@@ -1,621 +1,559 @@
-Sun Oct 12 19:11:10 1997  Andrew Scherpbier  <turtle@dt3h1nd3.san.rr.com>
+Mon Sep  7 23:19:12 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
-	* attrs.html: Added documentation for the external_parsers
+	* contrib/htparsedoc: Added contributed external parser for MS
+	Word documents by Richard Jones <rjones@imcl.com>.
+
+	* htdig/Document.cc: Added fix to use htparsedoc.
+	
+	* htdoc/*.html: Merged in new documentation for htdig-3.1.0b1.
+
+	* htdig/HTML.cc: Extended "noindex" behavior in previous patch.
+
+	* htcommon/defaults.cc: Added user_agent config option.
+
+	* htdig/Document.cc: Use it.
+
+Mon Sep  7 00:34:19 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/DocumentRef.h: Added DocState for documents marked as
+	"noindex".
+
+	* htdig/HTML.cc, htdig/Retriever.h, htdig/Retriever.cc,
+	htmerge/docs.cc: Use it to remove them.
+
+	* htsearch/TemplateList.cc: Add default template of builtin-long
+	to slot 0 in case of an error.
+
+	* htsearch/Display.cc: Use it.
+
+Sun Sep  6 21:36:16 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Sorted the current list of defaults, added
+	"pdf_parser" for the program to use in PDF.cc.
+
+	* htdig/PDF.cc: Use it, checking for the file before calling
+	system to fail gracefully.
+
+	* htlib/URL.cc: Bug fix for http:/ v. http://
+
+Sat Sep  5 23:11:48 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/String.cc: Added patch by Zvi Har'El
+	<rl@math.technion.ac.il> to indexOf function to prevent "false
+	positive" matches.
+
+	* installdir/nomatch.html, installdir/syntax.html: Fixed reference
+	to ht://Dig 3.0.
+
+	* htdig/Document.cc: Use robotstxt_name as user-agent as a more
+	consistent approach.
+
+	* htsearch/parser.cc: Convert "%01" to "|" to support <SELECT
+	... MULTIPLE> tags.
+
+Thu Sep  3 20:53:51 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Makefile.in: Remove reference to -lgdbm
+
+	* htsearch/Display.cc: Send Content-type header after all variable
+	expansion is completed.
+
+	* htcommon/WordList.cc: Removed warning under egcs-1.1
+
+Tue Aug 11 08:58:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+        * htsearch/Display.cc, htdig/Retriever.h,
+	htdig/Retriever.cc, htdig/Parsable.h, htdig/Parsable.cc,
+	htdig/HTML.h, htdig/HTML.cc, htcommon/defaults.cc,
+	htcommon/DocumentRef.h, htcommon/DocumentRef.cc,
+	htcommon/DocumentDB.cc:
+	Second patch for META description tags. New field in DocDB for the
+        desc., space in word DB w/ proper factor.
+
+	* htmerge/docs.cc: Added statistic for total size of docs in DB.
+	
+Thu Aug  6 10:15:22 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc: Added "local_dir_doc" config option,
+	the default filename in a directory.
+
+	* htcommon/defaults.cc: Fixed "elipses" spelling mistake,
+	local_dir_doc as above
+	
+Tue Aug  4 11:34:46 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Configuration.cc: Added fix by Philippe Rochat
+	<prochat@lbdsun.epfl.ch> to remove whitespace after config
+	options.
+
+	* htdig/HTML.cc, htdig/HTML.h: Added support for META robots tags.
+	
+Mon Aug  3 16:50:46 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+        * htsearch/ResultList.cc, htnotify/htnotify.cc,
+        htmerge/htmerge.cc, htmerge/docs.cc, htlib/String.cc,
+        htlib/ParsedString.cc, htfuzzy/Substring.cc,
+        htfuzzy/Prefix.cc, htfuzzy/Exact.cc,
+        htdig/SGMLEntities.cc, htdig/Retriever.cc, htdig/PDF.cc,
+        htdig/HTML.cc, htdig/Document.cc:
+        Fixed compiler warnings under -Wall
+
+Mon Aug  3 05:56:23 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc: Spelling correction for "ellipses"
+
+Thu Jul 23 12:14:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/PDF.cc, htdig/PDF.h, htdig/Document.cc: Added files (and
+	patch) from Sylvain Wallez for PDF parsing. Incorporates fix for
+	non-Adobe PDFs.
+
+	* htcommon/defaults.cc: Removed .pdf extension from bad_extensions.
+
+Wed Jul 22 10:04:31 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc: Added patch from Sylvain Wallez
+	<s.wallez.alcatel@e-mail.com> to use the filename if no title is found.
+
+	* htnotify/htnotify.cc: Added patch from Chris Jason
+	Richards <richards@cs.tamu.edu> to fix problems with sendmail.
+
+Tue Jul 21 09:56:58 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc:	Added patch by Rob Stone
+	<rob@psych.york.ac.uk> to create new environment variables to
+	htsearch: SELECTED_FORMAT and SELECTED_METHOD.
+
+Sun Jul 19 09:51:47 1998  Andrew Scherpbier  <andrew@contigo.com>
+
+	* configure.in (berkeley db stuff): Added the berkeley db .tar.gz
+ 	to the distribution and modified configure.in to extract it if it
+	needs to.
+
+Thu Jul  9 09:39:01 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Server.cc, htdig/Retriever.h, htdig/Retriever.cc,
+	htdig/Document.h, htdig/Document.cc, htcommon/defaults.cc: Added
+	support for local file digging using patches by Pasi Eronen
+	<pe@iki.fi>. Patches include support for local user (~username)
+	digging.
+	
+	* htdig/HTML.h, htdig/HTML.cc, htcommon/defaults.cc:
+	Added support for META name=description tags. Uses new config-file
+	option "use_meta_description" which is off by default.
+
+Mon Jun 22 05:02:01 1998  turtle  <turtle@kiwi>
+
+	* configure.in:
+	Added test to make sure that the berkeley db library is present
+
+	* .cvsignore: Ignore the berkeley db library
+
+	* configure: changed
+
+	* Makefile.config.in: Removed GDBM references
+
+	* Makefile.in: Removed GDMB references
+
+	* .version: updated version to 3.1.0b1
+
+	* README: Updated version # and website location
+
+	* htdig/HTML.cc: Applied patch that prevented SGML entities that
+	translate to valid_punctuation characters from becoming part of
+	words
+
+	* configure.in: Removed references to GDBM
+
+	* htcommon/defaults.cc: Got rid of my email address as the default
+	maintainer
+
+	* htdig/htdig.conf: simple config file for development
+
+	* htlib/String.cc, htlib/Attic/SDSU.h, htlib/Attic/SDSU.cc,
+	htlib/DB2_db.cc, htlib/Connection.cc, htlib/Configuration.cc,
+	htlib/BTree.cc: New Berkeley database stuff
+
+	* htlib/.sniffdir/ofiles.incl: removed SDSU.*
+
+	* installdir/syntax.html, installdir/search.html,
+	installdir/rundig, installdir/nomatch.html, installdir/htdig.conf,
+	installdir/footer.html: Changed to use the new
+	http://www.htdig.org/ instead of the sdsu site
+
+Sun Jun 21 23:20:14 1998  turtle  <turtle@kiwi>
+
+	* rx-1.5/rx/Attic/config.log, htsearch/htsearch.cc,
+	htsearch/Attic/display.cc, htsearch/Display.cc, htmerge/docs.cc,
+	htlib/.sniffdir/ofiles.incl, htlib/Database.h, htlib/DB2_db.cc,
+	htlib/DB2_db.h, htlib/Database.cc, htfuzzy/.sniffdir/ofiles.incl,
+	htfuzzy/Prefix.cc, htfuzzy/Prefix.h, htfuzzy/Makefile.in,
+	htfuzzy/Fuzzy.cc, htcommon/defaults.cc, configure.in, Makefile.in,
+	Makefile.config.in: patches by Esa and Jesse to add BerkeleyDB and
+	Prefix searching
+
+Mon Jun 15 18:15:50 1998  turtle  <turtle@kiwi>
+
+	* htdig/HTML.cc: Added suggestion by Chris Liddiard to add ',' to
+	the list of separator characters for meta keyword parsing
+
+Tue May 26 03:58:14 1998  turtle  <turtle@kiwi>
+
+	* rx-1.5/rx/Attic/config.log, htlib/htString.h, htlib/cgi.cc,
+	htlib/URL.cc, htlib/String.cc, htlib/ParsedString.cc,
+	htlib/Database.cc, htlib/Connection.cc: Got rid of compiler
+	warnings.
+
+	* rx-1.5/rx/.cvsignore: added config.log
+
+Fri Apr  3 17:10:44 1998  turtle  <turtle@kiwi>
+
+	* htsearch/Display.cc: Patch to make excludes work
+
+Tue Mar 10 16:02:32 1998  turtle  <turtle@kiwi>
+
+	* htlib/strcasecmp.cc: Applied patch by Bernhard Griener to add
+	arguments checks in the mystrncasecmp() function
+
+Sun Feb 22 17:43:49 1998  turtle  <turtle@kiwi>
+
+	* htdoc/mailing.html: New mailing list archive location
+
+Tue Feb 17 18:05:40 1998  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: added new one
+
+Thu Feb 12 22:22:15 1998  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: Added more sites
+
+Mon Jan  5 06:14:11 1998  turtle  <turtle@kiwi>
+
+	* configure, configure.in: Added check for fstream.h to get rid of
+	the annoying emails about ht://Dig not compiling...
+
+	* Makefile.config.in: Added include of the GDBM library back
+
+	* .version: Now at version 3.0.9
+
+	* include/htconfig.h.in: Changed refs to time related stuff
+
+	* htmerge/htmerge.cc, htmerge/docs.cc: format changes
+
+	* htdig/Document.cc: Changed tm from pointer to real structure
+
+	* htlib/.sniffdir/ofiles.incl, htlib/timegm.cc: Our own timegm
+	function
+
+	* rx-1.5/rx/.cvsignore, rx-1.5/rx/Attic/Makefile: cvs cleanup
+
+	* htmerge/docs.cc: Fixed memory leak
+
+	* htlib/lib.h: Added own replacement of timegm()
+
+	* htlib/Dictionary.cc: Fixed memory leaks
+
+	* htlib/Connection.cc: Fix by Pontus Borg for AIX.  Changed
+	'size_t' to 'unsigned long' for the length parameter for
+	getpeername()
+
+	* htfuzzy/Metaphone.cc: formatting changes
+
+	* htdig/Retriever.cc: fixed memory leak
+
+	* htdig/Document.cc: * Alarm was not cancelled if readHeader
+	returned anything but OK * Use our own timegm() replacement if
+	necessary
+
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: format changes
+
+	* htcommon/DocumentDB.h: reformatting
+
+	* htcommon/DocumentDB.cc: Fixed major memory leak
+
+	* include/.cvsignore, include/Attic/htconfig.h, rx-1.5/.cvsignore,
+	rx-1.5/Attic/config.cache, rx-1.5/Attic/config.status,
+	rx-1.5/rx/.cvsignore, rx-1.5/rx/Attic/config.status,
+	htlib/Attic/htlib.proj, htmerge/.cvsignore,
+	htmerge/Attic/htmerge.proj, htnotify/.cvsignore,
+	htnotify/Attic/htnotify.proj, htsearch/.cvsignore,
+	htsearch/Attic/htsearch.proj, Attic/config.cache,
+	htcommon/Attic/htcommon.proj, htfuzzy/.cvsignore,
+	htfuzzy/Attic/htfuzzy.proj, lookfor: General cleanup of archived
+	stuff
+
+	* .cvsignore: config.cache added
+
+	* htdig/.cvsignore: Added htdig
+
+Tue Dec 16 15:57:22 1997  turtle  <turtle@kiwi>
+
+	* htdig/Document.cc: Added little patch by Tobias Oetiker
+	<oetiker@ee.ethz.ch> that should fix problems with timeouts.
+
+Thu Dec 11 00:28:59 1997  turtle  <turtle@kiwi>
+
+	* htlib/URL.h, htlib/URL.cc: Added double slash removal code.
+	These were causing loops.
+
+Thu Oct 23 18:01:10 1997  turtle  <turtle@kiwi>
+
+	* htlib/Connection.cc: Fix by Pontus Borg for AIX.  Changed
+	'size_t' to 'unsigned long' for the length parameter for
+	getpeername()
+
+Mon Oct 13 02:13:52 1997  turtle  <turtle@kiwi>
+
+	* htdig/Attic/Makefile, htdig/Attic/htdig.proj: remove files that
+	shouldn't be in the repository
+
+	* htdig/.cvsignore: Ignore Makefile
+
+	* htdoc/cf_byname.html, htdoc/cf_byprog.html, htdoc/attrs.html,
+	htdoc/ChangeLog: Added documentation for the external_parsers
 	attribute.
 
-Sun Apr 13 18:13:28 1997  Andrew Scherpbier  <turtle@kiwi>
-
-	* htlib/strcasecmp.cc (mystrncasecmp): Fixed it.  Only one string
-	was converted to lower case.
-
-	* htlib/URL.cc (parse): Added extra check so that a colon is only
-	recognized if it comes right after the machine name.  It used to
-	just look for a colon anywhere in the path.  This broke some bogus
-	URLs.
-
-Wed Jan 15 21:42:36 1997  Andrew Scherpbier  <turtle@kiwi>
-
-	* htdig/HTML.cc (do_tag): Applied patch by William Miller that
-	will fix a problem with the <base> tag.
-
-Sun Jan 12 20:34:50 1997  Andrew Scherpbier  <turtle@kiwi>
-
-	* htlib/URL.cc (URL): Implemented David Filiatrault's suggestion
-	when dealing with anchors in URLs.  Anchors are now removed
-	without affecting anything after the anchor (like CGI parameters).
-
-	* config.html: Finally completed this file.  It now describes the
-	basic files needed to run the search engine.
-
-	* attrs.html: Fixed some problems pointed out by Darren Maglidt.
-	Missing attribute documentation for keywords_meta_tag_names was
-	added.
-
-	* htsearch/Display.cc (setVariables): Applied patch by Sander van
-	Zoest which fixed a problem with the use of the method_names
-	attribute.  The docs say that individual parts can be quoted while
-	the code didn't allow it.
-
-Sat Dec 14 09:21:25 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htdig/Plaintext.cc (parse): Applied patch by "Miller, William G"
-	<William.Miller@unisys.com> to fix a problem in the PlainText
-	parser of htdig.  Before, if the plaintext parser was called, it
-	used its contents literally.  Now it replaces '<', '>', and '&'
-	with the corresponsing SGML entities.  Now, when htsearch displays
-	the excerpt for a match, it will actually show these symbols.
-
-	* htlib/Dictionary.cc (Get_Next): Applied patch by "Miller,
-	William G" <William.Miller@unisys.com> to fix the Dictionary
-	class.  The Start_Get() and Get_Next() dictionary traversal
-	routines were severely broken.  Thanks William!
-
-Sun Dec  8 21:27:09 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htsearch.html: Updated docs to reflect the new keywords
-	value.  Also added a the MODIFIED output template variable to the
-	list of variables.  (I forgot to do this before...)
-
-	* htsearch/htsearch.cc (main): Added support for the new
-	"keywords" HTML search form value.  This attribute can be used to
-	add hidden terms to a search.  The terms will not show up in any
-	of the display methods, nor will they be hilighted.  The keywords
-	are added, separated with "and".
-
-	* htlib/URL.cc (URL): Added suggested patch by Brian H. Powell.
-	This patch allows URL of the form http:./foo.html
-	I am not sure if this really is legal, but it won't hurt anything
-	else.  (What if the document the above URL is in came from a
-	different service like ftp?  Is it now supposed to switch services
-	while keeping the same path?)
-
-	* htsearch/Display.cc (display): Added suggested patch by Esa
-	Ahola.  This will make htsearch only load document information for
-	matches that are actually going to be displayed.  Before, it would
-	get document information for all matches.  This will have to be
-	reworked as soon as we need to add some ranking rules that depend
-	on the document information.
-
-Sat Nov 30 13:15:59 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htsearch/parser.cc (perform_or): Added a patch by GLen Pringle
-	(pringle@cs.monash.edu.au) that fixed a bug in the boolean
-	expression parsing.  If an expression ended with an operator (AND
-	or OR), the parser would dump core.  The patch added error
-	checking and recovery.
-
-	* htdig/SGMLEntities.cc (translate): Fixed a small problem which
-	caused a compile error on some platforms.  Thanks Micheal Bass for
-	finding and fixing this.
-
-Fri Nov 29 12:23:36 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htdig/HTML.cc (do_tag): Fixed a bug in the <a> tag parsing which
-	only looked at the first attribute.  If the tag contained both a
-	name= and an href=, only the first one was seen.  Now they are
-	both seen.
-	(parse): Scott Laird found a problem whereby htdig would coredump
-	under certain conditions.  He fixed the problem by properly
-	parenthesizing the condition that was supposed to check for this
-	problem.
-
-	* htdig/Server.cc (robotstxt): Added support for the new
-	robotstxt_name attribute and also fixed a bug which caused the
-	parsing of the robots.txt file to produce wrong results.
-
-	* htcommon/defaults.cc (defaults): Added the robotstxt_name
-	attribute which is used to match the 'user-agent' lines in
-	robots.txt files on servers.  This will allow different databases
-	to be built depending on the robots.txt file and the name htdig
-	advertises itself as.
-
-Sat Oct 26 09:20:59 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htdig/HTML.cc (HTML): Added a new attribute,
-	keywords_meta_tag_names, which contains a list of meta names for
-	which the content will be used as document keywords.
-
-	* htlib/Dictionary.cc (rehash): Fixed problem with the
-	reallocation of the hash table.  The variable newCapacity was used
-	to create the new array before it was actually computed, hence
-	giving a random number and frequently causing virtual memory to be
-	exhausted.
-
-Tue Oct 22 08:45:50 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htlib/good_strtok.cc (good_strtok): Fixed problem with
-	characters outside of the 0-127 character range.  Changed the
-	indexing into the valids array to use unsigned char instead of the
-	default signed char.
-
-Sun Oct 13 9:57:47 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htcommon/WordList.cc (WordList): Changed the parameters to the
- 	Dictionary constructor from (32767, 0.85) to (203, 10.0).  This
- 	should severly reduce the demaind for memory in htsearch and
- 	htdig.
-
-	* htlib/Dictionary.cc (rehash): Changed the new capacity
- 	calculation to allow for load factors greater than 1.0.  Also
- 	changed the default load factor from 0.75 to 10.0 to reduce the
- 	number of memory\ reallocations.
-
-Tue Sep  3 16:25:01 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htsearch/parser.cc (parse): Added support to ignore words when
-	parsing the boolean search expression.
-
-	* htsearch/htsearch.cc (setupWords): Added check for the
-	bad_words. They are now marked to be ignored so that the
-	expressions parser can do just that...
-
-	* htdig/HTML.cc (HTML): Added a new configuration attribute
-	minimum_word_length which has a default of 3.  This determines the
-	minimum length of words that are indexed.  (Kinda follows from the
-	name, doesn't it?)
-
-Mon Sep  2 13:17:34 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htcommon/WordList.h (class WordList): Changed the words
-	Dictionary to be a pointer instead of an automatic so that the
-	dictionary can be initialized with a much larger table size and
-	also a higher threshold.
-
-	* htcommon/defaults.cc (defaults): Added .ram to the list of bad
-	extensions.  .ram files are realaudio files which I don't think
-	I'll be able to write a parser for since it is a proprietary
-	format!  :-)
-
-	* Makefile.in (install): Fixed a bug that caused the rundig script
-	to be generated incorrectly.  The symptom was that the endings
-	databases were recreated every time rundig was run.  They only
-	need to be created once.
-
-	* installdir/rundig: Added support to run htfuzzy on the synonyms
-	database.  This goes hand in hand with the changes to htdig.conf.
-
-	* installdir/htdig.conf: Added extensive comments to the example
-	configuration file.  Also added some more example attributes,
-	including exclude_urls, max_head_length, and search_algorithm.  I
-	hope this will make the configuration of htdig a little easier.
-
-	* htdig/Document.cc (getdate): Darren Maglidt
-	<dmaglidt@horizons.com> helped find a problem with the getdate()
-	method.  It turns out that on SunOS localtime() and timegm()
-	cannot be used together.  I changed it to use localtime() and
-	timelocal() instead.
-
-	* htmerge/words.cc (mergeWords): Put the string "htmerge:" in
-	front of all verbose output produced by the htmerge program.
-
-	* htdig/HTML.cc (do_tag): Fixed a problem with the patterns being
-	matched.  It was using the Compare() method of the StringMatch
-	class but since both "a" and "area" were supposed to be matched,
-	the <AREA> tag was never seen because it was matched with the "a"
-	pattern.  By changing this to use the new CompareWord() member of
-	StringMatch, this problem went away.
-
-	* htlib/StringMatch.h (class StringMatch): Added members
-	CompareWord(char*) and CompareWord(char *, int&, int&) to
-	complement the Compare(char*) and Compare(char*,int&,int&)
-	members.
-
-	* htlib/strptime.cc (mystrptime): Changed strptime.c to
-	strptime.cc and renamed the function from strptime to mystrptime.
-	This is to finally get rid of all the problems with machines that
-	have a strptime but no prototype.  Now mystrptime will ALWAYS be
-	used, ignoring the system version.
-
-	* htlib/lib.h (mystrptime): Added prototype for the new mystrptime
-	function.
-
-Mon Aug 26 22:30:55 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htsearch/Display.cc (generateStars): Added suggested code by
- 	Nathan Neulinger <nneul@umr.edu> to fix possible problems with
- 	divide by zero.
-
-Thu Aug 22 12:33:54 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htdig/Retriever.cc (Initial): Fixed problem with multiple start
- 	URLs.  It now actually *really* works!  The problem was that I
- 	used strtok() in a loop while the URL class also uses it to parse
- 	URLs.  Gotta love side effects!
-
-	* htmerge/words.cc (mergeWords): Applied patch supplied by Andy
- 	Hooper <hooper@knot.queensu.ca> to prevent the removal of files if
- 	/bin/sort fails for some reason.  Also added support for the
- 	TMPDIR environment variable to set the temporary directory
- 	/bin/sort should use.
-
-	* htsearch/htsearch.cc (setupWords): Added explicit support for
- 	ISO-Latin-1 characters within words that are searched for.
-
-	* htdig/HTML.cc (do_tag): Added support for the parsing of the
- 	<frame> tag withint HTML documents.  The 'src=' attribute is the
- 	same as the 'href=' attribute in an <a> tag.  (This was suggested
- 	by Darren Maglidt <dmaglidt@horizons.com>)
-
-Thu Aug 15 19:50:55 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htdig/Document.cc (Retrieve): Fixed a problem I introduced when
-	making the document retrieval more efficient.  I used
-	Connection::read_partial() instead of io::read()...  Since the
-	headers of a document are read one line at a time using the
-	buffered I/O or the io class, there was still data in the internal
-	buffer that the Connection::read_partial() didn't know about.
-	(ARGH!  Took me a while to find this one!)
-
-Wed Aug 14 09:26:52 1996  Andrew Scherpbier  <turtle@kiwi>
-
-	* htdig/Retriever.cc (parse_url): Applied small patch supplied by
- 	"Brian H. Powell" <brian@natinst.com>
-
-Tue Aug  6 12:45:44 1996  Andrew Scherpbier  <turtle@ender>
-
-	* htdig/SGMLEntities.cc: Fixed the SGML entities table.
-	Appearantly, the original document I go the info from had all the
-	grave and acute accents switched around.  Thanks "Patrick
-	A. Morin" <pmorin@clic.net> for pointing this out.
-
-	* htdig/Document.cc (Retrieve): Changed the document retrieval to
-	be more efficient.  It now no longer reads documents one line at
-	the time.  The only possible disadvantage is that now '\r'
-	characters will be part of the contents.  (This is a good thing
-	for non-HTML files!)
-	Thanks Chung-chieh Shan <ccshan@husc.harvard.edu> for pointing
-	this out.
-
-	* htdig/HTML.cc (do_tag): Fixed bug that caused the 'keywords'
-	META tag name not to be recognized.  Thanks Anat Rozenzon
-	<Anat.Rozenzon@telrad.co.il> for discovering the problem.
-	(parse): Fixed bug with the SGML entities.  A ';' was added to the
-	end of translated entities.
-
-Sun Aug  4 13:56:06 1996  Andrew Scherpbier  <turtle@ender>
-
-	* htnotify/htnotify.cc (send_notification): Added check for null
-	subjects.  This caused htnotify to segfault.
-	(send_notification): Added the use of the htnotify_sender
-	configuration attribute instead of the hard coded htdig@sdsu.edu
-	(oops!)
-
-Tue Jul 30 08:58:06 1996  Andrew Scherpbier  <turtle@ender>
-
-	* htsearch/htsearch.cc (main): Added a small patch by Nathan
- 	Neulinger <nneul@rollanet.org> to check for the existance of the
- 	CONFIG_DIR environment variable which will be used instead of the
- 	compiled CONFIG_DIR constant.  This allows a small shell script to
- 	set the CONFIG_DIR environment variable to what ever and allow one
- 	copy of htsearch to use multiple configuration directories.
-
-	* htsearch/Display.cc (createURL): Modified the createURL method
-	so that the value of the SCRIP_NAME environment variable is not
-	pushed through the URL encoder.  It was reported that the '-' in
-	cgi-bin was incorrectly converted to %2d which caused problems for
-	some server/browser combinations.
-
-Tue Jul  9 14:04:11 1996  Andrew Scherpbier  <turtle@max.sdsu.edu>
-
-	* Makefile.in (install): Modified the install procedure to reflect
-	the new files and images that are required now.
-
-	* htlib/String.h: modified the '<<' operator to support unsigned
-	char as an argument type.  This caused problems after adding the
-	international language support.  If an unsigned character was
-	used, it was silently upgraded to an int.  (You gotta hate c++!)
-
-Wed Jul  3 08:45:39 1996  Andrew Scherpbier  <turtle@max.sdsu.edu>
-
-	* htsearch/Display.cc (setupImages): This method will setup things
-	so that the star image URL can depend on the URL of the match it
-	is associated with.  This makes it easy to distinguish between
-	matches in multiple databases, for example.
-
-	* htsearch/htsearch.cc (doFuzzy): Rewrote the fuzzy algorithm
-	handling so that it actually does what the documentation said.
-	The correct weight is now assigned to each word produced by a
-	fuzzy algorithm.  In order to make everything more consistent, the
-	Exact fuzzy algorithm was added.  It is there only to make the
-	code cleaner.
-
-	* htfuzzy/Synonym.h (class Synonym): Added a new fuzzy algorithm:
-	Synonym.  It allows for the mapping of words to other words.  No
-	default synonym table is given because I couldn't find a good
-	one.  :-(
-
-Tue Jul  2 13:11:30 1996  Andrew Scherpbier  <turtle@max.sdsu.edu>
-
-	* htdig/HTML.cc (parse): Added support for SGML entities through
-	the use of the new SGMLEntities class.  This means that things
-	like '&amp;' will be translated to '&'.  Look in SGMLEntities.cc
-	for a table of the known entities that will be translated.
-
-	* htfuzzy/EndingsDB.cc (expandWord): Fixed a small bug which
-	caused rules that needed to remove characters to remove an extra
-	character. This meant that something like 'supply' was expanded to
-	'suppied' instead of 'supplied'.
-
-	* htfuzzy/Endings.cc (getWords): Made sure that if the word is not
-	a root, the root is added to the list of words.  (It wasn't
-	before...)
+Mon Jul 14 15:32:22 1997  turtle  <turtle@kiwi>
 
-Mon Jun 24 14:00:01 1996  Andrew Scherpbier  <andrew@sdsu.edu>
-
-	* htmerge/words.cc (mergeWords): Got rid of the mmap() call to
-	read in the whole wordlist file.  This was eating up LOTS of
-	virtual memory and caused problems on some systems.  Thanks to the
-	suggestion of Nathan Neulinger <nneul@umr.edu> I replaced the
-	whole mmap() and qsort() sequence with a simple call to the unix
-	sort program.  There appears to be no difference in speed between
-	the two ways of doing the sorting.
-
-	* htmerge/htmerge.cc: Split the source up into docs.cc and words.cc
+	* htdoc/uses.html: added cambridge
 
-Wed Jun 19 15:40:48 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+Wed Jul  9 15:57:30 1997  turtle  <turtle@kiwi>
 
-	* htsearch/htsearch.cc (main): Added support for the
-	'matches_per_page' attribute.  This is set with the '-p' option.
+	* htdoc/uses.html: added the rhodos project
 
-	* htcommon/defaults.cc (defaults): Added the 'matches_per_page'
-	attribute which determines what its name implies...  It is a
-	default only and can be overriden in htsearch.
+Mon Jul  7 22:15:45 1997  turtle  <turtle@kiwi>
 
-	* htsearch/htsearch.cc (main): Added '-x' option to do the
- 	opposite of the '-l' option.  It sets a pattern for URLs to
- 	exclude from the search.
+	* htdig/Document.cc: Removed old getdate() code that replaced '-'
+	with ' '.
 
-Tue Jun 18 09:16:51 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htlib/URL.cc: Sequences of "/./" are now replaced with "/" to
+	reduce the chance of infinite loops
 
-	* htdig/Server.cc (push): Fixed bug with the robots.txt matching
-	algorithm.  It now actually works...  :-(
+	* htdig/Document.cc: Added better date parsing.  Now also supports
+	the old RFC 850 format
 
-Mon Jun 17 17:14:31 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+Thu Jul  3 17:44:39 1997  turtle  <turtle@kiwi>
 
-	* htdig/Document.cc (Document): Removed a redundant constructor
-	for the Document class.  Now one constructor can deal with a URL
-	if supplied.
-	(Document): Added an optional max_size parameter to the
-	constructor to set the max_doc_size.  This is needed in case the
-	config value for "max_doc_size" is less than a robots.txt file.
-	This caused the robots.txt file to be truncated for certain
-	servers.
+	* htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htcommon/defaults.cc, htdig/htdig.h, htdoc/attrs.html,
+	htlib/Configuration.h, htlib/URL.cc, htdig/Attic/Makefile,
+	htdig/Document.cc: Added support for virtual hosts
 
-	* htdig/Retriever.cc (got_href): For verbose level 1, changed the
-	display of '.' to either '-' or '+' depending on whether the URL
-	was accepted or rejected.
+Mon Jun 30 17:07:49 1997  turtle  <turtle@kiwi>
 
-Wed Jun 12 13:27:28 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htdoc/uses.html: Added Depaul university
 
-	* htdig/HTML.cc (do_tag): Added support for the 'keywords' meta
-	attribute in addition to the old 'htdig-keywords' attribute.  This
-	is because some other search engines also seem to use this method.
-	(do_tag): Added support for the 'htdig-index' meta attribute.
-	This can be used to start indexing again after indexing was turned
-	off with the 'htdig-noindex' attribute.
+Tue Jun 24 14:59:45 1997  turtle  <turtle@kiwi>
 
-Tue Jun 11 10:03:48 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* Makefile.in: Fixed syntax error in the installation target.
 
-	* htsearch/display.cc (excerpt): Replaced the constant text for
-	when there is no excerpt with the attribute value
-	'no_excerpt_text'.
+Mon Jun 23 17:33:14 1997  turtle  <turtle@kiwi>
 
-	* htfuzzy/Metaphone.cc (addWord): Fixed bug in the metaphone
-	algorithm which could cause a segmentation fault in certain
-	cases.
+	* htdig/Attic/teamball.conf, htdig/Attic/tsdsu.conf,
+	htdig/Attic/rohan.conf, htdig/Attic/sdsu.conf, htdig/Attic/t.conf,
+	htdig/Attic/nsdsu.conf, htdig/Attic/daztec.conf,
+	htdig/Attic/max.conf, htdig/htdig.conf, htdig/Attic/Makefile,
+	htdig/Attic/catalog.conf: Removed old config files
 
-	* htdig/Retriever.cc (Retriever): Changed the constant weight
-	factor for normal text from 1 to whatever is specified in the
-	'text_factor' attribute.
+	* htdoc/FAQ.html: FAQ initial
 
-	* htcommon/defaults.cc (defaults): Added a 'text_factor' attribute
-	and set the default to '1'.  This will allow the administrator to
-	set the weight for text that isn't in any special tag.
+	* htdoc/contents.html: Added link to the new FAQ
 
-Thu May 23 17:57:51 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htdoc/FAQ.html: *** empty log message ***
 
-	* htdig/Document.cc (Retrieve): Added the 'Referer:' header to
-	HTTP requests if that information is available.
+	* htnotify/htnotify.cc: Added version info to the usage output
 
-	* htcommon/defaults.cc (defaults): Added 'max_doc_size' attribute.
+	* htfuzzy/htfuzzy.cc: Added version info the usage output
 
-Thu Apr 18 09:44:59 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htmerge/htmerge.cc: Added version info to usage message
 
-	* htlib/Configuration.cc (Read): Multiple lines of the
-	configuration file can now be combined by placing a backslash as
-	the last character of a line that is continued.
-	This works the same as line continuation in Makefiles.
+	* htdig/main.cc: Added version info to the usage message
 
-	* htdig/Retriever.cc (Initial): Added support for multiple start
-	urls.
+Mon Jun 16 15:35:56 1997  turtle  <turtle@kiwi>
 
-Wed Apr 17 17:22:11 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* installdir/footer.html: Changed the hardcoded version number to
+	the new VERSION variable
 
-	* htlib/ParsedString.cc: Changed the parsing to allow for
-	the inclusion of files by using back-quotes around a filename.
-	The filename may also contain variables.
-	The result of this is that configuration files can now ``include''
-	text files in attribute values.
+	* htdoc/hts_templates.html: Added docs for the VERSION and PERCENT
+	variables
 
-Thu Apr 11 10:08:00 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htsearch/Display.cc: Added PERCENT and VERSION variables for the
+	output templates
 
-	* htdig/Document.cc (Retrieve): Added support for the HTTP proxy
-	protocol.  If the 'http_proxy' attibute is defined, it will be
-	used to retrieve documents.
+Sat Jun 14 18:52:42 1997  turtle  <turtle@kiwi>
 
-	* htcommon/defaults.cc (defaults): Added default value for
-	http_proxy attribute.
+	* htdig/Document.cc: Made redirect detection code more general
 
-	* htwrapper/htwrapper.cc (main): Changed the location of the
-	configureation file from DATABASE_DIR to CONFIG_DIR.  Thanks to
-	Dale Bingham (dale@bitshop.com) for pointing this out.
+Fri Jun 13 05:31:17 1997  turtle  <turtle@kiwi>
 
-Wed Mar 20 13:41:01 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htdoc/cf_general.html: Fixed typo
 
-	* htsearch/htsearch.cc: Changed all references to the gdbm library
-	to the GDBM_db class instead.
+Thu Jun  5 15:00:53 1997  turtle  <turtle@kiwi>
 
-	* htlib/GDBM_db.h (class GDBM_db): Added this class to encapsulate
-	the GDBM library functions.  It is derived from the Database class.
+	* htdoc/uses.html: added VG Gas Analysis Systems
 
-	* htsearch/htsearch.cc (main): htsearch will no longer segfault
-	when no search words are specified.
+Tue Jun  3 17:49:05 1997  turtle  <turtle@kiwi>
 
-	* htdig/Parsable.cc (setContents): Fixed memory leak.  The
-	contents String was not released before a new one was created.
+	* installdir/english.0.original, installdir/english.0: Added new
+	english dictionary for the endings algorithm
 
-Thu Mar  7 14:54:37 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+Thu May 29 14:56:40 1997  turtle  <turtle@kiwi>
 
-	* htsearch/htsearch.cc: Added a new option '-r' which will cause
-	htsearch to produce raw output which is easy to interpret with a
-	wrapper program.  This is so that some other program can take the
-	search results and format it the way it wants to (or do other
-	things with it...)  The format of the raw output is defined in the
-	documentation.
+	* htdoc/uses.html: Added Indiana University Computer Security
+	Office
 
-	* htfuzzy/htfuzzy.cc: Added support for the creation of the
-	endings database.  This used to be done with a perl program but is
-	now done with htfuzzy when specifying the 'endings' algorithm on
-	the command line.
+Wed May 28 14:47:25 1997  turtle  <turtle@kiwi>
 
-	* htcommon/defaults.cc (defaults): Added three new attributes:
-	endings_affix_file, endings_dictionary, and excerpt_show_top.
-	Check the documentation for the meaning.
+	* htdoc/main.html: Fixed typo
 
-Fri Feb 16 17:13:40 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+Mon May 19 15:23:18 1997  turtle  <turtle@kiwi>
 
-	* htlib/Connection.cc (assign_server): Fixed problem with 64 bit
-	machines like dec alpha.
+	* htdoc/uses.html: Added daily californian online
 
-Thu Feb 15 14:36:58 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+Tue May 13 19:28:32 1997  turtle  <turtle@kiwi>
 
-	* htdig/HTML.cc (do_tag): Changed the way URLs are seen.  A '?'
-	will now also terminate the URL.  This is to prevent htdig from
-	going down infinite virtual web trees.
+	* htdoc/uses.html: Added The Reohr Group
 
-Mon Feb 12 16:46:00 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htdoc/uses.html: Added the Linux Documentation Project
 
-	* htcommon/defaults.cc (defaults): Changed the values of a lot of
-	the variables to use the new variable expansion feature of the
-	Configuration class.  The new variable database_dir now defines
-	the directory to use for everything else.  database_base is now
-	defined in terms of database_dir.
-	The old way of defining database_base will still work as it used
-	to in previous versions.
+Sun May 11 17:52:05 1997  turtle  <turtle@kiwi>
 
-Sun Feb 11 16:04:04 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htdoc/index.html: Made the contents frame a little wider so that
+	text doesn't wrap
 
-	* htsearch/htsearch.cc (setupWords): Added support for the
-	'metaphone' and 'endings' fuzzy algorithms.
+	* htdoc/uses.html: Added NOVA and Gajo & Associati
 
-	* htfuzzy/Metaphone.cc: Add the 'metaphone' fuzzy algorithm.
-	It is used in the same way as the 'soundex' algorithm.
+Fri May  2 23:35:56 1997  turtle  <turtle@kiwi>
 
-	* htfuzzy/Endings.cc: Added the 'endings' algorithm which uses a
-	dictionary of word roots and all legal endings for those roots.
+	* htdoc/uses.html: added www.bajan.org
 
-	* htfuzzy/createDict.pl: Added this program to create
-	two dictionaries to be used with the 'ending' fuzzy algorithm.
-	The input to this program is a language definition plus a
-	dictionary.  These files can be gotten from the Ispell program or
-	other sources.  Only a small English dictionary is included, but
-	any size and number of dictionaries can be used, including
-	dictionaries in other languages.
+Wed Apr 30 22:28:28 1997  turtle  <turtle@kiwi>
 
-Wed Jan 31 20:45:58 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htdoc/uses.html: Added Caldera, Inc.
 
-	* htmerge/htmerge.cc (Merge): Added better statistics reporting
-	output.  All output lines now start with "htmerge:".
+Sun Apr 27 14:43:31 1997  turtle  <turtle@kiwi>
 
-Fri Jan 26 11:28:06 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htsearch/parser.cc, htsearch/parser.h, include/Attic/htconfig.h,
+	htdoc/RELEASE.html, htdoc/uses.html, htdoc/where.html,
+	htlib/URL.cc, htlib/strcasecmp.cc, htsearch/htsearch.cc, .version,
+	README, htdig/Attic/Makefile, htdoc/ChangeLog: changes
 
-	* examples/README: Added some more example files to the directory
-	and the README.
+Mon Apr 21 15:44:39 1997  turtle  <turtle@kiwi>
 
-	* contrib/htwrapper/htwrapper.cc (main): Took out the HTML output
-	for the header and trailer.  This means that the header and footer
-	HTML now has to be placed in the files defined by the
-	'search_results_header', 'search_results_footer', and
-	'nothing_found_file' attributes.
-	This was done to allow more flexibility in things like background
-	color/image for the search results.
+	* htsearch/htsearch.cc: Added code to check the search words
+	against the minimum_word_length attribute
 
-Tue Jan 23 14:09:50 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+Sun Apr 20 15:27:37 1997  turtle  <turtle@kiwi>
 
-	* configure.in: Added test for the need for a prototype for the
-	gethostname() library call.
+	* CONFIG: Made paths more generic
 
-	* htlib/Connection.cc: Added test for the need for a prototype for
-	the gethostname() library call.
+	* htdig/Document.cc: Added include for ctype.h
 
-Thu Jan  4 09:22:44 1996  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htdig/Plaintext.cc: Fixed bug
 
-	* htdig/Server.cc (Server): Fixed bug in the robots.txt retrieval
-	code.  Previously, if a whole server was protected, htdig would
-	get a authorization failure on robots.txt and it would interpret
-	that as meaning that the server was unreachable.  (Chuck Lewis
-	found this one...)
+Tue Apr  1 17:56:57 1997  turtle  <turtle@kiwi>
 
-Fri Dec 29 16:41:59 1995  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htdoc/uses.html: added ukc
 
-	* htdig: Added support for Basic authentication with HTTP
-	requests.  The '-u' option specifies the username and password to
-	use.
+Sun Mar 30 01:18:16 1997  turtle  <turtle@kiwi>
 
-Wed Dec 20 09:28:27 1995  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htdig/Attic/Makefile, htdoc/uses.html, Attic/Makefile.config,
+	Attic/config.log, Attic/config.status, .cvsignore, Attic/Makefile,
+	htsearch/Attic/Makefile, htsearch/.cvsignore,
+	htnotify/Attic/Makefile, htnotify/.cvsignore, htmerge/.cvsignore,
+	htmerge/Attic/Makefile, htlib/.cvsignore, htlib/Attic/Makefile,
+	htfuzzy/.cvsignore, htfuzzy/Attic/Makefile, htcommon/.cvsignore,
+	htcommon/Attic/Makefile: update
 
-	* htcommon/WordList.cc (BadWordFile): Fixed nasty bug with empty
-	lines to the bad_words file.  (found by Craig.)
+Thu Mar 27 00:06:05 1997  turtle  <turtle@kiwi>
 
-	* htsearch/htsearch.cc (htsearch): Can now do proper fuzzy
-	searching.  The weight factors for each of the algorithms is
-	calculated in to the overall weight computation for matches.
+	* htdig/Plaintext.cc: Applied patch supplied by Peter Enderborg
+	<pme@ufh.se> to fix a problem with a pointer running off the end
+	of a string.
 
-	* htdig/HTML.cc (parse): Added code to detect HTML quoting
-	escapes.  They start with '&' and end with ';'.  If these
-	characters were seen as valid punctuation, the name of the quoted
-	entity would become part of the previous word if there was no
-	space.  This happened with "Billy&quot;" which was seen as
-	billyquot.
+Mon Mar 24 04:33:26 1997  turtle  <turtle@kiwi>
 
-Sun Dec 17 17:29:28 1995  Andrew Scherpbier  <andrew@sdsu.edu>
+	* rx-1.5/rx/Attic/config.log, rx-1.5/rx/Attic/config.status,
+	htsearch/htsearch.h, htsearch/parser.h, include/Attic/htconfig.h,
+	rx-1.5/Attic/config.status, htsearch/Attic/Makefile,
+	htsearch/ResultList.cc, htsearch/ResultMatch.h,
+	htsearch/Template.h, htsearch/WeightWord.h, htlib/cgi.cc,
+	htlib/htString.h, htlib/io.cc, htmerge/Attic/Makefile,
+	htmerge/htmerge.h, htnotify/Attic/Makefile, htlib/StringList.cc,
+	htlib/StringList.h, htlib/String_fmt.cc, htlib/URL.h,
+	htlib/URLTrans.cc, htlib/Attic/SDSU.cc, htlib/Attic/String.h,
+	htlib/ParsedString.h, htlib/String.cc, htfuzzy/htfuzzy.cc,
+	htlib/Attic/Makefile, htlib/Configuration.cc, htlib/Connection.cc,
+	htlib/Database.h, htdig/URLRef.h, htfuzzy/Attic/Makefile,
+	htfuzzy/Exact.cc, htfuzzy/Fuzzy.h, htfuzzy/Substring.cc,
+	htfuzzy/SuffixEntry.h, htdig/Plaintext.cc, htdig/Postscript.cc,
+	htdig/SGMLEntities.cc, htdig/Server.cc, htdig/Server.h,
+	htdig/Attic/Makefile, htdig/ExternalParser.cc,
+	htdig/ExternalParser.h, htdig/Parsable.h, htcommon/Attic/Makefile,
+	htcommon/DocumentRef.h, htcommon/WordList.cc, htcommon/WordList.h,
+	htcommon/WordReference.h, htdig/Document.h, Attic/config.status,
+	configure, configure.in, Attic/Makefile, Attic/Makefile.config,
+	Attic/config.cache, Attic/config.log, Makefile.config.in: Renamed
+	the String.h file to htString.h to help compiling under win32
 
-	* htlib/Match.h (class): Added int hasPattern() member to
-	determine if a pattern was compiled with a Match (or derived)
-	object.
+	* Makefile.in: Updated "make dist" to remove CVS stuff
 
-	* htsearch/htsearch.cc (main): Added the ability to specify more
-	than one limit pattern.  They are now all put into a StringMatch
-	object for efficient matching.  Multiple limit patterns can be
-	specified either by repeating the '-l' option or my separating the
-	patterns with '|'.
+Fri Mar 14 17:15:32 1997  turtle  <turtle@kiwi>
 
-	* htfuzzy/*:  Added fuzzy index creation.  Updated configure.in
-	and Makefile.in to reflect the addition of this subdirectory.
+	* htcommon/defaults.cc: Changed default value for remove_bad_urls
+	to true
 
-Mon Dec 11 10:58:12 1995  Andrew Scherpbier  <andrew@sdsu.edu>
+Thu Mar 13 18:37:50 1997  turtle  <turtle@kiwi>
 
-	* htmerge/htmerge.cc: Added better error recovery in case or all
-	of the needed files are unavailable.
+	* htnotify/htnotify.cc, Attic/Makefile.config,
+	htdig/SGMLEntities.cc, htdoc/uses.html: Changes
 
-Sun Dec 10 13:14:30 1995  Andrew Scherpbier  <andrew@sdsu.edu>
+Thu Feb 27 00:52:52 1997  turtle  <turtle@kiwi>
 
-	* htsearch/htsearch.cc: Added better error recovery in case some
-	or all of the needed files are unavailable.
+	* htdoc/uses.html: new uses
 
-Sat Dec  9 16:16:43 1995  Andrew Scherpbier  <andrew@sdsu.edu>
+Mon Feb 24 17:52:55 1997  turtle  <turtle@kiwi>
 
-	* htdig/Retriever.h and htdig/HTML_Parser.h: made the destructors
-	virtual since the classes contain other virtual methods.  (Caused
-	compiler warning.)
+	* htsearch/htsearch.cc, htnotify/Attic/Makefile,
+	htsearch/Attic/Makefile, htlib/strcasecmp.cc,
+	htmerge/Attic/Makefile, htlib/Attic/Makefile, htlib/String.cc,
+	htlib/StringMatch.cc, htdig/SGMLEntities.cc,
+	htfuzzy/Attic/Makefile, htdig/Attic/Makefile,
+	htcommon/Attic/Makefile, htcommon/WordList.cc: Applied patches
+	supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
+	ht://Dig run on 8-bit text without the global unsigned-char option
+	to gcc.
 
-	* htdig/Document.h and htdig/Document.cc: used "enum
-	Document::DocStatus" which some compilers barf on.  Took out the 'enum'.
+Sun Feb 23 17:29:38 1997  turtle  <turtle@kiwi>
 
-Tue Nov 14 14:33:28 1995  Andrew Scherpbier  <andrew@sdsu.edu>
+	* htdoc/uses.html: *** empty log message ***
 
-	* Finished port to IRIX 5.3
+Tue Feb 18 15:03:03 1997  turtle  <turtle@kiwi>
 
-	* htlib/htlib.a: Added strptime.c.  It will be used if the system
-	doesn't have it.
+	* htdoc/uses.html: New uses of ht://Dig
 
+Tue Feb 11 00:38:48 1997  turtle  <turtle@kiwi>
+
+	* htsearch/htsearch.cc: Renamed the very bad wordlist variable to
+	badWords
+
+Mon Feb 10 17:32:47 1997  turtle  <turtle@kiwi>
+
+	* htlib/Connection.cc, htdig/Document.h, htdig/Document.cc,
+	htcommon/DocumentRef.cc, htcommon/DocumentRef.h: Applied AIX
+	specific patches supplied by Lars-Owe Ivarsson
+	<lars-owe.ivarsson@its.uu.se>
+
+Fri Feb  7 18:04:13 1997  turtle  <turtle@kiwi>
+
+	* htlib/URL.cc: Fixed problem with anchors without a URL
+
+Mon Feb  3 17:37:59 1997  turtle  <turtle@kiwi>
+
+	* .version, README: updated stuff to 3.0.8
+
+	* Many files: Initial CVS
+
+Local Variables:
+add-log-time-format: current-time-string
+End:

@@ -4,6 +4,10 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.8  1998/09/08 03:29:09  ghutchis
+//
+// Clean up for 3.1.0b1.
+//
 // Revision 1.7  1998/09/07 04:37:16  ghutchis
 //
 // Added DocState for documents marked as "noindex".
@@ -13,7 +17,7 @@
 // desc., space in word DB w/ proper factor.
 //
 // Revision 1.5  1998/08/06 14:18:32  ghutchis
-// Added config option "local_dir_doc" for default filename in a local
+// Added config option "local_default_doc" for default filename in a local
 // directory. Fixed spelling mistake in "elipses" attributes.
 //
 // Revision 1.4  1998/08/03 16:50:34  ghutchis
@@ -589,8 +593,8 @@ Retriever::IsLocal(char *url)
 	    int l = strlen(url)-prefix->length()+path->length()+4;
 	    String *local = new String(*path, l);
 	    *local += &url[prefix->length()];
-	    if (local->last() == '/' && config["local_dir_doc"] != "")
-	      *local += config["local_dir_doc"];
+	    if (local->last() == '/' && config["local_default_doc"] != "")
+	      *local += config["local_default_doc"];
 	    return local;
 	}	
     }

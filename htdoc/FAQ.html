@@ -5,41 +5,176 @@
   </head>
 
   <body bgcolor="#eef7ff">
-      <h1>System requirements</h1>
-      <p>
-	ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier
-	&lt;<a href="mailto:andrew@contigo.com">andrew@contigo.com</a>&gt;
-	<br>
-	Please see the file <a href=../COPYING>COPYING</a> for license
-	information.
-      <hr noshade size=4>
       <h1>Frequently Asked Questions</h1>
+      <p>
+	ht://Dig &copy; 1995-1998 Andrew Scherpbier
+	<br>
+	Please see the file <a href="COPYING">COPYING</a> for license
+	information.</p>
+      <hr noshade size=4>
+      <p>This FAQ is compiled by Geoff Hutchison 
+      &lt;<a href="mailto:ghutchis@wso.williams.edu">ghutchis@wso.williams.edu</a>&gt;
+      and the most recent version is available at
+      &lt;<a href="http://www.htdig.org/FAQ.html">http://www.htdig.org/FAQ.html</a>&gt;.
+      Questions (and answers!) are greatly appreciated.</p>
+      <h2>Questions</h2>
 
       <h3>1. General</h3>
       1.1. <a href="#q1.1">Can I search the internet with ht://Dig?</a><br>
       1.2. <a href="#q1.2">Can I index the internet with ht://Dig?</a><br>
-      1.3. <a href="#q1.3">What's the difference between htdig and ht://Dig?</a></br>
-      1.4. <a href="#Q1.4">I sent mail to Andrew but I never got a response!</a><br>
+      1.3. <a href="#q1.3">What's the difference between htdig and ht://Dig?</a><br>
+      1.4. <a href="#q1.4">I sent mail to Andrew but I never got a response!</a><br>
       1.5. <a href="#q1.5">I sent a question to the mailing list but I never got a response!</a><br>
+      1.6. <a href="#q1.6">I have a great idea/patch for ht://Dig!</a><br>
+      1.7. <a href="#q1.7">Is ht://Dig Y2K compliant?</a><br>
       <p>
+
       <h3>2. Getting ht://Dig</h3>
-      2.1. <a href="#q2.1">Are there binary distributions of ht://Dig</a><br>
-      2.2. <a href="#q2.2">Are there mirror sites for ht://Dig</a><br>
-      2.3. <a href="#q2.3">Is ht://Dig available by ftp?</a><br>
+      2.1. <a href="#q2.1">What's the latest version of ht://Dig?</a><br>
+      2.2. <a href="#q2.2">Are there binary distributions of ht://Dig?</a><br>
+      2.3. <a href="#q2.3">Are there mirror sites for ht://Dig?</a><br>
+      2.4. <a href="#q2.4">Is ht://Dig available by ftp?</a><br>
       <p>
+
       <h3>3. Compiling</h3>
       3.1. <a href="#q3.1">When I compile ht://Dig I get an error about libht.a</a><br>
       <p>
+
       <h3>4. Configuration</h3>
       4.1. <a href="#q4.1">How come I can't index my site?</a><br>
-      4.2. <a href="#q4.1">How can I change the output format of htsearch?</a><br>
-      4.3. <a href="#q4.1">How do I index pages that start with '~'?</a><br>
+      4.2. <a href="#q4.2">How can I change the output format of htsearch?</a><br>
+      4.3. <a href="#q4.3">How do I index pages that start with '~'?</a><br>
+      4.4. <a href="#q4.4">Can I use multiple databases?</a><br>
 
       <hr noshade size=4>
-      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a></address>
+      <h2>Answers</h2>
+
+      <h3>1. General</h3>
+      1.1. <a name="q1.1">Can I search the internet with
+      ht://Dig?</a><br>
+      <p>No, ht://Dig is a system for indexing and searching a small
+      set of sites or intranet. It is not meant to replace any of the
+      many internet-wide search engines.</p>
+
+      1.2. <a name="q1.2">Can I index the internet with
+      ht://Dig?</a><br>
+      <p>No, as above, ht://Dig is not meant as an
+      internet-wide search engine. While there is
+      <emph>theoretically</emph> nothing to stop you from indexing as
+      much as you wish, practical considerations (e.g. time, disk
+      space, memory, etc.) will limit this.</p>
+
+      1.3. <a name="q1.3">What's the difference between htdig and ht://Dig?</a><br>
+      <p>The complete ht://Dig consists of several programs, one of
+      which is called "htdig." This program performs the "digging" or
+      indexing of the web pages. Of course an index doesn't do you much good
+      without a program to sort it, search through it, etc.</p>
+
+      1.4. <a name="q1.4">I sent mail to Andrew but I never got a response!</a><br>
+      <p>Andrew works on ht://Dig on the side. Since he is often busy
+      with work and gets a lot of e-mail, it can take a while to respond.</p>
+
+      1.5. <a name="q1.5">I sent a question to the mailing list but I never got a response!</a><br>
+      <p>As with Andrew, the members of the mailing list have jobs
+      too! Don't worry, someone will almost definitely get back to
+      you.</p>
+
+      1.6. <a name="q1.6">I have a great idea/patch for
+      ht://Dig!</a><br>
+      <p>Great! Development of ht://Dig continues through suggestions
+      and improvements from users. If you have an idea (or even better,
+      a patch), please send it to the ht://Dig mailing list so others
+      can use it. For suggestions on how to submit patches, please check 
+      the <a href="http://dev.htdig.org/patches.html">"Guidelines for Patch Submissions"</a></p>
+
+      1.7. <a name="q1.7">Is ht://Dig Y2K compliant?</a><br>
+      <p>
+      ht://Dig should be y2k compliant since it never stores dates as 
+      two-digit years. Under ht://Dig's copyright (GPL), there is no warranty 
+      whatsoever. If you would like an iron-clad, legally-binding guarantee, 
+      feel free to check the source code itself.
+      </p>
+      
+      <p>
+      <h3>2. Getting ht://Dig</h3>
+      2.1. <a name="q2.1">What's the latest version of ht://Dig?</a><br>
+      <p>The latest version is 3.1.0b1 as of this writing. Development
+      is beginning on htdig4 as well as a few interim releases of
+      htdig3.</p>
+
+      2.2. <a name="q2.2">Are there binary distributions of
+      ht://Dig?</a><br>
+      <p>Not at the moment. As a test, the release of ht://Dig 3.0.8b2
+      saw a pre-compiled SPARC/Solaris package in addition to the
+      standard source release. Binary distributions are on the TODO list.</p>
+
+      2.3. <a name="q2.3">Are there mirror sites for ht://Dig?</a><br>
+      <p>Currently two sites exist for ht://Dig, <a
+      href="http://www.htdig.org/">www.htdig.org</a> and <a
+      href="http://htdig.sdsu.edu">htdig.sdsu.edu</a>. The www.htdig.org
+      site contains the most up-to-date information and
+      releases. Currently no other mirrors exist.</p>
+
+      2.4. <a name="q2.4">Is ht://Dig available by ftp?</a><br>
+      <p>Not at the moment.</p>
+      <p>
+
+      <h3>3. Compiling</h3>
+      3.1. <a name="q3.1">When I compile ht://Dig I get an error about libht.a</a><br>
+      <p>This usually indicates that either libg++ is not installed or
+      is installed incorrectly. To get libg++ or any other GNU too,
+      check <a href="ftp://prep.ai.mit.edu/pub/gnu/">ftp://prep.ai.mit.edu/pub/gnu/</a></p>
+      <p>
+
+      <h3>4. Configuration</h3>
+      4.1. <a name="q4.1">How come I can't index my site?</a><br>
+      4.2. <a name="q4.2">How can I change the output format of htsearch?</a><br>
+<p>Answer contributed by: Malka Cymbalista <vumalki@ultra1.weizmann.ac.il></p>
+
+<p>You can change the output format of htsearch by creating different
+header, footer and result files that specify how you want the output
+to look. You then create a configuration file that specifies which
+files to use. In the html document that links to the search, you
+specify which configuration file to use.</p>
+
+<p>So the configuration file would have the lines:<br>
+search_results_header: ${common_dir}/ccheader.html<br>
+search_results_footer: ${common_dir}/ccfooter.html<br>
+template_map:   Long long builtin-long \<br>
+                Short short builtin-short \<br>
+                Default default ${common_dir}/ccresult.html<br>
+template_name:  Default<br>
+You would also put into the configuration file any other lines from the
+default configuration file that apply to htsearch.</p>
+
+<p>The files ${common_dir}/ccheader.html and
+${common_dir}/ccfooter.html and ${common_dir}/ccresult.html would be
+tailored to give the output in the desired format.</p>
+
+<p>Assuming your configuration file is called cc.conf, the html file that
+links to the search has to set the config parameter equal to cc. The
+following line would do it:<br>
+<pre>&lt;input type=hidden name=config value="cc"&gt;</pre></p>
+
+      4.3. <a name="q4.3">How do I index pages that start with '~'?</a><br>
+      <p>
+      ht://Dig should index pages starting with '~' as if it was another 
+      web browser. If you are having problems with this, check your server 
+      log files to see what file the server is attempting to return.
+      </p>
+      
+      4.4. <a name="q4.4">Can I use multiple databases?</a><br>
+      <p>Yes, though you may find it easier to have one larger
+      database and use restrict or exclude fields on searches. To use
+      multiple databases, you will need a config file for each
+      database. Then each file will set the "database_base" option to
+      change the name of the databases.</p>
+
+      <hr noshade size=4>
+      <address><a href="mailto:ghutchis@wso.williams.edu">Geoff Hutchison &lt;ghutchis@wso.williams.edu&gt;</a></address>
 <!-- Created: Sun Jun 22 23:16:38 PDT 1997 -->
 <!-- hhmts start -->
-Last modified: Sun Jun 22 23:37:40 PDT 
+Last modified: Sun Sep 6 5:11:00 EDT 1998
 <!-- hhmts end -->
   </body>
 </html>

@@ -4,6 +4,10 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
+// Revision 1.12  1998/09/08 03:29:09  ghutchis
+//
+// Clean up for 3.1.0b1.
+//
 // Revision 1.11  1998/09/07 04:27:39  ghutchis
 //
 // Bug fixes.
@@ -13,7 +17,7 @@
 // desc., space in word DB w/ proper factor.
 //
 // Revision 1.9  1998/08/06 14:18:30  ghutchis
-// Added config option "local_dir_doc" for default filename in a local
+// Added config option "local_default_doc" for default filename in a local
 // directory. Fixed spelling mistake in "elipses" attributes.
 //
 // Revision 1.8  1998/07/23 16:18:51  ghutchis
@@ -50,7 +54,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.11 1998/09/07 04:27:39 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.12 1998/09/08 03:29:09 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -102,7 +106,7 @@ ConfigDefaults	defaults[] =
     {"keywords_meta_tag_names",		"keywords htdig-keywords"},
     {"limit_urls_to",			"${start_url}"},
     {"locale",				"iso_8859_1"},
-    {"local_dir_doc",                   "index.html"},
+    {"local_default_doc",               "index.html"},
     {"local_urls",			""},
     {"local_user_urls",			""},
     {"maintainer",			"bogus@unconfigured.htdig.user"},
@@ -153,6 +157,7 @@ ConfigDefaults	defaults[] =
     {"url_list",			"${database_base}.urls"},
     {"use_star_image",			"true"},
     {"use_meta_description",            "false"},
+    {"user_agent",			"htdig"},
     {"valid_punctuation",		".-_/!#$%^&'"},
     {"version",				HTDIG_VERSION},
     {"word_db",				"${database_base}.words.db"},

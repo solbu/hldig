@@ -1,0 +1,38 @@
+
+>    Subject: htdig: HTDIG: Searching Word files
+>         To: htdig@sdsu.edu
+>       From: Richard Jones <rjones@imcl.com>
+>       Date: Tue, 15 Jul 1997 12:44:03 +0100
+>
+> I'm currently trying to hack together a script to search
+> Word files. I have a little program called `catdoc' (attached)
+> which takes Word files and turns them into passable text files.
+> What I did was write a shell script around this called
+> `htparsedoc' (also attached) and add it as an external
+> parser:
+> 
+>         --- /usr/local/lib/htdig/conf/htdig.conf ---
+> 
+>         # External parser for Word documents.
+>         external_parsers:       "applications/msword"
+> "/usr/local/lib/htdig/bin/htparsedoc"
+> 
+> This script produces output like this:
+> 
+>         t Word document http://annexia.imcl.com/test/comm.doc
+>         w INmEDIA 1 -
+>         w Investment 2 -
+>         w Ltd 3 -
+>         w Applications 4 -
+>         w Subproject 5 -
+>         w Terms 6 -
+>         w of 7 -
+>  [...]
+>         w Needed 994 -
+>         w Tbd 995 -
+>         w Resources 996 -
+>         w Needed 997 -
+>         w Tbd 998 -
+>         w i 1000 -
+> 
+

@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.9  1998/09/08 03:29:09  ghutchis
+//
+// Clean up for 3.1.0b1.
+//
 // Revision 1.8  1998/09/07 04:37:16  ghutchis
 //
 // Added DocState for documents marked as "noindex".
@@ -32,7 +36,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.8 1998/09/07 04:37:16 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.9 1998/09/08 03:29:09 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -565,6 +569,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    //
 	    if (conf["htdig-noindex"])
 	      {
+		retriever.got_noindex();
 		doindex = 0;
 		dofollow = 0;
 	      }
@@ -638,6 +643,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		}
 		else if (mystrcasecmp(cache, "htdig-noindex") == 0)
 		  {
+		    retriever.got_noindex();
 		    doindex = 0;
 		    dofollow = 0;
 		  }
@@ -689,7 +695,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    else if (conf["name"] &&
 		     mystrcasecmp(conf["name"], "htdig-noindex") == 0)
 	    {
-		doindex = 0;
+	        retriever.got_noindex();
+	        doindex = 0;
 		dofollow = 0;
 	    }
 	    break;

@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.15  1998/09/08 03:29:09  ghutchis
+//
+// Clean up for 3.1.0b1.
+//
 // Revision 1.14  1998/09/06 03:22:37  ghutchis
 //
 // Bug fixes
@@ -58,7 +62,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.14 1998/09/06 03:22:37 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.15 1998/09/08 03:29:09 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -345,7 +349,7 @@ Document::RetrieveHTTP(time_t date)
     {
 	command << url->path() << " HTTP/1.0\r\n";
     }
-    command << "User-Agent: " << config["robotstxt_name"] << "/" 
+    command << "User-Agent: " << config["user_agent"] << "/" 
 	    << HTDIG_VERSION << " (" <<	config["maintainer"] << ")\r\n";
 
     //
@@ -539,6 +543,7 @@ Document::readHeader(Connection &c)
 				
 		if (mystrncasecmp("text/", token, 5) != 0 &&
 		    mystrncasecmp("application/postscript", token, 22) != 0 &&
+		    mystrncasecmp("application/msword", token, 18) != 0 &&
 		    mystrncasecmp("application/pdf", token, 15) != 0)
 		    return Header_not_text;
 		contentType = token;

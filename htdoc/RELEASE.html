@@ -1,465 +1,623 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html>
   <head>
-    <title>ht://Dig: Release notes</title>
+    <title>
+      ht://Dig: Release notes
+    </title>
   </head>
-  
   <body bgcolor="#eef7ff">
-      <h1>Release notes</h1>
-      
-      <p>ht://Dig &copy; 1995, 1996, 1997 Andrew Scherpbier &lt;<a
-	  href="mailto:andrew@contigo.com">andrew@contigo.com</a>&gt;<br> Please
-	see the file <a href=../COPYING>COPYING</a> for license
-	information.</p>
-      <hr noshade size=4>
-      <p>These are notes that go with each release of ht://Dig.  There is
-	also a <a href="ChangeLog">ChangeLog</a> file which has more
-	details on the code changes.
-      </p>
-      <strong>Release notes for htdig-3.0.8b1</strong> 14-Apr-1997<br>
-      I consider this a beta release since I have not had time to test
-      everything.  Use at your own risk...
-      <ul>
-	<li>Base tag problem fixed
-	<li>URL parser somewhat more robust
-	<li>Date parsing bug fixed
-	<li>Added Substring fuzzy algorithm.
-	<li>Various other bugs were fixed.  Thanks for all the patches
-	    that were sent to me!
-      </ul>
-      <strong>Release notes for htdig-3.0.7</strong> 12-Jan-1997<br>
-      More bug fixes and some minor new functionality.  Hopefully,
-      I'll be able to finish up work on version 3.1 at some point in
-      the near future.<br>
-      I have recently received some more patches for various things,
-      but I have not incorporated those, yet.  Next version.
-      <ul>
-	<li>The problem with the missing words has been fixed.  This
-	  was a problem in the Dictionary class.</li>
-	<li>htsearch is a *lot* faster due to a patch by Esa
-	  Ahola.</li>
-	<li>htfuzzy has some work done to it.  With the addition of
-	  the new rx-1.4 library, the endings algorithm now actually
-	  works for languages other than Enlish...  It still takes an
-	  awfull long time to build the tables for languages with lots
-	  of rules.</li>
-	<li>URLs now can be of the dubious form http:foo.html  I have
-	  never seen this used and think it is bogus, but alas, it
-	  works now.</li>
-	<li>A search form can now manually add words to any search
-	  using the new <i>keywords</i> form attribute.</li>
-	<li>A problem in the plaintext parser used to cause bogus HTML
-	  in search results.  This has been fixed.</li>
-	<li>New documentation format.  Lots of new documentation, as
-	  well.</li>
-	<li>New tobotstxt_name attribute.  Used to match the
-	  'user-agent' lines in robots.txt files.</li>
-	<li>The &lt;base&gt; tag is now properly supported.
-	<li>Preliminary support for lots of new features, including:
-	  <ul>
-	    <li>External document parsers.  You'll be able to write
-	      your own document parser for that special document type
-	      that ht://Dig doesn't know about.</li>
-	    <li>New fuzzy search algorithms: substring, regex,
-	      globbing, etc.</li>
-	  </ul>
-	</li>
-      </ul>
-      <strong>Release notes for htdig-3.0.6</strong> 26-Oct-1996<br>
-      Just a single bug fix and one additional feature in this release.
-      <ul>
-	<li>
-	  Fixed the problem that caused frequent crashes with virtual memory
-	  exhausted.
-	</li>
-	<li>
-	  Added a new attribute, keywords_meta_tag_names, which should
-	  contain a list of meta tag names for which the content
-	  should be used as keywords.  The default is set to "keywords
-	  htdig-keywords"
-	</li>
-      </ul>
-      <strong>Release notes for htdig-3.0.5</strong> 13-Oct-1996<br>
-      This release consists of more bug fixes.<br>
-      I want to thank Elliot Lee &lt;sopwith@cuc.edu&gt; for his help with
-      tracking down several bugs.
-      <ul>
-	<li>
-	  Fixed problem with accent characters.  Words with SGML
-	  entities and iso-8859-1 characters will now be indexed
-	  correctly.
-	</li>
-	<li>
-	  Changed the auto configuration to detect the need for a prototype
-	  for the gethostname() function.  (This was supposed to be fixed
-	  before, but wasn't)
-	</li>
-	<li>
-	  Reduced the memory requirements for all the programs by changing
-	  the rehash() method in the Dictionary class.  Access to hashes
-	  may be a little slower, but the memory requirements were reduced by
-	  a factor 10 or so.
-	</li>
-	<li>
-	  Hopefully fixed a problem with the time related functions on
-	  certain platforms.  More checks are done to make sure the
-	  functions that are used are actually available.
-	</li>
-      </ul>
-      <strong>Release notes for htdig-3.0.4</strong> 2-Sep-1996<br>
-      The previous version failed to build under Linux.  This should be
-      fixed now.
-      <ul>
-	<li>
-	  Fixed problem with the time stuff which caused the build of
-	  htdig to fail.
-	</li>
-	<li>Fixed a memory problem in htdig
-	</li>
-      </ul>
-      <strong>Release notes for htdig-3.0.3</strong> 2-Sep-1996<br>
-      Bugs bugs bugs...  Will they <i>ever</i> all be found?
-      <p>
-	<b>NOTE</b>: I made extensive changes to the htdig.conf file that
-	gets installed.  I would advise you to remove or rename your
-	existing htdig.conf and let the installation process create a
-	new one for you that you can then modify.
-      <p>
-	Also, since the rundig script has changed, you should remove
-	the old one before installing ht://Dig.  (The installation
-	will refuse to overwrite existing files...)
-      <ul>
-	<li>
-	  The problem with htsearch crashing on some machines has been
-	  fixed.
-	</li>
-	<li>
-	  A bug caused the &lt;AREA&gt; tab to be ignored.  Fixed.
-	</li>
-	<li>
-	  A bug in SunOS caused dates to be all screwed up.
-	</li>
-	<li>
-	  Added lots of comments to the example htdig.conf file.  Also
-	  added some additional example attributes.
-	</li>
-	<li>
-	  Fixed a bug in the installation process which caused rundig
-	  to be created incorrectly.
-	</li>
-	<li>
-	  Added a sample synonyms file.  Also modified rundig to
-	  create a synonyms database for it.
-	</li>
-      </ul>
-      <strong>Release notes for htdig-3.0.2</strong> 22-Aug-1996<br>
-      More bug fixes.
-      <ul>
-	<li>
-	  Multiple start URLs now actually work.  Before they were
-	  just documented to work, but didn't actually work. 
-	</li>
-	<li>
-	  htmerge now will refuse to remove database files if it
-	  detects that the call to /bin/sort failed.
-	</li>
-	<li>
-	  htmerge can now tell /bin/sort to use a specific temporary
-	  directory.  This is done by setting the TMPDIR environment
-	  variable.
-	</li>
-	<li>
-	  htsearch can now search for words with non-ASCII characters
-	  in them.
-	</li>
-	<li>
-	  Added support for finding URLs in the &lt;frame&gt; and
-	  &lt;area&gt; tags.
-	</li>
-	<li>
-	  There is a problem with htsearch under Linux.  It causes a
-	  segmentation violation after the first search result is
-	  displayed.  Don't know what the problem is, yet.
-	</li>
-	<li>
-	  Fixed bug in the auto configuration which always set the
-	  value for NEED_PROTO_GETHOSTNAME to 1.  For most systems
-	  this actually needs to be 0.
-	</li>
-      <strong>Release notes for htdig-3.0.1</strong> 16-Aug-1996<br>
-      This is a maintenance release in response to several bug reports.
-      <ul>
-	<li>
-	  htdig now will display a list of errors when the statistics
-	  option (-s) is used.  The list gives the URL that caused the
-	  error and a URL that referred to it.  Hopefully this
-	  information is useful for site maintainers.
-	</li>
-	<li>
-	  Some problems with the SGML character entities were fixed.
-	  The major symptom was that the ';' that ends an entity used
-	  to be included as well.
-	</li>
-	<li>
-	  Major problems with htnotify were fixed.  There were many
-	  hardcoded things in this program that made it very specific
-	  to SDSU and to me.
-	</li>
-	<li>
-	  malloc.h should not be included anymore.  All references to
-	  it were replaced with stdlib.h instead.  This should make
-	  compiles on some platforms work better.
-	</li>
-	<li>
-	  htsearch now will use the CONFIG_DIR environment variable to
-	  override the compiled in default.  (set in the CONFIG
-	  file...)  This was done so that htsearch can be called from
-	  a simple wrapper that sets that environment variable.  Only
-	  the wrapper needs to be be modified to get different
-	  CONFIG_DIR values.
-	</li>
-      </ul>
-      <strong>Release notes for htdig-3.0</strong> 17-Jul-1996<br>
-      I decided to make this the <i>official</i> 3.0 release.
-      <blockquote><blockquote><font face="Helvetica" size="+1">
-	It is <strong>extreemely</strong> important that you remove
-	all traces of earlier beta versions of the software before
-	installing this version or that you install in a completely
-        different location.  Do not blame me for anything if you
-	didn't do this.  You have been warned...
-      </font></blockquote></blockquote>
-      <ul>
-	<li>
-	  htwrapper is no more.  htsearch is now the CGI program
-	</li>
-	<li>
-	  <a href="htsearch.html" target="_top">htsearch</a> now uses
-	  templates to display the results.  A template is simply a
-	  piece of HTML code for a single match.  The HTML code
-	  includes variables that will be expanded to the various
-	  items that are unique to each match, like URL, EXCERPT,
-	  TITLE, etc.  The template can be selected at search time
-	  (through a menu).  There are two builtin templates:
-	  <tt>builtin-short</tt> and <tt>builtin-long</tt>.  The
-	  <tt>builtin-short</tt> template just lists the stars and
-	  title while the <tt>builtin-long</tt> template lists results
-	  in a similar fashion to the way Alta Vista displays results.
-	</li>
-	<li>Many runtime configuration options have been removed and
-	  many new ones have been added.  Check the <a
-	    href="attrs.html">configuration file</a> documentation
-	  for details.  There are also some enhancements to the format
-	  of the configuration file.
-	  <ul>
-	    <li>
-	      Attribute values can now span multiple lines by ending
-	      each line that needs to be continued with a backslash
-	      ('\').
-	      The file that is specified is read in and all
-	      newlines and starting and trailing whitespaces are
-	      reduced to a single space.  If the file is not
-	      found, nothing is included and no error is flagged.
-	      <br>
-	      Note that the backquote character is used, not the
-	      regular quote character.
-	    </li>
-	    <li>
-	      Attribute values can now include the contents of files.
-	      Just put the filename in back-quotes.  The filename can
-	      use the normal variable expansion so that things like:
-	      <blockquote>
-		  <tt>someattribute: `${common_dir}/somefile`</tt>
-	      </blockquote>
-	    </li>
-	  </ul>
-	  Notable attribute changes:
-	  <ul>
-	    <li>
-	      All the attributes that set the heading text have been
-	      removed.  These attributes include:
-	      <ul>
-		<li>accessed_heading_text</li>
-		<li>datesize_heading_text</li>
-		<li>descriptions_heading_text</li>
-		<li>excerpt_heading_text</li>
-		<li>modified_heading_text</li>
-		<li>score_heading_text</li>
-		<li>size_heading_text</li>
-		<li>url_heading_text</li>
-		<li>wordlist_heading_text</li>
-		<li>field_order</li>
-	      </ul>
-	    </li>
-	    <li>
-	      New attributes added:
-	      <dl>
-		<dt><b>http_proxy</b></dt>
-		<dd>
-		  Added to support the use of a HTTP proxy server to
-		  index documents
-		</dd>
-		<dt><b>locale</b></dt>
-		<dd>
-		  Added to support international character sets
-		</dd>
-		<dt><b>match_method</b></dt>
-		<dd>
-		  New way of specifying if a search is an 'or', 'and',
-		  or 'boolean' search
-		</dd>
-		<dt><b>matches_per_page</b></dt>
-		<dd>
-		  The new paged results uses this
-		</dd>
-		<dt><b>max_doc_size</b></dt>
-		<dd>
-		  Limit the size of documents retrieved
-		</dd>
-		<dt><b>next_page_text</b></dt>
-		<dd>Used in the
-		  navigation between pages
-		</dd>
-		<dt><b>no_excerpt_text</b></dt>
-		<dd>
-		  Text displayed if no excerpt was avaialble (this
-		  used to be hard-coded)
-		</dd>
-		<dt><b>no_next_page_text</b></dt>
-		<dd>
-		  Used in the navigation between pages
-		</dd>
-		<dt><b>no_prev_page_text</b></dt>
-		<dd>
-		  Used in the navigation between pages
-		</dd>
-		<dt><b>prev_page_text</b></dt>
-		<dd>
-		  Used in the navigation between pages
-		</dd>
-		<dt><b>star_patterns</b></dt>
-		<dd>
-		  Allow different star images to be used depending on
-		  the match URL
-		</dd>
-		<dt><b>synonym_dictionary</b></dt>
-		<dd>
-		  Support for the new synonyms fuzzy algorithm
-		</dd>
-		<dt><b>synonym_db</b></dt>
-		<dd>
-		  Support for the new synonyms fuzzy algorithm
-		</dd>
-		<dt><b>syntax_error_file</b></dt>
-		<dd>
-		  HTML file displayed if there was a boolean
-		  expression syntax error
-		</dd>
-		<dt><b>template_map</b></dt>
-		<dd>
-		  Used in the support for the new result display
-		  templates
-		</dd>
-		<dt><b>template_name</b></dt>
-		<dd>
-		  Sets the default template name
-		</dd>
-		<dt><b>text_factor</b></dt>
-		<dd>
-		  Added to allow normal text to have a variable weight
-		  (0, for example...)
-		</dd>
-	      </dl>
-	    </li>
-	  </ul>
-	</li>
-	<li>
-	  Some form tag names have changed.  The list of recognized
-	  form tags are in the <a href="htsearch.html"
-	  target="_top">htsearch</a> documentation.
-	</li>
-	<li>
-	  Multiple start urls can be specified as a value to the
-	  'start_url' attribute.  This could be combined with the
-	  file inclusion to read in a file of URLs to start with.
-	</li>
-	<li>
-	  <a href="htdig.html">htdig</a> now sends the 'Referer:'
-	  header in HTTP requests so that any link errors will be
-	  logged in the server's log files.
-	</li>
-	<li>
-	  In addition to the "htdig-keywords" META tag name, <a
-	    href="htdig.html">htdig</a> now also supports just
-	  "keywords".  This is to make it more compatible with the
-	  Alta Vista search engine.
-	</li>
-	<li>
-	  The verbose display of <a href="htdig.html">htdig</a> was
-	  enhanced to show '+' for a link that will be followed and
-	  '-' for a link that was discarded.
-	</li>
-	<li>
-	  <a href="htmerge.html">htmerge</a> was changed to use the
-	  Unix sort program instead of doing its own sorting.  It no
-	  longer uses mmap() to map the words into memory.  This was
-	  causing problems on systems with limited virtual memory
-	  available.  (What???  You mean you DON'T have at least a 1GB
-	  disk dedicated to swap???)
-	</li>
-	<li>
-	  The Endings algorithm was fixed up to work properly now.
-	  There were several well hidden bugs that made the algorithm
-	  come up with illegal words.
-	</li>
-	<li>
-	  The <strong>synonyms</strong> fuzzy algorithm was added.
-	  This is simply a mapping of words to other words.  The input
-	  file is just a list of words which causes the first word on
-	  a line to be mapped to the rest of the words on that line.
-	  (We use this to map course abbriviations to full course
-	  names)
-	</li>
-	<li>
-	  SGML entities are now supported.  They are translated to
-	  their equivalent ISO-8859-1 encoding.
-	</li>
-      </ul>
-      <strong>Release notes for htdig-3.0b5</strong>
-      <ul>
-	<li>The configuration has changed.  There is now a CONFIG file
-	  which contains all the variables which control where
-	  things get installed.  'make install' will now actually
-	  attempt to set everything up with default or example files.<br>
-	  Note that some default directories have changed.  For
-	  example, the default configuration file location is not
-	  /usr/local/etc/htdig.conf anymore.  Instead it is now
-	  defined in terms of CONFIG_DIR.
-	</li>
-	<li>The htfuzzy/createDict.pl Perl program has been obsoleted.
-	  Creating the endings database is now done by htfuzzy
-	  itself.  If you already have endings databases, you don't
-	  need to recreate them, they will still work.
-	</li>
-	<li>GNU rx-1.0 is now included with the distribution.  This is
-	  used by htfuzzy to create the endings databases.
-	</li>
-	<li>The name of the whole search system has changed from
-	  <em>HTDig</em> to <em>ht://Dig</em>.
-	</li>
-	<li>The HTML documentation got a big facelift!  This includes
-	  the new logo for ht://Dig.  (Thanks goes to Keith Parks
-	  for the Images!)
-	</li>
-	<li>htsearch got a new option '-r' which will allow it to
-	  produce raw output.  This output can easily parsed by a
-	  wrapper program to produce custom HTML or other output for
-	  the search results.
-	</li>
-      </ul>
+    <h1>
+      Release notes
+    </h1>
+    <p>
+      ht://Dig &copy; 1995-1998 Andrew Scherpbier<br>
+       Please see the file <a href="COPYING">COPYING</a> for
+      license information.
+    </p>
+    <hr noshade size="4">
+    <p>
+      These are notes that go with each release of ht://Dig. There
+      is also a <a href="ChangeLog">ChangeLog</a> file which has
+      more details on the code changes.
+    </p>
+    <strong>Release notes for htdig-3.1.0b1</strong> 8 Sep
+    1998<br>
+    This version adds several major new features as well as some 
+    bug-fixes. It is considered a beta release since it has only seen 
+    limited testing.
+    <blockquote>
+    <font face="Helvetica" size="+1">It is <strong>
+    extremely</strong> important that you rebuild all your databases made 
+    with previous versions. This version no longer uses the GDBM database 
+    format and databases produced with it will be incompatible with other 
+    versions. Do not blame me for anything if you didn't do this. You have been
+    warned...</font>
+    </blockquote>
+    <ul>
+      <li>
+      Added patches made by Pasi Eronen to support local filesystem access
+      </li>
+      <li>
+      Added a PDF parser contributed by Sylvain Wallez
+      </li>
+      <li>
+      Added support for META description and robots tags
+      </li>
+      <li>
+      Converted the database code to use the BerkeleyDB format, contibuted 
+      by Esa Ahola and Jesse op den Brouw.
+      </li>
+      <li>
+      Added a prefix fuzzy algorithm, contributed by Esa and Jesse.
+      </li>
+      <li>
+        Various other bugs were fixed. Thanks for all the patches
+        that were sent to me and the mailing list!
+      </li>
+    </ul>
+    <br>
+    <strong>Release notes for htdig-3.0.8b2</strong> 15 Aug
+    1997<br>
+     This new version contains most of the patches that Pasi Eronen
+    has posted to the list plus some other random fixes.<br>
+     <strong>Release notes for htdig-3.0.8b1</strong>
+    27-Apr-1997<br>
+     I consider this a beta release since I have not had time to
+    test everything. Use at your own risk... 
+    <ul>
+      <li>
+        Base tag problem fixed
+      </li>
+      <li>
+        URL parser somewhat more robust
+      </li>
+      <li>
+        Date parsing bug fixed
+      </li>
+      <li>
+        Added Substring fuzzy algorithm.
+      </li>
+      <li>
+        Various other bugs were fixed. Thanks for all the patches
+        that were sent to me!
+      </li>
+    </ul>
+    <strong>Release notes for htdig-3.0.7</strong> 12-Jan-1997<br>
+     More bug fixes and some minor new functionality. Hopefully,
+    I'll be able to finish up work on version 3.1 at some point in
+    the near future.<br>
+     I have recently received some more patches for various things,
+    but I have not incorporated those, yet. Next version. 
+    <ul>
+      <li>
+        The problem with the missing words has been fixed. This was
+        a problem in the Dictionary class.
+      </li>
+      <li>
+        htsearch is a *lot* faster due to a patch by Esa Ahola.
+      </li>
+      <li>
+        htfuzzy has some work done to it. With the addition of the
+        new rx-1.4 library, the endings algorithm now actually
+        works for languages other than English... It still takes an
+        awfully long time to build the tables for languages with
+        lots of rules.
+      </li>
+      <li>
+        URLs now can be of the dubious form http:foo.html I have
+        never seen this used and think it is bogus, but alas, it
+        works now.
+      </li>
+      <li>
+        A search form can now manually add words to any search
+        using the new <i>keywords</i> form attribute.
+      </li>
+      <li>
+        A problem in the plaintext parser used to cause bogus HTML
+        in search results. This has been fixed.
+      </li>
+      <li>
+        New documentation format. Lots of new documentation, as
+        well.
+      </li>
+      <li>
+        New robotstxt_name attribute. Used to match the
+        'user-agent' lines in robots.txt files.
+      </li>
+      <li>
+        The &lt;base&gt; tag is now properly supported.
+      </li>
+      <li>
+        Preliminary support for lots of new features, including: 
+        <ul>
+          <li>
+            External document parsers. You'll be able to write your
+            own document parser for that special document type that
+            ht://Dig doesn't know about.
+          </li>
+          <li>
+            New fuzzy search algorithms: substring, regex,
+            globbing, etc.
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <strong>Release notes for htdig-3.0.6</strong> 26-Oct-1996<br>
+     Just a single bug fix and one additional feature in this
+    release. 
+    <ul>
+      <li>
+        Fixed the problem that caused frequent crashes with virtual
+        memory exhausted.
+      </li>
+      <li>
+        Added a new attribute, keywords_meta_tag_names, which
+        should contain a list of meta tag names for which the
+        content should be used as keywords. The default is set to
+        "keywords htdig-keywords"
+      </li>
+    </ul>
+    <strong>Release notes for htdig-3.0.5</strong> 13-Oct-1996<br>
+     This release consists of more bug fixes.<br>
+     I want to thank Elliot Lee &lt;sopwith@cuc.edu&gt; for his
+    help with tracking down several bugs. 
+    <ul>
+      <li>
+        Fixed problem with accent characters. Words with SGML
+        entities and iso-8859-1 characters will now be indexed
+        correctly.
+      </li>
+      <li>
+        Changed the auto configuration to detect the need for a
+        prototype for the gethostname() function. (This was
+        supposed to be fixed before, but wasn't)
+      </li>
+      <li>
+        Reduced the memory requirements for all the programs by
+        changing the rehash() method in the Dictionary class.
+        Access to hashes may be a little slower, but the memory
+        requirements were reduced by a factor 10 or so.
+      </li>
+      <li>
+        Hopefully fixed a problem with the time related functions
+        on certain platforms. More checks are done to make sure the
+        functions that are used are actually available.
+      </li>
+    </ul>
+    <strong>Release notes for htdig-3.0.4</strong> 2-Sep-1996<br>
+     The previous version failed to build under Linux. This should
+    be fixed now. 
+    <ul>
+      <li>
+        Fixed problem with the time stuff which caused the build of
+        htdig to fail.
+      </li>
+      <li>
+        Fixed a memory problem in htdig
+      </li>
+    </ul>
+    <strong>Release notes for htdig-3.0.3</strong> 2-Sep-1996<br>
+     Bugs bugs bugs... Will they <i>ever</i> all be found? 
+    <p>
+      <b>NOTE</b>: I made extensive changes to the htdig.conf file
+      that gets installed. I would advise you to remove or rename
+      your existing htdig.conf and let the installation process
+      create a new one for you that you can then modify.
+    </p>
+    <p>
+      Also, since the rundig script has changed, you should remove
+      the old one before installing ht://Dig. (The installation
+      will refuse to overwrite existing files...)
+    </p>
+    <ul>
+      <li>
+        The problem with htsearch crashing on some machines has
+        been fixed.
+      </li>
+      <li>
+        A bug caused the &lt;AREA&gt; tab to be ignored. Fixed.
+      </li>
+      <li>
+        A bug in SunOS caused dates to be all screwed up.
+      </li>
+      <li>
+        Added lots of comments to the example htdig.conf file. Also
+        added some additional example attributes.
+      </li>
+      <li>
+        Fixed a bug in the installation process which caused rundig
+        to be created incorrectly.
+      </li>
+      <li>
+        Added a sample synonyms file. Also modified rundig to
+        create a synonyms database for it.
+      </li>
+    </ul>
+    <strong>Release notes for htdig-3.0.2</strong> 22-Aug-1996<br>
+     More bug fixes. 
+    <ul>
+      <li>
+        Multiple start URLs now actually work. Before they were
+        just documented to work, but didn't actually work.
+      </li>
+      <li>
+        htmerge now will refuse to remove database files if it
+        detects that the call to /bin/sort failed.
+      </li>
+      <li>
+        htmerge can now tell /bin/sort to use a specific temporary
+        directory. This is done by setting the TMPDIR environment
+        variable.
+      </li>
+      <li>
+        htsearch can now search for words with non-ASCII characters
+        in them.
+      </li>
+      <li>
+        Added support for finding URLs in the &lt;frame&gt; and
+        &lt;area&gt; tags.
+      </li>
+      <li>
+        There is a problem with htsearch under Linux. It causes a
+        segmentation violation after the first search result is
+        displayed. Don't know what the problem is, yet.
+      </li>
+      <li>
+        Fixed bug in the auto configuration which always set the
+        value for NEED_PROTO_GETHOSTNAME to 1. For most systems
+        this actually needs to be 0.
+      </li>
+      <li>
+        <strong>Release notes for htdig-3.0.1</strong>
+        16-Aug-1996<br>
+         This is a maintenance release in response to several bug
+        reports. 
+        <ul>
+          <li>
+            htdig now will display a list of errors when the
+            statistics option (-s) is used. The list gives the URL
+            that caused the error and a URL that referred to it.
+            Hopefully this information is useful for site
+            maintainers.
+          </li>
+          <li>
+            Some problems with the SGML character entities were
+            fixed. The major symptom was that the ';' that ends an
+            entity used to be included as well.
+          </li>
+          <li>
+            Major problems with htnotify were fixed. There were
+            many hardcoded things in this program that made it very
+            specific to SDSU and to me.
+          </li>
+          <li>
+            malloc.h should not be included anymore. All references
+            to it were replaced with stdlib.h instead. This should
+            make compiles on some platforms work better.
+          </li>
+          <li>
+            htsearch now will use the CONFIG_DIR environment
+            variable to override the compiled in default. (set in
+            the CONFIG file...) This was done so that htsearch can
+            be called from a simple wrapper that sets that
+            environment variable. Only the wrapper needs to be be
+            modified to get different CONFIG_DIR values.
+          </li>
+        </ul>
+        <strong>Release notes for htdig-3.0</strong>
+        17-Jul-1996<br>
+         I decided to make this the <i>official</i> 3.0 release. 
+        <blockquote>
+          <blockquote>
+            <font face="Helvetica" size="+1">It is <strong>
+            extremely</strong> important that you remove all traces
+            of earlier beta versions of the software before
+            installing this version or that you install in a
+            completely different location. Do not blame me for
+            anything if you didn't do this. You have been
+            warned...</font>
+          </blockquote>
+        </blockquote>
+        <ul>
+          <li>
+            htwrapper is no more. htsearch is now the CGI program
+          </li>
+          <li>
+            <a href="htsearch.html" target="_top">htsearch</a> now
+            uses templates to display the results. A template is
+            simply a piece of HTML code for a single match. The
+            HTML code includes variables that will be expanded to
+            the various items that are unique to each match, like
+            URL, EXCERPT, TITLE, etc. The template can be selected
+            at search time (through a menu). There are two builtin
+            templates: <tt>builtin-short</tt> and <tt>
+            builtin-long</tt>. The <tt>builtin-short</tt> template
+            just lists the stars and title while the <tt>
+            builtin-long</tt> template lists results in a similar
+            fashion to the way Alta Vista displays results.
+          </li>
+          <li>
+            Many runtime configuration options have been removed
+            and many new ones have been added. Check the <a href=
+            "attrs.html">configuration file</a> documentation for
+            details. There are also some enhancements to the format
+            of the configuration file. 
+            <ul>
+              <li>
+                Attribute values can now span multiple lines by
+                ending each line that needs to be continued with a
+                backslash ('\'). The file that is specified is read
+                in and all newlines and starting and trailing
+                whitespaces are reduced to a single space. If the
+                file is not found, nothing is included and no error
+                is flagged.<br>
+                 Note that the backquote character is used, not the
+                regular quote character.
+              </li>
+              <li>
+                Attribute values can now include the contents of
+                files. Just put the filename in back-quotes. The
+                filename can use the normal variable expansion so
+                that things like: 
+                <blockquote>
+                  <tt>someattribute: `${common_dir}/somefile`</tt>
+                </blockquote>
+              </li>
+            </ul>
+            Notable attribute changes: 
+            <ul>
+              <li>
+                All the attributes that set the heading text have
+                been removed. These attributes include: 
+                <ul>
+                  <li>
+                    accessed_heading_text
+                  </li>
+                  <li>
+                    datesize_heading_text
+                  </li>
+                  <li>
+                    descriptions_heading_text
+                  </li>
+                  <li>
+                    excerpt_heading_text
+                  </li>
+                  <li>
+                    modified_heading_text
+                  </li>
+                  <li>
+                    score_heading_text
+                  </li>
+                  <li>
+                    size_heading_text
+                  </li>
+                  <li>
+                    url_heading_text
+                  </li>
+                  <li>
+                    wordlist_heading_text
+                  </li>
+                  <li>
+                    field_order
+                  </li>
+                </ul>
+              </li>
+              <li>
+                New attributes added: 
+                <dl>
+                  <dt>
+                    <b>http_proxy</b>
+                  </dt>
+                  <dd>
+                    Added to support the use of a HTTP proxy server
+                    to index documents
+                  </dd>
+                  <dt>
+                    <b>locale</b>
+                  </dt>
+                  <dd>
+                    Added to support international character sets
+                  </dd>
+                  <dt>
+                    <b>match_method</b>
+                  </dt>
+                  <dd>
+                    New way of specifying if a search is an 'or',
+                    'and', or 'boolean' search
+                  </dd>
+                  <dt>
+                    <b>matches_per_page</b>
+                  </dt>
+                  <dd>
+                    The new paged results uses this
+                  </dd>
+                  <dt>
+                    <b>max_doc_size</b>
+                  </dt>
+                  <dd>
+                    Limit the size of documents retrieved
+                  </dd>
+                  <dt>
+                    <b>next_page_text</b>
+                  </dt>
+                  <dd>
+                    Used in the navigation between pages
+                  </dd>
+                  <dt>
+                    <b>no_excerpt_text</b>
+                  </dt>
+                  <dd>
+                    Text displayed if no excerpt was available
+                    (this used to be hard-coded)
+                  </dd>
+                  <dt>
+                    <b>no_next_page_text</b>
+                  </dt>
+                  <dd>
+                    Used in the navigation between pages
+                  </dd>
+                  <dt>
+                    <b>no_prev_page_text</b>
+                  </dt>
+                  <dd>
+                    Used in the navigation between pages
+                  </dd>
+                  <dt>
+                    <b>prev_page_text</b>
+                  </dt>
+                  <dd>
+                    Used in the navigation between pages
+                  </dd>
+                  <dt>
+                    <b>star_patterns</b>
+                  </dt>
+                  <dd>
+                    Allow different star images to be used
+                    depending on the match URL
+                  </dd>
+                  <dt>
+                    <b>synonym_dictionary</b>
+                  </dt>
+                  <dd>
+                    Support for the new synonyms fuzzy algorithm
+                  </dd>
+                  <dt>
+                    <b>synonym_db</b>
+                  </dt>
+                  <dd>
+                    Support for the new synonyms fuzzy algorithm
+                  </dd>
+                  <dt>
+                    <b>syntax_error_file</b>
+                  </dt>
+                  <dd>
+                    HTML file displayed if there was a boolean
+                    expression syntax error
+                  </dd>
+                  <dt>
+                    <b>template_map</b>
+                  </dt>
+                  <dd>
+                    Used in the support for the new result display
+                    templates
+                  </dd>
+                  <dt>
+                    <b>template_name</b>
+                  </dt>
+                  <dd>
+                    Sets the default template name
+                  </dd>
+                  <dt>
+                    <b>text_factor</b>
+                  </dt>
+                  <dd>
+                    Added to allow normal text to have a variable
+                    weight (0, for example...)
+                  </dd>
+                </dl>
+              </li>
+            </ul>
+          </li>
+          <li>
+            Some form tag names have changed. The list of
+            recognized form tags are in the <a href="htsearch.html"
+            target="_top">htsearch</a> documentation.
+          </li>
+          <li>
+            Multiple start urls can be specified as a value to the
+            'start_url' attribute. This could be combined with the
+            file inclusion to read in a file of URLs to start with.
+          </li>
+          <li>
+            <a href="htdig.html">htdig</a> now sends the 'Referer:'
+            header in HTTP requests so that any link errors will be
+            logged in the server's log files.
+          </li>
+          <li>
+            In addition to the "htdig-keywords" META tag name, <a
+            href="htdig.html">htdig</a> now also supports just
+            "keywords". This is to make it more compatible with the
+            Alta Vista search engine.
+          </li>
+          <li>
+            The verbose display of <a href="htdig.html">htdig</a>
+            was enhanced to show '+' for a link that will be
+            followed and '-' for a link that was discarded.
+          </li>
+          <li>
+            <a href="htmerge.html">htmerge</a> was changed to use
+            the Unix sort program instead of doing its own sorting.
+            It no longer uses mmap() to map the words into memory.
+            This was causing problems on systems with limited
+            virtual memory available. (What??? You mean you DON'T
+            have at least a 1GB disk dedicated to swap???)
+          </li>
+          <li>
+            The Endings algorithm was fixed up to work properly
+            now. There were several well hidden bugs that made the
+            algorithm come up with illegal words.
+          </li>
+          <li>
+            The <strong>synonyms</strong> fuzzy algorithm was
+            added. This is simply a mapping of words to other
+            words. The input file is just a list of words which
+            causes the first word on a line to be mapped to the
+            rest of the words on that line. (We use this to map
+            course abbreviations to full course names)
+          </li>
+          <li>
+            SGML entities are now supported. They are translated to
+            their equivalent ISO-8859-1 encoding.
+          </li>
+        </ul>
+        <strong>Release notes for htdig-3.0b5</strong> 
+        <ul>
+          <li>
+            The configuration has changed. There is now a CONFIG
+            file which contains all the variables which control
+            where things get installed. 'make install' will now
+            actually attempt to set everything up with default or
+            example files.<br>
+             Note that some default directories have changed. For
+            example, the default configuration file location is not
+            /usr/local/etc/htdig.conf anymore. Instead it is now
+            defined in terms of CONFIG_DIR.
+          </li>
+          <li>
+            The htfuzzy/createDict.pl Perl program has been
+            obsoleted. Creating the endings database is now done by
+            htfuzzy itself. If you already have endings databases,
+            you don't need to recreate them, they will still work.
+          </li>
+          <li>
+            GNU rx-1.0 is now included with the distribution. This
+            is used by htfuzzy to create the endings databases.
+          </li>
+          <li>
+            The name of the whole search system has changed from
+            <em>HTDig</em> to <em>ht://Dig</em>.
+          </li>
+          <li>
+            The HTML documentation got a big facelift! This
+            includes the new logo for ht://Dig. (Thanks goes to
+            Keith Parks for the Images!)
+          </li>
+          <li>
+            htsearch got a new option '-r' which will allow it to
+            produce raw output. This output can easily parsed by a
+            wrapper program to produce custom HTML or other output
+            for the search results.
+          </li>
+        </ul>
+        <hr noshade size="4">
+        <address>
+          <a href="author.html">Andrew Scherpbier
+          &lt;andrew@contigo.com&gt;</a>
+        </address>
+        <!-- hhmts start -->Last modified: Sun Jan 12 23:49:49 PST 
+        <!-- hhmts end -->
+      </li>
+    </ul>
+  </body>
+</html>
 
-      <hr noshade size=4>
-      <address><a href="http://www.sdsu.edu/~turtle/">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a></address>
-      <!-- hhmts start -->
-Last modified: Sun Jan 12 23:49:49 PST 
-<!-- hhmts end -->
-  </body> </html>
