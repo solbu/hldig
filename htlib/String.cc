@@ -6,6 +6,9 @@
 // AWS	10/13/93	Fixed the constructors and operator = routines so that a NULL can be passed
 //
 // $Log: String.cc,v $
+// Revision 1.15  1999/01/25 04:09:12  ghutchis
+// Use autoconf check for strstr, fix compiler warnings.
+//
 // Revision 1.14  1999/01/23 01:25:03  hp
 // Fixed _some_ missing const qualifiers on common methods (requiring temps)
 //
@@ -57,7 +60,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.14 1999/01/23 01:25:03 hp Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.15 1999/01/25 04:09:12 ghutchis Exp $";
 #endif
 
 
@@ -309,8 +312,6 @@ String String::sub(int start) const
 
 int String::indexOf(char *str)
 {
-    int		len = strlen(str);
-    int		i;
     char	*c;    
     //
     // Set the first char after string end to zero to prevent finding
@@ -321,9 +322,12 @@ int String::indexOf(char *str)
     Data[Length] = '\0';
     
     /* OLD CODE: for (i = 0; i < Length; i++) */
+#ifdef HAVE_STRSTR
     if ((c = strstr(Data, str)) != NULL)
 	return(c -Data);
-#ifdef NOSTRSTR
+#else
+    int		len = strlen(str);
+    int		i;
     for (i = 0; i <= Length-len; i++)
     {
 	if (strncmp(&Data[i], str, len) == 0)
