@@ -20,10 +20,6 @@ KNOWN BUGS:
 * SGML encoding/decoding does not work with numeric forms, e.g. &#34; -> quote.
 * Modified database can cause problems with systems using the Berkeley db for 
    other tasks (e.g. networking)
-* Prefix matching current does not work--it attempts to search for the
-   same word 
-* Transport code and Connection code can cause segfaults when using
-   ExternalProtocol scripts.
 
 PENDING FEATURES:
 * htload program.

@@ -50,7 +50,7 @@ void	usage __P((void));
 
 int	 interrupted;
 const char
-	*progname = "htload";				/* Program name. */
+	*progname = "htdb_load";				/* Program name. */
 
 int
 main(int argc, char* argv[])
@@ -589,7 +589,7 @@ void
 usage()
 {
 	(void)fprintf(stderr, "%s\n\t%s\n",
-	    "usage: htload [-nTzW]",
+	    "usage: htdb_load [-nTzW]",
     "[-c name=value] [-f file] [-h home] [-C cachesize] [-t btree | hash | recno] db_file");
 	exit(1);
 }

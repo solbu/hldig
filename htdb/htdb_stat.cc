@@ -59,7 +59,7 @@ void	usage __P((void));
 
 char	*internal;
 const char
-	*progname = "htstat";				/* Program name. */
+	*progname = "htdb_stat";				/* Program name. */
 
 int
 main(int argc, char *argv[])
@@ -623,6 +623,6 @@ void
 usage()
 {
 	fprintf(stderr,
-    "usage: htstat [-clmNtzW] [-C Acflmo] [-d file] [-h home] [-M Ahlm]\n");
+    "usage: htdb_stat [-clmNtzW] [-C Acflmo] [-d file] [-h home] [-M Ahlm]\n");
 	exit (1);
 }

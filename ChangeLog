@@ -1,3 +1,17 @@
+Sat Mar 25 17:23:46 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdb/Makefile.am, htdb/Makefile.in: Change the names of the htdb
+	utility programs to escape name conflicts with httool programs.
+
+	* htdb/htdb_load.cc: Rename htload.cc to escape name conflict and
+	more closely match orignal db_load program name.
+
+	* htdb/htdb_dump.cc, htdb/htdb_stat.cc: Ditto.
+
+	* htfuzzy/Prefix.cc (getWords): Add code to "weed out" duplicates
+	returned from WordList::Prefix. We only want to add unique words
+	to the search list.
+
 Fri Mar 24 22:33:20 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Document.cc (Document): Fix bug reported by Mentos

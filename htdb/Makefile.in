@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -59,10 +59,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -126,21 +125,22 @@ INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/in
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libhtdb.a
 
 
-bin_PROGRAMS = htload htdump htstat
+bin_PROGRAMS = htdb_load htdb_dump htdb_stat
 
-htload_SOURCES = htload.cc err.c getlong.c
-htload_DEPENDENCIES = $(HTLIBS)
-htload_LDFLAGS = $(PROFILING)
-htload_LDADD = $(HTLIBS)
+htdb_load_SOURCES = htdb_load.cc err.c getlong.c
+htdb_load_DEPENDENCIES = $(HTLIBS)
+htdb_load_LDFLAGS = $(PROFILING)
+htdb_load_LDADD = $(HTLIBS)
 
-htdump_SOURCES = htdump.cc err.c
-htdump_DEPENDENCIES = $(HTLIBS)
-htdump_LDFLAGS = $(PROFILING)
-htdump_LDADD = $(HTLIBS)
+htdb_dump_SOURCES = htdb_dump.cc err.c
+htdb_dump_DEPENDENCIES = $(HTLIBS)
+htdb_dump_LDFLAGS = $(PROFILING)
+htdb_dump_LDADD = $(HTLIBS)
 
-htstat_SOURCES = htstat.cc err.c
-htstat_DEPENDENCIES = $(HTLIBS)
-htstat_LDADD = $(HTLIBS)
+htdb_stat_SOURCES = htdb_stat.cc err.c
+htdb_stat_DEPENDENCIES = $(HTLIBS)
+htdb_stat_LDFLAGS = $(PROFILING)
+htdb_stat_LDADD = $(HTLIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
 CONFIG_CLEAN_FILES = 
@@ -150,10 +150,9 @@ PROGRAMS =  $(bin_PROGRAMS)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-htload_OBJECTS =  htload.o err.o getlong.o
-htdump_OBJECTS =  htdump.o err.o
-htstat_OBJECTS =  htstat.o err.o
-htstat_LDFLAGS = 
+htdb_load_OBJECTS =  htdb_load.o err.o getlong.o
+htdb_dump_OBJECTS =  htdb_dump.o err.o
+htdb_stat_OBJECTS =  htdb_stat.o err.o
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -169,10 +168,10 @@ DIST_COMMON =  Makefile.am Makefile.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/err.P .deps/getlong.P .deps/htdump.P .deps/htload.P \
-.deps/htstat.P
-SOURCES = $(htload_SOURCES) $(htdump_SOURCES) $(htstat_SOURCES)
-OBJECTS = $(htload_OBJECTS) $(htdump_OBJECTS) $(htstat_OBJECTS)
+DEP_FILES =  .deps/err.P .deps/getlong.P .deps/htdb_dump.P \
+.deps/htdb_load.P .deps/htdb_stat.P
+SOURCES = $(htdb_load_SOURCES) $(htdb_dump_SOURCES) $(htdb_stat_SOURCES)
+OBJECTS = $(htdb_load_OBJECTS) $(htdb_dump_OBJECTS) $(htdb_stat_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -199,8 +198,8 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	  else :; fi; \
 	done
 
@@ -242,17 +241,17 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-htload: $(htload_OBJECTS) $(htload_DEPENDENCIES)
-	@rm -f htload
-	$(CXXLINK) $(htload_LDFLAGS) $(htload_OBJECTS) $(htload_LDADD) $(LIBS)
+htdb_load: $(htdb_load_OBJECTS) $(htdb_load_DEPENDENCIES)
+	@rm -f htdb_load
+	$(CXXLINK) $(htdb_load_LDFLAGS) $(htdb_load_OBJECTS) $(htdb_load_LDADD) $(LIBS)
 
-htdump: $(htdump_OBJECTS) $(htdump_DEPENDENCIES)
-	@rm -f htdump
-	$(CXXLINK) $(htdump_LDFLAGS) $(htdump_OBJECTS) $(htdump_LDADD) $(LIBS)
+htdb_dump: $(htdb_dump_OBJECTS) $(htdb_dump_DEPENDENCIES)
+	@rm -f htdb_dump
+	$(CXXLINK) $(htdb_dump_LDFLAGS) $(htdb_dump_OBJECTS) $(htdb_dump_LDADD) $(LIBS)
 
-htstat: $(htstat_OBJECTS) $(htstat_DEPENDENCIES)
-	@rm -f htstat
-	$(CXXLINK) $(htstat_LDFLAGS) $(htstat_OBJECTS) $(htstat_LDADD) $(LIBS)
+htdb_stat: $(htdb_stat_OBJECTS) $(htdb_stat_DEPENDENCIES)
+	@rm -f htdb_stat
+	$(CXXLINK) $(htdb_stat_LDFLAGS) $(htdb_stat_OBJECTS) $(htdb_stat_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cc.lo:
@@ -300,7 +299,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -380,7 +379,7 @@ uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir)
 

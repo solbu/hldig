@@ -43,7 +43,7 @@ void	pheader __P((DB *, int));
 void	usage __P((void));
 
 const char
-	*progname = "htdump";				/* Program name. */
+	*progname = "htdb_dump";				/* Program name. */
 
 int
 main(int argc, char *argv[])
@@ -277,6 +277,6 @@ void
 usage()
 {
 	(void)fprintf(stderr,
-	    "usage: htdump [-dNpzW] [-C cachesize] [-f file] [-h home] db_file\n");
+	    "usage: htdb_dump [-dNpzW] [-C cachesize] [-f file] [-h home] db_file\n");
 	exit(1);
 }
