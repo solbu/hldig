@@ -1,3 +1,10 @@
+Wed Jan 30 12:30:16 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Connection.cc (connect): Fixed bug with allow_EINTR and
+	add support for looping when the connection returns EAGAIN (no
+	more free local ports). Thanks to Ahmon Dancy <dancy@franz.com>
+	for pointing out the EAGAIN issue.
+
 Tue Jan 29 09:59:58 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/FAQ.html: Updated with today's changes to maindocs FAQ.

@@ -285,8 +285,13 @@ int Connection::connect(int allow_EINTR)
         //
         // Only loop if timed out. Other errors are fatal.
         //
-        if (status < 0 && errno != EINTR)
+	#ifndef EAGAIN
+        if (status < 0 && (errno != EINTR || !allow_EINTR))
           break;
+	#else
+	if (status < 0 && (errno != EINTR || !allow_EINTR) && errno != EAGAIN)
+          break;
+	#endif
 
 	::close(sock);
 	open();
