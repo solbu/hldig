@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.47.2.2 2000/03/28 01:45:51 ghutchis Exp $
+// $Id: DocumentRef.cc,v 1.47.2.3 2000/03/28 04:05:21 ghutchis Exp $
 //
 
 #include "DocumentRef.h"
@@ -264,6 +264,7 @@ void DocumentRef::Deserialize(String &stream)
     int		count;
     int		i;
     int		x;
+    int		throwaway; // As the name sounds--used for old fields
     String	*str;
 
 // There is a problem with getting a numeric value into a
@@ -367,6 +368,9 @@ void DocumentRef::Deserialize(String &stream)
         case DOC_SIZE:
             getnum(x, s, docSize);
             break;
+        case DOC_IMAGESIZE: // No longer used
+	    getnum(x, s, throwaway);
+	    break;
         case DOC_LINKS:
             getnum(x, s, docLinks);
             break;
