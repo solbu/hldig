@@ -1,7 +1,0 @@
-This file contains any messages produced by compilers while
-running configure, to aid debugging if configure makes a mistake.
-
-c++ -c -g -O conftest.C
-configure: In function `int t()':
-configure:1103: `struct tm' has no member named `tm_gmtoff'
-c++ -c -g -O conftest.C
