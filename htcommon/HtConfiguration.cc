@@ -103,11 +103,12 @@ const String HtConfiguration::Find(URL *aUrl, const char *value) const
     // Try to find best matched URL
     //
     struct {
-      Object *obj;
-      unsigned int  len;
+      Object		*obj;
+      unsigned int	len;
+      String		value;
     } candidate;
     candidate.len=0; 
-    String candValue;
+    String returnValue;
     // Begin competition: which URL is better?
     //
     // TODO: move this loop into Dictionary
@@ -121,15 +122,16 @@ const String HtConfiguration::Find(URL *aUrl, const char *value) const
 	// it seems this URL match better
 	candidate.obj=tmpPtr->Find(confUrl);
 	// but does it has got necessery parameter?
-	candValue=((HtConfiguration *)candidate.obj)->Find(value);
-	if (candValue[0]!=0) {
+	candidate.value=((HtConfiguration *)candidate.obj)->Find(value);
+	if (candidate.value[0]!=0) {
 	  // yes, it has! We've got new candidate.
-	  candidate.len=strlen(candValue);
+	  returnValue=candidate.value;
+	  candidate.len=candidate.value.length();
 	}
       }
     }
     if (candidate.len>0) {
-      return ParsedString(candValue).get(dcGlobalVars);
+      return ParsedString(returnValue).get(dcGlobalVars);
     }
        
   }
