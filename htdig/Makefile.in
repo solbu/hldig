@@ -7,10 +7,10 @@ INSTALL_PROGRAM=	@INSTALL_PROGRAM@
 top_builddir= ..
 @make_include_left@$(top_builddir)/Makefile.config@make_include_right@
 
-OBJS = Document.o HTML.o Images.o \
-		Parsable.o Plaintext.o Postscript.o \
-		Retriever.o SGMLEntities.o Server.o \
-		URLRef.o htdig.o ExternalParser.o PDF.o
+OBJS = Document.o HTML.o Images.o HtHTTP.o \
+	Parsable.o Plaintext.o Postscript.o \
+	Retriever.o SGMLEntities.o Server.o \
+	URLRef.o htdig.o ExternalParser.o PDF.o
 
 TARGET=		htdig
 

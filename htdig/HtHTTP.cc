@@ -142,6 +142,7 @@ HtHTTP::HtHTTP()
    _host=NULL;
    _persistent_connection_possible = false;
    _persistent_connection_allowed = true; // by default
+   _server = " ";
 
    _bytes_read=0;
 
