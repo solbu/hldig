@@ -1,3 +1,10 @@
+Tue Oct  5 12:24:43 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* db/*: Import of Sleepycat's Berkeley DB 2.7.7.
+
+	* db/db/db.c, db/include/db.h, db/include/db_cxx.h, db/mp/mp_bh.c:
+	Resolve conflicts created in merge.
+
 Tue Oct 05 18:53:13 1999  Loic Dachary  <loic@ceic.com>
 
 	* htdig/Display.cc, htword/*.cc: add inclusion of htconfig.h
