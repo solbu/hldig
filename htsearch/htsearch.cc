@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.37 1999/06/25 01:46:08 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.38 1999/07/10 02:17:45 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -132,12 +132,8 @@ main(int ac, char **av)
     if (!override_config && input.exists("config") 
 	&& (strstr(input["config"], "./") == NULL))
     {
-	char	*configDir;
-	if (input.exists("configdir"))
-	{
-	  configFile = input["configdir"];
-	}
-	else if ((configDir = getenv("CONFIG_DIR")) != NULL)
+	char	*configDir = getenv("CONFIG_DIR");
+	if (configDir)
 	{
 	    configFile = configDir;
 	}
@@ -157,8 +153,6 @@ main(int ac, char **av)
     }
     config.Read(configFile);
 
-    if (input.exists("commondir"))
-	config.Add("common_dir", input["commondir"]);
     if (input.exists("method"))
 	config.Add("match_method", input["method"]);
     if (input.exists("format"))
@@ -430,7 +424,6 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 		{
 		    // Add word to excerpt matching list
 		    originalPattern << word << "|";
-	  	    HtStripPunctuation(word);
 		    WeightWord	*ww = new WeightWord(word, 1.0);
 		    if (!badWords.IsValid(word) ||
 			word.length() < minimum_word_length)
