@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.64 2002/02/01 22:49:29 ghutchis Exp $
+// $Id: HTML.cc,v 1.65 2002/09/25 18:58:19 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -314,6 +314,13 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 	    if (!q)
 	      break; // Syntax error in the doc.  Tag never ends.
 	    position++;
+	    if (noindex & TAGscript)
+	    {	// Special handling in case '<' is part of JavaScript code
+		while (isspace(*position))
+		    position++;
+		if (mystrncasecmp((char *)position, "/script", 7) != 0)
+		    continue;
+	    }
 	    tag = 0;
 	    tag.append((char*)position, q - position);
 	    while (isspace(*position))

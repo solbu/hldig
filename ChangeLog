@@ -1,6 +1,11 @@
+Wed Sep 25 13:56:31 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc (parse): Fixed handling of JavaScript skipping so it
+	doesn't get confused by "<" in code.
+
 Thu Sep 19 09:04:50 CEST 2002 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
-   * htnet/HtHTTP.cc : another check for cookie jar's null pointer
+	* htnet/HtHTTP.cc : another check for cookie jar's null pointer
 
 Tue Sep 17 17:41:51 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
