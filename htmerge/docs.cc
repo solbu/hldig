@@ -1,9 +1,9 @@
 //
 // docs.cc
 //
-// Do sanity checking in "doc_db", remove insane documents.
+// docs: Do sanity checking in "doc_db", remove insane documents.
 //
-// $Id: docs.cc,v 1.22 1999/09/08 04:52:23 ghutchis Exp $
+// $Id: docs.cc,v 1.23 1999/09/08 17:19:39 loic Exp $
 //
 //
 

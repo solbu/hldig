@@ -1,11 +1,11 @@
 //
 // words.cc
 //
-// Implementation of htmerge
+// words: Implementation of htmerge
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: words.cc,v 1.14 1999/07/19 02:04:32 ghutchis Exp $";
+static char RCSid[] = "$Id: words.cc,v 1.15 1999/09/08 17:19:39 loic Exp $";
 #endif
 
 #include "htmerge.h"

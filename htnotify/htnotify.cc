@@ -1,13 +1,13 @@
 //
 // htnotify.cc
 //
-// Check through databases and look for notify META information
-// Send e-mail to addresses mentioned in documents if the doc
-// has "expired"
+// htnotify: Check through databases and look for notify META information
+//           Send e-mail to addresses mentioned in documents if the doc
+//           has "expired"
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.21 1999/03/12 00:46:57 hp Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.22 1999/09/08 17:20:32 loic Exp $";
 #endif
 
 #include "Configuration.h"

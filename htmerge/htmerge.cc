@@ -1,9 +1,9 @@
 //
 // htmerge.cc
 //
-// Merges two databases and/or updates databases to remove old documents and 
-// ensures the databases are consistent.
-//   Calls db.cc, docs.cc, and/or words.cc as necessary
+// htmerge: Merges two databases and/or updates databases to remove 
+//          old documents and ensures the databases are consistent.
+//          Calls db.cc, docs.cc, and/or words.cc as necessary
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htmerge.cc,v 1.15 1999/07/19 02:03:35 ghutchis Exp $
+// $Id: htmerge.cc,v 1.16 1999/09/08 17:19:39 loic Exp $
 //
 
 #include "htmerge.h"

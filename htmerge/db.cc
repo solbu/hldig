@@ -1,9 +1,10 @@
 //
 // db.cc
 //
-// Implementation of merging databases. Uses two config files to specify which
-// sets of databases to merge. Only adds the data in, assumes mergeWords and 
-// convertDocs are performed to ensure database integrity.
+// db: Implementation of merging databases. Uses two config files to 
+//     specify which sets of databases to merge. Only adds the data in, 
+//     assumes mergeWords and convertDocs are performed to ensure 
+//     database integrity.
 //
 
 #include "htmerge.h"
