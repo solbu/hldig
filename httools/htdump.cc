@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdump.cc,v 1.1.2.2 2000/03/21 00:35:25 ghutchis Exp $
+// $Id: htdump.cc,v 1.1.2.3 2000/04/09 15:22:30 ghutchis Exp $
 //
 
 #include "WordContext.h"
@@ -133,7 +133,8 @@ int main(int ac, char **av)
 	if (docs.Read(config["doc_db"], config["doc_index"], 
 		      config["doc_excerpt"]) == OK)
 	  {
-	    docs.DumpDB(doc_list);
+	    docs.DumpDB(doc_list, verbose);
+	    docs.Close();
 	  }
       }
     if (do_words)
@@ -147,9 +148,11 @@ int main(int ac, char **av)
 	HtWordList words(config);
 	if(words.Open(config["word_db"], O_RDONLY) == OK) {
 	  words.Dump(word_dump);
+	  words.Close();
 	}
       }
 
+    return 0;
 }
 
 
