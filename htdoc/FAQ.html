@@ -83,6 +83,8 @@
 	  4.12. <a href="#q4.12">How do I index numbers in documents?</a><br>
 	  4.13. <a href="#q4.13">How can I call htsearch from a hypertext
 	  link, rather than from a search form?</a><br>
+	  4.14. <a href="#q4.14">How do I restrict a search to only meta
+	  keywords entries in documents?</a><br>
 	  <hr noshade size=2>
 
 	  <h3>5. Troubleshooting</h3>
@@ -109,6 +111,14 @@
 	  matches, but doesn't list the matching documents.</a><br>
 	  5.12. <a href="#q5.12">I can't seem to index documents with names
 	  like left_index.html with htdig.</a><br>
+	  5.13. <a href="#q5.13">I get Premature End of Script Headers errors
+	  when running htsearch.</a><br>
+	  5.14. <a href="#q5.14">I get Segmentation faults when running
+	  htsearch or htfuzzy.</a><br>
+	  5.15. <a href="#q5.15">Why does htdig 3.1.3 mangle URL parameters
+	  that contain bare "&amp;" characters?</a><br>
+	  5.16. <a href="#q5.16">When I run htmerge, it stops with an
+	  "Unable to open word list file '.../db.wordlist'" message.</a><br>
 
 	  <hr noshade size=4>
 	  <h2>Answers</h2>
@@ -186,6 +196,12 @@
 	  the version of ht://Dig, the OS, and anything else that might be
 	  helpful. Often, running the programs with one "-v" or more
 	  (e.g. "-vvv") gives useful debugging information.
+	  If you are unsure whether the problem is a bug or a configuration
+	  problem, you should discuss the problem on htdig@htdig.org (after
+	  carefully reading the FAQ and searching the mail archives, of course)
+	  to sort out what it is. The mailing list has a wider audience, so
+	  you're more likely to get help with configuration problems there
+	  than by reporting them to the bug database.
 	  </p>
 
 	  1.9. <a name="q1.9">Does ht://Dig support phrase or near
@@ -461,6 +477,8 @@ external_parsers: application/msword /usr/local/bin/parse_doc.pl \
 	  so if you need to index such text in PDFs, you may still get
 	  better results with acroread.</p>
 
+	  <p>See also question <a href="#q5.2">5.2</a> below.</p>
+
 	  4.10. <a name="q4.10">How do I index documents in other
 	  languages?</a><br>
 	  <p>The first and most important thing you must do,
@@ -562,6 +580,24 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  use in a search form can be added to the URL in this way.
 	  This can be embedded into an &lt;a href="..."&gt; tag.</p>
 
+	  4.14. <a name="q4.14">How do I restrict a search to only meta
+	  keywords entries in documents?</a><br>
+	  <p>First of all, you do <b>not</b> do this by using the
+	  "keywords" field in the search form. This seems to be a
+	  frequent cause of confusion.	The "keywords" input parameter
+	  to htsearch has absolutely nothing to do with searching meta
+	  keywords fields.  It actually predates the addition of meta
+	  keyword support in 3.1.x.  A better choice of name for the
+	  parameter would have been "requiredwords", because that's what
+	  it really means - a list of words that are all required to be
+	  found somewhere in the document, in addition to the words the
+	  user specifies in the search form.</p>
+
+	  <p>To restrict a search to meta keywords only, you must set all
+	  factors other than keywords_factor to 0, and for 3.1.x, you
+	  must then reindex your documents.  In 3.2, you'll be able to
+	  change factors at search time without needing to reindex.</p>
+
 	  <hr noshade size=2>
 
 	  <h3>5. Troubleshooting</h3>
@@ -585,13 +621,18 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  solution is to obtain and install Adobe Acrobat Reader 3.0,
 	  if it's available for your system. You may also need to set
 	  the <a href="attrs.html#pdf_parser">pdf_parser</a> attribute
-	  to the correct location and options for acroread. There is
-	  apparently a bug in Adobe Acrobat Reader version 4, in its
+	  to the correct location and options for acroread.</p>
+
+	  <p>There is a bug in Adobe Acrobat Reader version 4, in its
 	  handling of the -pairs option, which causes a segmentation
-	  violation when using it with htdig, so it is not suitable as a
-	  PDF parser. An alternative is to use an external parser with
-	  the xpdf 0.90 package installed on your system, as described
-	  in question <a href="#q4.9">4.9</a> above.</p>
+	  violation when using it with htdig 3.1.2 or earlier. There is
+	  a workaround for this as of version 3.1.3 - you must remove
+	  the -pairs option from your pdf_parser definition, if it's
+	  there.  However, acroread version 4 is still very unstable (on
+	  Linux, anyway) so it is not recommended as a PDF parser. An
+	  alternative is to use an external parser with the xpdf 0.90
+	  package installed on your system, as described in question <a
+	  href="#q4.9">4.9</a> above.</p>
 
 	  5.3. <a name="q5.3">When I run "rundig," I get a message about
 	  "DATABASE_DIR" not being found.</a><br>
@@ -634,7 +675,7 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  can be caused by insufficient memory, so if you often run memory
 	  intensive programs (including htdig and htmerge themselves!)
 	  htsearch may run out of memory.
-	  </p>
+	  <br>See also question <a href="#q5.13">5.13</a>.</p>
 
 	  5.8. <a name="q5.8">I'm having problems with indexing words
 	  with accented characters.</a><br>
@@ -684,16 +725,19 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 
 	  5.11. <a name="q5.11">When I run htsearch, it gives me a count of
 	  matches, but doesn't list the matching documents.</a><br>
-	  <p>This is usually an indication of a corrupted database. If
+	  <p>This most commonly happens when you run htsearch while the
+	  database is currently being rebuilt or updated by htdig.
+	  If htdig and htmerge have run to completion, and the problem still
+	  occurs, this is usually an indication of a corrupted database. If
 	  it's finding matches, it's because it found the matching
 	  words in db.words.db.  However, it isn't finding the document
 	  records themselves in db.docdb, which would suggest that either
 	  db.docdb, or db.docs.index (which maps document IDs used in
 	  db.words.db to URLs used to look up records in db.docdb), is
-	  messed up.  You'll likely need to rebuild your database from
-	  scratch. Older versions of ht://Dig were susceptible to database
-	  corruption of this sort. Versions 3.1.2 and later are much
-	  more stable.</p>
+	  incomplete or messed up.  You'll likely need to rebuild your
+	  database from scratch if it's corrupted. Older versions of
+	  ht://Dig were susceptible to database corruption of this
+	  sort. Versions 3.1.2 and later are much more stable.</p>
 
 	  5.12. <a name="q5.12">I can't seem to index documents with names
 	  like left_index.html with htdig.</a><br>
@@ -705,15 +749,77 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 	  with this string (rather than matches it entirely) will have
 	  the filename stripped off. This is fixed in version 3.1.3.</p>
 
+	  5.13. <a name="q5.13">I get Premature End of Script Headers errors
+	  when running htsearch.</a><br>
+	  <p>This happens when htsearch dies before putting out a
+	  "Content-Type" header. If you are running Apache under Solaris,
+	  first try the solution described in question <a href="#q5.7">5.7</a>.
+	  If that doesn't work, or you're running on another system, try
+	  running "htsearch -vvv" directly from the command line to see where
+	  and why it's failing. It should prompt you for the search words,
+	  as well as the format.
+	  <br>See also questions <a href="#q5.7">5.7</a> and
+	  <a href="#q5.14">5.14</a>.</p>
+
+	  5.14. <a name="q5.14">I get Segmentation faults when running
+	  htsearch or htfuzzy.</a><br>
+	  <p>Despite a great deal of debugging of these programs, we haven't
+	  been able to completely eliminate all such problems on all platforms.
+	  If you're running htsearch or htfuzzy on a BSDI system, a common
+	  cause of core dumps is due to a conflict between the GNU regex
+	  code bundled in htdig 3.1.2 and later, and the BSD C or C++ library.
+	  The solution is to use the BSD library's own regex code instead,
+	  as summarized by Joe Jah:
+		<ul>
+		<li> make clean
+		<li> Remove references to regex.o from htlib/Makefile.
+		<li> Remove htlib/regex.h.
+		<li> Remove references to htlib/regex.h in htfuzzy/Makefile,
+			which will be there if you have previously done a
+			"make depend".
+		<li> make
+		</ul>
+	  This solution may work on some other platforms as well (we haven't
+	  heard one way or the other), but will definitely not work on some
+	  platforms. For instance, on libc5-based Linux systems, the bundled
+	  regex code works fine by default, but using libc5's regex code
+	  causes core dumps.</p>
+	  <p>For other causes of segmentation faults, or in other programs,
+	  getting a stack backtrace after the fault can be useful in narrowing
+	  down the problem. E.g.: try "gdb /path/to/htsearch /path/to/core",
+	  then enter the command "bt". You can also try running the program
+	  directly under the debugger, rather than attempting a post-mortem
+	  analysis of the core dump. Options to the program can be given on
+	  gdb's "run" command, and after the program is suspended on fault,
+	  you can use the "bt" command. This may give you enough information
+	  to find and fix the problem yourself, or at least it may help others
+	  on the htdig mailing list to point out what to do next.</p>
+
+	  5.15. <a name="q5.15">Why does htdig 3.1.3 mangle URL parameters
+	  that contain bare "&amp;" characters?</a><br>
+	  <p>This is a known bug in 3.1.3, and is fixed with this
+	  <a href="http://www.htdig.org/files/contrib/other/htdig-3.1.3-urlparmbug.patch">
+	  patch</a>. You can apply the patch by entering into the main
+	  source directory for htdig-3.1.3, and using the command
+	  "patch -p1 < /path/to/htdig-3.1.3-urlparmbug.patch".</p>
+
+	  5.16. <a name="q5.16">When I run htmerge, it stops with an
+	  "Unable to open word list file '.../db.wordlist'" message.</a><br>
+	  <p>The most common cause of this error is that htdig did not
+	  manage to index any documents, and so it did not create a word
+	  list. You should repeat the htdig or rundig command with the
+	  -vvv option to see where and why it is failing.
+	  See question <a href="#q4.1">4.1</a>.</p>
+
 	  <p>
 
 	  <hr noshade size=4>
 	<address>
-	  <a href="THANKS.html">$Author: ghutchis $</a>
+	  <a href="THANKS.html">$Author: grdetil $</a>
 	</address>
 <!-- Created: Sun Jun 22 23:16:38 PDT 1997 -->
 <!-- hhmts start -->
-Last modified: Wed Sep 22 09:25:59 CDT 1999
+Last modified: Sat Nov 20 20:47:06 EST 1999
 <!-- hhmts end -->
   </body>
 </html>
