@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ExactParseTree.cc,v 1.1.2.2 2000/08/01 16:52:46 ghutchis Exp $
+// $Id: ExactParseTree.cc,v 1.1.2.3 2000/08/29 13:57:34 ghutchis Exp $
 //
 
 #include "ExactParseTree.h"
@@ -96,7 +96,7 @@ String	ExactParseTree::GetLogicalWords()
   String	logicalWords;
   ParseTree	*child;
 
-  if (!children)
+  if (!children || children->Count() == 0)
     return initialQuery;
 
   logicalWords << '"';
