@@ -1,4 +1,19 @@
-Sun Mar 28 03:22:02 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+Sun Mar 28 19:45:02 1999  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htlib/HtWordType.h (HtIsWordChar): Avoid matching 0 when using
+	strchr.
+	(HtIsStrictWordChar): Ditto.
+
+	* htdig/ExternalParser.cc (parse): Before got_href call, set
+	hopcount of URL to that of base plus 1.
+	Add URL to external parser error output.
+
+	* htlib/URL.cc (URL(char *ref, URL &parent) ): Move call to
+	constructURL call inside previous else-clause.
+	(parse): Reset _normal, _signature, _user initially.
+	Commence parsing, even if no "//" is found.  Do not set _normal
+	here.
+	(normalizePath): Call removeIndex finally.
 
 	* htcommon/WordRecord.h (WORD_RECORD_COMPRESSED_FORMAT)
 	[!NO_WORD_COUNT]: Change to "cu4".

@@ -7,7 +7,7 @@
 // The format is documented in http://www.htdig.org/attrs.html#external_parser
 //
 #if RELEASE
-static char RCSid[] = "$Id: ExternalParser.cc,v 1.10 1999/02/14 02:31:19 ghutchis Exp $";
+static char RCSid[] = "$Id: ExternalParser.cc,v 1.11 1999/03/28 22:11:31 hp Exp $";
 #endif
 
 #include "ExternalParser.h"
@@ -170,7 +170,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 			(hd = atoi(token3)) >= 0 && hd < 12)
 		  retriever.got_word(token1, loc, hd);
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n";
+		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 		
 	    case 'u':	// href
@@ -180,10 +180,11 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		if (token1 != NULL && token2 != NULL)
 		{
 		  url.parse(token1);
+		  url.hopcount(base.hopcount() + 1);
 		  retriever.got_href(url, token2);
 		}
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n";
+		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 		
 	    case 't':	// title
@@ -191,7 +192,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		if (token1 != NULL)
 		  retriever.got_title(token1);
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n";
+		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 		
 	    case 'h':	// head
@@ -199,7 +200,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		if (token1 != NULL)
 		  retriever.got_head(token1);
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n";
+		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 		
 	    case 'a':	// anchor
@@ -207,7 +208,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		if (token1 != NULL)
 		  retriever.got_anchor(token1);
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n";
+		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 		
 	    case 'i':	// image url
@@ -215,7 +216,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		if (token1 != NULL)
 		  retriever.got_image(token1);
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n";
+		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 
 	    case 'm':	// meta
@@ -329,12 +330,12 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  }
 		}
 		else
-		  cerr<< "External parser error in line:"<<line<<"\n";
+		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 	      }
 
 	    default:
-		cerr<< "External parser error in line:"<<line<<"\n";
+		  cerr<< "External parser error in line:"<<line<<"\n" << " URL: " << base.get() << "\n";
 		break;
 	}
     }

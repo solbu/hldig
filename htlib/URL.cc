@@ -7,7 +7,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.19 1999/03/14 03:17:35 ghutchis Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.20 1999/03/28 22:11:32 hp Exp $";
 #endif
 
 #include "URL.h"
@@ -212,12 +212,13 @@ URL::URL(char *ref, URL &parent)
             //
             normalizePath();
 	}
+
+	//
+	// Build the url.  (Note, the host name has NOT been normalized!)
+	// No need for this if we have called URL::parse.
+	//
+	constructURL();
     }
-	
-    //
-    // Build the url.  (Note, the host name has NOT been normalized!)
-    //
-    constructURL();
 }
 
 
@@ -238,7 +239,14 @@ void URL::parse(char *u)
     char	*p = strchr(nurl, '#');
     if (p)
 	*p = '\0';
-	
+
+    // Some members need to be reset.  If not, the caller would
+    // have used URL::URL(char *ref, URL &parent)
+    // (which may call us, if the URL is found to be absolute).
+    _normal = 0;
+    _signature = 0;
+    _user = 0;
+
     //
     // Extract the service
     //
@@ -259,52 +267,53 @@ void URL::parse(char *u)
     //
     if (!p || strncmp(p, "//", 2) != 0)
     {
+	// No host specified, it's all a path.
 	_host = 0;
 	_port = 0;
 	_url = 0;
 	_path = p;
-	_normal = 1;
-	return;
     }
     else
+    {
 	p += 2;
 
-    //
-    // p now points to the host
-    //
-    char	*q = strchr(p, ':');
-    char	*slash = strchr(p, '/');
+	//
+	// p now points to the host
+	//
+	char	*q = strchr(p, ':');
+	char	*slash = strchr(p, '/');
     
-    if (q && ((slash && slash > q) || !slash))
-    {
-	_host = strtok(p, ":");
-	p = strtok(0, "/");
-	if (p)
-	    _port = atoi(p);
-    }
-    else
-    {
-	_host = strtok(p, "/");
-	_host.chop(" \t");
-	if (strcmp(_service, "http") == 0)
-	  _port = 80;
-	if (strcmp(_service, "https") == 0)
-	  _port = 442;
-	if (strcmp(_service, "ftp") == 0)
-	  _port = 21;
-	if (strcmp(_service, "gopher") == 0)
-	  _port = 70;
-	if (strcmp(_service, "news") == 0)
-	  _port = 532;
-	if (strcmp(_service, "file") == 0)
-	  _port = 0;
-    }
+	if (q && ((slash && slash > q) || !slash))
+	{
+	    _host = strtok(p, ":");
+	    p = strtok(0, "/");
+	    if (p)
+	      _port = atoi(p);
+	}
+	else
+	{
+	    _host = strtok(p, "/");
+	    _host.chop(" \t");
+	    if (strcmp(_service, "http") == 0)
+	      _port = 80;
+	    if (strcmp(_service, "https") == 0)
+	      _port = 442;
+	    if (strcmp(_service, "ftp") == 0)
+	      _port = 21;
+	    if (strcmp(_service, "gopher") == 0)
+	      _port = 70;
+	    if (strcmp(_service, "news") == 0)
+	      _port = 532;
+	    if (strcmp(_service, "file") == 0)
+	      _port = 0;
+	}
 
-    //
-    // The rest of the input string is the path.
-    //
-    _path = "/";
-    _path << strtok(0, "\n");
+	//
+	// The rest of the input string is the path.
+	//
+	_path = "/";
+	_path << strtok(0, "\n");
+    }
 
     //
     // Get rid of loop-causing constructs in the path
@@ -391,6 +400,9 @@ void URL::normalizePath()
         if (pathend < 0)
             pathend = _path.length();
       }
+
+    // And don't forget to remove index.html or similar file.
+    removeIndex(_path);
 }
 
 //*****************************************************************************
