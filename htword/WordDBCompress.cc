@@ -381,6 +381,21 @@ class WordDBPage
 	decmpr_indx=0;
     }
 
+    void delete_page()
+    {
+       if(!pg){errr("WordDBPage::delete_page: pg==NULL");}
+       delete [] pg;
+       pg=NULL;
+    }
+    void unset_page()
+    {
+       if(!pg){errr("WordDBPage::unset_page: pg==NULL");}
+       pg=NULL;
+    }
+    ~WordDBPage()
+    {
+	if(pg){errr("WordDBPage::~WordDBPage: page not empty");}
+    }
     WordDBPage(int npgsz)
     {
 	init0();
@@ -461,6 +476,9 @@ WordDBCompress::Compress(const  u_int8_t *inbuff, int inbuff_length, u_int8_t **
 
     delete res;
     if(debug>2){printf("WordDBCompress::Compress: final output size:%6d\n",(*outbuff_lengthp));}
+
+    // cleanup
+    pg.unset_page();
     return(0);
 }
 
@@ -483,6 +501,7 @@ WordDBCompress::Uncompress(const u_int8_t *inbuff, int inbuff_length, u_int8_t *
     // copy the result to outbuff
     memcpy((void *)outbuff,(void *)pg.pg,outbuff_length);
 
+    pg.delete_page();
     return(0);
 }
 
@@ -492,6 +511,7 @@ WordDBCompress::TestCompress(const  u_int8_t* pagebuff, int pagebuffsize,int deb
 {
     WordDBPage pg(pagebuff,pagebuffsize);
     pg.TestCompress(debuglevel);
+    pg.unset_page();
     return 0;
 }
 
@@ -553,7 +573,7 @@ WordDBPage::TestCompress(int debuglevel)
 	    if(cmp){errr("Compare failed");}
 	    delete res2;
 	}
-	delete [] pageu.pg;
+	pageu.delete_page();
 	delete res;
 
     }else {errr("WordDBPage::TestCompress: Compress failed");}
