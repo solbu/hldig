@@ -1,7 +1,10 @@
-Mon Dec  6 14:27:54 CST 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Mon Dec  6 16:23:39 CST 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htdoc/cf_generate.pl: added a bit of error checking for when it
+	can't fetch the config info, and made it more flexible for what it
+	allows as terminator.
 	* htcommon/defaults.cc: add default and description for authorization
-	attribute.
+	attribute, and clean up external_protocols entry for cf_generate.pl.
 	* htdoc/attrs.html, cf_by{name,prog}.html: reran cf_generate.pl
 	* htdig/htdig.cc(main): set authorization parameter before Retriever
 	constuctor is called, as it may initialize a Server.  (Should complete

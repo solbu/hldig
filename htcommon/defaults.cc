@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.13 1999/12/02 02:43:49 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.14 1999/12/06 22:48:47 grdetil Exp $
 //
 
 #include "Configuration.h"
@@ -62,6 +62,19 @@ ConfigDefaults	defaults[] =
 	address to map to. If this option is set to false,
 	there is no way to index either \"soft\" or \"hard\"
 	virtual web sites.
+" },
+{ "authorization", "", 
+	"string", "htdig", "authorization: myusername:mypassword", "
+	This tells htdig to send the supplied
+	<em>username</em><b>:</b><em>password</em> with each HTTP request.
+	The credentials will be encoded using the \"Basic\" authentication
+	scheme. There <em>must</em> be a colon (:) between the username and
+	password.<br>
+	This attribute can also be specified on htdig's command line using
+	the -u option, and will be blotted out so it won't show up in a
+	process listing. If you use it directly in a configuration file,
+	be sure to protect it so it is readable only by you, and do not
+	use that same configuration file for htsearch.
 " },
 { "backlink_factor", "1000", 
 	"number", "htsearch", "backlink_factor: 501.1", "
@@ -359,7 +372,10 @@ http://www.htdig.org/", "
 	common things such as an infinite virtual web-tree
 	which start with cgi-bin.
 " },
-{ "external_protocols", "", "quoted string list", "htdig", "external_protocols: https /usr/local/bin/handler.pl", ""},
+{ "external_protocols", "",
+	"quoted string list", "htdig", "external_protocols: https /usr/local/bin/handler.pl", "
+
+" },
 { "external_parsers", "", 
 	"quoted string list", "htdig", "external_parsers: text/html /usr/local/bin/htmlparser \\<br>
 	application/pdf /usr/local/bin/parse_doc.pl \\<br>
@@ -870,8 +886,8 @@ http://www.htdig.org/", "
 { "local_urls_only", "false", 
 	"boolean", "htdig", "local_urls_only: true", "
 	Set this to tell ht://Dig to only access files through the 
-        local filesystem using the local_urls attribute. If it cannot 
-        find the file, it will give up rather than trying HTTP or other protocol.
+	local filesystem using the local_urls attribute. If it cannot 
+	find the file, it will give up rather than trying HTTP or other protocol.
 " },
 { "local_user_urls", "", 
 	"string list", "htdig", "local_user_urls: http://www.my.org/=/home/,/www/", "

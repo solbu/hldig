@@ -14,7 +14,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: cf_generate.pl,v 1.1.2.4 1999/10/29 22:26:13 grdetil Exp $
+# $Id: cf_generate.pl,v 1.1.2.5 1999/12/06 22:48:50 grdetil Exp $
 #
 use strict;
 
@@ -54,7 +54,7 @@ close(FILE);
 $content =~ s/.*ConfigDefaults.*?\{(.*)\{0, 0.*/[$1]/s;
 $content =~ s/([\@\$])/\\$1/gs;
 $content =~ s/^\{/\[/mg;
-$content =~ s/^\" \},$/\" \],/mg;
+$content =~ s/^\"\s*\},$/\" \],/mg;
 #
 # Transform macro substituted strings by strings
 #
@@ -63,6 +63,9 @@ $content =~ s/^(\[ \"\w+\", )\"(.*?)\"(.*?)\"(.*?)\",\n/$1\"$2\\\"$3\\\"$4\",\n/
 my($config);
 eval "\$config = $content";
 
+if(!$config) {
+    die "could not extract any configuration info from $file";
+}
 
 #
 # Spit the HTML pages

@@ -251,6 +251,65 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="authorization">
+		authorization</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<i>No default</i>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This tells htdig to send the supplied
+	<em>username</em><b>:</b><em>password</em> with each HTTP request.
+	The credentials will be encoded using the "Basic" authentication
+	scheme. There <em>must</em> be a colon (:) between the username and
+	password.<br>
+	This attribute can also be specified on htdig's command line using
+	the -u option, and will be blotted out so it won't show up in a
+	process listing. If you use it directly in a configuration file,
+	be sure to protect it so it is readable only by you, and do not
+	use that same configuration file for htsearch.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  authorization:
+				</td>
+				<td nowrap>
+				     myusername:mypassword
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="backlink_factor">
 		backlink_factor</a></strong>
 	  </dt>
@@ -1957,6 +2016,56 @@ http://www.htdig.org/
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="external_protocols">
+		external_protocols</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			quoted string list
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<i>No default</i>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  external_protocols:
+				</td>
+				<td nowrap>
+				     https /usr/local/bin/handler.pl
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="external_parsers">
 		external_parsers</a></strong>
 	  </dt>
@@ -3278,6 +3387,58 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     http://www.foo.com/=/usr/www/htdocs/
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="local_urls_only">
+		local_urls_only</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Set this to tell ht://Dig to only access files through the 
+	local filesystem using the local_urls attribute. If it cannot 
+	find the file, it will give up rather than trying HTTP or other protocol.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  local_urls_only:
+				</td>
+				<td nowrap>
+				     true
 				</td>
 			  </tr>
 			</table>
@@ -8649,7 +8810,7 @@ http://www.htdig.org/
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Wed Nov 10 15:09:48 CST 1999
+Last modified: Mon Dec  6 15:59:09 CST 1999
 <!-- hhmts end -->
   </body>
 </html>
