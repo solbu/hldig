@@ -467,7 +467,7 @@ char *yytext;
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: conf_lexer.cxx,v 1.8 2003/12/03 07:16:16 lha Exp $
+// $Id: conf_lexer.cxx,v 1.9 2003/12/14 01:20:09 lha Exp $
 //
 */
 #ifdef HAVE_CONFIG_H
@@ -914,14 +914,7 @@ case YY_STATE_EOF(bracket):
 case YY_STATE_EOF(br_string):
 {
 		        if ( include_stack_ptr <= 0 )
-			{
-			    /* Grammar needs all lines to end in  T_NEWLINE */
-			    static int forceEOL = 0;
-			    if (forceEOL++)
-				yyterminate();
-			    else
-			        return (T_NEWLINE);
-			}
+		            yyterminate();
 		        else
 		            {
 			    delete name_stack[include_stack_ptr-1];
@@ -950,7 +943,7 @@ case 21:
 YY_RULE_SETUP
 { 
 	fprintf(stderr,"Unknown char in line %d: %s",yylineno,yytext);
-	// exit(1); // Seems too harsh!
+	// exit(1); // Seems to harsh!
 	}
 	YY_BREAK
 case 22:

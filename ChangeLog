@@ -1,3 +1,8 @@
+Sun Dec 14 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htcommon/conf_lexer.{lxx,cxx}:
+      Back out changes to try to accept files without EOL.
+
 Sat Dec 13 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htcommon/defaults.{cc,xml}, htdoc/{attrs,cf_byprog}.html:
