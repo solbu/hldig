@@ -2239,7 +2239,7 @@ http://www.htdig.org/</example>
 
    <attribute name="max_excerpts" 
               type="integer" 
-              programs="htsearchg" 
+              programs="htsearch" 
               version="3.1.6" 
               category="Presentation:How" 
               block="URL" >

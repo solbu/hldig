@@ -1,3 +1,8 @@
+Sat Dec 13 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htcommon/defaults.{cc,xml}, htdoc/{attrs,cf_byprog}.html:
+      Fix "used by" for  max_excerpts,  and resulting hyperlinks.
+
 Sat Nov 22 2003 Lachlan Andrew <lha@users.sourceforge.net>
 
     * htcommon/conf_lexer.{lxx,cxx}, htcommon/conf_parser.{yxx,cxx}:

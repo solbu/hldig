@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.100 2003/11/07 13:10:10 lha Exp $
+// $Id: defaults.cc,v 1.101 2003/12/13 09:15:41 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1405,7 +1405,7 @@ http://www.htdig.org/", " \
 	htdig</a>. \
 " }, \
 { "max_excerpts", "1",  \
-	"integer", "htsearchg", "URL", "3.1.6", "Presentation:How", "max_excerpts: 10", " \
+	"integer", "htsearch", "URL", "3.1.6", "Presentation:How", "max_excerpts: 10", " \
 	This value determines the maximum number of excerpts \
 	that can be displayed for one matching document in the \
 	search results. \
