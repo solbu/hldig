@@ -1,3 +1,7 @@
+Thu Nov 30 14:37:15 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* Makefile.in (distdir): Added missing variable name 'd' to cp -pr.
+
 Thu Nov 30 14:01:48 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/strptime.cc, htlib/lib.h: make first 2 args to strptime
