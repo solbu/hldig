@@ -1,3 +1,7 @@
+Sat Oct 25 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htdig/Server.cc: Fix #829754.  Avoid calculations with negative time
+
 Fri Oct 24 17:17:15 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
     * htdoc/htdig.html, htdoc/meta.html, htdoc/require.html: Update URL for

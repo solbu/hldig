@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.cc,v 1.25 2003/10/21 01:16:57 angusgb Exp $
+// $Id: Server.cc,v 1.26 2003/10/25 03:52:41 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -406,14 +406,13 @@ URLRef *Server::pop()
 void Server::delay()
 {
   HtDateTime now;
-  int how_long = _connection_space;
 
-  how_long += HtDateTime::GetDiff(_last_connection, now);  
+  int time_taken = HtDateTime::GetDiff(now, _last_connection);  // arg1-arg2 > 0
 
   _last_connection = now;  // Reset the clock for the next delay!
 
-  if (how_long > 0)
-    sleep(how_long);
+  if (time_taken < _connection_space)
+    sleep(_connection_space - time_taken);
 
   return;
 }
