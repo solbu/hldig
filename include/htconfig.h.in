@@ -14,6 +14,7 @@
 /* Define to the syslog facility for htsearch logging. */
 #define LOG_FACILITY LOG_LOCAL5
 
+
 /* Define if on AIX 3.
    System headers sometimes define this.
    We just want to avoid a redefinition error message.  */
@@ -106,6 +107,9 @@ typedef char bool;
 /* Define if you have the timegm function.  */
 #undef HAVE_TIMEGM
 
+/* Define if you have the <alloca.h> header file.  */
+#undef HAVE_ALLOCA_H
+
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
 
@@ -121,12 +125,6 @@ typedef char bool;
 /* Define if you have the <strings.h> header file.  */
 #undef HAVE_STRINGS_H
 
-/* Define if you have the <zlib.h> header file. */
-#undef HAVE_ZLIB_H 
-
-/* Define if you have the <alloca.h> header file. */
-#undef HAVE_ALLOCA_H 
-
 /* Define if you have the <sys/file.h> header file.  */
 #undef HAVE_SYS_FILE_H
 
@@ -141,6 +139,9 @@ typedef char bool;
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
+
+/* Define if you have the <zlib.h> header file.  */
+#undef HAVE_ZLIB_H
 
 /* Define if you have the nsl library (-lnsl).  */
 #undef HAVE_LIBNSL

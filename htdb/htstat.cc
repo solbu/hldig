@@ -36,6 +36,7 @@ extern "C" {
 }
 
 #include "WordDB.h"
+#include "WordContext.h"
 
 typedef enum { T_NOTSET, T_DB, T_LOCK, T_LOG, T_MPOOL, T_TXN } test_t;
 
@@ -74,13 +75,11 @@ main(int argc, char *argv[])
 	int wordlist = 0;
 	char *db, *home;
 
-	WordKeyInfo::InitializeFromString("nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0");
-
 	ttype = T_NOTSET;
 	db = home = NULL;
 	memset(&dbinfo, 0, sizeof(dbinfo));
 
-	while ((ch = getopt(argc, argv, "C:cd:h:lM:mNtS:zW")) != EOF)
+	while ((ch = getopt(argc, argv, "C:cd:h:lM:mNtzW")) != EOF)
 		switch (ch) {
 		case 'C':
 			ttype = T_LOCK;
@@ -111,9 +110,6 @@ main(int argc, char *argv[])
 		case 'N':
 			(void)db_value_set(0, DB_MUTEXLOCKS);
 			break;
-		case 'S':
-			dbinfo.db_pagesize = atoi(optarg);
-			break;
 		case 'z':
 			compress = DB_COMPRESS;
 			break;
@@ -132,6 +128,14 @@ main(int argc, char *argv[])
 
 	if (argc != 0 || ttype == T_NOTSET)
 		usage();
+
+	if(wordlist) {
+	  static ConfigDefaults defaults[] = {
+	    { "wordlist_wordkey_description", "nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0"},
+	    { 0, 0, 0 }
+	  };
+	  WordContext::Initialize(defaults);
+	}
 
 	/*
 	 * Ignore signals -- we don't want to be interrupted because we're

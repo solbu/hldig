@@ -34,6 +34,7 @@ extern "C" {
 }
 
 #include "WordDB.h"
+#include "WordContext.h"
 
 void	configure __P((char *));
 DB_ENV *db_init __P((char *, int, int));
@@ -59,13 +60,11 @@ main(int argc, char *argv[])
 	int wordlist = 0;
 	char *home;
 
-	WordKeyInfo::InitializeFromString("nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0");
-
 	home = NULL;
 	checkprint = dflag = 0;
 	memset(&dbinfo, 0, sizeof(dbinfo));
 
-	while ((ch = getopt(argc, argv, "df:h:NpC:S:zW")) != EOF)
+	while ((ch = getopt(argc, argv, "df:h:NpC:zW")) != EOF)
 		switch (ch) {
 		case 'd':
 			dflag = 1;
@@ -86,9 +85,6 @@ main(int argc, char *argv[])
 		case 'C':
 			dbinfo.db_cachesize = atoi(optarg);
 			break;
-		case 'S':
-			dbinfo.db_pagesize = atoi(optarg);
-			break;
 		case 'z':
 			compress = DB_COMPRESS;
 			break;
@@ -107,6 +103,14 @@ main(int argc, char *argv[])
 
 	if (dflag && checkprint)
 		errx(1, "the -d and -p options may not both be specified");
+
+	if(wordlist) {
+	  static ConfigDefaults defaults[] = {
+	    { "wordlist_wordkey_description", "nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0"},
+	    { 0, 0, 0 }
+	  };
+	  WordContext::Initialize(defaults);
+	}
 
 	/* Initialize the environment. */
 	dbenv = db_init(home, compress, wordlist);

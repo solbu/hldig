@@ -1,3 +1,11 @@
+Sat Jan 15 11:53:35 2000  Loic Dachary  <loic@ceic.com>
+
+	* htdb/htstat.cc,htdb/htdump.cc: remove useless -S option since
+	  the page size is found in the header of the file.
+
+	* htdb/htstat.cc,htdump.cc,htload.cc: only call WordContext::Initialize
+	  if -W flag specified.
+
 Fri Jan 14 18:39:12 2000  Marcel Bosc   <bosc@ceic.com>
 
 	* htword/WordBitCompress.cc: speedup, VlengthCoder::code()
