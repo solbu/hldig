@@ -1,4 +1,9 @@
-Fri Jun 4 10:23:53 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Sat 5 Jun 2004   Lachlan Andrew  <lha at users.sourceforge.net>
+
+    * htcommon/defaults.cc: Escaped new-line in "allow_spaces_in_url" entry.
+      Set no_next_page_text to ${next_page_text}; likewise no_prev_page_text.
+
+Fri Jun 4 10:23:53 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
    * htcommon/URL.cc: added "allow_space_in_url" (from fileSpace.1 patch)
    * htcommon/defaults.[cc,xml]: added documentation of allow_space_in_url
@@ -12,27 +17,27 @@ Thu Jun  3 16:04:23 2004  Gilles Detillieux  <grdetil at scrc.umanitoba.ca>
     * htdig/HTML.cc (do_tag): Fixed meta date handling to avoid inadvertently
       matching names like DC.Date.Review.
 
-Thu Jun 3 10:26:26 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Thu Jun 3 10:26:26 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
    * Tagged release htdig-3-2-0b6
 
-Thu Jun 3 10:01:50 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Thu Jun 3 10:01:50 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
    * htdoc/RELEASE.html: updated release notes and changes
    * htdoc/THANKS.html: updated the 'thanks' section
 
-Thu Jun 3 09:32:52 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Thu Jun 3 09:32:52 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * global: updated with 'autoreconf -if' (autoconf 2.59, libtool 1.5.6
       and automake 1.7.9)
 
-Wed Jun 2 19:03:14 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Wed Jun 2 19:03:14 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * contrib/rtf2html: added the rtf2html.c source as modified by David Lippi
     and Gabriele Bartolini of the Comune di Prato. The source code is now
     released under GNU GPL and included in the ht://Dig package.
 
-Tue Jun 1 20:23:40 CEST 2004 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Tue Jun 1 20:23:40 CEST 2004 Gabriele Bartolini <angusgb at users.sourceforge.net>
 
     * htcommon/HtSGMLCodec.cc: changed &curren; to &euro;
 

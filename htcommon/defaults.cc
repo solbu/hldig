@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.109 2004/06/04 08:51:05 angusgb Exp $
+// $Id: defaults.cc,v 1.110 2004/06/05 02:50:26 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -136,7 +136,7 @@ ConfigDefaults	defaults[] =
 	non-compliant URLs.  Even with this attribute set, htdig \
 	still strips out all white space (leading, trailing and \
 	embedded), except that space characters embedded within \
-	the URL will be encoded as %20.
+	the URL will be encoded as %20. \
 " }, \
 { "allow_virtual_hosts", "true",  \
 	"boolean", "htdig", "", "3.0.8b2", "Indexing:Where", "allow_virtual_hosts: false", " \
@@ -1617,7 +1617,7 @@ http://www.htdig.org/", " \
 	to nothing (blank), the excerpt label will not be \
 	displayed in this case. \
 " }, \
-{ "no_next_page_text", "[next]",  \
+{ "no_next_page_text", "${next_page_text}",  \
 	"string", "htsearch", "", "3.0", "Presentation:Text", "no_next_page_text:", " \
 	The text displayed where there would normally be a \
 	hyperlink to go to the next page of matches. \
@@ -1654,7 +1654,7 @@ http://www.htdig.org/", " \
 	or embed images. The strings need to be quoted if they contain \
 	spaces. \
 " }, \
-{ "no_prev_page_text", "[prev]",  \
+{ "no_prev_page_text", "${prev_page_text}",  \
 	"string", "htsearch", "", "3.0", "Presentation:Text", "no_prev_page_text:", " \
 	The text displayed where there would normally be a \
 	hyperlink to go to the previous page of matches. \
