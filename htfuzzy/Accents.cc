@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Accents.cc,v 1.1.2.3 2000/03/01 22:12:19 grdetil Exp $
+// $Id: Accents.cc,v 1.1.2.4 2000/03/17 20:47:49 grdetil Exp $
 //
 
 #include "Configuration.h"
@@ -140,10 +140,15 @@ Accents::writeDB()
 void
 Accents::generateKey(char *word, String &key)
 {
+    static int  maximum_word_length = config.Value("maximum_word_length", 12);
 
     if (!word || !*word)
       return;
 
+    String      temp(word);
+    if (temp.length() > maximum_word_length)
+      temp.chop(temp.length()-maximum_word_length);
+    word = temp.get();
     key = '0';
     while (*word) {
       key << MinusculeISOLAT1[ (unsigned char) *word++ ];

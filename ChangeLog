@@ -1,3 +1,8 @@
+Fri Mar 17 15:48:12 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/Accents.cc (generateKey): Truncate words to
+	maximum_word_length, for consistency with what's found in word DB.
+
 Fri Mar 17 10:56:17 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc (do_tag): Use case insensitive parsing of META
