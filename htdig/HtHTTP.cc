@@ -430,7 +430,15 @@ void HtHTTP::SetRequestCommand(String &cmd)
    if (_user_agent.length()) cmd << "User-Agent: " << _user_agent << "\r\n";
    
 
-   // Referer ???
+   // Referer
+   if (_referer.get() && strlen(_referer.get()))
+     cmd << "Referer: " << _referer.get() << "\r\n";
+
+
+   // Authentication
+   if (_credentials.length())
+     cmd << "Authorization: Basic " << _credentials << "\r\n";
+
    
    // A date has been passed to check if the server one is newer than
    // the one we already own.
@@ -778,4 +786,58 @@ HtHTTP::DocStatus HtHTTP::GetDocumentStatus(HtHTTP_Response &r)
    // Exit the function
    return returnStatus;
 	    
+}
+
+
+void HtHTTP::SetCredentials (String s)
+{
+  // Overload default Transport method to take care of Basic HTTP auth.
+    static char	tbl[64] =
+    {
+	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+	'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+	'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+	'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+	'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+	'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+	'w', 'x', 'y', 'z', '0', '1', '2', '3',
+	'4', '5', '6', '7', '8', '9', '+', '/'
+    };
+    _credentials = 0;
+    char	*p;
+    int		n = s.length();
+    int		ch;
+
+    for (p = s.get(); n > 2; n -= 3, p += 3)
+    {
+	ch = *p >> 2;
+	_credentials << tbl[ch & 077];
+	ch = ((*p << 4) & 060) | ((p[1] >> 4) & 017);
+	_credentials << tbl[ch & 077];
+	ch = ((p[1] << 2) & 074) | ((p[2] >> 6) & 03);
+	_credentials << tbl[ch & 077];
+	ch = p[2] & 077;
+	_credentials << tbl[ch & 077];
+    }
+
+    if (n != 0)
+    {
+	char c1 = *p;
+	char c2 = n == 1 ? 0 : p[1];
+
+	ch = c1 >> 2;
+	_credentials << tbl[ch & 077];
+
+	ch = ((c1 << 4) & 060) | ((c2 >> 4) & 017);
+	_credentials << tbl[ch & 077];
+
+	if (n == 1)
+	    _credentials << '=';
+	else
+        {
+	    ch = (c2 << 2) & 074;
+	    _credentials << tbl[ch & 077];
+        }
+	_credentials << '=';
+    }
 }

@@ -205,6 +205,9 @@ public:
    static char *GetRequestUserAgent() { return _user_agent; }
 
 
+   // Set (Basic) Authentication Credentials
+   void SetCredentials (String s);
+
  ///////
     //    Interface for the HTTP Response
  ///////

@@ -1,3 +1,16 @@
+Sat Jul  3 00:26:55 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/DocumentRef.cc (Clear): Change default value of
+	docHopCount to 0 to fix several hopcount bugs.
+
+	* htdig/Transport.h, htdig/Transport.cc: Changes to support URL
+	referers as well as authentication credentials.
+
+	* htdig/HtHTTP.h, htdig/HtHTTP.cc(SetCredentials): Implement HTTP
+	Basic Authentication credentials.
+	(SetRequestCommand): Use Referer and Authentication headers if
+	supplied.
+
 Sun Jun 30 11:26:00 1999  Gabriele Bartolini <g.bartol@comune.prato.it>
 
 	* htdig/Transport.h: Inserted the methods declarations regarding

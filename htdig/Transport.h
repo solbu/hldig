@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.3 1999/06/30 09:26:06 angus Exp $
+// $Id: Transport.h,v 1.4 1999/07/03 03:50:33 ghutchis Exp $
 //
 //
 
@@ -108,6 +108,15 @@ class Transport : public Object
    void SetRequestURL(URL u) { _url = u;}
    URL GetRequestURL () { return _url;}
 
+   // Set and get the referring URL
+   void SetRefererURL (URL u) { _referer = u;}
+   URL GetRefererURL () { return _referer;}
+
+   // Set and get the credentials
+   // Likely to vary based on transport protocol
+   virtual void SetCredentials (String s) { _credentials = s;}
+   virtual String GetCredentials () { return _credentials;}
+
    // Set the modification date and time for If-Modified-Since   
    void SetRequestModificationTime (HtDateTime *p) { _modification_time=p; }
    void SetRequestModificationTime (HtDateTime &p)
@@ -142,15 +151,16 @@ class Transport : public Object
 
  protected:
 
-   Connection  _connection;	       // Connection object
-
+   Connection	_connection;	       // Connection object
    int		_timeout;              // Connection timeout
+
    URL		_url;                  // URL to retrieve
+   URL		_referer;	       // Referring URL
    
    HtDateTime	*_modification_time;   // Stored modification time if avail.
    int		_max_document_size;    // Max document size to retrieve
 
-
+   String	_credentials;	       // Credentials for this connection
 
    ///////
       //    Services about a Transport layer connection
@@ -190,7 +200,6 @@ class Transport : public Object
    ///////
 
    static int debug;
-
 
 };
 

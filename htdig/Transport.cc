@@ -5,6 +5,7 @@
 // Used to grab URLs based on the scheme (e.g. http://, ftp://...)
 //
 // Keep constructor and destructor in a file of its own.
+// Also takes care of the lower-level connection code.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999 The ht://Dig Group
@@ -12,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.3 1999/06/30 09:26:06 angus Exp $
+// $Id: Transport.cc,v 1.4 1999/07/03 03:50:33 ghutchis Exp $
 //
 //
 
