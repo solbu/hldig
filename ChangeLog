@@ -1,7 +1,5 @@
 Fri Mar 12 00:31:03 1999  Hans-Peter Nilsson  <hp@bitrange.com>
 
-	* htmerge/docs.cc (convertDocs): 
-
 	* htsearch/htsearch.cc (main): Remove doc_index handling.
 
 	* htsearch/ResultMatch.h (setURL): Change to setID, use int.
