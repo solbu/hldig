@@ -1,3 +1,9 @@
+Mon Feb  5 11:47:07 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtDateTime.cc: Remove the timezone specs in the date
+	formats--these are not required in the RFCs because many dates are
+	in GMT anyway.
+
 Wed Jan 17 08:48:30 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/ExternalTransport.cc (Request): Oops, fixed a holdover from

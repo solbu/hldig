@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtDateTime.cc,v 1.12.2.5 2000/11/30 17:01:09 grdetil Exp $
+// $Id: HtDateTime.cc,v 1.12.2.6 2001/02/05 17:48:28 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -49,19 +49,19 @@ static char _strtime[MAXSTRTIME];
 ///////
 
 //     RFC1123: Sun, 06 Nov 1994 08:49:37 GMT
-#define RFC1123_FORMAT "%a, %d %b %Y %H:%M:%S %Z"
-#define LOOSE_RFC1123_FORMAT "%d %b %Y %H:%M:%S %Z"
+#define RFC1123_FORMAT "%a, %d %b %Y %H:%M:%S"
+#define LOOSE_RFC1123_FORMAT "%d %b %Y %H:%M:%S"
 
 //     RFC850 : Sunday, 06-Nov-94 08:49:37 GMT
-#define RFC850_FORMAT  "%A, %d-%b-%y %H:%M:%S %Z"
-#define LOOSE_RFC850_FORMAT  "%d-%b-%y %H:%M:%S %Z"
+#define RFC850_FORMAT  "%A, %d-%b-%y %H:%M:%S"
+#define LOOSE_RFC850_FORMAT  "%d-%b-%y %H:%M:%S"
 
 //     ANSI C's asctime() format : Sun Nov  6 08:49:37 1994
 #define ASCTIME_FORMAT  "%a %b %e %H:%M:%S %Y"
 #define LOOSE_ASCTIME_FORMAT  "%b %e %H:%M:%S %Y"
 
 // 	  ISO8601 : 1994-11-06 08:49:37 GMT
-#define ISO8601_FORMAT "%Y-%m-%d %H:%M:%S %Z"
+#define ISO8601_FORMAT "%Y-%m-%d %H:%M:%S"
 
 // 	  ISO8601 (short version): 1994-11-06
 #define ISO8601_SHORT_FORMAT "%Y-%m-%d"
