@@ -1,3 +1,8 @@
+Thu Mar 25 09:46:07 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(displayMatch): Avoid segfault when DocAnchors
+	list has too few entries for current anchor number.
+
 Tue Mar 23 15:08:40 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/Display.cc(displayMatch): Fix problem when documents
