@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.h,v 1.3.2.2 2000/02/19 04:56:48 ghutchis Exp $
+// $Id: Connection.h,v 1.3.2.3 2000/02/29 11:41:01 loic Exp $
 //
 
 #ifndef _Connection_h_
@@ -56,7 +56,7 @@ public:
     char		       *Get_Server()		{return server_name;}
 
     // Connection establishment
-    int				Connect(int allow_EINTR = 0);
+    int				Connect();
     Connection		       *Accept(int priv = 0);
     Connection		       *Accept_Privileged();
 

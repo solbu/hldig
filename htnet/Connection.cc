@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.3.2.3 2000/02/19 04:56:47 ghutchis Exp $
+// $Id: Connection.cc,v 1.3.2.4 2000/02/29 11:41:01 loic Exp $
 //
 
 #include "Connection.h"
@@ -28,6 +28,7 @@
 #include <sys/ioctl.h>
 #include <sys/uio.h>
 #include <sys/file.h>
+#include <signal.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <netdb.h>
@@ -252,40 +253,57 @@ int Connection::Assign_Server(const String& name)
     return OK;
 }
 
+//
+// Do nothing, we are only interested in the EINTR return of the
+// running system call.
+//
+static void handler_timeout(int) {
+}
 
 //*****************************************************************************
-// int Connection::Connect(int allow_EINTR)
+// int Connection::Connect()
 //
-int Connection::Connect(int allow_EINTR)
+int Connection::Connect()
 {
     int	status;
     int retries = retry_value;
 
     while (retries--)
       {
+	//
+	// Set an alarm to make sure the connect() call times out
+	// appropriately This ensures the call won't hang on a
+	// dead server or bad DNS call.
+	// Save the previous alarm signal handling policy, if any.
+	//
+	struct sigaction action;
+	struct sigaction old_action;
+	memset((char*)&action, '\0', sizeof(struct sigaction));
+	memset((char*)&old_action, '\0', sizeof(struct sigaction));
+	action.sa_handler = handler_timeout;
+	sigaction(SIGALRM, &action, &old_action);
+	alarm(timeout_value);
 
-	for (;;)
-	  {
-	    // Set an alarm to make sure the connect() call times out appropriately
-	    // This ensures the call won't hang on a dead server or bad DNS call
-	    alarm(timeout_value);
-	    status = connect(sock, (struct sockaddr *)&server, sizeof(server));
-	    alarm(0);
-	    if (status < 0 && errno == EINTR && !allow_EINTR)
-	      {
-		close(sock);
-		Open();
-		continue;
-	      }
-	    break;
-	  }
-	
+	status = connect(sock, (struct sockaddr *)&server, sizeof(server));
+
+	//
+	// Disable alarm and restore previous policy if any
+	//
+	alarm(0);
+       	sigaction(SIGALRM, &old_action, NULL);
+
 	if (status == 0 || errno == EALREADY || errno == EISCONN)
 	  {
 	    connected = 1;
 	    return OK;
 	  }
 
+	//
+	// Only loop if timed out. Other errors are fatal.
+	//
+	if (status < 0 && errno != EINTR)
+	  break;
+	
 	// cout << " <"  << ::strerror(errno) << "> ";
 	close(sock);
         Open();

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Images.cc,v 1.5.2.1 2000/02/19 05:02:45 ghutchis Exp $
+// $Id: Images.cc,v 1.5.2.2 2000/02/29 11:41:01 loic Exp $
 //
 
 #include "Images.h"
@@ -79,7 +79,7 @@ Images::Sizeof(char *url)
 		if (c.Assign_Server(Url.host()) == NOTOK)
 			return 0;
 
-		if (c.Connect(1) == NOTOK)
+		if (c.Connect() == NOTOK)
 		{
 			is->Size = 0;
 			images.Add(u, is);

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.5.2.5 2000/02/19 05:02:45 ghutchis Exp $
+// $Id: Transport.cc,v 1.5.2.6 2000/02/29 11:41:01 loic Exp $
 //
 //
 
@@ -240,7 +240,7 @@ int Transport::Connect()
       cout << "\tConnecting via TCP to (" << _host << ":" << _port << ")" << endl;
 
    if (isConnected()) return -1; // Already connected
-   if ( _connection.Connect(1) == NOTOK) return 0;  // Connection failed
+   if ( _connection.Connect() == NOTOK) return 0;  // Connection failed
    
    return 1;	// Connected
 }
