@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.45 2001/10/19 22:27:28 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.46 2001/10/19 22:43:12 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -1592,7 +1592,7 @@ Display::hilight(char *str, String urlanchor, int fanchor)
 {
     static char		*start_highlight = config["start_highlight"];
     static char		*end_highlight = config["end_highlight"];
-    static char		*end_highlight = config["anchor_target"];
+    static char		*anchor_target = config["anchor_target"];
     static String	result;
     int			pos;
     int			which, length;
