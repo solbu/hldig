@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.21  1998/11/18 05:15:32  ghutchis
+//
+// Added HTTP_REFERER to search logging.
+//
 // Revision 1.20  1998/11/17 04:06:14  ghutchis
 //
 // Add new ranking factors backlink_factor and date_factor
@@ -88,7 +92,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.20 1998/11/17 04:06:14 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.21 1998/11/18 05:15:32 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -817,7 +821,7 @@ Display::buildMatchList()
 	float now = time(0);
 	// This formula derived through experimentation
 	// We want older docs to have smaller values and the
-	// ultimate values to be a reasonable size (here about 100)
+	// ultimate values to be a reasonable size (max about 100)
 	score += config.Double("date_factor") * ((modified * 1000 / now) - 900);
 	score += config.Double("backlink_factor") * thisRef->DocBackLinks();
 
@@ -988,11 +992,11 @@ Display::logSearch(int page, List *matches)
 	nMatches = matches->Count();
 
     openlog("htsearch", LOG_PID, facility);
-    syslog(level, "%s [%s] (%s) [%s] [%s] (%d/%s) - %d\n",
+    syslog(level, "%s [%s] (%s) [%s] [%s] (%d/%s) - %d -- %s\n",
 	   getenv("REMOTE_HOST"),
 	   input->exists("config") ? input->get("config") : "default",
 	   config["match_method"], input->get("words"), logicalWords.get(),
 	   nMatches, config["matches_per_page"],
-	   page
+	   page, getenv("HTTP_REFERER")
 	   );
 }
