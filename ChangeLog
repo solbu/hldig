@@ -1,7 +1,9 @@
-Sun Jan 31 11:07:38 1999  Hans-Peter Nilsson  <hp@axis.se>
+Sun Jan 31 20:50:38 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htdig/Retriever.cc (Initial, GetRef, Need2Get, IsValidURL,
 	got_href, got_redirect): Do not lowercase URLs.
+
+	* htlib/HtURLCodec.h (class HtURLCodec): Fake a friend function.
 
 Sat Jan 30 22:29:50 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 

@@ -4,12 +4,7 @@
 //  Used for coding URLs when they are on disk; the key and the
 // href field in db.docdb.
 //
-// $Id: HtURLCodec.h,v 1.1 1999/01/21 13:43:03 ghutchis Exp $
-//
-// $Log: HtURLCodec.h,v $
-// Revision 1.1  1999/01/21 13:43:03  ghutchis
-// New files.
-//
+// $Id: HtURLCodec.h,v 1.2 1999/01/31 19:57:22 hp Exp $
 //
 #ifndef __HtURLCodec_h
 #define __HtURLCodec_h
@@ -37,6 +32,14 @@ public:
   // url_part_aliases or common_url_parts, this member gives a
   // nonempty String with an error message.
   String& ErrMsg();
+
+  // egcs-1.1 (and some earlier versions) always erroneously
+  // warns (even without warning flags) about classic singleton
+  // constructs ("only defines private constructors and has no
+  // friends").  Rather than adding autoconf tests to shut these
+  // versions up with -Wno-ctor-dtor-privacy, we fake normal
+  // conformism for it here (the minimal effort).
+  friend void my_friend_Harvey__a_faked_friend_function();
 
 private:
   // Hide default-constructor, copy-constructor and assignment
