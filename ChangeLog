@@ -1,0 +1,422 @@
+Thu Jul  9 09:39:01 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Server.cc, htdig/Retriever.h, htdig/Retriever.cc,
+	htdig/Document.h, htdig/Document.cc, htcommon/defaults.cc: Added
+	support for local file digging using patches by Pasi. Patches
+	include support for local user (~username) digging.
+
+	* htdig/HTML.h, htdig/HTML.cc, htcommon/defaults.cc:
+	Added support for META name=description tags. Uses new config-file
+	option "use_meta_description" which is off by default.
+
+Mon Jun 22 05:02:01 1998  turtle  <turtle@kiwi>
+
+	* configure.in:
+	Added test to make sure that the berkeley db library is present
+
+	* .cvsignore: Ignore the berkeley db library
+
+	* configure: changed
+
+	* Makefile.config.in: Removed GDBM references
+
+	* Makefile.in: Removed GDMB references
+
+	* .version: updated version to 3.1.0b1
+
+	* README: Updated version # and website location
+
+	* htdig/HTML.cc: Applied patch that prevented SGML entities that
+	translate to valid_punctuation characters from becoming part of
+	words
+
+	* configure.in: Removed references to GDBM
+
+	* htcommon/defaults.cc: Got rid of my email address as the default
+	maintainer
+
+	* htdig/htdig.conf: simple config file for development
+
+	* htlib/String.cc, htlib/Attic/SDSU.h, htlib/Attic/SDSU.cc,
+	htlib/DB2_db.cc, htlib/Connection.cc, htlib/Configuration.cc,
+	htlib/BTree.cc: New Berkeley database stuff
+
+	* htlib/.sniffdir/ofiles.incl: removed SDSU.*
+
+	* installdir/syntax.html, installdir/search.html,
+	installdir/rundig, installdir/nomatch.html, installdir/htdig.conf,
+	installdir/footer.html: Changed to use the new
+	http://www.htdig.org/ instead of the sdsu site
+
+Sun Jun 21 23:20:14 1998  turtle  <turtle@kiwi>
+
+	* rx-1.5/rx/Attic/config.log, htsearch/htsearch.cc,
+	htsearch/Attic/display.cc, htsearch/Display.cc, htmerge/docs.cc,
+	htlib/.sniffdir/ofiles.incl, htlib/Database.h, htlib/DB2_db.cc,
+	htlib/DB2_db.h, htlib/Database.cc, htfuzzy/.sniffdir/ofiles.incl,
+	htfuzzy/Prefix.cc, htfuzzy/Prefix.h, htfuzzy/Makefile.in,
+	htfuzzy/Fuzzy.cc, htcommon/defaults.cc, configure.in, Makefile.in,
+	Makefile.config.in: patches by Esa and Jesse to add BerkeleyDB and
+	Prefix searching
+
+Mon Jun 15 18:15:50 1998  turtle  <turtle@kiwi>
+
+	* htdig/HTML.cc: Added suggestion by Chris Liddiard to add ',' to
+	the list of separator characters for meta keyword parsing
+
+Tue May 26 03:58:14 1998  turtle  <turtle@kiwi>
+
+	* rx-1.5/rx/Attic/config.log, htlib/htString.h, htlib/cgi.cc,
+	htlib/URL.cc, htlib/String.cc, htlib/ParsedString.cc,
+	htlib/Database.cc, htlib/Connection.cc: Got rid of compiler
+	warnings.
+
+	* rx-1.5/rx/.cvsignore: added config.log
+
+Fri Apr  3 17:10:44 1998  turtle  <turtle@kiwi>
+
+	* htsearch/Display.cc: Patch to make excludes work
+
+Tue Mar 10 16:02:32 1998  turtle  <turtle@kiwi>
+
+	* htlib/strcasecmp.cc: Applied patch by Bernhard Griener to add
+	arguments checks in the mystrncasecmp() function
+
+Sun Feb 22 17:43:49 1998  turtle  <turtle@kiwi>
+
+	* htdoc/mailing.html: New mailing list archive location
+
+Tue Feb 17 18:05:40 1998  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: added new one
+
+Thu Feb 12 22:22:15 1998  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: Added more sites
+
+Mon Jan  5 06:14:11 1998  turtle  <turtle@kiwi>
+
+	* configure, configure.in: Added check for fstream.h to get rid of
+	the annoying emails about ht://Dig not compiling...
+
+	* Makefile.config.in: Added include of the GDBM library back
+
+	* .version: Now at version 3.0.9
+
+	* include/htconfig.h.in: Changed refs to time related stuff
+
+	* htmerge/htmerge.cc, htmerge/docs.cc: format changes
+
+	* htdig/Document.cc: Changed tm from pointer to real structure
+
+	* htlib/.sniffdir/ofiles.incl, htlib/timegm.cc: Our own timegm
+	function
+
+	* rx-1.5/rx/.cvsignore, rx-1.5/rx/Attic/Makefile: cvs cleanup
+
+	* htmerge/docs.cc: Fixed memory leak
+
+	* htlib/lib.h: Added own replacement of timegm()
+
+	* htlib/Dictionary.cc: Fixed memory leaks
+
+	* htlib/Connection.cc: Fix by Pontus Borg for AIX.  Changed
+	'size_t' to 'unsigned long' for the length parameter for
+	getpeername()
+
+	* htfuzzy/Metaphone.cc: formatting changes
+
+	* htdig/Retriever.cc: fixed memory leak
+
+	* htdig/Document.cc: * Alarm was not cancelled if readHeader
+	returned anything but OK * Use our own timegm() replacement if
+	necessary
+
+	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: format changes
+
+	* htcommon/DocumentDB.h: reformatting
+
+	* htcommon/DocumentDB.cc: Fixed major memory leak
+
+	* include/.cvsignore, include/Attic/htconfig.h, rx-1.5/.cvsignore,
+	rx-1.5/Attic/config.cache, rx-1.5/Attic/config.status,
+	rx-1.5/rx/.cvsignore, rx-1.5/rx/Attic/config.status,
+	htlib/Attic/htlib.proj, htmerge/.cvsignore,
+	htmerge/Attic/htmerge.proj, htnotify/.cvsignore,
+	htnotify/Attic/htnotify.proj, htsearch/.cvsignore,
+	htsearch/Attic/htsearch.proj, Attic/config.cache,
+	htcommon/Attic/htcommon.proj, htfuzzy/.cvsignore,
+	htfuzzy/Attic/htfuzzy.proj, lookfor: General cleanup of archived
+	stuff
+
+	* .cvsignore: config.cache added
+
+	* htdig/.cvsignore: Added htdig
+
+Tue Dec 16 15:57:22 1997  turtle  <turtle@kiwi>
+
+	* htdig/Document.cc: Added little patch by Tobias Oetiker
+	<oetiker@ee.ethz.ch> that should fix problems with timeouts.
+
+Thu Dec 11 00:28:59 1997  turtle  <turtle@kiwi>
+
+	* htlib/URL.h, htlib/URL.cc: Added double slash removal code.
+	These were causing loops.
+
+Thu Oct 23 18:01:10 1997  turtle  <turtle@kiwi>
+
+	* htlib/Connection.cc: Fix by Pontus Borg for AIX.  Changed
+	'size_t' to 'unsigned long' for the length parameter for
+	getpeername()
+
+Mon Oct 13 02:13:52 1997  turtle  <turtle@kiwi>
+
+	* htdig/Attic/Makefile, htdig/Attic/htdig.proj: remove files that
+	shouldn't be in the repository
+
+	* htdig/.cvsignore: Ignore Makefile
+
+	* htdoc/cf_byname.html, htdoc/cf_byprog.html, htdoc/attrs.html,
+	htdoc/ChangeLog: Added documentation for the external_parsers
+	attribute.
+
+Mon Jul 14 15:32:22 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: added cambridge
+
+Wed Jul  9 15:57:30 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: added the rhodos project
+
+Mon Jul  7 22:15:45 1997  turtle  <turtle@kiwi>
+
+	* htdig/Document.cc: Removed old getdate() code that replaced '-'
+	with ' '.
+
+	* htlib/URL.cc: Sequences of "/./" are now replaced with "/" to
+	reduce the chance of infinite loops
+
+	* htdig/Document.cc: Added better date parsing.  Now also supports
+	the old RFC 850 format
+
+Thu Jul  3 17:44:39 1997  turtle  <turtle@kiwi>
+
+	* htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htcommon/defaults.cc, htdig/htdig.h, htdoc/attrs.html,
+	htlib/Configuration.h, htlib/URL.cc, htdig/Attic/Makefile,
+	htdig/Document.cc: Added support for virtual hosts
+
+Mon Jun 30 17:07:49 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: Added Depaul university
+
+Tue Jun 24 14:59:45 1997  turtle  <turtle@kiwi>
+
+	* Makefile.in: Fixed syntax error in the installation target.
+
+Mon Jun 23 17:33:14 1997  turtle  <turtle@kiwi>
+
+	* htdig/Attic/teamball.conf, htdig/Attic/tsdsu.conf,
+	htdig/Attic/rohan.conf, htdig/Attic/sdsu.conf, htdig/Attic/t.conf,
+	htdig/Attic/nsdsu.conf, htdig/Attic/daztec.conf,
+	htdig/Attic/max.conf, htdig/htdig.conf, htdig/Attic/Makefile,
+	htdig/Attic/catalog.conf: Removed old config files
+
+	* htdoc/FAQ.html: FAQ initial
+
+	* htdoc/contents.html: Added link to the new FAQ
+
+	* htdoc/FAQ.html: *** empty log message ***
+
+	* htnotify/htnotify.cc: Added version info to the usage output
+
+	* htfuzzy/htfuzzy.cc: Added version info the usage output
+
+	* htmerge/htmerge.cc: Added version info to usage message
+
+	* htdig/main.cc: Added version info to the usage message
+
+Mon Jun 16 15:35:56 1997  turtle  <turtle@kiwi>
+
+	* installdir/footer.html: Changed the hardcoded version number to
+	the new VERSION variable
+
+	* htdoc/hts_templates.html: Added docs for the VERSION and PERCENT
+	variables
+
+	* htsearch/Display.cc: Added PERCENT and VERSION variables for the
+	output templates
+
+Sat Jun 14 18:52:42 1997  turtle  <turtle@kiwi>
+
+	* htdig/Document.cc: Made redirect detection code more general
+
+Fri Jun 13 05:31:17 1997  turtle  <turtle@kiwi>
+
+	* htdoc/cf_general.html: Fixed typo
+
+Thu Jun  5 15:00:53 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: added VG Gas Analysis Systems
+
+Tue Jun  3 17:49:05 1997  turtle  <turtle@kiwi>
+
+	* installdir/english.0.original, installdir/english.0: Added new
+	english dictionary for the endings algorithm
+
+Thu May 29 14:56:40 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: Added Indiana University Computer Security
+	Office
+
+Wed May 28 14:47:25 1997  turtle  <turtle@kiwi>
+
+	* htdoc/main.html: Fixed typo
+
+Mon May 19 15:23:18 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: Added daily californian online
+
+Tue May 13 19:28:32 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: Added The Reohr Group
+
+	* htdoc/uses.html: Added the Linux Documentation Project
+
+Sun May 11 17:52:05 1997  turtle  <turtle@kiwi>
+
+	* htdoc/index.html: Made the contents frame a little wider so that
+	text doesn't wrap
+
+	* htdoc/uses.html: Added NOVA and Gajo & Associati
+
+Fri May  2 23:35:56 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: added www.bajan.org
+
+Wed Apr 30 22:28:28 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: Added Caldera, Inc.
+
+Sun Apr 27 14:43:31 1997  turtle  <turtle@kiwi>
+
+	* htsearch/parser.cc, htsearch/parser.h, include/Attic/htconfig.h,
+	htdoc/RELEASE.html, htdoc/uses.html, htdoc/where.html,
+	htlib/URL.cc, htlib/strcasecmp.cc, htsearch/htsearch.cc, .version,
+	README, htdig/Attic/Makefile, htdoc/ChangeLog: changes
+
+Mon Apr 21 15:44:39 1997  turtle  <turtle@kiwi>
+
+	* htsearch/htsearch.cc: Added code to check the search words
+	against the minimum_word_length attribute
+
+Sun Apr 20 15:27:37 1997  turtle  <turtle@kiwi>
+
+	* CONFIG: Made paths more generic
+
+	* htdig/Document.cc: Added include for ctype.h
+
+	* htdig/Plaintext.cc: Fixed bug
+
+Tue Apr  1 17:56:57 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: added ukc
+
+Sun Mar 30 01:18:16 1997  turtle  <turtle@kiwi>
+
+	* htdig/Attic/Makefile, htdoc/uses.html, Attic/Makefile.config,
+	Attic/config.log, Attic/config.status, .cvsignore, Attic/Makefile,
+	htsearch/Attic/Makefile, htsearch/.cvsignore,
+	htnotify/Attic/Makefile, htnotify/.cvsignore, htmerge/.cvsignore,
+	htmerge/Attic/Makefile, htlib/.cvsignore, htlib/Attic/Makefile,
+	htfuzzy/.cvsignore, htfuzzy/Attic/Makefile, htcommon/.cvsignore,
+	htcommon/Attic/Makefile: update
+
+Thu Mar 27 00:06:05 1997  turtle  <turtle@kiwi>
+
+	* htdig/Plaintext.cc: Applied patch supplied by Peter Enderborg
+	<pme@ufh.se> to fix a problem with a pointer running off the end
+	of a string.
+
+Mon Mar 24 04:33:26 1997  turtle  <turtle@kiwi>
+
+	* rx-1.5/rx/Attic/config.log, rx-1.5/rx/Attic/config.status,
+	htsearch/htsearch.h, htsearch/parser.h, include/Attic/htconfig.h,
+	rx-1.5/Attic/config.status, htsearch/Attic/Makefile,
+	htsearch/ResultList.cc, htsearch/ResultMatch.h,
+	htsearch/Template.h, htsearch/WeightWord.h, htlib/cgi.cc,
+	htlib/htString.h, htlib/io.cc, htmerge/Attic/Makefile,
+	htmerge/htmerge.h, htnotify/Attic/Makefile, htlib/StringList.cc,
+	htlib/StringList.h, htlib/String_fmt.cc, htlib/URL.h,
+	htlib/URLTrans.cc, htlib/Attic/SDSU.cc, htlib/Attic/String.h,
+	htlib/ParsedString.h, htlib/String.cc, htfuzzy/htfuzzy.cc,
+	htlib/Attic/Makefile, htlib/Configuration.cc, htlib/Connection.cc,
+	htlib/Database.h, htdig/URLRef.h, htfuzzy/Attic/Makefile,
+	htfuzzy/Exact.cc, htfuzzy/Fuzzy.h, htfuzzy/Substring.cc,
+	htfuzzy/SuffixEntry.h, htdig/Plaintext.cc, htdig/Postscript.cc,
+	htdig/SGMLEntities.cc, htdig/Server.cc, htdig/Server.h,
+	htdig/Attic/Makefile, htdig/ExternalParser.cc,
+	htdig/ExternalParser.h, htdig/Parsable.h, htcommon/Attic/Makefile,
+	htcommon/DocumentRef.h, htcommon/WordList.cc, htcommon/WordList.h,
+	htcommon/WordReference.h, htdig/Document.h, Attic/config.status,
+	configure, configure.in, Attic/Makefile, Attic/Makefile.config,
+	Attic/config.cache, Attic/config.log, Makefile.config.in: Renamed
+	the String.h file to htString.h to help compiling under win32
+
+	* Makefile.in: Updated "make dist" to remove CVS stuff
+
+Fri Mar 14 17:15:32 1997  turtle  <turtle@kiwi>
+
+	* htcommon/defaults.cc: Changed default value for remove_bad_urls
+	to true
+
+Thu Mar 13 18:37:50 1997  turtle  <turtle@kiwi>
+
+	* htnotify/htnotify.cc, Attic/Makefile.config,
+	htdig/SGMLEntities.cc, htdoc/uses.html: Changes
+
+Thu Feb 27 00:52:52 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: new uses
+
+Mon Feb 24 17:52:55 1997  turtle  <turtle@kiwi>
+
+	* htsearch/htsearch.cc, htnotify/Attic/Makefile,
+	htsearch/Attic/Makefile, htlib/strcasecmp.cc,
+	htmerge/Attic/Makefile, htlib/Attic/Makefile, htlib/String.cc,
+	htlib/StringMatch.cc, htdig/SGMLEntities.cc,
+	htfuzzy/Attic/Makefile, htdig/Attic/Makefile,
+	htcommon/Attic/Makefile, htcommon/WordList.cc: Applied patches
+	supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
+	ht://Dig run on 8-bit text without the global unsigned-char option
+	to gcc.
+
+Sun Feb 23 17:29:38 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: *** empty log message ***
+
+Tue Feb 18 15:03:03 1997  turtle  <turtle@kiwi>
+
+	* htdoc/uses.html: New uses of ht://Dig
+
+Tue Feb 11 00:38:48 1997  turtle  <turtle@kiwi>
+
+	* htsearch/htsearch.cc: Renamed the very bad wordlist variable to
+	badWords
+
+Mon Feb 10 17:32:47 1997  turtle  <turtle@kiwi>
+
+	* htlib/Connection.cc, htdig/Document.h, htdig/Document.cc,
+	htcommon/DocumentRef.cc, htcommon/DocumentRef.h: Applied AIX
+	specific patches supplied by Lars-Owe Ivarsson
+	<lars-owe.ivarsson@its.uu.se>
+
+Fri Feb  7 18:04:13 1997  turtle  <turtle@kiwi>
+
+	* htlib/URL.cc: Fixed problem with anchors without a URL
+
+Mon Feb  3 17:37:59 1997  turtle  <turtle@kiwi>
+
+	* .version, README: updated stuff to 3.0.8
+
+	* Many files: Initial CVS
