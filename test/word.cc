@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.5 1999/12/14 13:43:49 loic Exp $
+// $Id: word.cc,v 1.14.2.6 1999/12/21 12:05:39 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,12 +32,14 @@
 #include "Configuration.h"
 
 static ConfigDefaults defaults[] = {
+  { "wordlist_wordkey_description", "nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0", 0 },
   { "word_db", "var/htdig/db.words.db", 0 },
   { "wordlist_extend", "true", 0 },
   { "minimum_word_length", "1", 0},
   { 0 }
 };
 static ConfigDefaults compress_defaults[] = {
+  { "wordlist_wordkey_description", "nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0", 0 },
   { "word_db", "var/htdig/db.words.db", 0 },
   { "wordlist_extend", "true", 0 },
   { "minimum_word_length", "1", 0},
@@ -169,27 +171,34 @@ static void dolist(params_t*)
   // search them, using exact match.
   //
   {
+	
+    // setup a new wordlist
     WordList words(config);
+    if(verbose)word_key_info->show();	
     words.Open(config["word_db"], O_RDWR);
 
+
+    // create entries from word_list
     WordReference wordRef;
-    wordRef.Key().SetTypeA(67, 2);
+    wordRef.Key().SetInSortOrder(2, 67);
     unsigned int location = 0;
     unsigned int anchor = 0;
     unsigned int docid = 1;
     if(verbose) fprintf(stderr, "Inserting\n");
 
-    for(char** p = word_list; *p; p++) {
-      wordRef.Key().SetWord(*p);
-      wordRef.Key().SetTypeA(docid, 0);
-      wordRef.Key().SetTypeA(location, 1);
-      wordRef.Record().info.data = anchor;
-      if(verbose > 2) pack_show(wordRef);
-      if(verbose > 1) cerr << wordRef << "\n";
-      words.Insert(wordRef);
-      location += strlen(*p);
-      anchor++;
-      docid++;
+    for(char** p = word_list; *p; p++) 
+    {
+	if(verbose > 4) cerr << "inserting word:" << *p << "\n";
+	wordRef.Key().SetWord(*p);
+  	wordRef.Key().SetInSortOrder(1, docid);
+  	wordRef.Key().SetInSortOrder(3, location);
+	wordRef.Record().info.data = anchor;
+  	if(verbose > 2) pack_show(wordRef);
+	if(verbose > 1) cerr << wordRef << "\n";
+	words.Insert(wordRef);
+	location += strlen(*p);
+	anchor++;
+	docid++;
     }
     words.Close();
 
@@ -198,12 +207,16 @@ static void dolist(params_t*)
 
     if(verbose) fprintf(stderr, "Searching\n");
 
+    // reopen wordlist
     words.Open(config["word_db"], O_RDONLY);
-    for(char** p = word_list; *p; p++) {
+    //  check if each word (from word_list) is there
+    for(char** p = word_list; *p; p++) 
+    {
+      // recreate wordref from each word
       wordRef.Key().SetWord(*p);
-      wordRef.Key().SetTypeA(location, 1);
+      wordRef.Key().SetInSortOrder(3, location);
       wordRef.Record().info.data = anchor;
-      wordRef.Key().SetTypeA(docid, 0);
+      wordRef.Key().SetInSortOrder(1, docid);
 
       location += strlen(*p);
       anchor++;
@@ -214,15 +227,20 @@ static void dolist(params_t*)
       //
       if(p == word_list) continue;
 
-      if(verbose) fprintf(stderr, "%s ... ", *p);
+      // check if wordref is in wordlist 
+      if(verbose) fprintf(stderr, "searching for %s ... ", *p);
       if(verbose > 2) pack_show(wordRef);
       if(verbose > 1) cerr << wordRef << "\n";
+      // find matches in wordlist
       List *result = words[wordRef];
       result->Start_Get();
       int count = 0;
       WordReference* found;
-      while((found = (WordReference*)result->Get_Next())) {
-	if(wordRef.Key().GetWord() != found->Key().GetWord()) {
+      // loop through found matches
+      while((found = (WordReference*)result->Get_Next())) 
+      {
+	if(wordRef.Key().GetWord() != found->Key().GetWord()) 
+	{
 	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (char*)wordRef.Key().GetWord(), (char*)found->Key().GetWord());
 	  exit(1);
 	}
@@ -230,7 +248,7 @@ static void dolist(params_t*)
       }
       if(count != 1) {
 	fprintf(stderr, "dolist: simple: searching %s, got %d matches instead of 1\n", (char*)wordRef.Key().GetWord(), count);
-	exit(1);
+  	exit(1);
       }
       if(verbose) fprintf(stderr, "done\n");
 
@@ -345,7 +363,7 @@ static void dolist(params_t*)
     words.Open(config["word_db"], O_RDWR);
 
     WordReference wordRef;
-    wordRef.Key().SetTypeA(5, 0);
+    wordRef.Key().SetInSortOrder(1, 5);
     int count;
     if((count = words.WalkDelete(wordRef)) != 1) {
       fprintf(stderr, "dolist: delete occurences in DocID 5, %d deletion instead of 1\n", count);
@@ -378,171 +396,246 @@ static void dolist(params_t*)
 // See WordKey.h
 // Tested: Pack, Unpack, Compare (both forms), accessors, meta information
 //
-static void dokey(params_t* params)
+static unsigned int
+myrnd(unsigned int v0,unsigned int v1)
 {
-  WordKey word;
-  const struct WordKeyInfo& info = word_key_info;
+    return(
+	(rand()%(v1-v0)) + v0 );
+}
 
-  //
-  // Feed the structure with a pattern
-  //
-  for(int i = 0; i < info.nfields; i++) {
-    if(verbose > 1) fprintf(stderr, "%s\t=\t", info.fields[i].name);
-    switch(info.fields[i].type) {
-    case WORD_ISA_String:
-      {
-	word.SetWord("Test string");
-	if(verbose > 1) fprintf(stderr, "%s", word.GetWord().get());
-      }
-      break;
-
-#define STATEMENT(type) \
-    case WORD_ISA_##type: \
-      { \
-	word.Set##type(0x12579ade & WORD_BIT_MASK(info.fields[i].bits), info.fields[i].index); \
-	if(verbose > 1) fprintf(stderr, "0x%0x", word.Get##type(info.fields[i].index)); \
-      } \
-      break;
-
-#ifdef WORD_HAVE_TypeA
-STATEMENT(TypeA)
-#endif /* WORD_HAVE_TypeA */
-#ifdef WORD_HAVE_TypeB
-STATEMENT(TypeB)
-#endif /* WORD_HAVE_TypeB */
-#ifdef WORD_HAVE_TypeC
-STATEMENT(TypeC)
-#endif /* WORD_HAVE_TypeC */
-
-#undef STATEMENT
-
+int *
+randomize_v(int *vals,int n)
+{
+    int i;
+    if(!vals)
+    {
+	vals=new int[n];
+	for(i=0;i<n;i++){vals[i]=i;}
     }
-    if(verbose > 1) fprintf(stderr, "\n");
-  }
-
-  //
-  // Pack the word
-  //
-  String packed;
-
-  word.Pack(packed);
-
-  if(verbose > 1) {
-    for(int i = 0; i < packed.length(); i++) {
-      fprintf(stderr, "0x%02x(%c) ", packed[i] & 0xff, packed[i]);
+    for(i=0;i<2*n;i++)
+    {
+	int i0=myrnd(0,n);
+	int i1=myrnd(0,n);
+	int t=vals[i0];
+	vals[i0]=vals[i1];
+	vals[i1]=t;
     }
-    fprintf(stderr, "\n");
-  }
+    return(vals);
+}
+static void
+SetRandomKeyDesc(int maxbitsize=100,int maxnnfields=10)
+{
+    int bitsize=myrnd(1,maxbitsize/8);
+    bitsize*=8;// byte aligned (for word)
+    int nfields=myrnd(2,bitsize > maxnnfields ? maxnnfields : bitsize);
+    int i;
+    char sdesc[10000];
+    char sfield[10000];
+    sdesc[0]=0;
+
+    // build sortorder
+    sprintf(sfield,"nfields: %d",nfields);
+    strcat(sdesc,sfield);
+
+    int *sort=randomize_v(NULL,nfields-1);
+
+    int bits;
+    int totbits=0;
+    // build fields
+    for(i=0;i<nfields-1;i++)
+    {
+	int maxf=(bitsize-totbits)-nfields+i+2;
+	if(maxf>32){maxf=32;}
+	bits=myrnd(1,maxf);
+	if(i==nfields-2)
+	{
+	    bits=maxf;
+	    if((totbits+bits)%8)
+	    {// argh really bad case :-(
+		SetRandomKeyDesc(maxbitsize,maxnnfields);
+		return;
+	    }
+	}
+	totbits+=bits;
+	sprintf(sfield,"/Field%d %d %d",i,bits,sort[i]+1);
+	strcat(sdesc,sfield);
+    }
+    sprintf(sfield,"/Word 0 0");
+    strcat(sdesc,sfield);
+
+    if(verbose)cout << "SetRandomKeyDesc:" << sdesc << endl;
+    WordKeyInfo::SetKeyDescriptionFromString(sdesc);
+
+}
+
+static void
+SetRandomKey(WordKey &key)
+{
+    int j;
+    for(j=1;j<key.nfields();j++)
+    {
+	int nbits=word_key_info->sort[j].bits;
+	WordKeyNum max=(1<<(nbits));
+	if(nbits==32){max=0xffffffff;}
+	WordKeyNum val=myrnd(0,max);
+//  	if(nbits==1)printf("field:%d :val:%d max:%d********************************\n",j,val,max);
+	key.SetInSortOrder(j,val);
+    }
+    int strl=myrnd(0,50);
+    int i;
+    String Word;
+    for(i=0;i<strl;i++)
+    {
+	char c;
+	c=myrnd('a','z');
+  	Word << c;
+    }
+    key.SetWord(Word);
+}
+
+static void 
+dokey(params_t* params)
+{
+    int ikey,j,ikeydesc;
+    char *test_keys[]=
+    {
+	"nfields: 4/DocID 5 1/Flags 8 2/Location 19  3/Word 0 0",
+	"nfields: 4/DocID 3 1/Location  2 3/Flags 11 2/Word 0 0",
+	"nfields: 4/DocID 3 1/Location  5 3/Flags 8  2/Word 0 0",
+	"nfields: 4/DocID 3 1/Location  7 3/Flags 14 2/Word 0 0",
+	"nfields: 6/DocID 3 1/Location  7 3/Flags 9  2/Foo1 13 4/Foo2 16 5/Word 0 0",
+    };
+
+    for(ikeydesc=0;ikeydesc<1000;ikeydesc++)
+    {
+        // check predefined keys structures first
+	if( ikeydesc < (int)(sizeof(test_keys)/sizeof(*test_keys)))
+	{
+	    WordKeyInfo::SetKeyDescriptionFromString(test_keys[ikeydesc]);
+	}
+	else
+	{
+	// check random predefined keys structures afterwards
+	    SetRandomKeyDesc();
+	}
+
+  	if(verbose)word_key_info->show();	
+	for(ikey=0;ikey<20;ikey++)
+	{
+	    WordKey word;
+	    SetRandomKey(word);
+  	    if(verbose>1)cout << "WORD :" << word << endl;
+
+	    String packed;
+	    word.Pack(packed);
+//  	    WordKey::show_packed(packed,1);
+
+	    WordKey other_word;
+	    other_word.Unpack(packed);
+
+  	    if(verbose>1)cout << "OTHER_WORD:" << other_word << endl;
+	    int failed =0 ;
+	    for(j=1;j<word.nfields();j++)
+	    {
+		if(word.GetInSortOrder(j)!=other_word.GetInSortOrder(j))
+		{failed=1;}
+	    }
+	    if(word.GetWord()!=other_word.GetWord() || !word.IsDefinedInSortOrder(0))
+	    {failed=1;}
+
+	    if(failed)
+	    {
+		printf("DOKEY failed, original and packed/unpacked not equal\n");
+		word_key_info->show();	
+		cout << "WORD :" << word << endl;
+		WordKey::show_packed(packed,1);
+		cout << "OTHER_WORD:" << other_word << endl;
+		exit(1);
+	    }
+
+	    //
+	    // Compare in packed form
+	    //
+	    if(!word.PackEqual(other_word)) 
+	    {
+		fprintf(stderr, "dokey: %s not equal (object compare)\n", params->word_desc);
+		exit(1);
+	    }
+
+	    //
+	    // Pack the other_word
+	    //
+	    String other_packed;
+
+	    other_word.Pack(other_packed);
+	    //
+	    // The two (word and other_word) must compare equal
+	    // using the alternate comparison (fast) interface.
+	    //
+	    if(WordKey::Compare(packed, other_packed) != 0) {
+		fprintf(stderr, "dokey: %s not equal (fast compare)\n", params->word_desc);
+		exit(1);
+	    }
+
+	    word.SetWord("Test string");
+	    word.SetInSortOrder(1,1);
+	    other_word.SetWord("Test string");
+	    word.Pack(packed);
+	    //
+	    // Add one char to the word, they must not compare equal and
+	    // the difference must be minus one.
+	    //
+	    other_word.GetWord().append("a");
+	    other_word.Pack(other_packed);
+	    {
+		int ret;
+		if((ret = WordKey::Compare(packed, other_packed)) != -1) 
+		{
+		    cerr << word << endl << other_word << endl;
+		    fprintf(stderr, "dokey: %s different length, expected -1 got %d\n", params->word_desc, ret);
+		    exit(1);
+		}
+	    }
+	    other_word.GetWord().set("Test string");
+
+	    //
+	    // Change T to S
+	    // the difference must be one.
+	    //
+	    {
+		String& tmp = other_word.GetWord();
+		tmp[tmp.indexOf('T')] = 'S';
+	    }
+	    other_word.Pack(other_packed);
+	    {
+		int ret;
+		if((ret = WordKey::Compare(packed, other_packed)) != 1) 
+		{
+		    cerr << word << endl << other_word << endl;
+		    fprintf(stderr, "dokey: %s different letter (S instead of T), expected 1 got %d\n", params->word_desc, ret);
+		    exit(1);
+		}
+	    }
+	    other_word.GetWord().set("Test string");
   
-  //
-  // Unpack in another object
-  //
-  WordKey other_word;
-  other_word.Unpack(packed);
+	    //
+	    // Substract one to the first numeric field
+	    // The difference must be one.
+	    //
+	    other_word.SetInSortOrder(1,word.GetInSortOrder(1) - 1);
+	    other_word.Pack(other_packed);
+	    {
+		int ret;
+		if((ret = WordKey::Compare(packed, other_packed)) != 1) 
+		{
+		    cerr << word << endl << other_word << endl;
+		    fprintf(stderr, "dokey: %s different numeric field, expected 1 got %d\n", params->word_desc, ret);
+		    exit(1);
+		}
+	    }
 
-  if(verbose > 1) {
-    for(int i = 0; i < info.nfields; i++) {
-      fprintf(stderr, "%s\t=\t", info.fields[i].name);
-      switch(info.fields[i].type) {
-      case WORD_ISA_String:
-	fprintf(stderr, "%s", (char*)other_word.GetWord());
-	break;
-#define STATEMENT(type) \
-      case WORD_ISA_##type: \
-        { \
-	  fprintf(stderr, "0x%0x", other_word.Get##type(info.fields[i].index)); \
-        } \
-        break;
-
-#ifdef WORD_HAVE_TypeA
-	STATEMENT(TypeA)
-#endif /* WORD_HAVE_TypeA */
-#ifdef WORD_HAVE_TypeB
-	STATEMENT(TypeB)
-#endif /* WORD_HAVE_TypeB */
-#ifdef WORD_HAVE_TypeC
-	STATEMENT(TypeC)
-#endif /* WORD_HAVE_TypeC */
-
-#undef STATEMENT
-
-      }
-      fprintf(stderr, "\n");
+	}
     }
-  }
-
-  //
-  // The two (word and other_word) must compare equal, using
-  // comparison of the packed strings.
-  //
-  if(!word.PackEqual(other_word)) {
-    fprintf(stderr, "dokey: %s not equal (object compare)\n", params->word_desc);
-    exit(1);
-  }
-
-  //
-  // Pack the other_word
-  //
-  String other_packed;
-
-  other_word.Pack(other_packed);
-
-  
-  //
-  // The two (word and other_word) must compare equal
-  // using the alternate comparison (fast) interface.
-  //
-  if(WordKey::Compare(packed, other_packed) != 0) {
-    fprintf(stderr, "dokey: %s not equal (fast compare)\n", params->word_desc);
-    exit(1);
-  }
-
-  //
-  // Add one char to the word, they must not compare equal and
-  // the difference must be minus one.
-  //
-  other_word.GetWord().append("a");
-  other_word.Pack(other_packed);
-  {
-    int ret;
-    if((ret = WordKey::Compare(packed, other_packed)) != -1) {
-      fprintf(stderr, "dokey: %s different length, expected -1 got %d\n", params->word_desc, ret);
-      exit(1);
-    }
-  }
-  other_word.GetWord().set("Test string");
-
-  //
-  // Change T to S
-  // the difference must be one.
-  //
-  {
-    String& tmp = other_word.GetWord();
-    tmp[tmp.indexOf('T')] = 'S';
-  }
-  other_word.Pack(other_packed);
-  {
-    int ret;
-    if((ret = WordKey::Compare(packed, other_packed)) != 1) {
-      fprintf(stderr, "dokey: %s different letter (S instead of T), expected 1 got %d\n", params->word_desc, ret);
-      exit(1);
-    }
-  }
-  other_word.GetWord().set("Test string");
-  
-  //
-  // Substract one to the first numeric field
-  // The difference must be one.
-  //
-  other_word.SetTypeA(other_word.GetTypeA(0) - 1, 0);
-  other_word.Pack(other_packed);
-  {
-    int ret;
-    if((ret = WordKey::Compare(packed, other_packed)) != 1) {
-      fprintf(stderr, "dokey: %s different numeric field, expected 1 got %d\n", params->word_desc, ret);
-      exit(1);
-    }
-  }
 }
 
 static void pack_show(const WordReference& wordRef)

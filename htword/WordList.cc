@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.13 1999/12/20 10:28:38 bosc Exp $
+// $Id: WordList.cc,v 1.6.2.14 1999/12/21 12:03:29 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -61,6 +61,24 @@ WordList::WordList(const Configuration& config_arg) :
     isread = 0;
     extended = config.Boolean("wordlist_extend");
     verbose =  config.Value("wordlist_verbose",0);
+    const String &keydescfile = config["wordlist_wordkey_description_file"];
+    if(keydescfile.empty())
+    {
+	const String &keydesc = config["wordlist_wordkey_description"];
+
+	if(keydesc.empty())
+	{
+	    cerr << "WordList::WordList: didn't find key description file in config" << endl;
+	}
+	else
+	{
+	    WordKeyInfo::SetKeyDescriptionFromString(keydesc);	
+	}
+    }
+    else
+    {
+	WordKeyInfo::SetKeyDescriptionFromFile(keydescfile);
+    }
 }
 
 //*****************************************************************************
@@ -109,6 +127,9 @@ int WordList::Put(const WordReference& arg, int flags)
   if (arg.Key().GetWord().length() == 0) {
     cerr << "WordList::Put(" << arg << ") word is zero length\n";
     return NOTOK;
+  }
+  if (!arg.Key().IsFullyDefined()) {
+    cerr << "WordList::Put(" << arg << ") key is not fully defined\n";
   }
 
   WordReference	wordRef(arg);
@@ -386,7 +407,7 @@ WordList::Walk(WordSearchDescription &search)
 int
 WordList::SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags)
 {
-    int nfields=word_key_info.nfields;
+    int nfields=word_key_info->nfields;
     if(verbose>1){cdebug << "WordList::SkipUselessSequentialWalking: skipchk:" <<  foundKey << endl;}
     int i;
     // check if "found" key has a field that is bigger than 
@@ -395,9 +416,9 @@ WordList::SkipUselessSequentialWalking(const WordSearchDescription &search,WordK
     {
 	if(search.searchKey.IsDefinedInSortOrder(i))
 	{
-	    if( (word_key_info.sort[i].direction == WORD_SORT_ASCENDING
+	    if( (word_key_info->sort[i].direction == WORD_SORT_ASCENDING
 		 && foundKey.GetInSortOrder(i) > search.searchKey.GetInSortOrder(i))   ||
-		(word_key_info.sort[i].direction == WORD_SORT_DESCENDING
+		(word_key_info->sort[i].direction == WORD_SORT_DESCENDING
 		 && foundKey.GetInSortOrder(i) < search.searchKey.GetInSortOrder(i))      )
 
 	    { //  field 'i' is bigger in "found" than in "wordRef", we can skip

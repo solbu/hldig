@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordBitCompress.cc,v 1.1.2.5 1999/12/14 18:31:31 bosc Exp $
+// $Id: WordBitCompress.cc,v 1.1.2.6 1999/12/21 12:03:29 bosc Exp $
 //
 
 
@@ -57,9 +57,20 @@ void
 show_bits(int v,int n/*=16*/)
 {
     int i;
-    for(i=0;i<n;i++)
+    if(n>0)
     {
-	printf("%c",( v&(1<<(n-i-1)) ? '1':'0' ) );
+	for(i=0;i<n;i++)
+	{
+	    printf("%c",( v&(1<<(n-i-1)) ? '1':'0' ) );
+	}
+    }
+    else
+    {
+	n=-n;
+	for(i=0;i<n;i++)
+	{
+	    printf("%c",( v&(1<<(i)) ? '1':'0' ) );
+	}
     }
 }
 

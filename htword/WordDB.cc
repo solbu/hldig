@@ -7,7 +7,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.cc,v 1.2.2.1 1999/12/09 11:31:26 bosc Exp $
+// $Id: WordDB.cc,v 1.2.2.2 1999/12/21 12:03:29 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -41,16 +41,4 @@ const char* dberror(int errval) {
     return strerror(errval);
 }
 
-// for debuging purposes
-void
-show_packed(const String& key)
-{
-    int i;
-    char c;
-    for(i=0;i<key.length();i++)
-    {
-	c=(isprint(key[i]) ? key[i] : '#');
-	printf("%c %2x ",c,key[i]);
-    }
 
-}

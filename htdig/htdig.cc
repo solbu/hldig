@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.26.2.4 1999/12/15 21:26:02 grdetil Exp $
+// $Id: htdig.cc,v 1.26.2.5 1999/12/21 12:05:39 bosc Exp $
 //
 
 #include "Document.h"
@@ -141,6 +141,9 @@ int main(int ac, char **av)
 
     // Word characterization
     WordType::Initialize(config);
+
+    // Key description
+    WordKeyInfo::SetKeyDescriptionFromString(config["wordlist_wordkey_description"]);
 
     //
     // Check url_part_aliases and common_url_parts for

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.17 1999/12/10 11:04:38 bosc Exp $
+// $Id: defaults.cc,v 1.64.2.18 1999/12/21 12:05:39 bosc Exp $
 //
 
 #include "HtConfiguration.h"
@@ -2094,12 +2094,17 @@ url_part_aliases:
 	performances. Giving an additional 1% leaves room for caching leaf pages.
 " },
 { "wordlist_compress_debug", "1", 
-	"number", "htdig htmerge htsearch htfuzzy", "wordlist_cache_size: 2", "
+	"number", "htdig htmerge htsearch htfuzzy", "wordlist_compress_debug: 2", "
 	Debuging value for the  compression system for the indexer.
 	0 : none
 	1 : transparent autotest while compressing (small performance decrease)
 	2 : ------------------              big performance decrease
 	3 : verbose
+" },
+{ "wordlist_wordkey_description", "nfields: 4/Location 16 3/Flags 8 2/DocID 32 1/Word 0 0",
+	"string", "htdig htmerge htsearch htfuzzy", "**this should not be configured by user**", "
+	Debuging value for the  compression system for the indexer.
+	Internal key description: *not user configurable*
 " },
 {0, 0, 0, 0, 0},
 };

@@ -1,3 +1,23 @@
+Mon Dec 20 17:59:15 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* WordKey: Made the key structure dynamic: Changing the
+	key structure used to imply recompiling the htword library.
+	This should not change anything in htdig.
+
+	* WordKey: numerical key fields are stored in an array of unsigned
+	ints instead of compile-time defined pools.
+
+	* WordKey.h: WordKey now needs copy opreators. Setbits are stored
+	in sort order (used to be in encoding order)
+
+	* htword: word_key_info is now a pointer, had to change all references
+	
+	* word.cc: Rewrote wordkey test for new dynamically
+	set key structure. The test randomly creates key structures
+	and tests them.
+
+	* test: adapted test files (simplifies things a lot)
+	
 1999-12-21  Toivo Pedaste  <toivo@ucs.uwa.edu.au>
 
 	* htlib/Dictionary.cc: Fix memory leak when destroying dictionary

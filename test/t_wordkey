@@ -5,49 +5,11 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_wordkey,v 1.5.2.1 1999/12/10 18:54:52 bosc Exp $
+# $Id: t_wordkey,v 1.5.2.2 1999/12/21 12:05:39 bosc Exp $
 #
 
 . ./test_functions
 
 verbose=$1
 
-exercise() {
-   if [ "$LONG_TEST" = "y" ]
-   then
-	    ( cd ../htword
-	      $perl word_builder.pl $1
-	      if $MAKE > /tmp/t_word$$ 2>&1
-	      then
-		rm /tmp/t_word$$
-	      else
-		cat /tmp/t_word$$
-		exit 1
-	      fi
-	    )
-	    if $MAKE > /tmp/t_word$$ 2>&1
-	    then
-		rm /tmp/t_word$$
-	    else
-		cat /tmp/t_word$$
-		exit 1
-	    fi
-    fi
-    ./word -w $1 -k $verbose || exit 1
-}
-
-if [ "$LONG_TEST" = "y" ]
-then
-	desc="$srcdir/../test/word.try1 $srcdir/../test/word.try2 $srcdir/../test/word.try3 $srcdir/../test/word.try4 $srcdir/../test/word.try5 word.desc"
-	if [ -z "$verbose" ]
-	then
-		verbose=-v
-	fi
-else
-	desc="word.desc"
-fi
-
-for i in $desc
-do
-    exercise $i
-done
+./word -k $verbose 

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.7 1999/12/16 16:52:43 loic Exp $
+// $Id: WordKey.cc,v 1.3.2.8 1999/12/21 12:03:29 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -26,6 +26,338 @@
 
 #include "WordKey.h"
 #include <ctype.h>
+#include<iostream.h>
+#include<fstream.h>
+
+WordKeyInfo *word_key_info = NULL;
+
+void 
+WordKeyField::nprint(char c,int n)
+{
+    for(int i=0;i<n;i++)
+    {
+	if(!(i%4)){printf("%c",'a'+i/4);}
+	else{printf("%c",c);}
+    }
+}
+
+void 
+WordKeyInfo::SetKeyDescriptionFromString(const String &desc)
+{
+    if(word_key_info){delete word_key_info;}
+    word_key_info=new WordKeyInfo();
+    word_key_info->SetDescriptionFromString(desc);
+}
+void 
+WordKeyInfo::SetKeyDescriptionFromFile(const String &filename)
+{
+    if(word_key_info){delete word_key_info;}
+    word_key_info=new WordKeyInfo();
+    word_key_info->SetDescriptionFromFile(filename);
+}
+
+void 
+WordKeyField::show()
+{
+    nprint(' ',bits_offset);
+    printf("\"%s\" %3d %3d type:%2d lowbits:%2d lastbits:%2d\n",(char *)name,encoding_position,sort_position,type, lowbits, lastbits);
+    nprint(' ',bits_offset);
+    printf("|---bytesize:%2d bytes_offset:%2d bits:%2d direction:%2d\n", bytesize, bytes_offset, bits, direction);
+    nprint(' ',bits_offset);
+    printf("|---encoding_position:%2d sort_position:%2d bits_offset:%2d\n", encoding_position, sort_position, bits_offset);
+
+}
+
+WordKeyField::WordKeyField(WordKeyField *previous,char *nname,int nbits,int nencoding_position, int nsort_position )
+{
+    encoding_position=nencoding_position;
+    sort_position=nsort_position;
+    name = strdup(nname);
+
+    type=(sort_position ? WORD_ISA_NUMBER : WORD_ISA_String);
+    bits = nbits;
+    bits_offset = (previous ?  previous->bits_offset + previous->bits  :  0 );
+
+    if(bits_offset%8 && sort_position==0)
+    {
+	cerr << "WordKeyField::WordKeyField: begining of word is at:" << bits_offset
+	     << " should be byte aligned" << endl;	
+	bits_offset+=8-(bits_offset%8);
+    }
+
+    if(bits_offset<0 || bits_offset>WORDKEYFIELD_BITS_MAX*WORD_KEY_MAX_NFIELDS)
+    {
+	cerr << "WordKeyField::WordKeyField: bits_offset:" << bits_offset << " is not correct" << endl;
+    }
+    bytes_offset = bits_offset/8;
+    bytesize = (bits_offset+bits-1)/8 - bytes_offset + 1;
+    lastbits = (bits_offset+bits)%8;
+    lowbits  =  bits_offset%8;
+    direction=WORD_SORT_ASCENDING;
+}
+void 
+WordKeyInfo::Initialize( String &line)
+{
+    StringList fields(line, "\t ");
+
+    String *found;
+    fields.Start_Get();
+    int i=0;
+    int nnfields=-1;
+    while((found = (String*)fields.Get_Next()))
+    {
+	if(i==1)
+	{
+	    nnfields=atoi((char *)*found);
+	}
+	else
+	{
+	    if(i>1 || *found!=String("nfields:"))
+	    {
+		cerr << "WordKeyInfo::Initialize: syntax error at begining" << endl;
+	    }
+	}
+	i++;
+    }
+    if(nnfields<2 || nnfields>=WORD_KEY_MAX_NFIELDS)
+    {
+	cerr << "WordKeyInfo::Initialize: invalid nfields:" << nnfields << endl;
+    }
+    Initialize(nnfields);
+}
+void 
+WordKeyInfo::Initialize( int nnfields)
+{
+//      cerr << "WordKeyInfo::Initialize: nfields:" << nnfields << endl;
+    nfields = nnfields;
+    sort = new WordKeyField[nfields];
+    encode = new WordKeyField[nfields];
+    minimum_length = 0;
+    previous=NULL;
+    encoding_position=0;
+}
+
+
+void 
+WordKeyInfo::AddFieldInEncodingOrder(String &name,int bits, int sort_position)
+{
+    int i;
+    for(i=0;i<encoding_position;i++)
+    {
+	if(encode[i].sort_position==sort_position)
+	{
+	    cerr << "WordKeyInfo::AddFieldInEncodingOrder: syntax error in key: " << endl;
+	    cerr << "WordKeyInfo::AddFieldInEncodingOrder: found sort position twice " << endl;
+	}
+    }
+	
+
+    WordKeyField tmp( previous, name, bits, encoding_position, sort_position );
+    sort[sort_position]       = tmp;
+    encode[encoding_position] = tmp;
+//    printf ("srt:");sort[sort_position].show();
+    previous = sort + sort_position;
+
+    encoding_position++;
+    if(sort_position == 0)
+    {
+	// this should be the last encoded field...
+	minimum_length = sort[sort_position].bytes_offset;
+	// verifiy some things
+	int fail=0;
+	if(encoding_position!=nfields)
+	{
+	    cerr << "WordKeyInfo::AddFieldInEncodingOrder: didnt find the right nuimber of fields" << endl;
+	    cerr << "found:" << encoding_position << " expected:" << nfields << endl;
+	}
+  	for(i=0;i<nfields;i++)
+  	{
+  	    if(sort[i].sort_position!=i){fail=1;}
+  	    if(encode[sort[i].encoding_position].sort_position!=i){fail=2;}
+
+  	    if(sort[encode[i].sort_position].encoding_position!=i){fail=3;}
+  	    if(encode[i].encoding_position!=i){fail=4;}
+  	}
+	if(fail)
+	{
+	    cerr << "WordKeyInfo::AddFieldInEncodingOrder: bad syntax:" << fail << endl;
+	    for(i=0;i<nfields;i++)
+	    {
+		cerr << "field in encoding order:" << i << endl;
+		encode[i].show();
+	    }
+	    for(i=0;i<nfields;i++)
+	    {
+		cerr << "field in sort order:" << i << endl;
+		sort[i].show();
+	    }
+	}
+    }
+}
+
+void 
+WordKeyInfo::AddFieldInEncodingOrder(const String &line)
+{
+    StringList fields(line, "\t ");
+	
+    fields.Start_Get();
+
+    String *name=(String*)fields.Get_Next();
+    if(!name){cerr << "WordKeyInfo::AddFieldInEncodingOrder: bad syntax:" << line << endl;}
+
+    String *sbits=(String*)fields.Get_Next();
+    if(!sbits){cerr << "WordKeyInfo::AddFieldInEncodingOrder: bad syntax:" << line << endl;}
+    int bits=atoi((char *)*sbits);
+    if(bits<0 || bits>WORDKEYFIELD_BITS_MAX){cerr << "WordKeyInfo::AddFieldInEncodingOrder: strange value:" << line << endl;}
+
+    String *ssortpos=(String*)fields.Get_Next();
+    if(!ssortpos){cerr << "WordKeyInfo::AddFieldInEncodingOrder: bad syntax:" << line << endl;}
+    int sortpos=atoi((char *)*ssortpos);
+    if(sortpos<0 || sortpos>nfields){cerr << "WordKeyInfo::AddFieldInEncodingOrder: strange value:" << line << endl;}
+
+    AddFieldInEncodingOrder(*name, bits, sortpos);
+}
+
+void
+WordKeyInfo::SetDescriptionFromString(const String &desc)
+{
+//      cerr << "WordKeyInfo::SetKeyDescriptionFromString:\"" << desc << "\""<< endl;
+    StringList lines(desc, "/");
+    String *found;
+    int initok=0;
+    lines.Start_Get();
+    while((found = (String*)lines.Get_Next()))
+    {
+	if(!initok){Initialize(*found);initok=1;}
+	else
+	{
+	    if( encoding_position >= nfields )
+	    {cerr << "WordKeyInfo::SetKeyDescriptionFromString: unexpected line " << *found << endl;}
+	    AddFieldInEncodingOrder(*found);
+	}
+    }
+}
+void
+WordKeyInfo::SetDescriptionFromFile(const String &filename)
+{
+    cerr << "WordKeyInfo::SetKeyDescriptionFromFile:" << filename << endl;
+    nfields=-1;
+    ifstream in((const char *)filename);
+#define WORD_BUFFER_SIZE	1024
+    char buffer[WORD_BUFFER_SIZE];
+    String line;
+    int line_number = 0;
+
+    while(!in.eof())
+    {
+	line_number++;
+
+	in.get(buffer, WORD_BUFFER_SIZE);
+	line.append(buffer);
+	//
+	// Get the terminator. I love iostream :-(
+	//
+	if(!in.eof()) 
+	{
+	    char c;
+	    in.get(c);
+	    if(c == '\n') 
+		line.append(c);
+	    in.putback(c);
+	}
+	//
+	// Join big lines
+	//
+	if(line.last() != '\n' && line.last() != '\r' && !in.eof())
+	    continue;
+	//
+	// Eat the terminator
+	//
+	if(!in.eof()) in.get();
+	//
+	// Strip line terminators from line
+	//
+	line.chop("\r\n");
+	//
+	// If line ends with a \ continue
+	//
+	if(line.last() == '\\') {
+	    line.chop(1);
+	    if(!in.eof())
+		continue;
+	}
+      
+	if(!line.empty()) 
+	{
+	    if(!in.good())
+	    {
+		cerr << "WordKeyInfo::SetKeyDescription: line " << line_number << " : " << line << endl
+		     << " input from file failed (A)" << endl;
+		break;
+	    }
+
+	    if(line[0] != '#')
+	    {
+
+		if( nfields < 0 ){Initialize(line);}
+		else
+		{
+		    AddFieldInEncodingOrder(line);
+		}
+
+		if( encoding_position >= nfields )
+		{cerr << "WordKeyInfo::SetKeyDescription: unexpected line " << line_number << " : " << line << endl;}
+	    }
+      
+	    if(in.eof()){break;}
+	    if(!in.good())
+	    {
+		cerr << "WordKeyInfo::SetKeyDescription: line " << line_number << " : " << line << endl
+		     << " input from stream failed (B)" << endl;
+		break;
+	    }
+	}
+
+	line.trunc();
+    }
+}
+
+void 
+WordKeyInfo::show()
+{
+    printf("-----------------------------------------\n");
+    printf("nfields:%3d minimum_length:%3d\n",nfields,minimum_length);
+    int i,j;
+    for(i=0;i<nfields;i++)
+    {
+	for(j=0;j<nfields;j++){if(sort[j].encoding_position==i)break;}
+	if(j==nfields)
+	{
+	    cerr << "WordKeyInfo::show field not found !!!!!!!!!!!!!! " <<endl;
+	    j=0;
+	}
+	sort[j].show();
+    }
+    char str[WORDKEYFIELD_BITS_MAX*WORD_KEY_MAX_NFIELDS];
+    for(i=0;i<WORDKEYFIELD_BITS_MAX*WORD_KEY_MAX_NFIELDS;i++)
+    {str[i]='_';}
+    int tmx=0;
+    for(j=0;j<nfields;j++)
+    {
+	for(i=0;i<sort[j].bits;i++)
+	{
+	    char c=(j%10)+'0';
+	    int pos=sort[j].bits_offset+i;
+	    if(str[pos]!='_'){c='X';}
+	    str[pos]=c;
+	    if(tmx<pos){tmx=pos;}
+	}
+    }
+    str[tmx+1]=0;
+    printf("%s (bits)\n",str);
+    printf("^0      ^1      ^2      ^3      ^4      ^5      ^6      ^7\n");
+    printf("0123456701234567012345670123456701234567012345670123456701234567\n");
+}
 
 //
 // C comparison function interface for Berkeley DB (bt_compare)
@@ -35,7 +367,7 @@
 //
 int word_db_cmp(const DBT *a, const DBT *b)
 {
-  return WordKey::Compare((char*)a->data, a->size, (char*)b->data, b->size);
+    return WordKey::Compare((char*)a->data, a->size, (char*)b->data, b->size);
 }
 
 //
@@ -54,7 +386,7 @@ int word_db_cmp(const DBT *a, const DBT *b)
 //
 int WordKey::Equal(const WordKey& other) const
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const struct WordKeyInfo& info = *word_key_info;
   //
   // Walk the fields in sorting order. As soon as one of them
   // does not compare equal, return.
@@ -66,25 +398,20 @@ int WordKey::Equal(const WordKey& other) const
     //
     if(!IsDefinedInSortOrder(j) || !other.IsDefinedInSortOrder(j)) continue;
 
-    int k = info.sort[j].index;
-
     switch(info.sort[j].type) {
     case WORD_ISA_String:
       if(!IsDefinedWordSuffix()) {
 //  	  cout << "COMPARING UNCOMPLETE WORDS IN WORDKEY" << endl;
-	if(pool_String[k] != other.pool_String[k].sub(0, pool_String[k].length()))
+	if(kword != other.kword.sub(0, kword.length()))
 	  return 0;
       } else {
-	if(pool_String[k] != other.pool_String[k])
+	if(kword != other.kword)
 	  return 0;
       }
       break;
-#define STATEMENT(type) \
-    case WORD_ISA_##type: \
-      if(pool_##type[k] != other.pool_##type[k]) return 0; \
+    default:
+      if(GetInSortOrder(j) != other.GetInSortOrder(j)) return 0;
       break;
-
-#include"WordCaseIsAStatements.h"
     }
   }
   return 1;
@@ -105,7 +432,7 @@ int WordKey::Compare(const String& a, const String& b)
 //
 int WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const struct WordKeyInfo& info = *word_key_info;
 
   if(a_length < info.minimum_length || b_length < info.minimum_length) {
     cerr << "WordKey::Compare: key length for a or b < info.minimum_length\n";
@@ -142,15 +469,7 @@ int WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
 	  return p1_length - p2_length;
       }
       break;
-#ifdef WORD_HAVE_TypeA
-    case WORD_ISA_TypeA:
-#endif /* WORD_HAVE_TypeA */
-#ifdef WORD_HAVE_TypeB
-    case WORD_ISA_TypeB:
-#endif /* WORD_HAVE_TypeB */
-#ifdef WORD_HAVE_TypeC
-    case WORD_ISA_TypeC:
-#endif /* WORD_HAVE_TypeC */
+    case WORD_ISA_NUMBER:
       {
 	unsigned int p1;
 	unsigned int p2;
@@ -206,9 +525,8 @@ int WordKey::PackEqual(const WordKey& other) const
 int 
 WordKey::SetToFollowingInSortOrder(int position)
 {
-    const struct WordKeyInfo& info = word_key_info;
-    int nfields=word_key_info.nfields;
-    if(position<0){position=nfields;}
+    const struct WordKeyInfo& info = *word_key_info;
+    if(position<0){position=nfields();}
     int i;
 
     if(position==0){cerr << "SetToFollowingInSortOrder with position=0" << endl;return NOTOK;}
@@ -237,7 +555,7 @@ WordKey::SetToFollowingInSortOrder(int position)
     }
 
     // zero fields >=position'th
-    for(i=position;i<nfields;i++){if(IsDefinedInSortOrder(i)){SetInSortOrder(i,0);}}
+    for(i=position;i<nfields();i++){if(IsDefinedInSortOrder(i)){SetInSortOrder(i,0);}}
 
     return(OK);
 }
@@ -251,7 +569,7 @@ WordKey::SetToFollowingInSortOrder(int position)
 //
 int WordKey::Prefix() const
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const struct WordKeyInfo& info = *word_key_info;
   //
   // If all fields are set, it can be considered as a prefix although
   // it really is a fully qualified key.
@@ -290,7 +608,7 @@ WordKey::FirstSkipField() const
 {
     int first_skip_field=-2;
 
-    for(int i=0;i<word_key_info.nfields;i++)
+    for(int i=0;i<nfields();i++)
     {
 	if(first_skip_field==-2 && !IsDefinedInSortOrder(i)){first_skip_field=-1;}
 	else
@@ -298,7 +616,7 @@ WordKey::FirstSkipField() const
 	else
 	if(first_skip_field==-1 &&  IsDefinedInSortOrder(i)){first_skip_field=i;break;}
     }
-    if(first_skip_field<0){first_skip_field=word_key_info.nfields;}
+    if(first_skip_field<0){first_skip_field=nfields();}
     return(first_skip_field);
 }
 
@@ -309,7 +627,7 @@ WordKey::FirstSkipField() const
 //
 int WordKey::PrefixOnly()
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const struct WordKeyInfo& info = *word_key_info;
   //
   // If all fields are set, the whole key is the prefix.
   //
@@ -353,39 +671,24 @@ int WordKey::Unpack(const String& data)
   const char* string = data;
   int length = data.length();
 
-  const struct WordKeyInfo& info = word_key_info;
+  const struct WordKeyInfo& info = *word_key_info;
 
   if(length < info.minimum_length) {
     cerr << "WordKey::Unpack: key record length < info.minimum_length\n";
     return NOTOK;
   }
 
-  for(int i = 0; i < info.nfields; i++) {
+  SetWord(String(&string[info.sort[0].bytes_offset], length - info.minimum_length));
 
-    switch(info.fields[i].type) {
-
-    case WORD_ISA_String:
-      pool_String[info.fields[i].index].set(&string[info.fields[i].bytes_offset], length - info.minimum_length);
-      SetDefined(i);
-      SetDefinedWordSuffix();
-      break;
-
-#define STATEMENT(type) \
-    case WORD_ISA_##type: \
-      { \
-	unsigned int value = 0; \
-	WordKey::UnpackNumber(&string[info.fields[i].bytes_offset], \
-				 info.fields[i].bytesize, \
-				 &value, \
-				 info.fields[i].lowbits, \
-				 info.fields[i].bits); \
-	pool_##type[info.fields[i].index] = (##type)value; \
-	SetDefined(i); \
-      } \
-      break;
-
-#include"WordCaseIsAStatements.h"
-    }
+  for(int j = 1; j < info.nfields; j++) 
+  {
+      WordKeyNum value = 0; 
+      WordKey::UnpackNumber(&string[info.sort[j].bytes_offset], 
+			    info.sort[j].bytesize, 
+			    &value, 
+			    info.sort[j].lowbits, 
+			    info.sort[j].bits); 
+      SetInSortOrder(j,value);
   }
 
   return OK;
@@ -396,12 +699,12 @@ int WordKey::Unpack(const String& data)
 //
 int WordKey::Pack(String& packed) const
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const struct WordKeyInfo& info = *word_key_info;
 
   char* string;
   int length = info.minimum_length;
 
-  length += pool_String[0].length();
+  length += kword.length();
 
   if((string = (char*)malloc(length)) == 0) {
     cerr << "WordKey::Pack: malloc returned 0\n";
@@ -409,24 +712,14 @@ int WordKey::Pack(String& packed) const
   }
   memset(string, '\0', length);
 
-  for(int i = 0; i < info.nfields; i++) {
-
-    switch(info.fields[i].type) {
-    case WORD_ISA_String:
-      memcpy(&string[info.fields[i].bytes_offset], pool_String[info.fields[i].index].get(), pool_String[info.fields[i].index].length());
-      break;
-
-#define STATEMENT(type) \
-    case WORD_ISA_##type: \
-      WordKey::PackNumber((unsigned int)pool_##type[info.fields[i].index], \
-			  &string[info.fields[i].bytes_offset], \
-			  info.fields[i].bytesize, \
-			  info.fields[i].lowbits, \
-			  info.fields[i].lastbits); \
-      break;
-
-#include"WordCaseIsAStatements.h"
-    }
+  memcpy(&string[info.sort[0].bytes_offset], kword.get(), kword.length());
+  for(int i = 0; i < info.nfields-1; i++) 
+  {
+      WordKey::PackNumber(GetInSortOrder(info.encode[i].sort_position), 
+			  &string[info.encode[i].bytes_offset], 
+			  info.encode[i].bytesize, 
+			  info.encode[i].lowbits, 
+			  info.encode[i].lastbits); 
   }
   
   packed.set(string, length);
@@ -442,19 +735,21 @@ int WordKey::Pack(String& packed) const
 //
 int WordKey::Merge(const WordKey& other)
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const struct WordKeyInfo& info = *word_key_info;
 
-  for(int i = 0; i < info.nfields; i++) {
-    if(!IsDefined(i) && other.IsDefined(i)) {
-      switch(info.fields[i].type) {
-
-#define STATEMENT(type) \
-      case WORD_ISA_##type: \
-	Set##type(other.Get##type(i), i); \
+  
+  for(int j = 0; j < info.nfields; j++) 
+  {
+    if(!IsDefinedInSortOrder(j) && other.IsDefinedInSortOrder(j)) 
+    {
+      switch(info.sort[j].type) 
+      {
+      case WORD_ISA_String: 
+	  SetWord(other.GetWord());
+	  break;
+      default:
+	  SetInSortOrder(j,other.GetInSortOrder(j)); 
 	break;
-
-#include"WordCaseIsAStatements.h"
-
       }
     }
   }
@@ -469,7 +764,7 @@ int
 WordKey::Get(String& buffer) const
 {
   buffer.trunc();
-  const struct WordKeyInfo& info = word_key_info;
+  const struct WordKeyInfo& info = *word_key_info;
 
   //
   // Walk the fields in sorting order. As soon as one of them
@@ -477,18 +772,16 @@ WordKey::Get(String& buffer) const
   //
   for(int j = 0; j < info.nfields; j++) 
   {
-      int index = info.sort[j].index;
       if(!IsDefinedInSortOrder(j)){buffer << "<UNDEF>";}
       else
       {
 	  switch(info.sort[j].type) 
 	  {
-	                 case WORD_ISA_String:  buffer << pool_String[index];  break;
-#define STATEMENT(type)  case WORD_ISA_##type:  buffer << pool_##type[index];  break;
-#include"WordCaseIsAStatements.h"
-	  default:
-	      cerr << "WordKey::operator <<: invalid type " << info.sort[j].type << " for field (in sort order) " << j << "\n";
-	      return NOTOK;
+	  case WORD_ISA_String:  buffer << GetWord();          break;
+	  case WORD_ISA_NUMBER:  buffer << GetInSortOrder(j);  break;
+  	  default:
+  	      cerr << "WordKey::operator <<: invalid type " << info.sort[j].type << " for field (in sort order) " << j << "\n";
+  	      return NOTOK;
 	  }
       }
       //
@@ -503,7 +796,6 @@ WordKey::Get(String& buffer) const
       }
       buffer << "\t";
   }
-
   return OK;
 }
 
@@ -523,7 +815,7 @@ WordKey::Set(const String& buffer)
 int
 WordKey::Set(StringList& fields)
 {
-  const struct WordKeyInfo& info = word_key_info;
+  const struct WordKeyInfo& info = *word_key_info;
   int length = fields.Count();
 
   if(length < info.nfields + 1) {
@@ -609,3 +901,38 @@ void WordKey::Print() const
 {
   cout << *this;
 }
+
+
+// ********************************
+// ************** DEBUGING ********
+// ********************************
+class BitStream;
+void
+WordKey::show_packed(const String& key,int type/*=0*/)
+{
+    int i;
+    char c;
+    if(1)
+    {
+	for(i=0; i<key.length(); i++)
+	{
+	    c = (isprint(key[i]) ? key[i] : '#');
+	    printf("%c-%2x ",c,key[i]);
+	}
+	printf("\n");
+    }
+    if(type>0)
+    {
+	extern void show_bits(int v,int n);
+	for(i=0; i<key.length(); i++)
+	{
+	    show_bits(key[i],-8);
+	}
+	printf("\n");
+	printf("^0      ^1      ^2      ^3      ^4      ^5      ^6      ^7\n");
+	printf("0123456701234567012345670123456701234567012345670123456701234567\n");
+
+    }
+}
+
+

@@ -1,7 +1,7 @@
 
 include $(top_srcdir)/Makefile.config
 
-EXTRA_DIST = word.desc word_builder.pl WordKey.h.tmpl
+EXTRA_DIST = word.desc 
 
 lib_LTLIBRARIES = libhtword.la
 
@@ -22,7 +22,10 @@ include_HEADERS = WordList.h \
 	WordStat.h \
 	WordCaseIsAStatements.h
 
-WordKey.h: $(top_srcdir)/htword/WordKey.h.tmpl $(top_srcdir)/htword/word.desc $(top_srcdir)/htword/word_builder.pl
-	rm -f $(top_srcdir)/htword/WordKey.h
-	@PERL@ $(top_srcdir)/htword/word_builder.pl @KEYDESC@
-	chmod -w $(top_srcdir)/htword/WordKey.h
+# WordKey.h: $(top_srcdir)/htword/WordKey.h.tmpl $(top_srcdir)/htword/word.desc $(top_srcdir)/htword/word_builder.pl
+# 	rm -f $(top_srcdir)/htword/WordKey.h
+# 	@PERL@ $(top_srcdir)/htword/word_builder.pl @KEYDESC@
+# 	chmod -w $(top_srcdir)/htword/WordKey.h
+
+
+

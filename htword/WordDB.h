@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.3.2.4 1999/12/20 10:33:02 bosc Exp $
+// $Id: WordDB.h,v 1.3.2.5 1999/12/21 12:03:29 bosc Exp $
 //
 
 #ifndef _WordDB_h_
@@ -37,7 +37,6 @@
 #include <ctype.h>
 
 extern const char* dberror(int errval);
-void show_packed(const String& key);// for debuging purposes
 
 //
 // Encapsulate the Berkeley DB Db class
@@ -161,12 +160,12 @@ class WordDB {
 	     << ": avg data sz:" << put_stat_totdsz/(double)put_stat_N << endl;
 
     }
-    if(0 && verbose)
+    if(0 && verbose)//DEBUGTMP
     {
 	cout << "WordDB::Put: keylength:" << setw(3) << key.length() << " datalength:" << data.length() << " ::key: ";
-	show_packed(key);
+	WordKey::show_packed(key);
 	cout << " data:";
-	show_packed(data);
+	WordKey::show_packed(data);
 	cout << endl;
     }
     if((errno = db->put(0, &rkey, &rdata, flags)) != 0) 

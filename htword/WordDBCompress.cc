@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.1.2.9 1999/12/20 10:33:02 bosc Exp $
+// $Id: WordDBCompress.cc,v 1.1.2.10 1999/12/21 12:03:29 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -36,6 +36,8 @@ extern "C"
 #include "WordBitCompress.h"
 #include "WordRecord.h"
 #include "WordKey.h"
+
+#include<ctype.h>
 
 // never change NBITS_COMPRESS_VERSION ! (otherwise version tracking will fail)
 #define NBITS_COMPRESS_VERSION 10
@@ -116,18 +118,14 @@ class WordDBKey : public WordKey
 {
     BKEYDATA *key;
 public:
-    int nbytes;
-    u_int8_t bytes(int i){return(key->data[nbytes-i-1]);}
 
     int RecType(){return (GetWord()[0]!=1 ? 1 :0);}
     WordDBKey():WordKey()
     {
-	nbytes=word_key_info.sort[0].bytes_offset;
 	key=NULL;
     }
     WordDBKey(BKEYDATA *nkey):WordKey()
     {
-	nbytes=word_key_info.sort[0].bytes_offset;
 	key=nkey;
 	Unpack(String((char *)key->data,key->len));
     }
@@ -136,7 +134,7 @@ public:
 	errr("UNUSED");
   	if(GetWord().length()==0)
 	{
-	    for(int j=1;j<word_key_info.nfields;j++)
+	    for(int j=1;j<nfields();j++)
 	    {if(GetInSortOrder(j)!=0){errr("WordDBKey::is_null key has 0 len word but is not null");}}
 	    return 1;
 	}
@@ -144,7 +142,6 @@ public:
     }
     WordDBKey(BINTERNAL *nkey):WordKey()
     {
-	nbytes=word_key_info.sort[0].bytes_offset;
 	key=NULL;
 	if(nkey->len==0)
 	{
@@ -154,7 +151,6 @@ public:
     }
     WordDBKey(byte *data,int len):WordKey()
     {
-	nbytes=word_key_info.sort[0].bytes_offset;
 	key=NULL;
 	if(!data || !len){errr("WordDBKey::WordDBKey(data,len) !data || !len");}
 	Unpack(String((char *)data,len));
@@ -413,13 +409,13 @@ class WordDBPage
     {
 	CNFLAGS        =0;
 	CNFIELDS       =1;
-	CNDATASTATS0   = word_key_info.nfields    ;
-	CNDATASTATS1   = word_key_info.nfields + 1;
-	CNDATADATA     = word_key_info.nfields + 2;
-	CNBTIPGNO      = word_key_info.nfields + 3;
-	CNBTINRECS     = word_key_info.nfields + 4;
-	CNWORDDIFFPOS  = word_key_info.nfields + 5;
-	CNWORDDIFFLEN  = word_key_info.nfields + 6;
+	CNDATASTATS0   = WordKey::nfields()    ;
+	CNDATASTATS1   = WordKey::nfields() + 1;
+	CNDATADATA     = WordKey::nfields() + 2;
+	CNBTIPGNO      = WordKey::nfields() + 3;
+	CNBTINRECS     = WordKey::nfields() + 4;
+	CNWORDDIFFPOS  = WordKey::nfields() + 5;
+	CNWORDDIFFLEN  = WordKey::nfields() + 6;
 	nnums=(CNWORDDIFFLEN+1);
 
 	pg=NULL;
@@ -472,7 +468,7 @@ class WordDBPage
 // *********** WordDBCompress  *******************
 // ***********************************************
 
-//word_key_info.sort[position].encoding_position
+//word_key_info->sort[position].encoding_position
 
 WordDBCompress::WordDBCompress()
 {
@@ -796,7 +792,7 @@ void
 WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_sizes,int nnums,byte *rworddiffs,int nrworddiffs)
 {
     int irwordiffs=0;
-    int nfields=word_key_info.nfields;
+    int nfields=WordKey::nfields();
     int *rnum_pos=new int[   nnums];// current index count
     CHECK_MEM(rnum_pos);
 
@@ -978,7 +974,7 @@ WordDBPage::Compress_main(Compressor &out)
     CHECK_MEM(nums_pos);
 //      int *cnsizes =new int[   nnums];
     for(j=0;j<nnums;j++){nums_pos[j]=0;}
-//      for(j=1;j<nfields;j++)  {cnsizes[j]=word_key_info.sort[j].bits;}
+//      for(j=1;j<nfields;j++)  {cnsizes[j]=word_key_info->sort[j].bits;}
 //      cnsizes[CNFLAGS]=4;
 //      cnsizes[CNWORDDIFFPOS ]=8;
 //      cnsizes[CNWORDDIFFLEN ]=8;
@@ -1079,7 +1075,7 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums,HtV
 
 	    // check numerical fields for changes
 	    // ********   sets CNFIELDS and some of CNFLAGS ************
-	    for(j=1;j<word_key_info.nfields;j++)
+	    for(j=1;j<akey.nfields();j++)
 	    {
 		int diff=akey.GetInSortOrder(j)-(foundfchange ? 0 : pkey.GetInSortOrder(j));
 		if(diff)
@@ -1094,7 +1090,7 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums,HtV
 	    // ********   sets CNWORDDIFFPOS CNWORDDIFFLEN and some of CNFLAGS ************
 	    if(!(aword==pword))
 	    {
-		nums[iflag]|=pow2(word_key_info.nfields-1);
+		nums[iflag]|=pow2(akey.nfields()-1);
 //  	    printf("wordchanged:%d %s\n",(1<<(CNWORD)),(char *)aword);
 		int fd=first_diff(aword,pword);
 		nums[CNWORDDIFFPOS*nk+nums_pos[CNWORDDIFFPOS]++]=fd;
@@ -1148,7 +1144,8 @@ WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums,HtVector_b
     CHECK_MEM(cnindexe2);
     for(j=0;j<nnums;j++){cnindexe2[j]=0;}
     int w=0;
-    for(i=0;i<nk;i++)
+    int mx=(nk>worddiffs.size() ? nk : worddiffs.size());
+    for(i=0;i<mx;i++)
     {
 	printf("%3d: ",i);
 	for(j=0;j<nnums;j++)
@@ -1390,10 +1387,10 @@ WordDBPage::show(int redo)
 	      printf("\"");
 	      for(j=0;j<20-key.GetWord().length();j++){printf(" ");}
 	      printf("|");
-	      for(j=1;j<word_key_info.nfields;j++){printf("%4x ",key.GetInSortOrder(j));}
+	      for(j=1;j<key.nfields();j++){printf("%4x ",key.GetInSortOrder(j));}
 	      printf("|");
 	  
-	      for(j=1;j<word_key_info.nfields;j++)
+	      for(j=1;j<key.nfields();j++)
 	      {
 		  int diff=key.GetInSortOrder(j)-prev.GetInSortOrder(j);
 		  if(diff<0){diff=key.GetInSortOrder(j);}
@@ -1412,10 +1409,10 @@ WordDBPage::show(int redo)
 		  printf("  %2d %s",fd,((char *)word)+fd);
 	      }
 
-	      int keycl=word_key_info.nfields;
-	      for(j=1;j<word_key_info.nfields;j++)
+	      int keycl=key.nfields();
+	      for(j=1;j<key.nfields();j++)
 	      {
-		  if(fieldchanged[j]){keycl+=word_key_info.sort[j].bits;}
+		  if(fieldchanged[j]){keycl+=word_key_info->sort[j].bits;}
 	      }
 	      if(fieldchanged[0]){keycl+=3;keycl+=8*strlen(wordchange);}
 	      printf("  ::%2d  %f",keycl,keycl/8.0);
@@ -1459,7 +1456,7 @@ WordDBPage::show(int redo)
 	  WordDBKey key(bie);
 	  for(j=0;j<bie->len-key.GetWord().length();j++){printf("%2x ",bie->data[j]);}
 	  printf(" : ");
-	  for(j=1;j<word_key_info.nfields;j++){printf("%5d ",key.GetInSortOrder(j));}
+	  for(j=1;j<key.nfields();j++){printf("%5d ",key.GetInSortOrder(j));}
 	  printf("\"%s\"\n",(char *)key.GetWord());
       }
   }
