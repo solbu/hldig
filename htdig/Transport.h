@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.h,v 1.5 1999/07/03 20:55:58 ghutchis Exp $
+// $Id: Transport.h,v 1.6 1999/07/22 10:35:43 angus Exp $
 //
 //
 
@@ -19,11 +19,9 @@
 
 #include "Object.h"
 #include "HtDateTime.h"
-#include "URL.h"
 #include "htString.h"
+#include "URL.h"
 #include "Connection.h"
-
-#define DEFAULT_CONNECTION_TIMEOUT 15
 
 // Declare in advance
 class Transport;
@@ -42,24 +40,40 @@ class Transport_Response : public Object
    Transport_Response();
    virtual ~Transport_Response();
 
-   // Get the Content type
-   virtual String GetContentType() = 0;
-
-   // Get the Content length
-   virtual int GetContentLength() const = 0;
+   // Reset the information stored
+   virtual void Reset();  // This function must be defined
 
    // Get the contents
-   virtual String GetContents() = 0;
-
+   virtual String GetContents() { return _contents; }
+	 
    // Get the modification time object pointer
-   virtual HtDateTime *GetModificationTime() const = 0;
+   virtual HtDateTime *GetModificationTime() const { return _modification_time; }
 
    // Get the access time object pointer
-   virtual HtDateTime *GetAccessTime() const = 0;
+   virtual HtDateTime *GetAccessTime() const { return _access_time; }
+
+   // Get the Content type
+   virtual String GetContentType() { return _content_type; }
+
+   // Get the Content length
+   virtual int GetContentLength() const { return _content_length; }
+
+   // Get the Document length (really stored)
+   virtual int GetDocumentLength() const { return _document_length; }
+
    
    protected:
 
-      // Empty so far
+   // Body of the response message
+
+	 String	   _contents;	   	    // Contents of the document
+
+	 HtDateTime  *_modification_time; // Modification time returned by the server
+	 HtDateTime  *_access_time;       // Access time returned by the server
+
+	 String	     _content_type; 	  // Content-type returned by the server
+	 int   	     _content_length;     // Content-length returned by the server
+	 int   	     _document_length;    // Length really stored
    
 };
 
@@ -93,25 +107,45 @@ class Transport : public Object
       Document_redirect,
       Document_not_authorized,
       Document_connection_down,
-      Document_no_header
+      Document_no_header,
+      Document_no_host,
+      Document_not_local
    };
 
 
+///////
+   //    Connects to an host and a port
+   //    Overloaded methods provided in order to take
+   //     the info from a URL obj or ptr
+///////
+
+   // Set Connection parameters
+   virtual void SetConnection (char *host, int port);
+
+   // from a URL pointer
+   virtual void SetConnection (URL *u)
+      { SetConnection (u->host(), u->port()); }
+
+   // from a URL object
+   virtual void SetConnection (URL &u)
+      { SetConnection (&u); }
+
+
+
    // Make the request
-   virtual DocStatus Request () { return Document_not_found;}
-   
+   virtual DocStatus Request() = 0; // different in derived classes
+
+
    // Set and get the connection time out value
    void SetTimeOut ( int t ) { _timeout=t; }
    int GetTimeOut () { return _timeout; }
-  
-   // Set and get the document to be retrieved
-   void SetRequestURL(URL u) { _url = u;}
-   URL GetRequestURL () { return _url;}
 
-   // Set and get the referring URL
-   void SetRefererURL (URL u) { _referer = u;}
-   URL GetRefererURL () { return _referer;}
+   // Get the Connection Host
+   char *GetHost() { return _host; }
 
+   // Get the Connection Host
+   int GetPort() { return _port; }
+   
    // Set and get the credentials
    // Likely to vary based on transport protocol
    virtual void SetCredentials (String s) { _credentials = s;}
@@ -129,10 +163,9 @@ class Transport : public Object
    void SetRequestMaxDocumentSize (int s) { _max_document_size=s; }
    GetRequestMaxDocumentSize() const { return _max_document_size; }
 
-   virtual const Transport_Response *GetResponse() { return 0;}
+   virtual Transport_Response *GetResponse() = 0;
    
-   virtual DocStatus GetDocumentStatus(Transport_Response &) 
-      { return Document_not_found; }
+   virtual DocStatus GetDocumentStatus() = 0; 
 
 ///////
    //    Querying the status of the connection
@@ -149,18 +182,7 @@ class Transport : public Object
    static void SetDebugLevel (int d) { debug=d;}   
 
 
- protected:
-
-   Connection	_connection;	       // Connection object
-   int		_timeout;              // Connection timeout
-
-   URL		_url;                  // URL to retrieve
-   URL		_referer;	       // Referring URL
-   
-   HtDateTime	*_modification_time;   // Stored modification time if avail.
-   int		_max_document_size;    // Max document size to retrieve
-
-   String	_credentials;	       // Credentials for this connection
+protected:
 
    ///////
       //    Services about a Transport layer connection
@@ -180,19 +202,36 @@ class Transport : public Object
    inline int Connect();
    
    // Write a message
-   virtual int ConnectionWrite(char *cmd)
+   inline int ConnectionWrite(char *cmd)
       { return _connection.write(cmd); }
 
 
    // Assign the timeout to the connection (returns the old value)
 
-   int AssignConnectionTimeOut()
+   inline int AssignConnectionTimeOut()
       { return _connection.timeout(_timeout); }
 
       
    // Close the connection
    
    inline int CloseConnection();
+
+
+
+ protected:
+
+   Connection	_connection;	       // Connection object
+
+   String       _host;                 // TCP Connection host
+   int          _port;                 // TCP Connection port
+   
+   int		_timeout;              // Connection timeout
+
+   HtDateTime	*_modification_time;   // Stored modification time if avail.
+   int		_max_document_size;    // Max document size to retrieve
+
+   String	_credentials;	       // Credentials for this connection
+
 
 
    ///////

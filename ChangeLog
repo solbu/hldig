@@ -1,3 +1,9 @@
+Thu Jul 22 13:10:00 1999 CEST Gabriele Bartolini <g.bartol@comune.prato.it>
+
+	* htdig/Transport.cc, htdig/Transport.h, htdig/HtHTTP.cc, htdig/HtHTTP.h :
+	Re-analyzed inheritance methods and attributes of the 2 classes. This is
+	a first step, not definitive ... cos it still doesn't work as I hope.
+
 Tue Jul 20 11:21:52 1999    <loic@ceic.com>
 
 	* configure.in : added AM_MAINTAINER_MODE to prevent unwanted

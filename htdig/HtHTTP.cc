@@ -10,7 +10,9 @@
 
 
 #include "lib.h"
+#include "Transport.h"
 #include "HtHTTP.h"
+#include "ExternalParser.h"
 #include <signal.h>
 #include <sys/types.h>
 #include <ctype.h>
@@ -78,36 +80,21 @@ HtHTTP_Response::~HtHTTP_Response()
 
 void HtHTTP_Response::Reset()
 {
-   // Reset all the field of the object
+   // Call the base class method in order to reset
+   // the base class attributes
 
-   // Check if an HtDateTime object exists, and delete it
-   if(_modification_time)
-   {
-   	 delete _modification_time;
-      _modification_time=NULL;
-   }
+   Transport_Response::Reset();
 
-   if(_access_time)
-   {
-   	 delete _access_time;
-      _access_time=NULL;
-   }
 
-   // Set the content length and the return status code to negative values
-   _content_length=-1;
+   // Set the return status code to a negative value
    _status_code=-1;
    
-   // Also set the document length, but to zero instead of -1
-   _document_length=0;
-
-   // Zeroes the contents, the version, and the reason phrase of the s.c.
-   // Also the location string and content type string
+   // Zeroes the version, and the reason phrase of the s.c.
+   // Also the location string
    _version=0;
    _reason_phrase=0;
-   _contents=0;
    _location=0;
-   _content_type=0;
-      
+
 }
 
 
@@ -130,6 +117,8 @@ HtHTTP::HtHTTP()
 
    _bytes_read=0;
 
+   // Default Method Request
+   _Method = Method_GET;
 }
 
 // Destruction
@@ -149,15 +138,17 @@ HtHTTP::~HtHTTP()
    //    Sends a GET method request
 ///////
 
-HtHTTP::DocStatus HtHTTP::Request(HtHTTP::HttpRequestMethod _Method)
+Transport::DocStatus HtHTTP::Request()
 {
 
    bool ShouldTheBodyBeRead = true;
-   
+
    // Reset the response
    _response.Reset();
 
    _bytes_read=0;
+
+   cout << " Making http connection !\n";
 
    if( debug > 3)
    	 cout << "Try to get through to host "
@@ -169,6 +160,7 @@ HtHTTP::DocStatus HtHTTP::Request(HtHTTP::HttpRequestMethod _Method)
    _start_time.SettoNow();
    
    result = EstablishConnection();
+
    
    if(result != Connection_ok && result != Connection_already_up)
    {
@@ -223,13 +215,13 @@ HtHTTP::DocStatus HtHTTP::Request(HtHTTP::HttpRequestMethod _Method)
 
    switch(_Method)
    {
-   	 case Method_GET:
+      case Method_GET:
    	    command = "GET ";
-	    break;
-   	 case Method_HEAD:
-   	    command = "HEAD ";
-   	    ShouldTheBodyBeRead = false;
-	    break;
+            break;
+      case Method_HEAD:
+            command = "HEAD ";
+            ShouldTheBodyBeRead = false;
+      break;
    }
 
 
@@ -356,14 +348,14 @@ HtHTTP::ConnectionStatus HtHTTP::EstablishConnection()
    if(result==1) // New connection open
    {
 
-      // Assign the remote host
-      if ( _connection.assign_server(_url.host()) == NOTOK)
+      // Assign the remote host to the connection
+      if ( !AssignConnectionServer() )
       	 return Connection_no_server;   	 
 	 else if (debug > 4)
 	       cout << "\tAssigned the remote host " << _url.host() << endl;
    
       // Assign the port of the remote host
-      if ( _connection.assign_port(_url.port()) == NOTOK)
+      if ( !AssignConnectionPort() )
       	 return Connection_no_port;   	 
 	 else if (debug > 4)
 	       cout << "\tAssigned the port " << _url.port() << endl;
@@ -375,38 +367,6 @@ HtHTTP::ConnectionStatus HtHTTP::EstablishConnection()
    else if (result == -1) return Connection_already_up; // Persistent
 	    else return Connection_ok; // New connection
    
-}
-
-
-void HtHTTP::SetHttpConnection (URL u)
-{
-   bool ischanged = false;
-
-   // Checking the connection server   
-   if( u.host() != _url.host() )   	 // server is gonna change
-   {
-     _url.host(u.host());
-     ischanged=true;
-   }
-
-   // Checking the connection port
-   if( u.port() != _url.port() )  	 // the port is gonna change
-   {
-     _url.port(u.port());
-     ischanged=true;
-   }
-
-   if (ischanged)
-   {
-     // Let's close any pendant connection with the old
-     // server / port pair
-	 
-     CloseConnection();
-   }
-
-   // Copy the url information to the object
-   _url = u;
-
 }
 
 
@@ -705,12 +665,11 @@ bool HtHTTP::isParsable(const char *content_type)
 {
 
    // Here I can decide what kind of document I can parse
-   // I only need to parse the ones which return a "text/html"
-   // content-type ... But if in future I wanna check and parse
-   // other document types, I only have to add some code here
-   // and add the ExternalParser handler ...
+   // text/html -> HTML, text/* -> plaintext
+   // and the rest are determined by the external_parser settings
    
-   if( ! mystrncasecmp ("text/html", content_type, 9))
+   if( ! mystrncasecmp ("text/", content_type, 5) 
+       || ExternalParser::canParse((char *)content_type) )
    	 return true;
 
    return false;

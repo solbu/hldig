@@ -2,14 +2,14 @@
    //
    // HtHTTP.h
    //
-   // Class for HTTP messaging
+   // Class for HTTP messaging (derived from Transport)
    // Gabriele Bartolini - Prato - Italia
    // started: 03.05.1999
    //
    // ////////////////////////////////////////////////////////////
    //
    // The HtHTTP class should provide (as I hope) an interface for
-   // retrieving document on the Web.
+   // retrieving document on the Web. It derives from Transport class.
    //
    // It should be HTTP/1.1 compatible.
    //
@@ -20,63 +20,15 @@
    // HtHTTP use another class to store the response returned by the
    // remote server.
    //
-   // To build up an HTTP connection you must set it before, by calling
-   // the SetHttpConnection method. Here you only have to specify the
-   // server you want to be connect with and its TCP port.
-   //
-   // Then you'll have to set the host and the document to be retrieved.
-   // This can be done by calling the SetRequestHost and SetRequestDocument.
-   //
-   // Once done, you could invoke the Request method with a HttpRequestMethod
-   // enum as parameter (the default, with no argument is GET method, but you
-   // could do the HEAD method too).
-   //
-   // You can also set information regarding only a request or a series of them.
-   // The info regarding a single request are:
-   // - the host (obviously, but not that much)
-   // - the document (obviusly again)
-   // - the modification time (to be used for If-Modified-Since directive)
-   // Infos regarding a series of them are:
-   // - user agent
-   // - maximum size of a document
-   //
-   // For example, if you wanna ask the server www.po-net.prato.it for
-   // the /home.htm document, you should do these steps:
-   //
-   // Instantiate an HtHTTP object, for example:
-   //    HtHTTP try;
-   //
-   // Set the user agent, and the max document size, depending on Config values
-   // Also set the timeout for the whole HtHTTP connections (static)
-   //
-   // Set the connection:
-   //    try.SetHttpConnection("www.po-net.prato.it", 80);
-   //    try.SetRequestHost("www.po-net.prato.it");
-   //    try.SetRequestDocument("/home.htm");
-   //
-   // And ask the document:
-   //    try.Request();    // GET is the default
-   // If I had to do a HEAD request, the method is this:
-   //    try.Request(HtHTTP::Method_HEAD);
-   //
-   // Now, all I need is inside the try._response object, only accessible
-   // from outside, through GetResponse function.
-   //
-   // The managing of a Proxy connection should be made by the outside of
-   // this class, by specifying the server and the port of the connection
-   // as the proxy ones and the host and the document as the request ones.
-   //
 ///////
 
 
 #ifndef _HTHTTP_H
 #define _HTHTTP_H
 
+#include "Transport.h"
 #include "URL.h"
 #include "htString.h"
-#include "Transport.h"
-
-#define DEFAULT_MAX_DOCUMENT_SIZE	 100000
 
 
 // In advance declarations
@@ -114,43 +66,19 @@ class HtHTTP_Response : public Transport_Response
 	 // Get the Status Code reason phrase
    	 char *GetReasonPhrase() { return _reason_phrase; }
 
-	 // Get the Content type
-   	 String GetContentType() { return _content_type; }
-
-	 // Get the Content length
-   	 int GetContentLength() const { return _content_length; }
-
-   	 // Get the contents
-   	 String GetContents() { return _contents; }
-	 
-	 // Get the modification time object pointer
-	 HtDateTime *GetModificationTime() const { return _modification_time; }
-
-	 // Get the access time object pointer
-	 HtDateTime *GetAccessTime() const { return _access_time; }
-
 
    protected:
 
    // Status line information
    
-   	 String	   _version;	   	    // HTTP Version
-	 int   	   _status_code;  	    // return Status code
-	 String	   _reason_phrase;	    // status code reason phrase
+   	 String	   _version;	          // HTTP Version
+	 int   	   _status_code;  	  // return Status code
+	 String	   _reason_phrase;	  // status code reason phrase
 
    // Other header information
    
-	 String	   _content_type; 	    // Content-type returned by the server
-	 int   	   _content_length;     // Content-length returned by the server
-	 int   	   _document_length;    // Length really stored
-	 HtDateTime *_modification_time;  // Modification time returned by the server
-	 HtDateTime *_access_time;  	    // Access time returned by the server
-	 String 	   _location;	   	    // Location (in case of redirect)
+	 String      _location;	          // Location (in case of redirect)
 
-   // Body of the response message
-
-	 String	   _contents;	   	    // Contents of the document
-	 
 };
 
 
@@ -168,19 +96,20 @@ public:
 
    // Information about the method to be used in the request
 
-   enum HttpRequestMethod
+   enum Request_Method
    {
    	 Method_GET,
 	 Method_HEAD
    };
    
 
+
 ///////
    //    Sends an HTTP request message
 ///////
 
-   // Sends a Method request message (by passing an HttpRequestMethod enum value)
-   DocStatus Request (HttpRequestMethod = Method_GET);
+   // Sends a Method request message
+   virtual DocStatus Request ();
    
 
 ///////
@@ -188,11 +117,26 @@ public:
 ///////
 
  ///////
-    //    Interface for the connection
+    //    Set the Request Method
  ///////
 
-   // Set Connection parameters
-   void SetHttpConnection (URL u);
+   SetRequestMethod (Request_Method rm) { _Method = rm; }
+   Request_Method GetRequestMethod() { return _Method; }
+   
+
+ ///////
+    //    Interface for resource retrieving
+ ///////
+
+   // Set and get the document to be retrieved
+   void SetRequestURL(URL &u) { _url = u;}
+   URL GetRequestURL () { return _url;}
+
+
+   // Set and get the referring URL
+   void SetRefererURL (URL u) { _referer = u;}
+   URL GetRefererURL () { return _referer;}
+
 
    // Get the date time information about the request
    const HtDateTime *GetStartTime() const { return &_start_time; }
@@ -212,9 +156,13 @@ public:
     //    Interface for the HTTP Response
  ///////
 
-   const HtHTTP_Response *GetResponse() const { return &_response; }
-   
+   Transport_Response *GetResponse() { return &_response; }
+
    // Get the document status 
+   virtual DocStatus GetDocumentStatus()
+      { return GetDocumentStatus (_response); }
+   
+   // It's a static method
    static DocStatus GetDocumentStatus(HtHTTP_Response &);
 
 
@@ -265,6 +213,8 @@ protected:
    //    Member attributes
 ///////
 
+   Request_Method    _Method;
+   
    ///////
       //    Modification Time is Now config attribute
    ///////
@@ -280,6 +230,10 @@ protected:
 
    int      	_bytes_read;	   	 // Bytes read
 
+   URL		_url;                  // URL to retrieve
+
+   URL		_referer;	       // Referring URL
+   
    
    ///////
       //    Http multiple Request information

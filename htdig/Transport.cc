@@ -13,11 +13,15 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.4 1999/07/03 03:50:33 ghutchis Exp $
+// $Id: Transport.cc,v 1.5 1999/07/22 10:35:44 angus Exp $
 //
 //
 
 #include "Transport.h"
+#include <iostream.h>
+
+
+#define DEFAULT_CONNECTION_TIMEOUT 15
 
 ///////
    //    Static variables initialization
@@ -45,6 +49,38 @@ Transport_Response::Transport_Response() { }
 Transport_Response::~Transport_Response() { }
 
 
+
+void Transport_Response::Reset()
+{
+   // Reset all the field of the object
+
+   // Check if an HtDateTime object exists, and delete it
+   if(_modification_time)
+   {
+   	 delete _modification_time;
+      _modification_time=NULL;
+   }
+
+   if(_access_time)
+   {
+   	 delete _access_time;
+      _access_time=NULL;
+   }
+
+   // Set the content length to a negative value
+   _content_length=-1;
+   
+   // Also set the document length, but to zero instead of -1
+   _document_length=0;
+
+   // Zeroes the contents and content type strings
+   _contents=0;
+   _content_type=0;
+      
+}
+
+
+
 ///////
    //    Transport class definition
 ///////
@@ -63,7 +99,7 @@ Transport::Transport()
     //    Empty destructor
  ///////
 
-Transport::~Transport() { }
+Transport::~Transport() { CloseConnection(); }
 
 
  ///////
@@ -89,6 +125,34 @@ int Transport::OpenConnection()
 }
 
 
+   // Assign the server to the connection
+
+int Transport::AssignConnectionServer()
+{
+   if (debug > 5)
+      cout << "\tAssigning the server (" << _host << ") to the TCP connection" << endl;
+      
+   if (_connection.assign_server(_host) == NOTOK) return 0;
+   
+   return 1;
+}
+
+
+   // Assign the remote server port to the connection
+
+int Transport::AssignConnectionPort()
+{
+   if (debug > 5)
+      cout << "\tAssigning the port (" << _port << ") to the TCP connection" << endl;
+      
+   if (_connection.assign_port(_port) == NOTOK) return 0;
+   
+   return 1;
+}
+
+
+
+
    // Connect
    // Returns
    // 	 -      0 if failed
@@ -97,12 +161,14 @@ int Transport::OpenConnection()
 
 int Transport::Connect()
 {
+   if (debug > 5)
+      cout << "\tConnecting via TCP to (" << _host << ":" << _port << ")" << endl;
+
    if (isConnected()) return -1; // Already connected
-   if (_connection.connect(1) == NOTOK) return 0;  // Connection failed
+   if ( _connection.connect(1) == NOTOK) return 0;  // Connection failed
    
    return 1;	// Connected
 }
-
 
 
    // Close the connection
@@ -120,5 +186,32 @@ int Transport::CloseConnection()
    return 1;
 }
 
+
+void Transport::SetConnection (char *host, int port)
+{
+
+   bool ischanged = false;
+
+   // Checking the connection server   
+   if( _host != host )   	 // server is gonna change
+     ischanged=true;
+
+   // Checking the connection port
+   if( _port != port )  	 // the port is gonna change
+     ischanged=true;
+
+   if (ischanged)
+   {
+     // Let's close any pendant connection with the old
+     // server / port pair
+	 
+     CloseConnection();
+   }
+
+   // Copy the host and port information to the object
+   _host = host;
+   _port = port;
+
+}
 
 // End of Transport.cc (it's a virtual class anyway!)
