@@ -30,7 +30,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.11 2002/08/06 07:32:29 angusgb Exp $ 
+// $Id: HtHTTP.h,v 1.12 2003/02/23 09:20:40 angusgb Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -241,7 +241,7 @@ public:
 ///////
 
    // It's set only if not done before
-   static void SetCookieJar(HtCookieJar *cj) { if (!_cookie_jar) _cookie_jar = cj; }
+   static void SetCookieJar(HtCookieJar *cj) { _cookie_jar = cj; }
 
 
 ///////
