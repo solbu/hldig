@@ -18,7 +18,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.cc,v 1.15.2.2 2000/02/29 20:39:19 grdetil Exp $
+// $Id: htfuzzy.cc,v 1.15.2.3 2000/03/01 22:12:19 grdetil Exp $
 //
 
 #include "htfuzzy.h"
@@ -33,6 +33,7 @@
 #include "Dictionary.h"
 #include "defaults.h"
 #include "HtWordList.h"
+#include "WordContext.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -125,6 +126,9 @@ main(int ac, char **av)
     }
     config.Read(configFile);
 
+    // Initialize htword library (key description + wordtype...)
+    WordContext::Initialize(config);
+
     Fuzzy	*fuzzy;
     if (wordAlgorithms.Count() > 0)
     {
@@ -132,7 +136,7 @@ main(int ac, char **av)
         // Open the word database so that we can grab the words from it.
         //
         HtWordList	worddb(config);
-	if (worddb.Open(config["word_db"], O_RDONLY))
+	if (worddb.Open(config["word_db"], O_RDONLY) == OK)
 	  {
 	    //
 	    // Go through all the words in the database
@@ -182,7 +186,7 @@ main(int ac, char **av)
 	  }
 	else
 	  {
-	    reportError("Unable to open word database");
+	    reportError(form("Unable to open word database %s", config["word_db"].get()));
 	  }
     }
     if (noWordAlgorithms.Count() > 0)

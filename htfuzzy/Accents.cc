@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Accents.cc,v 1.1.2.2 2000/02/29 21:18:39 grdetil Exp $
+// $Id: Accents.cc,v 1.1.2.3 2000/03/01 22:12:19 grdetil Exp $
 //
 
 #include "Configuration.h"
@@ -146,7 +146,7 @@ Accents::generateKey(char *word, String &key)
 
     key = '0';
     while (*word) {
-      key << MinusculeISOLAT1[ *word++ ];
+      key << MinusculeISOLAT1[ (unsigned char) *word++ ];
     }
 }
 

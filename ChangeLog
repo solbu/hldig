@@ -1,3 +1,12 @@
+Wed Mar  1 16:02:49 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htfuzzy/htfuzzy.cc (main): Correctly test return value on Open()
+	of word database, include db name in error message if Open() fails,
+	do a WordContext::Initialize() before we need htword functions.
+	(Obviously I'm the first to test htfuzzy in 3.2!)
+	* htfuzzy/Accents.cc (generateKey): cast characters to unsigned char
+	before using as array subscripts.
+
 Wed Mar  1 13:27:26 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc: Added accents_db attribute, mentioned accents
