@@ -7,7 +7,7 @@ INSTALL_PROGRAM=	@INSTALL_PROGRAM@
 top_builddir= ..
 include $(top_builddir)/Makefile.config
 
-OBJS=		htnotify.o 
+OBJS=		EmailNotification.o htnotify.o
 
 LOCAL_DEFINES=  -DSENDMAIL=\"$(SENDMAIL)\"
 

@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.23 2001/07/26 02:41:35 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.24 2001/07/26 03:12:41 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -70,6 +70,10 @@ ConfigDefaults	defaults[] =
     {"heading_factor_5",		"1"},
     {"heading_factor_6",		"0"},
     {"htnotify_sender",			"webmaster@www"},
+    {"htnotify_replyto",		""},
+    {"htnotify_webmaster",		"ht://Dig Notification Service"},
+    {"htnotify_prefix_file",		""},
+    {"htnotify_suffix_file",		""},
     {"http_proxy",			""},
     {"http_proxy_exclude",		""},
     {"image_list",			"${database_base}.images"},

@@ -1,3 +1,17 @@
+Wed Jul 25 22:06:08 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc: Add new attributes htnotify_replyto,
+	htnotify_webmaster, htnotify_prefix_file, htnotify_suffix_file.
+
+	* htdoc/attrs.html, cf_by{name,prog}.html: Document them.
+
+	* htnotify/htnotify.cc, htnotify/EmailNotification.{h,cc},
+	htnotify/Makefile.in: Added in code from Richard Beton
+	<richard.beton@roke.co.uk> to collect multiple URLs per e-mail
+	address and allow customization of notification messages by
+	reading in header/footer text as designated by the new attributes
+	above.
+
 Wed Jul 25 21:38:21 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htcommon/defaults.cc: Added .css to bad_extensions, for consistency

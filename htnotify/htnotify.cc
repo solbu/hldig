@@ -7,10 +7,11 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.19.2.2 1999/11/24 01:40:24 grdetil Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.19.2.3 2001/07/26 03:12:42 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
+#include "Dictionary.h"
 #include "DocumentDB.h"
 #include "DocumentRef.h"
 #include "defaults.h"
@@ -22,6 +23,7 @@ static char RCSid[] = "$Id: htnotify.cc,v 1.19.2.2 1999/11/24 01:40:24 grdetil E
 #include <stdio.h>
 #include <ctype.h>
 #include "HtURLCodec.h"
+#include "EmailNotification.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -30,11 +32,16 @@ static char RCSid[] = "$Id: htnotify.cc,v 1.19.2.2 1999/11/24 01:40:24 grdetil E
 
 void htnotify(DocumentRef &);
 void usage();
-void send_notification(char *date, char *email, char *url, char *subject);
+void readPreAndPostamble(void);
+void add_notification(char *date, char *email, char *url, char *subject);
+void send_notification(char *email, List * notifList);
+void send_email(List * notifList, String& command, String& to,
+		String& listText, int singleSubject);
 int parse_date(char *date, int &year, int &month, int &day);
 
 
 int	verbose = 0;
+int	sendEmail = 1;
 
 //
 // This variable is used to hold today's date.  It is global for
@@ -43,7 +50,21 @@ int	verbose = 0;
 //
 struct tm	*today;
 
+//
+// This structure holds the set of email notifications requiring
+// sending. It is indexed by email address of recipients, and
+// each entry is a List of EmailNotification objects.
+//
+Dictionary  * allNotifications;
 
+//
+// These strings holds the preamble/postamble text used in
+// email messages.
+//
+String preambleText;
+String postambleText;
+
+//{{{  main
 //*****************************************************************************
 // int main(int ac, char **av)
 //
@@ -54,7 +75,7 @@ int main(int ac, char **av)
     String		base;
     String		configFile = DEFAULT_CONFIG_FILE;
 
-    while ((c = getopt(ac, av, "vb:c:")) != -1)
+    while ((c = getopt(ac, av, "nvb:c:")) != -1)
     {
 	switch (c)
 	{
@@ -66,6 +87,10 @@ int main(int ac, char **av)
 	    break;
 	case 'v':
 	    verbose++;
+	    break;
+	case 'n':
+	    verbose++;
+	    sendEmail = 0;
 	    break;
 	case '?':
 	    usage();
@@ -109,9 +134,12 @@ int main(int ac, char **av)
     time_t	now = time(0);
     today = localtime(&now);
 
+    readPreAndPostamble();
+
     //
     // Traverse all the known documents to check for notification requirements
     //
+    allNotifications = new Dictionary();
     DocumentRef	*ref;
     String		*str;
     docs->Start_Get();
@@ -123,11 +151,98 @@ int main(int ac, char **av)
 	delete ref;
     }
     delete docs;
+
+    //
+    // Iterate through the list of notifications
+    //
+    allNotifications->Start_Get();
+    char * email;
+    while ((email = (char *) allNotifications->Get_Next()))
+    {
+        List * notifList = (List *) allNotifications->Find (email);
+        send_notification(email, notifList);
+    }
+
+    //
+    // tidy up
+    //
     docdb.Close();
+    delete allNotifications;
     return 0;
 }
 
 
+//}}}  
+//{{{  readPreAndPostamble
+//*****************************************************************************
+// void readPreAndPostamble(void)
+//
+void readPreAndPostamble(void)
+{
+    char* prefixfile = config["htnotify_prefix_file"];
+    char* suffixfile = config["htnotify_suffix_file"];
+
+    // define default preamble text - blank string
+    preambleText = "";
+
+    if (prefixfile != NULL)
+    {
+        ifstream    in(prefixfile);
+        char        buffer[1024];
+
+        if (! in.bad())
+        {
+            while (! in.bad() && ! in.eof())
+            {
+                in.getline(buffer, sizeof(buffer));
+                if (in.eof() && !*buffer)
+                    break;
+                preambleText << buffer << '\n';
+            }
+            in.close();
+        }
+    }
+
+    // define default postamble text
+    postambleText = "";
+    postambleText << "Note: This message will be sent again if you do not change or\n";
+    postambleText << "take away the notification of the above mentioned HTML page.\n";
+    postambleText << "\n";
+    postambleText << "Find out more about the notification service at\n\n";
+    postambleText << "    http://www.htdig.org/meta.html\n\n";
+    postambleText << "Cheers!\n\nht://Dig Notification Service\n";
+
+    if (suffixfile != NULL)
+    {
+        ifstream    in(suffixfile);
+        char        buffer[1024];
+
+        if (! in.bad())
+        {
+            postambleText = "";
+            while (! in.bad() && ! in.eof())
+            {
+                in.getline(buffer, sizeof(buffer));
+                if (in.eof() && !*buffer)
+                    break;
+                postambleText << buffer << '\n';
+            }
+            in.close();
+        }
+    }
+
+    if (verbose > 1)
+    {
+        cout << "Preamble text:" << endl;
+        cout << preambleText << endl << endl;
+        cout << "Postamble text:" << endl;
+        cout << postambleText << endl;
+        cout << endl;
+    }
+}
+
+//}}}  
+//{{{  htnotify
 //*****************************************************************************
 // void htnotify(DocumentRef &ref)
 //
@@ -138,7 +253,7 @@ void htnotify(DocumentRef &ref)
 
     if (date && *date && email && *email)
     {
-	if (verbose > 1)
+	if (verbose > 2)
 	{
 	    cout << "Saw a date:" << endl;
 	    cout << "Date:    " << date << endl;
@@ -152,22 +267,12 @@ void htnotify(DocumentRef &ref)
 	if (!parse_date(date, year, month, day))
 	{
 	    // Parsing Failed
-	    if (verbose > 1)
+	    if (verbose > 2)
 	    {
 		cout << "Malformed date: " << date << endl;
 	    }
 
-	    send_notification(date, email, ref.DocURL(), "Malformed Date");
-
-	    if (verbose)
-	    {
-		cout << "Message sent." << endl;
-		cout << "Date:    " << date << endl;
-		cout << "URL:     " << ref.DocURL() << endl;
-		cout << "Subject: Malformed Date" << endl;
-		cout << "Email:   " << email << endl;
-		cout << endl;
-	    }
+	    add_notification(date, email, ref.DocURL(), "Malformed Date");
 	    return;
 	}
 
@@ -186,21 +291,12 @@ void htnotify(DocumentRef &ref)
 	    // It seems that this date is either today or before
 	    // today.  Send a notification
 	    //
-	    send_notification(date, email, ref.DocURL(), ref.DocSubject());
-	    if (verbose)
-	    {
-		cout << "Message sent." << endl;
-		cout << "Date:    " << date << endl;
-		cout << "URL:     " << ref.DocURL() << endl;
-		cout << "Subject: " << ref.DocSubject() << endl;
-		cout << "Email:   " << email << endl;
-		cout << endl;
-	    }
+	    add_notification(date, email, ref.DocURL(), ref.DocSubject());
 	}
 	else
 	{
 	    // Page not yet expired
-	    if (verbose)
+	    if (verbose > 2)
 	    {
 		cout << "htnotify: URL " << ref.DocURL()
 		     << " (" << year+1900 << "-" << month+1
@@ -211,14 +307,35 @@ void htnotify(DocumentRef &ref)
 }
 
 
+//}}}  
+//{{{  add_notification
 //*****************************************************************************
-// void send_notification(char *date, char *email, char *url, char *subject)
+// void add_notification(char *date, char *email, char *url, char *subject)
 //
-void send_notification(char *date, char *email, char *url, char *subject)
+void add_notification(char *date, char *email, char *url, char *subject)
+{
+
+    List * list = (List *) allNotifications->Find (email);
+    if (list == NULL)
+    {   // here's a new recipient so add it
+        list = new List();
+        allNotifications->Add (email, list);
+    }
+
+    // now add the notification to the selected list
+    EmailNotification* notif = new EmailNotification(date, email, url, subject);
+    list->Add (notif);
+}
+
+//}}}  
+//{{{  send_notification
+//*****************************************************************************
+// void send_notification(char * email, List * notifList)
+//
+void send_notification(char* email, List * notifList)
 {
     String	command = SENDMAIL;
-    command << " -t -F '\"ht://Dig Notification Service\"' -f \"";
-    command << config["htnotify_sender"] << '"';
+    command << " -t";
 
     String	em = email;
     String	to = "";
@@ -242,42 +359,113 @@ void send_notification(char *date, char *email, char *url, char *subject)
 //    for (cursor = to.get(); *(cursor += strspn(cursor, ok_chars));)
 //      *cursor = '_'; // Set it to something harmless
     
-    FILE *fileptr;
-    if ( (fileptr = popen(command.get(), "w")) != NULL ) {
+    EmailNotification* notif = (EmailNotification*) notifList->Get_First();
+    String firstSubject = notif->getSubject();
+    int singleSubject = 1;
 
-      if (!subject || !*subject)
-	subject = "page expired";
-      String	out;
-      out << "From: \"ht://Dig Notification Service\" <"
-	  << config["htnotify_sender"] << ">\n";
-      out << "Subject: WWW notification: " << subject << '\n';
-      out << "To: " << to.get() << '\n';
-      out << "Reply-To: " << config["htnotify_sender"] << "\n";
-      out << "\n";
-      out << "The following page was tagged to notify you after " << date
-	  << '\n';
-      out << "\n";
-      out << "URL:     " << url << '\n';
-      out << "Date:    " << date << '\n';
-      out << "Subject: " << subject << '\n';
-      out << "Email:   " << email << '\n';
-      out << "\n";
-      out << "Note: This message will be sent again if you do not change or\n";
-      out << "take away the notification of the above mentioned HTML page.\n";
-      out << "\n";
-      out << "Find out more about the notification service at\n\n";
-      out << "    http://www.htdig.org/meta.html\n\n";
-      out << "Cheers!\n\nht://Dig Notification Service\n";
-
-      fputs( out.get(), fileptr );
-      pclose( fileptr );
-    } else {
-      perror( "popen" );
+    //
+    // scan to determine whether the same subject message is used throughout
+    //
+    notifList->Start_Get();
+    notifList->Get_Next();
+    // continue with the second item in the list
+    while ((notif = (EmailNotification*) notifList->Get_Next()))
+    {
+        String current = notif->getSubject();
+        if ( firstSubject != current )
+        {
+            singleSubject = 0;
+            break;
+        }
     }
 
+
+    //
+    // Aggregate the list text
+    //
+    String listText = "";
+    notifList->Start_Get();
+    while ((notif = (EmailNotification*) notifList->Get_Next()))
+    {
+        listText << notif->getUrl() << '\n';
+        listText << "  expired " << notif->getDate() << "\n";
+        if (! singleSubject)
+        { listText << "  " << notif->getSubject() << '\n'; }
+    }
+
+    if (sendEmail)
+    {
+        send_email (notifList, command, to, listText, singleSubject);
+    }
+    else if (verbose)
+    {   // just list the notifiable pages
+        cout << endl;
+        cout << "Notification required to " << to << endl;
+        cout << listText;
+    }
 }
 
 
+//}}}  
+//{{{  send_email
+//*****************************************************************************
+// void send_email(List * notifList, String& command, String& to)
+//
+void send_email (List * notifList, String& command,
+                 String& to, String& listText, int singleSubject)
+{
+    String from = "\"";
+    from << config["htnotify_webmaster"] << "\" <"
+         << config["htnotify_sender"] << ">";
+
+    String replyto = config["htnotify_replyto"];
+
+    if (verbose)
+    {
+        if (verbose > 1) { cout << endl; }
+
+        cout << "From: " << from << endl;
+        cout << "To: " << to << endl;
+
+        if (verbose > 1) { cout << listText; }
+    }
+
+    FILE *fileptr;
+    if ( (fileptr = popen(command.get(), "w")) != NULL )
+    {
+        EmailNotification* notif = (EmailNotification*) notifList->Get_First();
+        String	out;
+        out << "From: " << from << '\n';
+        out << "To: " << to << '\n';
+        if (replyto.length() > 0)
+        { out << "Reply-To: " << replyto << '\n'; }
+
+        if (singleSubject)
+        {
+            out << "Subject: " << notif->getSubject() << '\n';
+        }
+        else
+        {
+            out << "Subject: Web page expiry (" << notif->getSubject() << ", inter alia)\n";
+        }
+
+        out << '\n'; // this is the important header/body separator
+        out << preambleText;
+        out << listText;
+        out << postambleText;
+        out << '\n';
+        fputs( out.get(), fileptr );
+        pclose( fileptr );
+    }
+    else
+    {
+        perror( "popen" );
+    }
+}
+
+
+//}}}  
+//{{{  usage
 //*****************************************************************************
 // Display usage information for the htnotify program
 //
@@ -292,11 +480,16 @@ void usage()
     cout << "\t-b db_base\n";
     cout << "\t\tSet the base path of the document database.\n";
     cout << "\t-v\n";
-    cout << "\t\tIncrease the verbose level by one.\n";
+    cout << "\t\tIncrease the verbose level. Use two or three times for\n";
+    cout << "\t\tmore output.\n";
+    cout << "\t-n\n";
+    cout << "\t\tDon't send any email, just list what has expired.\n";
     exit(0);
 }
 
 
+//}}}  
+//{{{  parse_date
 //*****************************************************************************
 // Parse the notification date string from the user's document
 //
@@ -349,7 +542,7 @@ int parse_date(char *date, int &year, int &month, int &day)
 	yy += 2000;
     else if (yy < 1900)		// before computer age
 	yy += 1900;
-    if (verbose > 1)
+    if (verbose > 2)
 	cout << "Date used (y-m-d): " << yy << '-' << mm << '-' << dd << endl;
 
     year = yy;
@@ -358,3 +551,6 @@ int parse_date(char *date, int &year, int &month, int &day)
 
     return 1;
 }
+
+
+//}}}  

@@ -2420,6 +2420,110 @@
 	<hr>
 	<dl>
 	  <dt>
+		<strong><a name="htnotify_prefix_file">
+		htnotify_prefix_file</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htnotify.html">htnotify</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			Specifies the file containing text to be inserted
+			in each mail message sent by htnotify before the
+			list of expired webpages. If omitted, nothing
+			is inserted.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  htnotify_prefix_file:
+				</td>
+				<td nowrap>
+				     ${common_dir}/notify_prefix.txt
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="htnotify_replyto">
+		htnotify_replyto</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htnotify.html">htnotify</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This specifies the email address that htnotify email
+			messages include in the Reply-to: field.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  htnotify_replyto:
+				</td>
+				<td nowrap>
+				     design-group@foo.com
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
 		<strong><a name="htnotify_sender">
 		htnotify_sender</a></strong>
 	  </dt>
@@ -2460,6 +2564,111 @@
 			  <tr>
 				<td nowrap>
 				  htnotify_sender: bigboss@yourcompany.com
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="htnotify_suffix_file">
+		htnotify_suffix_file</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htnotify.html">htnotify</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			<em>&lt;empty&gt;</em>
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			Specifies the file containing text to be inserted
+			in each mail message sent by htnotify after the
+			list of expired webpages. If omitted, htnotify
+			will insert a standard message.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  htnotify_suffix_file:
+				</td>
+				<td nowrap>
+				     ${common_dir}/notify_suffix.txt
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="htnotify_webmaster">
+		htnotify_webmaster</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			string
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htnotify.html">htnotify</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			ht://Dig Notification Service
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+			This provides a name for the From field, in
+			addition to the email address for the email
+			messages sent out by htnotify.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  htnotify_webmaster:
+				</td>
+				<td nowrap>
+				     Notification Service
 				</td>
 			  </tr>
 			</table>
@@ -7837,7 +8046,7 @@
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: $Date: 2001/07/26 02:41:35 $
+Last modified: $Date: 2001/07/26 03:12:41 $
 <!-- hhmts end -->
   </body>
 </html>
