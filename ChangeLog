@@ -1,3 +1,12 @@
+Thu Sep  3 20:53:51 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Makefile.in: Remove reference to -lgdbm
+
+	* htsearch/Display.cc: Send Content-type header after all variable
+	expansion is completed.
+
+	* htcommon/WordList.cc: Removed warning under egcs-1.1
+
 Tue Aug 11 08:58:34 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
         * htsearch/Display.cc, htdig/Retriever.h,

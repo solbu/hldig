@@ -4,6 +4,10 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.4  1998/09/04 00:56:22  ghutchis
+//
+// Various bug fixes.
+//
 // Revision 1.3  1997/03/24 04:33:15  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -16,7 +20,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.3 1997/03/24 04:33:15 turtle Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.4 1998/09/04 00:56:22 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -98,7 +102,7 @@ int WordList::valid_word(char *word)
 {
     int		control = 0;
     int		alpha = 0;
-    static	allow_numbers = -1;
+    static int	allow_numbers = -1;
 
     if (allow_numbers < 0)
     {

@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.10  1998/09/04 00:56:23  ghutchis
+//
+// Various bug fixes.
+//
 // Revision 1.9  1998/08/11 08:58:34  ghutchis
 // Second patch for META description tags. New field in DocDB for the
 // desc., space in word DB w/ proper factor.
@@ -42,7 +46,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.9 1998/08/11 08:58:34 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.10 1998/09/04 00:56:23 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -104,8 +108,6 @@ Display::display(int pageNumber)
     int			number = config.Value("matches_per_page");
     int			startAt = (pageNumber - 1) * number;
 
-    cout << "Content-type: text/html\r\n\r\n";
-
     setVariables(pageNumber, matches);
 	
     //
@@ -120,13 +122,12 @@ Display::display(int pageNumber)
 	// No matches.
 	//
         delete matches;
+	cout << "Content-type: text/html\r\n\r\n";
 	displayNomatch();
 	return;
     }
     maxScore = match->getScore();
-	
-    displayHeader();
-	
+    	
     //
     // Display the window of matches requested.
     //
@@ -134,6 +135,10 @@ Display::display(int pageNumber)
     {
 	expandVariables(currentTemplate->getStartTemplate());
     }
+    
+    cout << "Content-type: text/html\r\n\r\n";
+    displayHeader();
+
     matches->Start_Get();
     while ((match = (ResultMatch *)matches->Get_Next()) &&
 	   numberDisplayed < number)
