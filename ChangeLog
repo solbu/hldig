@@ -1,3 +1,8 @@
+Tue Sep 17 17:41:51 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htcommon/defaults.cc (external_protocols): Fixed table formatting
+	as suggested by Lachlan Andrew.
+
 Thu Aug 29 21:21:34 CEST 2002 Soeren Vejrup Carlsen <svc@users.sourceforge.net>
 
 	* htdig/Document.[h,cc]: first steps in FTP handling. HtFTP.h included and 

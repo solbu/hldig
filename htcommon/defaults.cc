@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.68 2002/08/07 16:40:52 angusgb Exp $
+// $Id: defaults.cc,v 1.69 2002/09/17 22:43:30 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -905,7 +905,7 @@ http://www.htdig.org/", " \
 		</th> \
 	  </tr> \
 	  <tr> \
-		<th rowspan=\"3\" valign=\"top\"> \
+		<th valign=\"top\"> \
 		  s \
 		</th> \
 		<td valign=\"top\"> \
@@ -947,7 +947,7 @@ http://www.htdig.org/", " \
 		</td> \
 	  </tr> \
 	  <tr> \
-		<th rowspan=\"3\" valign=\"top\"> \
+		<th valign=\"top\"> \
 		  r \
 		</th> \
 		<td valign=\"top\"> \
@@ -958,7 +958,7 @@ http://www.htdig.org/", " \
 		</td> \
 	  </tr> \
 	  <tr> \
-		<th rowspan=\"3\" valign=\"top\"> \
+		<th valign=\"top\"> \
 		  m \
 		</th> \
 		<td valign=\"top\"> \
@@ -972,7 +972,7 @@ http://www.htdig.org/", " \
 		</td> \
 	  </tr> \
 	  <tr> \
-		<th rowspan=\"3\" valign=\"top\"> \
+		<th valign=\"top\"> \
 		  t \
 		</th> \
 		<td valign=\"top\"> \
@@ -983,7 +983,7 @@ http://www.htdig.org/", " \
 		</td> \
 	  </tr> \
 	  <tr> \
-		<th rowspan=\"3\" valign=\"top\"> \
+		<th valign=\"top\"> \
 		  l \
 		</th> \
 		<td valign=\"top\"> \
@@ -995,7 +995,7 @@ http://www.htdig.org/", " \
 		</td> \
 	  </tr> \
 	  <tr> \
-		<th rowspan=\"3\" valign=\"top\"> \
+		<th valign=\"top\"> \
 		  u \
 		</th> \
 		<td valign=\"top\"> \
