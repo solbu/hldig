@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.h,v 1.3.2.6 2000/01/06 14:42:31 loic Exp $
+// $Id: WordReference.h,v 1.3.2.7 2000/01/10 16:19:13 loic Exp $
 //
 #ifndef _WordReference_h_
 #define _WordReference_h_
@@ -45,6 +45,11 @@ class WordReference : public Object
   ~WordReference()	{}
 
   //
+  // Reset to empty key and record
+  //
+  void			Clear() { key.Clear(); record.Clear(); }
+
+  //
   // Accessors
   //
   WordKey&		Key() { return key; }
@@ -63,9 +68,9 @@ class WordReference : public Object
 %name(SetKey)
 #endif /* SWIG */
   void			Key(const WordKey& arg) { key = arg; }
+#ifndef SWIG
   void			KeyUnpack(const String& packed) { key.Unpack(packed); }
   String		KeyPack() const { String tmp; key.Pack(tmp); return tmp; }
-#ifndef SWIG
   int			KeyPack(String& packed) const { return key.Pack(packed); }
 #endif /* SWIG */
 
@@ -73,11 +78,10 @@ class WordReference : public Object
 %name(SetRecord)
 #endif /* SWIG */
   void			Record(const WordRecord& arg) { record = arg; }
+#ifndef SWIG
   void			RecordUnpack(const String& packed) { record.Unpack(packed); }
   String		RecordPack() const { String tmp; record.Pack(tmp); return tmp; }
-#ifndef SWIG
   int			RecordPack(String& packed) const { return record.Pack(packed); }
-#endif /* SWIG */
 
   inline int		Pack(String& ckey, String& crecord) const {
     if(key.Pack(ckey) == NOTOK) return NOTOK;
@@ -89,6 +93,7 @@ class WordReference : public Object
     if(record.Unpack(crecord) == NOTOK) return NOTOK;
     return OK;
   }
+#endif /* SWIG */
 
   //
   // Transformations
@@ -101,26 +106,22 @@ class WordReference : public Object
     return tmp;
   }
 #endif /* SWIG */
-  //
-  // Reset to empty key and record
-  //
-  void			Clear() { key.Clear(); record.Clear(); }
 
 #ifndef SWIG
   int			compare(Object *to) { String word(((WordReference *) to)->key.GetWord()); return key.GetWord().nocase_compare(word); }
 #endif /* SWIG */
 
+#ifndef SWIG
   //
   // Set the whole structure from ascii string description
   //
-  int Set(const String& buffer);
-#ifndef SWIG
+  int Set(const String& bufferin);
   int Set(StringList& fields);
-#endif /* SWIG */
   //
   // Convert the whole structure to an ascii string description
   //
-  int Get(String& buffer) const;
+  int Get(String& bufferout) const;
+#endif /* SWIG */
 
   //
   // Debuging
@@ -138,6 +139,5 @@ class WordReference : public Object
 #endif /* SWIG */
 };
 
-#endif
-
+#endif /* _WordReference_h */
 

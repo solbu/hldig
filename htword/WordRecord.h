@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.6.2.6 2000/01/06 14:42:31 loic Exp $
+// $Id: WordRecord.h,v 1.6.2.7 2000/01/10 16:19:13 loic Exp $
 //
 
 #ifndef _WordRecord_h_
@@ -42,7 +42,6 @@
 #ifndef SWIG
 #define WORD_RECORD_DATA_FORMAT "u"
 #define WORD_RECORD_STATS_FORMAT "u2"
-#endif /* SWIG */
 
 //
 // Meta information about WordRecord
@@ -62,6 +61,7 @@ class WordRecordInfo
 
     int default_type;
 };
+#endif /* SWIG */
 
 //
 // Statistical information on a word
@@ -106,8 +106,8 @@ class WordRecord
 
   inline int DefaultType() { return WordRecordInfo::Get()->default_type; }
 
-  int Pack(String& packed) const {
 #ifndef SWIG
+  int Pack(String& packed) const {
     switch(type) {
 
     case WORD_RECORD_DATA:
@@ -128,11 +128,9 @@ class WordRecord
       break;
     }
     return OK;
-#endif /* SWIG */
   }
 
   int Unpack(const String& packed) {
-#ifndef SWIG
     String decompressed;
 
     switch(type) {
@@ -165,20 +163,20 @@ class WordRecord
     }
 
     return OK;
-#endif /* SWIG */
   }
+#endif /* SWIG */
 
+#ifndef SWIG
   //
   // Set the whole structure from ascii string description
   //
-  int Set(const String& buffer);
-#ifndef SWIG
+  int Set(const String& bufferin);
   int Set(StringList& fields);
-#endif /* SWIG */
   //
   // Convert the whole structure to an ascii string description
   //
-  int Get(String& buffer) const;
+  int Get(String& bufferout) const;
+#endif /* SWIG */
 
 #ifndef SWIG
   friend ostream	&operator << (ostream &o, const WordRecord &record);

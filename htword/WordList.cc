@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.23 2000/01/06 14:42:31 loic Exp $
+// $Id: WordList.cc,v 1.6.2.24 2000/01/10 16:19:13 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -171,7 +171,7 @@ int WordList::Put(const WordReference& arg, int flags)
     cerr << "WordList::Put(" << arg << ") word is zero length\n";
     return NOTOK;
   }
-  if (!arg.Key().IsFullyDefined()) {
+  if (!arg.Key().Filled()) {
     cerr << "WordList::Put(" << arg << ") key is not fully defined\n";
   }
 
@@ -482,25 +482,25 @@ WordList::Walk(WordSearchDescription &search)
 int
 WordList::SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags)
 {
-    int nfields=WordKey::nfields();
+    int nfields=WordKey::NFields();
     if(verbose>1){cdebug << "WordList::SkipUselessSequentialWalking: skipchk:" <<  foundKey << endl;}
     int i;
     // check if "found" key has a field that is bigger than 
     // the corresponding "wordRef" key field
     for(i=search.first_skip_field;i<nfields;i++)// (field 0 is not set (...it's the word))
     {
-	if(search.searchKey.IsDefinedInSortOrder(i))
+	if(search.searchKey.IsDefined(i))
 	{
 	    if( (WordKeyInfo::Get()->sort[i].direction == WORD_SORT_ASCENDING
-		 && foundKey.GetInSortOrder(i) > search.searchKey.GetInSortOrder(i))   ||
+		 && foundKey.Get(i) > search.searchKey.Get(i))   ||
 		(WordKeyInfo::Get()->sort[i].direction == WORD_SORT_DESCENDING
-		 && foundKey.GetInSortOrder(i) < search.searchKey.GetInSortOrder(i))      )
+		 && foundKey.Get(i) < search.searchKey.Get(i))      )
 
 	    { //  field 'i' is bigger in "found" than in "wordRef", we can skip
 		if(verbose>1){cdebug << "WordList::SkipUselessSequentialWalking: found field:" << i 
 				   << "is past wordref ... maybe we should skip" << endl;}
 				// now find a key that's immediately bigger than "found"
-		if(foundKey.SetToFollowingInSortOrder(i) == OK)
+		if(foundKey.SetToFollowing(i) == OK)
 		{
 		    // ok!, we can setup for skip (instead of next) now
 		    foundKey.Pack(key);

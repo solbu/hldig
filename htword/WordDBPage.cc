@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.cc,v 1.1.2.1 2000/01/06 11:31:18 bosc Exp $
+// $Id: WordDBPage.cc,v 1.1.2.2 2000/01/10 16:19:13 loic Exp $
 //
 
 #include"WordDBPage.h"
@@ -240,7 +240,7 @@ WordDBPage::Uncompress_vals_chaged_flags(Compressor &in,unsigned int **pcflags,i
     int nbits=num_bits(n);
     for(int i=0;i<n;i++)
     {
-	ex=in.get_uint(WordKey::nfields(),label_str("cflags",i));
+	ex=in.get_uint(WordKey::NFields(),label_str("cflags",i));
 	cflags[i]=ex;
 	int rep=in.get("rep");
 	if(rep)
@@ -291,7 +291,7 @@ void
 WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_sizes,int nnums0,byte *rworddiffs,int nrworddiffs)
 {
     int irwordiffs=0;
-    int nfields=WordKey::nfields();
+    int nfields=WordKey::NFields();
     int *rnum_pos=new int[   nnums0];// current index count
     CHECK_MEM(rnum_pos);
 
@@ -367,13 +367,13 @@ WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_siz
 		    {
 			// this is the first field that changes in this key
 			// so difference is coded compared to value in pevious key
-			akey.SetInSortOrder(j,rnums[k][indx]+pkey.GetInSortOrder(j));
+			akey.Set(j,rnums[k][indx]+pkey.Get(j));
 		    }
 		    else
 		    {
 			// this is NOT the first field that changes in this key
 			// so difference is coded from 0
-			akey.SetInSortOrder(j,rnums[k][indx]);
+			akey.Set(j,rnums[k][indx]);
 		    }
                     // we read 1 element from coded differences in this field
 		    rnum_pos[k]++;
@@ -382,8 +382,8 @@ WordDBPage::Uncompress_rebuild(Compressor &in,unsigned int **rnums,int *rnum_siz
 		else
 		{
 		    // no changes found, just copy from previous key
-		    if(!foundfchange){akey.SetInSortOrder(j,pkey.GetInSortOrder(j));}
-		    else{akey.SetInSortOrder(j,0);}
+		    if(!foundfchange){akey.Set(j,pkey.Get(j));}
+		    else{akey.Set(j,0);}
 		}
 	    }
 	}
@@ -601,9 +601,9 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums0,Ht
 
 	    // check numerical fields for changes
 	    // ********   sets CNFIELDS and some of CNFLAGS ************
-	    for(j=1;j<akey.nfields();j++)
+	    for(j=1;j<akey.NFields();j++)
 	    {
-		int diff=akey.GetInSortOrder(j)-(foundfchange ? 0 : pkey.GetInSortOrder(j));
+		int diff=akey.Get(j)-(foundfchange ? 0 : pkey.Get(j));
 		if(diff)
 		{
 		    foundfchange=1;
@@ -616,7 +616,7 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int nnums0,Ht
 	    // ********   sets CNWORDDIFFPOS CNWORDDIFFLEN and some of CNFLAGS ************
 	    if(!(aword==pword))
 	    {
-		nums[iflag]|=pow2(akey.nfields()-1);
+		nums[iflag]|=pow2(akey.NFields()-1);
 		int fd=first_diff(aword,pword);
 		nums[CNWORDDIFFPOS*nk+nums_pos[CNWORDDIFFPOS]++]=fd;
 		nums[CNWORDDIFFLEN*nk+nums_pos[CNWORDDIFFLEN]++]=aword.length()-fd;
@@ -639,7 +639,7 @@ WordDBPage::Compress_vals_changed_flags(Compressor &out,unsigned int *cflags,int
     for(int i=0;i<n;i++)
     {
 	ex=cflags[i];
-	out.put_uint(ex,WordKey::nfields(),label_str("cflags",i));
+	out.put_uint(ex,WordKey::NFields(),label_str("cflags",i));
 	int k;
 	for(k=1;k+i<n;k++){if(ex!=cflags[i+k]){break;}}
 	k--;
@@ -941,13 +941,13 @@ WordDBPage::show(int redo)
 	      printf("\"");
 	      for(j=0;j<20-tkey.GetWord().length();j++){printf(" ");}
 	      printf("|");
-	      for(j=1;j<tkey.nfields();j++){printf("%4x ",tkey.GetInSortOrder(j));}
+	      for(j=1;j<tkey.NFields();j++){printf("%4x ",tkey.Get(j));}
 	      printf("|");
 	  
-	      for(j=1;j<tkey.nfields();j++)
+	      for(j=1;j<tkey.NFields();j++)
 	      {
-		  int diff=tkey.GetInSortOrder(j)-prev.GetInSortOrder(j);
-		  if(diff<0){diff=tkey.GetInSortOrder(j);}
+		  int diff=tkey.Get(j)-prev.Get(j);
+		  if(diff<0){diff=tkey.Get(j);}
 		  printf("%6d ",diff);
 		  fieldchanged[j]=diff;
 	      }
@@ -963,8 +963,8 @@ WordDBPage::show(int redo)
 		  printf("  %2d %s",fd,((char *)word)+fd);
 	      }
 
-	      int keycl=tkey.nfields();
-	      for(j=1;j<tkey.nfields();j++)
+	      int keycl=tkey.NFields();
+	      for(j=1;j<tkey.NFields();j++)
 	      {
 		  if(fieldchanged[j]){keycl+=WordKeyInfo::Get()->sort[j].bits;}
 	      }
@@ -1010,7 +1010,7 @@ WordDBPage::show(int redo)
 	  WordDBKey tkey(bie);
 	  for(j=0;j<bie->len-tkey.GetWord().length();j++){printf("%2x ",bie->data[j]);}
 	  printf(" : ");
-	  for(j=1;j<tkey.nfields();j++){printf("%5d ",tkey.GetInSortOrder(j));}
+	  for(j=1;j<tkey.NFields();j++){printf("%5d ",tkey.Get(j));}
 	  printf("\"%s\"\n",(char *)tkey.GetWord());
       }
   }

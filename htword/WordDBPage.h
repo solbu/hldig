@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBPage.h,v 1.1.2.1 2000/01/06 11:31:18 bosc Exp $
+// $Id: WordDBPage.h,v 1.1.2.2 2000/01/10 16:19:13 loic Exp $
 //
 //
 // Access to Berkeley DB internal
@@ -106,8 +106,8 @@ public:
 	errr("UNUSED");
   	if(GetWord().length()==0)
 	{
-	    for(int j=1;j<nfields();j++)
-	    {if(GetInSortOrder(j)!=0){errr("WordDBKey::is_null key has 0 len word but is not null");}}
+	    for(int j=1;j<NFields();j++)
+	    {if(Get(j)!=0){errr("WordDBKey::is_null key has 0 len word but is not null");}}
 	    return 1;
 	}
 	return 0;
@@ -416,13 +416,13 @@ class WordDBPage
     {
 	CNFLAGS        =0;
 	CNFIELDS       =1;
-	CNDATASTATS0   = WordKey::nfields()    ;
-	CNDATASTATS1   = WordKey::nfields() + 1;
-	CNDATADATA     = WordKey::nfields() + 2;
-	CNBTIPGNO      = WordKey::nfields() + 3;
-	CNBTINRECS     = WordKey::nfields() + 4;
-	CNWORDDIFFPOS  = WordKey::nfields() + 5;
-	CNWORDDIFFLEN  = WordKey::nfields() + 6;
+	CNDATASTATS0   = WordKey::NFields()    ;
+	CNDATASTATS1   = WordKey::NFields() + 1;
+	CNDATADATA     = WordKey::NFields() + 2;
+	CNBTIPGNO      = WordKey::NFields() + 3;
+	CNBTINRECS     = WordKey::NFields() + 4;
+	CNWORDDIFFPOS  = WordKey::NFields() + 5;
+	CNWORDDIFFLEN  = WordKey::NFields() + 6;
 	nnums=(CNWORDDIFFLEN+1);
 
 	pg=NULL;

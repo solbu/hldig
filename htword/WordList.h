@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.12 2000/01/06 14:42:31 loic Exp $
+// $Id: WordList.h,v 1.5.2.13 2000/01/10 16:19:13 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -224,10 +224,9 @@ public:
     // Walk and collect data from the word database.
     // Backend of Collect, Dump, Delete...
     //
-#ifndef SWIG
-//      List 		*Walk (const WordReference& word, int action, wordlist_walk_callback_t callback, Object &callback_data);
-    int   Walk(      WordSearchDescription &SearchDescription);
+    int   Walk(WordSearchDescription &SearchDescription);
     List *Search(const WordSearchDescription &SearchDescription);
+#ifndef SWIG
     int SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags);
 #endif /* SWIG */
 
