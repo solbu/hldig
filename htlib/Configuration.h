@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.4 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: Configuration.h,v 1.5 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -21,14 +21,16 @@
 
 #include "Dictionary.h"
 #include "htconfig.h"
-
-class String;
-
+#include "htString.h"
 
 struct ConfigDefaults
 {
-    char	*name;
-    char	*value;
+  char	*name;			// Name of the attribute
+  char	*value;			// Default value
+  char	*type;			// Type of the value (string, integer, boolean)
+  char	*programs;		// White separated list of programs/modules using this attribute
+  char	*example;		// Example usage of the attribute (HTML)
+  char	*description;		// Long description of the attribute (HTML)
 };
 
 
@@ -39,45 +41,50 @@ public:
     // Construction/Destruction
     //
     Configuration();
-    ~Configuration();
+    Configuration(const Configuration& config) :
+      dict(config.dict),
+      separators(config.separators)
+      {
+	allow_multiple = config.allow_multiple;
+      }
+    ~Configuration() {}
 
     //
     // Adding and deleting items to and from the Configuration
     //
-    void		Add(char *name, char *value);
-    void		Add(char *str);
-    int			Remove(char *name);
+    void		Add(const char *name, const char *value);
+    void		Add(const char *str);
+    int			Remove(const char *name);
 
     //
     // Let the Configuration know how to parse name value pairs
     //
-    void		NameValueSeparators(char *s);
+    void		NameValueSeparators(const char *s);
 	
     //
     // We need some way of reading in the database from a configuration file
     //
-    int			Read(char *filename);
+    int			Read(const String& filename);
 
     //
     // Searching can be done with the Find() member or the array indexing
     // operator
     //
-    char		*Find(char *name);
-    char		*operator[](char *name);
-    int			Value(char *name, int default_value = 0);
-    double		Double(char *name, double default_value = 0);
-    int			Boolean(char *name, int default_value = 0);
+    const String	Find(const char *name) const;
+    const String	operator[](const char *name) const;
+    int			Value(const char *name, int default_value = 0) const;
+    double		Double(const char *name, double default_value = 0) const;
+    int			Boolean(const char *name, int default_value = 0) const;
 
     //
     // Read defaults from an array
     //
-    void		Defaults(ConfigDefaults *);
+    void		Defaults(const ConfigDefaults *);
 
 protected:
     Dictionary		dict;
-    String		*separators;
+    String		separators;
     int			allow_multiple;
 };
-
 
 #endif

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htsearch.cc,v 1.47 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: htsearch.cc,v 1.48 1999/09/24 10:29:05 loic Exp $
 //
 
 #include "htsearch.h"
@@ -274,7 +274,7 @@ main(int ac, char **av)
     if (display.hasTemplateError())
       {
 	reportError(form("Unable to read template file '%s'\nDoes it exist?",
-                         config["template_name"]));
+                         (const char*)config["template_name"]));
 	return 0;
       }
     display.setOriginalWords(originalWords);
@@ -383,7 +383,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     // will be put in the searchWords list and at the same time in the
     // String pattern separated with '|'.
     //
-    WordList	badWords;		// Just used to check for valid words.
+    WordList	badWords(config);		// Just used to check for valid words.
     badWords.BadWordFile(config["bad_word_list"]);
 
     //
@@ -394,7 +394,7 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
     unsigned char	t;
     String		word;
     // Why use a char type if String is the new char type!!!
-    char		*prefix_suffix = config["prefix_match_character"];
+    const String	prefix_suffix = config["prefix_match_character"];
     while (*pos)
     {
 	while (1)
@@ -518,11 +518,11 @@ setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
 	    weight = "1";
 	fweight = atof(weight);
 
-	fuzzy = Fuzzy::getFuzzyByName(name);
+	fuzzy = Fuzzy::getFuzzyByName(name, config);
 	if (fuzzy)
 	{
 	    fuzzy->setWeight(fweight);
-	    fuzzy->openIndex(config);
+	    fuzzy->openIndex();
 	    algorithms.Add(fuzzy);
 	}
     }

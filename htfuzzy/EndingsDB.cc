@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: EndingsDB.cc,v 1.7 1999/09/10 17:22:24 ghutchis Exp $
+// $Id: EndingsDB.cc,v 1.8 1999/09/24 10:29:01 loic Exp $
 //
 
 #include "Endings.h"
@@ -28,7 +28,7 @@
 //*****************************************************************************
 //
 int
-Endings::createDB(Configuration &config)
+Endings::createDB(const Configuration &config)
 {
     Dictionary	rules;
     String      tmpdir = getenv("TMPDIR");
@@ -77,7 +77,7 @@ Endings::createDB(Configuration &config)
 
 //*****************************************************************************
 int
-Endings::readRules(Dictionary &rules, char *rulesFile)
+Endings::readRules(Dictionary &rules, const String& rulesFile)
 {
     FILE	*fl = fopen(rulesFile, "r");
 
@@ -146,7 +146,7 @@ Endings::readRules(Dictionary &rules, char *rulesFile)
 
 //*****************************************************************************
 int
-Endings::createRoot(Dictionary &rules, char *word2root, char *root2word, char *dictFile)
+Endings::createRoot(Dictionary &rules, char *word2root, char *root2word, const String& dictFile)
 {
     FILE	*fl = fopen(dictFile, "r");
     if (fl == NULL)
@@ -197,7 +197,7 @@ Endings::createRoot(Dictionary &rules, char *word2root, char *root2word, char *d
 	//
 	for (int i = 0; i < wordList.Count(); i++)
 	{
-	    w2r->Put(((String *)wordList[i])->get(), word, strlen(input));
+	    w2r->Put(*(String *)wordList[i], String(word, strlen(input)));
 	}
     }
 

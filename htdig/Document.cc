@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.52 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: Document.cc,v 1.53 1999/09/24 10:28:56 loic Exp $
 //
 
 #include "Document.h"
@@ -64,8 +64,8 @@ Document::Document(char *u, int max_size)
     else
 	max_doc_size = config.Value("max_doc_size");
 	
-    char	*proxyURL = config["http_proxy"];
-    if (proxyURL && *proxyURL)
+    String proxyURL = config["http_proxy"];
+    if (proxyURL[0])
     {
 	proxy = new URL(proxyURL);
 	proxy->normalize();
@@ -132,7 +132,7 @@ Document::Reset()
 // void Document::setUsernamePassword(char *credentials)
 //
 void
-Document::setUsernamePassword(char *credentials)
+Document::setUsernamePassword(const char *credentials)
 {
     static char	tbl[64] =
     {
@@ -146,7 +146,7 @@ Document::setUsernamePassword(char *credentials)
 	'4', '5', '6', '7', '8', '9', '+', '/'
     };
     authorization = 0;
-    char	*p;
+    const char	*p;
     int		n = strlen(credentials);
     int		ch;
 
@@ -453,7 +453,7 @@ Document::RetrieveHTTP(time_t date)
         bytesToGo = max_doc_size;
     while (bytesToGo > 0)
     {
-        int len = bytesToGo<sizeof(docBuffer) ? bytesToGo : sizeof(docBuffer);
+        int len = bytesToGo<(int)sizeof(docBuffer) ? bytesToGo : (int)sizeof(docBuffer);
         bytesRead = c.read(docBuffer, len);
         if (bytesRead <= 0)
             break;

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtPack.cc,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: HtPack.cc,v 1.5 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "HtPack.h"
@@ -38,9 +38,9 @@
 //  The description is located in a byte before every four
 // "fields".
 String
-htPack(char format[], const char *data)
+htPack(const char format[], const char *data)
 {
-  char *s = format;
+  const char *s = format;
 
   // We insert the encodings by number, rather than shifting and
   // inserting at the "bottom".	 This should make it faster for
@@ -70,10 +70,9 @@ htPack(char format[], const char *data)
 
     if (isdigit(*s))
     {
-      // This is the inner reason why format is not "const"; the
-      // second argument to strtol is seldom "const char **".
-      // I don't think it is worth the portability fuss to cast it.
-      n = strtol(s, &s, 10);
+      char* t;
+      n = strtol(s, &t, 10);
+      s = t;
     }
     else
       n = 1;
@@ -250,13 +249,11 @@ htPack(char format[], const char *data)
 }
 
 
-// Reverse the effect of htPack.  Update dataref according to
-// used amount of data.
+// Reverse the effect of htPack.
 String
-htUnpack(char format[], char * &dataref)
+htUnpack(const char format[], const char *data)
 {
-  char *s = format;
-  char *data = dataref;
+  const char *s = format;
 
   // The description needs to be renewed immediately.
   unsigned int description = 1;
@@ -275,10 +272,9 @@ htUnpack(char format[], char * &dataref)
 
     if (isdigit(*s))
     {
-      // This is the inner reason why format is not "const"; the
-      // second argument to strtol is seldom "const char **".
-      // I don't think it is worth the portability fuss to cast it.
-      n = strtol(s, &s, 10);
+      char* t;
+      n = strtol(s, &t, 10);
+      s = t;
     }
     else
       n = 1;
@@ -441,8 +437,6 @@ htUnpack(char format[], char * &dataref)
     }
   }
 
-  // Don't forget to say how much was used.
-  dataref = data;
   return decompressed;
 }
 

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ParsedString.h,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: ParsedString.h,v 1.5 1999/09/24 10:29:03 loic Exp $
 
 #ifndef _ParsedString_h_
 #define _ParsedString_h_
@@ -27,19 +27,15 @@ public:
 	// Construction/Destruction
 	//
 					ParsedString();
-					ParsedString(char *s);
+					ParsedString(const char *s);
 					~ParsedString();
 
-	void			set(char *s);
-	char			*get(Dictionary &d);
-protected:
-	String			value;
-	String			parsed;
-
+	void			set(const String& s);
+	const String		get(const Dictionary &d) const;
 private:
-	void			getFileContents(String &, char *);
+	String			value;
+
+	void			getFileContents(String &str, const String& filename) const;
 };
 
 #endif
-
-

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ParsedString.cc,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: ParsedString.cc,v 1.5 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "ParsedString.h"
@@ -30,9 +30,8 @@ ParsedString::ParsedString()
 
 
 //*****************************************************************************
-// ParsedString::ParsedString(char *s)
 //
-ParsedString::ParsedString(char *s)
+ParsedString::ParsedString(const char *s)
 {
     value = s;
 }
@@ -47,17 +46,15 @@ ParsedString::~ParsedString()
 
 
 //*****************************************************************************
-// void ParsedString::set(char *str)
 //
 void
-ParsedString::set(char *str)
+ParsedString::set(const String& str)
 {
     value = str;
 }
 
 
 //*****************************************************************************
-// char *ParsedString::get(Dictionary &dict)
 //   Return a fully parsed string.
 //
 //   Allowed syntax:
@@ -68,122 +65,122 @@ ParsedString::set(char *str)
 //
 //   The filename can also contain variables
 //
-char *
-ParsedString::get(Dictionary &dict)
+const String
+ParsedString::get(const Dictionary &dict) const
 {
-    String		variable("");
-    ParsedString	*temp;
-    char		*str = value.get();
-    char		delim = ' ';
-    int		need_delim = 0;
+  String		variable("");
+  String		parsed = 0;
+  ParsedString	*temp;
+  const char		*str = value.get();
+  char		delim = ' ';
+  int			need_delim = 0;
 
-    parsed = 0;
-    while (*str)
+  while (*str)
     {
-        if (*str == '$')
+      if (*str == '$')
         {
-            //
-            // A dollar sign starts a variable.
-            //
-            str++;
-            need_delim = 1;
-            if (*str == '{')
-                delim = '}';
-            else if (*str == '(')
-                delim = ')';
-            else
-                need_delim = 0;
-            if (need_delim)
-                str++;
-            variable = 0;
-            while (isalpha(*str) || *str == '_' || *str == '-')
+	  //
+	  // A dollar sign starts a variable.
+	  //
+	  str++;
+	  need_delim = 1;
+	  if (*str == '{')
+	    delim = '}';
+	  else if (*str == '(')
+	    delim = ')';
+	  else
+	    need_delim = 0;
+	  if (need_delim)
+	    str++;
+	  variable = 0;
+	  while (isalpha(*str) || *str == '_' || *str == '-')
             {
-                variable << *str++;
+	      variable << *str++;
             }
-            if (*str)
+	  if (*str)
             {
-                if (need_delim && *str == delim)
+	      if (need_delim && *str == delim)
                 {
-                    //
-                    // Found end of variable
-                    //
-                    temp = (ParsedString *) dict[variable];
-                    if (temp)
-                        parsed << temp->get(dict);
-                    str++;
+		  //
+		  // Found end of variable
+		  //
+		  temp = (ParsedString *) dict[variable];
+		  if (temp)
+		    parsed << temp->get(dict);
+		  str++;
                 }
-                else if (need_delim)
+	      else if (need_delim)
                 {
-                    //
-                    // Error.  Probably an illegal value in the name We'll
-                    // assume the variable ended here.
-                    //
-                    temp = (ParsedString *) dict[variable];
-                    if (temp)
-                        parsed << temp->get(dict);
+		  //
+		  // Error.  Probably an illegal value in the name We'll
+		  // assume the variable ended here.
+		  //
+		  temp = (ParsedString *) dict[variable];
+		  if (temp)
+		    parsed << temp->get(dict);
                 }
-                else
+	      else
                 {
-                    //
-                    // This variable didn't have a delimiter.
-                    //
-                    temp = (ParsedString *) dict[variable];
-                    if (temp)
-                        parsed << temp->get(dict);
+		  //
+		  // This variable didn't have a delimiter.
+		  //
+		  temp = (ParsedString *) dict[variable];
+		  if (temp)
+		    parsed << temp->get(dict);
                 }
             }
-            else
+	  else
             {
-                //
-                // End of string reached.  We'll assume that this is also
-                // the end of the variable
-		//
-                temp = (ParsedString *) dict[variable];
-                if (temp)
-                    parsed << temp->get(dict);
+	      //
+	      // End of string reached.  We'll assume that this is also
+	      // the end of the variable
+	      //
+	      temp = (ParsedString *) dict[variable];
+	      if (temp)
+		parsed << temp->get(dict);
             }
         }
-        else if (*str == '`')
+      else if (*str == '`')
         {
-            //
-            // Back-quote delimits a filename which we need to insert
-            //
-            str++;
-            variable = 0;
-            while (*str && *str != '`')
+	  //
+	  // Back-quote delimits a filename which we need to insert
+	  //
+	  str++;
+	  variable = 0;
+	  while (*str && *str != '`')
             {
-                variable << *str++;
+	      variable << *str++;
             }
-            if (*str == '`')
-                str++;
-            ParsedString	filename(variable);
-            variable = 0;
-            getFileContents(variable, filename.get(dict));
-            parsed << variable;
+	  if (*str == '`')
+	    str++;
+	  ParsedString	filename(variable);
+	  variable = 0;
+	  getFileContents(variable, filename.get(dict));
+	  parsed << variable;
         }
-        else if (*str == '\\')
+      else if (*str == '\\')
         {
-            //
-            // Backslash escapes the next character
-            //
-            str++;
-            if (*str)
-                parsed << *str++;
+	  //
+	  // Backslash escapes the next character
+	  //
+	  str++;
+	  if (*str)
+	    parsed << *str++;
         }
-        else
+      else
         {
-            //
-            // Normal character
-            //
-            parsed << *str++;
+	  //
+	  // Normal character
+	  //
+	  parsed << *str++;
         }
     }
-    return parsed.get();
+  return parsed;
 }
 
 
 void
-ParsedString::getFileContents(String &str, char *filename)
+ParsedString::getFileContents(String &str, const String& filename) const
 {
     FILE	*fl = fopen(filename, "r");
     char	buffer[1000];

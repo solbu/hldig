@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.8 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: Document.h,v 1.9 1999/09/24 10:28:57 loic Exp $
 //
 
 #ifndef _Document_h_
@@ -97,7 +97,7 @@ public:
     //
     // Set the username and password to be used in the HTTP request
     //
-    void			setUsernamePassword(char *credentials);
+    void			setUsernamePassword(const char *credentials);
 	
 private:
     enum

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: lib.h,v 1.8 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: lib.h,v 1.9 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef _lib_h
@@ -39,8 +39,8 @@
 // To get rid of inconsistencies between different machines we will ALWAYS
 // use our own version of the following routines
 //
-int mystrcasecmp(char *, const char *);
-int mystrncasecmp(char *, const char *, int);
+int mystrcasecmp(const char *, const char *);
+int mystrncasecmp(const char *, const char *, int);
 
 //
 // strdup is a really handy function except that the standard version
@@ -48,13 +48,17 @@ int mystrncasecmp(char *, const char *, int);
 // of when strdup is used and when new is used, we will solve the problem
 // be using our own version of strdup which uses new to allocate memory.
 //
-char *strdup(char *);
+char *strdup(const char *);
 
 //
 // The standard strstr() function is limited in that it does case-sensitive
 // searches.  This version will ignore case.
 //
-char *mystrcasestr(char *s, char *pattern);
+const char *mystrcasestr(const char *s, const char *pattern);
+inline char *mystrcasestr(char *s, const char *pattern) {
+  return (char*)mystrcasestr((const char *)s, pattern);
+}
+  
 
 //
 // Too many problems with system strptime() functions...  Just use our own

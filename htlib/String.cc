@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: String.cc,v 1.24 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: String.cc,v 1.25 1999/09/24 10:29:03 loic Exp $
 //
 
 
@@ -43,7 +43,7 @@ String::String(int init)
     Data = new char[init];
 }
 
-String::String(char *s)
+String::String(const char *s)
 {
     Allocated = 0;
     Length = 0;
@@ -56,7 +56,7 @@ String::String(char *s)
       }
 }
 
-String::String(char *s, int len)
+String::String(const char *s, int len)
 {
     Allocated = 0;
     Length = 0;
@@ -101,7 +101,7 @@ void String::operator = (const String &s)
     copy_data_from(s.Data, Length);
 }
 
-void String::operator = (char *s)
+void String::operator = (const char *s)
 {
     if (s)
     {
@@ -114,7 +114,7 @@ void String::operator = (char *s)
 	Length = 0;
 }
 
-void String::append(String &s)
+void String::append(const String &s)
 {
     if (s.length() == 0)
 	return;
@@ -125,7 +125,7 @@ void String::append(String &s)
     Length = new_len;
 }
 
-void String::append(char *s)
+void String::append(const char *s)
 {
     if (!s)
 	return;
@@ -133,7 +133,7 @@ void String::append(char *s)
     append(s,strlen(s));
 }
 
-void String::append(char *s, int slen)
+void String::append(const char *s, int slen)
 {
     if (!s || !slen)
 	return;
@@ -160,23 +160,22 @@ void String::append(char ch)
     Length = new_len;
 }
 
-int String::compare(Object *obj)
+int String::compare(const String& obj) const
 {
-    String	*s = (String *) obj;
     int	len;
     int	result;
-    char	*p1 = Data;
-    char	*p2 = s->Data;
+    const char	*p1 = Data;
+    const char	*p2 = obj.Data;
 
     len = Length;
     result = 0;
 
-    if (Length > s->Length)
+    if (Length > obj.Length)
     {
 	result = 1;
-	len = s->Length;
+	len = obj.Length;
     }
-    else if (Length < s->Length)
+    else if (Length < obj.Length)
 	result = -1;
 
     while (len)
@@ -196,10 +195,8 @@ int String::compare(Object *obj)
     return result;
 }
 
-int String::nocase_compare(String &s)
+int String::nocase_compare(const String &s) const
 {
-    int	len;
-    int	result;
     char	*p1 = Data;
     char	*p2 = s.Data;
 
@@ -223,13 +220,28 @@ int String::write(int fd) const
     return left;
 }
 
-char *String::get() const
+const char *String::get() const
 {
-static char	*null = "";
-    if (!Allocated)
-	return null;
-    Data[Length] = '\0';	// We always leave room for this.
-    return Data;
+  static char	*null = "";
+  if (!Allocated)
+    return null;
+  Data[Length] = '\0';	// We always leave room for this.
+  return Data;
+}
+
+char *String::get()
+{
+  static char	*null = "";
+  if (!Allocated)
+    return null;
+  Data[Length] = '\0';	// We always leave room for this.
+  return Data;
+}
+
+String::operator int () const
+{
+  cerr << "String: int(): either use empty() or as_integer()\n";
+  abort();
 }
 
 char *String::new_char() const
@@ -248,7 +260,7 @@ char *String::new_char() const
 }
 
 
-int String::as_integer(int def)
+int String::as_integer(int def) const
 {
     if (Length <= 0)
 	return def;
@@ -256,6 +268,13 @@ int String::as_integer(int def)
     return atoi(Data);
 }
 
+double String::as_double(double def) const
+{
+    if (Length <= 0)
+	return def;
+    Data[Length] = '\0';
+    return atof(Data);
+}
 
 String String::sub(int start, int len) const
 {
@@ -273,7 +292,7 @@ String String::sub(int start) const
     return sub(start, Length - start);
 }
 
-int String::indexOf(char *str)
+int String::indexOf(const char *str) const
 {
     char	*c;    
     //
@@ -300,7 +319,7 @@ int String::indexOf(char *str)
     return -1;
 }
 
-int String::indexOf(char ch)
+int String::indexOf(char ch) const
 {
     int		i;
     for (i = 0; i < Length; i++)
@@ -311,7 +330,7 @@ int String::indexOf(char ch)
     return -1;
 }
 
-int String::lastIndexOf(char ch, int pos)
+int String::lastIndexOf(char ch, int pos) const
 {
     if (pos >= Length)
 	return -1;
@@ -324,12 +343,12 @@ int String::lastIndexOf(char ch, int pos)
     return -1;
 }
 
-int String::lastIndexOf(char ch)
+int String::lastIndexOf(char ch) const
 {
     return lastIndexOf(ch, Length - 1);
 }
 #ifdef NOINLINE
-String &String::operator << (char *str)
+String &String::operator << (const char *str)
 {
     append(str);
     return *this;
@@ -366,7 +385,7 @@ String &String::operator << (long l)
     return *this;
 }
 
-String &String::operator << (String &s)
+String &String::operator << (const String &s)
 {
     append(s.get(), s.length());
     return *this;
@@ -389,12 +408,19 @@ char	String::operator >> (char c)
 
 char String::last()
 {
-    if (Length > 0)
-	return Data[Length - 1];
-    else
-	return 0;
+  if (Length > 0)
+    return Data[Length - 1];
+  else
+    return 0;
 }
 
+char	String::operator [] (int n) const
+{
+  if (Length > 0)
+    return Data[Length - 1];
+  else
+    return 0;
+}
 
 char	&String::operator [] (int n)
 {
@@ -519,7 +545,7 @@ void String::Deserialize(String &source, int &index)
 //------------------------------------------------------------------------
 // Non member operators.
 //
-String operator + (String &a, String &b)
+String operator + (const String &a, const String &b)
 {
     String	result(a, a.length() + b.length());
 	
@@ -527,42 +553,42 @@ String operator + (String &a, String &b)
     return result;
 }
 
-int operator == (String &a, String &b)
+int operator == (const String &a, const String &b)
 {
     if (a.Length != b.Length)
 	return 0;
 
-    return a.compare((Object *) &b) == 0;
+    return a.compare(b) == 0;
 }
 
-int operator != (String &a, String &b)
+int operator != (const String &a, const String &b)
 {
-    return a.compare((Object *) &b) != 0;
+    return a.compare(b) != 0;
 }
 
-int operator < (String &a, String &b)
+int operator < (const String &a, const String &b)
 {
-    return a.compare((Object *) &b) == -1;
+    return a.compare(b) == -1;
 }
 
-int operator > (String &a, String &b)
+int operator > (const String &a, const String &b)
 {
-    return a.compare((Object *) &b) == 1;
+    return a.compare(b) == 1;
 }
 
-int operator <= (String &a, String &b)
+int operator <= (const String &a, const String &b)
 {
-    return a.compare((Object *) &b) <= 0;
+    return a.compare(b) <= 0;
 }
 
-int operator >= (String &a, String &b)
+int operator >= (const String &a, const String &b)
 {
-    return a.compare((Object *) &b) >= 0;
+    return a.compare(b) >= 0;
 }
 
-ostream &operator << (ostream &o, String &s)
+ostream &operator << (ostream &o, const String &s)
 {
-    o.write(s.Data, s.length());;
+    o.write(s.Data, s.length());
     return o;
 }
 
@@ -570,7 +596,7 @@ ostream &operator << (ostream &o, String &s)
 // Private Methods.
 //
 
-void String::copy_data_from(char *s, int len, int dest_offset)
+void String::copy_data_from(const char *s, int len, int dest_offset)
 {
     memcpy(Data + dest_offset, s, len);
 }
@@ -627,7 +653,7 @@ void String::reallocate_space(int len)
       }
 }
 
-void String::copy(char *s, int len, int allocation_hint)
+void String::copy(const char *s, int len, int allocation_hint)
 {
   if (len == 0 || allocation_hint == 0)
     return;         // We're not actually copying anything!

@@ -1,0 +1,48 @@
+#
+#   Copyright (C) 1999 Loic Dachary
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the
+#   Free Software Foundation; either version 2, or (at your option) any
+#   later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
+#
+
+. test_functions
+
+verbose=$1
+
+exercise() {
+	    echo "Exercising $1";
+	    ( cd ../htcommon
+	      perl word_builder.pl $1
+	      if $MAKE > /tmp/t_word$$ 2>&1
+	      then
+		rm /tmp/t_word$$
+	      else
+		cat /tmp/t_word$$
+		exit 1
+	      fi
+	    )
+	    if $MAKE > /tmp/t_word$$ 2>&1
+	    then
+		rm /tmp/t_word$$
+	    else
+		cat /tmp/t_word$$
+		exit 1
+	    fi
+	    ./word -w $1 -k $verbose || exit 1
+}
+
+for i in ../test/word.try1 ../test/word.try2 ../test/word.try3 ../test/word.try4 ../test/word.try5 word.desc
+do
+    exercise $i
+done

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.cc,v 1.41 1999/09/10 14:55:44 loic Exp $
+// $Id: DocumentRef.cc,v 1.42 1999/09/24 10:28:56 loic Exp $
 //
 
 #include "DocumentRef.h"
@@ -425,7 +425,7 @@ void DocumentRef::Deserialize(String &stream)
 //*****************************************************************************
 // void DocumentRef::AddDescription(char *d, WordList &words)
 //
-void DocumentRef::AddDescription(char *d, WordList &words)
+void DocumentRef::AddDescription(const char *d, WordList &words)
 {
     if (!d || !*d)
         return;
@@ -444,14 +444,15 @@ void DocumentRef::AddDescription(char *d, WordList &words)
     // This also ensures we keep the proper weight on descriptions 
     // that occur many times
 
-    int old_docID = words.DocumentID(docID);
-    
     // Parse words.
     char         *p                   = desc;
     static int    minimum_word_length = config.Value("minimum_word_length", 3);
     static int    max_descriptions    = config.Value("max_descriptions", 5);
 
     String word;
+    WordReference wordRef;
+    wordRef.Flags(FLAG_LINK_TEXT);
+    wordRef.DocID(docID);
 
     while (*p)
     {
@@ -463,15 +464,15 @@ void DocumentRef::AddDescription(char *d, WordList &words)
 
       HtStripPunctuation(word);
 
-      if (word.length() >= minimum_word_length)
+      if (word.length() >= minimum_word_length) {
         // The wordlist takes care of lowercasing; just add it.
-        words.Word(word, 0, 0, FLAG_LINK_TEXT);
+	wordRef.Word(word);
+        words.Replace(wordRef);
+      }
 
       while (*p && !HtIsStrictWordChar(*p))
         p++;
     }
-
-    words.DocumentID(old_docID);
 
     // And let's flush the words! (nice comment hu :-)
     words.Flush();
@@ -494,7 +495,7 @@ void DocumentRef::AddDescription(char *d, WordList &words)
 //*****************************************************************************
 // void DocumentRef::AddAnchor(char *a)
 //
-void DocumentRef::AddAnchor(char *a)
+void DocumentRef::AddAnchor(const char *a)
 {
     if (a)
     	docAnchors.Add(new String(a));

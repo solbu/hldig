@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htdig.cc,v 1.19 1999/09/17 17:24:01 bergolth Exp $
+// $Id: htdig.cc,v 1.20 1999/09/24 10:28:57 loic Exp $
 //
 
 #include "Document.h"
@@ -67,7 +67,7 @@ main(int ac, char **av)
     //
     while ((c = getopt(ac, av, "lsm:c:vith:u:a")) != -1)
     {
-        int pos;
+        unsigned int pos;
 	switch (c)
 	{
 	    case 'c':
@@ -124,7 +124,7 @@ main(int ac, char **av)
     }
     config.Read(configFile);
 
-    if (*config["locale"] == '\0' && debug > 0)
+    if (config["locale"].empty() && debug > 0)
       cout << "Warning: unknown locale!\n";
 
     if (max_hops)
@@ -150,9 +150,8 @@ main(int ac, char **av)
     //
     if (alt_work_area != 0)
     {
-	String	configValue;
+	String	configValue = config["doc_db"];
 
-	configValue = config["doc_db"];
 	if (configValue.length() != 0)
 	{
 	    configValue << ".work";
@@ -300,15 +299,15 @@ main(int ac, char **av)
 
     if (create_text_database)
     {
-	filename = config["doc_list"];
+	String filename = config["doc_list"];
 	if (initial)
 	    unlink(filename);
 	docs.CreateSearchDB(filename);
 	filename = config["word_dump"];
 	if (initial)
 	    unlink(filename);
-	WordList words;
-	if(words.Read(config["word_db"]) == OK) {
+	WordList words(config);
+	if(words.Open(config["word_db"], O_RDONLY) == OK) {
 	  words.Dump(filename);
 	}
     }

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordType.h,v 1.5 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: HtWordType.h,v 1.6 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef __HtWordType_h
@@ -47,9 +47,9 @@ private:
   // to see the proximity.
   static struct InnerStatics
   {
-    char *valid_punctuation;     // The same as the attribute.
-    char *extra_word_characters; // Likewise.
-    char *other_chars_in_word;   // Attribute "valid_punctuation" plus
+    String valid_punctuation;     // The same as the attribute.
+    String extra_word_characters; // Likewise.
+    String other_chars_in_word;   // Attribute "valid_punctuation" plus
                                  // "extra_word_characters".
     char chrtypes[256];          // quick lookup table for types
   } statics;

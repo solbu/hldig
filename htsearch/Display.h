@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.h,v 1.19 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: Display.h,v 1.20 1999/09/24 10:29:04 loic Exp $
 //
 
 #ifndef _Display_h_
@@ -36,9 +36,9 @@ public:
     Display(char *docFile, char *indexFile, char *excerptFile);
     ~Display();
 
-    void		setStartTemplate(char *templateName);
-    void		setMatchTemplate(char *templateName);
-    void		setEndTemplate(char *templateName);
+    void		setStartTemplate(const String& templateName);
+    void		setMatchTemplate(const String& templateName);
+    void		setEndTemplate(const String& templateName);
 	
     void		setResults(ResultList *results);
     void		setSearchWords(List *searchWords);
@@ -54,7 +54,7 @@ public:
     void		displayHeader();
     void		displayFooter();
     void		displayNomatch();
-    void		displaySyntaxError(char *);
+    void		displaySyntaxError(const String &);
 	
     int                 hasTemplateError() {return templateError;}
 
@@ -148,17 +148,17 @@ protected:
     List		*buildMatchList();
     void		sort(List *);
 
-    int			includeURL(char *);
-    String		*readFile(char *);
-    void		expandVariables(char *);
-    void		outputVariable(char *);
+    int			includeURL(const String&);
+    String		*readFile(const String&);
+    void		expandVariables(const String&);
+    void		outputVariable(const String&);
     String		*excerpt(DocumentRef *ref, String urlanchor,
 				 int fanchor, int &first);
-    char		*hilight(char *str, String urlanchor, int fanchor);
+    String		hilight(const String& str, const String& urlanchor, int fanchor);
     void		setupTemplates();
     void		setupImages();
     String		*generateStars(DocumentRef *, int);
-    void		displayParsedFile(char *);
+    void		displayParsedFile(const String&);
     void		setVariables(int, List *);
     void		createURL(String &, int);
     void		logSearch(int, List *);

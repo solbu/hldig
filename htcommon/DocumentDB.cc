@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.24 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: DocumentDB.cc,v 1.25 1999/09/24 10:28:56 loic Exp $
 //
 
 #include "DocumentDB.h"
@@ -51,8 +51,7 @@ DocumentDB::DocumentDB()
 //
 DocumentDB::~DocumentDB()
 {
-    if (isopen)
-	Close();
+  Close();
 }
 
 
@@ -65,12 +64,11 @@ DocumentDB::~DocumentDB()
 //    There may also be an URL -> DocID index database to take
 //   care of, as well as a DocID -> DocHead excerpt database.
 //
-int DocumentDB::Open(char *filename, char *indexname, char *headname)
+int DocumentDB::Open(const String& filename, const String& indexfilename, const String& headname)
 {
     // If the database is already open, we'll close it
     // We might be opening this object with a new filename, so we'll be safe
-    if (isopen)
-      Close();
+    Close();
 
     dbf = 0;
     i_dbf = 0;
@@ -78,7 +76,7 @@ int DocumentDB::Open(char *filename, char *indexname, char *headname)
 
     i_dbf = Database::getDatabaseInstance(DB_HASH);
 
-    if (i_dbf->OpenReadWrite(indexname, 0664) != OK)
+    if (i_dbf->OpenReadWrite(indexfilename, 0664) != OK)
 	return NOTOK;
 
     h_dbf = Database::getDatabaseInstance(DB_HASH);
@@ -112,30 +110,29 @@ int DocumentDB::Open(char *filename, char *indexname, char *headname)
 //   We will attempt to open up an existing document database,
 //   and accompanying index database and excerpt database
 //
-int DocumentDB::Read(char *filename, char *indexname, char *headname)
+int DocumentDB::Read(const String& filename, const String& indexfilename = 0, const String& headfilename = 0)
 {
     // If the database is already open, we'll close it
     // We might be opening this object with a new filename, so we'll be safe
-    if (isopen)
-      Close();
+    Close();
 
     dbf = 0;
     i_dbf = 0;
     h_dbf = 0;
 
-    if (indexname)
+    if (!indexfilename.empty())
     {
 	i_dbf = Database::getDatabaseInstance(DB_HASH);
 
-	if (i_dbf->OpenRead(indexname) != OK)
+	if (i_dbf->OpenRead(indexfilename) != OK)
 	    return NOTOK;
     }
 
-    if (headname)
+    if (!headfilename.empty())
       {
 	h_dbf = Database::getDatabaseInstance(DB_HASH);
 	
-	if (h_dbf->OpenRead(headname) != OK)
+	if (h_dbf->OpenRead(headfilename) != OK)
 	  return NOTOK;
       }
 
@@ -159,6 +156,8 @@ int DocumentDB::Read(char *filename, char *indexname, char *headname)
 //
 int DocumentDB::Close()
 {
+    if (!isopen) return OK;
+
     if (!isread)
     {
 	int specialRecordNumber = NEXT_DOC_ID_RECORD;
@@ -198,7 +197,8 @@ int DocumentDB::Add(DocumentRef &doc)
 {
     int docID = doc.DocID();
 
-    temp = 0;
+    String temp = 0;
+
     doc.Serialize(temp);
 
     String key((char *) &docID, sizeof docID);
@@ -266,9 +266,9 @@ DocumentRef *DocumentDB::operator [] (int docID)
 
 
 //*****************************************************************************
-// DocumentRef *DocumentDB::operator [] (char *u)
+// DocumentRef *DocumentDB::operator [] (const String& u)
 //
-DocumentRef *DocumentDB::operator [] (char *u)
+DocumentRef *DocumentDB::operator [] (const String& u)
 {
     String			data;
     String			docIDstr;
@@ -337,7 +337,7 @@ int DocumentDB::Delete(int docID)
 //
 //   The extract will be sorted by docID.
 //
-int DocumentDB::CreateSearchDB(char *filename)
+int DocumentDB::CreateSearchDB(const String& filename)
 {
     DocumentRef	        *ref;
     List		*descriptions, *anchors;
@@ -347,7 +347,7 @@ int DocumentDB::CreateSearchDB(char *filename)
     String		docKey(sizeof(int));
 
     if((fl = fopen(filename, "w")) == 0) {
-      perror(form("DocumentDB::CreateSearchDB: opening %s for writing", filename));
+      perror(form("DocumentDB::CreateSearchDB: opening %s for writing", (const char*)filename));
       return NOTOK;
     }
 

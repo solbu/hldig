@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Database.h,v 1.10 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: Database.h,v 1.11 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef _Database_h_
@@ -48,31 +48,45 @@ public:
     // The idea here is that the particular type of database used by
     // all the programs is to be defined in one place.
     //
-    static Database	*getDatabaseInstance(int type);
+    static Database	*getDatabaseInstance(enum DBTYPE type);
 	
     //
     // Common interface
     //
-    virtual int		OpenReadWrite(char *filename, int mode = 0644) = 0;
-    virtual int		OpenRead(char *filename) = 0;
+    virtual int		OpenReadWrite(const char *filename, int mode = 0666) = 0;
+    virtual int		OpenRead(const char *filename) = 0;
+    void		SetCompare(int (*func)(const DBT *a, const DBT *b)) { _compare = func; }
+    void		SetPrefix(size_t (*func)(const DBT *a, const DBT *b)) { _prefix = func; }
     virtual int		Close() = 0;
-    int			Put(char *key, const String &data);
-    int			Put(char *key, char *data, int size);
     virtual int		Put(const String &key, const String &data) = 0;
-    int			Get(char *key, String &data);
     virtual int		Get(const String &key, String &data) = 0;
     virtual int		Exists(const String &key) = 0;
-    int			Exists(char *key);
     virtual int		Delete(const String &key) = 0;
-    int			Delete(char *key);
 
     virtual void	Start_Get() = 0;
-    virtual char	*Get_Next() = 0;
-    virtual char	*Get_Next(String &data) = 0;
-    virtual void	Start_Seq(char *str) = 0;
-    virtual char	*Get_Next_Seq() = 0;
+    virtual char	*Get_Next() { String item; String key; return Get_Next(item, key); }
+    virtual char	*Get_Next(String &item) { String key; return Get_Next(item, key); }
+    virtual char	*Get_Next(String &item, String &key) = 0;
+    virtual void	Start_Seq(const String& str) = 0;
+    virtual char	*Get_Next_Seq() { return Get_Next(); }
+
+protected:
+    int			isOpen;
+    DB			*dbp;		// database
+    DBC			*dbcp;		// cursor
+
+    String		skey;		// Next key to search for iterator
+    String		data;		// Next data to return for iterator
+    String		lkey;		// Contains the last key returned by iterator
+
+    DB_ENV		*dbenv;		// database enviroment
+    DB_INFO		dbinfo;		// See Open
+    int			(*_compare)(const DBT *a, const DBT *b); // Key comparison
+    size_t		(*_prefix)(const DBT *a, const DBT *b);  // Key reduction
+
+    int			seqrc;
+    int			seqerr;
+    enum DBTYPE		db_type;
 };
 
 #endif
-
-

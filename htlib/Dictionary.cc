@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.cc,v 1.7 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: Dictionary.cc,v 1.8 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "Dictionary.h"
@@ -65,6 +65,16 @@ Dictionary::Dictionary(int initialCapacity)
     init(initialCapacity, 0.75f);
 }
 
+Dictionary::Dictionary(const Dictionary& other)
+{
+    init(other.initialCapacity, other.loadFactor);
+
+    DictionaryCursor cursor;
+    char* key;
+    for(other.Start_Get(cursor); (key = other.Get_Next(cursor));) {
+      Add(key, other[key]);
+    }
+}
 
 //*********************************************************************
 //
@@ -135,7 +145,7 @@ Dictionary::init(int initialCapacity, float loadFactor)
 //*********************************************************************
 //
 unsigned int
-Dictionary::hashCode(char *key)
+Dictionary::hashCode(const char *key) const
 {
     char *test;
     long  conv_key = strtol(key,  &test, 10);
@@ -168,7 +178,7 @@ Dictionary::hashCode(char *key)
 //   method for that function.
 //
 void
-Dictionary::Add(char *name, Object *obj)
+Dictionary::Add(const char *name, Object *obj)
 {
     unsigned int	hash = hashCode(name);
     int			index = hash % tableLength;
@@ -205,7 +215,7 @@ Dictionary::Add(char *name, Object *obj)
 //   Remove an entry from the hash table.
 //
 int
-Dictionary::Remove(char *name)
+Dictionary::Remove(const char *name)
 {
     if (!count)
       return 0;
@@ -237,7 +247,7 @@ Dictionary::Remove(char *name)
 
 //*********************************************************************
 //
-Object *Dictionary::Find(char *name)
+Object *Dictionary::Find(const char *name) const
 {
     if (!count)
 	return NULL;
@@ -259,7 +269,7 @@ Object *Dictionary::Find(char *name)
 
 //*********************************************************************
 //
-Object *Dictionary::operator[](char *name)
+Object *Dictionary::operator[](const char *name) const
 {
     return Find(name);
 }
@@ -267,7 +277,7 @@ Object *Dictionary::operator[](char *name)
 
 //*********************************************************************
 //
-int Dictionary::Exists(char *name)
+int Dictionary::Exists(const char *name) const
 {
     if (!count)
       return 0;
@@ -330,65 +340,65 @@ Dictionary::rehash()
 //*********************************************************************
 //
 void
-Dictionary::Start_Get()
+Dictionary::Start_Get(DictionaryCursor& cursor) const
 {
-    currentTableIndex = -1;
-    currentDictionaryEntry = NULL;
+    cursor.currentTableIndex = -1;
+    cursor.currentDictionaryEntry = NULL;
 }
 
 
 //*********************************************************************
 //
 char *
-Dictionary::Get_Next()
+Dictionary::Get_Next(DictionaryCursor& cursor) const
 {
-    while (currentDictionaryEntry == NULL ||
-	   currentDictionaryEntry->next == NULL)
+    while (cursor.currentDictionaryEntry == NULL ||
+	   cursor.currentDictionaryEntry->next == NULL)
     {
-	currentTableIndex++;
+	cursor.currentTableIndex++;
 
-	if (currentTableIndex >= tableLength)
+	if (cursor.currentTableIndex >= tableLength)
 	{
-	    currentTableIndex--;
+	    cursor.currentTableIndex--;
 	    return NULL;
 	}
 
-	currentDictionaryEntry = table[currentTableIndex];
+	cursor.currentDictionaryEntry = table[cursor.currentTableIndex];
 
-	if (currentDictionaryEntry != NULL)
+	if (cursor.currentDictionaryEntry != NULL)
 	{
-	    return currentDictionaryEntry->key;
+	    return cursor.currentDictionaryEntry->key;
 	}
     }
 
-    currentDictionaryEntry = currentDictionaryEntry->next;
-    return currentDictionaryEntry->key;
+    cursor.currentDictionaryEntry = cursor.currentDictionaryEntry->next;
+    return cursor.currentDictionaryEntry->key;
 }
 
 //*********************************************************************
 //
 Object *
-Dictionary::Get_NextElement()
+Dictionary::Get_NextElement(DictionaryCursor& cursor) const
 {
-    while (currentDictionaryEntry == NULL ||
-	   currentDictionaryEntry->next == NULL)
+    while (cursor.currentDictionaryEntry == NULL ||
+	   cursor.currentDictionaryEntry->next == NULL)
     {
-	currentTableIndex++;
+	cursor.currentTableIndex++;
 
-	if (currentTableIndex >= tableLength)
+	if (cursor.currentTableIndex >= tableLength)
 	{
-	    currentTableIndex--;
+	    cursor.currentTableIndex--;
 	    return NULL;
 	}
 
-	currentDictionaryEntry = table[currentTableIndex];
+	cursor.currentDictionaryEntry = table[cursor.currentTableIndex];
 
-	if (currentDictionaryEntry != NULL)
+	if (cursor.currentDictionaryEntry != NULL)
 	{
-	    return currentDictionaryEntry->value;
+	    return cursor.currentDictionaryEntry->value;
 	}
     }
 
-    currentDictionaryEntry = currentDictionaryEntry->next;
-    return currentDictionaryEntry->value;
+    cursor.currentDictionaryEntry = cursor.currentDictionaryEntry->next;
+    return cursor.currentDictionaryEntry->value;
 }

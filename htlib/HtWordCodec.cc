@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordCodec.cc,v 1.5 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: HtWordCodec.cc,v 1.6 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "HtWordCodec.h"
@@ -379,7 +379,7 @@ HtWordCodec::code(const String &orig_string, StringMatch &match,
   String retval;
   String tempinput;
   int offset, which, length;
-  char *orig;
+  const char *orig;
 
   // Get a null-terminated string, usable for FindFirst to look at.
   orig = orig_string.get();

@@ -91,6 +91,7 @@ NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 PDF_PARSER = @PDF_PARSER@
+PERL = @PERL@
 RANLIB = @RANLIB@
 SEARCH_DIR = @SEARCH_DIR@
 SEARCH_FORM = @SEARCH_FORM@
@@ -103,13 +104,13 @@ TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include 		-I$(top_srcdir)/htlib -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
+INCLUDES = -Wall 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include 		-I$(top_srcdir)/htlib -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
 
 
 HTLIBS = $(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
 
 
-TESTS = t_htdig t_htsearch
+TESTS = t_htdig t_htsearch t_htmerge t_wordkey t_wordlist
 AM_MAKEFLAGS = MAKE="$(MAKE)"
 
 #PROFILING = -p
@@ -118,12 +119,17 @@ EXTRA_DIST = htdocs
 
 LOCAL_DEFINES = -I$(top_builddir)/db/include -I$(top_srcdir)/db/include $(PROFILING)
 
-noinst_PROGRAMS = dbbench
+noinst_PROGRAMS = dbbench word
 
 dbbench_SOURCES = dbbench.cc
 dbbench_DEPENDENCIES = $(HTLIBS)
 dbbench_LDFLAGS = $(PROFILING)
 dbbench_LDADD = $(HTLIBS)
+
+word_SOURCES = word.cc
+word_DEPENDENCIES = $(HTLIBS)
+word_LDFLAGS = $(PROFILING)
+word_LDADD = $(HTLIBS)
 
 BASE = test
 CACHESIZE = -C `expr 64 \* 1024 \* 1024`
@@ -142,6 +148,7 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 dbbench_OBJECTS =  dbbench.o
+word_OBJECTS =  word.o
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -152,9 +159,9 @@ DIST_COMMON =  Makefile.am Makefile.in test_functions.in
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/dbbench.P
-SOURCES = $(dbbench_SOURCES)
-OBJECTS = $(dbbench_OBJECTS)
+DEP_FILES =  .deps/dbbench.P .deps/word.P
+SOURCES = $(dbbench_SOURCES) $(word_SOURCES)
+OBJECTS = $(dbbench_OBJECTS) $(word_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -213,6 +220,10 @@ maintainer-clean-libtool:
 dbbench: $(dbbench_OBJECTS) $(dbbench_DEPENDENCIES)
 	@rm -f dbbench
 	$(CXXLINK) $(dbbench_LDFLAGS) $(dbbench_OBJECTS) $(dbbench_LDADD) $(LIBS)
+
+word: $(word_OBJECTS) $(word_DEPENDENCIES)
+	@rm -f word
+	$(CXXLINK) $(word_LDFLAGS) $(word_OBJECTS) $(word_LDADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cc.lo:

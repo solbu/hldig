@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Prefix.cc,v 1.11 1999/09/10 17:22:24 ghutchis Exp $
+// $Id: Prefix.cc,v 1.12 1999/09/24 10:29:01 loic Exp $
 //
 
 #include "Prefix.h"
@@ -20,13 +20,11 @@
 #include "StringMatch.h"
 #include "Configuration.h"
 
-extern Configuration	config;
-
-
 //*****************************************************************************
-// Prefix::Prefix()
+// Prefix::Prefix(const Configuration& config_arg)
 //
-Prefix::Prefix()
+Prefix::Prefix(const Configuration& config_arg) :
+  Fuzzy(config_arg)
 {
     name = "prefix";
 }
@@ -54,17 +52,16 @@ Prefix::getWords(char *w, List &words)
     HtStripPunctuation(stripped);
     w = stripped.get();
 
-    char 	*prefix_suffix = config["prefix_match_character"];
-    int 	prefix_suffix_length = prefix_suffix == NULL 
-					? 0 : strlen(prefix_suffix);
-    int 	minimum_prefix_length = config.Value("minimum_prefix_length");
+    const String	prefix_suffix = config["prefix_match_character"];
+    int 		prefix_suffix_length = prefix_suffix.length();
+    int 		minimum_prefix_length = config.Value("minimum_prefix_length");
 
     if (debug)
          cerr << " word=" << w << " prefix_suffix=" << prefix_suffix 
 		<< " prefix_suffix_length=" << prefix_suffix_length
 		<< " minimum_prefix_length=" << minimum_prefix_length << "\n";
 
-    if (strlen(w) < minimum_prefix_length + prefix_suffix_length)
+    if ((int)strlen(w) < minimum_prefix_length + prefix_suffix_length)
 	return;
 
     //  A null prefix character means that prefix matching should be 
@@ -75,8 +72,8 @@ Prefix::getWords(char *w, List &words)
 	    && strcmp(prefix_suffix, w+strlen(w)-prefix_suffix_length)) 
 	return;
 
-    WordList	wordDB;
-    if (wordDB.Read(config["word_db"]) == NOTOK)
+    WordList	wordDB(config);
+    if (wordDB.Open(config["word_db"], O_RDONLY) == NOTOK)
       return;
 
     int		wordCount = 0;
@@ -110,7 +107,7 @@ Prefix::getWords(char *w, List &words)
 
 //*****************************************************************************
 int
-Prefix::openIndex(Configuration &)
+Prefix::openIndex()
 {
   return 0;
 }

@@ -4,7 +4,7 @@ include $(top_srcdir)/Makefile.config
 lib_LTLIBRARIES = libht.la
 
 libht_la_SOURCES = Configuration.cc Connection.cc Database.cc Dictionary.cc \
-	DB2_db.cc DB2_hash.cc IntObject.cc List.cc Object.cc \
+	DB2_db.cc IntObject.cc List.cc Object.cc \
 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc \
 	String.cc StringList.cc StringMatch.cc String_fmt.cc \
 	URL.cc URLTrans.cc cgi.cc good_strtok.cc io.cc strcasecmp.cc \
@@ -18,7 +18,6 @@ noinst_HEADERS = \
 	Configuration.h \
 	Connection.h \
 	DB2_db.h \
-	DB2_hash.h \
 	Database.h \
 	Dictionary.h \
 	HtCodec.h \

@@ -18,7 +18,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htfuzzy.h,v 1.3 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: htfuzzy.h,v 1.4 1999/09/24 10:29:02 loic Exp $
 //
 
 #ifndef _htfuzzy_h_
@@ -33,7 +33,6 @@
 #include <fstream.h>
 #include <stdio.h>
 
-extern Configuration	config;
 extern int		debug;
 
 extern void reportError(char *msg);

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: QuotedStringList.cc,v 1.2 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: QuotedStringList.cc,v 1.3 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "QuotedStringList.h"
@@ -30,52 +30,8 @@ QuotedStringList::~QuotedStringList()
 
 
 //*****************************************************************************
-QuotedStringList::QuotedStringList(char *str, char sep, int single)
-{
-    Create(str, sep, single);
-}
-
-
-//*****************************************************************************
-QuotedStringList::QuotedStringList(String &str, char sep, int single)
-{
-    Create(str, sep, single);
-}
-
-
-//*****************************************************************************
-QuotedStringList::QuotedStringList(char *str, char *sep, int single)
-{
-    Create(str, sep, single);
-}
-
-
-//*****************************************************************************
-QuotedStringList::QuotedStringList(String &str, char *sep, int single)
-{
-    Create(str, sep, single);
-}
-
-
-//*****************************************************************************
 int
-QuotedStringList::Create(String &str, char sep, int single)
-{
-    return Create(str.get(), sep, single);
-}
-
-
-//*****************************************************************************
-int
-QuotedStringList::Create(String &str, char *sep, int single)
-{
-    return Create(str.get(), sep, single);
-}
-
-
-//*****************************************************************************
-int
-QuotedStringList::Create(char *str, char *sep, int single)
+QuotedStringList::Create(const char *str, const char *sep, int single)
 {
     char	quote = 0;
     String	word;
@@ -121,7 +77,7 @@ QuotedStringList::Create(char *str, char *sep, int single)
 
 //*****************************************************************************
 int
-QuotedStringList::Create(char *str, char sep, int single)
+QuotedStringList::Create(const char *str, char sep, int single)
 {
     char	t[2] = "1";
 

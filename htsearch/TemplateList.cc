@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: TemplateList.cc,v 1.6 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: TemplateList.cc,v 1.7 1999/09/24 10:29:05 loic Exp $
 //
 
 #include "TemplateList.h"
@@ -36,12 +36,12 @@ TemplateList::~TemplateList()
 // name.  If no template can be found, NULL is returned.
 //
 Template *
-TemplateList::get(char *internalName)
+TemplateList::get(const String& internalName)
 {
     for (int i = 0; i < internalNames.Count(); i++)
     {
-	String	*s = (String *) internalNames[i];
-	if (mystrcasecmp(s->get(), internalName) == 0)
+	const String	*s = (const String *) internalNames[i];
+	if (mystrcasecmp(*s, internalName) == 0)
 	    return (Template *) templates[i];
     }
     return 0;
@@ -57,7 +57,7 @@ TemplateList::get(char *internalName)
 // filename.
 //
 int
-TemplateList::createFromString(char *str)
+TemplateList::createFromString(const String& str)
 {
     StringList	sl(str, "\t \r\n");
     String		display, internal, file;

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Dictionary.h,v 1.5 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: Dictionary.h,v 1.6 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef	_Dictionary_h_
@@ -21,7 +21,17 @@
 #include "Object.h"
 #include "List.h"
 
+class Dictionary;
 class DictionaryEntry;
+
+class DictionaryCursor {
+ public:
+    //
+    // Support for the Start_Get and Get_Next routines
+    //
+    int			currentTableIndex;
+    DictionaryEntry	*currentDictionaryEntry;
+};
 
 class Dictionary : public Object
 {
@@ -30,6 +40,7 @@ public:
     // Construction/Destruction
     //
     Dictionary();
+    Dictionary(const Dictionary& other);
     Dictionary(int initialCapacity);
     Dictionary(int initialCapacity, float loadFactor);
     ~Dictionary();
@@ -37,28 +48,37 @@ public:
     //
     // Adding and deleting items to and from the dictionary
     //
-    void		Add(char *name, Object *obj);
-    int			Remove(char *name);
+    void		Add(const char *name, Object *obj);
+    int			Remove(const char *name);
 
     //
     // Searching can be done with the Find() member of the array indexing
     // operator
     //
-    Object		*Find(char *name);
-    Object		*operator[](char *name);
-    int			Exists(char *name);
+    Object		*Find(const char *name) const;
+    Object		*operator[](const char *name) const;
+    int			Exists(const char *name) const;
 
     //
     // We want to be able to go through all the entries in the
     // dictionary in sequence.  To do this, we have the same
     // traversal interface as the List class
     //
-    char		*Get_Next();
-    void		Start_Get();
-    Object              *Get_NextElement();
+    void		Start_Get() { Start_Get(cursor); }
+    void		Start_Get(DictionaryCursor& cursor) const;
+    //
+    // Get the next key
+    //
+    char		*Get_Next() { return Get_Next(cursor); }
+    char		*Get_Next(DictionaryCursor& cursor) const;
+    //
+    // Get the next entry
+    //
+    Object              *Get_NextElement() { return Get_NextElement(cursor); }
+    Object              *Get_NextElement(DictionaryCursor& cursor) const;
     void		Release();
     void		Destroy();
-    int			Count()		{return count;}
+    int			Count()	const	{ return count; }
     
 private:
     DictionaryEntry	**table;
@@ -68,15 +88,11 @@ private:
     int			threshold;
     float		loadFactor;
 
-    //
-    // Support for the Start_Get and Get_Next routines
-    //
-    int			currentTableIndex;
-    DictionaryEntry	*currentDictionaryEntry;
-    
+    DictionaryCursor	cursor;
+
     void		rehash();
     void		init(int, float);
-    unsigned int	hashCode(char *key);
+    unsigned int	hashCode(const char *key) const;
 };
 
 #endif

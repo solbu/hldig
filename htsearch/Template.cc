@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Template.cc,v 1.3 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: Template.cc,v 1.4 1999/09/24 10:29:05 loic Exp $
 //
 
 #include "Template.h"
@@ -38,7 +38,7 @@ Template::~Template()
 // respectively.
 //
 void
-Template::createFromFile(char *filename)
+Template::createFromFile(const char *filename)
 {
     String	realFile;
 
@@ -58,7 +58,7 @@ Template::createFromFile(char *filename)
 // doesn't exist.
 //
 void
-Template::readFile(String &s, char *filename)
+Template::readFile(String &s, const char *filename) const
 {
     FILE	*fl = fopen(filename, "r");
     char	buffer[1000];

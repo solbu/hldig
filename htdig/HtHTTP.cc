@@ -197,6 +197,11 @@ Transport::DocStatus HtHTTP::Request()
 		  	cout << "Unable to establish the connection with host: "
 			   << _url.host() << " (port " << _url.port() << ")" << endl;
 			break;
+	       default:
+		  	cout << "connection failed with unexpected result: result = "
+			     << (int)result << ", "
+			   << _url.host() << " (port " << _url.port() << ")" << endl;
+			break;
 	    }
 	 
    	 return FinishRequest(Document_not_found);
@@ -212,6 +217,9 @@ Transport::DocStatus HtHTTP::Request()
    	       break;
 	    case Connection_ok:
    	       cout << "New connection open successfully" << endl;
+	       break;
+	    default:
+	       cout << "Unexptected value: " << (int)result << endl;
 	       break;
    }
 
@@ -545,7 +553,7 @@ int HtHTTP::ReadBody()
     _response._contents = 0;	// Initialize the string
     
     char	docBuffer[8192];
-    int		bytesRead;
+    int		bytesRead = 0;
     int		bytesToGo = _response._content_length;
 
     if (bytesToGo < 0 || bytesToGo > _max_document_size)
@@ -553,7 +561,7 @@ int HtHTTP::ReadBody()
 
     while (bytesToGo > 0)
     {
-        int len = bytesToGo<sizeof(docBuffer) ? bytesToGo : sizeof(docBuffer);
+        int len = bytesToGo< (int)sizeof(docBuffer) ? bytesToGo : (int)sizeof(docBuffer);
         bytesRead = _connection.read(docBuffer, len);
         if (bytesRead <= 0)
             break;
@@ -610,6 +618,9 @@ HtDateTime *HtHTTP::NewDate(const char *datestring)
    	 case DateFormat_RFC850:
    	       	dt->SetRFC850((char *)datestring);
    	 	       break;
+         default:
+	        cout << "Date Format not handled: " << (int)df << endl;
+	        break;
    }
 
    return dt;
@@ -624,7 +635,7 @@ HtHTTP::DateFormat HtHTTP::RecognizeDateFormat (const char *datestring)
 {
    register char *s;
    
-   if(s=strchr(datestring, ','))
+   if((s=strchr(datestring, ',')))
    {
    	 // A comma is present.
 	 // Two chances: RFC1123 or RFC850

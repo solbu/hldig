@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: docs.cc,v 1.25 1999/09/14 06:21:30 ghutchis Exp $
+// $Id: docs.cc,v 1.26 1999/09/24 10:29:04 loic Exp $
 //
 
 #include "htmerge.h"
@@ -21,9 +21,9 @@
 void
 convertDocs()
 {
-    char		*doc_db = config["doc_db"];
-    char		*doc_index = config["doc_index"];
-    char		*doc_excerpt = config["doc_excerpt"];
+    const String	doc_db = config["doc_db"];
+    const String	doc_index = config["doc_index"];
+    const String	doc_excerpt = config["doc_excerpt"];
     int			remove_unused = config.Boolean("remove_bad_urls");
     int			remove_unretrieved = config.Boolean("remove_unretrieved_urls");
     DocumentDB		db;
@@ -33,18 +33,18 @@ convertDocs()
 
     if (access(doc_db, R_OK) < 0)
     {
-	reportError(form("Unable to open document database '%s'", doc_db));
+	reportError(form("Unable to open document database '%s'", (const char*)doc_db));
     }
 
     // These don't need to be fatal since we could make do otherwise...
     // It is (very) nice to have the URL around for messages though!
     if (access(doc_index, R_OK) < 0)
     {
-	reportError(form("Unable to open document index '%s'", doc_index));
+	reportError(form("Unable to open document index '%s'", (const char*)doc_index));
     }
     if (access(doc_excerpt, R_OK) < 0)
     {
-	reportError(form("Unable to open document excerpts '%s'", doc_excerpt));
+	reportError(form("Unable to open document excerpts '%s'", (const char*)doc_excerpt));
     }
 
     // Check "uncompressed"/"uncoded" urls at the price of time

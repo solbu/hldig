@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.h,v 1.5 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: Connection.h,v 1.6 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef _Connection_h_
@@ -50,7 +50,7 @@ public:
     int				is_privileged();
 
     // Host stuff
-    int				assign_server(char *name);
+    int				assign_server(const String& name);
     int				assign_server(unsigned int addr = INADDR_ANY);
     char				*get_server()		{return server_name;}
 

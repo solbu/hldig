@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtZlibCodec.cc,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: HtZlibCodec.cc,v 1.5 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "HtZlibCodec.h"
@@ -89,7 +89,7 @@ String HtZlibCodec::decode(const String &str) const
     d_stream.zfree=(free_func)0;
     d_stream.opaque=(voidpf)0;
     
-    int len=s.length();
+    unsigned int len=s.length();
     d_stream.next_in=(Bytef*)(char *)s;
     d_stream.avail_in=len;
     

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.h,v 1.6 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: DB2_db.h,v 1.7 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef _DB2_db_h_
@@ -30,39 +30,24 @@ protected:
 public:
     ~DB2_db();
 
-    static DB2_db	*getDatabaseInstance();
+    static DB2_db	*getDatabaseInstance(enum DBTYPE type);
 	
-    virtual int		OpenReadWrite(char *filename, int mode);
-    virtual int		OpenRead(char *filename);
+    virtual int		OpenReadWrite(const char *filename, int mode) { return Open(filename, DB_CREATE, 0666); }
+    virtual int		OpenRead(const char *filename) { return Open(filename, DB_RDONLY, 0666); }
     virtual int		Close();
-    virtual int		Delete(const String &);
-	
-    virtual void	Start_Get();
-    virtual char	*Get_Next();
-    virtual char	*Get_Next(String &item);
-    virtual void	Start_Seq(char *str);
-    virtual char	*Get_Next_Seq();
-	
-private:
-    int			isOpen;
-    DB			*dbp;		// database
-    DBC			*dbcp;		// cursor
-    DBT			skey;
-    DBT			data;
-    DB_ENV		*dbenv;		// database enviroment
-    DB_INFO		dbinfo;
-
-    String		lkey;
-    int			seqrc;
-    int			seqerr;
-
-    DB_ENV		*db_init(char *);
-
     virtual int		Get(const String &, String &);
     virtual int		Put(const String &, const String &);
     virtual int		Exists(const String &);
+    virtual int		Delete(const String &);
+	
+    virtual void	Start_Get();
+    virtual char	*Get_Next(String &item, String &key);
+    virtual void	Start_Seq(const String& key);
+	
+private:
+    DB_ENV		*db_init(char *);
+
+    int			Open(const char *filename, int flags, int mode);
 };
 
 #endif
-
-

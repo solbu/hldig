@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.h,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: HtRegex.h,v 1.5 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef	_HtRegex_h_
@@ -29,15 +29,17 @@ public:
     // Construction/Destruction
     //
     HtRegex();
-    HtRegex(char *str);
+    HtRegex(const char *str);
     ~HtRegex();
 
     //
     // Methods
     //
-    void	set(char *str);
+    void	set(const String& str) { set(str.get()); }
+    void	set(const char *str);
     void	setEscaped(StringList &list);
-    int		match(char *str, int nullmatch, int nullstr);
+    int		match(const String& str, int nullmatch, int nullstr) { return match(str.get(), nullmatch, nullstr); }
+    int		match(const char *str, int nullmatch, int nullstr);
 
 protected:
     int			compiled;

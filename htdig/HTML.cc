@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.cc,v 1.55 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: HTML.cc,v 1.56 1999/09/24 10:28:57 loic Exp $
 //
 
 #include "htdig.h"
@@ -136,8 +136,8 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     unsigned char	*position = (unsigned char *) contents->get();
     unsigned char       *text = (unsigned char *) new char[contents->length()+1];
     unsigned char       *ptext = text;
-    static char         *skip_start = config["noindex_start"];
-    static char         *skip_end = config["noindex_end"];
+    const String	skip_start = config["noindex_start"];
+    const String	skip_end = config["noindex_end"];
 
     title = 0;
     head = 0;
@@ -157,14 +157,13 @@ HTML::parse(Retriever &retriever, URL &baseURL)
       // Filter out section marked to be ignored for indexing. 
       // This can contain any HTML. 
       //
-      if (*skip_start &&
-	  mystrncasecmp((char *)position, skip_start, strlen(skip_start)) == 0)
+      if (mystrncasecmp((char *)position, skip_start, skip_start.length()) == 0)
 	{
 	  q = (unsigned char*)mystrcasestr((char *)position, skip_end);
 	  if (!q)
 	    *position = '\0';       // Rest of document will be skipped...
 	  else
-	    position = q + strlen(skip_end);
+	    position = q + skip_end.length();
 	  continue;
 	}
 
@@ -398,7 +397,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		  head << word;
 	    }
 
-	    if (word.length() >= minimumWordLength && doindex)
+	    if (word.length() >= (int)minimumWordLength && doindex)
 	    {
 	      retriever.got_word(word, wordindex++, in_heading);
 	    }
@@ -495,7 +494,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 			
 	case 2:		// "a"
 	{
-	  if (attrs["href"])
+	  if (!attrs["href"].empty())
 	    {
 	      //
 	      // a href seen
@@ -518,7 +517,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	      break;
 	    }
 	  
-	  if (attrs["name"])
+	  if (!attrs["name"].empty())
 	    {
 	      //
 	      // a name seen
@@ -591,27 +590,27 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    // First test for old-style meta tags (these break any
 	    // reasonable DTD...)
 	    //
-	    if (attrs["htdig-noindex"])
+	    if (!attrs["htdig-noindex"].empty())
 	      {
 		retriever.got_noindex();
 		doindex = 0;
 		dofollow = 0;
 	      }
-	    if (attrs["htdig-index"])
+	    if (!attrs["htdig-index"].empty())
 	      {
 		doindex = 1;
 		dofollow = 1;
 	      }
-	    if (attrs["htdig-email"])
+	    if (!attrs["htdig-email"].empty())
 	      retriever.got_meta_email(transSGML(attrs["htdig-email"]));
 
-	    if (attrs["htdig-notification-date"])
+	    if (!attrs["htdig-notification-date"].empty())
 	      retriever.got_meta_notification(transSGML(attrs["htdig-notification-date"]));
 
-	    if (attrs["htdig-email-subject"])
+	    if (!attrs["htdig-email-subject"].empty())
 	      retriever.got_meta_subject(transSGML(attrs["htdig-email-subject"]));
 
-	    if (attrs["htdig-keywords"] || attrs["keywords"])
+	    if (!attrs["htdig-keywords"].empty() || !attrs["keywords"].empty())
 	    {
 		//
 		// Keywords are added as being at the very top of the
@@ -619,10 +618,11 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		// keywords-factor which is assigned to slot 10 in the
 		// factor table.
 		//
-		char	*keywords = attrs["htdig-keywords"];
-		if (!keywords)
-		    keywords = attrs["keywords"];
-		char	*w = strtok(transSGML(keywords), " ,\t\r\n");
+		const String keywords = attrs["htdig-keywords"].empty() ?
+		  attrs["htdig-keywords"] :
+		  attrs["keywords"];
+		String tmp = transSGML(keywords);
+		char	*w = strtok(tmp, " ,\t\r\n");
 		while (w)
 		{
 		    if (strlen(w) >= minimumWordLength)
@@ -632,14 +632,14 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		w = '\0';
 	    }
 	
-	    if (attrs["http-equiv"])
+	    if (!attrs["http-equiv"].empty())
 	      {
 
 		// <META HTTP-EQUIV=REFRESH case
 		if (mystrcasecmp(attrs["http-equiv"], "refresh") == 0
-		    && attrs["content"])
+		    && !attrs["content"].empty())
 		  {
-		    char *content = attrs["content"];
+		    String content = attrs["content"];
 		    char *q = mystrcasestr(content, "url=");
 		    if (q && *q)
 		      {
@@ -663,16 +663,16 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	    // fly with any reasonable DTD out there
 	    //
 
-	    if (attrs["name"] && attrs["content"])
+	    if (!attrs["name"].empty() && !attrs["content"].empty())
 	    {
-		char	*cache = attrs["name"];
+		const String cache = attrs["name"];
 
 		which = -1; // What does it do?
 
 		  // First of all, check for META description
 
 		  if (mystrcasecmp(cache, "description") == 0 
-			 && strlen(attrs["content"]) != 0)
+			 && !attrs["content"].empty())
 		  {
 		    //
 		    // We need to do two things. First grab the description
@@ -690,7 +690,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		   // Slot 10 is the current slot for this
 		   //
 
-		   char        *w = strtok(transSGML(attrs["content"]), " \t\r\n");
+		   String tmp = transSGML(attrs["content"]);
+		   char        *w = strtok(tmp, " \t\r\n");
                    while (w)
 		     {
 			if (strlen(w) >= minimumWordLength)
@@ -702,7 +703,8 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 		if (keywordsMatch.CompareWord(cache))
 		{
-		    char	*w = strtok(transSGML(attrs["content"]), " ,\t\r\n");
+		    String tmp = transSGML(attrs["content"]);
+		    char	*w = strtok(tmp, " ,\t\r\n");
 		    while (w)
 		    {
 			if (strlen(w) >= minimumWordLength)
@@ -735,9 +737,9 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    dofollow = 0;
 		  }
 		else if (mystrcasecmp(cache, "robots") == 0
-			 && strlen(attrs["content"]) !=0)
+			 && !attrs["content"].empty())
 		  {
-		    String   content_cache = attrs["content"];
+		    const String   content_cache = attrs["content"];
 
 		    if (content_cache.indexOf("noindex") != -1)
 		      {
@@ -754,8 +756,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		      }
 		  }
 	    }
-	    else if (attrs["name"] &&
-		     mystrcasecmp(attrs["name"], "htdig-noindex") == 0)
+	    else if (mystrcasecmp(attrs["name"], "htdig-noindex") == 0)
 	    {
 	        retriever.got_noindex();
 	        doindex = 0;
@@ -768,7 +769,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
         case 24:	// embed
         case 25:	// object
 	{
-	  if (attrs["src"])
+	  if (!attrs["src"].empty())
 	    {
 	      //
 	      // src seen
@@ -789,7 +790,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	case 22:	// area
         case 26:	// link
 	{
-	  if (attrs["href"])
+	  if (!attrs["href"].empty())
 	    {
 	      // href seen
 	      if (dofollow)
@@ -807,7 +808,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	  
 	case 23:	// base
 	{
-	  if (attrs["href"])
+	  if (!attrs["href"].empty())
 	    {
 	      URL tempBase(transSGML(attrs["href"]));
 	      *base = tempBase;
@@ -817,12 +818,13 @@ HTML::do_tag(Retriever &retriever, String &tag)
 	
          case 18: // img
 	   {
-	     if (attrs["src"])
+	     if (!attrs["src"].empty())
 	       {
 		 retriever.got_image(transSGML(attrs["src"]));
-		 if (attrs["alt"])
+		 if (!attrs["alt"].empty())
 		   {
-		     char *w = strtok(transSGML(attrs["alt"]), " ,\t\r\n");
+		     String tmp = transSGML(attrs["alt"]);
+		     char *w = strtok(tmp, " ,\t\r\n");
 		     while (w)
 		       {
 			 if (strlen(w) >= minimumWordLength)
@@ -842,13 +844,10 @@ HTML::do_tag(Retriever &retriever, String &tag)
 
 
 //*****************************************************************************
-// char * HTML::transSGML(char *text)
+// const String HTML::transSGML(const String& str)
 //
-char *
-HTML::transSGML(char *str)
+const String
+HTML::transSGML(const String& str)
 {
-    static String	convert;
-    String		scratch = str;
-    convert = HtSGMLCodec::instance()->encode(scratch);
-    return convert.get();
+    return HtSGMLCodec::instance()->encode(str);
 }

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Speling.cc,v 1.4 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: Speling.cc,v 1.5 1999/09/24 10:29:02 loic Exp $
 //
 
 #include "Speling.h"
@@ -21,13 +21,11 @@
 #include <fstream.h>
 #include <stdio.h>
 
-extern Configuration	config;
-
-
 //*****************************************************************************
-// Speling::Speling()
+// Speling::Speling(const Configuration& config_arg)
 //
-Speling::Speling()
+Speling::Speling(const Configuration& config_arg) :
+  Fuzzy(config_arg)
 {
     name = "speling";
 }
@@ -49,11 +47,11 @@ Speling::~Speling()
 void
 Speling::getWords(char *w, List &words)
 {
-    if (strlen(w) < config.Value("minimum_speling_length",5))
+    if ((int)strlen(w) < config.Value("minimum_speling_length",5))
 	return;
 
-    WordList	wordDB;
-    if (wordDB.Read(config["word_db"]) == NOTOK)
+    WordList	wordDB(config);
+    if (wordDB.Open(config["word_db"], O_RDONLY) == NOTOK)
       return;
 
     String	initial = w;
@@ -102,7 +100,7 @@ Speling::getWords(char *w, List &words)
 
 //*****************************************************************************
 int
-Speling::openIndex(Configuration &)
+Speling::openIndex()
 {
   return 0;
 }

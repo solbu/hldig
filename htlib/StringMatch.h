@@ -29,7 +29,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringMatch.h,v 1.6 1999/09/11 05:21:07 ghutchis Exp $
+// $Id: StringMatch.h,v 1.7 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef _StringMatch_h_
@@ -61,22 +61,22 @@ public:
     // length of that pattern string.  If none of the pattern strings
     // could be found, the return value will be -1
     //
-    int			FindFirst(char *string, int &which, int &length);
-    int			FindFirst(char *string);
+    int			FindFirst(const char *string, int &which, int &length);
+    int			FindFirst(const char *string);
 	
-    int			FindFirstWord(char *string, int &which, int &length);
-    int			FindFirstWord(char *string);
+    int			FindFirstWord(const char *string, int &which, int &length);
+    int			FindFirstWord(const char *string);
 	
     //
     // If you are interested in matching instead of searching, use
     // the following.  Same parameters except that the return value will
     // be 1 if there was a match, 0 if there was not.
     //
-    int			Compare(char *string, int &which, int &length);
-    int			Compare(char *string);
+    int			Compare(const char *string, int &which, int &length);
+    int			Compare(const char *string);
 
-    int			CompareWord(char *string, int &which, int &length);
-    int			CompareWord(char *string);
+    int			CompareWord(const char *string, int &which, int &length);
+    int			CompareWord(const char *string);
     
     //
     // Provide a character translation table which will be applied to

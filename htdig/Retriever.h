@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.15 1999/09/10 13:24:15 loic Exp $
+// $Id: Retriever.h,v 1.16 1999/09/24 10:28:57 loic Exp $
 //
 
 #ifndef _Retriever_h_
@@ -47,36 +47,36 @@ public:
     //
     // Getting it all started
     //
-    void		Initial(char *url, int checked = 0);
+    void		Initial(const String& url, int checked = 0);
     void		Initial(List &list , int checked = 0);
     void		Start();
 
     //
     // Report statistics about the parser
     //
-    void		ReportStatistics(char *name);
+    void		ReportStatistics(const String& name);
 	
     //
     // These are the callbacks that we need to write code for
     //
-    void		got_word(char *word, int location, int heading);
-    void		got_href(URL &url, char *description, int hops = 1);
-    void		got_title(char *title);
-    void		got_time(char *time);
-    void		got_head(char *head);
-    void		got_meta_dsc(char *md);
-    void		got_anchor(char *anchor);
-    void		got_image(char *src);
-    void		got_meta_email(char *);
-    void		got_meta_notification(char *);
-    void		got_meta_subject(char *);
+    void		got_word(const char *word, int location, int heading);
+    void		got_href(URL &url, const char *description, int hops = 1);
+    void		got_title(const char *title);
+    void		got_time(const char *time);
+    void		got_head(const char *head);
+    void		got_meta_dsc(const char *md);
+    void		got_anchor(const char *anchor);
+    void		got_image(const char *src);
+    void		got_meta_email(const char *);
+    void		got_meta_notification(const char *);
+    void		got_meta_subject(const char *);
     void                got_noindex();
 
     //
     // Allow for the indexing of protected sites by using a
     // username/password
     //
-	void		setUsernamePassword(char *credentials);
+	void		setUsernamePassword(const char *credentials);
 	
 private:
     //
@@ -96,6 +96,7 @@ private:
     int			n_links;
     Images		images;
     String		credentials;
+    WordReference	word_context;
     WordList		words;
 	
     RetrieverLog log;
@@ -137,7 +138,7 @@ private:
     String *            IsLocalUser(char *url);
     void		RetrievedDocument(Document &, char *url, DocumentRef *ref);
     void		parse_url(URLRef &urlRef);
-    void		got_redirect(char *, DocumentRef *);
+    void		got_redirect(const char *, DocumentRef *);
     void		recordNotFound(char *url, char *referer, int reason);
 };
 

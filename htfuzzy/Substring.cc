@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Substring.cc,v 1.8 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: Substring.cc,v 1.9 1999/09/24 10:29:02 loic Exp $
 //
 
 #include "Substring.h"
@@ -20,13 +20,11 @@
 #include "StringMatch.h"
 #include "Configuration.h"
 
-extern Configuration	config;
-
-
 //*****************************************************************************
-// Substring::Substring()
+// Substring::Substring(const Configuration& config_arg)
 //
-Substring::Substring()
+Substring::Substring(const Configuration& config_arg) :
+  Fuzzy(config_arg)
 {
     name = "substring";
 }
@@ -60,10 +58,10 @@ Substring::getWords(char *w, List &words)
     match.Pattern(stripped);
 
     // And get the list of all possible words
-    WordList	wordDB;
+    WordList	wordDB(config);
     List	*wordList;
     String	*key;
-    wordDB.Read(config["word_db"]);
+    wordDB.Open(config["word_db"], O_RDONLY);
     wordList = wordDB.Words();
 
     int		wordCount = 0;
@@ -88,7 +86,7 @@ Substring::getWords(char *w, List &words)
 
 //*****************************************************************************
 int
-Substring::openIndex(Configuration &)
+Substring::openIndex()
 {
   return 0;
 }

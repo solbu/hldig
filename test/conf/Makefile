@@ -1,7 +1,7 @@
 .SUFFIXES: .in
 
 FILES = httpd.conf srm.conf access.conf mime.types \
-        htdig.conf
+        htdig.conf htdig.conf2
 
 all: $(FILES)
 

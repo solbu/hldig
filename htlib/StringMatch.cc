@@ -29,7 +29,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringMatch.cc,v 1.11 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: StringMatch.cc,v 1.12 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "StringMatch.h"
@@ -206,10 +206,10 @@ StringMatch::Pattern(char *pattern, char sep)
 
 
 //*****************************************************************************
-// int StringMatch::FindFirst(char *string, int &which, int &length)
+// int StringMatch::FindFirst(const char *string, int &which, int &length)
 //   Attempt to find the first occurance of the previous compiled patterns.
 //
-int StringMatch::FindFirst(char *string, int &which, int &length)
+int StringMatch::FindFirst(const char *string, int &which, int &length)
 {
     which = -1;
     length = -1;
@@ -281,9 +281,9 @@ int StringMatch::FindFirst(char *string, int &which, int &length)
 
 
 //*****************************************************************************
-// int StringMatch::Compare(char *string, int &which, int &length)
+// int StringMatch::Compare(const char *string, int &which, int &length)
 //
-int StringMatch::Compare(char *string, int &which, int &length)
+int StringMatch::Compare(const char *string, int &which, int &length)
 {
     which = -1;
     length = -1;
@@ -345,7 +345,7 @@ int StringMatch::Compare(char *string, int &which, int &length)
 //*****************************************************************************
 // int StringMatch::FindFirstWord(char *string)
 //
-int StringMatch::FindFirstWord(char *string)
+int StringMatch::FindFirstWord(const char *string)
 {
     int	dummy;
     return FindFirstWord(string, dummy, dummy);
@@ -353,9 +353,9 @@ int StringMatch::FindFirstWord(char *string)
 
 
 //*****************************************************************************
-// int StringMatch::CompareWord(char *string)
+// int StringMatch::CompareWord(const char *string)
 //
-int StringMatch::CompareWord(char *string)
+int StringMatch::CompareWord(const char *string)
 {
     int	dummy;
     return CompareWord(string, dummy, dummy);
@@ -366,7 +366,7 @@ int StringMatch::CompareWord(char *string)
 // int StringMatch::FindFirstWord(char *string, int &which, int &length)
 //   Attempt to find the first occurance of the previous compiled patterns.
 //
-int StringMatch::FindFirstWord(char *string, int &which, int &length)
+int StringMatch::FindFirstWord(const char *string, int &which, int &length)
 {
     which = -1;
     length = -1;
@@ -451,9 +451,9 @@ int StringMatch::FindFirstWord(char *string, int &which, int &length)
 
 
 //*****************************************************************************
-// int StringMatch::CompareWord(char *string, int &which, int &length)
+// int StringMatch::CompareWord(const char *string, int &which, int &length)
 //
-int StringMatch::CompareWord(char *string, int &which, int &length)
+int StringMatch::CompareWord(const char *string, int &which, int &length)
 {
     which = -1;
     length = -1;
@@ -571,9 +571,9 @@ void StringMatch::IgnorePunct(char *punct)
 
 
 //*****************************************************************************
-// int StringMatch::FindFirst(char *source)
+// int StringMatch::FindFirst(const char *source)
 //
-int StringMatch::FindFirst(char *source)
+int StringMatch::FindFirst(const char *source)
 {
     int		dummy;
     return FindFirst(source, dummy, dummy);
@@ -581,9 +581,9 @@ int StringMatch::FindFirst(char *source)
 
 
 //*****************************************************************************
-// int StringMatch::Compare(char *source)
+// int StringMatch::Compare(const char *source)
 //
-int StringMatch::Compare(char *source)
+int StringMatch::Compare(const char *source)
 {
     int		dummy;
     return Compare(source, dummy, dummy);

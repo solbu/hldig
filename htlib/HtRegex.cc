@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.cc,v 1.8 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: HtRegex.cc,v 1.9 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "HtRegex.h"
@@ -21,7 +21,7 @@ HtRegex::HtRegex()
 	compiled = 0;
 }
 
-HtRegex::HtRegex(char *str)
+HtRegex::HtRegex(const char *str)
 {
         set(str);
 }
@@ -33,7 +33,7 @@ HtRegex::~HtRegex()
 }
 
 void
-HtRegex::set(char * str)
+HtRegex::set(const char * str)
 {
 	compiled = 0;
 	if (str == NULL) return;
@@ -71,7 +71,7 @@ HtRegex::setEscaped(StringList &list)
 }
 
 int
-HtRegex::match(char * str, int nullpattern, int nullstr)
+HtRegex::match(const char * str, int nullpattern, int nullstr)
 {
 	int	rval;
 	

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: TemplateList.h,v 1.4 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: TemplateList.h,v 1.5 1999/09/24 10:29:05 loic Exp $
 //
 
 #ifndef _TemplateList_h_
@@ -27,8 +27,8 @@ public:
     TemplateList();
     ~TemplateList();
 
-    int	       	        createFromString(char *);
-    Template		*get(char *internalName);
+    int	       	        createFromString(const String& str);
+    Template		*get(const String& internalName);
 	
     List	       	displayNames;
     List	       	internalNames;

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ResultMatch.cc,v 1.5 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: ResultMatch.cc,v 1.6 1999/09/24 10:29:04 loic Exp $
 //
 
 #include "ResultMatch.h"
@@ -42,10 +42,10 @@ char *ResultMatch::getTitle()
 time_t ResultMatch::getTime()
 { return 0; }
 
-void ResultMatch::setTitle(char *)
+void ResultMatch::setTitle(const String& title)
 { }
 
-void ResultMatch::setTime(time_t)
+void ResultMatch::setTime(time_t t)
 { }
 
 // Then for each sort-type, we derive a class, which will keep
@@ -210,7 +210,7 @@ TitleMatch::getSortFun() { return compare; }
 
 //*****************************************************************************
 int
-ResultMatch::setSortType(char *sorttype)
+ResultMatch::setSortType(const String& sorttype)
 {
     static const struct
     {
@@ -226,7 +226,7 @@ ResultMatch::setSortType(char *sorttype)
         {"id", SortByID}
     };
     int		i = 0;
-    char	*st = sorttype;
+    const char	*st = sorttype;
     if (st && *st)
     {
 	if (mystrncasecmp("rev", st, 3) == 0)

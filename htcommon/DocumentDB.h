@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.h,v 1.10 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: DocumentDB.h,v 1.11 1999/09/24 10:28:56 loic Exp $
 //
 
 #ifndef _DocumentDB_h_
@@ -41,19 +41,19 @@ public:
     //
     // The database used for searching is generated from our internal database:
     //
-    int			CreateSearchDB(char *filename);
+    int			CreateSearchDB(const String& filename);
 
     //
     // Standard database operations
     //
-    int			Open(char *filename, char *indexfilename, char *headname);
-    int			Read(char *filename, char *indexfilename = 0, char *headfilename = 0);
+    int			Open(const String& filename, const String& indexfilename, const String& headname);
+    int			Read(const String& filename, const String& indexfilename = 0, const String& headfilename = 0);
     int			Close();
 
     int			Add(DocumentRef &);
     // These do not read in the excerpt
     DocumentRef		*operator [] (int DocID);
-    DocumentRef		*operator [] (char *url);
+    DocumentRef		*operator [] (const String& url);
     // You must call this to read the excerpt
     int			ReadExcerpt(DocumentRef &);
     int			Exists(int DocID);
@@ -93,7 +93,6 @@ private:
     int			isopen;
     int			isread;
     int			nextDocID;
-    String		temp;
     int			myTryUncoded;	// "Compatibility" mode.
 };
 

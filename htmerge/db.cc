@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: db.cc,v 1.18 1999/09/14 06:22:29 ghutchis Exp $
+// $Id: db.cc,v 1.19 1999/09/24 10:29:04 loic Exp $
 //
 
 #include "htmerge.h"
@@ -27,50 +27,47 @@ mergeDB()
     DocumentDB	merge_db, db;
     List	*urls;
     Dictionary  merge_dup_ids, db_dup_ids; // Lists of DocIds to ignore
-    char        *doc_db, *merge_doc_db;
-    char        *doc_index, *merge_doc_index;
-    char	*doc_excerpt, *merge_doc_excerpt;
     int         docIDOffset;
 
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
     db.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
-    doc_index = config["doc_index"];
+    const String doc_index = config["doc_index"];
     if (access(doc_index, R_OK) < 0)
     {
-	reportError(form("Unable to open document index '%s'", doc_index));
+	reportError(form("Unable to open document index '%s'", (const char*)doc_index));
     }
-    doc_excerpt = config["doc_excerpt"];
+    const String doc_excerpt = config["doc_excerpt"];
     if (access(doc_excerpt, R_OK) < 0)
     {
-	reportError(form("Unable to open document excerpts '%s'", doc_excerpt));
+	reportError(form("Unable to open document excerpts '%s'", (const char*)doc_excerpt));
     }
-    doc_db = config["doc_db"];    
+    const String doc_db = config["doc_db"];    
     if (db.Open(doc_db, doc_index, doc_excerpt) < 0)
     {
 	reportError(form("Unable to open/create document database '%s'",
-			 doc_db));
+			 (const char*)doc_db));
     }
 
     merge_db.
       SetCompatibility(merge_config.Boolean("uncoded_db_compatible", 1));
 
-    merge_doc_index = merge_config["doc_index"];    
+    const String merge_doc_index = merge_config["doc_index"];    
     if (access(merge_doc_index, R_OK) < 0)
     {
-	reportError(form("Unable to open document index '%s'", merge_doc_index));
+	reportError(form("Unable to open document index '%s'", (const char*)merge_doc_index));
     }
-    merge_doc_excerpt = merge_config["doc_excerpt"];    
+    const String merge_doc_excerpt = merge_config["doc_excerpt"];    
     if (access(merge_doc_excerpt, R_OK) < 0)
     {
-	reportError(form("Unable to open document excerpts '%s'", merge_doc_excerpt));
+	reportError(form("Unable to open document excerpts '%s'", (const char*)merge_doc_excerpt));
     }
-    merge_doc_db = merge_config["doc_db"];
+    const String merge_doc_db = merge_config["doc_db"];
     if (merge_db.Open(merge_doc_db, merge_doc_index, merge_doc_excerpt) < 0)
     {
 	reportError(form("Unable to open document database '%s'",
-			 merge_doc_db));
+			 (const char*)merge_doc_db));
     }
 
     // Start the merging by going through all the URLs that are in
@@ -151,20 +148,20 @@ mergeDB()
 
     // OK, after merging the doc DBs, we do the same for the words
 
-    WordList	mergeWordDB, wordDB;
+    WordList	mergeWordDB(config), wordDB(config);
     List	*words;
     String	docIDKey;
 
-    if (wordDB.Open(config["word_db"]) < 0)
+    if (wordDB.Open(config["word_db"], O_RDWR) < 0)
     {
 	reportError(form("Unable to open/create document database '%s'",
-			 config["word_db"]));
+			 (const char*)config["word_db"]));
     }
 
-    if (mergeWordDB.Read(merge_config["word_db"]) < 0)
+    if (mergeWordDB.Open(merge_config["word_db"], O_RDONLY) < 0)
     {
 	reportError(form("Unable to open document database '%s'",
-			 merge_config["word_db"]));
+			 (const char *)merge_config["word_db"]));
     }
 
     // Start the merging by going through all the URLs that are in
@@ -176,12 +173,12 @@ mergeDB()
     WordReference	*word;
     while ((word = (WordReference *) words->Get_Next()))
     {
-      docIDKey = word->DocumentID;
+      docIDKey = word->DocID();
       if (merge_dup_ids.Exists(docIDKey))
 	continue;
 
-      word->DocumentID += docIDOffset;
-      wordDB.Add(word);
+      word->DocID(word->DocID() + docIDOffset);
+      wordDB.Add(*word);
     }
     words->Destroy();
 
@@ -189,7 +186,7 @@ mergeDB()
     words->Start_Get();
     while ((word = (WordReference *) words->Get_Next()))
     {
-      docIDKey = word->DocumentID;
+      docIDKey = word->DocID();
       if (db_dup_ids.Exists(docIDKey))
 	wordDB.Delete(*word);
     }

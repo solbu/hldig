@@ -91,6 +91,7 @@ NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 PDF_PARSER = @PDF_PARSER@
+PERL = @PERL@
 RANLIB = @RANLIB@
 SEARCH_DIR = @SEARCH_DIR@
 SEARCH_FORM = @SEARCH_FORM@
@@ -103,13 +104,13 @@ TIMEV = @TIMEV@
 USER = @USER@
 VERSION = @VERSION@
 
-INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include 		-I$(top_srcdir)/htlib -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
+INCLUDES = -Wall 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/include 		-I$(top_srcdir)/htlib -I$(top_srcdir)/htcommon 		-I$(top_srcdir)/db/dist -I$(top_builddir)/db/dist 		$(LOCAL_DEFINES)
 
 
 HTLIBS = $(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
 
 
-EXTRA_DIST = COPYING  	ChangeLog 	FAQ.html 	RELEASE.html 	THANKS.html 	TODO.html 	attrs.html 	author.html 	bdot.gif 	bugs.html 	cf_byname.html 	cf_byprog.html 	cf_general.html 	cf_types.html 	cf_variables.html 	config.html 	confindex.html 	confmenu.html 	contents.html 	dot.gif 	howitworks.html 	htdig.gif 	htdig.html 	htdig_big.gif 	htfuzzy.html 	htmerge.html 	htnotify.html 	hts_form.html 	hts_general.html 	hts_menu.html 	hts_method.html 	hts_templates.html 	htsearch.html 	index.html 	install.html 	ma_menu.html 	mailarchive.html 	mailing.html 	main.html 	meta.html 	notification.html 	require.html 	triangle.gif 	up.gif 	uses.html 	where.html
+EXTRA_DIST = COPYING  	ChangeLog 	FAQ.html 	RELEASE.html 	THANKS.html 	TODO.html 	author.html 	bdot.gif 	bugs.html 	attrs.html attrs_head.html attrs_tail.html 	cf_byname.html cf_byname_head.html cf_byname_tail.html 	cf_byprog.html cf_byprog_head.html cf_byprog_tail.html 	cf_general.html 	cf_types.html 	cf_variables.html 	config.html 	confindex.html 	confmenu.html 	contents.html 	dot.gif 	howitworks.html 	htdig.gif 	htdig.html 	htdig_big.gif 	htfuzzy.html 	htmerge.html 	htnotify.html 	hts_form.html 	hts_general.html 	hts_menu.html 	hts_method.html 	hts_templates.html 	htsearch.html 	index.html 	install.html 	ma_menu.html 	mailarchive.html 	mailing.html 	main.html 	meta.html 	notification.html 	require.html 	triangle.gif 	up.gif 	uses.html 	where.html
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -214,6 +215,15 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+attrs.html: attrs_head.html attrs_tail.html ../htcommon/defaults.cc cf_generate.pl
+	@PERL@ cf_generate.pl
+
+cf_byname.html: cf_byname_head.html cf_byname_tail.html ../htcommon/defaults.cc cf_generate.pl
+	@PERL@ cf_generate.pl
+
+cf_byprog.html: cf_byprog_head.html cf_byprog_tail.html ../htcommon/defaults.cc cf_generate.pl
+	@PERL@ cf_generate.pl
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

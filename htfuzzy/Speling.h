@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Speling.h,v 1.2 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: Speling.h,v 1.3 1999/09/24 10:29:02 loic Exp $
 //
 
 #ifndef _Speling_h_
@@ -28,11 +28,11 @@ public:
     //
     // Construction/Destruction
     //
-    Speling();
+    Speling(const Configuration& config_arg);
     virtual		~Speling();
 
     virtual void	getWords(char *word, List &words);
-    virtual int		openIndex(Configuration &);
+    virtual int		openIndex();
 
     virtual void	generateKey(char *, String &);
     virtual void	addWord(char *);

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HTML.h,v 1.8 1999/09/08 17:11:16 loic Exp $
+// $Id: HTML.h,v 1.9 1999/09/24 10:28:57 loic Exp $
 //
 #ifndef _HTML_h_
 #define _HTML_h_
@@ -58,7 +58,7 @@ private:
     // Helper functions
     //
     void		do_tag(Retriever &, String &);
-    char		*transSGML(char *);
+    const String	transSGML(const String& str);
 };
 
 #endif

@@ -11,7 +11,7 @@
    or the GNU Public License version 2 or later 
    <http://www.gnu.org/copyleft/gpl.html>
   
-   $Id: timegm.c,v 1.15 1999/09/17 17:24:01 bergolth Exp $
+   $Id: timegm.c,v 1.16 1999/09/24 10:29:03 loic Exp $
 */
 
 /* Copyright (C) 1993, 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
@@ -52,6 +52,10 @@ static struct tm *my_mktime_gmtime_r (const time_t *t, struct tm *tp)
   *tp = *l;
   return tp;
 }
+
+time_t __mktime_internal(struct tm *,
+			 struct tm *(*) (const time_t *, struct tm *),
+			 time_t *);
 
 time_t Httimegm(tmp)
 struct tm *tmp;

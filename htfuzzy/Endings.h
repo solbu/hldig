@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Endings.h,v 1.2 1999/09/10 17:22:24 ghutchis Exp $
+// $Id: Endings.h,v 1.3 1999/09/24 10:29:01 loic Exp $
 //
 
 #ifndef _Endings_h_
@@ -29,20 +29,20 @@ public:
     //
     // Construction/Destruction
     //
-    Endings();
+    Endings(const Configuration& config_arg);
     virtual		~Endings();
 
     virtual void	getWords(char *word, List &words);
     virtual void	generateKey(char *word, String &key);
     virtual void	addWord(char *word);
-    virtual int		openIndex(Configuration &);
-    virtual int		writeDB(Configuration &);
+    virtual int		openIndex();
+    virtual int		writeDB();
 
     //
     // Special member which will create the two databases needed for this
     // algorithm.
     //
-    int			createDB(Configuration &config);
+    int			createDB(const Configuration &config);
 	
     static void		mungeWord(char *, String &);
     
@@ -50,11 +50,9 @@ private:
     Database		*root2word;
     Database		*word2root;
 
-    int			createRoot(Dictionary &, char *, char *, char *);
-    int			readRules(Dictionary &, char *);
+    int			createRoot(Dictionary &, char *, char *, const String&);
+    int			readRules(Dictionary &, const String&);
     void		expandWord(String &, List &, Dictionary &, char *, char *);
 };
 
 #endif
-
-

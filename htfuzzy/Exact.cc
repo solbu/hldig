@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Exact.cc,v 1.6 1999/09/10 17:22:24 ghutchis Exp $
+// $Id: Exact.cc,v 1.7 1999/09/24 10:29:01 loic Exp $
 //
 
 #include "Exact.h"
@@ -20,7 +20,8 @@
 //*****************************************************************************
 // Exact::Exact()
 //
-Exact::Exact()
+Exact::Exact(const Configuration& config_arg) :
+  Fuzzy(config_arg)
 {
   name = "exact";
 }
@@ -47,7 +48,7 @@ Exact::getWords(char *w, List &words)
 
 //*****************************************************************************
 int
-Exact::openIndex(Configuration &)
+Exact::openIndex()
 {
   return 0;
 }

@@ -7,10 +7,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.cc,v 1.1 1999/09/10 11:45:29 loic Exp $
+// $Id: WordReference.cc,v 1.2 1999/09/24 10:28:56 loic Exp $
 //
 
+#include <iostream.h>
+
 #include "WordReference.h"
+#include "HtPack.h"
 
 //
 // Explain the format of data output of the Dump function
@@ -24,13 +27,46 @@ int WordReference::DumpHeader(FILE *fl)
 //
 // Ascii representation of a word occurence.
 //
-int WordReference::Dump(FILE *fl)
+int WordReference::Dump(FILE *fl) const
 {
-  fprintf(fl, "%s\t%ld\t%ld\t%d\t%d\n",
-	  Word.get(),
-	  DocumentID,
-	  Flags,
-	  Location,
-	  Anchor);
+  fprintf(fl, "%s\t%d\t%d\t%d\t%d\n",
+	  (const char*)Word(),
+	  DocID(),
+	  Flags(),
+	  Location(),
+	  Anchor());
   return OK;
+}
+
+int WordReference::Pack(String& ckey, String& crecord) const
+{
+  // We need to compress the WordRecord and convert it into a binary form
+  crecord = htPack(WORD_RECORD_COMPRESSED_FORMAT, (char *)&record );
+  return key.Pack(ckey);
+}
+
+int WordReference::Unpack(const String& ckey, const String& crecord)
+{
+  String decompressed;
+  decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT,
+			  crecord);
+
+  if (decompressed.length() != sizeof (WordRecord))
+    {
+      cerr << "WordReference::Unpack: Decoding mismatch" << endl;
+      return NOTOK;
+    }
+
+  memcpy((char *)&record, decompressed.get(), sizeof(WordRecord));
+
+  return key.Unpack(ckey);
+}
+
+int WordReference::Merge(const WordReference& other)
+{
+  int ret = key.Merge(other.Key());
+
+  if(record.anchor == 0) record.anchor = other.Anchor();
+
+  return ret;
 }

@@ -1,3 +1,259 @@
+Thu Sep 23 18:18:40 1999  Loic Dachary  <loic@ceic.com>
+
+	* configure.in: add PERL detection & use in Makefile.am
+
+Thu Sep 23 14:29:29 1999  Loic Dachary  <loic@ceic.com>
+
+	* configure.in: removed unused alloca.h
+
+	* htcommon/DocumentDB.cc: test isopen in Close instead of before calling Close.
+	  Add some const in functions arguments.
+	  (Read): change char* args to const String&, changed tests for null pointers to 
+	  empty().
+	  (Add): Delete the temp class member, use function local temp.
+	  (operator []): change char* args to const String&
+	  (CreateSearchDB): change char* args to const String&
+
+	* htcommon/DocumentRef.cc:(AddDescription): Add some const in functions arguments.
+	  Use a WordReference as insertion context instead of merely the docid: it contains
+	  the insertion context.
+	  (AddAnchor): Add some const in functions arguments.
+
+	* htcommon/DocumentRef.h: Add some const in inline functions arguments.
+
+	* htcommon/Makefile.am: add WordKey + WordKey.h generation
+
+	* htcommon/word_builder.pl, word.desc, WordKey.h.tmpl: generate WordKey.h from WordKey.h.tmpl and
+	  word.desc
+
+	* htcommon/WordList.cc: In general remove code that belongs to WordReference rather
+	  than WordList and cleanup const + String.
+	  (WordList) the constructor takes a Configuration object in argument. 
+	  (Word -> Replace): Word method replaced by Replace method because more explicit. Now
+	  taks a WordReference in argument instead of the list of fields values.
+	  (valid_word deleted, IsValid only): Add some const in functions arguments.
+	  (BadWordFile): change char* args to const String&
+	  (Open + Read -> Open): Open and Read merge into Open with mode argument. change char* args
+	  to const String&. 
+	  (Add): use WordReference::Pack and simply do Put. 
+	  (operator[], Prefix ...) now take WordReference instead of Word. Autmatic Conversion from
+	  Word for compatibility thru WordReference(const Word& w).
+	  (Dump): change char* args to const String&
+	  (Walk): use WordReference member functions instead of hard coded packing
+
+	* htcommon/WordRecord.h: move flag definitions to WordReference.h
+	  only keep anchor, the reste moved to key.
+
+	* htdig/Document.cc: change all config[""] manipulations from char* to String
+	  or const String
+	  (setUsernamePassword): Add some const in functions arguments.
+
+	* htdig/HTML.cc: change all config[""] manipulations from char* to String
+	  or const String. Change null pointer tests to empty().
+	  (transSGML): change char* args to const String&
+
+	* htdig/HtHTTP.cc: Add error messages for default cases in every switch.
+
+	* htdig/PDF.cc: (parse) change char* to const String& for config[""]
+
+	* htdig/Plaintext.cc: (parse) remove unused variable
+
+	* htdig/Retriever.cc: use WordReference word_context instead of simple docid
+	  to hold the insertion context.
+	  (Retriever) pass config to WordList initializer.
+	  (setUsernamePassword): Add some const in functions arguments.
+	  (Initial): change char* args to const String&
+	  (parse_url): use WordReference word_context, add debug information.
+	  (RetrievedDocument): set anchor in word_context.
+	  (got_word): use Replace instead of Word
+	  (got_*): Add some const in functions arguments.
+	  
+	* htdig/htdig.cc: change all config[""] manipulations from char* to String
+	  
+	* htdoc/cf_generate.pl: compute attrs.html, cf_byprog.html and cf_byname.html from
+	  ../htlib/default.cc and attrs_head.html attrs_tail.html cf_byname_head.html cf_byname_tail.html 
+	  cf_byprog_head.html cf_byprog_tail.html
+	  Add rules in Makefile.am
+
+	* htfuzzy: In every programs I changed the constructor to take a
+	  Configuration agrument.  The openIndex and writeDB had this
+	  argument sometime used it, sometimes used the global
+	  config. Having it in the contructor is cleaner and safer, there
+	  is no more reference to the global config. I also changed some
+	  char* to String and const. Most of the program look the same, I
+	  won't go into details here :-}
+
+	* htlib/Configuration.cc: changed separators from String* to String. Simpler.
+	  (~Configuration): removed because not needed.
+	  (Add): change to String, remove new String + delete for local var.
+	  (Find, operator[]): make it const fct, add some const in functions arguments.
+	  (Value + Double): killed, replaced by as_integer + as_double from String
+	  (Boolean): use String methods + string objects
+	  (Defaults): Add some const in functions arguments.
+
+	* htlib/Configuration.h: add
+	  char	*type;			// Type of the value (string, integer, boolean)
+	  char	*programs;		// White separated list of programs/modules using this attribute
+	  char	*example;		// Example usage of the attribute (HTML)
+	  char	*description;		// Long description of the attribute (HTML)
+	  to the ConfigDefaults type.
+
+	* htlib/Connection.cc: (assign_server) change char* args to const String&
+
+	* htlib/DB2_db.cc: Merge with DB2_hash.
+	  Add compare and prefix functions pointers.
+	  Merge OpenRead & OpenReadWrite into Open, keep for compatibility.
+	  skey and data are now strings instead of DBT.
+	  Remove Get_Next_Seq.
+	  Get_Next now returns key and value in arguments. 
+	  Remove all other Get_Next interfaces.
+
+	* htlib/Database.h: 
+	  Compatibility functions for Get_Next
+	  Put, Get, Exists, Delete take String args and are inline
+	  Add SetPrefix and SetCompare
+
+	* htlib/Dictionary.cc:
+	  Add copy constructor.
+	  Add DictionaryCursor that holds the traversal context.
+	  Use DictionaryCursor object for traversal without explicit
+	  cursor specified.
+	  Add constness where meaningfull.
+
+	* htlib/HtPack.cc: 
+	  (htPack) format is const, change strtol call
+	  to use temporary variable to cope with constness.
+	  (htUnpack) dataref argument is not a reference anymore. Not used
+	  anywhere and kind of hidden argument nobody wants.
+
+	* htlib/HtRegex.cc: set, match, HtRegex have const args.
+
+	* htlib/HtWordCodec.cc: (code) orig is const
+
+	* htlib/HtWordType.cc,h: statics is made of String instead of char*. Remove
+	  static String punct_and_extra from Initialize. 
+
+	* htlib/HtZlibCodec.cc: len is unsigned int
+
+	* htlib/ParsedString.cc: add constness to function args
+	  (get) use String instead of char
+
+	* htlib/QuotedStringList.cc: inline functions argument variations and
+	  add constness.
+
+	* htlib/String.cc: add constness whereever possible.
+
+	* htlib/htString.h: Add const get, char* cast, operator [].
+	  Add as_double conversion.
+	
+	* htlib/StringList.cc: inline functions argument variations and
+	  add constness.
+
+	* htlib/StringMatch.cc: add constness to function args.
+
+	* htlib/URL.cc: add constness to function args.
+	  (URL): fct arg was used as temp. Change, clearer.
+
+	* htlib/lib.h: add const declaration of string manipulation functions.
+	  Two forms for mystrcasestsr: const and not const.
+
+	* htlib/strcasecmp.cc: add constness to function args.
+
+	* htlib/timegm.c: add declaration for __mktime_internal
+
+	* htmerge/db.cc: change *doc* vars from char* to const String, use
+	  new WordList + WordReference interface.
+
+	* htmerge/docs.cc: change *doc* vars from char* to const String.
+
+	* htmerge/words.cc: use new WordList + WordReference interface.
+
+	* htsearch/Display.cc: use empty method on String where appropriate.
+	  use String instead of char* where config[""] used.
+	  (includeURL): change char* args to const String&
+
+	* htsearch/ResultMatch.cc: (setTitle, setSortType) change char* args to const String&
+	  
+	* htsearch/Template.cc: (createFromFile) change char* args to const String&
+	
+	* htsearch/Template.h: accessors return const String& or take const char*
+	  
+	* htsearch/TemplateList.cc: (get) use const String for internalNames.
+
+	* htsearch/htsearch.cc: use String instead of char* where config[""] used.
+	  
+	* htsearch/parser.cc: Initialize WordList member with config global.
+	  (perform_push): free the result list after calling score.
+	  (score, phrase): use new WordList + WordReference interface.
+
+Thu Sep 23 14:29:29 1999  Loic Dachary  <loic@ceic.com>
+
+	* htcommon/WordKey.h.tmpl, WordKey.cc: new, describe the key of the word
+	  database.
+
+	* htcommon/word.desc: new, abstract description of the key structure of the word
+	  database.
+
+	* htcommon/word_builder.pl: new, generate WordKey.h from WordKey.h.tmpl
+	
+	* htcommon/WordReference.cc: move key manipulation to WordKey.cc
+	  Add Unpack/Pack functions. Add accessors for fields and move fields to private.
+	  Add constness where possible.
+
+Mon Sep 20 14:50:47 1999  Loic Dachary  <loic@ceic.com>
+
+	* Everywhere config["string"] is used, check that it's *not* converted to 
+	  char* for later use. Keep String object so that there is no chance to
+	  use a char* that has been deallocated. Using a String as return for config["string"]
+	  is also *much* safer for the great number of calls that did not check for a possible
+	  0 pointer return.
+	
+	* htfuzzy/*.{cc,h}: const Configuration& config member. Constructor sets it.
+	  Remove config argument from openIndex & writeDB. The idea (as it was initialy,
+	  I guess) is to be able to have a standalone fuzzy library using a specify 
+	  configuration file. It is now possible and consistent.
+	
+	* htlib/htString.cc: more constness where appropriate. Changed compare
+	  to have const String& arg instead of const Object* because useless and
+	  potential source of bugous code.
+
+	* htfuzzy/Regex.cc (getWords): fix bugous setting of extra_word_chars
+	  configuration value. It is set to change the behaviour of HtStripPunctuation
+	  but this function get the extra_word_chars from a static array initialized
+	  at program start by static void Initialize(Configuration & config). Use straight
+	  s.remove() instead. Besides, the string was anchored by prepending a ^ that
+	  was removed because part of the reserved chars.
+
+Mon Sep 20 11:47:05 1999  Loic Dachary  <loic@ceic.com>
+
+	* htlib/Configuration.cc (operator []): changed return type to String
+	  to solve memory leak. When char* the string was malloced from ParsedString
+	  after substitution and never freed. In fact it was even worse : it was
+	  free before use in some cases.
+
+Sun Sep 19 19:12:44 1999  Loic Dachary  <loic@ceic.com>
+
+	* htdoc/cf_generate.pl, htcommon/defaults.cc, htlib/Configuration.h: 
+	  Change the structure of the configuration defaults. Move
+	  description, examples, types, used_by information from attrs.html.
+	  Write cf_generate.pl to build attrs.html, cf_byname, cf_byprog
+	  from defaults.cc. Makes it easier to maintain an up to date 
+	  description of existing attributes. About 10 attributes existed
+	  in defaults.cc and were not describted in the HTML pages. 
+	  Add rules in htdoc/Makefile.am to generate the pages if a source
+	  changes.
+
+Fri Sep 17 19:34:48 1999  Loic Dachary  <loic@ceic.com>
+
+	* Makefile.config: add -Wall to all compilation and fix
+	  all resulting warnings.
+
+	* htlib/Connection.cc (assign_server): remove redundant test
+	  and cast litteral value to unsigned
+
+	* htlib/String.cc: add const qualifier where possible. Helps
+	  dealing with const objects at an upper level.
+
 Fri Sep 17 18:27:57 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	A few changes so that it compiles with xlC on AIX:

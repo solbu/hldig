@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.17 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: parser.cc,v 1.18 1999/09/24 10:29:05 loic Exp $
 //
 
 #include "parser.h"
@@ -21,7 +21,8 @@
 
 
 //*****************************************************************************
-Parser::Parser()
+Parser::Parser() :
+  words(config)
 {
     tokens = 0;
     result = 0;
@@ -254,7 +255,9 @@ Parser::perform_push()
     if (temp.length() > maximum_word_length)
 	p[maximum_word_length] = '\0';
 
-    score(words[p], current->weight);
+    List* result = words[p];
+    score(result, current->weight);
+    delete result;
 }
 
 //*****************************************************************************
@@ -300,15 +303,13 @@ Parser::perform_phrase(List &oldWords)
 	newWords->Start_Get();
 	while ((newWord = (WordReference *) newWords->Get_Next()))
 	  {
-	    if (oldWord->DocumentID == newWord->DocumentID)
-	      if ((oldWord->Location + 1) == newWord->Location)
+	    if (oldWord->DocID() == newWord->DocID())
+	      if ((oldWord->Location() + 1) == newWord->Location())
 		{
-		  WordReference *result = new WordReference;
-		  result->DocumentID = oldWord->DocumentID;
-		  result->Location = newWord->Location;	      
-		  
-		  result->Flags = oldWord->Flags & newWord->Flags;
-		  result->Anchor = oldWord->Anchor;
+		  WordReference *result = new WordReference(*oldWord);
+
+		  result->Flags(oldWord->Flags() & newWord->Flags());
+		  result->Location(newWord->Location());
 		  
 		  results->Add(result);
 		}
@@ -346,30 +347,30 @@ Parser::score(List *wordList, double weight)
     wordList->Start_Get();
     while ((wr = (WordReference *) wordList->Get_Next()))
       {
-	dm = list->find(wr->DocumentID);
+	dm = list->find(wr->DocID());
 	if (dm)
 	  {
 
-	    int prevAnchor;
+	    unsigned int prevAnchor;
 	    double prevScore;
 	    prevScore = dm->score;
 	    prevAnchor = dm->anchor;
 	    // We wish to *update* this, not add a duplicate
-	    list->remove(wr->DocumentID);
+	    list->remove(wr->DocID());
 
 	    dm = new DocMatch;
 
-	    dm->score = (wr->Flags & FLAG_TEXT) * config.Value("text_factor", 1);
-	    dm->score += (wr->Flags & FLAG_CAPITAL) * config.Value("caps_factor", 1);
-	    dm->score += (wr->Flags & FLAG_TITLE) * config.Value("title_factor", 1);
-	    dm->score += (wr->Flags & FLAG_HEADING) * config.Value("heading_factor", 1);
-	    dm->score += (wr->Flags & FLAG_KEYWORDS) * config.Value("keywords_factor", 1);
-	    dm->score += (wr->Flags & FLAG_DESCRIPTION) * config.Value("meta_description_factor", 1);
-	    dm->score += (wr->Flags & FLAG_AUTHOR) * config.Value("author_factor", 1);
-	    dm->score += (wr->Flags & FLAG_LINK_TEXT) * config.Value("description_factor", 1);
+	    dm->score = (wr->Flags() & FLAG_TEXT) * config.Value("text_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_CAPITAL) * config.Value("caps_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_TITLE) * config.Value("title_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_HEADING) * config.Value("heading_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_KEYWORDS) * config.Value("keywords_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_DESCRIPTION) * config.Value("meta_description_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_AUTHOR) * config.Value("author_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_LINK_TEXT) * config.Value("description_factor", 1);
 	    dm->score = weight * dm->score + prevScore;
-	    if (prevAnchor > wr->Anchor)
-	      dm->anchor = wr->Anchor;
+	    if (prevAnchor > wr->Anchor())
+	      dm->anchor = wr->Anchor();
 	    else
 	      dm->anchor = prevAnchor;
 	    
@@ -381,17 +382,17 @@ Parser::score(List *wordList, double weight)
 	    // *******  Compute the score for the document
 	    //
 	    dm = new DocMatch;
-	    dm->score = (wr->Flags & FLAG_TEXT) * config.Value("text_factor", 1);
-	    dm->score += (wr->Flags & FLAG_CAPITAL) * config.Value("caps_factor", 1);
-	    dm->score += (wr->Flags & FLAG_TITLE) * config.Value("title_factor", 1);
-	    dm->score += (wr->Flags & FLAG_HEADING) * config.Value("heading_factor", 1);
-	    dm->score += (wr->Flags & FLAG_KEYWORDS) * config.Value("keywords_factor", 1);
-	    dm->score += (wr->Flags & FLAG_DESCRIPTION) * config.Value("meta_description_factor", 1);
-	    dm->score += (wr->Flags & FLAG_AUTHOR) * config.Value("author_factor", 1);
-	    dm->score += (wr->Flags & FLAG_LINK_TEXT) * config.Value("description_factor", 1);
+	    dm->score = (wr->Flags() & FLAG_TEXT) * config.Value("text_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_CAPITAL) * config.Value("caps_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_TITLE) * config.Value("title_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_HEADING) * config.Value("heading_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_KEYWORDS) * config.Value("keywords_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_DESCRIPTION) * config.Value("meta_description_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_AUTHOR) * config.Value("author_factor", 1);
+	    dm->score += (wr->Flags() & FLAG_LINK_TEXT) * config.Value("description_factor", 1);
 	    dm->score *= weight;
-	    dm->id = wr->DocumentID;
-	    dm->anchor = wr->Anchor;
+	    dm->id = wr->DocID();
+	    dm->anchor = wr->Anchor();
 	  }
 	list->add(dm);
       }

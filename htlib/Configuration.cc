@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.cc,v 1.13 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: Configuration.cc,v 1.14 1999/09/24 10:29:02 loic Exp $
 //
 
 #include "Configuration.h"
@@ -31,35 +31,25 @@
 //
 Configuration::Configuration()
 {
-    separators = new String("=:");
+    separators = String("=:");
     allow_multiple = 0;
-}
-
-
-//*********************************************************************
-// Configuration::~Configuration()
-//
-Configuration::~Configuration()
-{
-    delete separators;
 }
 
 
 //*********************************************************************
 // void Configuration::NameValueSeparators(char *s)
 //
-void Configuration::NameValueSeparators(char *s)
+void Configuration::NameValueSeparators(const char *s)
 {
-    delete separators;
-    separators = new String(s);
+    separators = 0;
+    separators.append(s);
 }
 
 
 //*********************************************************************
-// void Configuration::Add(char *str)
 //   Add an entry to the configuration table.
 //
-void Configuration::Add(char *str)
+void Configuration::Add(const char *str)
 {
     String	name, value;
 	
@@ -94,7 +84,7 @@ void Configuration::Add(char *str)
             return;
         }
 
-        if (!strchr(separators->get(), *str))
+        if (!strchr(separators, *str))
         {
             //
             // We are now at a new name.  The previous one needs to be set
@@ -169,17 +159,15 @@ void Configuration::Add(char *str)
 
 
 //*********************************************************************
-// void Configuration::Add(char *name, char *value)
 //   Add an entry to the configuration table.
 //
-void Configuration::Add(char *name, char *value)
+void Configuration::Add(const char *name, const char *value)
 {
     ParsedString	*ps = new ParsedString(value);
     if (mystrcasecmp(name, "locale") == 0)
     {
-        String *str = new String(setlocale(LC_ALL, value));
-        ps->set(str->get());
-	delete str;
+        String str(setlocale(LC_ALL, value));
+        ps->set(str);
 
         //
         // Set time format to standard to avoid sending If-Modified-Since
@@ -193,10 +181,9 @@ void Configuration::Add(char *name, char *value)
 
 
 //*********************************************************************
-// int Configuration::Remove(char *name)
 //   Remove an entry from both the hash table and from the list of keys.
 //
-int Configuration::Remove(char *name)
+int Configuration::Remove(const char *name)
 {
     return dict.Remove(name);
 }
@@ -207,7 +194,7 @@ int Configuration::Remove(char *name)
 //   Retrieve a variable from the configuration database.  This variable
 //   will be parsed and a new String object will be returned.
 //
-char *Configuration::Find(char *name)
+const String Configuration::Find(const char *name) const
 {
     ParsedString	*ps = (ParsedString *) dict[name];
     if (ps)
@@ -225,53 +212,37 @@ char *Configuration::Find(char *name)
 
 
 //*********************************************************************
-// int Configuration::Value(char *name, int default_value)
 //
-int Configuration::Value(char *name, int default_value)
+int Configuration::Value(const char *name, int default_value) const
 {
-    int		value = default_value;
-    char	*s = Find(name);
-    if (s && *s)
-    {
-        value = atoi(s);
-    }
-
-    return value;
+    return Find(name).as_integer(default_value);
 }
 
 
 //*********************************************************************
-// double Configuration::Double(char *name, double default_value)
 //
-double Configuration::Double(char *name, double default_value)
+double Configuration::Double(const char *name, double default_value) const
 {
-    double		value = default_value;
-    char	*s = Find(name);
-    if (s && *s)
-    {
-        value = atof(s);
-    }
-
-    return value;
+    return Find(name).as_double(default_value);
 }
 
 
 //*********************************************************************
 // int Configuration::Boolean(char *name, int default_value)
 //
-int Configuration::Boolean(char *name, int default_value)
+int Configuration::Boolean(const char *name, int default_value) const
 {
     int		value = default_value;
-    char	*s = Find(name);
-    if (s && *s)
+    const String s = Find(name);
+    if (s[0])
     {
-        if (mystrcasecmp(s, "true") == 0 ||
-            mystrcasecmp(s, "yes") == 0 ||
-            mystrcasecmp(s, "1") == 0)
+        if (s.nocase_compare("true") == 0 ||
+            s.nocase_compare("yes") == 0 ||
+            s.nocase_compare("1") == 0)
             value = 1;
-        else if (mystrcasecmp(s, "false") == 0 ||
-                 mystrcasecmp(s, "no") == 0 ||
-                 mystrcasecmp(s, "0") == 0)
+        else if (s.nocase_compare("false") == 0 ||
+                 s.nocase_compare("no") == 0 ||
+                 s.nocase_compare("0") == 0)
             value = 0;
     }
 
@@ -280,20 +251,18 @@ int Configuration::Boolean(char *name, int default_value)
 
 
 //*********************************************************************
-// char *Configuration::operator[](char *name)
 //
-char *Configuration::operator[](char *name)
+const String Configuration::operator[](const char *name) const
 {
     return Find(name);
 }
 
 
 //*********************************************************************
-// int Configuration::Read(char *filename)
 //
-int Configuration::Read(char *filename)
+int Configuration::Read(const String& filename)
 {
-    ifstream	in(filename);
+    ifstream	in((const char*)filename);
 
     if (in.bad() || in.eof())
         return NOTOK;
@@ -362,7 +331,7 @@ int Configuration::Read(char *filename)
 		    str = "";		// No slash in current filename
 		str << ps.get(dict);
 	    }
-	    Read(str.get());
+	    Read(str);
 	    line = 0;
 	    continue;
 	}
@@ -378,7 +347,7 @@ int Configuration::Read(char *filename)
 //*********************************************************************
 // void Configuration::Defaults(ConfigDefaults *array)
 //
-void Configuration::Defaults(ConfigDefaults *array)
+void Configuration::Defaults(const ConfigDefaults *array)
 {
     for (int i = 0; array[i].name; i++)
     {

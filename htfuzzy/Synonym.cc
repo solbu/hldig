@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Synonym.cc,v 1.7 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: Synonym.cc,v 1.8 1999/09/24 10:29:02 loic Exp $
 //
 
 #include "Synonym.h"
@@ -25,7 +25,8 @@
 
 
 //*****************************************************************************
-Synonym::Synonym()
+Synonym::Synonym(const Configuration& config_arg) :
+  Fuzzy(config_arg)
 {
     name = "synonyms";
     db = 0;
@@ -46,15 +47,13 @@ Synonym::~Synonym()
 
 //*****************************************************************************
 int
-Synonym::createDB(Configuration &config)
+Synonym::createDB()
 {
-    char	*sourceFile;
-    char	*dbFile;
     char	input[1000];
     FILE	*fl;
 	
-    sourceFile = config["synonym_dictionary"];
-    dbFile = config["synonym_db"];
+    const String sourceFile = config["synonym_dictionary"];
+    const String dbFile = config["synonym_db"];
 
     fl = fopen(sourceFile, "r");
     if (fl == NULL)
@@ -91,7 +90,7 @@ Synonym::createDB(Configuration &config)
 	    word = sl[i];
 	    word.lowercase();
 	    data.lowercase();
-	    db->Put(word, data, data.length() - 1);
+	    db->Put(word, String(data.get(), data.length() - 1));
 	    if (debug && (count % 10) == 0)
 	    {
                 cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
@@ -114,9 +113,9 @@ Synonym::createDB(Configuration &config)
 
 //*****************************************************************************
 int
-Synonym::openIndex(Configuration &)
+Synonym::openIndex()
 {
-    char	*dbFile = config["synonym_db"];
+    const String	dbFile = config["synonym_db"];
 	
     if (db)
     {

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Database.cc,v 1.6 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: Database.cc,v 1.7 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "Database.h"
@@ -34,77 +34,16 @@ Database::~Database()
 
 
 //*****************************************************************************
-// int Database::Put(char *key, const String &data)
-//
-int
-Database::Put(char *key, const String &data)
-{
-    String		k(key);
-
-    return Put(k, data);
-}
-
-
-//*****************************************************************************
-// int Database::Put(char *key, char *data, int size)
-//
-int
-Database::Put(char *key, char *data, int size)
-{
-    String		k(key);
-    String		d;
-
-    d.append(data, size);
-    return Put(k, d);
-}
-
-
-//*****************************************************************************
-// int Database::Get(char *key, String &data)
-//
-int
-Database::Get(char *key, String &data)
-{
-    String		k(key);
-
-    return Get(k, data);
-}
-
-
-//*****************************************************************************
-// int Database::Exists(char *key)
-//
-int
-Database::Exists(char *key)
-{
-    String		k(key);
-
-    return Exists(k);
-}
-
-
-//*****************************************************************************
-// int Database::Delete(char *key)
-//
-int
-Database::Delete(char *key)
-{
-    String		k(key);
-
-    return Delete(k);
-}
-
-
-//*****************************************************************************
 // Database *Database::getDatabaseInstance()
 //
 Database *
-Database::getDatabaseInstance(int type = DB_BTREE)
+Database::getDatabaseInstance(enum DBTYPE type = DB_BTREE)
 {
-  if (type == DB_HASH) // Hash
-    return DB2_hash::getDatabaseInstance();
-  else
-    return DB2_db::getDatabaseInstance();
+  Database* db = DB2_db::getDatabaseInstance(type);
+
+  db->db_type = type;
+
+  return db;
 }
 
 

@@ -10,36 +10,19 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordRecord.h,v 1.11 1999/09/10 11:45:29 loic Exp $
+// $Id: WordRecord.h,v 1.12 1999/09/24 10:28:56 loic Exp $
 //
 
 #ifndef _WordRecord_h_
 #define _WordRecord_h_
 
-//
-// Flags
-// 
-#define FLAG_TEXT 0
-#define FLAG_CAPITAL 1
-#define FLAG_TITLE 2
-#define FLAG_HEADING 4
-#define FLAG_KEYWORDS 8
-#define FLAG_DESCRIPTION 16
-#define FLAG_AUTHOR 32
-#define FLAG_LINK_TEXT 64
-#define FLAG_URL 128
-// The remainder are undefined
-
 struct WordRecord
 {
-    int		id;
-    int		flags;
-    int		anchor;
-    int		location;
+    unsigned int		anchor;
 
     void	Clear()
       {
-	id = flags = anchor = location = 0;
+	anchor = 0;
       }
 };
 
@@ -52,7 +35,7 @@ struct WordRecord
    Since none of the values are non-zero, we want to use
    unsigned chars and unsigned short ints when possible. */
 
-#define WORD_RECORD_COMPRESSED_FORMAT "u4"
+#define WORD_RECORD_COMPRESSED_FORMAT "u"
 
 #endif
 

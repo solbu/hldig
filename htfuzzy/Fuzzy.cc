@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Fuzzy.cc,v 1.14 1999/09/10 17:22:24 ghutchis Exp $
+// $Id: Fuzzy.cc,v 1.15 1999/09/24 10:29:01 loic Exp $
 //
 
 #include "Fuzzy.h"
@@ -33,9 +33,10 @@
 #include "Speling.h"
 
 //*****************************************************************************
-// Fuzzy::Fuzzy()
+// Fuzzy::Fuzzy(const Configuration& config)
 //
-Fuzzy::Fuzzy()
+Fuzzy::Fuzzy(const Configuration& config_arg) :
+  config(config_arg)
 {
     dict = 0;
     index = 0;
@@ -106,10 +107,10 @@ Fuzzy::getWords(char *word, List &words)
 
 
 //*****************************************************************************
-// int Fuzzy::openIndex(Configuration &config)
+// int Fuzzy::openIndex(const Configuration &config)
 //
 int
-Fuzzy::openIndex(Configuration &config)
+Fuzzy::openIndex()
 {
     String	var = name;
     var << "_db";
@@ -131,7 +132,7 @@ Fuzzy::openIndex(Configuration &config)
 // int Fuzzy::writeDB(Configuration &config)
 //
 int
-Fuzzy::writeDB(Configuration &config)
+Fuzzy::writeDB()
 {
     String	var = name;
     var << "_db";
@@ -175,33 +176,33 @@ Fuzzy::writeDB(Configuration &config)
 // Fuzzy algorithm factory.
 //
 Fuzzy *
-Fuzzy::getFuzzyByName(char *name)
+Fuzzy::getFuzzyByName(char *name, const Configuration& config)
 {
     if (mystrcasecmp(name, "exact") == 0)
-	return new Exact();
+	return new Exact(config);
     else if (mystrcasecmp(name, "soundex") == 0)
-	return new Soundex();
+	return new Soundex(config);
     else if (mystrcasecmp(name, "metaphone") == 0)
-	return new Metaphone();
+	return new Metaphone(config);
     else if (mystrcasecmp(name, "endings") == 0)
-	return new Endings();
+	return new Endings(config);
     else if (mystrcasecmp(name, "synonyms") == 0)
-	return new Synonym();
+	return new Synonym(config);
     else if (mystrcasecmp(name, "substring") == 0)
-	return new Substring();
+	return new Substring(config);
     else if (mystrcasecmp(name, "prefix") == 0)
-	return new Prefix();
+	return new Prefix(config);
     else if (mystrcasecmp(name, "regex") == 0)
-	return new Regex();
+	return new Regex(config);
     else if (mystrcasecmp(name, "speling") == 0)
-	return new Speling();
+	return new Speling(config);
     else
 	return 0;
 }
 
 //*****************************************************************************
 int
-Fuzzy::createDB(Configuration &)
+Fuzzy::createDB(const Configuration &)
 {
     return OK;
 }

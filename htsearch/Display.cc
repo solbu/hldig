@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.93 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: Display.cc,v 1.94 1999/09/24 10:29:04 loic Exp $
 //
 
 #include "htsearch.h"
@@ -101,7 +101,7 @@ Display::display(int pageNumber)
       // Must temporarily stash the message in a String, since
       // displaySyntaxError will overwrite the static temp used in form.
 
-      String s(form("No such sort method: `%s'", config["sort"]));
+      String s(form("No such sort method: `%s'", (const char*)config["sort"]));
 
       displaySyntaxError(s);
       return;
@@ -181,7 +181,7 @@ Display::display(int pageNumber)
     //
     // Display the window of matches requested.
     //
-    if (currentTemplate->getStartTemplate())
+    if (!currentTemplate->getStartTemplate().empty())
     {
 	expandVariables(currentTemplate->getStartTemplate());
     }
@@ -204,7 +204,7 @@ Display::display(int pageNumber)
 	currentMatch++;
     }
 
-    if (currentTemplate->getEndTemplate())
+    if (!currentTemplate->getEndTemplate().empty())
     {
 	expandVariables(currentTemplate->getEndTemplate());
     }
@@ -221,7 +221,7 @@ Display::display(int pageNumber)
 //*****************************************************************************
 // Return true if the specified URL should be counted towards the results.
 int
-Display::includeURL(char *url)
+Display::includeURL(const String& url)
 {
   
     if (limitTo && limitTo->match(url, 1, 0) == 0)
@@ -328,16 +328,16 @@ Display::displayMatch(DocumentRef *ref, int current)
 	if (t)
 	{
 	    struct tm	*tm = localtime(&t);
-	    char	*datefmt = config["date_format"];
-	    char        *locale  = config["locale"];
-	    if (!datefmt || !*datefmt)
+	    String datefmt = config["date_format"];
+	    String locale  = config["locale"];
+	    if (!datefmt.empty())
 	      {
 		if (config.Boolean("iso_8601"))
 		    datefmt = "%Y-%m-%d %H:%M:%S %Z";
 		else
 		    datefmt = "%x";
 	      }
-	    if ( locale && *locale )
+	    if (!locale.empty())
 	      {
 		setlocale(LC_TIME,locale);
 	      }
@@ -422,7 +422,7 @@ Display::setVariables(int pageNumber, List *matches)
 	i = nMatches;
     vars.Add("LASTDISPLAYED", new String(form("%d", i)));
 
-    if (strlen(config["script_name"]) != 0) {
+    if (config["script_name"].length() != 0) {
       vars.Add("CGI", new String(config["script_name"]));
     } else {
       vars.Add("CGI", new String(getenv("SCRIPT_NAME")));
@@ -466,7 +466,7 @@ Display::setVariables(int pageNumber, List *matches)
 
     str = new String();
     QuotedStringList	sl(config["sort_names"], " \t\r\n");
-    char		*st = config["sort"];
+    const String	st = config["sort"];
     StringMatch		datetime;
     datetime.IgnoreCase();
     datetime.Pattern("date|time");
@@ -477,7 +477,7 @@ Display::setVariables(int pageNumber, List *matches)
 	if (mystrcasecmp(sl[i], st) == 0 ||
 		datetime.Compare(sl[i]) && datetime.Compare(st) ||
 		mystrncasecmp(sl[i], st, 3) == 0 &&
-		    datetime.Compare(sl[i]+3) && datetime.Compare(st+3))
+		    datetime.Compare(sl[i]+3) && datetime.Compare(st.get()+3))
 	    *str << " selected";
 	*str << '>' << sl[i + 1] << '\n';
     }
@@ -548,7 +548,7 @@ Display::setVariables(int pageNumber, List *matches)
     String* key;
     for (i= 0; i < form_vars.Count(); i++)
     {
-      if (config[form_vars[i]])
+      if(!config[form_vars[i]].empty())
       {
 	key= new String(form_vars[i]);
 	key->uppercase();
@@ -564,7 +564,7 @@ Display::createURL(String &url, int pageNumber)
     String	s;
     int         i;
 
-    if (strlen(config["script_name"]) != 0) {
+    if (!config["script_name"].empty()) {
       url << config["script_name"];
     } else {
       url << getenv("SCRIPT_NAME");
@@ -624,7 +624,7 @@ Display::displayNomatch()
 
 //*****************************************************************************
 void
-Display::displaySyntaxError(char *message)
+Display::displaySyntaxError(const String& message)
 {
     cout << "Content-type: text/html\r\n\r\n";
 
@@ -635,7 +635,7 @@ Display::displaySyntaxError(char *message)
 
 //*****************************************************************************
 void
-Display::displayParsedFile(char *filename)
+Display::displayParsedFile(const String& filename)
 {
     FILE	*fl = fopen(filename, "r");
     char	buffer[1000];
@@ -658,8 +658,8 @@ Display::displayParsedFile(char *filename)
 void
 Display::setupTemplates()
 {
-    char	*templatePatterns = config["template_patterns"];
-    if (templatePatterns && *templatePatterns)
+    String templatePatterns = config["template_patterns"];
+    if (!templatePatterns.empty())
     {
 	//
 	// The templatePatterns string will have pairs of values.  The first
@@ -698,8 +698,8 @@ Display::setupTemplates()
 void
 Display::setupImages()
 {
-    char	*starPatterns = config["star_patterns"];
-    if (starPatterns && *starPatterns)
+    String starPatterns = config["star_patterns"];
+    if (!starPatterns.empty())
     {
 	//
 	// The starPatterns string will have pairs of values.  The first
@@ -737,8 +737,8 @@ Display::generateStars(DocumentRef *ref, int right)
     if (!config.Boolean("use_star_image", 1))
 	return result;
 
-    char	*image = config["star_image"];
-    char	*blank = config["star_blank"];
+    String image = config["star_image"];
+    const String blank = config["star_blank"];
     double	score;
 
     if (maxScore != 0)
@@ -792,7 +792,7 @@ Display::generateStars(DocumentRef *ref, int right)
 
 //*****************************************************************************
 String *
-Display::readFile(char *filename)
+Display::readFile(const String& filename)
 {
     FILE	*fl;
     String	*s = new String();
@@ -808,8 +808,9 @@ Display::readFile(char *filename)
 
 //*****************************************************************************
 void
-Display::expandVariables(char *str)
+Display::expandVariables(const String& str_arg)
 {
+    const char* str = str_arg;
     enum
     {
 	StStart, StLiteral, StVarStart, StVarClose, StVarPlain, StGotVar
@@ -893,11 +894,11 @@ Display::expandVariables(char *str)
 
 //*****************************************************************************
 void
-Display::outputVariable(char *var)
+Display::outputVariable(const String& var)
 {
     String	*temp;
     String	value = "";
-    char	*ev, *name;
+    const char	*ev, *name;
 
     // We have a complete variable name in var. Look it up and
     // see if we can find a good replacement for it, either in our
@@ -914,7 +915,7 @@ Display::outputVariable(char *var)
 	if (ev)
 	    value = ev;
     }
-    while (--name >= var && value.length())
+    while (--name >= var.get() && value.length())
     {
 	if (*name == '%')
 	    encodeURL(value);
@@ -1072,7 +1073,7 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 	//
 	// No excerpt available, don't show top, so display message
 	//
-	if (config["no_excerpt_text"][0])
+	if (!config["no_excerpt_text"].empty())
 	{
 	    *text << config["no_excerpt_text"];
 	}
@@ -1124,10 +1125,11 @@ Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 }
 
 //*****************************************************************************
-char *
-Display::hilight(char *str, String urlanchor, int fanchor)
+String
+Display::hilight(const String& str_arg, const String& urlanchor, int fanchor)
 {
-    static String	result;
+    const char		*str = str_arg;
+    String		result;
     int			pos;
     int			which, length;
     WeightWord		*ww;
@@ -1172,8 +1174,8 @@ Display::sort(List *matches)
     qsort((char *) array, numberOfMatches, sizeof(ResultMatch *),
 	  array[0]->getSortFun());
 
-    char	*st = config["sort"];
-    if (st && *st && mystrncasecmp("rev", st, 3) == 0)
+    const String st = config["sort"];
+    if (!st.empty() && mystrncasecmp("rev", st, 3) == 0)
     {
 	for (i = numberOfMatches; --i >= 0; )
 	    matches->Add(array[i]);
@@ -1212,8 +1214,8 @@ Display::logSearch(int page, List *matches)
     syslog(level, "%s [%s] (%s) [%s] [%s] (%d/%s) - %d -- %s\n",
 	   host,
 	   input->exists("config") ? input->get("config") : "default",
-	   config["match_method"], input->get("words"), logicalWords.get(),
-	   nMatches, config["matches_per_page"],
+	   (const char*)config["match_method"], input->get("words"), logicalWords.get(),
+	   nMatches, (const char*)config["matches_per_page"],
 	   page, ref
 	   );
 }

@@ -1,0 +1,35 @@
+#
+# DocID and Location on the same byte and
+# Location ends on a byte boundary.
+#
+Key 
+	Definition
+		Word
+			type 	= String
+		end
+		DocID
+			type	= unsigned int
+			bits	= 3
+		end
+		Location
+			type	= unsigned int
+			bits	= 7
+		end
+		Flags
+			type	= unsigned int
+			bits	= 9
+		end
+		Foo1
+			type	= unsigned int
+			bits	= 13
+		end
+		Foo2
+			type	= unsigned int
+			bits	= 9
+		end
+	end
+
+	EncodingOrder 		= DocID,Location,Flags,Foo1,Foo2,Word
+
+	SortOrder 		= Word asc,DocID asc,Flags asc,Location asc, Foo1 asc, Foo2 asc
+end

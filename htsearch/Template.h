@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Template.h,v 1.4 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: Template.h,v 1.5 1999/09/24 10:29:05 loic Exp $
 //
 
 #ifndef _Template_h_
@@ -30,15 +30,15 @@ public:
     Template();
     ~Template();
 
-    char	       	*getMatchTemplate()	       	{return matchTemplate;}
-    char	       	*getStartTemplate()	       	{return startTemplate;}
-    char	       	*getEndTemplate()	       	{return endTemplate;}
+    const String&      	getMatchTemplate() const       	{ return matchTemplate; }
+    const String&     	getStartTemplate() const       	{ return startTemplate; }
+    const String&      	getEndTemplate() const       	{ return endTemplate; }
 
-    void	       	setMatchTemplate(char *s)	{matchTemplate = s;}
-    void	       	setStartTemplate(char *s)	{startTemplate = s;}
-    void	       	setEndTemplate(char *s)		{endTemplate = s;}
+    void	       	setMatchTemplate(const char *s)	{ matchTemplate = s; }
+    void	       	setStartTemplate(const char *s)	{ startTemplate = s; }
+    void	       	setEndTemplate(const char *s)	{ endTemplate = s; }
 
-    void	       	createFromFile(char *filename);
+    void	       	createFromFile(const char *filename);
 	
 protected:
     String	       	matchTemplate;
@@ -46,7 +46,7 @@ protected:
     String	       	endTemplate;
 
 private:
-    void	       	readFile(String &, char *);
+    void	       	readFile(String &, const char *) const;
 };
 
 #endif

@@ -18,4 +18,4 @@
 
 . test_functions
 
-$htdig -i -c $testdir/conf/htdig.conf
+$htdig "$@" -t -i -c $testdir/conf/htdig.conf

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: QuotedStringList.h,v 1.3 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: QuotedStringList.h,v 1.4 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef _QuotedStringList_h_
@@ -31,15 +31,15 @@ public:
     //
     // Creation of a String from a string or String
     //
-    QuotedStringList(char *, char sep = '\t', int single = 0);
-    QuotedStringList(String &, char sep = '\t', int single = 0);
-    QuotedStringList(char *, char *sep, int single = 0);
-    QuotedStringList(String &, char *sep, int single = 0);
+    QuotedStringList(const char *str, char sep = '\t', int single = 0) { Create(str, sep, single); }
+    QuotedStringList(const String &str, char sep = '\t', int single = 0) { Create(str, sep, single); }
+    QuotedStringList(const char *str, const char *sep, int single = 0) { Create(str, sep, single); }
+    QuotedStringList(const String &str, const char *sep, int single = 0) { Create(str, sep, single); }
 
-    int			Create(char *, char sep = '\t', int single = 0);
-    int			Create(String &, char sep = '\t', int single = 0);
-    int			Create(char *, char *sep, int single = 0);
-    int			Create(String &, char *sep, int single = 0);
+    int			Create(const char *str, char sep = '\t', int single = 0);
+    int			Create(const String &str, char sep = '\t', int single = 0) { return Create(str.get(), sep, single); }
+    int			Create(const char *str, const char *sep, int single = 0);
+    int			Create(const String &str, const char *sep, int single = 0) { return Create(str.get(), sep, single); }
 private:
 };
 

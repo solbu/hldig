@@ -84,9 +84,6 @@ typedef char bool;
 /* Define if you have the timegm function.  */
 #undef HAVE_TIMEGM
 
-/* Define if you have the <alloca.h> header file.  */
-#undef HAVE_ALLOCA_H
-
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
 

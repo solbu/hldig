@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Fuzzy.h,v 1.5 1999/09/10 17:22:24 ghutchis Exp $
+// $Id: Fuzzy.h,v 1.6 1999/09/24 10:29:01 loic Exp $
 //
 
 #ifndef _Fuzzy_h_
@@ -42,7 +42,7 @@ public:
     //
     // Construction/Destruction
     //
-    Fuzzy();
+    Fuzzy(const Configuration& config);
     virtual		~Fuzzy();
 
     //
@@ -54,7 +54,7 @@ public:
     //
     // For the current algorithm, open the key database
     //
-    virtual int		openIndex(Configuration &config);
+    virtual int		openIndex();
 
     //
     // For searching, we will need to keep track of the weight associated
@@ -68,14 +68,14 @@ public:
     //
     // For the current algorithm, write the database to disk.
     //
-    virtual int		writeDB(Configuration &config);
+    virtual int		writeDB();
 
     //
     // For the current algorithm, create the database.
     // This is for those algoritms that don't need a list of words
     // to work.
     //
-    virtual int		createDB(Configuration &config);
+    virtual int		createDB(const Configuration &config);
 	
     //
     // Given a word from the htdig word database, create the appropriate
@@ -92,7 +92,7 @@ public:
     // Fuzzy algorithm factory.  This returns a new Fuzzy algorithm
     // object that belongs to the given name.
     //
-    static Fuzzy	*getFuzzyByName(char *name);
+    static Fuzzy	*getFuzzyByName(char *name, const Configuration& config);
 	
 protected:
     //
@@ -100,10 +100,11 @@ protected:
     //
     virtual void	generateKey(char *word, String &key);
 
-    char		*name;
-    Database		*index;
-    Dictionary		*dict;
-    double		weight;
+    char			*name;
+    Database			*index;
+    Dictionary			*dict;
+    double			weight;
+    const Configuration&	config;
 };
 
 #endif

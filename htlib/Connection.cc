@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Connection.cc,v 1.15 1999/09/17 17:24:01 bergolth Exp $
+// $Id: Connection.cc,v 1.16 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "Connection.h"
@@ -201,15 +201,17 @@ int Connection::assign_server(unsigned int addr)
 extern "C" unsigned int   inet_addr(char *);
 
 //*****************************************************************************
-// int Connection::assign_server(char *name)
 //
-int Connection::assign_server(char *name)
+int Connection::assign_server(const String& name)
 {
     struct hostent		*hp;
     unsigned int		addr;
 
-    addr = inet_addr(name);
-    if (addr == ~0 || addr == ~0/*L*/)
+    //
+    // inet_addr arg IS const char even though prototype says otherwise
+    //
+    addr = inet_addr((char*)name.get());
+    if (addr == (unsigned int)~0)
     {
 	hp = gethostbyname(name);
 	if (hp == NULL)

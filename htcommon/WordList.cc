@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.31 1999/09/17 17:24:01 bergolth Exp $
+// $Id: WordList.cc,v 1.32 1999/09/24 10:28:56 loic Exp $
 //
 
 #include "WordList.h"
@@ -52,20 +52,6 @@ extern Configuration	config;
 #define HTDIG_WORDLIST_WALK_WORD	(HTDIG_WORDLIST_WORD|HTDIG_WORDLIST_WALKER)
 
 //*****************************************************************************
-// WordList::WordList()
-//
-WordList::WordList()
-{
-    words = new List;
-
-    // The database itself hasn't been opened yet
-    isopen = 0;
-    isread = 0;
-
-}
-
-
-//*****************************************************************************
 // WordList::~WordList()
 //
 WordList::~WordList()
@@ -74,45 +60,51 @@ WordList::~WordList()
     Close();
 }
 
+//*****************************************************************************
+//
+WordList::WordList(const Configuration& config_arg) :
+  config(config_arg)
+{
+    words = new List;
+
+    // The database itself hasn't been opened yet
+    isopen = 0;
+    isread = 0;
+}
 
 //*****************************************************************************
-// void WordList::Word
-// (String word, unsigned int location, unsigned int anchor_number,
-//  unsigned long int flags)
 //
-void WordList::Word(String word, unsigned int location, 
-		    unsigned int anchor_number,
-		    unsigned int flags)
+void WordList::Replace(const WordReference& arg)
 {
-    // Why should we add empty words?
-    if (word.length() == 0)
-      return;
+  WordReference	wordRef(arg);
+  String 	word = wordRef.Word();
+  
+  // Why should we add empty words?
+  if (word.length() == 0)
+    return;
 
     // Let's clean it up--lowercase it, check for caps, and strip punctuation
-    String 	orig = word;
-    word.lowercase();
+  String orig = word;
+  word.lowercase();
     
-    if (word != orig)
-      flags |= FLAG_CAPITAL;
+  if (word != orig)
+    wordRef.Flags(wordRef.Flags() | FLAG_CAPITAL);
 
-    HtStripPunctuation(word);
+  HtStripPunctuation(word);
 
-    if (!valid_word(word))
-	return;
+  if (!IsValid(word))
+    return;
 
-    static int	maximum_word_length = config.Value("maximum_word_length", 12);
-    if (word.length() > maximum_word_length)
-	word.chop(word.length() - maximum_word_length);
-    //
-    // New word.  Create a new reference for it
-    //
-    WordReference	*wordRef = new WordReference;
-    wordRef->Location = location;
-    wordRef->DocumentID = docID;
-    wordRef->Flags = flags;
-    wordRef->Anchor = anchor_number;
-    wordRef->Word = word;
-    words->Add(wordRef);
+  static int	maximum_word_length = config.Value("maximum_word_length", 12);
+  if (word.length() > maximum_word_length)
+    word.chop(word.length() - maximum_word_length);
+
+  wordRef.Word(word);
+
+  //
+  // New word.  Create a new reference for it and cache it in the object.
+  //
+  words->Add(new WordReference(wordRef));
 }
 
 
@@ -122,7 +114,7 @@ void WordList::Word(String word, unsigned int location,
 //   no control characters.  Also, if the word is found in the list of
 //   bad words, it will be marked invalid.
 //
-int WordList::valid_word(char *word)
+int WordList::IsValid(const char *word)
 {
     int		control = 0;
     int		alpha = 0;
@@ -132,7 +124,7 @@ int WordList::valid_word(char *word)
     if (badwords.Exists(word))
 	return 0;
 
-    if (strlen(word) < minimum_word_length)
+    if ((int)strlen(word) < minimum_word_length)
       return 0;
 
     while (word && *word)
@@ -167,25 +159,26 @@ int WordList::valid_word(char *word)
 //   
 void WordList::Flush()
 {
-    WordReference	*wordRef;
+  WordReference	*wordRef;
 
     // Provided for backwards compatibility
-    if (!isopen)
-      Open(config["word_db"]);
+  if (!isopen)
+    Open(config["word_db"], O_RDWR);
 
-    words->Start_Get();
-    while ((wordRef = (WordReference *) words->Get_Next()))
-      {
-	if (wordRef->Word.length() == 0)
-	  continue;
+  words->Start_Get();
+  while ((wordRef = (WordReference *) words->Get_Next()))
+    {
+      if (wordRef->Word().length() == 0) {
+	cerr << "WordList::Flush: unexpected empty word\n";
+	continue;
+      }
 
-	Add(wordRef);
-      }	
+      Add(*wordRef);
+    }	
     
-    // Cleanup
-    words->Destroy();
+  // Cleanup
+  words->Destroy();
 }
-
 
 //*****************************************************************************
 // void WordList::MarkGone()
@@ -194,7 +187,7 @@ void WordList::Flush()
 //
 void WordList::MarkGone()
 {
-    words->Destroy();
+  words->Destroy();
 }
 
 
@@ -203,7 +196,7 @@ void WordList::MarkGone()
 //   Read in a list of words which are not to be included in the word
 //   file.  This is mostly to exclude words that are too common.
 //
-void WordList::BadWordFile(char *filename)
+void WordList::BadWordFile(const String& filename)
 {
     FILE	*fl = fopen(filename, "r");
     char	buffer[1000];
@@ -220,7 +213,7 @@ void WordList::BadWordFile(char *filename)
 	  {
 	    // We need to clean it up before we add it
 	    // Just in case someone enters an odd one
-	    if (strlen(word) > maximum_word_length)
+	    if ((int)strlen(word) > maximum_word_length)
 		word[maximum_word_length] = '\0';
 	    new_word = word;
 	    new_word.lowercase();
@@ -236,41 +229,34 @@ void WordList::BadWordFile(char *filename)
 
 
 //*****************************************************************************
-// int WordList::Open(char *filename)
 //
-int WordList::Open(char *filename)
+int WordList::Open(const String& filename, int mode)
 {
-    dbf = 0;
+  Close();
+  
+  dbf = 0;
 
-    dbf = Database::getDatabaseInstance(DB_BTREE);
+  dbf = Database::getDatabaseInstance(DB_BTREE);
 
-    if (dbf->OpenReadWrite(filename, 0664) != OK)
-        return NOTOK;
-    else
-      {
-	isopen = 1;
-        return OK;
-      }
-}
+  if(!dbf) return NOTOK;
 
+  dbf->SetCompare(word_db_cmp);
 
-//*****************************************************************************
-// int WordList::Read(char *filename)
-//
-int WordList::Read(char *filename)
-{
-    dbf = 0;
+  isread = mode & O_RDONLY;
 
-    dbf = Database::getDatabaseInstance(DB_BTREE);
+  int ret;
 
-    if (dbf->OpenRead(filename) != OK)
-      return NOTOK;
-    else
-      {
-	isopen = 1;
-	isread = 1;
-	return OK;
-      }
+  if(isread)
+    ret = dbf->OpenRead(filename);
+  else
+    ret = dbf->OpenReadWrite(filename, 0777);
+  
+  if(ret != OK)
+    return NOTOK;
+
+  isopen = 1;
+
+  return OK;
 }
 
 
@@ -291,53 +277,38 @@ int WordList::Close()
 
 
 //*****************************************************************************
-// int WordList::Add(WordReference *wordRef)
 //
-int WordList::Add(WordReference *wordRef)
+int WordList::Add(const WordReference& wordRef)
 {
-  if (!wordRef || wordRef->Word.length() == 0)
+  if (wordRef.Word().length() == 0)
     return NOTOK;
 
+  int ret;
+
   String	key;
-  String	compressedData;
-  WordRecord	*wordRec = new WordRecord;
+  String	record;
 
-  // Construct the key, which is word conjoined by the DocID
-  // \001 is used to join them simply because it's never a word char
-  key = wordRef->Word;
-  key << "\001" << wordRef->DocumentID;
-  
-  // Now split out the WordRecord to store
-  wordRec->id = wordRef->DocumentID;
-  wordRec->flags = wordRef->Flags;
-  wordRec->anchor = wordRef->Anchor;
-  wordRec->location = wordRef->Location;
-  
-  // We need to compress the WordRecord and convert it into a binary form
-  compressedData = htPack(WORD_RECORD_COMPRESSED_FORMAT,
-			  (char *) wordRec);
-  
-  dbf->Put(wordRef->Word, compressedData.get(), compressedData.length());
+  if((ret = wordRef.Pack(key, record)) == OK) {
+    dbf->Put(key, record);
+  }
 
-  delete wordRec;
-
-  return OK;
+  return ret;
 }
 
 
 //*****************************************************************************
-// List *WordList::operator [] (String word)
+// List *WordList::operator [] (const WordReference& wordRef)
 //
-List *WordList::operator [] (String word)
+List *WordList::operator [] (const WordReference& wordRef)
 {
-  return Collect(word, HTDIG_WORDLIST_COLLECT_WORD);
+  return Collect(wordRef, HTDIG_WORDLIST_COLLECT_WORD);
 }
 
 
 //*****************************************************************************
-// List *WordList::Prefix (String prefix)
+// List *WordList::Prefix (const WordReference& prefix)
 //
-List *WordList::Prefix (String prefix)
+List *WordList::Prefix (const WordReference& prefix)
 {
   return Collect(prefix, HTDIG_WORDLIST_COLLECT_PREFIX);
 }
@@ -347,7 +318,7 @@ List *WordList::Prefix (String prefix)
 //
 List *WordList::WordRefs()
 {
-  return Collect("", HTDIG_WORDLIST_COLLECT);
+  return Collect(WordReference(), HTDIG_WORDLIST_COLLECT);
 }
 
 //
@@ -367,11 +338,13 @@ public:
 // Write the ascii representation of a word occurence. Helper
 // of WordList::Dump
 //
-static int dump_word(WordList *words, WordReference *word, Object &data)
+static int dump_word(WordList *words, const WordReference *word, Object &data)
 {
   DumpWordData &info = (DumpWordData &)data;
 
   word->Dump(info.fl);
+
+  return OK;
 }
 
 //*****************************************************************************
@@ -379,10 +352,9 @@ static int dump_word(WordList *words, WordReference *word, Object &data)
 //
 // Write an ascii version of the word database in <filename>
 //
-int WordList::Dump(char* filename)
+int WordList::Dump(const String& filename)
 {
   FILE		*fl;
-  int		ret;
 
   if (!isopen) {
     cerr << "WordList::Dump: database must be opened first\n";
@@ -390,23 +362,25 @@ int WordList::Dump(char* filename)
   }
 
   if((fl = fopen(filename, "w")) == 0) {
-    perror(form("WordList::Dump: opening %s for writing", filename));
+    perror(form("WordList::Dump: opening %s for writing", (const char*)filename));
     return NOTOK;
   }
 
   WordReference::DumpHeader(fl);
   DumpWordData data(fl);
-  (void)Walk(0, HTDIG_WORDLIST_WALK, dump_word, data);
+  (void)Walk(WordReference(), HTDIG_WORDLIST_WALK, dump_word, data);
   
   fclose(fl);
+
+  return OK;
 }
 
 //*****************************************************************************
 //
-List *WordList::Collect (String word, int action)
+List *WordList::Collect (const WordReference& wordRef, int action)
 {
   Object o;
-  return Walk(word, action, (wordlist_walk_callback_t)0, o);
+  return Walk(wordRef, action, (wordlist_walk_callback_t)0, o);
 }
 
 //*****************************************************************************
@@ -425,15 +399,10 @@ List *WordList::Collect (String word, int action)
 //    is called for each WordReference found. No list is built and the
 //    function returns a null pointer.
 //
-List *WordList::Walk (String word, int action, wordlist_walk_callback_t callback, Object &callback_data)
+List *WordList::Walk (const WordReference& wordRef, int action, wordlist_walk_callback_t callback, Object &callback_data)
 {
-    List        *list = 0;
-    char        *key;
-    String	wordKey;
-    String	data;
-    String      decompressed;
-    WordRecord  *wr = new WordRecord;
-    int		prefixLength = word.length();
+    List        	*list = 0;
+    int			prefixLength = wordRef.Word().length();
 
     if(action & HTDIG_WORDLIST_COLLECTOR) {
       list = new List;
@@ -442,127 +411,77 @@ List *WordList::Walk (String word, int action, wordlist_walk_callback_t callback
     if(action & HTDIG_WORDLIST) {
       dbf->Start_Get();
     } else {
-      dbf->Start_Seq(word.get());
+      dbf->Start_Seq(wordRef.KeyPack());
     }
-    while ((key = dbf->Get_Next(data)))
-      {
 
-        // Break off the \001 and the docID
-        wordKey = strtok(key, "\001");
+    String data;
+    String key;
+    while (dbf->Get_Next(data, key))
+      {
+	WordReference found(key, data);
 	//
 	// Stop loop if we reach a record whose key does not
 	// match requirements.
 	//
 	if(action & HTDIG_WORDLIST_PREFIX) {
-	  if(word != wordKey.sub(0, prefixLength))
+	  if(!wordRef.Key().Equal(found.Key(), prefixLength))
             break;
 	} else if(action & HTDIG_WORDLIST_WORD) {
-	  if(word != wordKey) {
+	  if(!wordRef.Key().Equal(found.Key(), 0))
 	    break;
-	  }
 	}
 
-        if (data.length())
-          {
-	    char	*unpack = data.get();
-	    decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT,
-			  unpack);
-
-            if (decompressed.length() != sizeof (WordRecord))
-	      {
-		cout << "Decoding mismatch" << endl;
-		continue;
-	      }
-
-            memcpy((char *) wr, decompressed.get(), sizeof(WordRecord));
-
-            WordReference *wordRef = new WordReference;
-            wordRef->Word = wordKey;
-            wordRef->DocumentID = wr->id;
-            wordRef->Flags = wr->flags;
-            wordRef->Anchor = wr->anchor;
-            wordRef->Location = wr->location;
-
-	    if(action & HTDIG_WORDLIST_COLLECTOR) {
-	      list->Add(wordRef);
-	    } else if(action & HTDIG_WORDLIST_WALKER) {
-	      if(callback(this, wordRef, callback_data) == NOTOK) {
-		break;
-	      }
-	    } else {
-	      // Useless to continue since we're not doing anything
-	      break;
-	    }
-          }
+	if(action & HTDIG_WORDLIST_COLLECTOR) {
+	  list->Add(new WordReference(found));
+	} else if(action & HTDIG_WORDLIST_WALKER) {
+	  int ret = callback(this, &found, callback_data);
+	  if(ret == NOTOK) break;
+	} else {
+	  // Useless to continue since we're not doing anything
+	  break;
+	}
       }
 
     return list;
 }
 
 //*****************************************************************************
-// int WordList::Exists(WordReference wordRef)
 //
-int WordList::Exists(WordReference wordRef)
+int WordList::Exists(const WordReference& wordRef)
 {
-    String	key;
-
-    // Construct the key, which is word conjoined by the DocID
-    // \001 is used to join them simply because it's never a word char
-    key = wordRef.Word;
-    key << "\001" << wordRef.DocumentID;
-
-    return dbf->Exists(key);
+    return dbf->Exists(wordRef.KeyPack());
 }
 
 //*****************************************************************************
-// int WordList::Exists(String word)
+// int WordList::Delete(const WordReference& wordRef)
 //
-int WordList::Exists(String word)
+int WordList::Delete(const WordReference& wordRef)
 {
-    // Attempt to retrieve the word, but see if we actually get anything back
-    dbf->Start_Seq(word.get());
-    return (dbf->Get_Next() != 0);
-}
-
-
-//*****************************************************************************
-// int WordList::Delete(WordReference wordRef)
-//
-int WordList::Delete(WordReference wordRef)
-{
-    String      key;
-
-    // Construct the key, which is word conjoined by the DocID
-    // \001 is used to join them simply because it's never a word char
-    key = wordRef.Word;
-    key << "\001" << wordRef.DocumentID;
-
-    return dbf->Delete(key);
+    return dbf->Delete(wordRef.KeyPack());
 }
 
 
 //*****************************************************************************
 // List *WordList::Words()
 //
-// Rewrite this with Walk + callback
 //
 List *WordList::Words()
 {
-    List	*list = new List;
-    char	*key;
-    String	word;
-    String	lastWord = 0;
+    List		*list = new List;
+    String		key;
+    String		record;
+    String		word;
+    WordReference	lastWord;
 
     dbf->Start_Get();
-    while ((key = dbf->Get_Next()))
+    while (dbf->Get_Next(record, key))
       {
-	// Break off the \001 and the docID
-	word = strtok(key, "\001");
+	WordReference	wordRef(key, record);
 
-	if ( ((char *) lastWord == NULL) || (word != lastWord) )
+	if ( (lastWord.Word() == String("")) || (wordRef.Word() != lastWord.Word()) )
 	  {
-            list->Add(new String(word));
-	    lastWord = word;
+            list->Add(new String(wordRef.Word()));
+	    lastWord = wordRef;
 	  }
       }
     return list;

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DB2_db.cc,v 1.13 1999/09/11 05:03:51 ghutchis Exp $
+// $Id: DB2_db.cc,v 1.14 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "DB2_db.h"
@@ -33,6 +33,8 @@
 DB2_db::DB2_db()
 {
     isOpen = 0;
+    _compare = 0;
+    _prefix = 0;
 }
 
 
@@ -41,77 +43,28 @@ DB2_db::DB2_db()
 //
 DB2_db::~DB2_db()
 {
-    if (isOpen)
-    {
-	Close();
-    }
+  Close();
 }
 
 
 //*****************************************************************************
-// int DB_db::OpenReadWrite(char *filename, int mode)
 //
 int
-DB2_db::OpenReadWrite(char *filename, int mode)
+DB2_db::Open(const char *filename, int flags, int mode)
 {
     //
     // Initialize the database environment.
     //
     dbenv = db_init((char *)NULL);
     memset(&dbinfo, 0, sizeof(dbinfo));
-//    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	// Cachesize: 64K.
-//    dbinfo.db_pagesize = 1024;      			// Page size: 1K.
-    dbinfo.flags = DB_DUP;
-
-    //
-    // Create the database.
-    //
-    if (access(filename, F_OK) == 0)
-      errno = db_open(filename, DB_BTREE, 0, 0, dbenv, &dbinfo, &dbp);
-    else
-      errno = db_open(filename, DB_BTREE, DB_CREATE, mode, dbenv, &dbinfo, &dbp);
-    if (errno == 0)
-    {
-        //
-	// Acquire a cursor for the database.
-	//
-        if ((seqrc = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0)
-	{
-            seqerr = seqrc;
-	    isOpen = 0;
-            Close();
-	    return NOTOK;
-        }
-	isOpen = 1;
-	return OK;
-    }
-    else
-    {
-	return NOTOK;
-    }
-}
-
-
-//*****************************************************************************
-// int DB2_db::OpenRead(char *filename)
-//
-int
-DB2_db::OpenRead(char *filename)
-{
-    //
-    // Initialize the database environment.
-    //
-    dbenv = db_init((char *)NULL);
-    memset(&dbinfo, 0, sizeof(dbinfo));
-//    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	// Cachesize: 64K.
-//    dbinfo.db_pagesize = 1024;			// Page size: 1K.
-    dbinfo.flags = DB_DUP;
+    dbinfo.bt_compare = _compare ? _compare : 0;
+    dbinfo.bt_prefix = _prefix ? _prefix : 0;
+    dbinfo.flags = db_type == DB_HASH ? 0 : DB_DUP;
 
     //
     // Open the database.
     //
-    if ((errno = db_open(filename, DB_BTREE, DB_RDONLY, 0, dbenv,
-			 &dbinfo, &dbp)) == 0)
+    if((errno = db_open(filename, db_type, flags, mode, dbenv, &dbinfo, &dbp)) == 0)
     {
         //
 	// Acquire a cursor for the database.
@@ -119,7 +72,6 @@ DB2_db::OpenRead(char *filename)
         if ((seqrc = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0)
 	{
             seqerr = seqrc;
-	    isOpen = 0;
             Close();
 	    return NOTOK;
         }
@@ -139,7 +91,7 @@ DB2_db::OpenRead(char *filename)
 int
 DB2_db::Close()
 {
-    if (isOpen)
+    if(isOpen)
     {
 	//
 	// Close cursor, database and clean up environment
@@ -154,93 +106,65 @@ DB2_db::Close()
 
 
 //*****************************************************************************
-// void DB2_db::Start_Get()
-//
-void
-DB2_db::Start_Get()
-{
-    //
-    // skey and nextkey are just dummies
-    //
-    memset(&skey, 0, sizeof(DBT));
-    memset(&data, 0, sizeof(DBT));
-
-//    skey.data = "";
-//    skey.size = 0;
-//    skey.flags = 0;
-    if (isOpen && dbp)
-    {
-	//
-	// Set the cursor to the first position.
-	//
-        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_FIRST);
-	seqerr = seqrc;
-    }
-}
-
-
-//*****************************************************************************
-// char *DB2_db::Get_Next()
+// char *DB2_db::Get_Next(String &item, String &key)
 //
 char *
-DB2_db::Get_Next()
+DB2_db::Get_Next(String &item, String &key)
 {
-    //
-    // Looks like get Get_Next() and Get_Next_Seq() are pretty much the same...
-    //
-
-    if (isOpen && !seqrc)
+  if (isOpen && !seqrc)
     {
-	lkey = 0;
-	lkey.append((char *)skey.data, skey.size);
-	// DON'T forget to set the flags to 0!
-	skey.flags = 0;
-        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_NEXT);
-	seqerr = seqrc;
-	return lkey.get();
+      //
+      // Return values
+      //
+      key = skey;
+      lkey = skey;
+      item = data;
+
+      //
+      // Search for the next record
+      //
+      DBT local_key;
+      DBT local_data;
+
+      memset(&local_key, 0, sizeof(DBT));
+      memset(&local_data, 0, sizeof(DBT));
+
+      local_key.data = skey.get();
+      local_key.size = skey.length();
+
+      seqrc = dbcp->c_get(dbcp, &local_key, &local_data, DB_NEXT);
+      seqerr = seqrc;
+
+      if(!seqrc) {
+	data = 0;
+	data.append((char*)local_data.data, (int)local_data.size);
+	skey = 0;
+	skey.append((char*)local_key.data, (int)local_key.size);
+      }
+
+      return lkey.get();
     }
-    else
-	return 0;
-}
-
-//*****************************************************************************
-// char *DB2_db::Get_Next(String &item)
-//
-char *
-DB2_db::Get_Next(String &item)
-{
-
-    if (isOpen && !seqrc)
-    {
-	lkey = 0;
-	lkey.append((char *)skey.data, skey.size);
-
-	item = 0;
-	item.append((char *)data.data, data.size);
-
-	// DON'T forget to set the flags to 0!
-	skey.flags = 0;
-        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_NEXT);
-	seqerr = seqrc;
-
-	return lkey.get();
-    }
-    else
-	return 0;
+  else
+    return 0;
 }
 
 //*****************************************************************************
 // void DB2_db::Start_Seq()
 //
 void
-DB2_db::Start_Seq(char *str)
+DB2_db::Start_Seq(const String& key)
 {
+    DBT local_key;
+    DBT local_data;
 
-    memset(&skey, 0, sizeof(DBT));
-    memset(&data, 0, sizeof(DBT));
+    memset(&local_key, 0, sizeof(DBT));
+    memset(&local_data, 0, sizeof(DBT));
 
-    skey.data = str;
-    skey.size = strlen(str);
+    skey = key;
+
+    local_key.data = skey.get();
+    local_key.size = skey.length();
+
     if (isOpen && dbp)
     {
 	//
@@ -251,32 +175,51 @@ DB2_db::Start_Seq(char *str)
 	// anything. Setting to DB_SET_RANGE will still find the `first'
 	// word after boo* (which is book).
 	//
-        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_SET_RANGE);
+        seqrc = dbcp->c_get(dbcp, &local_key, &local_data, DB_SET_RANGE);
 	seqerr = seqrc;
+
+	if(!seqrc) {
+	  data = 0;
+	  data.append((char*)local_data.data, (int)local_data.size);
+	  skey = 0;
+	  skey.append((char*)local_key.data, (int)local_key.size);
+	}
     }
 }
-
 
 //*****************************************************************************
-// char *DB2_db::Get_Next_Seq()
+// void DB2_db::Start_Get()
 //
-char *
-DB2_db::Get_Next_Seq()
+void
+DB2_db::Start_Get()
 {
-    if (isOpen && !seqrc)
+    DBT local_key;
+    DBT local_data;
+
+    memset(&local_key, 0, sizeof(DBT));
+    memset(&local_data, 0, sizeof(DBT));
+
+    if (isOpen && dbp)
     {
-	lkey = 0;
-	lkey.append((char *)skey.data, skey.size);
-	skey.flags = 0;
-        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_NEXT);
+	//
+	// Okay, get the first key. Use DB_SET_RANGE for finding partial
+	// keys also. If you set it to DB_SET, and the words book, books
+	// and bookstore do exists, it will find them if you specify
+	// book*. However if you specify boo* if will not find
+	// anything. Setting to DB_SET_RANGE will still find the `first'
+	// word after boo* (which is book).
+	//
+        seqrc = dbcp->c_get(dbcp, &local_key, &local_data, DB_FIRST);
 	seqerr = seqrc;
-	return lkey.get();
+
+	if(!seqrc) {
+	  data = 0;
+	  data.append((char*)local_data.data, (int)local_data.size);
+	  skey = 0;
+	  skey.append((char*)local_key.data, (int)local_key.size);
+	}
     }
-    else
-	return 0;
 }
-
-
 
 //*****************************************************************************
 // int DB2_db::Put(const String &key, const String &data)
@@ -292,10 +235,10 @@ DB2_db::Put(const String &key, const String &data)
     if (!isOpen)
 	return NOTOK;
 
-    k.data = key.get();
+    k.data = (char*)key.get();
     k.size = key.length();
 
-    d.data = data.get();
+    d.data = (char*)data.get();
     d.size = data.length();
 
     //
@@ -317,7 +260,10 @@ DB2_db::Get(const String &key, String &data)
     memset(&k, 0, sizeof(DBT));
     memset(&d, 0, sizeof(DBT));
 
-    k.data = key.get();
+    //
+    // k arg of get should be const but is not. Harmless cast.
+    //
+    k.data = (char*)key.get();
     k.size = key.length();
 
     int rc = dbp->get(dbp, NULL, &k, &d, 0);
@@ -358,7 +304,7 @@ DB2_db::Delete(const String &key)
     if (!isOpen)
 	return 0;
 
-    k.data = key.get();
+    k.data = (char*)key.get();
     k.size = key.length();
 
     return (dbp->del)(dbp, NULL, &k, 0);
@@ -369,7 +315,7 @@ DB2_db::Delete(const String &key)
 // DB2_db *DB2_db::getDatabaseInstance()
 //
 DB2_db *
-DB2_db::getDatabaseInstance()
+DB2_db::getDatabaseInstance(enum DBTYPE type)
 {
     return new DB2_db();
 }

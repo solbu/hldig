@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.h,v 1.7 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: URL.h,v 1.8 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef _URL_h_
@@ -23,11 +23,11 @@ class URL
 {
 public:
     URL();
-    URL(char *url);
+    URL(const char *url);
     URL(URL &url);
-    URL(char *ref, URL &parent);
+    URL(const char *ref, URL &parent);
 
-    void		parse(char *url);
+    void		parse(const char *url);
 
     char		*host()			{return _host;}
     void		host(char *h)		{_host = h;}

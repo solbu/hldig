@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.h,v 1.10 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: parser.h,v 1.11 1999/09/24 10:29:05 loic Exp $
 //
 
 #ifndef _parser_h_
@@ -34,7 +34,7 @@ public:
     int			checkSyntax(List *);
     void		parse(List *, ResultList &);
 
-    void		setDatabase(char *db)		{words.Read(db);}
+    void		setDatabase(char *db)		{ words.Open(db, O_RDONLY); }
     char		*getErrorMessage()		{return error.get();}
     int			hadError()			{return valid == 0;}
 	

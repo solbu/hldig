@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Synonym.h,v 1.2 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: Synonym.h,v 1.3 1999/09/24 10:29:02 loic Exp $
 //
 //
 
@@ -27,19 +27,19 @@ public:
 	//
 	// Construction/Destruction
 	//
-			Synonym();
+			Synonym(const Configuration& config_arg);
 			~Synonym();
 
 	//
 	// Lookup routines
 	//
 	virtual void	getWords(char *word, List &words);
-	virtual int	openIndex(Configuration &);
+	virtual int	openIndex();
 
 	//
 	// Creation
 	//
-	virtual int	createDB(Configuration &config);
+	virtual int	createDB();
 	
 protected:
 

@@ -14,11 +14,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.9 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: WordList.h,v 1.10 1999/09/24 10:28:56 loic Exp $
 //
 
 #ifndef _WordList_h_
 #define _WordList_h_
+
+#include <fcntl.h>
 
 #include "Dictionary.h"
 #include "List.h"
@@ -26,13 +28,14 @@
 #include "Database.h"
 #include "WordRecord.h"
 #include "WordReference.h"
+#include "Configuration.h"
 
 class WordList;
 
 //
 // Type of the callback argument of WordList::Walk
 //
-typedef int (*wordlist_walk_callback_t)(WordList *words, WordReference *word, Object &data);
+typedef int (*wordlist_walk_callback_t)(WordList *words, const WordReference *word, Object &data);
 
 class WordList
 {
@@ -40,22 +43,23 @@ public:
     //
     // Construction/Destruction
     //
-    WordList();
+    WordList(const Configuration& config_arg);
     ~WordList();
+    
+    //
+    // Update/add a word, perform sanity checking and
+    // fill information.
+    //
+    void		Replace(const WordReference& wordRef);
+    //
+    // Update/add a word (backend of Replace)
+    //
+    int                 Add(const WordReference& wordRef);
 
     //
-    // Set some operating parameters
+    // Delete permanently
     //
-    void		BadWordFile(char *filename);
-    int			DocumentID(int id)		{ int tmp = docID; docID = id; return tmp; }
-    int			DocumentID()			{ return docID; }
-
-    //
-    // Update/add a word
-    //
-    void		Word(String word, unsigned int location, 
-			     unsigned int anchor_number, 
-			     unsigned int flags);
+    int                 Delete(const WordReference& wordRef);
 
     //
     // Mark a document as already scanned for words or mark it as disappeared
@@ -63,38 +67,54 @@ public:
     void		MarkGone();
 
     //
-    // Dump the words to the database
+    // Flush the words stored in the object to the database
     //
     void		Flush();
 
     //
+    // Handling the list of bad words 
+    //
+    void		BadWordFile(const String& filename);
+    //
     // Check if the given word is valid
     //
-    int			IsValid(String word)	{return valid_word(word);}
+    int			IsValid(String word)	{ return IsValid(word.get()); }
+    int			IsValid(const char* word);
 
 
     //
-    // Database access methods
+    // Open underlying db file
+    // mode may be O_RDONLY or O_RDWR
     //
-
-    int                 Open(char *filename);
-    int                 Read(char *filename);
-    int                 Close();
-
-    int                 Add(WordReference *wordRef);
-
-    // This returns a list of all the WordReference * for this word
-    List		*operator [] (String word);
-    // This returns a list of all the WordReference * matching the prefix
-    List		*Prefix (String prefix);
-
-    int                 Exists(WordReference wordRef);
-    int                 Exists(String word);
-    int                 Delete(WordReference wordRef);
-
+    int                 Open(const String& filename, int mode);
+    //
+    // Close underlying db file
+    // 
+    int			Close();
 
     //
-    // We will need to be able to iterate over the complete database.
+    // This returns a list of all the WordReference * matching 
+    // the constraint.
+    //
+    // Return the list of word occurences exactly matching the wordRef
+    //
+    List		*operator [] (const WordReference& wordRef);
+    List		*operator [] (const String& word)  { return (*this)[WordReference(word)]; }
+    //
+    // Return the list of word occurences matching the beginning of wordRef
+    //
+    List		*Prefix (const WordReference& prefix);
+    List		*Prefix (const String& prefix) { return this->Prefix(WordReference(prefix)); }
+
+    //
+    // Check for existence
+    //
+    int                 Exists(const WordReference& wordRef);
+    int                 Exists(const String& word) { return Exists(WordReference(word)); }
+
+
+    //
+    // Iterate over the complete database.
     //
 
     // This returns a list of all the Words, as String *
@@ -102,7 +122,7 @@ public:
     // This returns a list of all the Words, as WordReference *
     List		*WordRefs();
     // Write an ascii version of the word database in <filename>
-    int			Dump(char* filename);
+    int			Dump(const String& filename);
 
 
 protected:
@@ -110,26 +130,23 @@ protected:
     // Retrieve WordReferences from the database. 
     // Backend of WordRefs, operator[], Prefix...
     //
-    List		*WordList::Collect (String word, int action);
+    List		*WordList::Collect (const WordReference& word, int action);
     //
     // Walk and collect data from the word database.
     // Backend of Collect, Dump...
     //
-    List 		*Walk (String word, int action, wordlist_walk_callback_t callback, Object &callback_data);
+    List 		*Walk (const WordReference& word, int action, wordlist_walk_callback_t callback, Object &callback_data);
 
 private:
 
-    int			docID;
-    String		tempfile;
-    List		*words;
-    Dictionary		badwords;
+    List			*words;
+    Dictionary			badwords;
 
-    Database            *dbf;
-    int                 isopen;
-    int                 isread;
+    Database            	*dbf;
+    int                 	isopen;
+    int                 	isread;
 
-
-    int			valid_word(char *);
+    const Configuration&	config;
 };
 
 #endif

@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: ResultMatch.h,v 1.6 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: ResultMatch.h,v 1.7 1999/09/24 10:29:05 loic Exp $
 //
 
 #ifndef _ResultMatch_h_
@@ -43,7 +43,7 @@ public:
 	int				getScore()	{return (int) score;}
 	int			getID()			{return id;}
 
-	static int		setSortType(char *);
+	static int		setSortType(const String& sorttype);
 
 	// A method for each type of data Display wants to cram in.
 	// Will only store the pieces necessary for the
@@ -51,8 +51,8 @@ public:
 	virtual char *getTitle();
 	virtual time_t getTime();
 
-	virtual void setTitle(char *);
-	virtual void setTime(time_t);
+	virtual void setTitle(const String& title);
+	virtual void setTime(time_t t);
 
 	// This is likely to help weak compilers as well as the eye.
 	typedef int (*CmpFun)(const void *, const void *);

@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Plaintext.cc,v 1.14 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: Plaintext.cc,v 1.15 1999/09/24 10:28:57 loic Exp $
 //
 
 #include "Plaintext.h"
@@ -46,7 +46,6 @@ Plaintext::parse(Retriever &retriever, URL &)
 	return;
 
     unsigned char       *position = (unsigned char *) contents->get();
-    unsigned char	*start = position;
     static int	minimumWordLength = config.Value("minimum_word_length", 3);
     int		wordIndex = 1;
     int		in_space = 0;

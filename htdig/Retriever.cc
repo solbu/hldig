@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.63 1999/09/10 13:24:15 loic Exp $
+// $Id: Retriever.cc,v 1.64 1999/09/24 10:28:57 loic Exp $
 //
 
 #include "Retriever.h"
@@ -44,7 +44,8 @@ static int noSignal;
 //*****************************************************************************
 // Retriever::Retriever()
 //
-Retriever::Retriever(RetrieverLog flags)
+Retriever::Retriever(RetrieverLog flags) :
+  words(config)
 {
     FILE	*urls_parsed;
 
@@ -117,7 +118,7 @@ Retriever::~Retriever()
 // void Retriever::setUsernamePassword(char *credentials)
 //
 void
-Retriever::setUsernamePassword(char *credentials)
+Retriever::setUsernamePassword(const char *credentials)
 {
     doc->setUsernamePassword(credentials);
 }
@@ -135,7 +136,7 @@ Retriever::setUsernamePassword(char *credentials)
 //   from == 3 urls in db.docs and there was a db.log 
 //
 void
-Retriever::Initial(char *list, int from)
+Retriever::Initial(const String& list, int from)
 {
     //
     // Split the list of urls up into individual urls.
@@ -309,8 +310,8 @@ Retriever::Start()
     // if we exited on signal 
     if (Retriever_noLog != log && !noSignal) 
     {
-    FILE	*urls_parsed;
-    String	filelog = config["url_log"];
+        FILE	*urls_parsed;
+	String	filelog = config["url_log"];
         // save url seen but not fetched
 	urls_parsed = fopen(filelog,   "w" );
 	if (0 == urls_parsed)
@@ -387,7 +388,7 @@ Retriever::parse_url(URLRef &urlRef)
 	old_document = 0;
     }
 
-    words.DocumentID(ref->DocID());
+    word_context.DocID(ref->DocID());
 
     if (debug > 0)
     {
@@ -460,7 +461,7 @@ Retriever::parse_url(URLRef &urlRef)
 	        int backlinks = ref->DocBackLinks();
 		delete ref;
 		current_id = docs.NextDocID();
-		words.DocumentID(current_id);
+		word_context.DocID(current_id);
 		ref = new DocumentRef;
 		ref->DocID(current_id);
 		ref->DocURL(url.get());
@@ -474,9 +475,11 @@ Retriever::parse_url(URLRef &urlRef)
 	    RetrievedDocument(*doc, url.get(), ref);
 	    // Hey! If this document is marked noindex, don't even bother
 	    // adding new words. Mark this as gone and get rid of it!
-	    if (ref->DocState() == Reference_noindex)
+	    if (ref->DocState() == Reference_noindex) {
+	      if(debug > 1)
+		cout << " ( " << ref->DocURL() << " ignored)";
 	      words.MarkGone();
-	    else
+	    } else
 	      words.Flush();
 	    if (debug)
 		cout << " size = " << doc->Length() << endl;
@@ -557,8 +560,8 @@ Retriever::RetrievedDocument(Document &doc, char *, DocumentRef *ref)
 {
     n_links = 0;
     current_ref = ref;
-    current_anchor_number = 0;
     current_title = 0;
+    word_context.Anchor(0);
     current_time = 0;
     current_head = 0;
     current_meta_dsc = 0;
@@ -778,7 +781,7 @@ Retriever::IsLocal(char *url)
 	    int l = strlen(url)-prefix->length()+path->length()+4;
 	    String *local = new String(*path, l);
 	    *local += &url[prefix->length()];
-	    if (local->last() == '/' && config["local_default_doc"] != "")
+	    if (local->last() == '/' && !config["local_default_doc"].empty())
 	      *local += config["local_default_doc"];
 	    return local;
 	}	
@@ -880,7 +883,7 @@ Retriever::IsLocalUser(char *url)
 	}
 	*local += *dir;
 	*local += rest;
-	if (local->last() == '/' && config["local_default_doc"] != "")
+	if (local->last() == '/' && !config["local_default_doc"].empty())
 	  *local += config["local_default_doc"];
 	return local;
     }
@@ -908,7 +911,7 @@ Retriever::GetRef(char *u)
 //   The location is normalized to be in the range 0 - 1000.
 //
 void
-Retriever::got_word(char *word, int location, int heading)
+Retriever::got_word(const char *word, int location, int heading)
 {
     if (debug > 3)
 	cout << "word: " << word << '@' << location << endl;
@@ -917,8 +920,15 @@ Retriever::got_word(char *word, int location, int heading)
     if (trackWords)
     {
       String w = word;
-      if (w.length() >= minimumWordLength)
-	words.Word(w, location, current_anchor_number, factor[heading]);
+      WordReference wordRef;
+
+      wordRef.Location(location);
+      wordRef.Flags(factor[heading]);
+
+      if (w.length() >= minimumWordLength) {
+	wordRef.Word(w);
+	words.Replace(WordReference::Merge(wordRef, word_context));
+      }
 
       // Check for compound words...
       String parts = word;
@@ -928,7 +938,7 @@ Retriever::got_word(char *word, int location, int heading)
 	{
 	  added = 0;
 	  char *start = parts.get();
-	  char *punctp, *nextp, *p;
+	  char *punctp = 0, *nextp = 0, *p;
 	  char  punct;
 	  int   n;
 	  while (*start)
@@ -956,7 +966,8 @@ Retriever::got_word(char *word, int location, int heading)
 		    HtStripPunctuation(w);
 		    if (w.length() >= minimumWordLength)
 		      {
-			words.Word(w, location, current_anchor_number, factor[heading]);
+			wordRef.Word(w);
+			words.Replace(WordReference::Merge(wordRef, word_context));
 			if (debug > 3)
 			  cout << "word part: " << start << '@' << location << endl;
 		      }
@@ -972,10 +983,10 @@ Retriever::got_word(char *word, int location, int heading)
 
 
 //*****************************************************************************
-// void Retriever::got_title(char *title)
+// void Retriever::got_title(const char *title)
 //
 void
-Retriever::got_title(char *title)
+Retriever::got_title(const char *title)
 {
     if (debug > 1)
 	cout << "\ntitle: " << title << endl;
@@ -983,10 +994,10 @@ Retriever::got_title(char *title)
 }
 
 //*****************************************************************************
-// void Retriever::got_time(char *time)
+// void Retriever::got_time(const char *time)
 //
 void
-Retriever::got_time(char *time)
+Retriever::got_time(const char *time)
 {
     time_t   new_time;
     struct tm   tm;
@@ -1022,23 +1033,23 @@ Retriever::got_time(char *time)
 }
 
 //*****************************************************************************
-// void Retriever::got_anchor(char *anchor)
+// void Retriever::got_anchor(const char *anchor)
 //
 void
-Retriever::got_anchor(char *anchor)
+Retriever::got_anchor(const char *anchor)
 {
     if (debug > 2)
 	cout << "anchor: " << anchor << endl;
     current_ref->AddAnchor(anchor);
-    current_anchor_number++;
+    word_context.Anchor(word_context.Anchor() + 1);
 }
 
 
 //*****************************************************************************
-// void Retriever::got_image(char *src)
+// void Retriever::got_image(const char *src)
 //
 void
-Retriever::got_image(char *src)
+Retriever::got_image(const char *src)
 {
     URL	url(src, *base);
     char	*image = url.get();
@@ -1053,13 +1064,12 @@ Retriever::got_image(char *src)
 
 
 //*****************************************************************************
-// void Retriever::got_href(char *href, char *description, int hops)
 //
 void
-Retriever::got_href(URL &url, char *description, int hops)
+Retriever::got_href(URL &url, const char *description, int hops)
 {
-    DocumentRef		*ref;
-    Server		*server;
+    DocumentRef		*ref = 0;
+    Server		*server = 0;
 
     if (debug > 2)
 	cout << "href: " << url.get() << " (" << description << ')' << endl;
@@ -1199,10 +1209,10 @@ Retriever::got_href(URL &url, char *description, int hops)
 
 
 //*****************************************************************************
-// void Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
+// void Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 //
 void
-Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
+Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 {
     URL	url(new_url);
 
@@ -1298,10 +1308,10 @@ Retriever::got_redirect(char *new_url, DocumentRef *old_ref)
 
 
 //*****************************************************************************
-// void Retriever::got_head(char *head)
+// void Retriever::got_head(const char *head)
 //
 void
-Retriever::got_head(char *head)
+Retriever::got_head(const char *head)
 {
     if (debug > 4)
 	cout << "head: " << head << endl;
@@ -1309,10 +1319,10 @@ Retriever::got_head(char *head)
 }
 
 //*****************************************************************************
-// void Retriever::got_meta_dsc(char *md)
+// void Retriever::got_meta_dsc(const char *md)
 //
 void
-Retriever::got_meta_dsc(char *md)
+Retriever::got_meta_dsc(const char *md)
 {
     if (debug > 4)
 	cout << "meta description: " << md << endl;
@@ -1321,10 +1331,10 @@ Retriever::got_meta_dsc(char *md)
 
 
 //*****************************************************************************
-// void Retriever::got_meta_email(char *e)
+// void Retriever::got_meta_email(const char *e)
 //
 void
-Retriever::got_meta_email(char *e)
+Retriever::got_meta_email(const char *e)
 {
     if (debug > 1)
 	cout << "\nmeta email: " << e << endl;
@@ -1333,10 +1343,10 @@ Retriever::got_meta_email(char *e)
 
 
 //*****************************************************************************
-// void Retriever::got_meta_notification(char *e)
+// void Retriever::got_meta_notification(const char *e)
 //
 void
-Retriever::got_meta_notification(char *e)
+Retriever::got_meta_notification(const char *e)
 {
     if (debug > 1)
 	cout << "\nmeta notification date: " << e << endl;
@@ -1345,10 +1355,10 @@ Retriever::got_meta_notification(char *e)
 
 
 //*****************************************************************************
-// void Retriever::got_meta_subject(char *e)
+// void Retriever::got_meta_subject(const char *e)
 //
 void
-Retriever::got_meta_subject(char *e)
+Retriever::got_meta_subject(const char *e)
 {
     if (debug > 1)
 	cout << "\nmeta subect: " << e << endl;
@@ -1363,7 +1373,7 @@ void
 Retriever::got_noindex()
 {
     if (debug > 1)
-      cout << "\nMETA ROBOT: Noindex " << endl;
+      cout << "\nMETA ROBOT: Noindex " << current_ref->DocURL() << endl;
     current_ref->DocState(Reference_noindex);
 }
 
@@ -1397,7 +1407,7 @@ Retriever::recordNotFound(char *url, char *referer, int reason)
 // void Retriever::ReportStatistics(char *name)
 //
 void
-Retriever::ReportStatistics(char *name)
+Retriever::ReportStatistics(const String& name)
 {
     cout << name << ": Run complete\n";
     cout << name << ": " << servers.Count() << " server";

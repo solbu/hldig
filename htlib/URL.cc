@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.31 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: URL.cc,v 1.32 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "URL.h"
@@ -62,10 +62,10 @@ URL::URL(URL &nurl)
 
 
 //*****************************************************************************
-// URL::URL(char *nurl)
+// URL::URL(const char *nurl)
 // Construct a URL from a String (obviously parses the string passed in)
 // 
-URL::URL(char *nurl)
+URL::URL(const char *nurl)
 {
     _normal = 0;
     _hopcount = 0;
@@ -78,11 +78,11 @@ URL::URL(char *nurl)
 //   Parse a reference given a parent url.  This is needed to resolve relative
 //   references which do NOT have a full url.
 //
-URL::URL(char *ref, URL &parent)
+URL::URL(const char *url, URL &parent)
 {
-    String	temp(ref);
+    String	temp(url);
     temp.remove(" \r\n\t");
-    ref = temp;
+    char* ref = temp;
 
     // Grab as much from the original URL as possible
     _service = parent._service;
@@ -228,10 +228,10 @@ URL::URL(char *ref, URL &parent)
 
 
 //*****************************************************************************
-// void URL::parse(char *u)
+// void URL::parse(const char *u)
 //   Given a URL string, extract the service, host, port, and path from it.
 //
-void URL::parse(char *u)
+void URL::parse(const char *u)
 {
     String	temp(u);
     temp.remove(" \t\r\n");

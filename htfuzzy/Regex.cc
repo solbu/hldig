@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Regex.cc,v 1.4 1999/09/10 17:22:25 ghutchis Exp $
+// $Id: Regex.cc,v 1.5 1999/09/24 10:29:01 loic Exp $
 //
 
 #include "Regex.h"
@@ -19,13 +19,11 @@
 #include "StringMatch.h"
 #include "Configuration.h"
 
-extern Configuration	config;
-
-
 //*****************************************************************************
-// Regex::Regex()
+// Regex::Regex(const Configuration& config_arg)
 //
-Regex::Regex()
+Regex::Regex(const Configuration& config_arg) :
+  Fuzzy(config_arg)
 {
     name = "regex";
 }
@@ -53,30 +51,16 @@ Regex::getWords(char *w, List &words)
     HtRegex	regexMatch;
     String	stripped;
 
-    // Anchor the string to be matched
-    stripped << '^' << w;
-
     // First we have to strip the necessary punctuation
-    // So add regex reserved characters to extra_word_chars
-    // (which we will restore later)
+    stripped.remove("^.[]$()|*+?{},-\\");
 
-    String  configValue, savedConfig;
-    configValue = config["extra_word_chars"];
-    savedConfig = configValue;
-    configValue << "^.[]$()|*+?{},-\\";
-    config.Add("extra_word_chars", configValue);
+    // Anchor the string to be matched
+    regexMatch.set(String("^") + stripped);
 
-    // Now we can strip anything remaining
-    // and restore the saved extra_word_chars
-    HtStripPunctuation(stripped);
-    config.Add("extra_word_chars", savedConfig);
-
-    regexMatch.set(stripped);
-
-    WordList    wordDB;
+    WordList    wordDB(config);
     List        *wordList;
     String	*key;
-    wordDB.Read(config["word_db"]);
+    wordDB.Open(config["word_db"], O_RDONLY);
     wordList = wordDB.Words();
 
     int         wordCount = 0;
@@ -101,7 +85,7 @@ Regex::getWords(char *w, List &words)
 
 //*****************************************************************************
 int
-Regex::openIndex(Configuration &)
+Regex::openIndex()
 {
   return 0;
 }

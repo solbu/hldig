@@ -17,6 +17,7 @@
 #
 
 . t_htdig
+$htmerge -c $testdir/conf/htdig.conf
 
 config=$testdir/conf/htdig.conf
 tmp=/tmp/t_htsearch$$
@@ -52,11 +53,11 @@ try "Explicit and search with two words 'also movies'" \
 
 try "Implicit or search for 'also distribution'" \
     "method=or&words=also+distribution" \
-    '5 matches' 'site2.html' 'script.html' 'site4.html' 'site1.html' 'software.htm'
+    '4 matches' 'site2.html' 'script.html' 'site4.html' 'site1.html'
 
 try "Explicit or search for 'also distribution'" \
     "method=boolean&words=also+or+distribution" \
-    '5 matches' 'site2.html' 'script.html' 'site4.html' 'site1.html' 'software.htm'
+    '4 matches' 'site2.html' 'script.html' 'site4.html' 'site1.html'
 
 try "Boolean and/or mixed 'also or distribution and ltd'" \
     "method=boolean&words=also+or+distribution+and+ltd" \

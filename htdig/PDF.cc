@@ -23,7 +23,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: PDF.cc,v 1.19 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: PDF.cc,v 1.20 1999/09/24 10:28:57 loic Exp $
 //
 // Written by Sylvain Wallez, wallez@mail.dotcom.fr
 //
@@ -118,8 +118,8 @@ PDF::parse(Retriever &retriever, URL &url)
     _retriever = &retriever;
 
     String acroread;
-    char* configValue = config["pdf_parser"];
-    if (configValue && strlen(configValue))
+    const String configValue = config["pdf_parser"];
+    if (!configValue.empty())
 	acroread = configValue;
     else
 	// Assume it's in the path

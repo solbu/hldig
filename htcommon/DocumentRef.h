@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentRef.h,v 1.22 1999/09/11 05:03:50 ghutchis Exp $
+// $Id: DocumentRef.h,v 1.23 1999/09/24 10:28:56 loic Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -73,28 +73,28 @@ class DocumentRef : public Object
     char		*DocSubject()			{return docSubject;}
 	
     void		DocID(int d)			{docID = d;}
-    void		DocURL(char *u)			{docURL = u;}
+    void		DocURL(const char *u)		{docURL = u;}
     void		DocTime(time_t t)		{docTime = t;}
-    void		DocTitle(char *t)		{docTitle = t;}
-    void		DocHead(char *h)		{docHeadIsSet = 1; docHead = h;}
-    void                DocMetaDsc(char *md)            {docMetaDsc = md;}
+    void		DocTitle(const char *t)		{docTitle = t;}
+    void		DocHead(const char *h)		{docHeadIsSet = 1; docHead = h;}
+    void                DocMetaDsc(const char *md)      {docMetaDsc = md;}
     void		DocAccessed(time_t t)		{docAccessed = t;}
     void		DocLinks(int l)			{docLinks = l;}
     void                DocBackLinks(int l)             {docBackLinks = l;}
     void		Descriptions(List &l)		{descriptions = l;}
-    void		AddDescription(char *d, WordList &words);
+    void		AddDescription(const char *d, WordList &words);
     void		DocState(ReferenceState s)	{docState = s;}
     void		DocSize(int s)			{docSize = s;}
     void		DocImageSize(int s)		{docImageSize = s;}
     void                DocSig(int s)                   {docSig = s;}
     void		DocAnchors(List &l)		{docAnchors = l;}
-    void		AddAnchor(char *a);
+    void		AddAnchor(const char *a);
     void		DocScore(int s)			{docScore = s;}
     void		DocAnchor(int a)		{docAnchor = a;}
     void		DocHopCount(int h)		{docHopCount = h;}
-    void		DocEmail(char *e)		{docEmail = e;}
-    void		DocNotification(char *n)	{docNotification = n;}
-    void		DocSubject(char *s)		{docSubject = s;}
+    void		DocEmail(const char *e)		{docEmail = e;}
+    void		DocNotification(const char *n)	{docNotification = n;}
+    void		DocSubject(const char *s)	{docSubject = s;}
 	
     void		Clear();			// Reset everything
 

@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordType.cc,v 1.4 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: HtWordType.cc,v 1.5 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "HtWordType.h"
@@ -22,15 +22,13 @@ HtWordType::InnerStatics HtWordType::statics;
 void
 HtWordType::Initialize(Configuration &config)
 {
-  char *valid_punct = config["valid_punctuation"];
-  char *extra_word_chars = config["extra_word_characters"];
-
-  static String punct_and_extra(extra_word_chars);
-  punct_and_extra.append(valid_punct);
+  const String valid_punct = config["valid_punctuation"];
+  const String extra_word_chars = config["extra_word_characters"];
 
   HtWordType::statics.extra_word_characters = extra_word_chars;
   HtWordType::statics.valid_punctuation = valid_punct;
-  HtWordType::statics.other_chars_in_word = punct_and_extra;
+  HtWordType::statics.other_chars_in_word = extra_word_chars;
+  HtWordType::statics.other_chars_in_word.append(valid_punct);
   HtWordType::statics.chrtypes[0] = 0;
   for (int i = 1; i < 256; i++)
   {

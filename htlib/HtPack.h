@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtPack.h,v 1.3 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: HtPack.h,v 1.4 1999/09/24 10:29:03 loic Exp $
 //
 
 #ifndef __HtPack_h
@@ -28,12 +28,12 @@
 // Pack.
 // The parameter "format" is not const but should normally be.
 extern String
-htPack(char format[], const char *theStruct);
+htPack(const char format[], const char *theStruct);
 
 // Unpack.
 // The parameter "theString" will be updated to point after the
 // processed amount of data.
 extern String
-htUnpack(char format[], char * &thePackedData);
+htUnpack(const char format[], const char *thePackedData);
 
 #endif // __HtPack_h

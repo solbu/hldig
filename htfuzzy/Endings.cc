@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Endings.cc,v 1.6 1999/09/10 17:22:24 ghutchis Exp $
+// $Id: Endings.cc,v 1.7 1999/09/24 10:29:01 loic Exp $
 //
 
 #include "Endings.h"
@@ -21,7 +21,8 @@
 //*****************************************************************************
 // Endings::Endings()
 //
-Endings::Endings()
+Endings::Endings(const Configuration& config_arg) :
+  Fuzzy(config_arg)
 {
     root2word = 0;
     word2root = 0;
@@ -137,14 +138,13 @@ Endings::addWord(char *)
 
 
 //*****************************************************************************
-// int Endings::openIndex(Configuration &)
+// int Endings::openIndex()
 //   Dummy method.  Just makde sure we don't actually create a database.
 //
 int
-Endings::openIndex(Configuration &)
+Endings::openIndex()
 {
-    String	filename;
-    filename = config["endings_word2root_db"];
+    String	filename = config["endings_word2root_db"];
     word2root = Database::getDatabaseInstance(DB_BTREE);
     if (word2root->OpenRead(filename) == NOTOK)
 	return NOTOK;
@@ -159,11 +159,11 @@ Endings::openIndex(Configuration &)
 
 
 //*****************************************************************************
-// int Endings::writeDB(Configuration &)
+// int Endings::writeDB()
 //   Dummy method.  Just making sure we don't actually write anything.
 //
 int
-Endings::writeDB(Configuration &)
+Endings::writeDB()
 {
     return OK;
 }

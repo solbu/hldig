@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringList.cc,v 1.6 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: StringList.cc,v 1.7 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "StringList.h"
@@ -34,65 +34,10 @@ StringList::~StringList()
 {
 }
 
-
 //*****************************************************************************
-// StringList::StringList(char *str, char sep)
+// int StringList::Create(const char *str, char *sep)
 //
-StringList::StringList(char *str, char sep)
-{
-    Create(str, sep);
-}
-
-
-//*****************************************************************************
-// StringList::StringList(String &str, char sep)
-//
-StringList::StringList(String &str, char sep)
-{
-    Create(str, sep);
-}
-
-
-//*****************************************************************************
-// StringList::StringList(char *str, char *sep)
-//
-StringList::StringList(char *str, char *sep)
-{
-    Create(str, sep);
-}
-
-
-//*****************************************************************************
-// StringList::StringList(String &str, char *sep)
-//
-StringList::StringList(String &str, char *sep)
-{
-    Create(str, sep);
-}
-
-
-//*****************************************************************************
-// int StringList::Create(String &str, char sep)
-//
-int StringList::Create(String &str, char sep)
-{
-    return Create(str.get(), sep);
-}
-
-
-//*****************************************************************************
-// int StringList::Create(String &str, char *sep)
-//
-int StringList::Create(String &str, char *sep)
-{
-    return Create(str.get(), sep);
-}
-
-
-//*****************************************************************************
-// int StringList::Create(char *str, char *sep)
-//
-int StringList::Create(char *str, char *sep)
+int StringList::Create(const char *str, char *sep)
 {
     String	word;
 
@@ -121,9 +66,9 @@ int StringList::Create(char *str, char *sep)
 
 
 //*****************************************************************************
-// int StringList::Create(char *str, char sep)
+// int StringList::Create(const char *str, char sep)
 //
-int StringList::Create(char *str, char sep)
+int StringList::Create(const char *str, char sep)
 {
     String	word;
 

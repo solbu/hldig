@@ -10,16 +10,15 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: strcasecmp.cc,v 1.6 1999/09/11 05:03:52 ghutchis Exp $
+// $Id: strcasecmp.cc,v 1.7 1999/09/24 10:29:03 loic Exp $
 //
 
 #include "lib.h"
 #include <ctype.h>
 
 //*****************************************************************************
-// int mystrcasecmp(char *str1, const char *str2)
 //
-int mystrcasecmp(char *str1, const char *str2)
+int mystrcasecmp(const char *str1, const char *str2)
 {
     if (!str1 && !str2)
 	return 0;
@@ -41,9 +40,8 @@ int mystrcasecmp(char *str1, const char *str2)
 
 //#define tolower(ch)	(isupper(ch) ? (ch) + 'a' - 'A' : (ch))
 //*****************************************************************************
-// int mystrncasecmp(char *str1, const char *str2, int n)
 //
-int mystrncasecmp(char *str1, const char *str2, int n)
+int mystrncasecmp(const char *str1, const char *str2, int n)
 {
     if (!str1 && !str2)
 	return 0;
@@ -80,10 +78,10 @@ char *strdup(char *str)
 
 
 //*****************************************************************************
-// char *mystrcasestr(char *s, char *pattern)
+// char *mystrcasestr(const char *s, const char *pattern)
 //
-char *
-mystrcasestr(char *s, char *pattern)
+const char *
+mystrcasestr(const char *s, const char *pattern)
 {
     int		length = strlen(pattern);
 

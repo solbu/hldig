@@ -7,12 +7,12 @@ EXTRA_DIST = COPYING  \
 	RELEASE.html \
 	THANKS.html \
 	TODO.html \
-	attrs.html \
 	author.html \
 	bdot.gif \
 	bugs.html \
-	cf_byname.html \
-	cf_byprog.html \
+	attrs.html attrs_head.html attrs_tail.html \
+	cf_byname.html cf_byname_head.html cf_byname_tail.html \
+	cf_byprog.html cf_byprog_head.html cf_byprog_tail.html \
 	cf_general.html \
 	cf_types.html \
 	cf_variables.html \
@@ -47,3 +47,12 @@ EXTRA_DIST = COPYING  \
 	up.gif \
 	uses.html \
 	where.html
+
+attrs.html: attrs_head.html attrs_tail.html ../htcommon/defaults.cc cf_generate.pl
+	@PERL@ cf_generate.pl
+
+cf_byname.html: cf_byname_head.html cf_byname_tail.html ../htcommon/defaults.cc cf_generate.pl
+	@PERL@ cf_generate.pl
+
+cf_byprog.html: cf_byprog_head.html cf_byprog_tail.html ../htcommon/defaults.cc cf_generate.pl
+	@PERL@ cf_generate.pl

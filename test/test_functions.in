@@ -46,8 +46,11 @@ if [ ! -d logs ]
 then 
   mkdir -p logs
 else
-  kill -15 `cat logs/httpd.pid`
-  sleep 2
+  if [ -f logs/httpd.pid ]
+  then
+    kill -15 `cat logs/httpd.pid`
+    sleep 2
+  fi
 fi
 $httpd -d $testdir
 
@@ -58,6 +61,10 @@ if [ ! -d var/htdig ]
 then 
   mkdir -p var/htdig
 fi
+if [ ! -d var/htdig2 ] 
+then 
+  mkdir -p var/htdig2
+fi
 
 fail() {
    echo $1
@@ -66,3 +73,4 @@ fail() {
 
 htdig=../htdig/htdig
 htsearch=../htsearch/htsearch
+htmerge=../htmerge/htmerge

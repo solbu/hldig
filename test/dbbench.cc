@@ -14,6 +14,21 @@
 #include <stdlib.h>
 #include <errno.h>
 
+/* AIX requires this to be the first thing in the file.  */
+#ifndef __GNUC__
+# if HAVE_ALLOCA_H
+#  include <alloca.h>
+# else
+#  ifdef _AIX
+#pragma alloca
+#  else
+#   ifndef alloca /* predefined by HP cc +Olibcalls */
+char *alloca ();
+#   endif
+#  endif
+# endif
+#endif
+
 #include <zlib.h>
 #include <htString.h>
 #include <db.h>
@@ -147,10 +162,14 @@ void dbput(DB* db, params_t* params, const String& key, const String& data)
     memset(&k, 0, sizeof(DBT));
     memset(&d, 0, sizeof(DBT));
 
-    k.data = key.get();
+    char* key_string = (char*)alloca(key.length());
+    strcpy(key_string, key.get());
+    k.data = key_string;
     k.size = key.length();
 
-    d.data = data.get();
+    char* data_string = (char*)alloca(data.length());
+    strcpy(data_string, data.get());
+    d.data = data_string;
     d.size = data.length();
 
     if((db->put)(db, NULL, &k, &d, 0) != 0)
@@ -217,7 +236,6 @@ int_cmp(const DBT *a, const DBT *b)
 static void fill(DB* db, params_t* params)
 {
   char buffer[50000];
-  char tmp[1024];
   int count = params->count;
   int words_count;
   int i;
@@ -237,8 +255,6 @@ static void fill(DB* db, params_t* params)
       String line;
       line << buffer;
       line.chop("\r\n");
-
-      char *current = line.get();
 
       for(int j = 0; j < params->multiply_keys; j++) {
 	String key((char*)&count, sizeof(int));
@@ -317,7 +333,6 @@ static void remove(DB* db, params_t* params)
   memset(&data, '\0', sizeof(DBT));
 
   String word("\0\0\0\0", sizeof(int));
-  int next;
 
   cursor->c_get(cursor, &key, &data, DB_FIRST);
 
