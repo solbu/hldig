@@ -1,8 +1,11 @@
-Sun May 30 18:45:46 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
+Sun May 30 19:36:15 1999  Alexander Bergolth  <leo@leo.wu-wien.ac.at>
 
 	* htlib/URL.cc (normalizePath): Fix bug that caused endless loops
 	and core dumps when normalizing URLs with more than one of
 	( "/../" | "/./" | "//" | "%7E" )
+
+	* htlib/HtDateTime.cc (Httimegm): Call Httimegm in timegm.c unless
+	HAVE_TIMEGM.
 
 Wed May 26 23:15:46 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
