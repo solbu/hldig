@@ -4,6 +4,9 @@
 // Implementation of WordList
 //
 // $Log: WordList.cc,v $
+// Revision 1.8  1998/12/08 02:52:19  ghutchis
+// Remove unnecessary code.
+//
 // Revision 1.7  1998/12/06 18:45:57  ghutchis
 // Ensure duplicate words have minimum location and anchor attributes.
 //
@@ -29,7 +32,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.7 1998/12/06 18:45:57 ghutchis Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.8 1998/12/08 02:52:19 ghutchis Exp $";
 #endif
 
 #include "WordList.h"
@@ -115,12 +118,7 @@ int WordList::valid_word(char *word)
 {
     int		control = 0;
     int		alpha = 0;
-    static int	allow_numbers = -1;
-
-    if (allow_numbers < 0)
-    {
-	allow_numbers = config.Boolean("allow_numbers", 0);
-    }
+    static int	allow_numbers = config.Boolean("allow_numbers", 0);
 
     if (badwords.Exists(word))
 	return 0;
