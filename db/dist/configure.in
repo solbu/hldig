@@ -670,9 +670,9 @@ AC_ARG_WITH(zlib,
     [ZLIB_HOME=$with_zlib])
 db_cv_zlib_home=${ZLIB_HOME}
 )
-AC_CHECK_LIB(z, inflateEnd)
 LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
 CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
+AC_CHECK_LIB(z, inflateEnd)
 
 AC_OUTPUT(Makefile include.tcl:../test/include.tcl \
     db.h:../include/db.h db_int.h:../include/db_int.h \

@@ -113,7 +113,23 @@ dnl Checks for libraries.
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, t_accept)
 if test $WITH_ZLIB = yes; then
-AC_CHECK_LIB(z, deflate)
+#
+# Location of Zlib installation
+#
+ZLIB_HOME=/usr/local
+if test ! -f "${ZLIB_HOME}/include/zlib.h"
+then
+	ZLIB_HOME=/usr
+fi
+AC_CACHE_CHECK([ZLIB_HOME], db_cv_zlib_home,
+AC_ARG_WITH(zlib,
+    [  --with-zlib=<path> root directory path of zlib installation],
+    [ZLIB_HOME=$with_zlib])
+db_cv_zlib_home=${ZLIB_HOME}
+)
+LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
+CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
+AC_CHECK_LIB(z, inflateEnd)
 fi
 
 AC_SUBST(CXXFLAGS)dnl
