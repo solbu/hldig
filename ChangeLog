@@ -1,5 +1,7 @@
-Thu Dec  2 14:39:49 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Thu Dec  2 15:00:10 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htcommon/defaults.cc: Add missing no_page_number_text and
+	page_number_text attribute definitions.
 	* htdoc/attrs.html(modification_time_is_now): Make the description
 	a bit clearer as to how it may cut down on reindexing.
 

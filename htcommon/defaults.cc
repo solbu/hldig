@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.10 1999/12/02 20:18:17 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.11 1999/12/02 21:21:00 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -105,11 +105,13 @@ ConfigDefaults	defaults[] =
     {"noindex_end",                     "<!--/htdig_noindex-->"},
     {"no_next_page_text",		"[next]"},
     {"no_page_list_header",		""},
+    {"no_page_number_text",		""},
     {"no_prev_page_text",		"[prev]"},
     {"no_title_text",                   "filename"},
     {"nothing_found_file",		"${common_dir}/nomatch.html"},
     {"page_list_header",		"<hr noshade size=2>Pages:<br>"},
     {"page_number_separator",		"\" \""},
+    {"page_number_text",		""},
     {"prefix_match_character",		"*"},
     {"prev_page_text",			"[prev]"},
     {"remove_bad_urls",			"true"},
