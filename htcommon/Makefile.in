@@ -111,7 +111,7 @@ HTLIBS = $(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 
 
 lib_LTLIBRARIES = libcommon.la
 
-libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc WordList.cc 		defaults.cc 
+libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc WordList.cc 		WordReference.cc defaults.cc 
 
 
 libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
@@ -119,7 +119,7 @@ libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(
 noinst_HEADERS = DocumentDB.h 	DocumentRef.h 	WordList.h 	WordRecord.h 	WordReference.h 	defaults.h
 
 
-LOCAL_DEFINES = -DBIN_DIR=\"$(bindir)\" 		-DCOMMON_DIR=\"$(COMMON_DIR)\" 		-DCONFIG_DIR=\"$(CONFIG_DIR)\" 		-DDATABASE_DIR=\"$(DATABASE_DIR)\" 		-DIMAGE_URL_PREFIX=\"$(IMAGE_URL_PREFIX)\" 		-DPDF_PARSER=\"$(PDF_PARSER)\" 		-DSORT_PROG=\"$(SORT)\"
+LOCAL_DEFINES = -DBIN_DIR=\"$(bindir)\" 		-DCOMMON_DIR=\"$(COMMON_DIR)\" 		-DCONFIG_DIR=\"$(CONFIG_DIR)\" 		-DDATABASE_DIR=\"$(DATABASE_DIR)\" 		-DIMAGE_URL_PREFIX=\"$(IMAGE_URL_PREFIX)\" 		-DPDF_PARSER=\"$(PDF_PARSER)\"
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -132,7 +132,7 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libcommon_la_LIBADD = 
 libcommon_la_OBJECTS =  DocumentDB.lo DocumentRef.lo WordList.lo \
-defaults.lo
+WordReference.lo defaults.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -146,7 +146,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
 DEP_FILES =  .deps/DocumentDB.P .deps/DocumentRef.P .deps/WordList.P \
-.deps/defaults.P
+.deps/WordReference.P .deps/defaults.P
 SOURCES = $(libcommon_la_SOURCES)
 OBJECTS = $(libcommon_la_OBJECTS)
 

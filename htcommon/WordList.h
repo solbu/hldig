@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.6 1999/09/08 17:10:40 loic Exp $
+// $Id: WordList.h,v 1.7 1999/09/10 11:45:29 loic Exp $
 //
 //
 #ifndef _WordList_h_
@@ -26,6 +26,13 @@
 #include "Database.h"
 #include "WordRecord.h"
 #include "WordReference.h"
+
+class WordList;
+
+//
+// Type of the callback argument of WordList::Walk
+//
+typedef int (*wordlist_walk_callback_t)(WordList *words, WordReference *word, Object &data);
 
 class WordList
 {
@@ -93,8 +100,24 @@ public:
     List                *Words();
     // This returns a list of all the Words, as WordReference *
     List		*WordRefs();
+    // Write an ascii version of the word database in <filename>
+    int			Dump(char* filename);
+
+
+protected:
+    //
+    // Retrieve WordReferences from the database. 
+    // Backend of WordRefs, operator[], Prefix...
+    //
+    List		*WordList::Collect (String word, int action);
+    //
+    // Walk and collect data from the word database.
+    // Backend of Collect, Dump...
+    //
+    List 		*Walk (String word, int action, wordlist_walk_callback_t callback, Object &callback_data);
 
 private:
+
     int			docID;
     String		tempfile;
     List		*words;

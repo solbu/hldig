@@ -1,3 +1,21 @@
+Fri Sep 10 13:45:53 1999  Loic Dachary  <loic@ceic.com>
+
+	* htcommon/WordList.h htcommon/WordList.cc: methods Collect
+	  and Walk that factorise the behaviour of operator [], Prefix
+	  and WordRefs. 
+
+	* htcommon/WordList.h htcommon/WordList.cc: method Dump to
+	  dump an ascii version of the word database.
+
+	* htcommon/WordReference.h,htcommon/WordReference.cc: method Dump
+	  to write an ascii version of a word.
+	
+	* htdig/htdig.cc: -t now also dump word database in ascii as
+	  well.
+
+	* htdoc/attrs.html,cf_byprog.html,cf_byname.html: added doc
+	  for word_dump
+
 Thu Sep  9 14:55:59 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/parse_doc.pl: fix bug in pdf title extraction.

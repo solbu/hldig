@@ -109,8 +109,6 @@ INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/in
 HTLIBS = $(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/db/dist/libdb.a
 
 
-LOCAL_DEFINES = -DSORT_PROG=\"@SORT@\"
-
 bin_PROGRAMS = htmerge
 
 htmerge_SOURCES = db.cc docs.cc htmerge.cc words.cc 

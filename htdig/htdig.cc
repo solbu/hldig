@@ -299,6 +299,13 @@ main(int ac, char **av)
 	if (initial)
 	    unlink(filename);
 	docs.CreateSearchDB(filename);
+	filename = config["word_dump"];
+	if (initial)
+	    unlink(filename);
+	WordList words;
+	if(words.Read(config["word_db"]) == OK) {
+	  words.Dump(filename);
+	}
     }
 
     //

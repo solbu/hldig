@@ -234,7 +234,7 @@ mergeDB()
     // Check for file access errors
     if (!mergewords)
       {
-        reportError(form("Unable to open word list file '%s'", merge_config["word_list"]));
+        reportError(form("Unable to open merge word list file '%s'", merge_config["word_list"]));
       }
 
     // Read it in a line at a time...

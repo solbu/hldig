@@ -11,12 +11,13 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordReference.h,v 1.6 1999/09/08 17:10:40 loic Exp $
+// $Id: WordReference.h,v 1.7 1999/09/10 11:45:29 loic Exp $
 //
 #ifndef _WordReference_h_
 #define _WordReference_h_
 
 #include "htString.h"
+#include <stdio.h>
 
 class WordReference : public Object
 {
@@ -33,6 +34,8 @@ public:
 	int			Location;
 	int			Anchor;
 
+	int			Dump(FILE *fl);
+	static int		DumpHeader(FILE *fl);
 	int			compare(Object *to) {return Word.nocase_compare( ((WordReference *) to)->Word );}
 private:
 };

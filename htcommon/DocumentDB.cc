@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.22 1999/09/09 15:25:17 loic Exp $
+// $Id: DocumentDB.cc,v 1.23 1999/09/10 11:45:29 loic Exp $
 //
 
 #include "DocumentDB.h"
@@ -330,8 +330,8 @@ int DocumentDB::Delete(int docID)
 
 //*****************************************************************************
 // int DocumentDB::CreateSearchDB(char *filename)
-//   Create an extract from our database which can be used by the
-//   search engine.  The extract will consist of lines with fields
+//   Create an extract from our database which can be used by an
+//   external application. The extract will consist of lines with fields
 //   separated by tabs. 
 //
 //   The extract will be sorted by docID.

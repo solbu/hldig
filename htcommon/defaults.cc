@@ -11,7 +11,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.60 1999/09/08 17:10:40 loic Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.61 1999/09/10 11:45:29 loic Exp $";
 #endif
 
 #include "Configuration.h"
@@ -159,6 +159,7 @@ ConfigDefaults	defaults[] =
     {"valid_punctuation",		".-_/!#$%^&'"},
     {"word_db",				"${database_base}.words.db"},
     {"word_list",			"${database_base}.wordlist"},
+    {"word_dump",			"${database_base}.worddump"},
     {0,					0},
 };
 

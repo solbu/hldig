@@ -4,7 +4,7 @@ include $(top_srcdir)/Makefile.config
 lib_LTLIBRARIES = libcommon.la
 
 libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc WordList.cc \
-		defaults.cc 
+		WordReference.cc defaults.cc 
 
 libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 

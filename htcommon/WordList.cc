@@ -16,7 +16,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: WordList.cc,v 1.26 1999/09/08 17:10:40 loic Exp $";
+static char RCSid[] = "$Id: WordList.cc,v 1.27 1999/09/10 11:45:29 loic Exp $";
 #endif
 
 #include "WordList.h"
@@ -33,6 +33,24 @@ static char RCSid[] = "$Id: WordList.cc,v 1.26 1999/09/08 17:10:40 loic Exp $";
 #include <fstream.h>
 
 extern Configuration	config;
+
+//
+// Possible values of the action argument of WordList::Walk
+//
+#define HTDIG_WORDLIST			0x0001
+#define HTDIG_WORDLIST_PREFIX		0x0002
+#define HTDIG_WORDLIST_WORD		0x0004
+#define HTDIG_WORDLIST_COLLECTOR	0x0008
+#define HTDIG_WORDLIST_WALKER		0x0010
+// 
+// Short hand
+//
+#define HTDIG_WORDLIST_COLLECT		(HTDIG_WORDLIST|HTDIG_WORDLIST_COLLECTOR)
+#define HTDIG_WORDLIST_COLLECT_PREFIX	(HTDIG_WORDLIST_PREFIX|HTDIG_WORDLIST_COLLECTOR)
+#define HTDIG_WORDLIST_COLLECT_WORD	(HTDIG_WORDLIST_WORD|HTDIG_WORDLIST_COLLECTOR)
+#define HTDIG_WORDLIST_WALK		(HTDIG_WORDLIST|HTDIG_WORDLIST_WALKER)
+#define HTDIG_WORDLIST_WALK_PREFIX	(HTDIG_WORDLIST_PREFIX|HTDIG_WORDLIST_WALKER)
+#define HTDIG_WORDLIST_WALK_WORD	(HTDIG_WORDLIST_WORD|HTDIG_WORDLIST_WALKER)
 
 //*****************************************************************************
 // WordList::WordList()
@@ -313,48 +331,7 @@ int WordList::Add(WordReference *wordRef)
 //
 List *WordList::operator [] (String word)
 {
-    List        *list = new List;
-    char        *key;
-    String	wordKey;
-    String	data;
-    String      decompressed;
-    WordRecord  *wr = new WordRecord;
-
-    dbf->Start_Seq(word.get());
-    while ((key = dbf->Get_Next(data)))
-      {
-
-        // Break off the \001 and the docID
-        wordKey = strtok(key, "\001");
-        if (word != wordKey)
-            break;
-
-        if (data.length())
-          {
-	    char	*unpack = data.get();
-	    decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT,
-			  unpack);
-
-            if (decompressed.length() != sizeof (WordRecord))
-	      {
-		cout << "Decoding mismatch" << endl;
-		continue;
-	      }
-
-            memcpy((char *) wr, decompressed.get(), sizeof(WordRecord));
-
-            WordReference *wordRef = new WordReference;
-            wordRef->Word = word;
-            wordRef->DocumentID = wr->id;
-            wordRef->Flags = wr->flags;
-            wordRef->Anchor = wr->anchor;
-            wordRef->Location = wr->location;
-
-            list->Add(wordRef);
-          }
-      }
-
-    return list;
+  return Collect(word, HTDIG_WORDLIST_COLLECT_WORD);
 }
 
 
@@ -363,22 +340,128 @@ List *WordList::operator [] (String word)
 //
 List *WordList::Prefix (String prefix)
 {
-    int		prefixLength = prefix.length();
-    List        *list = new List;
+  return Collect(prefix, HTDIG_WORDLIST_COLLECT_PREFIX);
+}
+
+//*****************************************************************************
+// List *WordList::WordRefs()
+//
+List *WordList::WordRefs()
+{
+  return Collect("", HTDIG_WORDLIST_COLLECT);
+}
+
+//
+// Callback data dedicated to Dump and dump_word communication
+//
+class DumpWordData : public Object
+{
+public:
+  DumpWordData(FILE* fl_arg) { fl = fl_arg; }
+
+  FILE* fl;
+};
+
+//*****************************************************************************
+// static int dump_word(WordList* words, WordReference* word)
+//
+// Write the ascii representation of a word occurence. Helper
+// of WordList::Dump
+//
+static int dump_word(WordList *words, WordReference *word, Object &data)
+{
+  DumpWordData &info = (DumpWordData &)data;
+
+  word->Dump(info.fl);
+}
+
+//*****************************************************************************
+// int WordList::Dump(char* filename)
+//
+// Write an ascii version of the word database in <filename>
+//
+int WordList::Dump(char* filename)
+{
+  FILE		*fl;
+  int		ret;
+
+  if (!isopen) {
+    cerr << "WordList::Dump: database must be opened first\n";
+    return NOTOK;
+  }
+
+  if((fl = fopen(filename, "w")) == 0) {
+    perror(form("WordList::Dump: opening %s for writing", filename));
+    return NOTOK;
+  }
+
+  WordReference::DumpHeader(fl);
+  DumpWordData data(fl);
+  (void)Walk(0, HTDIG_WORDLIST_WALK, dump_word, data);
+  
+  fclose(fl);
+}
+
+//*****************************************************************************
+//
+List *WordList::Collect (String word, int action)
+{
+  Object o;
+  return Walk(word, action, (wordlist_walk_callback_t)0, o);
+}
+
+//*****************************************************************************
+//
+// Walk and collect data from the word database.
+//
+// If action bit HTDIG_WORDLIST is set all the words are retrieved.
+// If action bit HTDIG_WORDLIST_WORD is set all the occurences of
+//    the <word> argument (exact match) are retrieved.
+// If action bit HTDIG_WORDLIST_PREFIX is set all the occurences of
+//    the words starting with <word> are retrieved.
+//
+// If action bit HTDIG_WORDLIST_COLLECTOR is set WordReferences are
+//    stored in a list and the list is returned.
+// If action bit HTDIG_WORDLIST_WALKER is set the <callback> function
+//    is called for each WordReference found. No list is built and the
+//    function returns a null pointer.
+//
+List *WordList::Walk (String word, int action, wordlist_walk_callback_t callback, Object &callback_data)
+{
+    List        *list = 0;
     char        *key;
     String	wordKey;
     String	data;
     String      decompressed;
     WordRecord  *wr = new WordRecord;
+    int		prefixLength = word.length();
 
-    dbf->Start_Seq(prefix.get());
+    if(action & HTDIG_WORDLIST_COLLECTOR) {
+      list = new List;
+    }
+
+    if(action & HTDIG_WORDLIST) {
+      dbf->Start_Get();
+    } else {
+      dbf->Start_Seq(word.get());
+    }
     while ((key = dbf->Get_Next(data)))
       {
 
         // Break off the \001 and the docID
         wordKey = strtok(key, "\001");
-        if (prefix != wordKey.sub(0,prefixLength))
+	//
+	// Stop loop if we reach a record whose key does not
+	// match requirements.
+	//
+	if(action & HTDIG_WORDLIST_PREFIX) {
+	  if(word != wordKey.sub(0, prefixLength))
             break;
+	} else if(action & HTDIG_WORDLIST_WORD) {
+	  if(word != wordKey) {
+	    break;
+	  }
+	}
 
         if (data.length())
           {
@@ -401,13 +484,21 @@ List *WordList::Prefix (String prefix)
             wordRef->Anchor = wr->anchor;
             wordRef->Location = wr->location;
 
-            list->Add(wordRef);
+	    if(action & HTDIG_WORDLIST_COLLECTOR) {
+	      list->Add(wordRef);
+	    } else if(action & HTDIG_WORDLIST_WALKER) {
+	      if(callback(this, wordRef, callback_data) == NOTOK) {
+		break;
+	      }
+	    } else {
+	      // Useless to continue since we're not doing anything
+	      break;
+	    }
           }
       }
 
     return list;
 }
-
 
 //*****************************************************************************
 // int WordList::Exists(WordReference wordRef)
@@ -454,6 +545,8 @@ int WordList::Delete(WordReference wordRef)
 //*****************************************************************************
 // List *WordList::Words()
 //
+// Rewrite this with Walk + callback
+//
 List *WordList::Words()
 {
     List	*list = new List;
@@ -476,50 +569,3 @@ List *WordList::Words()
     return list;
 }
 
-
-//*****************************************************************************
-// List *WordList::WordRefs()
-//
-List *WordList::WordRefs()
-{
-    List        *list = new List;
-    char        *key;
-    char	*word;
-    String	data;
-    String	decompressed;
-    WordRecord  *wr = new WordRecord;
-
-    dbf->Start_Get();
-    while ((key = dbf->Get_Next(data)))
-      {
-        // Break off the \001 and the docID
-        word = strtok(key, "\001");
-
-        if (data.length())
-          {
-	    char	*unpack = data.get();
-	    decompressed = htUnpack(WORD_RECORD_COMPRESSED_FORMAT,
-			  unpack);
-
-            if (decompressed.length() != sizeof (WordRecord))
-	      {
-		cout << "Decoding mismatch" << endl;
-		continue;
-	      }
-
-            memcpy((char *) wr, decompressed.get(), sizeof(WordRecord));
-
-            WordReference *wordRef = new WordReference;
-            wordRef->Word = word;
-            wordRef->DocumentID = wr->id;
-            wordRef->Flags = wr->flags;
-            wordRef->Anchor = wr->anchor;
-            wordRef->Location = wr->location;
-
-	    list->Add(wordRef);
-
-	  }
-      }
-
-    return list;
-}
