@@ -1,9 +1,9 @@
 //
 // DB.h
 //
-// This is a class which defines the interface to a generic, simple database.
+//: This is a class which defines the interface to a generic, simple database.
 //
-// $Id: Database.h,v 1.6 1999/03/03 04:59:15 ghutchis Exp $
+// $Id: Database.h,v 1.7 1999/07/19 01:08:08 ghutchis Exp $
 //
 //
 //
@@ -26,8 +26,8 @@
 class Database : public Object
 {
     //
-    // Make sure noone can actually create an object of this type or
-    // the derived types.  The static netDatabase() method needs to be
+    // Make sure no one can actually create an object of this type or
+    // the derived types.  The static getDatabaseInstance() method needs to be
     // used.
     //
 protected:
@@ -61,6 +61,7 @@ public:
 
     virtual void	Start_Get() = 0;
     virtual char	*Get_Next() = 0;
+    virtual char	*Get_Item() = 0;
     virtual void	Start_Seq(char *str) = 0;
     virtual char	*Get_Next_Seq() = 0;
 };

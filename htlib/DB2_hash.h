@@ -1,7 +1,7 @@
 //
 // DB2_hash.h
 //
-// $Id: DB2_hash.h,v 1.1 1999/03/03 04:23:15 ghutchis Exp $
+// $Id: DB2_hash.h,v 1.2 1999/07/19 01:08:08 ghutchis Exp $
 //
 //
 #ifndef _DB2_hash_h_
@@ -30,6 +30,7 @@ public:
 	
     virtual void	Start_Get();
     virtual char	*Get_Next();
+    virtual char	*Get_Item();
     virtual void	Start_Seq(char *str);
     virtual char	*Get_Next_Seq();
 	

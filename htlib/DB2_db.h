@@ -1,9 +1,13 @@
 //
 // DB2_db.h
 //
-// $Id: DB2_db.h,v 1.2 1999/01/23 01:25:02 hp Exp $
+// $Id: DB2_db.h,v 1.3 1999/07/19 01:08:08 ghutchis Exp $
 //
 // $Log: DB2_db.h,v $
+// Revision 1.3  1999/07/19 01:08:08  ghutchis
+// Add new method Get_Item to access the data of the current item when using
+// Get_Next() or Get_Next_Seq().
+//
 // Revision 1.2  1999/01/23 01:25:02  hp
 // Fixed _some_ missing const qualifiers on common methods (requiring temps)
 //
@@ -40,6 +44,7 @@ public:
 	
     virtual void	Start_Get();
     virtual char	*Get_Next();
+    virtual char	*Get_Item();
     virtual void	Start_Seq(char *str);
     virtual char	*Get_Next_Seq();
 	

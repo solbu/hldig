@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_hash.cc,v 1.2 1999/03/08 00:48:58 hp Exp $";
+static char RCSid[] = "$Id: DB2_hash.cc,v 1.3 1999/07/19 01:08:08 ghutchis Exp $";
 #endif
 
 #include "DB2_hash.h"
@@ -54,7 +54,7 @@ DB2_hash::OpenReadWrite(char *filename, int mode)
     dbenv = db_init((char *)NULL);
     memset(&dbinfo, 0, sizeof(dbinfo));
 //    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	// Cachesize: 64K.
-    dbinfo.db_pagesize = 1024;      			// Page size: 1K.
+//    dbinfo.db_pagesize = 1024;      			// Page size: 1K.
 
     //
     // Create the database.
@@ -97,7 +97,7 @@ DB2_hash::OpenRead(char *filename)
     dbenv = db_init((char *)NULL);
     memset(&dbinfo, 0, sizeof(dbinfo));
 //    dbinfo.db_cachesize = CACHE_SIZE_IN_KB * 1024;	// Cachesize: 64K.
-    dbinfo.db_pagesize = 1024;				// Page size: 1K.
+//    dbinfo.db_pagesize = 1024;			// Page size: 1K.
 
     //
     // Open the database.
@@ -195,6 +195,29 @@ DB2_hash::Get_Next()
         seqrc = dbcp->c_get(dbcp, &skey, &nextkey, DB_NEXT);
 	seqerr = seqrc;
 	return lkey.get();
+    }
+    else
+	return 0;
+}
+
+//*****************************************************************************
+// char *DB2_hash::Get_Item()
+//
+char *
+DB2_hash::Get_Item()
+{
+    // This uses the cursor to get the current item
+    DBT	data;
+	
+    memset(&data, 0, sizeof(DBT));
+
+    if (isOpen && !seqrc)
+    {
+	// DON'T forget to set the flags to 0!
+	skey.flags = 0;
+        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_CURRENT);
+	seqerr = seqrc;
+	return (char *) data.data;
     }
     else
 	return 0;

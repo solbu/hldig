@@ -4,7 +4,7 @@
 // Implementation of DB2_db
 //
 #if RELEASE
-static char RCSid[] = "$Id: DB2_db.cc,v 1.10 1999/07/15 02:04:40 ghutchis Exp $";
+static char RCSid[] = "$Id: DB2_db.cc,v 1.11 1999/07/19 01:08:08 ghutchis Exp $";
 #endif
 
 #include "DB2_db.h"
@@ -196,6 +196,31 @@ DB2_db::Get_Next()
         seqrc = dbcp->c_get(dbcp, &skey, &nextkey, DB_NEXT);
 	seqerr = seqrc;
 	return lkey.get();
+    }
+    else
+	return 0;
+}
+
+//*****************************************************************************
+// char *DB2_db::Get_Item()
+//
+char *
+DB2_db::Get_Item()
+{
+    // This uses the cursor to get the current item
+    DBT	data;
+	
+    memset(&data, 0, sizeof(DBT));
+
+    if (isOpen && !seqrc)
+    {
+        String returnData = 0;
+	// DON'T forget to set the flags to 0!
+	skey.flags = 0;
+        seqrc = dbcp->c_get(dbcp, &skey, &data, DB_CURRENT);
+	seqerr = seqrc;
+        returnData.append((char *)data.data, data.size);
+	return returnData.get();
     }
     else
 	return 0;

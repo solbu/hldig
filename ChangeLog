@@ -1,3 +1,12 @@
+Sun Jul 18 21:50:04 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Database.h, htlib/DB2_db.h, htlib/DB2_hash.h: Add new
+	method Get_Item to access the data of the current item when using
+	Get_Next() or Get_Next_Seq().
+
+	* htlib/DB2_db.h, htlib/DB2_hash.cc: Implement Get_Item() using
+	cursor access.
+	
 Sat Jul 17 12:59:01 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* test/*.html: Added various HTML files as the beginnings of a
