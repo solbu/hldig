@@ -18,6 +18,8 @@
 int
 WordRecord::Get(String& buffer) const
 {
+  buffer.trunc();
+
   switch(type) {
 
   case WORD_RECORD_DATA:

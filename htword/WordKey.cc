@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordKey.cc,v 1.3.2.6 1999/12/14 17:49:32 loic Exp $
+// $Id: WordKey.cc,v 1.3.2.7 1999/12/16 16:52:43 loic Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -468,6 +468,7 @@ int WordKey::Merge(const WordKey& other)
 int
 WordKey::Get(String& buffer) const
 {
+  buffer.trunc();
   const struct WordKeyInfo& info = word_key_info;
 
   //
