@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.30.2.3 1999/03/19 23:02:55 grdetil Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.30.2.4 1999/03/19 23:11:53 grdetil Exp $";
 #endif
 
 #include "htdig.h"
@@ -464,6 +464,16 @@ HTML::do_tag(Retriever &retriever, String &tag)
 				   *q != '#')
 				q++;
 			    *q = '\0';
+			}
+			if (in_ref)
+			{
+			    if (debug > 1)
+				cout << "Terminating previous <a href=...> tag,"
+				     << " which didn't have a closing </a> tag."
+				     << endl;
+			    if (dofollow)
+				retriever.got_href(*href, description);
+			    in_ref = 0;
 			}
 			delete href;
 			href = new URL(position, *base);

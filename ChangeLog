@@ -1,3 +1,8 @@
+Fri Mar 19 17:05:16 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/HTML.cc: Add check for <a href=...> tag that is missing a
+	closing </a> tag, terminating it at next href.
+
 Fri Mar 19 17:00:18 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc: Fix check of Content-type header in readHeader(),
