@@ -28,7 +28,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.h,v 1.8.2.4 2000/01/29 01:35:37 ghutchis Exp $ 
+// $Id: HtHTTP.h,v 1.8.2.5 2000/08/17 00:29:21 angus Exp $ 
 //
 
 #ifndef _HTHTTP_H
@@ -75,6 +75,9 @@ class HtHTTP_Response : public Transport_Response
 	 // Get server info
    	 char *GetServer() { return _server; }
 
+	 // Get Connection info
+   	 char *GetConnectionInfo() { return _hdrconnection; }
+
 
    protected:
 
@@ -86,6 +89,7 @@ class HtHTTP_Response : public Transport_Response
    
 	 String    _transfer_encoding;    // Transfer-encoding
    	 String	   _server;	          // Server string returned
+   	 String	   _hdrconnection;	  // Server string returned
 
 };
 
@@ -191,8 +195,8 @@ public:
    // Is possible
    bool isPersistentConnectionPossible() {return _persistent_connection_possible;}
 
-   // Check if a persistent connection is possible depending on the HTTP version
-   void CheckPersistentConnection(const char *);
+   // Check if a persistent connection is possible depending on the HTTP response
+   void CheckPersistentConnection(HtHTTP_Response &);
 
    // Is Up (is both allowed and permitted by the server too)
    bool isPersistentConnectionUp()

@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Transport.cc,v 1.5.2.8 2000/05/06 20:46:40 loic Exp $
+// $Id: Transport.cc,v 1.5.2.9 2000/08/17 00:29:21 angus Exp $
 //
 //
 
@@ -47,7 +47,7 @@
 ///////
 
  ///////
-    //    Empty constructor
+    //    Class Constructor
  ///////
 
 Transport_Response::Transport_Response()
@@ -64,8 +64,15 @@ Transport_Response::Transport_Response()
    // Also set the document length, but to zero instead of -1
    _document_length = 0;
 
-   // Zeroes the contents
+   // Zeroes the contents and the content-type
    _contents = 0;
+   _content_type = 0;
+   
+   // Initialize the reason_phrase
+   _reason_phrase = 0;
+
+   // Initialize the location
+   _location = 0;
 
 }
 
@@ -119,14 +126,17 @@ void Transport_Response::Reset()
    _document_length=0;
 
    // Zeroes the contents and content type strings
-   _contents=0;
-   _content_type=0;
+   _contents.trunc();
+   _content_type.trunc();
 
    // Set the return status code to a negative value
    _status_code=-1;
 
    // Zeroes the reason phrase of the s.c.
-   _reason_phrase=0;
+   _reason_phrase.trunc();
+
+   // Reset the location
+   _location.trunc();
       
 }
 

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.15.2.15 2000/05/10 18:23:46 loic Exp $ 
+// $Id: HtHTTP.cc,v 1.15.2.16 2000/08/17 00:29:21 angus Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -62,10 +62,11 @@ typedef SIG_PF SIGNAL_HANDLER;
 
 HtHTTP_Response::HtHTTP_Response()
 {
-   // Initialize the version, transfer-encoding, location and server strings
+
+   // Initialize the version, transfer-encoding and server strings
    _version = 0;
    _transfer_encoding = 0;
-   _location = 0;
+   _hdrconnection = 0;
    _server = 0;
          
 }
@@ -80,16 +81,17 @@ HtHTTP_Response::~HtHTTP_Response()
 
 void HtHTTP_Response::Reset()
 {
+
    // Call the base class method in order to reset
    // the base class attributes
 
    Transport_Response::Reset();
 
    // Initialize the version, transfer-encoding, location and server strings
-   _version = 0;
-   _transfer_encoding = 0;
-   _location = 0;
-   _server = 0;
+   _version.trunc();
+   _transfer_encoding.trunc();
+   _hdrconnection.trunc();
+   _server.trunc();
 
 }
 
@@ -345,10 +347,13 @@ Transport::DocStatus HtHTTP::HTTPRequest()
       if (_response._transfer_encoding.length())
       cout << "Transfer-encoding : " << _response._transfer_encoding << endl;
       
+      if (_response._hdrconnection.length())
+      cout << "Connection        : " << _response._hdrconnection << endl;
+      
    }   
 
    // Check if persistent connection are possible
-   CheckPersistentConnection(_response.GetVersion());
+   CheckPersistentConnection(_response);
 
    if (debug > 4)
    	 cout << "Persistent connection: "
@@ -699,7 +704,17 @@ int HtHTTP::ParseHeader()
                _response._location = token;
 
          }
-         else
+         else if( ! mystrncasecmp((char*)line, "connection:", 11))
+         {
+            // Ooops ... found a Connection clause
+		  
+            token = strtok(token, "\n\t");
+
+            if (token && *token)
+               _response._hdrconnection = token;
+
+         }
+          else
          {
             // Discarded
 			
@@ -753,11 +768,20 @@ bool HtHTTP::isParsable(const char *content_type)
 // Check for a possibile persistent connection
 // on the return message's HTTP version basis
 
-void HtHTTP::CheckPersistentConnection(const char *version)
+void HtHTTP::CheckPersistentConnection(HtHTTP_Response &response)
 {
+
+   const char *version = response.GetVersion();
    
    if( ! mystrncasecmp ("HTTP/1.1", version, 8))
-   	 _persistent_connection_possible=true;
+   {
+      const char *connection = response.GetConnectionInfo();
+
+      if( ! mystrncasecmp ("close", connection, 5))
+         _persistent_connection_possible=false; // Server wants to close
+      else _persistent_connection_possible=true;
+      
+   }
    else
       _persistent_connection_possible=false;
    	 
