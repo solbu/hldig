@@ -4,6 +4,10 @@
 // Implementation of Server
 //
 // $Log: Server.cc,v $
+// Revision 1.7  1999/01/18 22:57:28  ghutchis
+// Use max_doc_size when retrieving robots.txt files instead of a hard-coded
+// 10k limit.
+//
 // Revision 1.6  1998/12/11 02:54:07  ghutchis
 // Changed support for server_wait_time to use delay() method in Server. Delay
 // is from beginning of last connection to this one.
@@ -27,7 +31,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.6 1998/12/11 02:54:07 ghutchis Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.7 1999/01/18 22:57:28 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -64,7 +68,7 @@ Server::Server(char *host, int port)
     //
     String	url = "http://";
     url << host << ':' << port << "/robots.txt";
-    Document	doc(url, 10000);
+    Document	doc(url, 0);
     switch (doc.RetrieveHTTP(0))
     {
 	case Document::Document_ok:
