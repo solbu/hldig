@@ -4,6 +4,11 @@
 // Implementation of Retriever
 //
 // $Log: Retriever.cc,v $
+// Revision 1.22  1998/12/05 00:52:55  ghutchis
+//
+// Added a parameter to Initial function to prevent URLs from being checked
+// twice during an update dig.
+//
 // Revision 1.21  1998/12/02 02:45:10  ghutchis
 //
 // Update hopcount correctly by taking the shortest paths to documents.
@@ -165,13 +170,14 @@ Retriever::setUsernamePassword(char *credentials)
 //   the correct server to add the URL's path to.
 //
 void
-Retriever::Initial(char *list)
+Retriever::Initial(char *list, int check)
 {
     //
     // Split the list of urls up into individual urls.
     //
     StringList	tokens(list, " \t");
     String	sig;
+    String      url;
     Server	*server;
 
     for (int i = 0; i < tokens.Count(); i++)
@@ -179,15 +185,19 @@ Retriever::Initial(char *list)
 	URL	u(tokens[i]);
 	sig = u.signature();
 	server = (Server *) servers[sig];
+	url = u.get();
+	url.lowercase();
 	if (!server)
 	{
 	    server = new Server(u.host(), u.port());
 	    servers.Add(sig, server);
 	}
-	server->push(u.get(), 0, 0);
-	sig = u.get();
-	sig.lowercase();
-	visited.Add(sig, 0);
+	else if (check && visited.Exists(url)) 
+	{
+	    continue;
+	}
+     	server->push(u.get(), 0, 0);
+	visited.Add(url, 0);
     }
 }
 
@@ -196,13 +206,13 @@ Retriever::Initial(char *list)
 // void Retriever::Initial(List &list)
 //
 void
-Retriever::Initial(List &list)
+Retriever::Initial(List &list,int check)
 {
     list.Start_Get();
     String	*str;
     while ((str = (String *) list.Get_Next()))
     {
-	Initial(str->get());
+	Initial(str->get(),check);
     }
 }
 

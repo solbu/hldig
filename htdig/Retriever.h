@@ -1,9 +1,14 @@
 //
 // Retriever.h
 //
-// $Id: Retriever.h,v 1.5 1998/11/27 18:34:52 ghutchis Exp $
+// $Id: Retriever.h,v 1.6 1998/12/05 00:52:55 ghutchis Exp $
 //
 // $Log: Retriever.h,v $
+// Revision 1.6  1998/12/05 00:52:55  ghutchis
+//
+// Added a parameter to Initial function to prevent URLs from being checked
+// twice during an update dig.
+//
 // Revision 1.5  1998/11/27 18:34:52  ghutchis
 //
 // Changed Retriever::got_word to check for small words, valid_punctuation to
@@ -58,8 +63,8 @@ public:
     //
     // Getting it all started
     //
-    void		Initial(char *url);
-    void		Initial(List &list);
+    void		Initial(char *url, int checked = 0);
+    void		Initial(List &list , int checked = 0);
     void		Start();
 
     //

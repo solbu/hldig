@@ -5,6 +5,11 @@
 // generating several databases to be used by htmerge
 //
 // $Log: main.cc,v $
+// Revision 1.7  1998/12/05 00:52:55  ghutchis
+//
+// Added a parameter to Initial function to prevent URLs from being checked
+// twice during an update dig.
+//
 // Revision 1.6  1998/12/04 04:13:51  ghutchis
 // Use configure check to only include getopt.h when it exists.
 //
@@ -220,19 +225,21 @@ main(int ac, char **av)
     //
     // Create the Retriever object which we will use to parse all the
     // HTML files.
+    // In case this is just an update dig, we will add all existing
+    // URLs?
     //
     Retriever	retriever;
-    if (credentials.length())
-	retriever.setUsernamePassword(credentials);
-    retriever.Initial(config["start_url"]);
-
-    //
-    // In case this is just an update dig, we will add all existing
-    // URLs to the initial list of the retriever.
-    //
     List	*list = docs.URLs();
     retriever.Initial(*list);
     delete list;
+
+    // Add start_url to the initial list of the retriever.
+    // Don't check a URL twice!
+    // Beware order is important, if this bugs you could change 
+    // previous line retriever.Initial(*list, 0) to Initial(*list,1)
+    if (credentials.length())
+	retriever.setUsernamePassword(credentials);
+    retriever.Initial(config["start_url"], 1);
 
     //
     // Go do it!
