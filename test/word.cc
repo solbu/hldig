@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.3 1999/12/09 12:40:42 bosc Exp $
+// $Id: word.cc,v 1.14.2.4 1999/12/10 17:30:00 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -41,7 +41,7 @@ static ConfigDefaults compress_defaults[] = {
   { "word_db", "var/htdig/db.words.db", 0 },
   { "wordlist_extend", "true", 0 },
   { "minimum_word_length", "1", 0},
-  { "wordlist_compress", "1", 0},
+  { "wordlist_compress", "true", 0},
   { "wordlist_compress_debug", "2", 0},
   { 0 }
 };
@@ -66,9 +66,10 @@ static void pack_show(const WordReference& wordRef);
 
 static int verbose = 0;
 
-//*****************************************************************************
+// *****************************************************************************
 // int main(int ac, char **av)
 //
+
 int main(int ac, char **av)
 {
   int			c;
@@ -616,17 +617,21 @@ public:
     }
     int Check(WordList &WList)
     {
-	WordReference emptyword;
+	WordKey empty;
 	WordReference srchwrd;
 	GetSearchKey(srchwrd.Key());
 	Object o;
 	if(verbose) cout << "checking SkipUselessSequentialWalking on:" << srchwrd << endl;
 	if(verbose) cout << "walking all:" << endl;
-	List *all=WList.Walk(emptyword,HTDIG_WORDLIST_COLLECTOR, (wordlist_walk_callback_t)0, o);
+//	WList.verbose=5;
+	List *all=WList.Walk(WordSearchDescription(empty));
 	if(verbose) cout << "walking search: searching for:" << srchwrd <<endl;
-	WList.BeginTrace();
-	List *wresw=WList.Walk(srchwrd,HTDIG_WORDLIST_COLLECTOR, (wordlist_walk_callback_t)0, o);
-	List *wres=WList.EndTrace();
+
+	WordSearchDescription search(srchwrd.Key());
+	search.traceRes = new List;
+	WList.Walk(search);
+	List *wresw = search.collectRes;
+	List *wres  = search.traceRes;
 	wresw->Start_Get();
 	wres->Start_Get();
 	WordReference *found;
@@ -646,9 +651,9 @@ public:
 	}
 	if(i<ngoodorder){cerr << "SkipUselessSequentialWalking test failed! n<ngoodorder" << endl;exit(1);}
 	
-	WList.CleanupTrace();
 	delete [] goodorder_a;
 	delete wresw;
+	delete wres;
 	return OK;
     }
 };

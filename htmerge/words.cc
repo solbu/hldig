@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: words.cc,v 1.22.2.1 1999/11/02 12:58:37 bosc Exp $
+// $Id: words.cc,v 1.22.2.2 1999/12/10 17:30:00 bosc Exp $
 //
 
 #include "htmerge.h"
@@ -70,7 +70,7 @@ void mergeWords()
 
   words.Open(config["word_db"], O_RDWR);
 
-  (void)words.Walk(WordReference(), HTDIG_WORDLIST_WALKER, delete_word, data);
+  (void)words.Walk(WordSearchDescription(WordKey(), delete_word, &data));
   
   words.Close();
 

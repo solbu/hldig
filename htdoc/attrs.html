@@ -8806,11 +8806,222 @@ http://www.htdig.org/
 	  </dd>
 	</dl>
 	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="wordlist_compress">
+		wordlist_compress</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htfuzzy.html">htfuzzy</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Enables or disables the default compression system for the indexer.
+	This currently compresses the index by a factor of 8.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_compress:
+				</td>
+				<td nowrap>
+				     true
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="wordlist_page_size">
+		wordlist_page_size</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htfuzzy.html">htfuzzy</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			0
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Size of pages used by Berkeley DB (DB used by the indexer)
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_page_size:
+				</td>
+				<td nowrap>
+				     8192
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="wordlist_cache_size">
+		wordlist_cache_size</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htfuzzy.html">htfuzzy</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			0
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Size of memory cache used by Berkeley DB (DB used by the indexer)
+
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  wordlist_cache_size:
+				</td>
+				<td nowrap>
+				     40000000
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="wordlist_compress_debug">
+		wordlist_compress_debug</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			number
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htdig.html">htdig</a>,
+			<a href="htmerge.html">htmerge</a>,
+			<a href="htsearch.html" target="_top">htsearch</a>,
+			<a href="htfuzzy.html">htfuzzy</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			1
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	Debuging value for the  compression system for the indexer.
+	0 : none
+	1 : transparent autotest while compressing (small performance decrease)
+	2 : ------------------              big performance decrease
+	3 : verbose
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr> <td valign="top"><i>No example provided</i></td> </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
 <!-- hhmts start -->
-Last modified: Tue Dec  7 20:04:16 CET 1999
+Last modified: Thu Dec  9 19:23:53 CET 1999
 <!-- hhmts end -->
   </body>
 </html>
