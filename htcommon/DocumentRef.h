@@ -1,7 +1,16 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.19 1999/09/05 06:46:33 ghutchis Exp $
+//: Reference to an indexed document. Keeps track of all information stored
+//  on the document, either by the dig or temporary search information.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: DocumentRef.h,v 1.20 1999/09/05 18:24:22 ghutchis Exp $
 //
 //
 #ifndef _DocumentRef_h_

@@ -1,10 +1,16 @@
 //
 // DocumentRef.cc
 //
-// Implementation of DocumentRef
-// Reference to an indexed document. Keeps track of all information stored
-// on the document, either by the dig or temporary search information.
+//: Reference to an indexed document. Keeps track of all information stored
+//  on the document, either by the dig or temporary search information.
 //
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
+//
+// $Id: DocumentRef.cc,v 1.39 1999/09/05 18:24:22 ghutchis Exp $
 //
 
 #include "DocumentRef.h"
