@@ -3,152 +3,13 @@
 //
 // default values for the ht programs
 //
-// $Log: defaults.cc,v $
-// Revision 1.42  1999/01/26 20:16:39  hp
-// Fix typo with default 'case_sensitive'
-//
-// Revision 1.41  1999/01/25 01:53:43  hp
-// Provide a clean upgrade from old databses without "url_part_aliases" and
-// "common_url_parts" through the new option "uncoded_db_compatible".
-//
-// Revision 1.40  1999/01/21 13:41:50  ghutchis
-// Add common_url_parts and url_part_aliases.
-//
-// Revision 1.39  1999/01/20 05:25:17  ghutchis
-// Use translate_quote, _lt_gt, and _amp to optionally translate these entities.
-//
-// Revision 1.38  1999/01/18 23:13:02  ghutchis
-// Added no_title_text option to allow configuration of the text when no title
-// is available. Default is the filename.
-//
-// Revision 1.37  1999/01/18 03:07:24  ghutchis
-// Added options "sort" and "sort_names" to pick result sorting order and text
-// names for sort options.
-//
-// Revision 1.36  1999/01/18 00:52:50  ghutchis
-// Fix mismatched naming of compression_level (was compression_factor).
-//
-// Revision 1.35  1999/01/17 21:12:55  ghutchis
-// Change default pdf_parser attribute to include acrobat-specific flags.
-//
-// Revision 1.34  1999/01/17 20:32:20  ghutchis
-// Added support for url_log, save and restart digs.
-//
-// Revision 1.33  1999/01/15 04:52:18  ghutchis
-// Added options noindex_start and noindex_end to enable NOT indexing some
-// sections of HTML.
-//
-// Revision 1.32  1999/01/15 04:34:14  ghutchis
-// Set compression_factor to 0 for default (no compression).
-//
-// Revision 1.31  1999/01/14 03:01:25  ghutchis
-// Added search_results_wrapper for the location of the wrapper file, if used.
-// (The default is empty, which uses header.html and footer.html)
-//
-// Revision 1.30  1999/01/14 00:31:02  ghutchis
-// Removed use_document_compression (redundant) and fixed problem with missing
-// comma. Setting compression_factor to 0 is the equivalent of turning 
-// off use_document_compression.
-//
-// Revision 1.29  1999/01/12 18:09:24  ghutchis
-// Added config options use_document_compression and compression_factor for
-// zlib support.
-//
-// Revision 1.28  1999/01/07 19:56:01  ghutchis
-// Use the no_page_list_header stuff.
-//
-// Revision 1.27  1999/01/07 03:12:07  ghutchis
-// Add .bin, .tgz, .rpm, .mov, .mpg, .avi to bad_extensions.
-//
-// Revision 1.26  1999/01/05 19:30:16  ghutchis
-// Added new option max_descriptions for limit on the number of descriptions to
-// store (default 5, matches behavior pre 3.1.0b3).
-//
-// Revision 1.25  1998/12/19 18:59:19  bergolth
-// Added defaults.
-//
-// Revision 1.24  1998/12/11 02:49:54  ghutchis
-// Added option for server_max_docs as a limit on the number of docs returned
-// from a server.
-//
-// Revision 1.23  1998/12/08 02:53:56  ghutchis
-// Add new option server_wait_time for the number of seconds to wait between
-// requests.
-//
-// Revision 1.22  1998/12/04 04:14:22  ghutchis
-// Add new option "http_proxy_exclude" for servers that shouldn't use the
-// proxy, from a patch by Gilles Detillieux.
-//
-// Revision 1.21  1998/11/27 18:31:45  ghutchis
-// Changed backlink_factor to 1000, description_factor to 150, match_method to
-// and, and meta_description factor to 50. Should produce more accurate search
-// results.
-//
-// Revision 1.20  1998/11/22 19:13:38  ghutchis
-// New config options "description_factor" and "no_excerpt_show_top"
-//
-// Revision 1.19  1998/11/17 04:06:14  ghutchis
-// Add new ranking factors backlink_factor and date_factor
-//
-// Revision 1.18  1998/10/21 17:33:03  ghutchis
-// Added defaults for server_aliases and limit_normalized
-//
-// Revision 1.17  1998/10/17 14:06:08  ghutchis
-// Changed htdig.sdsu.edu to www.htdig.org in start_urls
-//
-// Revision 1.16  1998/10/12 02:09:28  ghutchis
-// Added htsearch logging patch from Alexander Bergolth.
-//
-// Revision 1.13  1998/09/23 14:58:21  ghutchis
-// Many, many bug fixes
-//
-// Revision 1.12  1998/09/08 03:29:09  ghutchis
-// Clean up for 3.1.0b1.
-//
-// Revision 1.11  1998/09/07 04:27:39  ghutchis
-// Bug fixes.
-//
-// Revision 1.10  1998/08/11 08:58:26  ghutchis
-// Second patch for META description tags. New field in DocDB for the
-// desc., space in word DB w/ proper factor.
-//
-// Revision 1.9  1998/08/06 14:18:30  ghutchis
-// Added config option "local_default_doc" for default filename in a local
-// directory. Fixed spelling mistake in "elipses" attributes.
-//
-// Revision 1.8  1998/07/23 16:18:51  ghutchis
-// Added files (and patch) from Sylvain Wallez for PDF
-// parsing. Incorporates fix for non-Adobe PDFs.
-//
-// Revision 1.7  1998/07/09 09:38:56  ghutchis
-// Added support for local file digging using patches by Pasi. Patches
-// include support for local user (~username) digging.
-//
-// Revision 1.6  1998/07/09 09:32:02  ghutchis
-// Added support for META name=description tags. Uses new config-file
-// option "use_meta_description" which is off by default.
-//
-// Revision 1.5  1998/06/22 04:35:43  turtle
-// Got rid of my email address as the default maintainer
-//
-// Revision 1.4  1998/06/21 23:20:01  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.3  1997/07/03 17:44:38  turtle
-// Added support for virtual hosts
-//
-// Revision 1.2  1997/03/14 17:15:32  turtle
-// Changed default value for remove_bad_urls to true
-//
-// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
-// Initial CVS
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.42 1999/01/26 20:16:39 hp Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43 1999/01/27 00:25:07 ghutchis Exp $";
 #endif
 
-#include <Configuration.h>
+#include "Configuration.h"
 
 ConfigDefaults	defaults[] =
 {
@@ -246,6 +107,7 @@ ConfigDefaults	defaults[] =
     {"prefix_match_character",		"*"},
     {"prev_page_text",			"[prev]"},
     {"remove_bad_urls",			"true"},
+    {"remove_default_doc",              "index.html"},
     {"robotstxt_name",			"htdig"},
     {"search_algorithm",		"exact:1"},
     {"search_results_footer",		"${common_dir}/footer.html"},
