@@ -5,7 +5,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: URL.cc,v 1.18.2.3 1999/09/01 20:36:30 grdetil Exp $";
+static char RCSid[] = "$Id: URL.cc,v 1.18.2.4 1999/09/01 20:41:45 grdetil Exp $";
 #endif
 
 #include "URL.h"
@@ -130,7 +130,7 @@ URL::URL(char *ref, URL &parent)
     while (isalpha(*p))
 	p++;
     int	hasService = (*p == ':');
-    if (hasService && ((strncmp(ref, "http://", 6) == 0) ||
+    if (hasService && ((strncmp(ref, "http://", 7) == 0) ||
 		       (strncmp(ref, "http:", 5) != 0)))
     {
 	//

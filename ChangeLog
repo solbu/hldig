@@ -1,4 +1,8 @@
-Wed Sep  1 15:34:18 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 15:38:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/URL.cc(URL): Fix PR#566 by setting the correct length of the
+	string being matched. 'http://' is 7 characters. Submitted by
+	<wolfgang.pichler@creditanstalt.co.at>.
 
 	* htdig/HTML.h, htdig/HTML.cc(do_tag, transSGML): Fix the HTML parser
 	to decode SGML entities within tag attributes.
