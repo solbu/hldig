@@ -63,6 +63,7 @@ fi
 %files
 %defattr(-,root,root)
 %config /etc/htdig/htdig.conf
+%config /etc/htdig/mime.types
 %config /usr/sbin/rundig
 %config /home/httpd/html/search.html
 /etc/cron.daily/htdig-dbgen
@@ -75,6 +76,12 @@ fi
 %doc README htdoc/*
 
 %changelog
+* Thu Feb  3 2000 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+  - added mime.types as a %config file
+
+* Mon Jan 17 2000 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+  - updated to 3.2.0b1
+
 * Fri Aug 13 1999 Gilles Detillieux <grdetil@scrc.umanitoba.ca>
   - changed configure & install options and got rid of conf.patch file
     to work with latest 3.2 code
