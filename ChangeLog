@@ -1,3 +1,22 @@
+Sun Jul 18 22:42:04 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htmerge/htmerge.h: Cleanup, including WordRecord and
+	WordReference as needed.
+
+	* htmerge/htmerge.cc: Update for files necessary for merge
+	calls.
+	Call convertDocs before mergeWords so that the discardList gets
+	the list of documents deleted.
+
+	* htmerge/docs.cc: Update for difference in calling order.
+
+	* htmerge/words.cc: Update (and significant cleanup) since
+	WordList writes directly to db.words.db. Iterate over the stored
+	words, deleting those from deleted documents.
+
+	* htmerge/db.cc: Update to eliminate compiler errors. Currently
+	disabled until bugs in the words code are fixed.
+
 Sun Jul 18 22:33:49 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.cc: Collapse the multiple heading_factors into
