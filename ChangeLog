@@ -1,3 +1,8 @@
+Wed Oct 06 11:40:48 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+
+	* HtHTTP: stores the server info correctly and removed some debug info
+	  in chunk managing
+
 Wed Oct 06 11:39:12 1999  Loic Dachary  <loic@ceic.com>
 
 	* Move htlib/*URL* to htcommon
@@ -8,7 +13,7 @@ Wed Oct 06 10:09:19 1999  Loic Dachary  <loic@ceic.com>
 
 	* test/t_htnet: fix variable set problem & return code problem
 
-Mon Oct 04 18:43:56 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
+Wed Oct 06 08:53:52 1999  Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* Written t_htnet test
 

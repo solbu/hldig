@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtHTTP.cc,v 1.6 1999/10/04 15:46:23 angus Exp $ 
+// $Id: HtHTTP.cc,v 1.7 1999/10/06 09:46:15 angus Exp $ 
 //
 
 #include "lib.h"
@@ -543,6 +543,17 @@ int HtHTTP::ParseHeader()
             _response._reason_phrase = strtok(0, "\n");
 
          }
+         else if( ! mystrncasecmp(line, "server:", 7))
+         {
+            // Server info
+		  
+            // Set the server info
+            token = strtok(token, "\n\t");
+
+            if (token && *token)
+               _response._server = token;
+
+         }
          else if( ! mystrncasecmp(line, "last-modified:", 14))
          {
             // Modification date sent by the server
@@ -906,6 +917,7 @@ int HtHTTP::ReadChunkedBody()
    _connection.read_line(ChunkHeader);
    sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 
+   if (debug>4)
       cout << "Initial chunk-size: " << chunk_size << endl;
 
    while (chunk_size > 0)
@@ -926,7 +938,8 @@ int HtHTTP::ReadChunkedBody()
       _connection.read_line(ChunkHeader);
       sscanf ((char *)ChunkHeader, "%x", &chunk_size);
 
-      cout << "Chunk-size: " << chunk_size << endl;
+      if (debug>4)
+         cout << "Chunk-size: " << chunk_size << endl;
    }
    
    ChunkHeader = 0;
