@@ -4,9 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
-// Revision 1.21  1998/11/18 05:15:32  ghutchis
+// Revision 1.22  1998/11/22 19:16:13  ghutchis
 //
-// Added HTTP_REFERER to search logging.
+// Adjust date_factor and backlink_factor rankings to produce better results,
+// Use "no_excerpt_show_top."
 //
 // Revision 1.20  1998/11/17 04:06:14  ghutchis
 //
@@ -92,7 +93,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.21 1998/11/18 05:15:32 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.22 1998/11/22 19:16:13 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -817,13 +818,16 @@ Display::buildMatchList()
 	// Other changes to the score can happen now
 	// Or be calculated by the result match in getScore()
 
-	float modified = thisRef->DocTime();
-	float now = time(0);
 	// This formula derived through experimentation
 	// We want older docs to have smaller values and the
 	// ultimate values to be a reasonable size (max about 100)
-	score += config.Double("date_factor") * ((modified * 1000 / now) - 900);
-	score += config.Double("backlink_factor") * thisRef->DocBackLinks();
+	score += config.Double("date_factor") * 
+	  (((double)(thisRef->DocTime()) * 1000 / (double)time(0)) - 900);
+	int links = thisRef->DocLinks();
+	if (links == 0)
+	  links = 1; // It's a hack, but it helps...
+	score += config.Double("backlink_factor") 
+	  * (thisRef->DocBackLinks() / (double)links);
 
 	thisMatch->setIncompleteScore(score);
 	thisMatch->setAnchor(dm->anchor);
@@ -860,10 +864,13 @@ Display::excerpt(DocumentRef *ref, char *url)
     if (config.Boolean("excerpt_show_top", 0))
 	first = 0;
 
+    if (first < 0 && config.Boolean("no_excerpt_show_top"))
+      first = 0;  // No excerpt, but we want to show the top.
+
     if (first < 0)
     {
 	//
-	// No excerpt available
+	// No excerpt available, don't show top, so display message
 	//
 	if (config["no_excerpt_text"][0])
 	{
