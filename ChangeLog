@@ -1,3 +1,9 @@
+Mon Jan 25 19:38:31 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Configuration(Find): Make error message for missing
+	entries conditional to DEBUG symbol. Removes odd error messages
+	under normal use.
+
 Sun Jan 24 23:55:57 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htmerge/db.cc, htmerge/docs.cc: Fix comiler errors.
