@@ -1,80 +1,54 @@
 //
 // htsearch.cc
 //
-// Implementation of htsearch
+// htsearch: The main search CGI. Parses the CGI input, reads the config files
+//           and calls the necessary code to put together the result lists
+//           and the final display.
 //
-// $Log: htsearch.cc,v $
-// Revision 1.11  1998/11/22 19:15:35  ghutchis
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Public License version 2 or later
+// <http://www.gnu.org/copyleft/gpl.html>
 //
-// Don't remove boolean operators from boolean search strings!
+// $Id: htsearch.cc,v 1.54.2.1 1999/11/10 21:57:00 grdetil Exp $
 //
-// Revision 1.10  1998/11/01 00:00:40  ghutchis
-//
-// Replaced system calls with htlib/my* functions.
-//
-// Revision 1.9  1998/10/26 20:34:33  ghutchis
-//
-// Added patch by Esa Ahola to fix bug with not properly ignoring bad_words
-//
-// Revision 1.8  1998/09/30 17:31:51  ghutchis
-//
-// Changes for 3.1.0b2
-//
-// Revision 1.7  1998/09/10 04:16:26  ghutchis
-//
-// More bug fixes.
-//
-// Revision 1.6  1998/06/21 23:20:12  turtle
-// patches by Esa and Jesse to add BerkeleyDB and Prefix searching
-//
-// Revision 1.5  1997/04/27 14:43:30  turtle
-// changes
-//
-// Revision 1.4  1997/04/21 15:44:39  turtle
-// Added code to check the search words against the minimum_word_length attribute
-//
-// Revision 1.3  1997/02/24 17:52:55  turtle
-// Applied patches supplied by "Jan P. Sorensen" <japs@garm.adm.ku.dk> to make
-// ht://Dig run on 8-bit text without the global unsigned-char option to gcc.
-//
-// Revision 1.2  1997/02/11 00:38:48  turtle
-// Renamed the very bad wordlist variable to badWords
-//
-// Revision 1.1.1.1  1997/02/03 17:11:05  turtle
-// Initial CVS
-//
-// Revision 1.1  1996/01/03 18:59:56  turtle
-// Before rewrite
-//
-//
-#if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.11 1998/11/22 19:15:35 ghutchis Exp $";
-#endif
 
 #include "htsearch.h"
 #include "WeightWord.h"
 #include "parser.h"
 #include "Display.h"
 #include "../htfuzzy/Fuzzy.h"
-#include <cgi.h>
-#include <WordRecord.h>
-#include <WordList.h>
-#include <StringList.h>
-#include <IntObject.h>
+#include "cgi.h"
+#include "WordRecord.h"
+#include "HtWordList.h"
+#include "StringList.h"
+#include "IntObject.h"
+#include "HtURLCodec.h"
+#include "WordType.h"
+#include "HtRegex.h"
+
 #include <time.h>
 #include <ctype.h>
 #include <signal.h>
 
 
+// If we have this, we probably want it.
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#endif
+
 typedef void (*SIGNAL_HANDLER) (...);
 
-ResultList *htsearch(char *, List &, Parser *);
-void setupWords(char *, List &, String&, int, Parser *);
-void createLogicalWords(List &, String &, StringMatch &);
+ResultList *htsearch(const String&, List &, Parser *);
+
+void setupWords(char *, List &, int, Parser *, String &);
+void createLogicalWords(List &, String &, String &);
 void reportError(char *);
 void convertToBoolean(List &words);
 void doFuzzy(WeightWord *, List &, List &);
 void addRequiredWords(List &, StringList &);
+void usage();
 
 int			debug = 0;
 int			minimum_word_length = 3;
@@ -92,12 +66,14 @@ main(int ac, char **av)
     List		searchWords;
     String		configFile = DEFAULT_CONFIG_FILE;
     int			pageNumber = 1;
-    StringMatch		limit_to;
-    StringMatch		exclude_these;
-    String		originalWords;
+    HtRegex		limit_to;
+    HtRegex		exclude_these;
     String		logicalWords;
+    String              origPattern;
+    String              logicalPattern;
     StringMatch		searchWordsPattern;
     StringList		requiredWords;
+    int                 i;
 
      //
      // Parse command line arguments
@@ -116,6 +92,9 @@ main(int ac, char **av)
  	    case 'd':
  		debug++;
  		break;
+	    case '?':
+	        usage();
+                break;
  	}
      }
 
@@ -127,18 +106,23 @@ main(int ac, char **av)
     //
     // Parse the CGI parameters.
     //
-    cgi		input;
+    char	none[] = "";
+    cgi		input(optind < ac ? av[optind] : none);
 
     //
     // Compile the URL limit pattern.
     //
     if (input.exists("restrict"))
     {
-	limit_to.Pattern(input["restrict"]);
+	StringList l(input["restrict"], " \t\001|");
+	limit_to.setEscaped(l);
+	l.Release();
     }
     if (input.exists("exclude"))
     {
-	exclude_these.Pattern(input["exclude"]);
+	StringList l(input["exclude"], " \t\001|");
+	exclude_these.setEscaped(l);
+	l.Release();
     }
 
     //
@@ -148,7 +132,10 @@ main(int ac, char **av)
     // got from the HTML form.
     //
     config.Defaults(&defaults[0]);
-    if (!override_config && input.exists("config") && !strchr(input["config"], '.'))
+    // To allow . in filename while still being 'secure',
+    // e.g. htdig-f.q.d.n.conf
+    if (!override_config && input.exists("config") 
+	&& (strstr(input["config"], "./") == NULL))
     {
 	char	*configDir = getenv("CONFIG_DIR");
 	if (configDir)
@@ -164,7 +151,7 @@ main(int ac, char **av)
 	else
 	  configFile << '/' << input["config"] << ".conf";
     }
-    if (access(configFile, R_OK) < 0)
+    if (access((char*)configFile, R_OK) < 0)
     {
 	reportError(form("Unable to read configuration file '%s'",
 			 configFile.get()));
@@ -175,8 +162,14 @@ main(int ac, char **av)
 	config.Add("match_method", input["method"]);
     if (input.exists("format"))
 	config.Add("template_name", input["format"]);
+
     if (input.exists("matchesperpage"))
-	config.Add("matches_per_page", input["matchesperpage"]);
+    {
+	// minimum check for a valid int value of "matchesperpage" cgi variable
+	if (atoi(input["matchesperpage"]) > 0)
+	    config.Add("matches_per_page", input["matchesperpage"]);
+    }
+
     if (input.exists("page"))
 	pageNumber = atoi(input["page"]);
     if (input.exists("config"))
@@ -186,27 +179,60 @@ main(int ac, char **av)
     if (input.exists("exclude"))
 	config.Add("exclude", input["exclude"]);
     if (input.exists("keywords"))
-	requiredWords.Create(input["keywords"], " \t\r\n");
+	config.Add("keywords", input["keywords"]);
+    requiredWords.Create(config["keywords"], " \t\r\n\001");
+    if (input.exists("sort"))
+	config.Add("sort", input["sort"]);
 
     minimum_word_length = config.Value("minimum_word_length", minimum_word_length);
-    
+
+    StringList form_vars(config["allow_in_form"], " \t\r\n");
+    for (i= 0; i < form_vars.Count(); i++)
+    {
+      if (input.exists(form_vars[i]))
+	config.Add(form_vars[i], input[form_vars[i]]);
+    }
+ 
+    // Ctype-like functions for what constitutes a word.
+    WordType::Initialize(config);
+
+    //
+    // Check url_part_aliases and common_url_parts for
+    // errors.
+    String url_part_errors = HtURLCodec::instance()->ErrMsg();
+
+    if (url_part_errors.length() != 0)
+      reportError(form("Invalid url_part_aliases or common_url_parts: %s",
+                       url_part_errors.get()));
+
     Parser	*parser = new Parser();
 	
     //
     // Parse the words to search for from the argument list.
     // This will produce a list of WeightWord objects.
     //
-    String	tmp = input["words"];
-    tmp.chop(" \t\r\n");
-    setupWords(tmp, searchWords, originalWords,
+    String	 originalWords = input["words"];
+    originalWords.chop(" \t\r\n");
+    setupWords(originalWords, searchWords,
 	       strcmp(config["match_method"], "boolean") == 0,
-	       parser);
+	       parser, origPattern);
 
     //
     // Convert the list of WeightWord objects to a pattern string
     // that we can compile.
     //
-    createLogicalWords(searchWords, logicalWords, searchWordsPattern);
+    createLogicalWords(searchWords, logicalWords, logicalPattern);
+
+    // 
+    // Assemble the full pattern for excerpt matching and highlighting
+    //
+    origPattern += logicalPattern;
+    searchWordsPattern.IgnoreCase();
+    searchWordsPattern.IgnorePunct();
+    searchWordsPattern.Pattern(logicalPattern);	// this should now be enough
+    //searchWordsPattern.Pattern(origPattern);
+    //if (debug > 2)
+    //  cout << "Excerpt pattern: " << origPattern << "\n";
 
     //
     // If required keywords were given in the search form, we will
@@ -223,7 +249,7 @@ main(int ac, char **av)
     // The Dictionary it returns is then passed on to the Display object to
     // actually render the results in HTML.
     //
-    String	word_db = config["word_db"];
+    const String	word_db = config["word_db"];
     if (access(word_db, R_OK) < 0)
     {
 	reportError(form("Unable to read word database file '%s'\nDid you run htmerge?",
@@ -231,24 +257,25 @@ main(int ac, char **av)
     }
     ResultList	*results = htsearch(word_db, searchWords, parser);
 
-    String	index = config["doc_index"];
-    if (access(index, R_OK) < 0)
-    {
-	reportError(form("Unable to read document index file '%s'\nDid you run htmerge?",
-			 index.get()));
-    }
-    String	doc_db = config["doc_db"];
+    const String	doc_db = config["doc_db"];
     if (access(doc_db, R_OK) < 0)
     {
 	reportError(form("Unable to read document database file '%s'\nDid you run htmerge?",
 			 doc_db.get()));
     }
 
-    Display	display(index, doc_db);
+    const String	doc_excerpt = config ["doc_excerpt"];
+    if (access(doc_excerpt, R_OK) < 0)
+    {
+	reportError(form("Unable to read document excerpts '%s'\nDid you run htmerge?",
+			 doc_excerpt.get()));
+    }
+
+    Display	display(doc_db, 0, doc_excerpt);
     if (display.hasTemplateError())
       {
 	reportError(form("Unable to read template file '%s'\nDoes it exist?",
-                         config["template_name"]));
+                         (const char*)config["template_name"]));
 	return 0;
       }
     display.setOriginalWords(originalWords);
@@ -265,45 +292,58 @@ main(int ac, char **av)
 	display.display(pageNumber);
 
     delete results;
+    delete parser;
     return 0;
 }
 
 //*****************************************************************************
 void
-createLogicalWords(List &searchWords, String &logicalWords, StringMatch &wm)
+createLogicalWords(List &searchWords, String &logicalWords, String &wm)
 {
     String		pattern;
     int			i;
     int			wasHidden = 0;
+    int			inPhrase = 0;
 
     for (i = 0; i < searchWords.Count(); i++)
     {
 	WeightWord	*ww = (WeightWord *) searchWords[i];
 	if (!ww->isHidden)
 	{
-	    if (strcmp(ww->word, "&") == 0 && wasHidden == 0)
+	    if (strcmp((char*)ww->word, "&") == 0 && wasHidden == 0)
 		logicalWords << " and ";
-	    else if (strcmp(ww->word, "|") == 0 && wasHidden == 0)
+	    else if (strcmp((char*)ww->word, "|") == 0 && wasHidden == 0)
 		logicalWords << " or ";
-	    else if (strcmp(ww->word, "!") == 0 && wasHidden == 0)
+	    else if (strcmp((char*)ww->word, "!") == 0 && wasHidden == 0)
 		logicalWords << " not ";
+	    else if (strcmp((char*)ww->word, "\"") == 0 && wasHidden == 0)
+	      {
+		if (inPhrase)
+		  logicalWords.chop(' ');
+		inPhrase = !inPhrase;
+		logicalWords << "\"";
+	      }
 	    else if (wasHidden == 0)
 	    {
-		logicalWords << ww->word;
+	      logicalWords << ww->word;
+	      if (inPhrase)
+		logicalWords << " ";
 	    }
 	    wasHidden = 0;
 	}
 	else
 	    wasHidden = 1;
-	if (ww->weight > 0)			// Ignore boolean syntax stuff
+	if (ww->weight > 0			// Ignore boolean syntax stuff
+	    && !ww->isIgnore)			// Ignore short or bad words
 	{
-	    if (pattern.length())
+	    if (pattern.length() && !inPhrase)
 		pattern << '|';
+	    else if (pattern.length() && inPhrase)
+	      pattern << ' ';
 	    pattern << ww->word;
 	}
     }
-    wm.IgnoreCase();
-    wm.Pattern(pattern);
+    wm = pattern;
 
     if (debug)
     {
@@ -328,23 +368,15 @@ dumpWords(List &words, char *msg = "")
 }
 
 //*****************************************************************************
-// void setupWords(char *allWords, List &searchWords, String &parsedWords,
-//					int boolean, Parser *parser)
+// void setupWords(char *allWords, List &searchWords,
+//		   int boolean, Parser *parser, String &originalPattern)
 //
 void
-setupWords(char *allWords, List &searchWords, String &parsedWords,
-	   int boolean, Parser *parser)
+setupWords(char *allWords, List &searchWords, int boolean, Parser *parser,
+	   String &originalPattern)
 {
     List	tempWords;
     int		i;
-    char	*valid_punctuation = 0;
-	
-    //
-    // This is going to be used a lot.  We'll cache it.
-    //
-    valid_punctuation = config["valid_punctuation"];
-    if (!valid_punctuation)
-	valid_punctuation = "";
 
     //
     // Parse the words we need to search for.  It should be a list of words
@@ -352,39 +384,7 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
     // will be put in the searchWords list and at the same time in the
     // String pattern separated with '|'.
     //
-    WordList	badWords;		// Just used to check for valid words.
-    badWords.BadWordFile(config["bad_word_list"]);
 
-    //
-    // Create a string with the original search words minus any attributes
-    // and minus hidden keywords.
-    //
-    StringList	origList(allWords, ' ');
-    for (i = 0; i < origList.Count(); i++)
-    {
-	char	*p = origList[i];
-	if (mystrncasecmp(p, "hidden:", 7) == 0)
-	{
-	    i++;
-	    continue;
-	}
-	if (mystrncasecmp(p, "exact:", 6) == 0)
-	    p += 6;
-	if (mystrncasecmp(p, "hidden:", 7) == 0)
-	{
-	    i++;
-	    continue;
-	}
-	if (badWords.IsValid(p))
-	    parsedWords << p << ' ';
-	if (boolean && ((mystrncasecmp(p, "or", 2) == 0) || 
-			(mystrncasecmp(p, "and", 3) == 0) ||
-			(mystrncasecmp(p, "not", 3) == 0)))
-	    parsedWords << p << ' ';
-    }
-
-    parsedWords.chop(' ');
-	
     //
     // Convert the string to a list of WeightWord objects.  The special
     // characters '(' and ')' will be put into their own WeightWord objects.
@@ -393,7 +393,7 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
     unsigned char	t;
     String		word;
     // Why use a char type if String is the new char type!!!
-    char		*prefix_suffix = config["prefix_match_character"];
+    const String	prefix_suffix = config["prefix_match_character"];
     while (*pos)
     {
 	while (1)
@@ -403,6 +403,11 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 	    {
 		continue;
 	    }
+	    else if (t == '"')
+	      {
+		tempWords.Add(new WeightWord("\"", -1.0));
+		break;
+	      }
 	    else if (boolean && (t == '(' || t == ')'))
 	    {
 		char	s[2];
@@ -411,17 +416,17 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 		tempWords.Add(new WeightWord(s, -1.0));
 		break;
 	    }
-	    else if (isalnum(t) || strchr(valid_punctuation, t) || t == ':' ||
+	    else if (HtIsWordChar(t) || t == ':' ||
 			 (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255))
 	    {
 		word = 0;
-		while (t && (isalnum(t) || strchr(valid_punctuation, t) ||
+		while (t && (HtIsWordChar(t) ||
 			     t == ':' || (strchr(prefix_suffix, t) != NULL) || (t >= 161 && t <= 255)))
 		{
 		    word << (char) t;
 		    t = *pos++;
 		}
-		word.remove(valid_punctuation);
+
 		pos--;
 		if (boolean && mystrcasecmp(word.get(), "and") == 0)
 		{
@@ -435,19 +440,18 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 		{
 		    tempWords.Add(new WeightWord("!", -1.0));
 		}
+		else if (boolean && mystrcasecmp(word.get(), "+") == 0)
+		  tempWords.Add(new WeightWord("&", -1.0));
+		else if (boolean && mystrcasecmp(word.get(), "-") == 0)
+		  tempWords.Add(new WeightWord("!", -1.0));
 		else
 		{
+		    // Add word to excerpt matching list
+		    originalPattern << word << "|";
 		    WeightWord	*ww = new WeightWord(word, 1.0);
-		    if (!badWords.IsValid(word) ||
-			word.length() < minimum_word_length)
-		    {
+		    if(HtWordNormalize(word) & WORD_NORMALIZE_NOTOK)
 			ww->isIgnore = 1;
-			tempWords.Add(ww);
-		    }
-		    else
-		    {
-			tempWords.Add(ww);
-		    }
+		    tempWords.Add(ww);
 		}
 		break;
 	    }
@@ -504,13 +508,13 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 	    name = "exact";
 	if (weight.length() == 0)
 	    weight = "1";
-	fweight = atof(weight);
+	fweight = atof((char*)weight);
 
-	fuzzy = Fuzzy::getFuzzyByName(name);
+	fuzzy = Fuzzy::getFuzzyByName(name, config);
 	if (fuzzy)
 	{
 	    fuzzy->setWeight(fweight);
-	    fuzzy->openIndex(config);
+	    fuzzy->openIndex();
 	    algorithms.Add(fuzzy);
 	}
     }
@@ -529,7 +533,7 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 	    // Apply all the algorithms to the word.
 	    //
 	    if (debug)
-		cerr << "Fuzzy on: " << ww->word << endl;
+	      cerr << "Fuzzy on: " << ww->word << endl;
 	    doFuzzy(ww, searchWords, algorithms);
 	    delete ww;
 	}
@@ -546,10 +550,6 @@ setupWords(char *allWords, List &searchWords, String &parsedWords,
 	dumpWords(searchWords, "searchWords");
     }
     tempWords.Release();
-    // Does the next thing work??
-//    algorithms.Start_Get();
-//    while ((fuzzy = (Fuzzy *) algorithms.Get_Next()))
-//	delete fuzzy;
 }
 
 
@@ -566,15 +566,21 @@ doFuzzy(WeightWord *ww, List &searchWords, List &algorithms)
     algorithms.Start_Get();
     while ((fuzzy = (Fuzzy *) algorithms.Get_Next()))
     {
+        if (debug > 1)
+	  cout << "   " << fuzzy->getName();
 	fuzzy->getWords(ww->word, fuzzyWords);
 	fuzzyWords.Start_Get();
 	while ((word = (String *) fuzzyWords.Get_Next()))
 	{
+	    if (debug > 1)
+	      cout << " " << word->get();
 	    newWw = new WeightWord(word->get(), fuzzy->getWeight());
 	    newWw->isExact = ww->isExact;
 	    newWw->isHidden = ww->isHidden;
 	    weightWords.Add(newWw);
 	}
+	if (debug > 1)
+	  cout << endl;
 	fuzzyWords.Destroy();
     }
 
@@ -608,16 +614,28 @@ convertToBoolean(List &words)
     List	list;
     int		i;
     int		do_and = strcmp(config["match_method"], "and") == 0;
+    int		in_phrase = 0;
+
+    String	quote = "\"";
 
     if (words.Count() == 0)
 	return;
     list.Add(words[0]);
+
+    // We might start off with a phrase match
+    if (((WeightWord *) words[0])->word == quote)
+	in_phrase = 1;
+
     for (i = 1; i < words.Count(); i++)
     {
-	if (do_and)
+	if (do_and && !in_phrase)
 	    list.Add(new WeightWord("&", -1.0));
-	else
+	else if (!in_phrase)
 	    list.Add(new WeightWord("|", -1.0));
+	
+	if (((WeightWord *) words[i])->word == quote)
+	    in_phrase = !in_phrase;
+  
 	list.Add(words[i]);
     }
     words.Release();
@@ -633,10 +651,10 @@ convertToBoolean(List &words)
 //*****************************************************************************
 // Dictionary *htsearch(char *wordfile, List &searchWords, Parser *parser)
 //   This returns a dictionary indexed by document ID and containing a
-//   List of WordReference objects.
+//   List of HtWordReference objects.
 //
 ResultList *
-htsearch(char *wordfile, List &searchWords, Parser *parser)
+htsearch(const String& wordfile, List &searchWords, Parser *parser)
 {
     //
     // Pick the database type we are going to use
@@ -644,11 +662,7 @@ htsearch(char *wordfile, List &searchWords, Parser *parser)
     ResultList	*matches = new ResultList;
     if (searchWords.Count() > 0)
     {
-	Database	*dbf = Database::getDatabaseInstance();
-
-	dbf->OpenRead(wordfile);
-
-	parser->setDatabase(dbf);
+	parser->setDatabase(wordfile);
 	parser->parse(&searchWords, *matches);
     }
 	
@@ -686,7 +700,33 @@ reportError(char *msg)
     cout << "<body bgcolor=\"#ffffff\">\n";
     cout << "<h1>ht://Dig error</h1>\n";
     cout << "<p>htsearch detected an error.  Please report this to the\n";
-    cout << "webmaster of this site.  The error message is:</p>\n";
+    cout << "webmaster of this site by sending an e-mail to:\n";
+    cout << "<a href=\"mailto:" << config["maintainer"] << "\">";
+    cout << config["maintainer"] << "</a>\n";
+    cout << "The error message is:</p>\n";
     cout << "<pre>\n" << msg << "\n</pre>\n</body></html>\n";
     exit(1);
+}
+
+//*****************************************************************************
+// void usage()
+//   Display program usage information--assumes we're running from a cmd line
+//
+void usage()
+{
+  cout << "usage: htsearch [-v][-d][-c configfile] [query_string]\n";
+  cout << "This program is part of ht://Dig " << VERSION << "\n\n";
+  cout << "Options:\n";
+  cout << "\t-v -d\tVerbose mode.  This increases the verbosity of the\n";
+  cout << "\t\tprogram.  Using more than 2 is probably only useful\n";
+  cout << "\t\tfor debugging purposes.  The default verbose mode\n";
+  cout << "\t\tgives a progress on what it is doing and where it is.\n\n";
+  cout << "\t-c configfile\n";
+  cout << "\t\tUse the specified configuration file instead on the\n";
+  cout << "\t\tdefault.\n\n";
+  cout << "\tquery_string\tA CGI-style query string can be given as a single\n";
+  cout << "\t\targument, and is only used if the REQUEST_METHOD environment\n";
+  cout << "\t\tvariable is not set.  If no query_string is given, and\n";
+  cout << "\t\tREQUEST_METHOD is not set, htsearch will prompt for the query.\n\n";
+  exit(0);
 }

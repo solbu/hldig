@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.2 1999/11/02 12:58:37 bosc Exp $
+// $Id: Display.cc,v 1.100.2.3 1999/11/10 21:57:00 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -407,6 +407,7 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("VERSION", new String(config["version"]));
     vars.Add("RESTRICT", new String(config["restrict"]));
     vars.Add("EXCLUDE", new String(config["exclude"]));
+    vars.Add("KEYWORDS", new String(config["keywords"]));
     if (mystrcasecmp(config["match_method"], "and") == 0)
 	vars.Add("MATCH_MESSAGE", new String("all"));
     else if (mystrcasecmp(config["match_method"], "or") == 0)
@@ -595,6 +596,8 @@ Display::createURL(String &url, int pageNumber)
 	s << "sort=" << input->get("sort") << '&';
     if (input->exists("matchesperpage"))
 	s << "matchesperpage=" << input->get("matchesperpage") << '&';
+    if (input->exists("keywords"))
+	s << "keywords=" << input->get("keywords") << '&';
     if (input->exists("words"))
 	s << "words=" << input->get("words") << '&';
     StringList form_vars(config["allow_in_form"], " \t\r\n");

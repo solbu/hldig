@@ -1,3 +1,9 @@
+Wed Nov 10 15:34:04 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(setVariables & createURL),
+	htsearch/htsearch.cc(main), htdoc/hts_templates.html: handle keywords
+	input parameter like others, and make it propagate to followups.
+
 Wed Nov 10 15:16:57 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Retriever.cc: Fix PR#688, where htdig goes into an infinite
