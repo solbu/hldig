@@ -1,3 +1,13 @@
+Wed Aug 29 10:20:55 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdoc/attrs.html (allow_in_form, build_select_lists,
+	limit_normalized, server_aliases, server_max_docs, server_wait_time,
+	url_part_aliases): Added clarifications to allow_in_form,
+	server_aliases and url_part_aliases descriptions. Changed word
+	"directive" to "attribute" where appropriate. Added cross-link to
+	server_aliases from limit_normalized, and to allow_in_form from
+	build_select_lists.
+
 Mon Aug 27 17:22:56 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc (do_tag): Improve handling of whitespace in META
