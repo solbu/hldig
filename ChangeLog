@@ -1,3 +1,7 @@
+Tue Jul 30 12:46:56 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/md5.cc: Added missing include of stdlib.h, as Geoff suggested.
+
 Sat Jul 27 11:57:25 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htnet/SSLConnection.cc: Add fix for segfault on SSL connections
