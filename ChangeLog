@@ -1,3 +1,34 @@
+Sat Mar 25 21:43:12 2000  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* htcommon/defaults.cc (defaults): Add default for
+	search_results_order, url_seed_score.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerated using cf_generate.pl.
+	
+	* htlib/List.h (List): New method AppendList.
+	* htlib/List.cc (List::AppendList): Implement it.
+
+	* htsearch/SplitMatches.h, htsearch/SplitMatches.cc: New.
+
+	* htsearch/HtURLSeedScore.cc, HtURLSeedScore.h: New.
+
+	* htsearch/Display.h (class Display: Add member minScore.
+	Change maxScore type to double.
+
+	* htsearch/Display.cc: Include SplitMatches.h and HtURLSeedScore.h
+	(ctor): Initialize minScore, change init value for
+	maxScore to -DBL_MAX.
+	(buildMatchList): Use a SplitMatches to hold search results and
+	interate over its parts when sorting scores.
+	Ignore Count() of matches when setting minScore and maxScore.
+	Use an URLSeedScore to adjust the score after other calculations.
+	Calculate minScore.
+	Correct maxScore adjustment for change to double.
+	(displayMatch): Use minScore in calculation of score to adjust for
+	negative scores.
+	(sort): Calculation of maxScore moved to buildMatchList.
+	
 Mon Mar 27 20:22:24 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentRef.h, htcommon/DocumentRef.cc: Remove

@@ -7,7 +7,6 @@ RELEASES:
 SHOWSTOPPERS:
 
 KNOWN BUGS:
-* htdig/Image.cc doesn't use Transport classes.
 * URL.cc tries to parse malformed URLs (which causes further problems)
    (It should probably just set everything to empty) This relates to 
    PR#348.
@@ -17,13 +16,11 @@ KNOWN BUGS:
    we fix this?)
 * Running on BSDI and similar systems causes coredumps because the regex
    code is incompatible. We need some sort of configure test for this.
-* SGML encoding/decoding does not work with numeric forms, e.g. &#34; -> quote.
 * Modified database can cause problems with systems using the Berkeley db for 
    other tasks (e.g. networking)
 
 PENDING FEATURES:
 * htload program.
-* Hans-Peter's url-seed-score patch.
 * Forward-Porting of NNTP code.
 * Additional support for Win32.
 * Make URL and Server blocks match documentation--i.e. change config
