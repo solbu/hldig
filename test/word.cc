@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: word.cc,v 1.14.2.8 2000/01/03 10:04:48 bosc Exp $
+// $Id: word.cc,v 1.14.2.9 2000/01/06 11:39:06 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -742,7 +742,7 @@ bitstream_int()
 	if(sz==32){nums[i]=(rand())&(0xffffffff);}
 	else{nums[i]=(rand())&(pow2(sz)-1);}
 	sprintf(tag,"tag(i:%d,sz:%d,val:%x)",i,sz,nums[i]);
-	bs.put(nums[i],sz,tag);
+	bs.put_uint(nums[i],sz,tag);
     }
 
     printf("checking (uint):\n");
@@ -754,7 +754,7 @@ bitstream_int()
 	unsigned int v;
 	sz=szs[i];
 	sprintf(tag,"tag(i:%d,sz:%d,val:%x)",i,sz,nums[i]);
-	v=bs.get(sz,tag);
+	v=bs.get_uint(sz,tag);
 	if(v!=nums[i])
 	{
 	    cerr << "BitStream failed for pos:" << i << " size:" << sz << " found:" << v << " tag:" << tag << endl;
