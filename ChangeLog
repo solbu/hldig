@@ -1,3 +1,8 @@
+Wed Sep  1 15:51:20 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/HtWordType.h, htlib/HtWordType.cc(Initialize): set up and
+	use a lookup table to speed up HtIsWordChar() and HtIsStrictWordChar().
+
 Wed Sep  1 15:48:13 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/PDF.cc(parse), htcommon/defaults.cc, htdoc/attrs.html:
