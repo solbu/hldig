@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htpurge.cc,v 1.1.2.3 2000/04/07 04:18:18 ghutchis Exp $
+// $Id: htpurge.cc,v 1.1.2.4 2000/04/09 15:22:46 ghutchis Exp $
 //
 
 #include "WordContext.h"
@@ -60,6 +60,9 @@ int main(int ac, char **av)
 		break;
 	    case 'a':
 		alt_work_area++;
+		break;
+	    case 'u':
+	        discard_urls.Add(optarg, NULL);
 		break;
 	    case '?':
 		usage();
@@ -336,10 +339,12 @@ void purgeWords(Dictionary discard_list)
 //
 void usage()
 {
-    cout << "usage: htpurge [-v][-a][-c configfile]\n";
+    cout << "usage: htpurge [-][-u url][-v][-a][-c configfile]\n";
     cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Options:\n";
     cout << "\t-\tURL input. Read in a list of URLs to remove, one per line.\n\n";
+    cout << "\t-u\tURL input. Add this url to the list of URLs to remove.\n";
+    cout << "\t\t(can be specified multiple times)\n\n";
     cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
     cout << "\t\tprogram.  Using more than 2 is probably only useful\n";
     cout << "\t\tfor debugging purposes.  The default verbose mode\n";
