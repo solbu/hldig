@@ -22,7 +22,47 @@
 	</p>
 
 	<p>
-	<strong>Release notes for htdig-3.2.0b3</strong>22 Feb 2001<br>
+	<strong>Release notes for htdig-3.2.0b5</strong> 10 Nov 2003<br>
+	This version was slated to be 3.2.0rc1, but some final testing
+	is still required.  It primarily fixes many bugs in 3.2.0b3, with
+	some limited new functionality.
+	As with 3.2.0b1 and 3.2.0b2, if you are upgrading
+	from a previous version, you should read the <a
+	href="upgrade.html">upgrade guide</a> first.
+	</p>
+	<ul>
+	    <li>Fixed database bugs.  Introduced zlib compression to replace
+	    buggy internal compression.</li>
+	    <li>Forward-ported functionality from 3.1.6
+	    (description_meta_tag_names, use_doc_date, ignore_alt_text,
+	    ignore_dead_servers, boolean_keywords, boolean_syntax_errors,
+	    multimatch_factor, translate_latin1)</li>
+	    <li>Fixed bugs in phrase searching</li>
+	    <li>Fixed compile problems due to deprecated C++ includes</li>
+	    <li>Fixed bugs handling double slashes in URLs</li>
+	    <li>Suppress display of matches with weight zero</li>
+	    <li>Fixed bugs in nesting of tags which turn off indexing</li>
+	</ul>
+	<ul>
+	    <li>Added Native Win32 support</li>
+	    <li>Added http_proxy_authorization attribute</li>
+	    <li>Improved networking code, with improved cookie handling and
+	    accept_language support</li>
+	    <li>Implemented field-restricted searches (e.g. title:word)</li>
+	    <li>Handle noindex_start/noindex_end as string lists</li>
+	    <li>Implemented external converters,
+	    text/html-&gt;text/html-internal</li>
+	    <li>Improved support for MIME types</li>
+	    <li>Changed licence to LGPL from GPL</li>
+	</ul>
+
+	<p>
+	<strong>Release notes for htdig-3.2.0b4</strong><br>
+	This beta was never issued.
+	</p>
+
+	<p>
+	<strong>Release notes for htdig-3.2.0b3</strong> 22 Feb 2001<br>
 	This version is still marked beta because it has still only
 	received limited testing and there are still revisions pending
 	for the 3.2 releases. However, it adds more functionality and
@@ -129,7 +169,7 @@
 	 contributed bug reports, fixes and patches!</li>
 	</ul>
 
-	<strong>Release notes for htdig-3.2.0b2</strong>11 Apr 2000<br>
+	<strong>Release notes for htdig-3.2.0b2</strong> 11 Apr 2000<br>
 	This version is still marked beta because it has still only
 	received limited testing. However, it adds more functionality
 	and should fix all known bugs in the previous 3.2.0b1 release,
@@ -264,7 +304,7 @@
 	</ul>
 
 	<p>
-	<strong>Release notes for htdig-3.2.0b1</strong>4 Feb 2000<br>
+	<strong>Release notes for htdig-3.2.0b1</strong> 4 Feb 2000<br>
 	This marks the first beta version of the 3.2.0 codebase,
 	over a year in the works. Since it has not received as much
 	testing as the 3.1.x series, it is *not* recommended for
@@ -1437,6 +1477,6 @@
 	</ul>
 
 	<hr size="4" noshade>
-		Last modified: $Date: 2003/06/24 21:07:01 $
+		Last modified: $Date: 2003/11/08 05:59:52 $
   </body>
 </html>

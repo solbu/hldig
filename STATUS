@@ -1,46 +1,8 @@
 STATUS of ht://Dig branch 3-2-x
 
-CHECKLIST FOR 3.2.0b5:
-* Check bugs listed in bug-tracker...
-* Polish release docs (Geoff)
-* Must be able to
-	(a) make check  and
-	(b) index  www.htdig.org  using  "robotstxt_name: master-htdig"
-  on all systems listed as "supported".
-  Systems tested so far:
-    - RH AdvancedServer 2.1 ItaniumII, gcc 2.96.x (David Bannon, 21 Sep)
-
-  Very out-of-date tests:
-    - Mandrake 8.2, gcc 3.2 (lha, 21 May)
-    - FreeBSD 4.6, gcc 2.95.3 (lha, 23 May)
-    - Debian, Linux kernel 2.2.19, gcc 2.95.4 (lha, 23 May)
-    - SunOS 5.8 = Solaris 2.8, gcc 3.1 (lha, 25 May)
-    - SunOS 5.8 = Solaris 2.8, Sun cc with g++ 3.1 (lha, 29 May)
-    - OS X (Jim, 30 May)
-  Partly tested:
-    - RedHat 8 (Jim, 1 June.  make check requires tweaking for apache)
-    - SunOS 5.8 = Solaris 2.8, gcc 2.95.2
-	    (lha. Makes check minus apache, Digs small htdig.org. 27 May)
-    - SunOS 5.8 = Solaris 2.8, Sun cc with g++ 2.95.2
-	    (lha. Makes check minus apache, Digs small htdig.org. 2 June)
-    - RedHat 7.3
-	    (lha. Makes check minus apache. Digs small htdig.org. 25 May)
-    - Alpha Debian
-    	    (lha. Makes check minus apache. Digs small htdig.org. 25 May)
-  To be tested:
-    - HP-UX 10.20, gcc 2.8.1 (Jesse)
-    - RedHat, other versions anyone?
-  Known to have problems:
-    - SGI/Irix 6.5.3 using SGI compilers
-      <http://www.geocrawler.com/mail/msg.php3?msg_id=8025827&list=8825>
-
-
-
-
-
 RELEASES:
-   3.2.0b5: Next release, July 2003
-   3.2.0b4: "In progress" -- snapshots called "3.2.0b4" until prerelease.
+   3.2.0b5: Released:  10 Nov 2003.
+   3.2.0b4: Cancelled.
    3.2.0b3: Released:  22 Feb 2001.
    3.2.0b2: Released:  11 Apr 2000.
    3.2.0b1: Released:   4 Feb 2000.
@@ -50,21 +12,13 @@ we can be sure they're fixed. Geoff is currently trying to add PR#s for
 what's currently here.)
 
 SHOWSTOPPERS:
-* Mifluz database errors are a severe problem (PR#428295)
--- Does Neal's new zlib patch solve this for now?
+(none)
 
 KNOWN BUGS:
-* Odd behavior with $(MODIFIED) and scores not working with
-   wordlist_compress set but work fine without wordlist_compress.
-   (the date is definitely stored correctly, even with compression on
-    so this must be some sort of weird htsearch bug) PR#618737.
-* META descriptions are somehow added to the database as FLAG_TITLE,
-   not FLAG_DESCRIPTION. (PR#618738)
-   Can anyone reproduce this?  I can't! -- Lachlan
-   Me either. Let's remove the PR. -Geoff
+(none serious.
+See <http://sourceforge.net/tracker/?atid=104593&group_id=4593&func=browse>.)
 
 PENDING PATCHES (available but need work):
-* Additional support for Win32. (Neal)
 * Memory improvements to htmerge. (Backed out b/c htword API changed.)
 * Mifluz merge.
 
@@ -95,9 +49,6 @@ DOCUMENTATION:
 * require.html is not updated to list new features and disk space
    requirements of 3.2.x (e.g. regex matching, database compression.)
    PRs# 405280 #405281.
-* TODO.html has not been updated for current TODO list and
-   completions.
-   I've tried.  Someone "official" please check and remove this -- Lachlan
 * Htfuzzy could use more documentation on what each fuzzy algorithm
    does. PR#405714.
 * Document the list of all installed files and default

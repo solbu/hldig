@@ -221,7 +221,7 @@ typedef char bool;
 #define PACKAGE "htdig"
 
 /* Version number of package */
-#define VERSION "3.2.0b4-20030126"
+#define VERSION "3.2.0b5"
 
 
 /*
