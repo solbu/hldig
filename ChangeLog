@@ -1,3 +1,8 @@
+Fri Feb 04 17:28:32 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordKey.cc,WordReference.cc,WordRecord.cc (Print): use
+	  cerr instead of cout for immediate printing under debugger.
+
 Thu Feb  3 16:06:45 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/Document.cc (RetrieveLocal): fix bug that prevented local
@@ -61,6 +66,24 @@ Wed Feb  2 12:57:40 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 	htdig/Server.cc (ctor), htdig/Server.h: Add in Paul Henson's
 	enhancements to local_urls, local_default_urls & local_default_doc.
 	* htcommon/defaults.cc: Document these.
+
+Wed Feb 02 10:14:57 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordKeyInfo.h,WordKey.{cc,h}: fix overflow bug when 32
+	  bits. For that purpose implement Outbound/Overflow/Underflow
+	  methods in WordKey, MaxValue in WordKey/WordKeyInfo.
+	  (WordKey::SetToFollowing) was FUBAR : overflow of field1 tested
+	  with number of bits in next field, do not handle overflow,
+	  Re-implemented.
+	  (WordKey::Set) Change atoi to strtoul.
+	  (WordList::SkipUselessSequentialWalking) was much to fucked up
+	  to explain. Re-implement
+	  (WordKey::Diff) Added as a support function of
+	  SkipUselessSequentialWalking.
+	  implement consistent verbosity.
+
+	* htword/WordList.cc (operator >>): explicit error message when
+	  insert failed, with line number.
 
 Wed Feb  2 00:11:03 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
