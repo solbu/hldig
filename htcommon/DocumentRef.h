@@ -1,9 +1,12 @@
 //
 // DocumentRef.h
 //
-// $Id: DocumentRef.h,v 1.3 1997/03/24 04:33:15 turtle Exp $
+// $Id: DocumentRef.h,v 1.4 1998/01/05 00:50:30 turtle Exp $
 //
 // $Log: DocumentRef.h,v $
+// Revision 1.4  1998/01/05 00:50:30  turtle
+// format changes
+//
 // Revision 1.3  1997/03/24 04:33:15  turtle
 // Renamed the String.h file to htString.h to help compiling under win32
 //
@@ -33,7 +36,7 @@ enum ReferenceState
 
 class DocumentRef : public Object
 {
-public:
+    public:
     //
     // Construction/Destruction
     //
@@ -75,7 +78,7 @@ public:
     void		DocTitle(char *t)		{docTitle = t;}
     void		DocHead(char *h)		{docHead = h;}
     void		DocAccessed(time_t t)		{docAccessed = t;}
-    void		DocLinks(int l)			{docLinks = l;}
+    void		DocLinks(int l)		{docLinks = l;}
     void		Descriptions(List &l)		{descriptions = l;}
     void		AddDescription(char *d);
     void		DocState(ReferenceState s)	{docState = s;}
@@ -83,16 +86,16 @@ public:
     void		DocImageSize(int s)		{docImageSize = s;}
     void		DocAnchors(List &l)		{docAnchors = l;}
     void		AddAnchor(char *a);
-    void		DocScore(int s)			{docScore = s;}
+    void		DocScore(int s)		{docScore = s;}
     void		DocAnchor(int a)		{docAnchor = a;}
     void		DocHopCount(int h)		{docHopCount = h;}
     void		DocEmail(char *e)		{docEmail = e;}
     void		DocNotification(char *n)	{docNotification = n;}
     void		DocSubject(char *s)		{docSubject = s;}
 	
-    void		Clear();				// Reset everything
+    void		Clear();			// Reset everything
 
-protected:
+    protected:
     //
     // These values will be stored when serializing
     //
@@ -113,15 +116,15 @@ protected:
     //
     // The following values are for the email notification of expiration
     //
-    String			docEmail;
-    String			docNotification;
-    String			docSubject;
+    String		docEmail;
+    String		docNotification;
+    String		docSubject;
 
     //
     // This is used for searching and is not stored in the database
     //
-    int				docScore;
-    int				docAnchor;
+    int			docScore;
+    int			docAnchor;
 };
 
 #endif

@@ -4,6 +4,9 @@
 // Implementation of DocumentRef
 //
 // $Log: DocumentRef.cc,v $
+// Revision 1.3  1998/01/05 00:49:16  turtle
+// format changes
+//
 // Revision 1.2  1997/02/10 17:30:58  turtle
 // Applied AIX specific patches supplied by Lars-Owe Ivarsson
 // <lars-owe.ivarsson@its.uu.se>
@@ -15,9 +18,6 @@
 // *** empty log message ***
 //
 //
-#if RELEASE
-static char RCSid[] = "$Id: DocumentRef.cc,v 1.2 1997/02/10 17:30:58 turtle Exp $";
-#endif
 
 #include "DocumentRef.h"
 #include <good_strtok.h>
@@ -31,7 +31,7 @@ static char RCSid[] = "$Id: DocumentRef.cc,v 1.2 1997/02/10 17:30:58 turtle Exp 
 //
 DocumentRef::DocumentRef()
 {
-	Clear();
+    Clear();
 }
 
 
@@ -48,41 +48,41 @@ DocumentRef::~DocumentRef()
 //
 void DocumentRef::Clear()
 {
-	docID = 0;
-	docURL = 0;
-	docTitle = 0;
-	docState = Reference_normal;
-	docTime = 0;
-	docSize = 0;
-	docImageSize = 0;
-	docHead = 0;
-	docAccessed = 0;
-	docLinks = 0;
-	descriptions.Destroy();
-	docAnchors.Destroy();
-	docHopCount = -1;
+    docID = 0;
+    docURL = 0;
+    docTitle = 0;
+    docState = Reference_normal;
+    docTime = 0;
+    docSize = 0;
+    docImageSize = 0;
+    docHead = 0;
+    docAccessed = 0;
+    docLinks = 0;
+    descriptions.Destroy();
+    docAnchors.Destroy();
+    docHopCount = -1;
 }
 
 
 enum
 {
-	DOC_ID,					// 0
-	DOC_TIME,				// 1
-	DOC_ACCESSED,			// 2
-	DOC_STATE,				// 3
-	DOC_SIZE,				// 4
-	DOC_LINKS,				// 5
-	DOC_IMAGESIZE,			// 6
-	DOC_HOPCOUNT,			// 7
-	DOC_URL,				// 8
-	DOC_HEAD,				// 9
-	DOC_TITLE,				// 10
-	DOC_DESCRIPTIONS,		// 11
-	DOC_ANCHORS,			// 12
-	DOC_EMAIL,				// 13
-	DOC_NOTIFICATION,		// 14
-	DOC_SUBJECT,			// 15
-      DOC_STRING                              // 16
+    DOC_ID,				// 0
+    DOC_TIME,				// 1
+    DOC_ACCESSED,			// 2
+    DOC_STATE,				// 3
+    DOC_SIZE,				// 4
+    DOC_LINKS,				// 5
+    DOC_IMAGESIZE,			// 6
+    DOC_HOPCOUNT,			// 7
+    DOC_URL,				// 8
+    DOC_HEAD,				// 9
+    DOC_TITLE,				// 10
+    DOC_DESCRIPTIONS,	        	// 11
+    DOC_ANCHORS,			// 12
+    DOC_EMAIL,				// 13
+    DOC_NOTIFICATION,		        // 14
+    DOC_SUBJECT,			// 15
+    DOC_STRING                          // 16
 };
 
 
@@ -93,8 +93,8 @@ enum
 //
 void DocumentRef::Serialize(String &s)
 {
-	int		length;
-	String	*str;
+    int		length;
+    String	*str;
 
 //
 // The following macros make the serialization process a little easier
@@ -103,50 +103,50 @@ void DocumentRef::Serialize(String &s)
 // storage will be saved...
 //
 #define addnum(id, out, var)	if (var != 0)										\
-								{													\
-									out << (char) id;								\
-									out.append((char *) &var, sizeof(var));			\
-								}
+    {													\
+                                                                                                            out << (char) id;								\
+    out.append((char *) &var, sizeof(var));			\
+    }
 #define	addstring(id, out, str)	if (str.length())									\
-								{													\
-									length = str.length();							\
-									out << (char) id;								\
-									out.append((char *) &length, sizeof(length));	\
-									out.append(str);								\
-								}
+    {													\
+                                                                                                            length = str.length();							\
+    out << (char) id;								\
+    out.append((char *) &length, sizeof(length));	\
+    out.append(str);								\
+    }
 #define	addlist(id, out, list)	if (list.Count())									\
-								{													\
-									length = list.Count();							\
-									out << (char) id;								\
-									out.append((char *) &length, sizeof(length));	\
-									list.Start_Get();								\
-									while ((str = (String *) list.Get_Next()))		\
-									{												\
-										length = str->length();						\
-										out.append((char*) &length, sizeof(length));\
-										out.append(*str);							\
-									}												\
-								}
+    {													\
+                                                                                                            length = list.Count();							\
+    out << (char) id;								\
+    out.append((char *) &length, sizeof(length));	\
+    list.Start_Get();								\
+    while ((str = (String *) list.Get_Next()))		\
+        {												\
+                                                                                                            length = str->length();						\
+        out.append((char*) &length, sizeof(length));\
+        out.append(*str);							\
+        }												\
+    }
 
-	addnum(DOC_ID, s, docID);
-	addnum(DOC_TIME, s, docTime);
-	addnum(DOC_ACCESSED, s, docAccessed);
-	addnum(DOC_STATE, s, docState);
-	addnum(DOC_SIZE, s, docSize);
-	addnum(DOC_LINKS, s, docLinks);
-	addnum(DOC_IMAGESIZE, s, docImageSize);
-	addnum(DOC_HOPCOUNT, s, docHopCount);
+    addnum(DOC_ID, s, docID);
+    addnum(DOC_TIME, s, docTime);
+    addnum(DOC_ACCESSED, s, docAccessed);
+    addnum(DOC_STATE, s, docState);
+    addnum(DOC_SIZE, s, docSize);
+    addnum(DOC_LINKS, s, docLinks);
+    addnum(DOC_IMAGESIZE, s, docImageSize);
+    addnum(DOC_HOPCOUNT, s, docHopCount);
 
-	addstring(DOC_URL, s, docURL);
-	addstring(DOC_HEAD, s, docHead);
-	addstring(DOC_TITLE, s, docTitle);
+    addstring(DOC_URL, s, docURL);
+    addstring(DOC_HEAD, s, docHead);
+    addstring(DOC_TITLE, s, docTitle);
 
-	addlist(DOC_DESCRIPTIONS, s, descriptions);
-	addlist(DOC_ANCHORS, s, docAnchors);
+    addlist(DOC_DESCRIPTIONS, s, descriptions);
+    addlist(DOC_ANCHORS, s, docAnchors);
 
-	addstring(DOC_EMAIL, s, docEmail);
-	addstring(DOC_NOTIFICATION, s, docNotification);
-	addstring(DOC_SUBJECT, s, docSubject);
+    addstring(DOC_EMAIL, s, docEmail);
+    addstring(DOC_NOTIFICATION, s, docNotification);
+    addstring(DOC_SUBJECT, s, docSubject);
 }
 
 
@@ -158,90 +158,90 @@ void DocumentRef::Serialize(String &s)
 //
 void DocumentRef::Deserialize(String &stream)
 {
-	char	*s = stream.get();
-	char	*end = s + stream.length();
-	int		length;
-	int		count;
-	int		i;
-	int		x;
-	String	*str;
+    char	*s = stream.get();
+    char	*end = s + stream.length();
+    int		length;
+    int		count;
+    int		i;
+    int		x;
+    String	*str;
 
-	Clear();
+    Clear();
 
 #define	getnum(in, var)			memcpy((char *) &var, in, sizeof(var));			\
-								in += sizeof(var)
+    in += sizeof(var)
 #define	getstring(in, str)		getnum(in, length);								\
-								str = 0;										\
-								str.append(in, length);							\
-								in += length
+        str = 0;										\
+    str.append(in, length);							\
+    in += length
 #define	getlist(in, list)		getnum(in, count);								\
-								for (i = 0; i < count; i++)						\
-								{												\
-									getnum(in, length);							\
-									str = new String;							\
-									str->append(in, length);					\
-									list.Add(str);								\
-									in += length;								\
-								}
+                                                                                    for (i = 0; i < count; i++)						\
+        {												\
+                                                                                                            getnum(in, length);							\
+        str = new String;							\
+        str->append(in, length);					\
+        list.Add(str);								\
+        in += length;								\
+        }
 
-	while (s < end)
-	{
-		x = *s++;
-		switch (x)
-		{
-			case DOC_ID:
-				getnum(s, docID);
-				break;
-			case DOC_TIME:
-				getnum(s, docTime);
-				break;
-			case DOC_ACCESSED:
-				getnum(s, docAccessed);
-				break;
-			case DOC_STATE:
-				getnum(s, docState);
-				break;
-			case DOC_SIZE:
-				getnum(s, docSize);
-				break;
-			case DOC_LINKS:
-				getnum(s, docLinks);
-				break;
-			case DOC_IMAGESIZE:
-				getnum(s, docImageSize);
-				break;
-			case DOC_HOPCOUNT:
-				getnum(s, docHopCount);
-				break;
-			case DOC_URL:
-				getstring(s, docURL);
-				break;
-			case DOC_HEAD:
-				getstring(s, docHead);
-				break;
-			case DOC_TITLE:
-				getstring(s, docTitle);
-				break;
-			case DOC_DESCRIPTIONS:
-				getlist(s, descriptions);
-				break;
-			case DOC_ANCHORS:
-				getlist(s, docAnchors);
-				break;
-			case DOC_EMAIL:
-				getstring(s, docEmail);
-				break;
-			case DOC_NOTIFICATION:
-				getstring(s, docNotification);
-				break;
-			case DOC_SUBJECT:
-				getstring(s, docSubject);
-				break;
-			default:
-				cerr << "BAD TAG IN SERIALIZED DATA: " << x << endl;
-				return;
-		}
-	}
+    while (s < end)
+    {
+        x = *s++;
+        switch (x)
+        {
+        case DOC_ID:
+            getnum(s, docID);
+            break;
+        case DOC_TIME:
+            getnum(s, docTime);
+            break;
+        case DOC_ACCESSED:
+            getnum(s, docAccessed);
+            break;
+        case DOC_STATE:
+            getnum(s, docState);
+            break;
+        case DOC_SIZE:
+            getnum(s, docSize);
+            break;
+        case DOC_LINKS:
+            getnum(s, docLinks);
+            break;
+        case DOC_IMAGESIZE:
+            getnum(s, docImageSize);
+            break;
+        case DOC_HOPCOUNT:
+            getnum(s, docHopCount);
+            break;
+        case DOC_URL:
+            getstring(s, docURL);
+            break;
+        case DOC_HEAD:
+            getstring(s, docHead);
+            break;
+        case DOC_TITLE:
+            getstring(s, docTitle);
+            break;
+        case DOC_DESCRIPTIONS:
+            getlist(s, descriptions);
+            break;
+        case DOC_ANCHORS:
+            getlist(s, docAnchors);
+            break;
+        case DOC_EMAIL:
+            getstring(s, docEmail);
+            break;
+        case DOC_NOTIFICATION:
+            getstring(s, docNotification);
+            break;
+        case DOC_SUBJECT:
+            getstring(s, docSubject);
+            break;
+        default:
+            cerr << "BAD TAG IN SERIALIZED DATA: " << x << endl;
+            return;
+        }
+    }
 }
 
 
@@ -250,23 +250,23 @@ void DocumentRef::Deserialize(String &stream)
 //
 void DocumentRef::AddDescription(char *d)
 {
-	if (!d || descriptions.Count() >= 5)
-		return;
+    if (!d || descriptions.Count() >= 5)
+        return;
 
-	while (isspace(*d))
-		d++;
+    while (isspace(*d))
+        d++;
 
-	String	desc = d;
-	desc.chop(" \t");
+    String	desc = d;
+    desc.chop(" \t");
 
-	descriptions.Start_Get();
-	String	*description;
-	while ((description = (String *) descriptions.Get_Next()))
-	{
-		if (mystrcasecmp(description->get(), desc) == 0)
-			return;
-	}
-	descriptions.Add(new String(desc));
+    descriptions.Start_Get();
+    String	*description;
+    while ((description = (String *) descriptions.Get_Next()))
+    {
+        if (mystrcasecmp(description->get(), desc) == 0)
+            return;
+    }
+    descriptions.Add(new String(desc));
 }
 
 
@@ -275,7 +275,7 @@ void DocumentRef::AddDescription(char *d)
 //
 void DocumentRef::AddAnchor(char *a)
 {
-	docAnchors.Add(new String(a));
+    docAnchors.Add(new String(a));
 }
 
 
