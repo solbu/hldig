@@ -1,3 +1,15 @@
+Tue Sep 14 01:15:48 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htmerge/db.cc: Rewrite to use the WordList functions to merge
+	the two word databases. Also make sure to load the document
+	excerpt when adding in DocumentRefs. 
+
+	* htmerge/docs.cc: Fix bug where ids were not added to the discard
+	list correctly.
+
+	* htmerge/words.cc: Fix bug where ids were not checked for
+	existance in the discard list correctly.
+
 Sun Sep 12 12:27:16 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/defaults.cc: Remove word_list since that file is no

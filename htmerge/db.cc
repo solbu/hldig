@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: db.cc,v 1.17 1999/09/11 05:03:53 ghutchis Exp $
+// $Id: db.cc,v 1.18 1999/09/14 06:22:29 ghutchis Exp $
 //
 
 #include "htmerge.h"
@@ -128,7 +128,8 @@ mergeDB()
 	  }
 	else
 	  {
-	    // it's a new URL, just add it
+	    // It's a new URL, just add it, making sure to load the excerpt
+	    merge_db.ReadExcerpt(*ref);
 	    ref->DocID(ref->DocID() + docIDOffset);
 	    db.Add(*ref);
 	    if (verbose > 1)
@@ -148,182 +149,55 @@ mergeDB()
     merge_db.Close();
     db.Close();
 
-    //
-    // Now we go through the original wordlist and remove deleted docIDs
-    //
+    // OK, after merging the doc DBs, we do the same for the words
 
-    char       *wordtmp = config["word_list"];
-    FILE       *wordlist = fopen(form("%s.new", wordtmp), "w");
-    FILE       *dbwords = fopen(wordtmp, "r");
-    char        buffer[1000];
-    String      word;
-    char       *sid;
-    char       *name, *value, *pair;
-    WordRecord  wr;
+    WordList	mergeWordDB, wordDB;
+    List	*words;
+    String	docIDKey;
 
-    // Check for file access errors
-    if (!wordlist)
-      {
-        reportError(form("Unable to create temporary word file '%s.new'",
-                         wordtmp));
-      }
-    if (!dbwords)
-      {
-        reportError(form("Unable to open word list file '%s'", wordtmp));
-      }
+    if (wordDB.Open(config["word_db"]) < 0)
+    {
+	reportError(form("Unable to open/create document database '%s'",
+			 config["word_db"]));
+    }
 
-    // Read it in a line at a time...
-    while (fgets(buffer, sizeof(buffer), dbwords))
-      {
-	// Split the line up into the word, count, location, and
-	// document id, just like in words.cc(mergeWords).
-	word = good_strtok(buffer, '\t');
-	pair = good_strtok(NULL, '\t');
-	wr.Clear();   // Reset count to 1, anchor to 0, and all that
-	sid = "-";
-	while (pair && *pair)
-	  {
-	    name = strtok(pair, ":");
-	    value = strtok(0, "\n");
-	    if (name && *name && value && *value)
-	      {
-		switch (*name)
-		  {
-		  case 'l':
-		    wr.location = atoi(value);
-		    break;
-		  case 'i':
-		    sid = value;
-		    wr.id = atoi(value);
-		    break;
-		  case 'w':
-		    wr.flags = atoi(value);
-		    break;
-		  case 'a':
-		    wr.anchor = atoi(value);
-		    break;
-		  }
-	      }
-	    pair = good_strtok(NULL, '\t');
-	  }
+    if (mergeWordDB.Read(merge_config["word_db"]) < 0)
+    {
+	reportError(form("Unable to open document database '%s'",
+			 merge_config["word_db"]));
+    }
 
-	// OK, now we have to check if this word was from a doc we discarded.
-	if (db_dup_ids.Exists(sid))
-	  {
-	    if (verbose > 1)
-	      {
-		cout << "htmerge: Discarding duplicate " << word << " in doc #"
-		     << sid << "     \n";
-		cout.flush();
-	      }
-	    continue;
-	  }
+    // Start the merging by going through all the URLs that are in
+    // the database to be merged
+        
+    words = mergeWordDB.WordRefs();
 
-	// Record the word in the new file
-	fprintf(wordlist, "%s", word.get());
-	fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
-		wr.location,
-		wr.id,
-		wr.flags);
-	if (wr.anchor != 0)
-	  {
-	    fprintf(wordlist, "\ta:%d", wr.anchor);
-	  }
-	putc('\n', wordlist);
-      }
-    fclose(dbwords);
-    db_dup_ids.Destroy(); // Save some memory
+    words->Start_Get();
+    WordReference	*word;
+    while ((word = (WordReference *) words->Get_Next()))
+    {
+      docIDKey = word->DocumentID;
+      if (merge_dup_ids.Exists(docIDKey))
+	continue;
 
-    // Now wordlist is at the end of its current stream, so we're set to write
-    // the new merged data.
+      word->DocumentID += docIDOffset;
+      wordDB.Add(word);
+    }
+    words->Destroy();
 
-    FILE *mergewords = fopen(merge_config["word_list"], "r");
+    words = wordDB.WordRefs();
+    words->Start_Get();
+    while ((word = (WordReference *) words->Get_Next()))
+    {
+      docIDKey = word->DocumentID;
+      if (db_dup_ids.Exists(docIDKey))
+	wordDB.Delete(*word);
+    }
+    words->Destroy();
 
-    // Check for file access errors
-    if (!mergewords)
-      {
-        reportError(form("Unable to open merge word list file '%s'", merge_config["word_list"]));
-      }
-
-    // Read it in a line at a time...
-    while (fgets(buffer, sizeof(buffer), mergewords))
-      {
-if (*buffer == '+') {
-	    // This will prevent removing documents from main
-	    // config db with id of bad documents from merged config
-	    // It was happened when I run htmerge -m test1.conf -c test.conf
-	    // without previous runned htmerge -c test1.conf, which
-	    // normally must remove strings +ID, -ID, !ID from wordlist
-	    //
- fprintf(wordlist, "+%d\n", atoi(strtok(buffer + 1, "\n"))+docIDOffset);
-} else if (*buffer == '-') {
- fprintf(wordlist, "-%d\n", atoi(strtok(buffer + 1, "\n"))+docIDOffset);
-} else if (*buffer == '!') {
- fprintf(wordlist, "!%d\n", atoi(strtok(buffer + 1, "\n"))+docIDOffset);
-} else {
-	// Split the line up into the word, count, location, and
-	// document id, just like in words.cc(mergeWords).
-	word = good_strtok(buffer, '\t');
-	pair = good_strtok(NULL, '\t');
-	wr.Clear();   // Reset count to 1, anchor to 0, and all that
-	sid = "-";
-	while (pair && *pair)
-	  {
-	    name = strtok(pair, ":");
-	    value = strtok(0, "\n");
-	    if (name && *name && value && *value)
-	      {
-		switch (*name)
-		  {
-		  case 'l':
-		    wr.location = atoi(value);
-		    break;
-		  case 'i':
-		    sid = value;
-		    wr.id = atoi(value);
-		    break;
-		  case 'w':
-		    wr.flags = atoi(value);
-		    break;
-		  case 'a':
-		    wr.anchor = atoi(value);
-		    break;
-		  }
-	      }
-	    pair = good_strtok(NULL, '\t');
-	  }
-
-	// OK, now we have to check if this word was from a doc we discarded.
-	if (merge_dup_ids.Exists(sid))
-	  {
-	    if (verbose > 1)
-	      {
-		cout << "htmerge: Discarding merged duplicate " << word << " in doc #"
-		     << sid << "     \n";
-		cout.flush();
-	      }
-	    continue;
-	  }
-
-	// Record the word in the new file
-	fprintf(wordlist, "%s", word.get());
-	fprintf(wordlist, "\tl:%d\ti:%d\tw:%d",
-		wr.location,
-		wr.id + docIDOffset,
-		wr.flags);
-	if (wr.anchor != 0)
-	  {
-	    fprintf(wordlist, "\ta:%d", wr.anchor);
-	  }
-	putc('\n', wordlist);
-      }
-      }
-    fclose(mergewords);
-
-    // Deal with the new wordlist file.  We need to replace the old file with
-    // the new one.
-    fclose(wordlist);
-    unlink(wordtmp);
-    link(form("%s.new", wordtmp), wordtmp);
-    unlink(form("%s.new", wordtmp));
+    delete words;
+    
+    // Cleanup--just close the two word databases
+    mergeWordDB.Close();
+    wordDB.Close();
 }
