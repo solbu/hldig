@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.30 2000/06/14 01:49:53 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.31 2000/08/21 02:33:43 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1340,6 +1340,9 @@ Retriever::got_href(URL &url, const char *description, int hops)
 {
     DocumentRef		*ref = 0;
     Server		*server = 0;
+
+    // Rewrite the URL (if need be) before we do anything to it.
+    url.rewrite();
 
     if (debug > 2)
 	cout << "href: " << url.get() << " (" << description << ')' << endl;
