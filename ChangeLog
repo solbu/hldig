@@ -1,3 +1,19 @@
+Wed May 19 22:17:49 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HtHTTP.cc, htdig/HtHTTP.h: Add new files, contributed by 
+	Gabriele. A start at an HTTP/1.1 implementation.
+	
+	* htdig/Document (readHeader): Fix change of 5/16 to actually work! :-)
+
+	* htsearch/Display.cc (expandVariables): Change end-of-expansion
+	test to include states 2 and 5 to ensure templates ending in } are
+	still properly expanded, as suggested by Gilles.
+
+Mon May 17 14:31:31 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/HtRegex.cc (setEscaped): Use full list of characters to
+	escape as suggested by Gilles.
+
 Sun May 16 17:27:51 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/Document.cc (readHeader): Since multiple whitespace
