@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.h,v 1.18.2.3 2000/01/20 03:59:20 ghutchis Exp $
+// $Id: Retriever.h,v 1.18.2.4 2000/02/02 19:01:03 grdetil Exp $
 //
 
 #ifndef _Retriever_h_
@@ -24,6 +24,7 @@
 #include "Queue.h"
 #include "HtWordReference.h"
 #include "List.h"
+#include "StringList.h"
 
 class URL;
 class Document;
@@ -82,8 +83,8 @@ public:
     //
     // Routines for dealing with local filesystem access
     //
-    String *            GetLocal(char *url);
-    String *            GetLocalUser(char *url);
+    StringList *	GetLocal(char *url);
+    StringList *	GetLocalUser(char *url, StringList *defaultdocs);
     int			IsLocalURL(char *url);
 
 private:

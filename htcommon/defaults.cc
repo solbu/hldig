@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.27 2000/02/02 06:22:55 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.28 2000/02/02 19:01:03 grdetil Exp $
 //
 
 #include "HtConfiguration.h"
@@ -1073,11 +1073,16 @@ http://www.htdig.org/", "
 	but it is simple enough and it covers most cases.
 " },
 { "local_default_doc", "index.html", 
-	"string", "htdig", "3.0.8b2", "", "local_default_doc: default.html", "
-	Set this to the default document in a directory used by the
+	"string list", "htdig", "3.0.8b2", "", "local_default_doc: default.html default.htm index.html index.htm", "
+	Set this to the default documents in a directory used by the
 	server. This is used for local filesystem access to
 	translate URLs like http://foo.com/ into something like
-	/home/foo.com/index.html
+	/home/foo.com/index.html<br>
+	The list should only contain names that the local server
+	recognizes as default documents for directory URLs, as defined
+	by the DirectoryIndex setting in Apache's srm.conf, for example.
+	As of 3.2.0b1, this can be a string list rather than a single name,
+	and htdig will use the first name that works.
 " },
 { "local_urls", "", 
 	"string list", "htdig", "3.0.8b2", "", "local_urls: http://www.foo.com/=/usr/www/htdocs/", "
@@ -1088,6 +1093,9 @@ http://www.htdig.org/", "
 	try the URL through HTTP instead. Note the example--the
 	equal sign and the final slashes in both the URL and the
 	directory path are critical.
+	As of 3.2.0b1, you can provide multiple mappings of a given
+	URL to different directories, and htdig will use the first
+	mapping that works.
 " },
 { "local_urls_only", "false", 
 	"boolean", "htdig", "3.1.4", "", "local_urls_only: true", "
@@ -1104,6 +1112,9 @@ http://www.htdig.org/", "
 	found, ht://Dig will try with HTTP or the appropriate protocol. Again, note the
 	example's format. To map http://www.my.org/~joe/foo/bar.html
 	to /home/joe/www/foo/bar.html, try the example below.
+	As of 3.2.0b1, you can provide multiple mappings of a given
+	URL to different directories, and htdig will use the first
+	mapping that works.
 " },
 { "locale", "C", 
 	"string", "htdig", "3.0", "", "locale: en_US", "

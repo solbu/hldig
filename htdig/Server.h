@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.9.2.5 1999/12/02 23:11:42 ghutchis Exp $
+// $Id: Server.h,v 1.9.2.6 2000/02/02 19:01:03 grdetil Exp $
 //
 
 #ifndef _Server_h_
@@ -17,6 +17,7 @@
 
 #include "Object.h"
 #include "htString.h"
+#include "StringList.h"
 #include "Stack.h"
 #include "HtHeap.h"
 #include "StringMatch.h"
@@ -32,7 +33,7 @@ public:
 	//
 	// Construction/Destruction
 	//
-	Server(URL u, String *local_robots_file = NULL);
+	Server(URL u, StringList *local_robots_files = NULL);
 	~Server();
 
 	//

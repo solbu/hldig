@@ -3806,7 +3806,7 @@ http://www.htdig.org/
 				  limit_urls_to:
 				</td>
 				<td nowrap>
-				     .sdsu.edu kpbs [.*.html]
+				     .sdsu.edu kpbs [.*\.html]
 				</td>
 			  </tr>
 			</table>
@@ -3826,7 +3826,7 @@ http://www.htdig.org/
 			<em>type:</em>
 		  </dt>
 		  <dd>
-			string
+			string list
 		  </dd>
 		  <dt>
 			<em>used by:</em>
@@ -3850,10 +3850,15 @@ http://www.htdig.org/
 			<em>description:</em>
 		  </dt>
 		  <dd>
-	Set this to the default document in a directory used by the
+	Set this to the default documents in a directory used by the
 	server. This is used for local filesystem access to
 	translate URLs like http://foo.com/ into something like
-	/home/foo.com/index.html
+	/home/foo.com/index.html<br>
+	The list should only contain names that the local server
+	recognizes as default documents for directory URLs, as defined
+	by the DirectoryIndex setting in Apache's srm.conf, for example.
+	As of 3.2.0b1, this can be a string list rather than a single name,
+	and htdig will use the first name that works.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -3865,7 +3870,7 @@ http://www.htdig.org/
 				  local_default_doc:
 				</td>
 				<td nowrap>
-				     default.html
+				     default.html default.htm index.html index.htm
 				</td>
 			  </tr>
 			</table>
@@ -3916,6 +3921,9 @@ http://www.htdig.org/
 	try the URL through HTTP instead. Note the example--the
 	equal sign and the final slashes in both the URL and the
 	directory path are critical.
+	As of 3.2.0b1, you can provide multiple mappings of a given
+	URL to different directories, and htdig will use the first
+	mapping that works.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4036,6 +4044,9 @@ http://www.htdig.org/
 	found, ht://Dig will try with HTTP or the appropriate protocol. Again, note the
 	example's format. To map http://www.my.org/~joe/foo/bar.html
 	to /home/joe/www/foo/bar.html, try the example below.
+	As of 3.2.0b1, you can provide multiple mappings of a given
+	URL to different directories, and htdig will use the first
+	mapping that works.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -10653,6 +10664,6 @@ http://www.htdig.org/
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-Last modified: Tue Feb  1 23:42:09 CST 2000
+Last modified: Wed Feb  2 12:57:17 CST 2000
   </body>
 </html>

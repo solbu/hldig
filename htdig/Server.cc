@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.7 2000/01/25 07:45:30 angus Exp $
+// $Id: Server.cc,v 1.17.2.8 2000/02/02 19:01:03 grdetil Exp $
 //
 
 #include "htdig.h"
@@ -27,10 +27,10 @@
 
 
 //*****************************************************************************
-// Server::Server(URL u, String *local_robots_file)
+// Server::Server(URL u, StringList *local_robots_files)
 //  u is the base URL for this server
 //
-Server::Server(URL u, String *local_robots_file)
+Server::Server(URL u, StringList *local_robots_files)
 {
     if (debug)
       cout << endl << "New server: " << u.host() << ", " << u.port() << endl;
@@ -63,11 +63,11 @@ Server::Server(URL u, String *local_robots_file)
 	time_t 		timeZero = 0; // Right now we want to get this every time
 	Document	doc(url, 0);
 	Transport::DocStatus	status;
-	if (local_robots_file)
+	if (local_robots_files)
 	  {  
 	    if (debug > 1)
-	      cout << "Trying local file " << local_robots_file << endl;
-	    status = doc.RetrieveLocal(timeZero, *local_robots_file);
+	      cout << "Trying local files" << endl;
+	    status = doc.RetrieveLocal(timeZero, local_robots_files);
 	    if (status == Transport::Document_not_local)
 	      {
 		if (local_urls_only)

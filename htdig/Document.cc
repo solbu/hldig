@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.cc,v 1.55.2.11 2000/01/29 01:35:35 ghutchis Exp $
+// $Id: Document.cc,v 1.55.2.12 2000/02/02 19:01:03 grdetil Exp $
 //
 
 #include <signal.h>
@@ -408,19 +408,32 @@ Document::Retrieve(HtDateTime date)
 }
   
 //*****************************************************************************
-// DocStatus Document::RetrieveLocal(HtDateTime date, String filename)
+// DocStatus Document::RetrieveLocal(HtDateTime date, StringList *filenames)
 //   Attempt to retrieve the document pointed to by our internal URL
-//   using a local filename given. Returns Document_ok,
+//   using a list of potential local filenames given. Returns Document_ok,
 //   Document_not_changed or Document_not_local (in which case the
 //   retriever tries it again using the standard retrieve method).
 //
 Transport::DocStatus
-Document::RetrieveLocal(HtDateTime date, const String filename)
+Document::RetrieveLocal(HtDateTime date, StringList *filenames)
 {
     struct stat stat_buf;
-    // Check that it exists, and is a regular file. 
-    if ((stat(filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode))
-      return Transport::Document_not_local;
+    String *filename;
+
+    filenames->Start_Get();
+
+    // Loop through list of potential filenames until the list is exhausted
+    // or a suitable file is found to exist as a regular file.
+    while ((filename = (String *)filenames->Get_Next()) &&
+	   ((stat(*filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
+        if (debug > 1)
+	    cout << "  tried local file " << *filename << endl;
+    
+    if (!filename)
+        return Transport::Document_not_local;
+
+    if (debug > 1)
+        cout << "  found existing file " << *filename << endl;
 
     modtime = stat_buf.st_mtime;
     if (modtime <= date)
@@ -437,7 +450,7 @@ Document::RetrieveLocal(HtDateTime date, const String filename)
       return Transport::Document_not_local;
 
     // Open it
-    FILE *f = fopen(filename, "r");
+    FILE *f = fopen(*filename, "r");
     if (f == NULL)
       return Transport::Document_not_local;
 

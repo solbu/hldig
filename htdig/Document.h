@@ -16,7 +16,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Document.h,v 1.10.2.6 2000/01/25 07:45:30 angus Exp $
+// $Id: Document.h,v 1.10.2.7 2000/02/02 19:01:03 grdetil Exp $
 //
 //
 #ifndef _Document_h_
@@ -26,6 +26,7 @@
 #include "Object.h"
 #include "URL.h"
 #include "htString.h"
+#include "StringList.h"
 #include "Transport.h"
 #include "HtHTTP.h"
 #include "HtFile.h"
@@ -62,7 +63,7 @@ public:
     time_t			ModTime()		{return modtime.GetTime_t();}
 
     Transport::DocStatus	Retrieve(HtDateTime date);
-    Transport::DocStatus	RetrieveLocal(HtDateTime date, const String filename);
+    Transport::DocStatus	RetrieveLocal(HtDateTime date, StringList *filenames);
 
     //
     // Return an appropriate parsable object for the document type.

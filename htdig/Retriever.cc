@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.17 2000/01/26 08:53:54 angus Exp $
+// $Id: Retriever.cc,v 1.72.2.18 2000/02/02 19:01:03 grdetil Exp $
 //
 
 #include "Retriever.h"
@@ -156,7 +156,7 @@ Retriever::Initial(const String& list, int from)
 	{
 	  String robotsURL = u.signature();
 	  robotsURL << "robots.txt";
-	  String *localRobotsFile = GetLocal(robotsURL.get());
+	  StringList *localRobotsFile = GetLocal(robotsURL.get());
 	  
 	  server = new Server(u, localRobotsFile);
 	  servers.Add(u.signature(), server);
@@ -522,12 +522,12 @@ Retriever::parse_url(URLRef &urlRef)
     // Retrieve document, first trying local file access if possible.
     Transport::DocStatus status;
     server = (Server *) servers[url.signature()];
-    String *local_filename = GetLocal(url.get());
-    if (local_filename)
+    StringList *local_filenames = GetLocal(url.get());
+    if (local_filenames)
     {  
         if (debug > 1)
-	    cout << "Trying local file " << *local_filename << endl;
-        status = doc->RetrieveLocal(date, *local_filename);
+	    cout << "Trying local files" << endl;
+        status = doc->RetrieveLocal(date, local_filenames);
         if (status == Transport::Document_not_local)
         {
             if (debug > 1)
@@ -538,7 +538,7 @@ Retriever::parse_url(URLRef &urlRef)
 	    else
 		status = Transport::Document_no_host;
         }
-        delete local_filename;
+        delete local_filenames;
     }
     else if (server && !server->IsDead() && !local_urls_only)
         status = doc->Retrieve(date);
@@ -924,16 +924,17 @@ Retriever::IsValidURL(char *u)
 
 
 //*****************************************************************************
-// String* Retriever::GetLocal(char *url)
-//   Returns a string containing the (possible) local filename
+// StringList* Retriever::GetLocal(char *url)
+//   Returns a list of strings containing the (possible) local filenames
 //   of the given url, or 0 if it's definitely not local.
-//   THE CALLER MUST FREE THE STRING AFTER USE!
+//   THE CALLER MUST FREE THE STRINGLIST AFTER USE!
 //
-String*
+StringList*
 Retriever::GetLocal(char *url)
 {
     static StringList *prefixes = 0;
     static StringList *paths = 0;
+    StringList *defaultdocs = 0;
     URL aUrl(url);
 
     //
@@ -961,11 +962,24 @@ Retriever::GetLocal(char *url)
 	    p = strtok(0, " \t");
 	}
     }
+    if (!config.Find(&aUrl,"local_default_doc").empty())
+    {
+	defaultdocs = new StringList();
+	String t = config.Find(&aUrl,"local_default_doc");
+	p = strtok(t, " \t");
+	while (p)	
+	{
+	    defaultdocs->Add(p);
+	    p = strtok(0, " \t");
+	}
+	if (defaultdocs->Count() == 0)
+	    delete defaultdocs;
+    }
 
     // Check first for local user...
     if (strchr(url, '~'))
     {
-	String *local = GetLocalUser(url);
+	StringList *local = GetLocalUser(url, defaultdocs);
 	if (local)
 	    return local;
     }
@@ -975,6 +989,7 @@ Retriever::GetLocal(char *url)
         return 0;
     
     String *prefix, *path;
+    StringList *local_names = new StringList();
     prefixes->Start_Get();
     paths->Start_Get();
     while ((prefix = (String*) prefixes->Get_Next()))
@@ -985,24 +1000,36 @@ Retriever::GetLocal(char *url)
 	    int l = strlen(url)-prefix->length()+path->length()+4;
 	    String *local = new String(*path, l);
 	    *local += &url[prefix->length()];
-	    if (local->last() == '/' && !config.Find(&aUrl,"local_default_doc").empty())
-	      *local += config.Find(&aUrl,"local_default_doc");
-	    return local;
+	    if (local->last() == '/' && defaultdocs) {
+	      defaultdocs->Start_Get();
+	      while (String *defaultdoc = (String *)defaultdocs->Get_Next()) {
+		String *localdefault = new String(*local, local->length()+defaultdoc->length()+1);
+		localdefault->append(*defaultdoc);
+		local_names->Add(localdefault);
+	      }
+	      delete local;
+	    }
+	    else
+	      local_names->Add(local);
 	}	
     }
+    if (local_names->Count() > 0)
+        return local_names;
+
+    delete local_names;
     return 0;
 }
 
 
 //*****************************************************************************
-// String* Retriever::GetLocalUser(char *url)
-//   If the URL has ~user part, returns a string containing the
-//   (possible) local filename of the given url, or 0 if it's
+// StringList* Retriever::GetLocalUser(char *url, StringList *defaultdocs)
+//   If the URL has ~user part, return a list of strings containing the
+//   (possible) local filenames of the given url, or 0 if it's
 //   definitely not local.
-//   THE CALLER MUST FREE THE STRING AFTER USE!
+//   THE CALLER MUST FREE THE STRINGLIST AFTER USE!
 //
-String*
-Retriever::GetLocalUser(char *url)
+StringList*
+Retriever::GetLocalUser(char *url, StringList *defaultdocs)
 {
     static StringList *prefixes = 0, *paths = 0, *dirs = 0;
     static Dictionary home_cache;
@@ -1061,6 +1088,7 @@ Retriever::GetLocalUser(char *url)
     paths->Start_Get();
     dirs->Start_Get();
     String *prefix, *path, *dir;
+    StringList *local_names = new StringList();
     while ((prefix = (String*) prefixes->Get_Next()))
     {
         path = (String*) paths->Get_Next();
@@ -1085,7 +1113,7 @@ Retriever::GetLocalUser(char *url)
 	    if (home)
 	        *local += *home;
 	    else
-	        return 0;
+	        continue;
 	}
 	else
 	{
@@ -1094,10 +1122,23 @@ Retriever::GetLocalUser(char *url)
 	}
 	*local += *dir;
 	*local += rest;
-	if (local->last() == '/' && !config.Find(&aUrl,"local_default_doc").empty())
-	  *local += config.Find(&aUrl,"local_default_doc");
-	return local;
+	if (local->last() == '/' && defaultdocs) {
+	  defaultdocs->Start_Get();
+	  while (String *defaultdoc = (String *)defaultdocs->Get_Next()) {
+	    String *localdefault = new String(*local, local->length()+defaultdoc->length()+1);
+	    localdefault->append(*defaultdoc);
+	    local_names->Add(localdefault);
+	  }
+	  delete local;
+	}
+	else
+	  local_names->Add(local);
     }
+
+    if (local_names->Count() > 0)
+        return local_names;
+
+    delete local_names;
     return 0;
 }
 
@@ -1112,7 +1153,7 @@ Retriever::IsLocalURL(char *url)
 {
     int ret;
 
-    String *local_filename = GetLocal(url);
+    StringList *local_filename = GetLocal(url);
     ret = (local_filename != 0);
     delete local_filename;
 
@@ -1364,7 +1405,7 @@ Retriever::got_href(URL &url, const char *description, int hops)
 		    //
 		    String robotsURL = url.signature();		    
 		    robotsURL << "robots.txt";
-		    String *localRobotsFile = GetLocal(robotsURL.get());
+		    StringList *localRobotsFile = GetLocal(robotsURL.get());
 		    
 		    server = new Server(url, localRobotsFile);
 		    servers.Add(url.signature(), server);
@@ -1486,7 +1527,7 @@ Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 		    //
 		    String robotsURL = url.signature();		    
 		    robotsURL << "robots.txt";
-		    String *localRobotsFile = GetLocal(robotsURL.get());
+		    StringList *localRobotsFile = GetLocal(robotsURL.get());
 		    
 		    server = new Server(url, localRobotsFile);
 		    servers.Add(url.signature(), server);
