@@ -1,5 +1,7 @@
-Fri Mar 17 16:17:54 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Fri Mar 17 16:47:37 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
+	* htsearch/Display.cc (excerpt, hilight): Correctly handle case
+	where there is no pattern to highlight.
 	* htsearch/htsearch.cc (addRequiredWords), htcommon/defaults.cc:
 	Add any_keywords attribute, to OR keywords rather than ANDing,
 	fix addRequiredWords not to mess up expression when there are

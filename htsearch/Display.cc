@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.15 2000/03/01 23:09:49 grdetil Exp $
+// $Id: Display.cc,v 1.100.2.16 2000/03/17 21:47:11 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1196,7 +1196,8 @@ Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fan
     // If previous conditions are false and "excerpt_show_top" is set to true
     // it shows the whole head. Else, it acts as default.
 
-    if (config.Boolean("excerpt_show_top", 0) || use_meta_description)
+    if (config.Boolean("excerpt_show_top", 0) || use_meta_description ||
+		!allWordsPattern->hasPattern())
       first = 0;
     else
       first = allWordsPattern->FindFirstWord(head, which, length);
@@ -1284,7 +1285,8 @@ Display::hilight(ResultMatch *match, const String& str_arg, const String& urlanc
     if (!allWordsPattern || !searchWords)
         return result;                                           
 
-    while ((pos = allWordsPattern->FindFirstWord(str, which, length)) >= 0)
+    while (allWordsPattern->hasPattern() &&
+	   (pos = allWordsPattern->FindFirstWord(str, which, length)) >= 0)
     {
 	//result.append(str, pos);
 	result << SGMLencodedChars(str, pos);
