@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: htload.cc,v 1.1.2.2 2000/05/06 20:46:42 loic Exp $
+// $Id: htload.cc,v 1.1.2.3 2000/06/13 22:59:27 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -148,9 +148,8 @@ int main(int ac, char **av)
 
 	const String word_dump = config["word_dump"];
 	HtWordList words(config);
-	if(words.Open(config["word_db"], O_RDONLY) == OK) {
-	  //  This currently does not work
-	  //	  words.Load(word_dump);
+	if(words.Open(config["word_db"], O_RDWR) == OK) {
+	  words.Load(word_dump);
 	  words.Close();
 	}
       }

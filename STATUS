@@ -23,8 +23,6 @@ KNOWN BUGS:
    we fix this?)
 * META descriptions are somehow added to the database as FLAG_TITLE,
    not FLAG_DESCRIPTION. (PR#859)
-* htload doesn't load word database
-* htload may not work if databases don't exist
 
 PENDING FEATURES:
 * Forward-Porting of NNTP code.

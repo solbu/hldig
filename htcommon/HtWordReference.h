@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordReference.h,v 1.1.2.2 2000/01/10 16:47:19 loic Exp $
+// $Id: HtWordReference.h,v 1.1.2.3 2000/06/13 22:59:27 ghutchis Exp $
 //
 #ifndef _HtWordReference_h_
 #define _HtWordReference_h_
@@ -68,10 +68,12 @@ public:
 	void			Anchor(const unsigned int arg) { record.info.data = arg; }
 
 	//
-	// Debuging
+	// Dumping/Loading
 	//
 	int			Dump(FILE *fl) const;
 	static int		DumpHeader(FILE *fl);
+	int			Load(const String& s);
+	static int		LoadHeader(FILE *fl);
 };
 
 

@@ -1,3 +1,15 @@
+Tue Jun 13 19:30:28 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/HtWordReference.h, htcommon/HtWordReference.cc (Load,
+	LoadHeaders): New methods to check the header of an ASCII
+	representation and read it in.
+
+	* htcommon/HtWordList.h, htcommon/HtWordList.cc (Load): Add load
+	method to read in data. Calls the new methods above.
+
+	* httools/htload.cc: Open word databases read-write and call
+	HtWordList::Load().
+
 Sun Jun 11 14:39:28 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htsearch/Display.cc (generateStars): Fix problem when maxScore

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.cc,v 1.2.2.9 2000/05/06 20:46:37 loic Exp $
+// $Id: HtWordList.cc,v 1.2.2.10 2000/06/13 22:59:27 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -153,3 +153,47 @@ int HtWordList::Dump(const String& filename)
   return OK;
 }
 
+//*****************************************************************************
+// int HtWordList::Load(char* filename)
+//
+// Read in an ascii version of the word database in <filename>
+//
+int HtWordList::Load(const String& filename)
+{
+  FILE		*fl;
+  String	data;
+  HtWordReference *next;
+
+  if (!isopen) {
+    cerr << "WordList::Load: database must be opened first\n";
+    return NOTOK;
+  }
+
+  if((fl = fopen(filename, "r")) == 0) {
+    perror(form("WordList::Load: opening %s for reading", (const char*)filename));
+    return NOTOK;
+  }
+
+  if (HtWordReference::LoadHeader(fl) != OK)
+    {
+      cerr << "WordList::Load: header is not correct\n";
+      return NOTOK;
+    }
+
+  while (data.readLine(fl))
+    {
+      next = new HtWordReference;
+      if (next->Load(data) != OK)
+	{
+	  delete next;
+	  continue;
+	}
+  
+      words->Add(next);
+    }
+
+  Flush();
+  fclose(fl);
+
+  return OK;
+}
