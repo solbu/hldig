@@ -1,3 +1,8 @@
+Sat Jul 17 12:59:01 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* test/*.html: Added various HTML files as the beginnings of a
+	testing suite.
+
 Fri Jul 16 13:04:27 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc(parse): fix to prevent closing ">" from being passed
