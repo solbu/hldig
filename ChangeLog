@@ -1,3 +1,27 @@
+Wed Feb  2 00:11:03 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/RELEASE.html: Finish up with notes on all significant 
+	new attributes.
+
+	* htdoc/FAQ.html, htdoc/where.html: Mention new 3.2.0b1 release
+	as a beta.
+	
+	* contrib/README: Update to mention new scripts.
+
+	* installdir/mime.types: Add default Apache mime.types file for
+	systems that do not already have one.
+
+	* installdir/Makefile.am: Make sure it is installed by default.
+
+	* installdir/Makefile.in: Regenerate using automake.
+
+	* htcommon/defaults.cc: Add documentation for mime_types
+	attribute, remove currently unused image_alt_factor, and add
+	documentation for external_protocols.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate using cf_generate.pl.
+
 Tue Feb  1 10:24:19 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htsearch/parser.cc (score): fix up score calculations for

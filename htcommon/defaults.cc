@@ -5,12 +5,12 @@
 //           HtConfiguration class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1999 The ht://Dig Group
+// Copyright (c) 1995-2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.26 2000/01/30 03:37:31 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.27 2000/02/02 06:22:55 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
@@ -405,8 +405,188 @@ http://www.htdig.org/", "
 	which start with cgi-bin.
 " },
 { "external_protocols", "",
-	"quoted string list", "htdig", "3.2.0b1", "", "external_protocols: https /usr/local/bin/handler.pl", "
-
+	"quoted string list", "htdig", "3.2.0b1", "", "external_protocols: https /usr/local/bin/handler.pl \\<br>
+        ftp /usr/local/bin/ftp-handler.pl", "
+        This attribute is a bit like <a href=\"#external_parsers\">external_parsers</a>
+	since it specifies a list of protocols/handlers that are used to download documents
+	that cannot be retrieved using the internal methods. This enables htdig to index
+	documents with URL schemes it does not understand, or to use more advanced authentication
+	for the documents it is retrieving. This list is checked before HTTP or other methods,
+	so this can override the internal behavior without writing additional code for htdig.<br>
+	  The external protocols are specified as pairs of strings, the first being the URL scheme that
+	the script can handle while the second is the path to the script itself. If the second is
+	quoted, then additional command-line arguments may be given.<br>
+	  The program takes three command-line parameters, not counting any parameters already given 
+	in the command string:<br>
+	<em>protocol URL configuration-file</em><br>
+	<table border=\"1\">
+	  <tr>
+		<th>
+		  Parameter
+		</th>
+		<th>
+		  Description
+		</th>
+		<th>
+		  Example
+		</th>
+	  </tr>
+	  <tr>
+		<td valign=\"top\">
+		  protocol
+		</td>
+		<td>
+		  The URL scheme to be used.
+		</td>
+		<td>
+		  https
+		</td>
+	  </tr>
+	  <tr>
+		<td valign=\"top\">
+		  URL
+		</td>
+		<td>
+		  The URL to be retrieved.
+		</td>
+		<td>
+		  https://www.htdig.org:8008/attrs.html
+		</td>
+	  </tr>
+	  <tr>
+		<td valign=\"top\">
+		  configuration-file
+		</td>
+		<td>
+		  The configuration-file in effect.
+		</td>
+		<td>
+		  /etc/htdig/htdig.conf
+		</td>
+	  </tr>
+	</table><p>
+	The external protocol script is to write information for htdig on the 
+	standard output. The output must follow the form described here. The output 
+	consists of a header followed by a blank line, followed by the contents of 
+	the document. Each record in the header is terminated with a newline. 
+	Each record is a series of (unless expressively allowed to be empty) non-empty 
+	tab-separated fields. The first field is a single character that specifies the 
+	record type. The rest of the fields are determined by the record type.
+	<table border=\"1\">
+	  <tr>
+		<th>
+		  Record type
+		</th>
+		<th>
+		  Fields
+		</th>
+		<th>
+		  Description
+		</th>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  s
+		</th>
+		<td valign=\"top\">
+		  status code
+		</td>
+		<td>
+		  An HTTP-style status code, e.g. 200, 404. Typical codes include:
+		    <dl compact>
+			<dt>
+			  200
+			</dt>
+			<dd>
+			  Successful retrieval
+			</dd>
+			<dt>
+			  304
+			</dt>
+			<dd>
+			  Not modified (for example, if the document hasn\'t changed)
+			</dd>
+			<dt>
+			  301
+			</dt>
+			<dd>
+			  Redirect (to another URL)
+			</dd>
+			<dt>
+			  401
+			</dt>
+			<dd>
+			  Not authorized
+			</dd>
+			<dt>
+			  404
+			</dt>
+			<dd>
+			  Not found
+			</dd>
+		</td>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  r
+		</th>
+		<td valign=\"top\">
+		  reason
+		</td>
+		<td>
+		  A text string describing the status code, e.g \"Redirect\" or \"Not Found.\"
+		</td>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  m
+		</th>
+		<td valign=\"top\">
+		  status code
+		</td>
+		<td>
+		  The modification time of this document. While the code is fairly flexible
+		  about the time/date formats it accepts, it is recommended to use something
+		  standard, like RFC1123: Sun, 06 Nov 1994 08:49:37 GMT, or ISO-8601: 
+		  1994-11-06 08:49:37 GMT.
+		</td>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  t
+		</th>
+		<td valign=\"top\">
+		  content-type
+		</td>
+		<td>
+		  A valid MIME type for the document, like text/html or text/plain.
+		</td>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  l
+		</th>
+		<td valign=\"top\">
+		  content-length
+		</td>
+		<td>
+		  The length of the document on the server, which may not necessarily
+		  be the length of the buffer returned.
+		</td>
+	  </tr>
+	  <tr>
+		<th rowspan=\"3\" valign=\"top\">
+		  u
+		</th>
+		<td valign=\"top\">
+		  url
+		</td>
+		<td>
+		  The URL of the document, or in the case of a redirect, the URL
+		  that should be indexed as a result of the redirect.
+		</td>
+	  </tr>
+      </table>	  
 " },
 { "external_parsers", "", 
 	"quoted string list", "htdig", "3.0.7", "", "external_parsers: text/html /usr/local/bin/htmlparser \\<br>
@@ -819,14 +999,6 @@ http://www.htdig.org/", "
 	compile time.
 	</p>
 " },
-{ "img_alt_factor", "3", 
-	"number", "htsearch", "3.2.0b1", "", "image_alt_factor: 10.1", "
-	This is a factor which will be used to multiply the
-	weight of words in the ALT portions of &lt;img&gt; tags
-	The number may be a floating point number. See also the
-	<a href=\"#keywords_factor\">keywords_factor</a> and
-	<a href=\"#text_factor\">text_factor</a>attributes.
-" },
 { "include", "",
         "string", "htdig htnotify htfuzzy htmerge htsearch", "3.1.0", "", "include: ${config_dir}/htdig.conf", "
 			This is not quite a configuration attribute, but
@@ -885,7 +1057,7 @@ http://www.htdig.org/", "
 	href=\"#limit_urls_to\">limit_urls_to</a> directive.
 " },
 { "limit_urls_to", "${start_url}", 
-	"pattern list", "htdig", "all", "", "limit_urls_to: .sdsu.edu kpbs [.*\.html]", "
+	"pattern list", "htdig", "all", "", "limit_urls_to: .sdsu.edu kpbs [.*\\.html]", "
 	This specifies a set of patterns that all URLs have to
 	match against in order for them to be included in the
 	search. Any number of strings can be specified,
@@ -1116,6 +1288,12 @@ http://www.htdig.org/", "
 	See the <a href=\"hts_selectors.html\">select list documentation</a>
 	for more information on how this attribute is used.
 " },
+{ "mime_types", "${config_dir}/mime.types",
+        "string", "htdig", "3.2.0b1", "", "mime_types: /etc/mime.types", "
+        This file is used by htdig for local file access and resolving file:// URLs
+        to ensure the files are parsable. If you are running a webserver with its own
+        MIME file, you should set this attribute to point to that file.
+"},
 { "minimum_prefix_length", "1", 
 	"number", "htsearch", "3.1.0b1", "", "minimum_prefix_length: 2", "
 	This sets the minimum length of prefix matches used by the
@@ -1387,7 +1565,7 @@ http://www.htdig.org/", "
 	by the DirectoryIndex setting in Apache's srm.conf, for example.
 " },
 { "remove_unretrieved_urls", "false", 
-	"boolean", "htmerge", "3.2.0b1", "", "remove_bad_urls: true", "
+	"boolean", "htmerge", "3.2.0b1", "", "remove_unretrieved_urls: true", "
 	If TRUE, htmerge will remove any URLs which were discovered
 	and included as stubs in the database but not yet retrieved. If FALSE, it
 	will not do this. When htdig is run in initial mode with no restrictions 
