@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.h,v 1.13.2.1 2000/02/27 04:36:03 ghutchis Exp $
+// $Id: parser.h,v 1.13.2.2 2000/08/29 13:56:21 ghutchis Exp $
 //
 
 #ifndef _parser_h_
@@ -51,9 +51,10 @@ protected:
     int			match(int);
     void		setError(char *);
     void		perform_push();
-    void		perform_and(int);
+    void		perform_and();
+    void		perform_not();
     void		perform_or();
-    void		perform_phrase(List &);
+    void		perform_phrase(List * &);
 
     void		score(List *, double weight);
 

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.22.2.6 2000/08/13 23:06:22 toivo Exp $
+// $Id: parser.cc,v 1.22.2.7 2000/08/29 13:56:21 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -101,7 +101,9 @@ Parser::expr(int output)
 	    term(output);
 	    if (output)
 	    {
+		if(debug) cerr << "or--" << endl;
 		perform_or();
+		if(debug) cerr << "stack:" << stack.Size() << endl;
 	    }
 	}
 	else
@@ -117,21 +119,35 @@ Parser::expr(int output)
 void
 Parser::term(int output)
 {
-    int	isand;
     
     factor(output);
+	if(debug) cerr << "term:factor" << endl;
     while (1)
     {
-	if ((isand = match('&')) || match('!'))
+	if(match('&'))
 	{
-	    factor(output);
-	    if (output)
-	    {
-		perform_and(isand);
-	    }
+		factor(output);
+		if(output)
+		{
+			if(debug) cerr << "and--" << endl;
+			perform_and();
+			if(debug) cerr << "stack:" << stack.Size() << endl;
+		}
+	}
+	else if(match('!'))
+	{
+		factor(output);
+		if(output)
+		{
+			if(debug) cerr << "not--" << endl;
+			perform_not();
+			if(debug) cerr << "stack:" << stack.Size() << endl;
+		}
 	}
 	else
-	    break;
+	{
+		break;
+	}
     }
 }
 
@@ -139,9 +155,11 @@ Parser::term(int output)
 void
 Parser::factor(int output)
 {
-    phrase(output);
-
-    if (match('('))
+    if(match('"'))
+    {
+	phrase(output);
+    }
+    else if (match('('))
     {
 	expr(output);
 	if (match(')'))
@@ -161,21 +179,17 @@ Parser::factor(int output)
 	}
 	lookahead = lexan();
     }
-    //    else
-    //    {
-    //	setError("a search word");
-    //    }
+    else
+    {
+    	setError("a search word, a quoted phrase, a boolean expression between ()");
+    }
 }
 
 //*****************************************************************************
 void
 Parser::phrase(int output)
 {
-  int skipRest = 0;
-
-  if (match('"'))
-    {
-      List *wordList = new List;
+      List *wordList = 0;
       double weight = 1.0;
 
       while (1)
@@ -183,31 +197,29 @@ Parser::phrase(int output)
 	  if (match('"'))
 	    {
 	      if (output)
+	      {
+                if(!wordList) wordList = new List;
+		if(debug) cerr << "scoring phrase" << endl;
 		score(wordList, weight);
+	      }
 	      break;
 	    }
 	  else if (lookahead == WORD)
 	    {
 	      weight *= current->weight;
-	      if (output && !skipRest)
-		{
-		  perform_phrase(*wordList);
-		  if (wordList->Count() == 0)
-		    // just the start of the phrase has no results => skipRest
-		    skipRest = 1;
-		}
-	      else if (lookahead == DONE)
-		{
-		  setError("'\"'");
-		  break;
-		}
-
+	      if (output)
+		perform_phrase(wordList);
+	      
 	      lookahead = lexan();
 	    }
+          else if (lookahead == DONE)
+           {
+	     setError("missing quote");
+	     break;
+           }
 
 	} // end while
-      delete wordList;
-    } // end if
+	if(wordList) delete wordList;
 }
 
 //*****************************************************************************
@@ -260,11 +272,17 @@ Parser::perform_push()
     String	temp = current->word.get();
     char	*p;
 
+    if(debug)
+	cerr << "perform_push @"<< stack.Size() << ": " << temp << endl;
     if (current->isIgnore)
     {
+	if(debug) cerr << "ignore: " << temp << " @" << stack.Size() << endl;
 	//
 	// This word needs to be ignored.  Make it so.
 	//
+    	ResultList	*list = new ResultList;
+	list->isIgnore = 1;
+    	stack.push(list);
 	return;
     }
 
@@ -280,7 +298,7 @@ Parser::perform_push()
 
 //*****************************************************************************
 void
-Parser::perform_phrase(List &oldWords)
+Parser::perform_phrase(List * &oldWords)
 {
     static int	maximum_word_length = config.Value("maximum_word_length", 12);
     String	temp = current->word.get();
@@ -288,11 +306,20 @@ Parser::perform_phrase(List &oldWords)
     List	*newWords = 0;
     HtWordReference *oldWord, *newWord;
 
+    // if the query is empty, no further effort is needed
+    if(oldWords && oldWords->Count() == 0)
+    {
+	if(debug) cerr << "phrase not found, skip" << endl;
+	return;
+    }
+
+    if(debug) cerr << "phrase current: " << temp << endl;
     if (current->isIgnore)
     {
 	//
 	// This word needs to be ignored.  Make it so.
 	//
+	if(debug) cerr << "ignoring: " << temp << endl;
 	return;
     }
 
@@ -302,21 +329,27 @@ Parser::perform_phrase(List &oldWords)
 	p[maximum_word_length] = '\0';
 
     newWords = words[p];
+    if(debug) cerr << "new words count: " << newWords->Count() << endl;
 
     // If we don't have a prior list of words, we want this one...
-    if (oldWords.Count() == 0)
+    if (!oldWords)
       {
+	oldWords = new List;
+	if(debug) cerr << "phrase adding first: " << temp << endl;
 	newWords->Start_Get();
 	while ((newWord = (HtWordReference *) newWords->Get_Next()))
-	  oldWords.Add(newWord);
+	{
+	  oldWords->Add(newWord);
+	}
+	if(debug) cerr << "old words count: " << oldWords->Count() << endl;
 	return;
       }
 
     // OK, now we have a previous list in wordList and a new list
     List	*results = new List;
 
-    oldWords.Start_Get();
-    while ((oldWord = (HtWordReference *) oldWords.Get_Next()))
+    oldWords->Start_Get();
+    while ((oldWord = (HtWordReference *) oldWords->Get_Next()))
       {
 	newWords->Start_Get();
 	while ((newWord = (HtWordReference *) newWords->Get_Next()))
@@ -334,22 +367,27 @@ Parser::perform_phrase(List &oldWords)
 	  }
       }
 
-    oldWords.Destroy();
+    if(debug) cerr << "old words count: " << oldWords->Count() << endl;
+    if(debug) cerr << "results count: " << results->Count() << endl;
+    oldWords->Destroy();
     results->Start_Get();
     while ((newWord = (HtWordReference *) results->Get_Next()))
-      oldWords.Add(newWord);
+    {
+      oldWords->Add(newWord);
+    }
+    if(debug) cerr << "old words count: " << oldWords->Count() << endl;
     results->Release();
     delete results;
 
     newWords->Destroy();
     delete newWords;
+
 }
 
 //*****************************************************************************
 void
 Parser::score(List *wordList, double weight)
 {
-    ResultList	*list = new ResultList;
     DocMatch	*dm;
     HtWordReference *wr;
     static double text_factor = config.Double("text_factor", 1);
@@ -364,15 +402,18 @@ Parser::score(List *wordList, double weight)
     int		  docanchor;
     int		  word_count;
 
-    stack.push(list);
-
     if (!wordList || wordList->Count() == 0)
       {
-	// We can't score an empty list, so this should be ignored...
-        // (setting isIgnore as well would cause errors with AND)
+ 	// We can't score an empty list, so push a null pointer...
+ 	if(debug) cerr << "score: empty list, push 0 @" << stack.Size() << endl;
+ 
+ 	stack.push(0);
 	return;
       }
 
+    ResultList	*list = new ResultList;
+    if(debug) cerr << "score: push @" << stack.Size() << endl;
+    stack.push(list);
     // We're now guaranteed to have a non-empty list
     // We'll use the number of occurences of this word for scoring
     word_count = wordList->Count();
@@ -417,60 +458,75 @@ Parser::score(List *wordList, double weight)
 //*****************************************************************************
 // The top two entries in the stack need to be ANDed together.
 //
+//	a	b	a and b
+//	0	0	0
+//	0	1	0
+//	0	x	0
+//	1	0	0
+//	1	1	intersect(a,b)
+//	1	x	a
+//	x	0	0
+//	x	1	b
+//	x	x	x
+//
 void
-Parser::perform_and(int isand)
+Parser::perform_and()
 {
     ResultList		*l1 = (ResultList *) stack.pop();
     ResultList		*l2 = (ResultList *) stack.pop();
-    ResultList		*result = new ResultList;
     int			i;
     DocMatch		*dm, *dm2, *dm3;
     HtVector		*elements;
 
-    //
-    // If either of the arguments is not present, we will use the other as
-    // the result.
-    //
-    if (!l1 && l2)
+    if(!(l2 && l1))
     {
-	stack.push(l2);
+	if(debug) cerr << "and: at least one empty operator, pushing 0 @" << stack.Size() << endl;
+	stack.push(0);
+	if(l1) delete l1;
+	if(l2) delete l2;
 	return;
     }
-    else if (l1 && !l2)
-    {
-	stack.push(l1);
-	return;
-    }
-    else if (!l1 && !l2)
-    {
-	stack.push(result);
-	return;
-    }
-    
+
     //
     // If either of the arguments is set to be ignored, we will use the
     // other as the result.
-    //
-    if (l1->isIgnore)
+    // remember l2 and l1, l2 not l1
+
+    if (l1->isIgnore && l2->isIgnore)
     {
+	if(debug) cerr << "and: ignoring all, pushing ignored list @" << stack.Size() << endl;
+	ResultList *result = new ResultList;
+	result->isIgnore = 1;
+	delete l1; delete l2;
+	stack.push(result);
+    }
+    else if (l1->isIgnore)
+    {
+	if(debug) cerr << "and: ignoring l1, pushing l2 @" << stack.Size() << endl;
 	stack.push(l2);
 	delete l1;
 	return;
     }
     else if (l2->isIgnore)
     {
-	stack.push(isand ? l1 : result);
+	if(debug) cerr << "and: ignoring l2, pushing l2 @" << stack.Size() <<  endl;
+	stack.push(l1);
 	delete l2;
 	return;
     }
     
+    ResultList		*result = new ResultList;
     stack.push(result);
     elements = l2->elements();
+
+    if(debug)
+	cerr << "perform and: " << elements->Count() << " " << l1->elements()->Count() << " ";
+
     for (i = 0; i < elements->Count(); i++)
     {
 	dm = (DocMatch *) (*elements)[i];
 	dm2 = l1->find(dm->id);
-	if (dm2 ? isand : (isand == 0))
+	if (dm2)
 	{
 	    //
 	    // Duplicate document.  We just need to add the scored together.
@@ -484,6 +540,77 @@ Parser::perform_and(int isand)
 	    result->add(dm3);
 	}
     }
+    if(debug)
+	cerr << result->elements()->Count() << endl;
+
+    elements->Release();
+    delete elements;
+    delete l1;
+    delete l2;
+}
+
+//	a	b	a not b
+//	0	0	0
+//	0	1	0
+//	0	x	0
+//	1	0	a
+//	1	1	intersect(a,not b)
+//	1	x	a
+//	x	0	x
+//	x	1	x
+//	x	x	x
+void
+Parser::perform_not()
+{
+    ResultList		*l1 = (ResultList *) stack.pop();
+    ResultList		*l2 = (ResultList *) stack.pop();
+    int			i;
+    DocMatch		*dm, *dm2, *dm3;
+    HtVector		*elements;
+
+
+    if(!l2)
+    {
+	if(debug) cerr << "not: no positive term, pushing 0 @" << stack.Size() << endl;
+	stack.push(0);
+	if(l1) delete l1;
+	return;
+    }
+    if(!l1 || l1->isIgnore || l2->isIgnore)
+    {
+	if(debug) cerr << "not: no negative term, pushing positive @" << stack.Size() << endl;
+        stack.push(l2);
+	if(l1) delete l1;
+        return;
+    }
+
+    ResultList		*result = new ResultList;
+    if(debug) cerr << "not: pushing result @" << stack.Size() << endl;
+    stack.push(result);
+    elements = l2->elements();
+
+    if(debug)
+	cerr << "perform not: " << elements->Count() << " " << l1->elements()->Count() << " ";
+
+    for (i = 0; i < elements->Count(); i++)
+    {
+	dm = (DocMatch *) (*elements)[i];
+	dm2 = l1->find(dm->id);
+	if (!dm2)
+	{
+	    //
+	    // Duplicate document.  We just need to add the scored together.
+	    //
+	    dm3 = new DocMatch;
+	    dm3->score = dm->score;
+	    dm3->id = dm->id;
+	    dm3->anchor = dm->anchor;
+	    result->add(dm3);
+	}
+    }
+    if(debug)
+	cerr << result->elements()->Count() << endl;
+
     elements->Release();
     delete elements;
     delete l1;
@@ -508,16 +635,21 @@ Parser::perform_or()
     //
     if (!l1 && result)
     {
-	return;
+	if(debug) cerr << "or: no 2nd operand" << endl;
+	return; // result in top of stack
     }
     else if (l1 && !result)
     {
+	if(debug) cerr << "or: no 1st operand" << endl;
+	stack.pop();
 	stack.push(l1);
 	return;
     }
     else if (!l1 & !result)
     {
-	stack.push(new ResultList);
+	if(debug) cerr << "or: no operands" << endl;
+	stack.pop();
+	stack.push(0); // empty result
 	return;
     }
     
@@ -539,6 +671,8 @@ Parser::perform_or()
     }
     
     elements = l1->elements();
+    if(debug)
+	cerr << "perform or: " << elements->Count() << " " << result->elements()->Count() << " ";
     for (i = 0; i < elements->Count(); i++)
     {
 	dm = (DocMatch *) (*elements)[i];
@@ -561,6 +695,8 @@ Parser::perform_or()
 	    result->add(dm2);
 	}
     }
+    if(debug)
+	cerr << result->elements()->Count() << endl;
     elements->Release();
     delete elements;
     delete l1;
@@ -578,9 +714,9 @@ Parser::parse(List *tokenList, ResultList &resultMatches)
     ResultList	*result = (ResultList *) stack.pop();
     if (!result)  // Ouch!
       {
-	valid = 0;
+//	valid = 0;
 	error = 0;
-	error << "Expected to have something to parse!";
+//	error << "Expected to have something to parse!";
 	return;
       }
     HtVector	*elements = result->elements();
