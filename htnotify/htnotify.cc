@@ -6,6 +6,9 @@
 // has "expired"
 //
 // $Log: htnotify.cc,v $
+// Revision 1.18  1999/01/25 05:13:22  ghutchis
+// Fix comiler errors.
+//
 // Revision 1.17  1999/01/25 04:08:54  ghutchis
 // Fix compiler warnings.
 //
@@ -65,7 +68,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.17 1999/01/25 04:08:54 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.18 1999/01/25 05:13:22 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -154,7 +157,7 @@ int main(int ac, char **av)
 
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
-    docdb.SetCompatibility(config.Boolean("uncoded_db_compatible", TRUE));
+    docdb.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
     docdb.Read(doc_db);
     List	*docs = docdb.URLs();

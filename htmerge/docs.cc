@@ -4,6 +4,9 @@
 // Implementation of newclass
 //
 // $Log: docs.cc,v $
+// Revision 1.12  1999/01/25 05:09:08  ghutchis
+// Fix comiler errors.
+//
 // Revision 1.11  1999/01/25 01:53:47  hp
 // Provide a clean upgrade from old databses without "url_part_aliases" and
 // "common_url_parts" through the new option "uncoded_db_compatible".
@@ -69,7 +72,7 @@ convertDocs(char *doc_db, char *doc_index)
 
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
-    db.SetCompatibility(config.Boolean("uncoded_db_compatible", TRUE));
+    db.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
     //
     // Start the conversion by going through all the URLs that are in

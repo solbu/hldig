@@ -6,6 +6,12 @@
 // convertDocs are performed to ensure database integrity.
 //
 // $Log: db.cc,v $
+// Revision 1.8  1999/01/25 05:10:17  ghutchis
+// Fix comiler errors.
+//
+// Revision 1.7  1999/01/25 05:09:08  ghutchis
+// Fix comiler errors.
+//
 // Revision 1.6  1999/01/25 04:55:54  ghutchis
 // Ignore word count by compile-time option NO_WORD_COUNT.
 //
@@ -48,7 +54,7 @@ mergeDB()
 
     // Check "uncompressed"/"uncoded" urls at the price of time
     // (extra DB probes).
-    db.SetCompatibility(config.Boolean("uncoded_db_compatible", TRUE));
+    db.SetCompatibility(config.Boolean("uncoded_db_compatible", 1));
 
     doc_db = config["doc_db"];    
     if (db.Open(doc_db) < 0)
@@ -58,7 +64,7 @@ mergeDB()
     }
 
     merge_db.
-      SetCompatibility(merge_config.Boolean("uncoded_db_compatible", TRUE));
+      SetCompatibility(merge_config.Boolean("uncoded_db_compatible", 1));
 
     merge_doc_db = merge_config["doc_db"];
     if (merge_db.Open(merge_doc_db) < 0)
@@ -267,7 +273,7 @@ mergeDB()
 	      {
 		switch (*name)
 		  {
-#ifndef #NO_WORD_COUNT
+#ifndef NO_WORD_COUNT
 		  case 'c':
 		    wr.count = atoi(value);
 		    break;
