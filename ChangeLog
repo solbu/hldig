@@ -1,3 +1,16 @@
+Thu Feb 10 00:26:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htcommon/defaults.cc: Add new attribute "nph" to send out
+	non-parsed headers for servers that do not supply HTTP headers on
+	CGI output (e.g. IIS).
+	
+	* htsearch/Display.cc (display): If nph is set, send out HTTP OK
+	header as suggested by Matthew Daniel <mdaniel@scdi.com>
+	(displaySyntaxError): Ditto.
+
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerate from current defaults.cc file.
+	
 Thu Feb 10 00:21:58 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc (do_tag): Treat <script></script> tags as noindex

@@ -2956,13 +2956,13 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			3.1.2
+			<i>No default</i>
 		  </dd>
 		  <dt>
 		      <em>version:</em>
 		  </dt>
 		  <dd>
-		      
+		      3.1.2 or later
 		  </dd>
 		  <dt>
 			<em>description:</em>
@@ -3858,7 +3858,8 @@ http://www.htdig.org/
 	recognizes as default documents for directory URLs, as defined
 	by the DirectoryIndex setting in Apache's srm.conf, for example.
 	As of 3.2.0b1, this can be a string list rather than a single name,
-	and htdig will use the first name that works.
+	and htdig will use the first name that works. Since this requires a
+        loop, setting the most common name first will improve performance.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -4855,8 +4856,8 @@ http://www.htdig.org/
 		  </dt>
 		  <dd>
 	While gathering descriptions from meta description tags,
-	<a href="htdig.html">htdig</a> will truncate
-	descriptions which are longer than this length.
+	<a href="htdig.html">htdig</a> will only store up to 
+        this much of the text for each document.
 		  </dd>
 		  <dt>
 			<em>example:</em>
@@ -6240,6 +6241,66 @@ http://www.htdig.org/
 				</td>
 				<td nowrap>
 				     /www/searching/nothing.html
+				</td>
+			  </tr>
+			</table>
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<hr>
+	<dl>
+	  <dt>
+		<strong><a name="nph">
+		nph</a></strong>
+	  </dt>
+	  <dd>
+		<dl>
+		  <dt>
+			<em>type:</em>
+		  </dt>
+		  <dd>
+			boolean
+		  </dd>
+		  <dt>
+			<em>used by:</em>
+		  </dt>
+		  <dd>
+			<a href="htsearch.html" target="_top">htsearch</a>
+		  </dd>
+		  <dt>
+			<em>default:</em>
+		  </dt>
+		  <dd>
+			false
+		  </dd>
+		  <dt>
+		      <em>version:</em>
+		  </dt>
+		  <dd>
+		      3.2.0b2 or later
+		  </dd>
+		  <dt>
+			<em>description:</em>
+		  </dt>
+		  <dd>
+	This attribute determines whether htsearch sends out full HTTP
+	headers as required for an NPH (non-parsed header) CGI. Some
+	servers assume CGIs will act in this fashion, for example MS
+	IIS. If your server does not send out full HTTP headers, you
+	should set this to true.
+		  </dd>
+		  <dt>
+			<em>example:</em>
+		  </dt>
+		  <dd>
+			<table border="0">
+			  <tr>
+				<td valign="top">
+				  nph:
+				</td>
+				<td nowrap>
+				     true
 				</td>
 			  </tr>
 			</table>
@@ -10726,6 +10787,6 @@ http://www.htdig.org/
 	<address>
 	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
 	</address>
-Last modified: Thu Feb  3 20:57:13 MET 2000
+Last modified: Thu Feb 10 00:33:18 CST 2000
   </body>
 </html>

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.30 2000/02/10 06:13:06 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.31 2000/02/10 06:38:41 ghutchis Exp $
 //
 
 #include "HtConfiguration.h"
@@ -1443,6 +1443,14 @@ http://www.htdig.org/", "
 	Note that this attribute could also be defined in
 	terms of <a href=\"#database_base\">database_base</a> to
 	make is specific to the current search database.
+" },
+{ "nph", "false", 
+	"boolean", "htsearch", "3.2.0b2", "Presentation:How", "nph: true", "
+	This attribute determines whether htsearch sends out full HTTP
+	headers as required for an NPH (non-parsed header) CGI. Some
+	servers assume CGIs will act in this fashion, for example MS
+	IIS. If your server does not send out full HTTP headers, you
+	should set this to true.
 " },
 { "page_list_header", "<hr noshade size=2>Pages:<br>", 
 	"string", "htsearch", "3.0", "Presentation:Text", "page_list_header:", "

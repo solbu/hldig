@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Display.cc,v 1.100.2.9 2000/01/25 10:43:26 loic Exp $
+// $Id: Display.cc,v 1.100.2.10 2000/02/10 06:38:43 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -141,12 +141,14 @@ Display::display(int pageNumber)
 	// No matches.
 	//
         delete matches;
+	if( config.Boolean("nph") ) cout << "HTTP/1.0 200 OK\r\n";
 	cout << "Content-type: text/html\r\n\r\n";
 	displayNomatch();
 	return;
     }
     // maxScore = match->getScore();	// now done in buildMatchList()
     	
+    if( config.Boolean("nph") ) cout << "HTTP/1.0 200 OK\r\n";
     cout << "Content-type: text/html\r\n\r\n";
     String	wrap_file = config["search_results_wrapper"];
     String	*wrapper = 0;
@@ -681,6 +683,7 @@ Display::displayNomatch()
 void
 Display::displaySyntaxError(const String& message)
 {
+    if( config.Boolean("nph") ) cout << "HTTP/1.0 200 OK\r\n";
     cout << "Content-type: text/html\r\n\r\n";
 
     setVariables(0, 0);
