@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.50 1999/05/31 18:34:10 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.51 1999/06/13 19:56:44 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -149,6 +149,7 @@ ConfigDefaults	defaults[] =
     {"use_star_image",			"true"},
     {"use_meta_description",            "false"},
     {"user_agent",			"htdig"},
+    {"valid_extensions",		""},
     {"valid_punctuation",		".-_/!#$%^&'"},
     {"word_db",				"${database_base}.words.db"},
     {"word_list",			"${database_base}.wordlist"},

@@ -1,3 +1,11 @@
+Sun Jun 13 16:29:19 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc (IsValidURL): Add valid_extension list, as
+	requested numerous times.
+
+	* htcommon/defaults.cc: Add config attribute valid_extensions,
+	with default as empty.
+
 Sat Jun 12 23:10:39 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentRef.h: Fix thinkos introduced in change earlier

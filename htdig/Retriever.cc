@@ -3,7 +3,7 @@
 //
 // Implementation of Retriever
 //
-// $Id: Retriever.cc,v 1.48 1999/06/01 01:54:06 ghutchis Exp $
+// $Id: Retriever.cc,v 1.49 1999/06/13 19:56:45 ghutchis Exp $
 //
 
 #include "Retriever.h"
@@ -633,6 +633,7 @@ int
 Retriever::IsValidURL(char *u)
 {
     static Dictionary	*invalids = 0;
+    static Dictionary	*valids = 0;
 
     //
     // Invalid extensions will be kept in a dictionary for quick
@@ -656,18 +657,28 @@ Retriever::IsValidURL(char *u)
 	}
     }
 
+    //
+    // Valid extensions are performed similarly 
+    //
+    if (!valids)
+    {
+	// A list of bad extensions, separated by spaces or tabs
+	String	t = config["valid_extensions"];
+	String lowerp;
+	char	*p = strtok(t, " \t");
+	valids = new Dictionary;
+	while (p)
+	{
+	  // Extensions are case insensitive
+	  lowerp = p;
+	  lowerp.lowercase();
+	  valids->Add(lowerp, 0);
+	  p = strtok(0, " \t");
+	}
+    }
+
     static String	url;
     url = u;
-
-    //
-    // We used to only deal with http urls. This shouldn't be necessary.
-    //
-    //    if (strstr(u, "..") || strncmp(u, "http://", 7) != 0)
-    //      {
-    //	if (debug > 2)
-    //	  cout << endl <<"   Rejected: Not an http or relative link!";
-    //	return FALSE;
-    //      }
 
     //
     // If the URL contains any of the patterns in the exclude list,
@@ -680,9 +691,22 @@ Retriever::IsValidURL(char *u)
                 return(FALSE);
       }
 
-    // See if the path extension is in the list of invalid ones
     //
-    char	*ext = strrchr(url, '.');
+    // If the URL has a query string and it is in the bad query list
+    // mark it as invalid
+    //
+    char *ext = strrchr(url, '?');
+    if (ext && badquerystr.match(url, 0, 0) != 0)
+      {
+                if (debug >= 2)
+		  cout << endl << "   Rejected: item in bad query list ";
+                return(FALSE);
+      }
+
+    //
+    // See if the file extension is in the list of invalid ones
+    //
+    ext = strrchr(url, '.');
     String	lowerext = ext;
     lowerext.lowercase();
     if (ext && invalids->Exists(lowerext))
@@ -692,12 +716,14 @@ Retriever::IsValidURL(char *u)
 	return FALSE;
       }
 
-    ext = strrchr(url, '?');
-    if (ext && badquerystr.match(url, 0, 0) != 0)
+    //
+    // Or NOT in the list of valid ones
+    //
+    if (ext && !valids->Exists(lowerext))
       {
-                if (debug >= 2)
-		  cout << endl << "   Rejected: item in bad query list ";
-                return(FALSE);
+	if (debug > 2)
+	  cout << endl <<"   Rejected: Extension is invalid!";
+	return FALSE;
       }
 
     //
