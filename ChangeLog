@@ -1,3 +1,8 @@
+Wed Jun 16 14:19:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.cc(buildMatchList): cast score to (int) in maxScore
+	calculation, to avoid compiler warnings.
+
 Wed Jun 16 14:11:46 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/htdig.cc(main): change comparison on minimalFile to avoid
