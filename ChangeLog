@@ -1,3 +1,8 @@
+Mon Oct 27 15:57:38 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+    * htdoc/THANKS.html: Added Lachlan, Jim and Neal to the active developers
+      list.
+
 Sun Oct 26 2003  Lachlan Andrew <lha@users.sourceforge.net>
 
     * htdoc/hts_templates.html: Clarify that PREV/NEXTPAGE template variables
