@@ -32,4 +32,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) $(CXXFLAGS) $(INCS) -- $(OBJS)
 
-htmerge.o:		$(top_builddir)/CONFIG
+htmerge.o:		$(top_builddir)/Makefile.config

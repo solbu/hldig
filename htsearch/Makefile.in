@@ -35,4 +35,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) $(INCS) -- $(OBJS)
 
-htsearch.o:		$(top_builddir)/CONFIG
+htsearch.o:		$(top_builddir)/Makefile.config

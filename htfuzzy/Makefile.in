@@ -44,4 +44,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) @CPPFLAGS@ $(CXXFLAGS) $(INCS) -- $(OBJS)
 
-htfuzzy.o:	$(top_builddir)/CONFIG
+htfuzzy.o:	$(top_builddir)/Makefile.config

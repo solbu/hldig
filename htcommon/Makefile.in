@@ -40,4 +40,4 @@ distclean:	clean
 depend:
 	$(MAKEDEPEND) $(CXXFLAGS) @CPPFLAGS@ $(INCS) -- $(OBJS)
 
-defaults.o:		$(top_builddir)/CONFIG
+defaults.o:		$(top_builddir)/Makefile.config
