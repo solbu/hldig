@@ -1,3 +1,13 @@
+Mon Sep 27 10:18:12 1999  Ecila 4.10  <ecila40@newsun>
+
+Mon Sep 27 09:46:34 1999  Loic Dachary  <loic@ceic.com>
+
+	* test/conf/htdig.conf.in (common_dir): add common_dir so that
+	  templates are found in compile directory.
+
+	* htsearch/parser.cc (phrase): free wordList at end and only allocate if
+	  needed.
+
 Fri Sep 24 16:35:47 1999  Loic Dachary  <loic@ceic.com>
 
 	* htcommon/DocumentDB.ccf (Open): change mode to 666 instead of 664, 

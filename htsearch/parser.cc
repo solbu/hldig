@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: parser.cc,v 1.18 1999/09/24 10:29:05 loic Exp $
+// $Id: parser.cc,v 1.19 1999/09/27 08:32:02 loic Exp $
 //
 
 #include "parser.h"
@@ -166,11 +166,11 @@ Parser::factor(int output)
 void
 Parser::phrase(int output)
 {
-  List *wordList = new List;
-  double weight = 1.0;
-
   if (match('"'))
     {
+      List *wordList = new List;
+      double weight = 1.0;
+
       while (1)
 	{
 	  if (match('"'))
@@ -189,6 +189,7 @@ Parser::phrase(int output)
 	    }
 
 	} // end while
+      delete wordList;
     } // end if
 }
 
