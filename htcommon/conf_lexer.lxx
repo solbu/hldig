@@ -7,7 +7,14 @@
 %x br_string
 
 %{
-#include <string.h>
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif
+
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+
 #include "HtConfiguration.h"
 //#include "Dictionary.h"
 #include "conf.tab.cc.h"
