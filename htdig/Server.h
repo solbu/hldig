@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.h,v 1.9.2.2 1999/10/15 10:53:58 angus Exp $
+// $Id: Server.h,v 1.9.2.3 1999/11/30 05:47:20 ghutchis Exp $
 //
 
 #ifndef _Server_h_
@@ -52,7 +52,7 @@ public:
 	// see if the path in the path is allowed.  If it isn't allowed,
 	// it simply won't be added.
 	//
-	void			push(char *path, int hopcount, char *referer);
+	void			push(char *path, int hopcount, char *referer, int local = 0);
 
 	//
 	// Return the next URL from the queue for this server.

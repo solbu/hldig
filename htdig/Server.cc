@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Server.cc,v 1.17.2.2 1999/10/15 10:53:58 angus Exp $
+// $Id: Server.cc,v 1.17.2.3 1999/11/30 05:47:20 ghutchis Exp $
 //
 
 #include "htdig.h"
@@ -219,11 +219,11 @@ void Server::robotstxt(Document &doc)
 
 
 //*****************************************************************************
-// void Server::push(char *path, int hopcount, char *referer)
+// void Server::push(char *path, int hopcount, char *referer, int local)
 //
-void Server::push(char *path, int hopcount, char *referer)
+void Server::push(char *path, int hopcount, char *referer, int local)
 {
-    if (_bad_server)
+    if (_bad_server && !local)
 	return;
 
     //

@@ -1,3 +1,10 @@
+Mon Nov 29 23:19:35 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriver.cc, htdig/Retriver.h, htdig/Server.cc,
+	htdig/Server.h: forward-ported Alexis and Gilles's work for
+	cleaning up IsLocal/GetLocal. Makes local digging persistent, even
+	when HTTP server is down.
+
 Mon Nov 29 22:35:06 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* test/url.cc: New test for URL class.
