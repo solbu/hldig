@@ -1,3 +1,8 @@
+Thu Sep  7 23:45:25 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/Retriever.cc (Retriever): Only open up md5 database if
+	check_unique_md5 attribute is set.
+
 Thu Sep  7 22:56:19 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/URL.cc (DefaultPort): Add file default port of 0.

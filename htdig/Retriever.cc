@@ -12,7 +12,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Retriever.cc,v 1.72.2.35 2000/09/03 21:55:07 ghutchis Exp $
+// $Id: Retriever.cc,v 1.72.2.36 2000/09/08 04:51:10 ghutchis Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -108,14 +108,17 @@ Retriever::Retriever(RetrieverLog flags) :
         unlink((char*)filelog);
     }
     
-     check_unique_md5 = config.Boolean("check_unique_md5", 0); 
+    check_unique_md5 = config.Boolean("check_unique_md5", 0); 
     check_unique_date = config.Boolean("check_unique_date", 0); 
 
-    d_md5 = Database::getDatabaseInstance(DB_HASH);
+    if (check_unique_md5)
+      {
+	d_md5 = Database::getDatabaseInstance(DB_HASH);
 
-    if (d_md5->OpenReadWrite(config["md5_db"], 0666) != OK) {
-      cerr << "DocumentDB::Open: " << config["md5_db"] << " " << strerror(errno) << "\n";
-    }
+	if (d_md5->OpenReadWrite(config["md5_db"], 0666) != OK) {
+	  cerr << "DocumentDB::Open: " << config["md5_db"] << " " << strerror(errno) << "\n";
+	}
+      }
 
 }
 
@@ -125,7 +128,8 @@ Retriever::Retriever(RetrieverLog flags) :
 //
 Retriever::~Retriever()
 {
-    d_md5->Close();
+    if (d_md5)
+      d_md5->Close();
     delete doc;
 }
 
