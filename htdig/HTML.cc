@@ -6,12 +6,12 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.31 1999/02/21 19:54:44 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.32 1999/03/14 03:16:10 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
 #include "HTML.h"
-#include "SGMLEntities.h"
+#include "HtSGMLCodec.h"
 #include "Configuration.h"
 #include <ctype.h>
 #include "StringMatch.h"
@@ -102,7 +102,7 @@ HTML::parse(Retriever &retriever, URL &baseURL)
     int			offset = 0;
     int			in_space = 0;
     unsigned char	*q, *start;
-    unsigned char	*position = (unsigned char *) contents->get();
+    unsigned char	*position = (unsigned char *) HtSGMLCodec::instance()->encode(*contents).get();
     unsigned char       *text = (unsigned char *) new char[contents->length()+1];
     unsigned char       *ptext = text;
     static char         *skip_start = config["noindex_start"];
@@ -210,15 +210,6 @@ HTML::parse(Retriever &retriever, URL &baseURL)
 		  *ptext++ = *position++;
 	      }
 	}
-	else if (*position == '&')
-	{
-           *ptext = SGMLEntities::translateAndUpdate(position);
-           if (*ptext == '<') 
-           {
-              *ptext = ' ';
-           }
-           ptext++;
-        }
         else
         {
            *ptext++ = *position++;
