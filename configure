@@ -2170,14 +2170,14 @@ EOF
 fi
 rm -f conftest*
 
-DB_DIR=`echo db-*/dist`
+DB_DIR=`echo db*/dist`
 if test ! -d $DB_DIR; then
   echo "Extracting files..."
-  tarfile=`echo db-*.tar.gz`
+  tarfile=`echo db*.tar.gz`
   $GUNZIP < $tarfile | $TAR xf -
 fi
 
-DB_DIR=`echo db-*/dist`
+DB_DIR=`echo db*/dist`
 
 if test ! -d $DB_DIR; then
   { echo "configure: error: Please extract the Berkeley DB library" 1>&2; exit 1; }
