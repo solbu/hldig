@@ -1,7 +1,7 @@
 //
 // Implementation of String class
 //
-// $Id: String.cc,v 1.16.2.5 2001/07/05 16:26:35 ghutchis Exp $
+// $Id: String.cc,v 1.16.2.6 2001/11/20 23:15:32 grdetil Exp $
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2001 The ht://Dig Group
@@ -10,7 +10,7 @@
 // <http://www.gnu.org/copyleft/gpl.html>
 //
 #if RELEASE
-static char	RCSid[] = "$Id: String.cc,v 1.16.2.5 2001/07/05 16:26:35 ghutchis Exp $";
+static char	RCSid[] = "$Id: String.cc,v 1.16.2.6 2001/11/20 23:15:32 grdetil Exp $";
 #endif
 
 
@@ -61,7 +61,7 @@ String::String(char *s, int len)
 {
     Allocated = 0;
     Length = 0;
-    if (s && len != 0)
+    if (s && len > 0)
 	copy(s, len, len);
 }
 
@@ -143,7 +143,7 @@ void String::append(char *s)
 
 void String::append(char *s, int slen)
 {
-    if (!s || !slen)
+    if (!s || slen <= 0)
 	return;
 
 //    if ( slen == 1 ) 
@@ -258,7 +258,7 @@ int String::as_integer(int def)
 
 String String::sub(int start, int len) const
 {
-    if (start > Length)
+    if (start > Length || start < 0 || len < 0)
 	return 0;
 
     if (len > Length - start)

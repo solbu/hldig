@@ -1,8 +1,13 @@
+Tue Nov 20 17:13:27 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/String.cc (String, append, sub): Added checks for negative
+	lengths or start position to make code more fault-tolerant.
+
 Tue Nov 20 16:37:26 2001  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htfuzzy/Synonym.cc (createDB): Check for lines with less than
-	2 words, to avoid segfault caused by calling DB::Put() with negative
-	length for data field.
+	2 words, to avoid segfault caused by calling Database::Put() with
+	negative length for data field.
 
 Sat Nov  3 23:55:00 2001  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
