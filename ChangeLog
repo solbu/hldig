@@ -1,3 +1,17 @@
+Tue Feb 08 10:32:48 2000  Loic Dachary  <loic@ceic.com>
+
+	* test/t_wordskip: copy $srcdir/skiptest_db.txt to allow running
+	  outside the source tree.
+
+	* configure.in: use '${prefix}/...' instead of "$ac_default_prefix/..."
+	  that did not carry the --prefix value. 
+
+	* configure.in: run CHECK_USER and AC_PROG_APACHE if --enable-tests
+
+Mon Feb 07 17:40:47 2000  Loic Dachary  <loic@ceic.com>
+
+	* htlib/htString.h (last): turn to const
+
 Mon Feb 07 14:05:37 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
         * htnet/HtHTTP.cc: fixed a bug in ReadChunkedBody() function

@@ -5,11 +5,16 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: t_wordskip,v 1.1.2.1 1999/12/09 12:40:42 bosc Exp $
+# $Id: t_wordskip,v 1.1.2.2 2000/02/08 08:15:05 loic Exp $
 #
 
 . ./test_functions
 
 verbose=$1
+
+if [ ! -f skiptest_db.txt ]
+then
+	cp $srcdir/skiptest_db.txt .
+fi
 
 ./word  -s $verbose

@@ -1561,7 +1561,7 @@ if test "${with_config_dir+set}" = set; then
   withval="$with_config_dir"
   CONFIG_DIR="$withval"
 else
-  CONFIG_DIR="$ac_default_prefix/conf"
+  CONFIG_DIR='${prefix}/conf'
 fi
 
 
@@ -1571,7 +1571,7 @@ if test "${with_common_dir+set}" = set; then
   withval="$with_common_dir"
   COMMON_DIR="$withval"
 else
-  COMMON_DIR="$datadir/htdig"
+  COMMON_DIR='${datadir}/htdig'
 fi
 
 
@@ -1581,7 +1581,7 @@ if test "${with_database_dir+set}" = set; then
   withval="$with_database_dir"
   DATABASE_DIR="$withval"
 else
-  DATABASE_DIR="$localstatedir/htdig"
+  DATABASE_DIR='${localstatedir}/htdig'
 fi
 
 
@@ -1591,7 +1591,7 @@ if test "${with_default_config_file+set}" = set; then
   withval="$with_default_config_file"
   DEFAULT_CONFIG_FILE="$withval"
 else
-  DEFAULT_CONFIG_FILE="$CONFIG_DIR/htdig.conf"
+  DEFAULT_CONFIG_FILE='${CONFIG_DIR}/htdig.conf'
 fi
 
 
@@ -1601,7 +1601,7 @@ if test "${with_cgi_bin_dir+set}" = set; then
   withval="$with_cgi_bin_dir"
   CGIBIN_DIR="$withval"
 else
-  CGIBIN_DIR="$ac_default_prefix/cgi-bin"
+  CGIBIN_DIR='${prefix}/cgi-bin'
 fi
 
 
@@ -1611,7 +1611,7 @@ if test "${with_image_dir+set}" = set; then
   withval="$with_image_dir"
   IMAGE_DIR="$withval"
 else
-  IMAGE_DIR="$ac_default_prefix/htdocs/htdig"
+  IMAGE_DIR='${prefix}/htdocs/htdig'
 fi
 
 
@@ -1621,7 +1621,7 @@ if test "${with_search_dir+set}" = set; then
   withval="$with_search_dir"
   SEARCH_DIR="$withval"
 else
-  SEARCH_DIR="$ac_default_prefix/htdocs/htdig"
+  SEARCH_DIR='${prefix}/htdocs/htdig'
 fi
 
 
@@ -1631,7 +1631,7 @@ if test "${with_image_url_prefix+set}" = set; then
   withval="$with_image_url_prefix"
   IMAGE_URL_PREFIX="$withval"
 else
-  IMAGE_URL_PREFIX="/htdig"
+  IMAGE_URL_PREFIX='/htdig'
 fi
 
 
@@ -1641,7 +1641,7 @@ if test "${with_search_form+set}" = set; then
   withval="$with_search_form"
   SEARCH_FORM="$withval"
 else
-  SEARCH_FORM="search.html"
+  SEARCH_FORM='search.html'
 fi
 
 
@@ -4199,7 +4199,7 @@ if test ! -d "./db"; then
   mkdir db
 fi
 
-if test -n "$TESTDIR"
+if $htdig_cv_test
 then
 	echo $ac_n "checking user name""... $ac_c" 1>&6
 echo "configure:4206: checking user name" >&5
