@@ -1,3 +1,25 @@
+Wed Jan 19 21:49:57 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdig/HTML.cc (do_tag): Only add words for META descriptions,
+	keywords, and IMG ALT attributes if doindex is set.
+
+	* htcommon/DocumentRef.h: Added Reference_obsolete for documents
+	that should be removed (but haven't).
+
+	* htdig/Retriever.cc (parse_url): Flag documents that have been
+	modified as Reference_obsolete and update the database. Flag all
+	documents with various errors as something other than
+	Reference_normal, as appropriate--these probably should be pruned.
+
+	* htsearch/Display.cc (display): Don't show DocumentRefs with
+	states other than Reference_normal--these documents have various
+	errors.
+
+	* htmerge/docs.cc: If a document has a state of Reference_obsolete, ignore it.
+
+	* htcommon/HtWordList.h, htcommon/HtWordList.cc (Skip): Change
+	MarkGone() to Skip() to emphasize that this document should be ignored.
+
 Mon Jan 17 12:15:45 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/htdig-3.2.0.spec: added sample RPM spec file for 3.2
