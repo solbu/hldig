@@ -1,3 +1,8 @@
+Wed Feb  9 09:05:10 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htlib/HtRegex.cc (set): apply the fix from Valdas Andrulis, to
+	properly compile case_sensitive expressions.
+
 Mon Feb 09 09:43:59 2000 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
         * htnet/HtHTTP.cc: changed "<<" to append() for content_length

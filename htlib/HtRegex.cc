@@ -9,7 +9,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtRegex.cc,v 1.9.2.1 1999/12/02 02:41:24 ghutchis Exp $
+// $Id: HtRegex.cc,v 1.9.2.2 2000/02/09 15:10:08 grdetil Exp $
 //
 
 #include "HtRegex.h"
@@ -39,11 +39,15 @@ HtRegex::set(const char * str, int case_sensitive)
 	if (str == NULL) return;
 	if (strlen(str) <= 0) return;
 	if (!case_sensitive)
+	{
 	  if (regcomp(&re, str, REG_EXTENDED|REG_ICASE) == 0)
 		compiled = 1;
+	}
 	else
+	{
 	  if (regcomp(&re, str, REG_EXTENDED) == 0)
 		compiled = 1;
+	}
 }
 
 void
