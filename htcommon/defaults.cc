@@ -4,9 +4,9 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
-// Revision 1.15  1998/10/02 17:07:31  ghutchis
+// Revision 1.16  1998/10/12 02:09:28  ghutchis
 //
-// More configure changes
+// Added htsearch logging patch from Alexander Bergolth.
 //
 // Revision 1.13  1998/09/23 14:58:21  ghutchis
 //
@@ -62,7 +62,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.15 1998/10/02 17:07:31 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.16 1998/10/12 02:09:28 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -120,6 +120,7 @@ ConfigDefaults	defaults[] =
     {"local_default_doc",               "index.html"},
     {"local_urls",			""},
     {"local_user_urls",			""},
+    {"logging",                         "false"},
     {"maintainer",			"bogus@unconfigured.htdig.user"},
     {"match_method",			"or"},
     {"matches_per_page",		"10"},

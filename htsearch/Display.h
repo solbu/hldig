@@ -1,9 +1,13 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.2 1998/09/10 04:16:26 ghutchis Exp $
+// $Id: Display.h,v 1.3 1998/10/12 02:09:28 ghutchis Exp $
 //
 // $Log: Display.h,v $
+// Revision 1.3  1998/10/12 02:09:28  ghutchis
+//
+// Added htsearch logging patch from Alexander Bergolth.
+//
 // Revision 1.2  1998/09/10 04:16:26  ghutchis
 //
 // More bug fixes.
@@ -156,6 +160,7 @@ protected:
     void		displayParsedFile(char *);
     void		setVariables(int, List *);
     void		createURL(String &, int);
+    void		logSearch(int, List *);
 };
 
 //*****************************************************************************

@@ -4,6 +4,10 @@
 // Implementation of parser
 //
 // $Log: parser.cc,v $
+// Revision 1.4  1998/10/12 02:09:28  ghutchis
+//
+// Added htsearch logging patch from Alexander Bergolth.
+//
 // Revision 1.3  1998/09/06 03:22:38  ghutchis
 //
 // Bug fixes
@@ -16,7 +20,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: parser.cc,v 1.3 1998/09/06 03:22:38 ghutchis Exp $";
+static char RCSid[] = "$Id: parser.cc,v 1.4 1998/10/12 02:09:28 ghutchis Exp $";
 #endif
 
 #include "parser.h"
@@ -203,7 +207,7 @@ Parser::perform_push()
     if (dbf->Get(p, data) == OK)
     {
 	p = data.get();
-	for (int i = 0; i < data.length() / sizeof(WordRecord); i++)
+	for (unsigned int i = 0; i < data.length() / sizeof(WordRecord); i++)
 	{
 	    p = data.get() + i * sizeof(WordRecord);
 	    memcpy((char *) &wr, p, sizeof(WordRecord));

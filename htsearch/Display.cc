@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.15  1998/10/12 02:09:28  ghutchis
+//
+// Added htsearch logging patch from Alexander Bergolth.
+//
 // Revision 1.14  1998/09/23 14:58:22  ghutchis
 //
 // Many, many bug fixes
@@ -62,7 +66,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.14 1998/09/23 14:58:22 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.15 1998/10/12 02:09:28 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -74,6 +78,7 @@ static char RCSid[] = "$Id: Display.cc,v 1.14 1998/09/23 14:58:22 ghutchis Exp $
 #include <fstream.h>
 #include <stdio.h>
 #include <ctype.h>
+#include<syslog.h>
 
 
 //*****************************************************************************
@@ -130,6 +135,11 @@ Display::display(int pageNumber)
     ResultMatch	*match = 0;
     int			number = config.Value("matches_per_page");
     int			startAt = (pageNumber - 1) * number;
+
+    if (config.Boolean("logging"))
+    {
+        logSearch(pageNumber, matches);
+    }
 
     setVariables(pageNumber, matches);
 	
@@ -797,7 +807,7 @@ Display::excerpt(DocumentRef *ref, char *url)
     char	*head = ref->DocHead();
     if (config.Boolean("use_meta_description",0) 
 	&& strlen(ref->DocMetaDsc()) != 0)
-      head = ref->DocMetaDsc();
+	head = ref->DocMetaDsc();
     int		which, length;
     int		first = allWordsPattern->FindFirstWord(head, which, length);
     char	*temp = head;
@@ -926,3 +936,24 @@ Display::compare(const void *a1, const void *a2)
 }
 
 
+void
+Display::logSearch(int page, List *matches)
+{
+    // Currently unused char	*env_host;
+    // Currently unused    time_t	t;
+    int		nMatches = 0;
+    int         level = LOG_LEVEL;
+    int         facility = LOG_FACILITY;
+
+    if (matches)
+	nMatches = matches->Count();
+
+    openlog("htsearch", LOG_PID, facility);
+    syslog(level, "%s [%s] (%s) [%s] [%s] (%d/%s) - %d\n",
+	   getenv("REMOTE_HOST"),
+	   input->exists("config") ? input->get("config") : "default",
+	   config["match_method"], input->get("words"), logicalWords.get(),
+	   nMatches, config["matches_per_page"],
+	   page
+	   );
+}
