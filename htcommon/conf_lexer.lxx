@@ -5,13 +5,17 @@
 //             This lexical parser is used to parse ht://Dig config
 //             files.  
 //
+//       Note:  The resulting .cxx file produces warnings of unused
+//		labels.  As at 2003-06-02, these have been manually
+//		removed, but they will reappear when  (f)lex  is re-run.
+//
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999, 2000 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: conf_lexer.lxx,v 1.4 2003/02/01 02:40:48 nealr Exp $
+// $Id: conf_lexer.lxx,v 1.5 2003/06/02 13:54:56 lha Exp $
 //
 */
 %{

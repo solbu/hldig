@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.83 2003/05/24 14:30:21 lha Exp $
+// $Id: defaults.cc,v 1.84 2003/06/02 13:54:56 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2751,7 +2751,7 @@ form during indexing and translated for results. \
 { "wordlist_compress", "true",  \
 	"boolean", "all", "", "3.2.0b1", "Indexing:How", "wordlist_compress: false", " \
 	Enables or disables the default compression system for the indexer. \
-	This currently attempts to compress the index by a factor of 3. If the \
+	This currently attempts to compress the index by a factor of 8. If the \
 	Zlib library is not found on the system, the default is false. \
 " }, \
 { "wordlist_compress_zlib", "true",  \

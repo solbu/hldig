@@ -10,7 +10,7 @@
 // or the GNU General Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDBCompress.cc,v 1.4 2002/10/27 15:47:56 ghutchis Exp $
+// $Id: WordDBCompress.cc,v 1.5 2003/06/02 13:54:57 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -95,7 +95,7 @@ DB_CMPR_INFO* WordDBCompress::CmprInfo()
   cmpr_info->user_data = (void *)this;
   cmpr_info->compress = WordDBCompress_compress_c;
   cmpr_info->uncompress = WordDBCompress_uncompress_c;
-  cmpr_info->coefficient = 3;
+  cmpr_info->coefficient = 3;	// reduce page size by factor of 1<<3 = 8
   cmpr_info->max_npages = 9;
 
   if(use_zlib == 1)

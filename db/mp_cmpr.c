@@ -114,12 +114,14 @@ static int CDB___memp_cmpr_page __P((DB_MPOOLFILE *, CMPR *, DB_IO *, ssize_t *)
 static DB_CMPR_INFO default_cmpr_info = {
     CDB___memp_cmpr_deflate,    
     CDB___memp_cmpr_inflate,    
-    1,
-    3,
+    3,		/* reduce page size by factor of 1<<3 = 8 */
+    9,		/* allow 9 reduced pages, in case "compression" expands data */
+    6,		/* zlib compression level */
     NULL
 };
 #else /* HAVE_LIBZ */
 static DB_CMPR_INFO default_cmpr_info = {
+    0,
     0,
     0,
     0,

@@ -1,3 +1,11 @@
+Mon Jun 2 2003 Lachlan Andrew  <lha@users.sourceforge.net>
+
+	* db/mp_cmpr.c: Add default zlib setting to  default_cmpr_info
+	* htcommon/defaults.cc, htword/WordDBCompress.cc: Fix docs to say
+	  default compression by 8 (not by 3, which I had "fixed" it to...)
+
+	* htcommon/conf_lexer.{cxx,lxx}: Avoid warnings, and document hack.
+
 Thu May 29 2003 Lachlan Andrew  <lha@users.sourceforge.net>
 	
 	* db/mp_cmpr.c: Fix comparison of -1 and unsigned which broke SunOS cc

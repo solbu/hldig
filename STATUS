@@ -1,7 +1,8 @@
 STATUS of ht://Dig branch 3-2-x
 
 CHECKLIST FOR 3.2.0b5:
-* Add more items to checklist :-)
+* Latin-encodings (Gilles)
+* Apply memory leak patches (Neal)
 * Must be able to
 	(a) make check  and
 	(b) index  www.htdig.org  using  "robotstxt_name: master-htdig"
@@ -12,17 +13,21 @@ CHECKLIST FOR 3.2.0b5:
     - Debian, Linux kernel 2.2.19, gcc 2.95.4 (lha, 23 May)
     - SunOS 5.8 = Solaris 2.8, gcc 3.1 (lha, 25 May)
     - SunOS 5.8 = Solaris 2.8, Sun cc with g++ 3.1 (lha, 29 May)
+    - OS X (Jim, 30 May)
   Partly tested:
+    - RedHat 8 (Jim, 1 June.  make check requires tweaking for apache)
     - SunOS 5.8 = Solaris 2.8, gcc 2.95.2
-    		   (lha. Makes check minus apache, Digs small htdig.org. 27 May)
-    - RedHat 7.3   (lha. Makes check minus apache. Digs small htdig.org. 25 May)
-    - Alpha Debian (lha. Makes check minus apache. Digs small htdig.org. 25 May)
+	    (lha. Makes check minus apache, Digs small htdig.org. 27 May)
+    - SunOS 5.8 = Solaris 2.8, Sun cc with g++ 2.95.2
+	    (lha. Makes check minus apache, Digs small htdig.org. 2 June)
+    - RedHat 7.3
+	    (lha. Makes check minus apache. Digs small htdig.org. 25 May)
+    - Alpha Debian
+    	    (lha. Makes check minus apache. Digs small htdig.org. 25 May)
   To be tested:
-    - SunOS 5.8 = Solaris 2.8, Sun cc with g++ 2.95.2 (lha)
     - HP-UX 10.20, gcc 2.8.1 (Jesse)
-    - RedHat anyone?
-    - OS X anyone?
-* Latin-encodings (Gilles)
+    - RedHat, other versions anyone?
+    - RedHat AdvanceServer Itanium II (David Bannon)
 * Check bugs listed in bug-tracker...
 * Polish release docs (Geoff)
 
