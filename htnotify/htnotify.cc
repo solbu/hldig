@@ -5,83 +5,23 @@
 // Send e-mail to addresses mentioned in documents if the doc
 // has "expired"
 //
-// $Log: htnotify.cc,v $
-// Revision 1.18  1999/01/25 05:13:22  ghutchis
-// Fix comiler errors.
-//
-// Revision 1.17  1999/01/25 04:08:54  ghutchis
-// Fix compiler warnings.
-//
-// Revision 1.16  1999/01/25 01:53:49  hp
-// Provide a clean upgrade from old databses without "url_part_aliases" and
-// "common_url_parts" through the new option "uncoded_db_compatible".
-//
-// Revision 1.15  1999/01/21 13:41:23  ghutchis
-// Check HtURLCodec for errors.
-//
-// Revision 1.14  1999/01/14 03:00:40  ghutchis
-// Bring latest security patch from 3.1.0b4 onto the mainline source.
-//
-// Revision 1.13  1998/12/27 14:22:58  bergolth
-// Fixed memory leaks and local_default_doc bug.
-//
-// Revision 1.12  1998/12/19 16:27:07  ghutchis
-// Fix nasty security hole found by Werner Hett <hett@isbiel.ch>.
-//
-// Revision 1.11  1998/12/04 04:13:52  ghutchis
-// Use configure check to only include getopt.h when it exists.
-//
-// Revision 1.9  1998/11/06 23:41:38  ghutchis
-//
-// Fixed buglet with -F flag to sendmail.
-//
-// Revision 1.8  1998/11/02 20:36:30  ghutchis
-//
-// Changed HTDig to ht://Dig.
-//
-// Revision 1.7  1998/10/02 17:07:32  ghutchis
-//
-// More configure changes
-//
-// Revision 1.6  1998/09/23 14:58:22  ghutchis
-//
-// Many, many bug fixes
-//
-// Revision 1.5  1998/08/03 16:50:44  ghutchis
-//
-// Fixed compiler warnings under -Wall
-//
-// Revision 1.4  1998/07/22 10:04:28  ghutchis
-//
-// Added patches from Sylvain Wallez <s.wallez.alcatel@e-mail.com> to
-// Display.cc to use the filename if no title is found and Chris Jason
-// Richards <richards@cs.tamu.edu> to htnotify.cc to fix problems with sendmail.
-//
-// Revision 1.3  1997/06/23 02:27:24  turtle
-// Added version info to the usage output
-//
-// Revision 1.2  1997/03/13 18:37:50  turtle
-// Changes
-//
-// Revision 1.1.1.1  1997/02/03 17:11:11  turtle
-// Initial CVS
-//
 //
 #if RELEASE
-static char RCSid[] = "$Id: htnotify.cc,v 1.18 1999/01/25 05:13:22 ghutchis Exp $";
+static char RCSid[] = "$Id: htnotify.cc,v 1.19 1999/02/06 01:17:47 ghutchis Exp $";
 #endif
 
-#include <Configuration.h>
-#include <DocumentDB.h>
-#include <DocumentRef.h>
-#include <defaults.h>
+#include "Configuration.h"
+#include "DocumentDB.h"
+#include "DocumentRef.h"
+#include "defaults.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <fstream.h>
 #include <time.h>
 #include <stdio.h>
-#include <HtURLCodec.h>
+#include <ctype.h>
+#include "HtURLCodec.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -91,6 +31,7 @@ static char RCSid[] = "$Id: htnotify.cc,v 1.18 1999/01/25 05:13:22 ghutchis Exp 
 void htnotify(DocumentRef &);
 void usage();
 void send_notification(char *date, char *email, char *url, char *subject);
+int parse_date(char *date, int &year, int &month, int &day);
 
 
 int	verbose = 0;
@@ -109,7 +50,7 @@ struct tm	*today;
 int main(int ac, char **av)
 {
     int			c;
-    extern char	*optarg;
+    extern char		*optarg;
     String		base;
     String		configFile = DEFAULT_CONFIG_FILE;
 
@@ -177,7 +118,8 @@ int main(int ac, char **av)
     while ((str = (String *) docs->Get_Next()))
     {
 	ref = docdb[str->get()];
-	htnotify(*ref);
+	if (ref)
+	    htnotify(*ref);
 	delete ref;
     }
     delete docs;
@@ -207,17 +149,29 @@ void htnotify(DocumentRef &ref)
 	}
 
 	int		month, day, year;
-	if (config.Boolean("iso_8601"))
-	  {
-	    sscanf(date, "%d-%d-%d", &year, &month, &day);
-	  }
-	else
-	  {
-	    sscanf(date, "%d/%d/%d", &month, &day, &year);
-	  }
+	if (!parse_date(date, year, month, day))
+	{
+	    // Parsing Failed
+	    if (verbose > 1)
+	    {
+		cout << "Malformed date: " << date << endl;
+	    }
 
-	if (year > 1900)
-	    year -= 1900;
+	    send_notification(date, email, ref.DocURL(), "Malformed Date");
+
+	    if (verbose)
+	    {
+		cout << "Message sent." << endl;
+		cout << "Date:    " << date << endl;
+		cout << "URL:     " << ref.DocURL() << endl;
+		cout << "Subject: Malformed Date" << endl;
+		cout << "Email:   " << email << endl;
+		cout << endl;
+	    }
+	    return;
+	}
+
+	year -= 1900;
 	month--;
 
 	//
@@ -241,6 +195,16 @@ void htnotify(DocumentRef &ref)
 		cout << "Subject: " << ref.DocSubject() << endl;
 		cout << "Email:   " << email << endl;
 		cout << endl;
+	    }
+	}
+	else
+	{
+	    // Page not yet expired
+	    if (verbose)
+	    {
+		cout << "htnotify: URL " << ref.DocURL()
+		     << " (" << year+1900 << "-" << month+1
+		     << "-" << day << ")" << endl;
 	    }
 	}
     }
@@ -315,7 +279,7 @@ void send_notification(char *date, char *email, char *url, char *subject)
 
 
 //*****************************************************************************
-// Display usage information for the htdig program
+// Display usage information for the htnotify program
 //
 void usage()
 {
@@ -333,3 +297,59 @@ void usage()
 }
 
 
+//*****************************************************************************
+// Parse the notification date string from the user's document
+//
+int parse_date(char *date, int &year, int &month, int &day)
+{
+    int		mm = -1, dd = -1, yy = -1, t;
+    String	scandate = date;
+
+    for (char *s = scandate.get(); *s; s++)
+	if (ispunct(*s))
+	    *s = ' ';
+
+    if (config.Boolean("iso_8601"))
+    {
+	// conf file specified ISO standard, so expect [yy]yy mm dd.
+	sscanf(scandate.get(), "%d%d%d", &yy, &mm, &dd);
+    }
+    else
+    {
+	// Default to American standard when not specified in conf,
+	// so expect mm dd [yy]yy.
+	sscanf(scandate.get(), "%d%d%d", &mm, &dd, &yy);
+    }
+
+    // OK, we took our best guess at the order the y, m & d should be.
+    // Now let's see if we guessed wrong, and fix it.  This won't work
+    // for ambiguous dates (e.g. 01/02/03), which must be given in the
+    // expected format.
+    if (dd > 31 && yy <= 31)
+    {
+	t = yy; yy = dd; dd = t;
+    }
+    if (mm > 31 && yy <= 31)
+    {
+	t = yy; yy = mm; mm = t;
+    }
+    if (mm > 12 && dd <= 12)
+    {
+	t = dd; dd = mm; mm = t;
+    }
+    if (yy < 0 || mm < 1 || mm > 12 || dd < 1 || dd > 31)
+	return 0;		// Invalid date
+
+    if (yy < 70)		// before UNIX Epoch
+	yy += 2000;
+    else if (yy < 1900)		// before computer age
+	yy += 1900;
+    if (verbose > 1)
+	cout << "Date used (y-m-d): " << yy << '-' << mm << '-' << dd << endl;
+
+    year = yy;
+    month = mm;
+    day = dd;
+
+    return 1;
+}
