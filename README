@@ -1,5 +1,5 @@
 ht://Dig 3.1.6 README
-Copyright (c) 1995-2001 The ht://Dig Group
+Copyright (c) 1995-2002 The ht://Dig Group
 Contributions from many, see htdoc/THANKS.html
 
 ht://Dig is distributed under the GNU General Public License (GPL).
@@ -12,20 +12,13 @@ See the htdoc/install.html file for compilation and installation instructions.
 This distribution includes:
 
     * htdig     - A www information gathering and indexing system
-
     * htmerge   - A htdig database merging program
-
     * htfuzzy   - A fuzzy search database creation program
-
     * htsearch  - A search engine.
-
     * htlib     - A small general purpose C++ class library
-
     * htcommon  - ht://Dig specific classes
-
     * htdoc     - ht://Dig documentation in HTML
-
-    * db        - The latest Berkeley DB package from Sleepycat Software
+    * db        - The Berkeley DB package from Sleepycat Software
 
 ht://Dig has been tested extensively under Linux using gcc/g++
 If you use g++, make absolutely sure you have libstdc++ installed

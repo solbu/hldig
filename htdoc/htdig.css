@@ -1,0 +1,56 @@
+<!--
+
+
+
+a:link {text-decoration: none}
+
+a:visited {text-decoration: none}
+
+a:active {text-decoration: none}
+
+a:hover {text-decoration: underline; font-weight: bold}
+
+
+
+body { bgcolor: #eef7ff; font-family: arial, helvetica, sans-serif }
+
+
+
+p { font-family: arial, helvetica, sans-serif }
+
+p.credits { color: black; font-style: normal; font-size: 8pt; text-align: center }
+
+p.main { text-align: justify; text-indent: 10pt }
+
+
+
+h1 { font-family: arial, helvetica, sans-serif; font-style: normal; font-size: 17pt; }
+
+h2 { font-family: arial, helvetica, sans-serif; font-style: normal; font-size: 15pt; }
+
+h3 { font-family: arial, helvetica, sans-serif; font-style: italic; font-size: 14pt; }
+
+h4 { font-family: arial, helvetica, sans-serif; font-style: italic; font-size: 13pt; }
+
+h5 { font-family: arial, helvetica, sans-serif; font-style: normal; font-size: 12pt; }
+
+
+
+table { font-family: arial, helvetica, sans-serif }
+
+th { font-family: arial, helvetica, sans-serif }
+
+td { font-family: arial, helvetica, sans-serif }
+
+
+
+blockquote { font-family: arial, helvetica, sans-serif }
+
+ul { font-family: arial, helvetica, sans-serif }
+
+code { font-family: courier-new, courier, arial, helvetica, sans-serif }
+
+
+
+-->
+

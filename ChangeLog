@@ -1,3 +1,12 @@
+Mon Jan 21 22:33:30 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htdoc/RELEASE.html: Add first shot at the release notes for
+	3.1.6. Still need to finish some of the htdoc/ merges, including
+	the SF icons and such.
+
+	* htdoc/*.html: First stab at many of the htdoc/merges including
+	the new Copyright line. (It is 2002, after all.)
+
 Fri Jan 18 18:17:34 2002  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htmerge/docs.cc: Add a test if the DB database has no URLs
@@ -719,7 +728,7 @@ Mon Jun 4 10:31:45 CEST 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htdoc/cf_byname.html: I forgot to insert the 'restrict' attribute.
 
-Wed May 30 11:30:43 CEST 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
+Wed May 30 11:30:43 2001 Gabriele Bartolini <angusgb@users.sourceforge.net>
 
 	* htsearch/htsearch.cc: two new attributes, used by htsearch, have
         been added: restrict and exclude. They can now give more control

@@ -3,14 +3,15 @@
   <head>
 	<title>
 	  ht://Dig: Release notes
-	</title>
+	</title> 
+        <link rel="stylesheet" href="htdig.css">
   </head>
   <body bgcolor="#eef7ff">
 	<h1>
 	  Release notes
 	</h1>
 	<p>
-	  ht://Dig Copyright &copy; 1995-2000 The ht://Dig Group<br>
+	  ht://Dig Copyright &copy; 1995-2002 <a href="THANKS.html">The ht://Dig Group</a><br>
 	   Please see the file <a href="COPYING">COPYING</a> for
 	  license information.
 	</p>
@@ -22,6 +23,101 @@
 	</p>
 
 	<p>
+	<strong>Release notes for htdig-3.1.6</strong> XX Jan 2001<br>
+	As with previous releases, this version cleans up some
+	remaining bugs and adds a few heavily-requested features. As
+	the latest stable release, it is recommended for all
+	production servers.
+	</p>
+	<ul>
+	<li>Fixed another nasty security hole in htsearch, which would
+	allow a denial of service attack or forcing htsearch to read
+	in config files outside of the configuration directory.</li>
+	<li>Fixed some problems with htmerge, including problems with
+	words beginning with special characters and merging multiple
+	databases.</li>
+	<li>Fixed a bug in handling hopcounts.</li>
+	<li>Fixed problems in handling non-standard relative HTTP
+	redirects.</li>
+	<li>Fixed bugs in external parsers support including being confused by
+	charset information in the Content-Type header and handling
+	binary output from external converters.</li>
+	<li>Fixed bugs in the default English endings database. (Under
+	ispell, it wasn't quite intended for the accuracy needed for
+	our usage.)</li>
+	<li>Fixed additional bugs in the endings fuzzy algorithm.</li>
+	<li>Fixed bugs with compiling with gcc-3.0 and later.</li>
+	<li>Fixed bugs compiling and running on Mac OS X.</li>
+	<li>Fixed problems with servers not returning a Last-Modified
+	date--now assums indexing time as modification time.</li>
+	<li>Fixed a variety of bugs in the HTML parser to more
+	flexibly handle non-standard HTML.</li>
+	<li>Fixed problems in the TCP connection code and will more
+	reliably timeout when a connection hangs and will retry bad
+	connections several times before giving up.</li>
+	<li>Added the -m 'minimal' flag to <a
+	href="htdig.html">htdig</a> for only indexing a set list of
+	URLs.</li>
+	<li>Added <a href="htdump.html">htdump</a> and <a
+	href="htload.html">htload</a> programs for dumping ASCII
+	representations of the databases and reloading the same.</li>
+	<li>Added support for htnotify to collect multiple URLs and
+	allow easy customization of notification messages, including
+	the new attributes
+	<a href="attrs.html#htnotify_replyto">htnotify_replyto</a>,
+	<a href="attrs.html#htnotify_webmaster">htnotify_webmaster</a>,
+	<a
+	href="attrs.html#htnotify_prefix_file">htnotify_prefix_file</a>, and
+	<a
+	href="attrs.html#htnotify_suffix_file">htnotify_suffix_file</a>.
+	</li>
+	<li>Added a new 'accents' fuzzy algorithm to morph accents,
+	including the new <a
+	href="attrs.html#accents_db">accents_db</a> attribute.</li>
+	<li>Added a 'list all' feature to htsearch with a query of '*'
+	or the current prefix_match_character.</li>
+	<li>Added date restricted searching to <a
+	href="hts_form.html">htsearch</a> including relative dates.</li>
+	<li>Added documentation on <a href="running.html">running
+	ht://Dig</a> and the <a href="rundig.html">rundig script</a>.</li>
+	<li>Added METADESCRIPTION and NSTARS variables to the <a
+	href="hts_templates.html">htsearch templates</a> as well as
+	support for $=(var) template variable references.</li>
+	<li>Added new config attributes to htsearch for <a
+	href="attrs.html#restrict">restrict</a> and <a
+	href="attrs.html#exclude">exclude</a> which work like the
+	normal htsearch form variables if the form variables are not
+	set.</li>
+	<li>Added many new attributes, including
+	<a href="attrs.html#description_meta_tag_names">description_meta_tag_names</a>,
+	<a href="attrs.html#max_keywords">max_keywords</a>,
+	<a href="attrs.html#translate_latin1">translate_latin1</a>,
+	<a href="attrs.html#url_rewrite_rules">url_rewrite_rules</a>,
+	<a href="attrs.html#search_rewrite_rules">search_rewrite_rules</a>,
+	<a href="attrs.html#anchor_target">anchor_target</a>,
+	<a href="attrs.html#ignore_alt_text">ignore_alt_text</a>,
+	<a href="attrs.html#search_results_contenttype">search_results_contenttype</a>,
+	<a href="attrs.html#boolean_keywords">boolean_keywords</a>,
+	<a href="attrs.html#boolean_syntax_errors">boolean_syntax_errors</a>,
+	<a href="attrs.html#multimatch_method">multimatch_method</a>,
+	<a href="attrs.html#maximum_page_buttons">maximum_page_buttons</a>,
+	<a href="attrs.html#max_excerpts">max_excerpts</a>,
+	<a href="attrs.html#plural_suffix">plural_suffix</a>,
+	<a href="attrs.html#any_keywords">any_keywords</a> and
+	<a href="attrs.html#use_doc_date">use_doc_date</a>.</li>
+	<li>Extended the <a
+	href="attrs.html#build_select_lists">build_select_lists</a>
+	attribute to support select multiple, radio boxes and checkboxes.</li>
+	<li>Revised the documentation to make it clearer in parts,
+	including the <a
+	href="attrs.html#url_part_aliases">url_part_aliases</a> attribute.</li>
+	<li>Updated various contributed utilities including doc2html,
+	xmlsearch, rundig.sh, htparsedoc, acroconv.pl, multidig, etc.</li>
+	<li>A variety of other bug fixes, and many documentation updates.
+	    See the <a href="ChangeLog">ChangeLog</a> for details.</li>
+	<li>Once again, thanks to everyone who reported bugs and bug
+	    fixes.</li>
+	</ul>
 	<strong>Release notes for htdig-3.1.5</strong> 25 Feb 2000<br>
 	This version cleans up some remaining bugs in the 3.1.4
 	release. As the latest stable release of ht://Dig, it is
@@ -1140,11 +1236,10 @@
 	</ul>
 
 	<hr size="4" noshade>
-	<address>
-	  <a href="author.html">Andrew Scherpbier &lt;andrew@contigo.com&gt;</a>
-	</address>
 
-Last modified: $Date: 2000/02/24 21:25:09 $
+Last modified: $Date: 2002/01/22 04:35:10 $
 
+    <a href="http://sourceforge.net/"> 
+          <img src="http://sourceforge.net/sflogo.php?group_id=4593&amp;type=1" width="88" height="31" border="0" alt="SourceForge Logo"></a>
   </body>
 </html>
