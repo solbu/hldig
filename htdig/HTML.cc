@@ -4,6 +4,10 @@
 // Implementation of HTML
 //
 // $Log: HTML.cc,v $
+// Revision 1.12  1998/09/18 18:45:55  ghutchis
+//
+// YABF (Yet another bug fix)
+//
 // Revision 1.11  1998/09/18 02:38:08  ghutchis
 //
 // Bug fixes for 3.1.0b2
@@ -44,7 +48,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: HTML.cc,v 1.11 1998/09/18 02:38:08 ghutchis Exp $";
+static char RCSid[] = "$Id: HTML.cc,v 1.12 1998/09/18 18:45:55 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -614,7 +618,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		{
 		    if (strlen(w) >= minimumWordLength)
 			retriever.got_word(w, 1, 10);
-		    w = strtok(0, " \t\r\n");
+		    w = strtok(0, " ,\t\r\n");
 		}
 	    }
 
@@ -634,7 +638,7 @@ HTML::do_tag(Retriever &retriever, String &tag)
 		    {
 			if (strlen(w) >= minimumWordLength)
 			    retriever.got_word(w, 1, 10);
-			w = strtok(0, " \t\r\n");
+			w = strtok(0, " ,\t\r\n");
 		    }
 		}
 		else if (mystrcasecmp(cache, "htdig-email") == 0)

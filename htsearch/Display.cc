@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.13  1998/09/18 18:45:55  ghutchis
+//
+// YABF (Yet another bug fix)
+//
 // Revision 1.12  1998/09/10 04:16:26  ghutchis
 //
 // More bug fixes.
@@ -54,7 +58,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.12 1998/09/10 04:16:26 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.13 1998/09/18 18:45:55 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -194,7 +198,7 @@ Display::includeURL(char *url)
     {
 	if (excludeFrom &&
             excludeFrom->hasPattern() &&
-            excludeFrom->FindFirst(url) < 0)
+            excludeFrom->FindFirst(url) > 0)
 	    return 0;
 	else
 	    return 1;

@@ -1,3 +1,35 @@
+Fri Sep 18 14:35:02 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc: Fixed bug noted by Alexander Bergolth 
+	<leo@strike.wu-wien.ac.at> in exclude logic
+
+	* htdig/HTML.cc: Fixed bug in comma-separated keywords noted by
+	<C.H.Liddiard@qmw.ac.uk>
+
+	* installdir/synonyms: New version contributed by John Banbury 
+	<lijab@flinders.edu.au>
+
+Fri Sep 18 00:38:09 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* .version: Bump to 3.1.0b2
+
+	* htsearch/Makefile.in, htdig/Makefile.in, htfuzzy/Makefile.in,
+        htlib/Makefile.in, htmerge/Makefile.in,
+        htnotify/Makefile.in, htcommon/Makefile.in: Remove include
+	.sniffdir directive.
+
+	* htdig/HTML.cc: Fix horrible META description coding.
+
+	* htfuzzy/EndingsDB.cc, htfuzzy/Fuzzy.cc htfuzzy/Synonym.cc,
+	htfuzzy/htfuzzy.cc: Change "\r" to "\n" in statistics on
+	suggestion of Andrew M. Bishop <amb@gedanken.demon.co.uk>
+
+	* Makefile.config.in: Remove -ggdb from LDFLAGS.
+	
+Tue Sep 15 22:31:48 1998  turtle  <turtle@kiwi>
+
+        * Makefile.in: add substitution for @DATABASE_DIR@
+
 Thu Sep 10 00:06:58 1998  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htdig/HTML.cc: Change debug level of META tags.
