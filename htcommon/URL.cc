@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: URL.cc,v 1.3.2.5 2000/02/22 22:27:28 grdetil Exp $
+// $Id: URL.cc,v 1.3.2.6 2000/02/23 16:49:10 loic Exp $
 //
 
 #include "URL.h"
@@ -155,7 +155,7 @@ URL::URL(const char *url, URL &parent)
 	// look at the parent url's _service, to make this is a complete url...
 	String	fullref(parent._service);
 	fullref << ':' << ref;
-	parse(fullref);
+	parse((char*)fullref);
     }
     else
     {

@@ -1,3 +1,12 @@
+Wed Feb 23 19:04:16 2000  Loic Dachary  <loic@ceic.com>
+
+	* test/test_functions.in: inconditionaly remove existing test/var
+	  directory before runing tests to prevent accidents.
+
+	* htcommon/URL.cc (URL): fixed String->char warning
+
+	* htcommon/defaults.cc (wordlist_compress): defaults to true
+
 Tue Feb 22 17:09:10 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdig/HTML.cc(parse, do_tag): Fix handling of <img alt=...> text

@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: defaults.cc,v 1.64.2.34 2000/02/16 05:45:14 ghutchis Exp $
+// $Id: defaults.cc,v 1.64.2.35 2000/02/23 16:49:10 loic Exp $
 //
 
 #include "HtConfiguration.h"
@@ -2248,7 +2248,7 @@ url_part_aliases:
 	words. The file is easy to parse with tools like
 	perl or tcl.
 " },
-{ "wordlist_compress", "false", 
+{ "wordlist_compress", "true", 
 	"boolean", "htdig htmerge htsearch htfuzzy", "3.2.0b1", "Indexing:How", "wordlist_compress: true", "
 	Enables or disables the default compression system for the indexer.
 	This currently compresses the index by a factor of 8.

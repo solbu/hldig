@@ -5,7 +5,7 @@
 # or the GNU Public License version 2 or later
 # <http://www.gnu.org/copyleft/gpl.html>
 #
-# $Id: test_functions.in,v 1.6.2.2 1999/12/09 10:28:43 loic Exp $
+# $Id: test_functions.in,v 1.6.2.3 2000/02/23 16:49:11 loic Exp $
 #
 
 testdir=`pwd`
@@ -51,14 +51,9 @@ $httpd -f $testdir/conf/httpd.conf
 #
 # Prepare htdig test environment
 #
-if [ ! -d var/htdig ] 
-then 
-  mkdir -p var/htdig
-fi
-if [ ! -d var/htdig2 ] 
-then 
-  mkdir -p var/htdig2
-fi
+rm -fr var/htdig
+mkdir -p var/htdig
+mkdir -p var/htdig2
 
 fail() {
    echo $1
