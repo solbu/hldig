@@ -4,6 +4,11 @@
 // Implementation of Server
 //
 // $Log: Server.cc,v $
+// Revision 1.5  1998/11/30 01:53:10  ghutchis
+//
+// Fixed bug with robots.txt files containing tabs, based on patch from
+// Christian Schneider <cschneid@relog.ch>.
+//
 // Revision 1.4  1998/09/30 17:31:51  ghutchis
 //
 // Changes for 3.1.0b2
@@ -22,7 +27,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Server.cc,v 1.4 1998/09/30 17:31:51 ghutchis Exp $";
+static char RCSid[] = "$Id: Server.cc,v 1.5 1998/11/30 01:53:10 ghutchis Exp $";
 #endif
 
 #include "htdig.h"
@@ -146,7 +151,7 @@ void Server::robotstxt(Document &doc)
 	length = strlen(rest);
 	if (length > 0)
 	{
-	    while (length > 0 && rest[length - 1] == ' ')
+	    while (length > 0 && isspace(rest[length - 1]))
 		length--;
 	    rest[length] = '\0';
 	}
