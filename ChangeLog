@@ -1,4 +1,8 @@
-Wed Sep  1 14:49:08 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 14:50:22 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htsearch/Display.h, htsearch/Display.cc(excerpt): Fix declaration
+	to refer to "first" as reference--ensures ANCHOR is properly set.
+	Fixes PR#541 as suggested by <pmb1@york.ac.uk>.
 
 	* htdig/ExternalParser.cc(parse): Quote the filename before passing
 	it to the command-line to prevent shell escapes. Fixes PR#542.

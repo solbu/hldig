@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.54.2.9 1999/04/13 18:17:37 grdetil Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.54.2.10 1999/09/01 19:54:36 grdetil Exp $";
 #endif
 
 #include "htsearch.h"
@@ -959,7 +959,7 @@ Display::buildMatchList()
 
 //*****************************************************************************
 String *
-Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first)
+Display::excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first)
 {
     char	*head;
     int		use_meta_description = 0;

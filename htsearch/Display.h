@@ -1,7 +1,7 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.8.2.1 1999/04/13 16:38:07 grdetil Exp $
+// $Id: Display.h,v 1.8.2.2 1999/09/01 19:54:36 grdetil Exp $
 //
 //
 //
@@ -151,7 +151,7 @@ protected:
     String		*readFile(char *);
     void		expandVariables(char *);
     void		outputVariable(char *);
-    String		*excerpt(DocumentRef *ref, String urlanchor, int fanchor, int first);
+    String		*excerpt(DocumentRef *ref, String urlanchor, int fanchor, int &first);
     char		*hilight(char *str, String urlanchor, int fanchor);
     void		setupImages();
     String		*generateStars(DocumentRef *, int);
