@@ -1,3 +1,8 @@
+Fri Oct 17 2003 Lachlan Andrew <lha@users.sourceforge.net>
+
+    * htcommon/defaults.cc:  Patched to fix bug #823455
+      Escaped "$" in valid_punctuation, and add warnings about $, \ and `.
+
 Wed Oct 15 11:12:52 2003  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
     * htdig/Server.cc (robotstxt): Patched to fix bug #765726.

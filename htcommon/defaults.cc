@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.92 2003/10/13 11:04:30 lha Exp $
+// $Id: defaults.cc,v 1.93 2003/10/17 11:10:54 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -1000,7 +1000,9 @@ http://www.htdig.org/", " \
 	<a href=\"#valid_punctuation\">valid_punctuation</a>. \
 	To add one of the characters in the default valid_punctuation to \
 	extra_word_characters, an explicit valid_punctuation entry must be \
-	added to the configuration file. \
+	added to the configuration file.<br> \
+	See also the comments about special characters at \
+	<a href=\"#valid_punctuation\">valid_punctuation</a>. \
 " }, \
 { "head_before_get", "false",  \
 	"boolean", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "head_before_get: true", " \
@@ -2654,7 +2656,7 @@ form during indexing and translated for results. \
 	extensions in the list are parsed. \
 	See also <a href=\"#bad_extensions\">bad_extensions</a>. \
 " }, \
-{ "valid_punctuation", ".-_/!#$%^&'",  \
+{ "valid_punctuation", ".-_/!#\\$%^&'",  \
 	"string", "htdig htsearch", "", "all", "Indexing:What", "valid_punctuation: -'", " \
 	This is the set of characters which may be deleted \
 	from the document before determining what a word is. \
@@ -2664,9 +2666,14 @@ form during indexing and translated for results. \
 	<code>halfhearted</code>.<br> \
 	These characters are also removed before keywords are passed to the \
 	search engine, so a search for \"half-hearted\" works as expected.<br> \
+	Note that the dollar sign ($) and backslash (\\) must be escaped by a \
+	backslash in both valid_punctuation and extra_word_characters. \
+	Moreover, the backslash should not be the last character on the line. \
+	There is currently no way to include a back-quote (`) in \
+	extra_word_characters or valid_punctuation.<br> \
 	See also the \
 	<a href=\"#extra_word_characters\">extra_word_characters</a> \
-	attribute. \
+	attribute.  \
 " }, \
 { "version", VERSION,  \
 	"string", "htsearch", "", "all", "Presentation:Text", "version: 3.2.0", " \
