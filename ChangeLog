@@ -1,3 +1,7 @@
+Sun Mar 14 14:04:31 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htlib/Makefile.in: Add HtSGMLEntites.o to OBJS.
+
 Sat Mar 13 21:29:38 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* htcommon/DocumentDB.cc(Open, Read): Switch to DB_HASH for faster
