@@ -1,7 +1,7 @@
 //
 // Display.h
 //
-// $Id: Display.h,v 1.13 1999/04/27 15:35:11 ghutchis Exp $
+// $Id: Display.h,v 1.14 1999/05/26 14:43:58 ghutchis Exp $
 //
 //
 
@@ -18,6 +18,7 @@
 #include "DocumentDB.h"
 #include "Database.h"
 #include "Dictionary.h"
+#include "HtRegex.h"
 
 class Display : public Object
 {
@@ -34,8 +35,8 @@ public:
 	
     void		setResults(ResultList *results);
     void		setSearchWords(List *searchWords);
-    void		setLimit(StringMatch *);
-    void		setExclude(StringMatch *);
+    void		setLimit(HtRegex *);
+    void		setExclude(HtRegex *);
     void		setAllWordsPattern(StringMatch *);
     void		setLogicalWords(char *);
     void		setOriginalWords(char *);
@@ -69,8 +70,8 @@ protected:
     //
     // Pattern that all result URLs must match or exclude
     //
-    StringMatch		*limitTo;
-    StringMatch		*excludeFrom;
+    HtRegex		*limitTo;
+    HtRegex		*excludeFrom;
 
     //
     // Pattern of all the words
@@ -149,13 +150,13 @@ protected:
 
 //*****************************************************************************
 inline void
-Display::setLimit(StringMatch *limit)
+Display::setLimit(HtRegex *limit)
 {
     limitTo = limit;
 }
 
 inline void
-Display::setExclude(StringMatch *exclude)
+Display::setExclude(HtRegex *exclude)
 {
     excludeFrom = exclude;
 }

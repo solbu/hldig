@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.77 1999/05/20 01:35:05 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.78 1999/05/26 14:43:58 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -216,18 +216,16 @@ Display::display(int pageNumber)
 int
 Display::includeURL(char *url)
 {
-    if (limitTo && limitTo->FindFirst(url) < 0)
-    {
-	return 0;
-    }
+  
+    if (limitTo && limitTo->match(url, 1, 0) == 0)
+      return 0;
     else
     {
-	if (excludeFrom &&
-            excludeFrom->hasPattern() &&
-            excludeFrom->FindFirst(url) >= 0)
-	    return 0;
-	else
-	    return 1;
+
+      if (excludeFrom && excludeFrom->match(url, 0, 0) != 0)
+	return 0;
+      else
+	return 1;
     }
 }
 

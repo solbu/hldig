@@ -8,7 +8,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: htsearch.cc,v 1.32 1999/05/04 19:45:39 ghutchis Exp $";
+static char RCSid[] = "$Id: htsearch.cc,v 1.33 1999/05/26 14:43:58 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -21,11 +21,13 @@ static char RCSid[] = "$Id: htsearch.cc,v 1.32 1999/05/04 19:45:39 ghutchis Exp 
 #include "WordList.h"
 #include "StringList.h"
 #include "IntObject.h"
+#include "HtURLCodec.h"
+#include "HtWordType.h"
+#include "HtRegex.h"
 #include <time.h>
 #include <ctype.h>
 #include <signal.h>
-#include "HtURLCodec.h"
-#include "HtWordType.h"
+
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -60,8 +62,8 @@ main(int ac, char **av)
     List		searchWords;
     String		configFile = DEFAULT_CONFIG_FILE;
     int			pageNumber = 1;
-    StringMatch		limit_to;
-    StringMatch		exclude_these;
+    HtRegex		limit_to;
+    HtRegex		exclude_these;
     String		logicalWords;
     String              origPattern;
     String              logicalPattern;
@@ -110,14 +112,14 @@ main(int ac, char **av)
 	char *sep = input["restrict"];
 	while ((sep = strchr(sep, '\001')) != NULL)
 	  *sep++ = '|';
-	limit_to.Pattern(input["restrict"]);
+	limit_to.setEscaped(input["restrict"]);
     }
     if (input.exists("exclude"))
     {
        char *sep = input["exclude"];
        while ((sep = strchr(sep, '\001')) != NULL)
        	 *sep++ = '|';
-       exclude_these.Pattern(input["exclude"]);
+       exclude_these.setEscaped(input["exclude"]);
     }
 
     //
