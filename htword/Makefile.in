@@ -110,14 +110,16 @@ INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" 		-I$(top_srcdir)/in
 HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/htlib/libht.la 		$(top_builddir)/htcommon/libcommon.la 		$(top_builddir)/htword/libhtword.la 		$(top_builddir)/db/dist/libdb.a
 
 
-lib_LTLIBRARIES = libht.la
+EXTRA_DIST = word.desc word_builder.pl WordKey.h.tmpl
 
-libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc 	DB2_db.cc IntObject.cc List.cc Object.cc 	ParsedString.cc Queue.cc QuotedStringList.cc Stack.cc 	String.cc StringList.cc StringMatch.cc String_fmt.cc 	good_strtok.cc strcasecmp.cc 	mktime.c strptime.c timegm.c HtCodec.cc HtWordCodec.cc 	HtVector.cc HtHeap.cc regex.c 	HtPack.cc HtDateTime.cc HtRegex.cc 
+lib_LTLIBRARIES = libhtword.la
+
+libhtword_la_SOURCES = WordKey.cc WordList.cc WordReference.cc WordType.cc 	WordDB.cc WordStat.cc
 
 
-libht_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
+libhtword_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-include_HEADERS =  	Configuration.h 	DB2_db.h 	Database.h 	Dictionary.h 	HtCodec.h 	HtDateTime.h 	HtHeap.h 	HtPack.h 	HtRegex.h 	HtVector.h 	HtWordCodec.h 	IntObject.h 	List.h 	Object.h 	ParsedString.h 	Queue.h 	QuotedStringList.h 	Stack.h 	StringList.h 	StringMatch.h 	good_strtok.h 	htString.h 	lib.h 	langinfo.h 	regex.h
+include_HEADERS = WordList.h 	WordRecord.h 	WordReference.h 	WordType.h 	WordKey.h 	WordDB.h 	WordStat.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -128,46 +130,31 @@ LTLIBRARIES =  $(lib_LTLIBRARIES)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../include
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-libht_la_LIBADD = 
-libht_la_OBJECTS =  Configuration.lo Database.lo Dictionary.lo DB2_db.lo \
-IntObject.lo List.lo Object.lo ParsedString.lo Queue.lo \
-QuotedStringList.lo Stack.lo String.lo StringList.lo StringMatch.lo \
-String_fmt.lo good_strtok.lo strcasecmp.lo mktime.lo strptime.lo \
-timegm.lo HtCodec.lo HtWordCodec.lo HtVector.lo HtHeap.lo regex.lo \
-HtPack.lo HtDateTime.lo HtRegex.lo
+libhtword_la_LIBADD = 
+libhtword_la_OBJECTS =  WordKey.lo WordList.lo WordReference.lo \
+WordType.lo WordDB.lo WordStat.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
-CFLAGS = @CFLAGS@
-COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  README Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DEP_FILES =  .deps/Configuration.P .deps/DB2_db.P .deps/Database.P \
-.deps/Dictionary.P .deps/HtCodec.P .deps/HtDateTime.P .deps/HtHeap.P \
-.deps/HtPack.P .deps/HtRegex.P .deps/HtVector.P .deps/HtWordCodec.P \
-.deps/IntObject.P .deps/List.P .deps/Object.P .deps/ParsedString.P \
-.deps/Queue.P .deps/QuotedStringList.P .deps/Stack.P .deps/String.P \
-.deps/StringList.P .deps/StringMatch.P .deps/String_fmt.P \
-.deps/good_strtok.P .deps/mktime.P .deps/regex.P .deps/strcasecmp.P \
-.deps/strptime.P .deps/timegm.P
-SOURCES = $(libht_la_SOURCES)
-OBJECTS = $(libht_la_OBJECTS)
+DEP_FILES =  .deps/WordDB.P .deps/WordKey.P .deps/WordList.P \
+.deps/WordReference.P .deps/WordStat.P .deps/WordType.P
+SOURCES = $(libhtword_la_SOURCES)
+OBJECTS = $(libhtword_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .cc .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.config
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign htlib/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign htword/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -231,8 +218,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libht.la: $(libht_la_OBJECTS) $(libht_la_DEPENDENCIES)
-	$(CXXLINK) -rpath $(libdir) $(libht_la_LDFLAGS) $(libht_la_OBJECTS) $(libht_la_LIBADD) $(LIBS)
+libhtword.la: $(libhtword_la_OBJECTS) $(libhtword_la_DEPENDENCIES)
+	$(CXXLINK) -rpath $(libdir) $(libhtword_la_LDFLAGS) $(libhtword_la_OBJECTS) $(libhtword_la_LIBADD) $(LIBS)
 .cc.o:
 	$(CXXCOMPILE) -c $<
 .cc.lo:
@@ -284,14 +271,14 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = htlib
+subdir = htword
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign htlib/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign htword/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -431,6 +418,9 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+WordKey.h: $(top_srcdir)/htword/WordKey.h.tmpl $(top_srcdir)/htword/word.desc $(top_srcdir)/htword/word_builder.pl
+	@PERL@ $(top_srcdir)/htword/word_builder.pl $(top_srcdir)/htword/word.desc
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

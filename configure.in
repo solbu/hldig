@@ -1,5 +1,5 @@
 # Configuration for ht://Dig 3.x
-# Copyright (c) 1995-1998 Andrew Scherpbier
+# Copyright (c) 1995-1999 The ht://Dig Group
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,45 +11,103 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-#
 
 AC_INIT(htcommon/DocumentDB.cc)
 VERSION=`cat ${srcdir}/.version`
+HTDIG_MAJOR_VERSION=[`expr $VERSION : '\([0-9][0-9]*\)'`]
+AC_SUBST(HTDIG_MAJOR_VERSION)
+HTDIG_MINOR_VERSION=[`expr $VERSION : '[0-9][0-9]*\.\([0-9][0-9]*\)'`]
+AC_SUBST(HTDIG_MINOR_VERSION)
+HTDIG_MICRO_VERSION=[`expr $VERSION : '[0-9][0-9]*\.[0-9][0-9]*\.\([0-9][0-9]*\)'`]
+AC_SUBST(HTDIG_MICRO_VERSION)
 AM_INIT_AUTOMAKE([htdig], $VERSION)
-AC_PREREQ(2.12)
+AC_PREREQ(2.13)
 
-AC_CONFIG_HEADER(include/htconfig.h)
-AC_PREFIX_DEFAULT(/opt/www/htdig)
-HTDIG_TOP=`pwd`
-AC_SUBST(HTDIG_TOP)
+AM_CONFIG_HEADER(include/htconfig.h)
+AC_PREFIX_DEFAULT(/opt/www)
+
+AC_PROG_MAKE_SET
+
+AM_PROG_LIBTOOL
+
+dnl Initialize maintainer mode
+AM_MAINTAINER_MODE
+
+AC_ARG_WITH(config-dir, [  --with-config-dir=DIR  where your config directory is [default=$ac_default_prefix/conf]],
+ CONFIG_DIR="$withval", CONFIG_DIR="$ac_default_prefix/conf")
+AC_SUBST(CONFIG_DIR)
+
+AC_ARG_WITH(common-dir, [  --with-common-dir=DIR  where your common directory is [default=$datadir/htdig]],
+ COMMON_DIR="$withval", COMMON_DIR="$datadir/htdig")
+AC_SUBST(COMMON_DIR)
+
+AC_ARG_WITH(database-dir, [  --with-database-dir=DIR  where your database directory is [default=$localstatedir/htdig]],
+ DATABASE_DIR="$withval", DATABASE_DIR="$localstatedir/htdig")
+AC_SUBST(DATABASE_DIR)
+
+AC_ARG_WITH(default-config-file, [  --with-default-config-file=FILE Where the various programs will look for a configuration file  [default=$CONFIG_DIR/htdig.conf]],
+ DEFAULT_CONFIG_FILE="$withval", DEFAULT_CONFIG_FILE="$CONFIG_DIR/htdig.conf")
+AC_SUBST(DEFAULT_CONFIG_FILE)
+
+AC_ARG_WITH(cgi-bin-dir, [  --with-cgi-bin-dir=DIR  where your cgi-bin directory is  [default=$ac_default_prefix/cgi-bin]],
+ CGIBIN_DIR="$withval", CGIBIN_DIR="$ac_default_prefix/cgi-bin")
+AC_SUBST(CGIBIN_DIR)
+
+AC_ARG_WITH(image-dir, [  --with-image-dir=DIR    where the ht://Dig images are installed [default=$ac_default_prefix/htdocs/htdig]],
+ IMAGE_DIR="$withval", IMAGE_DIR="$ac_default_prefix/htdocs/htdig")
+AC_SUBST(IMAGE_DIR)
+
+AC_ARG_WITH(search-dir, [  --with-search-dir=DIR   where the sample search form should be installed [default=$ac_default_prefix/htdocs/htdig]],
+ SEARCH_DIR="$withval", SEARCH_DIR="$ac_default_prefix/htdocs/htdig")
+AC_SUBST(SEARCH_DIR)
+
+AC_ARG_WITH(image-url-prefix, [  --with-image-url-prefix=LOCATION   the URL path to the installed images [default=/hdig]],
+ IMAGE_URL_PREFIX="$withval", IMAGE_URL_PREFIX="/htdig")
+AC_SUBST(IMAGE_URL_PREFIX)
+
+AC_ARG_WITH(search-form, [  --with-search-form=FILE   the name for the sample search form [default=search.html]],
+ SEARCH_FORM="$withval", SEARCH_FORM="search.html")
+AC_SUBST(SEARCH_FORM)
+
+dnl If the user wants tests
+AC_MSG_CHECKING(if --enable-tests option specified)
+AC_ARG_ENABLE(tests,
+	[  --enable-tests     Build a version with run-time tests.],
+	[htdig_cv_tests="$enable_tests"], [htdig_cv_tests="no"])
+AC_MSG_RESULT($htdig_cv_tests)
+if test "$htdig_cv_tests" = yes; then
+	TESTDIR=test
+fi
+
+dnl While we're at it, let's work out the program transformations
+AC_ARG_PROGRAM
 
 echo configuring ht://Dig version $VERSION
 
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
+AC_COMPILE_WARNINGS
 AC_PROG_RANLIB
 AC_PATH_PROG(AR, ar, ar)
 AC_PATH_PROG(SHELL, sh, /bin/sh)
 AC_PATH_PROG(SED, sed, /bin/sed)
-AC_PATH_PROG(SORT, sort, /bin/sort)
+AC_PATH_PROG(PERL, perl, /usr/bin/perl)
 AC_PATH_PROG(FIND, find, /bin/find)
 AC_PATH_PROG(GUNZIP, gunzip, /bin/gunzip)
 AC_CHECK_PROGS(TAR, tar gtar gnutar, tar)
 AC_PATH_PROG(PDF_PARSER, acroread, /usr/local/bin/acroread)
 AC_PATH_PROG(SENDMAIL, sendmail, /usr/lib/sendmail, 
    $PATH:/usr/libexec:/usr/sbin:/usr/lib:/usr/etc:etc)
+AM_PROG_TIME
 
 dnl Check for AIX problems
 AC_AIX
 
 dnl Checks for libraries.
-AC_CHECK_LIB(socket, socket, [LIBS="$LIBS -lsocket"])
-AC_CHECK_LIB(nsl, t_accept, [LIBS="$LIBS -lnsl"])
-
+AC_CHECK_LIB(socket, socket)
+AC_CHECK_LIB(nsl, t_accept)
+CHECK_ZLIB
 AC_SUBST(CXXFLAGS)dnl
 AC_SUBST(LDFLAGS)dnl
 
@@ -59,10 +117,10 @@ AC_HEADER_TIME
 
 dnl More header checks--here use C++
 AC_LANG_CPLUSPLUS
-AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h)
+AC_CHECK_HEADERS(fcntl.h limits.h malloc.h sys/file.h sys/ioctl.h sys/time.h unistd.h getopt.h strings.h zlib.h sys/select.h)
 AC_CHECK_HEADER(fstream.h,nofstream=0,nofstream=1)
 if test "x$nofstream" = "x1" ; then
-AC_MSG_ERROR([To compile ht://Dig, you will need a C++ library. Try installing libg++.])
+AC_MSG_ERROR([To compile ht://Dig, you will need a C++ library. Try installing libstdc++.])
 fi
 
 dnl Checks for typedefs, structures, and compiler characteristics.
@@ -73,17 +131,12 @@ dnl AC_CHECK_SIZEOF(int *) => SIZEOF_INT_P
 
 dnl Checks for library functions.
 AC_CHECK_FUNCS(strdup strerror strstr)
-AC_CHECK_FUNCS(localtime_r)
-dnl Check for timegm
-AC_CHECK_FUNC(timegm)
-dnl AC_DEFINE(HAVE_TIMEGM),
-dnl  AC_MSG_CHECKING(whether our timegm replacement works);
-dnl  AC_TRY_RUN([
-dnl #define TEST_TIMEGM 1
-dnl #include "$srcdir/htlib/mktime.c"
-dnl #include "$srcdir/htlib/timegm.c"
-dnl ], AC_MSG_RESULT(yes), AC_MSG_ERROR([no!]), AC_MSG_RESULT([I hope so])))
+AC_FUNC_STRFTIME
+AC_FUNC_STRPTIME
+AC_CHECK_FUNCS(localtime_r timegm)
 
+dnl These tests need to be run through the c++ compiler
+AC_LANG_CPLUSPLUS
 AC_MSG_CHECKING(whether we need gethostname() prototype?)
 AC_TRY_COMPILE([#include <unistd.h>
 #include <stdio.h>
@@ -98,34 +151,71 @@ AC_TRY_COMPILE([#include <unistd.h>
 #include <stdlib.h>
 extern "C" int gethostname(char *, int);],
   [gethostname("sdsu.edu", (int) 8);],
-  [AC_MSG_RESULT(no)],
-  [AC_MSG_RESULT(yes);AC_DEFINE(NEED_PROTO_GETHOSTNAME)])
+  [AC_MSG_RESULT(yes);AC_DEFINE(NEED_PROTO_GETHOSTNAME)],
+  [AC_MSG_RESULT(no)])
 
-DB_DIR=`echo db*/dist`
-if test ! -d $DB_DIR; then
-  echo "Extracting files..."
-  tarfile=`echo db*.tar.gz`
-  $GUNZIP < $tarfile | $TAR xf -
+AC_LANG_CPLUSPLUS
+AC_MSG_CHECKING(how to call getpeername?)
+for sock_t in 'struct sockaddr' 'void'; do
+  for getpeername_length_t in 'size_t' 'int' 'unsigned int' 'long unsigned int' 'socklen_t'
+  do
+    AC_TRY_COMPILE([#include <sys/types.h>
+#include <sys/socket.h>
+ extern "C" int getpeername(int, $sock_t *, $getpeername_length_t *);
+ $sock_t s;  $getpeername_length_t l; ],
+    [ getpeername(0, &s, &l); ],
+    [ac_found=yes ; break 2],[ac_found=no])
+  done
+done
+
+if test "$ac_found" = no
+then
+  AC_MSG_WARN([can't determine argument type using int])
+  AC_DEFINE_UNQUOTED(GETPEERNAME_LENGTH_T, int)
+else
+  AC_MSG_RESULT($getpeername_length_t)
+  AC_DEFINE_UNQUOTED(GETPEERNAME_LENGTH_T, $getpeername_length_t)
 fi
 
-DB_DIR=`echo db*/dist`
-AC_SUBST(DB_DIR)
-if test ! -d $DB_DIR; then
-  AC_MSG_ERROR([Please extract the Berkeley DB library])
+dnl Check if the c++ compiler knows bool
+AC_LANG_CPLUSPLUS
+AC_MSG_CHECKING(for bool data type?)
+AC_TRY_COMPILE(,[bool i;],
+  [AC_MSG_RESULT(yes);AC_DEFINE(HAVE_BOOL)],
+  [AC_MSG_RESULT(no)])
+
+dnl Check if the c++ compiler knows true and false
+AC_MSG_CHECKING(for true and false?)
+AC_TRY_COMPILE(,[int i, j; i= true; j= false;],
+  [AC_MSG_RESULT(yes)
+     AC_DEFINE(HAVE_TRUE)
+     AC_DEFINE(HAVE_FALSE)],
+  [AC_MSG_RESULT(no)])
+
+dnl Any remaining tests probably want the C compiler
+AC_LANG_C
+if test ! -d "./db"; then
+  mkdir db
 fi
 
-AC_PATH_PROG(TSORT, tsort)
-if test -z "$TSORT"; then
-  AC_MSG_ERROR([GNU rx configuration needs tsort in path!])
+if test -n "$TESTDIR"
+then
+	CHECK_USER
+	AC_PROG_APACHE(1.3.1)
 fi
 
-RX_DIR=`echo rx*`
-AC_SUBST(RX_DIR)
+#
+# See db/dist/configure.in
+# We always want the C++ support enabled.
+#
+ac_configure_args="$ac_configure_args --enable-cxx"
 
-AC_CONFIG_SUBDIRS($DB_DIR)
-AC_CONFIG_SUBDIRS($RX_DIR)
+AC_CONFIG_SUBDIRS(db/dist)
 
-AC_OUTPUT(CONFIG Makefile Makefile.config htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile makedp, chmod +x makedp, echo timestamp > stamp-h)
+HTDIGDIRS="db htlib htcommon htword htnet htfuzzy htdig htsearch htmerge htnotify installdir include htdoc $TESTDIR ."
+AC_SUBST(HTDIGDIRS)
+
+AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htword/Makefile htnet/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile test/Makefile test/test_functions)
 
 echo ""
 echo ""

@@ -1,0 +1,70 @@
+#
+# Part of the ht://Dig package   <http://www.htdig.org/>
+# Copyright (c) 1999 The ht://Dig Group
+# For copyright details, see the file COPYING in your distribution
+# or the GNU Public License version 2 or later
+# <http://www.gnu.org/copyleft/gpl.html>
+#
+# $Id: test_functions.in,v 1.6.2.1 1999/10/15 16:07:42 loic Exp $
+#
+
+testdir=`pwd`
+
+perl=@PERL@
+
+@SET_MAKE@
+
+if test -z "$MAKE"
+then
+	echo "no make command found"
+	exit 77
+fi
+
+#
+# Prepare http server
+#
+(
+    cd conf
+    $MAKE user="@USER@" testdir=$testdir all > /dev/null
+)
+
+httpd=@APACHE@
+
+if test -z "$httpd"
+then
+	echo "no apache server provided. Run configure with --with-apache=<httpd path>"
+	exit 77
+fi
+
+if [ ! -d logs ] 
+then 
+  mkdir -p logs
+else
+  if [ -f logs/httpd.pid ]
+  then
+    kill -15 `cat logs/httpd.pid`
+    sleep 2
+  fi
+fi
+$httpd -f $testdir/conf/httpd.conf
+
+#
+# Prepare htdig test environment
+#
+if [ ! -d var/htdig ] 
+then 
+  mkdir -p var/htdig
+fi
+if [ ! -d var/htdig2 ] 
+then 
+  mkdir -p var/htdig2
+fi
+
+fail() {
+   echo $1
+   exit 1
+}
+
+htdig=../htdig/htdig
+htsearch=../htsearch/htsearch
+htmerge=../htmerge/htmerge

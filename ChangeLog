@@ -1,3 +1,13 @@
+Fri Oct 15 17:46:23 1999  Loic Dachary  <loic@ceic.com>
+
+	* acinclude.m4,configure.in: modified AC_APACHE_PROG to detect 
+	  version number and control it.
+
+	* test/conf/*.in: patch to fit module loading or not, accomodate
+	  various installation configurations.
+
+	* test/test_functions.in: More portable call to apache.
+
 Fri Oct 15 12:55:47 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 
 	* htdig/Document: added the management of 'persistent_connections',
@@ -28,6 +38,10 @@ Fri Oct 15 12:35:51 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 	  and we asked for it with a GET call).
 
 	* Transport: _host variable is treated as a String, as Loic suggested.
+
+Fri Oct 15 12:11:23 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* Added README to htword
 
 Thu Oct 14 11:29:35 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
@@ -64,6 +78,12 @@ Wed Oct 13 13:35:42 1999 CEST Gabriele Bartolini  <g.bartol@comune.prato.it>
 	  all the Document status messages coming from the Transport class.
 	  Also modified the method for not found URLs for managing the no_port
 	  status.
+
+Tue Oct 12 10:12:10 1999  Loic Dachary  <loic@ceic.com>
+
+	* install headers and libraries so that htdig libraries may be used by external programs
+
+	* htword/WordList.cc,WordType.cc: add comments about config parameters used.
 
 Fri Oct  8 09:35:30 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
