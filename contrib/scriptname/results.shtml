@@ -1,0 +1,17 @@
+<!--
+  -- script_name example using SSI
+  -- This is the results page.
+  -- Note the server side include directive calling /cgi-bin/htsearch.
+  -- The page's parameters will be handed over to htsearch.
+  -->
+
+<html><head><title>Search results (SHTML)</title></head>
+<body bgcolor="#eef7ff">
+<h2><img src="/htdig/htdig.gif">
+
+<!--#exec cgi="/cgi-bin/htsearch" -->
+
+<hr noshade size=4>
+<a href="http://www.htdig.org">
+<img src="/htdig/htdig.gif" border=0>ht://Dig</a>
+</body></html>

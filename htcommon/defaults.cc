@@ -6,7 +6,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.43.2.7 1999/11/24 03:33:08 grdetil Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.43.2.8 1999/11/24 04:12:14 grdetil Exp $";
 #endif
 
 #include "Configuration.h"
@@ -114,6 +114,7 @@ ConfigDefaults	defaults[] =
     {"remove_bad_urls",			"true"},
     {"remove_default_doc",              "index.html"},
     {"robotstxt_name",			"htdig"},
+    {"script_name",                     ""},
     {"search_algorithm",		"exact:1"},
     {"search_results_footer",		"${common_dir}/footer.html"},
     {"search_results_header",		"${common_dir}/header.html"},

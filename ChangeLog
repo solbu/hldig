@@ -1,3 +1,19 @@
+Tue Nov 23 21:52:18 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	[Applied patch from Hanno Mueller <kontakt@hanno.de>, which includes...]
+	* contrib/README: Add scriptname directory.
+	* contrib/scriptname/*: An example of using htsearch within
+	dynamic SSI pages
+	* htcommon/defaults.cc: Add script_name attribute to override
+	SCRIPT_NAME CGI environment variable.
+	* htdoc/FAQ.html: Update question 4.7 based on including htsearch
+	as a CGI in SSI markup.
+	* htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html,
+	htdoc/hts_templates.html: Update based on behavior of script_name
+	attribute.
+	* htsearch/Display.cc: Set SCRIPT_NAME variable to attribute
+	script_name if set and CGI environment variable if undefined.
+
 Tue Nov 23 21:29:03 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htdoc/FAQ.html: Added the past few month's updates to the FAQ.
@@ -12,7 +28,7 @@ Tue Nov 23 21:20:35 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 Tue Nov 23 20:52:38 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/cgi.h, htlib/cgi.cc(cgi & init), htsearch/htsearch.cc
-        (main & usage): allow a query string to be passed as an argument.
+	(main & usage): allow a query string to be passed as an argument.
 
 Tue Nov 23 20:35:05 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 

@@ -404,11 +404,22 @@ following line would do it:<br>
 	  href="http://www.apache.org/docs/misc/FAQ.html#ssi-part-iii">Apache
 	  FAQ</a>). Thus,the htsearch CGI does not understand SSI
 	  markup and thus cannot include other
-	  CGIs. However, you can easily write a "wrapper" CGI or other
-	  server-parsed file that includes the htsearch results. For
-	  perl script examples, see the files in contrib/ewswrap. For
-	  PHP examples, see PHP guide in the <a
-	  href="http://www.htdig.org/contrib/guides.html">contributed guides</a>.
+	  CGIs. However, it is possible doing it the other way round:
+	  you can have the htsearch results included in your dynamic
+	  page.</p>
+
+	  <p>The easiest approach is using SSI with the help of the <a
+	  href="attrs.html#script_name">script_name</a> configuration
+	  file attribute. See the <tt>contrib/scriptname</tt>
+	  directory for a small example using SSI.</p>
+
+	  <p>For CGI and PHP, you need a &quot;wrapper&quot; script to
+	  do that. For perl script examples, see the files in
+	  <tt>contrib/ewswrap</tt>. The PHP guide (see <a
+	  href="http://www.htdig.org/contrib/guides.html">contributed
+	  guides</a>) not only describes a wrapper script for PHP, but
+	  also offers a step by step tutorial to the basics of
+	  ht://dig and is well worth reading.
 	  For other alternatives, see question <a href="#q4.11">4.11</a>.
 	  </p>
 
