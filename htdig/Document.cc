@@ -4,6 +4,10 @@
 // Implementation of Document
 //
 // $Log: Document.cc,v $
+// Revision 1.23  1998/11/18 05:16:02  ghutchis
+//
+// Fixed memory leak as a result of a thinko.
+//
 // Revision 1.22  1998/11/09 19:35:09  ghutchis
 //
 // Changed reset to keep proxy settings--fixes bug noted by Didier Gautheron
@@ -87,7 +91,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Document.cc,v 1.22 1998/11/09 19:35:09 ghutchis Exp $";
+static char RCSid[] = "$Id: Document.cc,v 1.23 1998/11/18 05:16:02 ghutchis Exp $";
 #endif
 
 #include <signal.h>
@@ -147,9 +151,9 @@ Document::Document(char *u, int max_size)
 //
 Document::~Document()
 {
-    if (!url)
+    if (url)
       delete url;
-    if (!proxy)
+    if (proxy)
       delete proxy;
 #if MEM_DEBUG
     char *p = new char;
@@ -169,7 +173,7 @@ void
 Document::Reset()
 {
     contentType = 0;
-    if (!url)
+    if (url)
       delete url;
     url = 0;
     referer = 0;
@@ -185,7 +189,7 @@ Document::Reset()
     // Don't reset the authorization since it's a pain to set up again.
     //    authorization = 0;
     // Don't reset the proxy since it's a pain to set up too.
-    //    if (!proxy)
+    //    if (proxy)
     //      delete proxy;
     //    proxy = 0;
 }
@@ -255,7 +259,7 @@ Document::setUsernamePassword(char *credentials)
 void
 Document::Url(char *u)
 {
-    if (!url)
+    if (url)
       delete url;
     url = new URL(u);
 }
