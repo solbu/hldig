@@ -1,4 +1,7 @@
-Wed Sep  1 14:54:56 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+Wed Sep  1 14:56:38 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* COPYING, htdoc/COPYING, Makefile.in: Updated the FSF address
+	in COPYING & Makefile.in.  PR#595.
 
 	* htdig/Retriever.cc(IsValidURL): Fix PR#493, to avoid rejecting
 	a valid URL with ".." in it.
