@@ -4,13 +4,13 @@
 // Implementation of DocumentDB
 //
 // $Log: DocumentDB.cc,v $
-// Revision 1.1  1997/02/03 17:11:07  turtle
-// Initial revision
+// Revision 1.2  1998/01/05 00:44:29  turtle
+// Fixed major memory leak
+//
+// Revision 1.1.1.1  1997/02/03 17:11:07  turtle
+// Initial CVS
 //
 //
-#if RELEASE
-static char RCSid[] = "$Id: DocumentDB.cc,v 1.1 1997/02/03 17:11:07 turtle Exp $";
-#endif
 
 #include "DocumentDB.h"
 #include <stdio.h>
@@ -270,6 +270,7 @@ List *DocumentDB::URLs()
 	    DocumentRef	*ref = (*this)[key];
 	    if (ref)
 	    	list->Add(new String(ref->DocURL()));
+            delete ref;
 	}
     }
     return list;
