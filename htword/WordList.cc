@@ -17,7 +17,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.cc,v 1.6.2.12 1999/12/15 18:00:30 loic Exp $
+// $Id: WordList.cc,v 1.6.2.13 1999/12/20 10:28:38 bosc Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -77,7 +77,7 @@ int WordList::Open(const String& filename, int mode)
   if(config.Boolean("wordlist_compress",0) == 1)
   {
       usecompress=DB_COMPRESS;
-      db.dbenv.set_mp_cmpr_info(WordDB::CmprInfo());
+      db.dbenv.set_mp_cmpr_info(WordDB::CmprInfo(config.Value("wordlist_compress_debug",1)));
   }
 
   db.dbinfo.set_bt_compare(word_db_cmp);

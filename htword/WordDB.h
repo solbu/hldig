@@ -19,7 +19,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordDB.h,v 1.3.2.2 1999/12/15 17:26:35 loic Exp $
+// $Id: WordDB.h,v 1.3.2.3 1999/12/20 10:28:26 bosc Exp $
 //
 
 #ifndef _WordDB_h_
@@ -29,6 +29,7 @@
 #include "WordReference.h"
 #include "WordDBCompress.h"
 #include "htString.h"
+#include "Configuration.h"
 
 #include <iostream.h>
 #include <errno.h>
@@ -270,7 +271,7 @@ class WordDB {
   //
   // Return object describing the compression scheme
   //
-  static inline DB_CMPR_INFO* CmprInfo() {
+  static inline DB_CMPR_INFO* CmprInfo(int debug=1) {
       DB_CMPR_INFO *cmpr_info=new DB_CMPR_INFO;
 
       WordDBCompress *compressor=new WordDBCompress;
@@ -279,7 +280,7 @@ class WordDB {
       cmpr_info->uncompress=WordDBCompress_uncompress_c;
       cmpr_info->coefficient=3;
       cmpr_info->max_npages=9;
-
+      compressor->debug=debug;
       return cmpr_info;
   }
 
