@@ -1,3 +1,29 @@
+Mon Mar 20 14:10:30 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* httools/htpurge.cc: Whoops! Left some references to htmerge in
+	the error messages and usage message.
+
+	* httools/htstat.cc: New program. Simply spits up the total number
+	of documents, words and unique words in the databases.
+
+	* httools/htdump.cc: New program. Simply dumps the contents of the
+	document DB and the word DB to doc_list and word_dump files
+	respectively. Also has flags -w and -d to pick one or the other.
+
+	* httools/Makefile.am, httools/Makefile.in: Add htdump and htstat
+	programs to compilation list.
+	
+	* htcommon/DocumentDB.cc (DumpDB): Change name of CreateSearchDB
+	and add fields for DocBackLinks, DocSig, DocHopCount, DocEmail,
+	DocNotification, and DocSubject. This should now export every
+	portion of the document DB.
+
+	* htcommon/DocumentDB.h: Change name of CreateSearchDB and add
+	stub for LoadDB, to be written shortly.
+
+	* htdig/htdig.cc: Call DumpDB instead of CreateSearchDB when
+	creating an ASCII version of the DB.
+	
 Sat Mar 18 22:57:02 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* httools/Makefile.am, httools/Makefile.in: New directory for
