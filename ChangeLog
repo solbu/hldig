@@ -1,3 +1,13 @@
+Mon Jul 19 13:23:53 1999    <loic@ceic.com>
+
+	* Makefile.config (INCLUDES): added -I$(top_srcdir)/include because
+	automatically -I../include is not good, added -I$(top_builddir)/db/dist
+	because some db headers are configure generated (if building in a directory
+	that is not the source directory).
+
+	* rename db/Makefile db/Makefile.in: otherwise it does not show
+	up if if building in a directory that is not the source directory.
+
 Mon Jul 19 13:02:22 1999    <loic@ceic.com>
 
 	* .cvsignore: do not ignore Makefile.config

@@ -192,7 +192,7 @@ if test ! -d "./db"; then
 fi
 AC_CONFIG_SUBDIRS(db/dist)
 
-AC_OUTPUT(Makefile htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile)
+AC_OUTPUT(Makefile db/Makefile htcommon/Makefile htlib/Makefile htdig/Makefile htmerge/Makefile htnotify/Makefile htfuzzy/Makefile htsearch/Makefile installdir/Makefile include/Makefile htdoc/Makefile)
 
 echo ""
 echo ""

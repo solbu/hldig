@@ -118,7 +118,7 @@ typedef char bool;
 /* Define if you have the socket library (-lsocket).  */
 #undef HAVE_LIBSOCKET
 
-/* Define if you have the z library (-lz). */
+/* Define if you have the z library (-lz).  */
 #undef HAVE_LIBZ
 
 /* Name of package */
