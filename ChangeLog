@@ -1,3 +1,7 @@
+Tue Dec 14 19:18:22 1999  Marcel Bosc  <bosc@ceic.com>
+
+	* WordBitCompress: code cleaned up and commented
+
 Tue Dec 14 18:32:21 1999  Loic Dachary  <loic@ceic.com>
 
 	* htword/Word{Record,Reference,Key}: added a Get method to 
