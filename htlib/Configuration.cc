@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.cc,v 1.15.2.4 2000/01/14 00:57:15 ghutchis Exp $
+// $Id: Configuration.cc,v 1.15.2.5 2000/02/21 23:17:12 grdetil Exp $
 //
 
 #include <stdio.h>
@@ -157,14 +157,34 @@ void Configuration::Add(const String& str_arg)
 
 
 //*********************************************************************
-//   Add an entry to the configuration table.
+//   Add an entry to the configuration table, without allowing variable
+//   or file expansion of the value.
 //
 void Configuration::Add(const String& name, const String& value)
+{
+    String	escaped;
+    const char	*s = value.get();
+    while (*s)
+    {
+        if (strchr("$`\\", *s))
+            escaped << '\\';
+        escaped << *s++;
+    }
+    ParsedString	*ps = new ParsedString(escaped);
+    dcGlobalVars.Add(name, ps);
+}
+
+
+//*********************************************************************
+//   Add an entry to the configuration table, allowing parsing for variable
+//   or file expansion of the value.
+//
+void Configuration::AddParsed(const String& name, const String& value)
 {
     ParsedString	*ps = new ParsedString(value);
     if (mystrcasecmp(name, "locale") == 0)
     {
-        String str(setlocale(LC_ALL, value));
+        String str(setlocale(LC_ALL, ps->get(dcGlobalVars)));
         ps->set(str);
 
         //
@@ -339,7 +359,7 @@ int Configuration::Read(const String& filename)
  	    continue;
  	}
  
-         Add(name, value);
+         AddParsed(name, value);
          line = 0;
      }
      in.close();
@@ -354,7 +374,7 @@ void Configuration::Defaults(const ConfigDefaults *array)
 {
     for (int i = 0; array[i].name; i++)
     {
-        Add(array[i].name, array[i].value);
+        AddParsed(array[i].name, array[i].value);
     }
 }
 

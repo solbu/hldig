@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: Configuration.h,v 1.6.2.7 2000/01/29 01:38:36 ghutchis Exp $
+// $Id: Configuration.h,v 1.6.2.8 2000/02/21 23:17:12 grdetil Exp $
 //
 
 #ifndef	_Configuration_h_
@@ -62,6 +62,7 @@ public:
     void		Add(const String& str);
 #endif /* SWIG */
     void		Add(const String& name, const String& value);
+    void		AddParsed(const String& name, const String& value);
     int			Remove(const String& name);
 
     //

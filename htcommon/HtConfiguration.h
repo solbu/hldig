@@ -11,7 +11,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtConfiguration.h,v 1.1.2.5 2000/02/16 14:32:41 vadim Exp $
+// $Id: HtConfiguration.h,v 1.1.2.6 2000/02/21 23:17:12 grdetil Exp $
 //
 
 
@@ -30,6 +30,7 @@ class HtConfiguration : public Configuration
     int		Boolean(const String& name, int default_value = 0) const   {return(Configuration::Boolean(name,default_value));}
     void		Add(const String& str){Configuration::Add(str);}
     void		Add(const String& name, const String& value){Configuration::Add(name,value);}
+    void		AddParsed(const String& name, const String& value){Configuration::AddParsed(name,value);}
 
     void		Add(char *name, char *value, Configuration *aList);
     const String	Find(URL *aUrl, const char *value) const;
