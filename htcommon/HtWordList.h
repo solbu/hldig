@@ -10,7 +10,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: HtWordList.h,v 1.2.2.1 1999/12/07 19:54:09 bosc Exp $
+// $Id: HtWordList.h,v 1.2.2.2 1999/12/09 12:18:08 bosc Exp $
 //
 
 #ifndef _HtWordList_h_
@@ -18,6 +18,7 @@
 
 #include <fcntl.h>
 
+#include"HtConfiguration.h"
 #include "WordList.h"
 
 class HtWordList : public WordList
@@ -26,6 +27,11 @@ public:
     //
     // Construction/Destruction
     //
+    HtWordList(const Configuration  & config_arg) : WordList(config_arg) 
+	{
+	    cerr << "HtWordList::HtWordList(Configuration) is not valid" << endl; 
+	    abort();
+	}
     HtWordList(const HtConfiguration& config_arg);
     virtual ~HtWordList();
     
