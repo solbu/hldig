@@ -1,3 +1,15 @@
+Fri Apr  7 00:30:01 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* README: Update to mention 3.2.0b2 and use correct copyright. (It
+	is 2000 after all!)
+
+	* htdoc/FAQ.html, htdoc/where.html, htdoc/uses.html,
+	htdoc/isp.html: Update with most recent versions from maindocs.
+
+	* htdoc/RELEASE.html: Add release notes for 3.1.5 to the
+	top. (It's out of version ordering, but it is in correct
+	chronological order.)
+
 Fri Apr  7 00:11:29 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 
 	* httools/htpurge.cc (main): Read in URLs from STDIN for purging,
