@@ -123,12 +123,12 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la 		$(top_builddir)/htcommon/libcommon.
 
 pkglib_LTLIBRARIES = libhtnet.la
 
-libhtnet_la_SOURCES = Connection.cc Transport.cc HtHTTP.cc HtFile.cc 	HtNNTP.cc HtCookie.cc HtCookieJar.cc HtCookieMemJar.cc 	HtHTTPBasic.cc HtHTTPSecure.cc SSLConnection.cc
+libhtnet_la_SOURCES = Connection.cc Transport.cc HtHTTP.cc HtFile.cc 	HtNNTP.cc HtCookie.cc HtCookieJar.cc HtCookieMemJar.cc 	HtHTTPBasic.cc HtHTTPSecure.cc SSLConnection.cc HtFTP.cc
 
 
 libhtnet_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION)
 
-pkginclude_HEADERS =  	Connection.h 	Transport.h 	HtHTTP.h 	HtFile.h 	HtNNTP.h 	HtCookie.h 	HtCookieJar.h 	HtCookieMemJar.h 	HtHTTPBasic.h 	HtHTTPSecure.h 	SSLConnection.h
+pkginclude_HEADERS =  	Connection.h 	Transport.h 	HtHTTP.h 	HtFile.h   HtNNTP.h 	HtCookie.h 	HtCookieJar.h 	HtCookieMemJar.h 	HtHTTPBasic.h 	HtHTTPSecure.h 	SSLConnection.h  HtFTP.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/htconfig.h
@@ -142,7 +142,7 @@ LIBS = @LIBS@
 libhtnet_la_LIBADD = 
 libhtnet_la_OBJECTS =  Connection.lo Transport.lo HtHTTP.lo HtFile.lo \
 HtNNTP.lo HtCookie.lo HtCookieJar.lo HtCookieMemJar.lo HtHTTPBasic.lo \
-HtHTTPSecure.lo SSLConnection.lo
+HtHTTPSecure.lo SSLConnection.lo HtFTP.lo
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
