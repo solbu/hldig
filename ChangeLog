@@ -1,3 +1,8 @@
+Mon Mar 22 14:38:01 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
+
+	* htdig/Plaintext.cc: Use minimum_word_length instead of hardcoded
+	constant.
+
 Mon Mar 22 14:33:45 1999  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* htlib/Configuration.cc: Fix Add() function to avoid infinite loop

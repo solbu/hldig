@@ -4,6 +4,9 @@
 // Implementation of Plaintext
 //
 // $Log: Plaintext.cc,v $
+// Revision 1.7.2.1  1999/03/22 20:44:44  grdetil
+// make Plaintext.cc use minimum_word_length instead of hardcoded 2.
+//
 // Revision 1.7  1999/01/08 19:39:18  bergolth
 // bugfixes in htdig/Plaintext.cc and htlib/URL.cc
 //
@@ -31,7 +34,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Plaintext.cc,v 1.7 1999/01/08 19:39:18 bergolth Exp $";
+static char RCSid[] = "$Id: Plaintext.cc,v 1.7.2.1 1999/03/22 20:44:44 grdetil Exp $";
 #endif
 
 #include "Plaintext.h"
@@ -67,6 +70,7 @@ Plaintext::parse(Retriever &retriever, URL &)
 
     unsigned char       *position = (unsigned char *) contents->get();
     unsigned char	*start = position;
+    static int	minimumWordLength = config.Value("minimum_word_length", 3);
     int		offset = 0;
     int		in_space = 0;
     String	word;
@@ -94,11 +98,11 @@ Plaintext::parse(Retriever &retriever, URL &)
 		head << word;
 	    }
 
-	    if (word.length() > 2)
+	    if (word.length() >= minimumWordLength)
 	    {
 		word.lowercase();
 		word.remove(valid_punctuation);
-		if (word.length() > 2)
+		if (word.length() >= minimumWordLength)
 		{
 		    retriever.got_word(word,
 				       int(offset * 1000 / contents->length()),
