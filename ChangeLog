@@ -22,6 +22,33 @@ Wed Jan 19 21:49:57 2000  Geoff Hutchison  <ghutchis@wso.williams.edu>
 	* htcommon/HtWordList.h, htcommon/HtWordList.cc (Skip): Change
 	MarkGone() to Skip() to emphasize that this document should be ignored.
 
+Wed Jan 19 14:11:51 2000  Loic Dachary  <loic@ceic.com>
+
+	* htword/WordList.cc (SkipUselessSequentialWalking): return OK if skipping, 
+	  NOTOK if not skipping.
+
+	* htword/WordReference.h: remove useless Clear in WordReference(key, record) 
+	  constructor.
+
+	* htword/WordList.h,WordList.cc: Split Walk in three separate functions
+	  WalkInit, WalkNext and WalkFinish. Much clearer. Fill the status field
+	  of WordSearchDescription to have more information about the error condition.
+	  Add found field to WordSearchDescription for WalkNext result. Add cursor_get_flags
+	  and searchKeyIsSamePrefix fields to WordSearchDescription as internal state
+	  information.
+
+	* htword/WordList.h,WordList.cc: WalkInit to create and prepare cursor,
+	  WalkNext to move to next match
+	  WalkNextStep to move to next index entry, be it a match or not
+	  WalkFinish to release cursor.
+
+	* htword/WordList.h: WordSearchDescription::ModifyKey add to jump
+	  while walking.
+
+	* htword/WordList.cc (WalkNext) : it is now legal to step without
+	  collection or callback because search contains the last match (found
+	  field) and it s therefore not useless.
+	
 Mon Jan 17 12:15:45 2000  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* contrib/htdig-3.2.0.spec: added sample RPM spec file for 3.2

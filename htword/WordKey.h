@@ -51,6 +51,11 @@
 #define WORDKEYFIELD_BITS_MAX 1000
 
 //
+// Position of the first numerical field (just after the word)
+//
+#define WORD_FIRSTFIELD	1
+
+//
 // Unknown field position
 //
 #define WORD_KEY_UNKNOWN_POSITION	-1
@@ -198,7 +203,11 @@ class WordKey
   inline WordKeyNum Get(int position) const 
   {
     // if(position<1 || position>=NFields()){errr("Get: out of bounds");}
-      return(numerical_fields[position-1]);
+    return(numerical_fields[position-1]);
+  }
+  inline WordKeyNum& Get(int position)
+  {
+    return(numerical_fields[position-1]);
   }
 #ifndef SWIG
   inline       WordKeyNum &      operator[] (int n)        { return(numerical_fields[n-1]); }

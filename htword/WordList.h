@@ -14,7 +14,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: WordList.h,v 1.5.2.19 2000/01/13 14:47:11 loic Exp $
+// $Id: WordList.h,v 1.5.2.20 2000/01/20 15:55:22 loic Exp $
 //
 
 #ifndef _WordList_h_
@@ -74,6 +74,10 @@ public:
 // Possible values of the status member
 //
 //
+// WordSearchDescription contains valid data
+//
+#define WORD_WALK_OK			0x0000
+//
 // WalkNext reached the end of the matches
 //
 #define WORD_WALK_ATEND			0x0001
@@ -89,6 +93,15 @@ public:
 // Callback function returned NOTOK
 //
 #define WORD_WALK_CALLBACK_FAILED	0x0008
+//
+// WalkNextStep hit an entry that does not match the
+// searched key.
+//
+#define WORD_WALK_NOMATCH_FAILED	0x0010
+//
+// WordSearchDescription contains undefined data
+//
+#define WORD_WALK_FAILED		0xffff
 
 //
 // Wordlist::Walk uses WordSearchDescription for :
@@ -107,6 +120,13 @@ class WordSearchDescription
 
     void Clear();
     void ClearInternal();
+    void ClearResult();
+
+    //
+    // Set the document number in key and prepare to
+    // move to this document, if any.
+    //
+    int ModifyKey(const WordKey& patch);
 
     //
     // Input parameters
@@ -138,6 +158,10 @@ class WordSearchDescription
     // List of WordReference found in the search
     //
     List *collectRes;
+    //
+    // Last match found.
+    //
+    WordReference found;
     //
     // Description of the last NOTOK condition
     //
@@ -181,6 +205,14 @@ class WordSearchDescription
     // The shorted prefix key computed from searchKey
     //
     WordKey prefixKey;
+    //
+    // Next leap is either DB_NEXT or DB_SET_RANGE
+    //
+    int cursor_get_flags;
+    //
+    // True if search key is a prefix key
+    //
+    int searchKeyIsSameAsPrefix;
 
     int first_skip_field;
 };
@@ -285,10 +317,22 @@ public:
     //
     int                 WalkInit(WordSearchDescription& search);
     //
-    // Move to the next
+    // Move to the next match
     // Returns OK if successfull, NOTOK if it fails.
     //
     int                 WalkNext(WordSearchDescription& search);
+    //
+    // Advance the cursor one step, be it a match or not
+    // Returns OK if successfull, NOTOK if it fails.
+    // If NOTOK and WORD_WALK_NOMATCH_FAILED, it's safe to
+    // call WalkNextStep again.
+    //
+    int                 WalkNextStep(WordSearchDescription& search);
+    //
+    // Terminate walk, free allocated resources.
+    // Returns OK if successfull, NOTOK if it fails.
+    //
+    int                 WalkFinish(WordSearchDescription& search);
     List               *Collect(const WordSearchDescription &search);
 
     //
@@ -316,7 +360,17 @@ public:
     // Backend of WordRefs, operator[], Prefix...
     //
     List		*Collect (const WordReference& word);
-    int SkipUselessSequentialWalking(const WordSearchDescription &search,WordKey &foundKey,String &key,int &cursor_get_flags);
+    //
+    // Find out if we should better jump to the next possible key (DB_SET_RANGE) instead of 
+    // sequential iterating (DB_NEXT). 
+    // If it is decided that jump is a better move :
+    //   search.cursor_set_flags = DB_SET_RANGE
+    //   search.key = calculated next possible key
+    // Else
+    //   do nothing
+    // Returns NOTOK if not skipping, OK if skipping.
+    // 
+    int SkipUselessSequentialWalking(WordSearchDescription &search);
 
     const WordType		wtype;
     const Configuration&	config;
