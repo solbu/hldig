@@ -1,9 +1,11 @@
 #!/usr/local/bin/perl
 #
 # whatsnew.pl v1.1  (C) 1996 Iain Lea
+# modified 26 Oct 1998 (c) 1998 Jacques Reynes
 #
 # ChangeLog
 # 960321 IL  Reversed sorting to show newest documents first
+# 981026 JR  Modified to work with Berkeley DB2.
 #
 # Produces a HTML 'Whats New' page with custom header and footer.
 #
@@ -24,7 +26,7 @@
 #        -o file  HTML generated file
 #        -v       verbose
 
-use GDBM_File;
+use BerkeleyDB;
 require 'timelocal.pl';
 require 'getopts.pl';
 
