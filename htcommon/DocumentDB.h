@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.h,v 1.11.2.1 2000/02/14 06:08:17 ghutchis Exp $
+// $Id: DocumentDB.h,v 1.11.2.2 2000/03/20 19:14:49 ghutchis Exp $
 //
 
 #ifndef _DocumentDB_h_
@@ -38,10 +38,6 @@ public:
     DocumentDB();
     ~DocumentDB();
 
-    //
-    // The database used for searching is generated from our internal database:
-    //
-    int			CreateSearchDB(const String& filename);
 
     //
     // Standard database operations
@@ -78,6 +74,13 @@ public:
 
     // This returns a list of all the DocIDs, as IntObject *
     List		*DocIDs();
+
+    // Dump the database out to an ASCII text file
+    int			DumpDB(const String& filename);
+
+    // Read in the database from an ASCII text file
+    // (created by DumpDB)
+    int			LoadDB(const String& filename);
 
 private:
     Database		*dbf;

@@ -13,7 +13,7 @@
 // or the GNU Public License version 2 or later
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: DocumentDB.cc,v 1.28.2.1 2000/02/14 06:07:30 ghutchis Exp $
+// $Id: DocumentDB.cc,v 1.28.2.2 2000/03/20 19:14:48 ghutchis Exp $
 //
 
 #include "DocumentDB.h"
@@ -335,14 +335,14 @@ int DocumentDB::Delete(int docID)
 }
 
 //*****************************************************************************
-// int DocumentDB::CreateSearchDB(char *filename)
+// int DocumentDB::DumpDB(char *filename)
 //   Create an extract from our database which can be used by an
 //   external application. The extract will consist of lines with fields
 //   separated by tabs. 
 //
 //   The extract will be sorted by docID.
 //
-int DocumentDB::CreateSearchDB(const String& filename)
+int DocumentDB::DumpDB(const String& filename)
 {
     DocumentRef	        *ref;
     List		*descriptions, *anchors;
@@ -352,7 +352,7 @@ int DocumentDB::CreateSearchDB(const String& filename)
     String		docKey(sizeof(int));
 
     if((fl = fopen(filename, "w")) == 0) {
-      perror(form("DocumentDB::CreateSearchDB: opening %s for writing", (const char*)filename));
+      perror(form("DocumentDB::DumpDB: opening %s for writing", (const char*)filename));
       return NOTOK;
     }
 
