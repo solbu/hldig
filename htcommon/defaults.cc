@@ -4,47 +4,41 @@
 // default values for the ht programs
 //
 // $Log: defaults.cc,v $
-// Revision 1.22  1998/12/04 04:14:22  ghutchis
+// Revision 1.23  1998/12/08 02:53:56  ghutchis
+// Add new option server_wait_time for the number of seconds to wait between
+// requests.
 //
+// Revision 1.22  1998/12/04 04:14:22  ghutchis
 // Add new option "http_proxy_exclude" for servers that shouldn't use the
 // proxy, from a patch by Gilles Detillieux.
 //
 // Revision 1.21  1998/11/27 18:31:45  ghutchis
-//
 // Changed backlink_factor to 1000, description_factor to 150, match_method to
 // and, and meta_description factor to 50. Should produce more accurate search
 // results.
 //
 // Revision 1.20  1998/11/22 19:13:38  ghutchis
-//
 // New config options "description_factor" and "no_excerpt_show_top"
 //
 // Revision 1.19  1998/11/17 04:06:14  ghutchis
-//
 // Add new ranking factors backlink_factor and date_factor
 //
 // Revision 1.18  1998/10/21 17:33:03  ghutchis
-//
 // Added defaults for server_aliases and limit_normalized
 //
 // Revision 1.17  1998/10/17 14:06:08  ghutchis
-//
 // Changed htdig.sdsu.edu to www.htdig.org in start_urls
 //
 // Revision 1.16  1998/10/12 02:09:28  ghutchis
-//
 // Added htsearch logging patch from Alexander Bergolth.
 //
 // Revision 1.13  1998/09/23 14:58:21  ghutchis
-//
 // Many, many bug fixes
 //
 // Revision 1.12  1998/09/08 03:29:09  ghutchis
-//
 // Clean up for 3.1.0b1.
 //
 // Revision 1.11  1998/09/07 04:27:39  ghutchis
-//
 // Bug fixes.
 //
 // Revision 1.10  1998/08/11 08:58:26  ghutchis
@@ -56,18 +50,14 @@
 // directory. Fixed spelling mistake in "elipses" attributes.
 //
 // Revision 1.8  1998/07/23 16:18:51  ghutchis
-//
 // Added files (and patch) from Sylvain Wallez for PDF
 // parsing. Incorporates fix for non-Adobe PDFs.
 //
 // Revision 1.7  1998/07/09 09:38:56  ghutchis
-//
-//
 // Added support for local file digging using patches by Pasi. Patches
 // include support for local user (~username) digging.
 //
 // Revision 1.6  1998/07/09 09:32:02  ghutchis
-//
 // Added support for META name=description tags. Uses new config-file
 // option "use_meta_description" which is off by default.
 //
@@ -88,7 +78,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: defaults.cc,v 1.22 1998/12/04 04:14:22 ghutchis Exp $";
+static char RCSid[] = "$Id: defaults.cc,v 1.23 1998/12/08 02:53:56 ghutchis Exp $";
 #endif
 
 #include <Configuration.h>
@@ -184,6 +174,7 @@ ConfigDefaults	defaults[] =
     {"search_results_footer",		"${common_dir}/footer.html"},
     {"search_results_header",		"${common_dir}/header.html"},
     {"server_aliases",                  ""},
+    {"server_wait_time",                "0"},
     {"soundex_db",			"${database_base}.soundex.db"},
     {"star_blank",			"${image_url_prefix}/star_blank.gif"},
     {"star_image",			"${image_url_prefix}/star.gif"},
