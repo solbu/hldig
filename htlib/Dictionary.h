@@ -5,14 +5,8 @@
 // is indexed with a string.  The objects can be returned by mentioning their
 // string index.
 //
-// $Id: Dictionary.h,v 1.2 1999/01/14 00:26:01 ghutchis Exp $
+// $Id: Dictionary.h,v 1.3 1999/02/22 13:57:28 ghutchis Exp $
 //
-// $Log: Dictionary.h,v $
-// Revision 1.2  1999/01/14 00:26:01  ghutchis
-// Add new method GetNextElement to directly return next object when iterating.
-//
-// Revision 1.1.1.1  1997/02/03 17:11:04  turtle
-// Initial CVS
 //
 //
 #ifndef	_Dictionary_h_
