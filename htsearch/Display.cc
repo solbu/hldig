@@ -4,6 +4,10 @@
 // Implementation of Display
 //
 // $Log: Display.cc,v $
+// Revision 1.31  1999/01/17 20:30:35  ghutchis
+// Take advantage of createFromString returning an error value to bail out of
+// poorly-constructed template_maps, based on code contributed by <tlm@mbox.comune.prato.it>.
+//
 // Revision 1.30  1999/01/14 03:10:53  ghutchis
 // Added support for using the wrapper instead of header and footer if
 // search_results_wrapper is set. Added support for sorting and reverse sorting
@@ -106,7 +110,7 @@
 //
 //
 #if RELEASE
-static char RCSid[] = "$Id: Display.cc,v 1.30 1999/01/14 03:10:53 ghutchis Exp $";
+static char RCSid[] = "$Id: Display.cc,v 1.31 1999/01/17 20:30:35 ghutchis Exp $";
 #endif
 
 #include "htsearch.h"
@@ -138,7 +142,21 @@ Display::Display(char *indexFile, char *docFile)
     maxScore = 100;
     setupImages();
 
-    templates.createFromString(config["template_map"]);
+    if (!templates.createFromString(config["template_map"]))
+      {
+	// Error in createFromString.
+	// Let's try the default template_map
+	
+	config.Add("template_map", 
+		   "Long builtin-long builtin-long Short builtin-short builtin-short");
+        if (!templates.createFromString(config["template_map"]))
+	  {
+	    // Unrecoverable Error
+	    // (No idea why this would happen)
+	    templateError = 1;
+	  }
+      }
+
     currentTemplate = templates.get(config["template_name"]);
     if (!currentTemplate)
     {
