@@ -6,6 +6,9 @@
 // http headers in native format. 
 //
 // $Log: Configuration.cc,v $
+// Revision 1.7  1999/01/23 02:23:55  ghutchis
+// Add support for keyword "include" to include other config files.
+//
 // Revision 1.6  1999/01/14 00:26:48  ghutchis
 // Fixed time format to standard to avoid sending If-Modified-Since http
 // headers in native format (which would be incorrect behavior). Use C locale.
@@ -30,7 +33,7 @@
 //
 //
 #if RELEASE
-static char	RCSid[] = "$Id: Configuration.cc,v 1.6 1999/01/14 00:26:48 ghutchis Exp $";
+static char	RCSid[] = "$Id: Configuration.cc,v 1.7 1999/01/23 02:23:55 ghutchis Exp $";
 #endif
 
 #include "Configuration.h"
@@ -338,6 +341,25 @@ int Configuration::Read(char *filename)
 	    value[len] = '\0';
 	    len--;
 	  }
+
+	if (mystrcasecmp(name, "include") == 0)
+	{
+	    ParsedString	ps(value);
+	    String		str(ps.get(dict));
+	    if (str[0] != '/')		// Given file name not fully qualified
+	    {
+		str = filename;		// so strip dir. name from current one
+		len = str.lastIndexOf('/') + 1;
+		if (len > 0)
+		    str.chop(str.length() - len);
+		else
+		    str = "";		// No slash in current filename
+		str << ps.get(dict);
+	    }
+	    Read(str.get());
+	    line = 0;
+	    continue;
+	}
 
         Add(name, value);
         line = 0;

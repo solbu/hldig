@@ -23,6 +23,18 @@ Sat Jan 23 01:18:05 1999  Hans-Peter Nilsson  <hp@axis.se>
 	needless temporary String.
 	* htcommon/DocumentRef.cc (Deserialize): Ditto.
 
+Fri Jan 22 21:10:12 1999   Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* htlib/Configuration.cc: Add support for keyword "include" to
+	include other config files.
+
+	* htdoc/cf_general.html: Document it.
+
+Thu Jan 21 23:25:37 1999  Geoff Hutchison  <ghutchis@wso.williams.edu>
+
+	* htsearch/Display.cc(logSearch): Check if HTTP_REFERER is NULL,
+	if so, use a dash. (Otherwise we'll kill some syslog() services).
+
 Thu Jan 21 05:30:40 1999  Hans-Peter Nilsson  <hp@axis.se>
 
 	* htlib/HtURLCodec.h, htlib/HtURLCodec.cc, htlib/HtWordCodec.cc,
