@@ -3,7 +3,7 @@
 //
 // StringMatch: This class provides an interface to a fairly specialized string
 //              lookup facility.  It is intended to be used as a replace for any
-//              regualr expression matching when the pattern string is in the form:
+//              regular expression matching when the pattern string is in the form:
 //
 //                 <string1>|<string2>|<string3>|...
 //
@@ -29,7 +29,7 @@
 // or the GNU Public License version 2 or later 
 // <http://www.gnu.org/copyleft/gpl.html>
 //
-// $Id: StringMatch.h,v 1.7 1999/09/24 10:29:03 loic Exp $
+// $Id: StringMatch.h,v 1.8 1999/10/01 07:28:12 loic Exp $
 //
 
 #ifndef _StringMatch_h_

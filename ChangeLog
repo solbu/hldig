@@ -1,3 +1,8 @@
+Fri Oct 01 09:02:11 1999  Loic Dachary  <loic@ceic.com>
+
+	* Makefile.config: duplicate library lines to resolve 
+	  interdependencies.
+
 Thu Sep 30 17:56:55 1999  Loic Dachary  <loic@ceic.com>
 
 	* htmerge/words.cc (delete_word): Upgrade to use WordCursor.
