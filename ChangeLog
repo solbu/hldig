@@ -1,3 +1,12 @@
+Thu Aug 29 21:21:34 CEST 2002 Soeren Vejrup Carlsen <svc@users.sourceforge.net>
+
+	* htdig/Document.[h,cc]: first steps in FTP handling. HtFTP.h included and 
+	we now test for the 'ftp' protocol in the Document::Retrieve function. 
+	Has not yet been tested!
+
+	* htnet/HtFTP.[h,cc]: added class to handle the FTP-protocol. Very 
+	experimental (has not been tested yet).	
+
 Fri Aug  9 13:01:05 2002  Gilles Detillieux  <grdetil@scrc.umanitoba.ca>
 
 	* httools/htnotify.cc (readPreAndPostamble): Check for empty strings
