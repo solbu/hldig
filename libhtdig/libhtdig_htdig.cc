@@ -17,7 +17,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htdig.cc,v 1.5 2004/05/28 13:15:29 lha Exp $
+// $Id: libhtdig_htdig.cc,v 1.6 2005/05/12 05:48:35 nealr Exp $
 //
 //-------------------------------------------------------------
 
@@ -53,6 +53,7 @@ extern "C" {
 #include "HtURLRewriter.h"
 #include "URL.h"
 #include "Server.h"
+#include "IndexPurge.h"
 
 ////////////////////////////
 // For cookie jar
@@ -62,22 +63,15 @@ extern "C" {
 #include "HtHTTP.h"
 ////////////////////////////
 
-// If we have this, we probably want it.
-//#ifdef HAVE_GETOPT_H
-//#include <getopt.h>
-//#endif
-
-
-
 //Global Variables for Library
 
-int debug = 0;
 HtRegexList limits;
 HtRegexList limitsn;
 String configFile = DEFAULT_CONFIG_FILE;
 FILE *urls_seen = NULL;
 FILE *images_seen = NULL;
 DocumentDB docs;
+extern int debug;
 
     
 //
@@ -88,7 +82,6 @@ static String minimalFile = 0;
 static HtDateTime StartTime;
 static HtDateTime EndTime;
 
-//static char *max_hops = NULL;
 static String credentials;
 static HtCookieJar *_cookie_jar = NULL;
 static HtConfiguration * config = NULL;
@@ -132,7 +125,7 @@ BasicDocument the_basicdoc;
  *
  *******************************************************/
  
-int htdig_index_open(htdig_parameters_struct * htdig_parms)
+DLLEXPORT int htdig_index_open(htdig_parameters_struct * htdig_parms)
 {
     int ret = -1;
 
@@ -149,7 +142,10 @@ int htdig_index_open(htdig_parameters_struct * htdig_parms)
         myURL = strdup(htdig_parms->URL);
     }
     
-    debug = htdig_parms->debug;
+   // fprintf(stderr,"debug:%d, htdig_parms->debug:%d\n", debug,htdig_parms->debug);
+    debug = (int)htdig_parms->debug;
+   // fprintf(stderr,"debug:%d, htdig_parms->debug:%d\n", debug,htdig_parms->debug);
+
     if(debug != 0)
     {
         ret = logOpen(htdig_parms->logFile);
@@ -164,22 +160,11 @@ int htdig_index_open(htdig_parameters_struct * htdig_parms)
 
     initial = htdig_parms->initial;
     create_text_database  =  htdig_parms->create_text_database;
-    //max_hops  =  strdup(htdig_parms->max_hops);
     report_statistics  =  htdig_parms->report_statistics;
     credentials = htdig_parms->credentials;
     alt_work_area  =  htdig_parms->alt_work_area;
     minimalFile = htdig_parms->minimalFile;
-
     
-    if(htdig_parms->use_cookies == TRUE)
-    {
-        // Cookie jar dynamic creation.
-
-        _cookie_jar = new HtCookieMemJar ();    // new cookie jar
-        if (_cookie_jar)
-            HtHTTP::SetCookieJar (_cookie_jar);
-    }
-
     //
     // First set all the defaults and then read the specified config
     // file to override the defaults.
@@ -214,9 +199,19 @@ int htdig_index_open(htdig_parameters_struct * htdig_parms)
     if (config->Find ("locale").empty () && debug > 0)
         logEntry("Warning: unknown locale!\n");
 
-    if (strlen(htdig_parms->max_hops) > 0)
+    if (strlen(htdig_parms->max_hop_count) > 0)
     {
-        config->Add ("max_hop_count", htdig_parms->max_hops);
+        config->Add ("max_hop_count", htdig_parms->max_hop_count);
+    }
+
+    if (strlen(htdig_parms->max_head_length) > 0)
+    {
+        config->Add ("max_head_length", htdig_parms->max_head_length);
+    }
+    
+    if (strlen(htdig_parms->max_doc_size) > 0)
+    {
+        config->Add ("max_doc_size", htdig_parms->max_doc_size);
     }
 
     if(strlen(htdig_parms->limit_urls_to) > 0)
@@ -236,17 +231,14 @@ int htdig_index_open(htdig_parameters_struct * htdig_parms)
     
     if(strlen(htdig_parms->url_rewrite_rules) > 0)
     {
+        //printf("Old url_rewrite_rules: %s\n", ((String)(config->Find("url_rewrite_rules"))).get());
         config->Add("url_rewrite_rules", htdig_parms->url_rewrite_rules);
+        //printf("Adding url_rewrite_rules: %s\n",htdig_parms->url_rewrite_rules);
     }
     
     if(strlen(htdig_parms->bad_querystr) > 0)
     {
         config->Add("bad_querystr", htdig_parms->bad_querystr);
-    }
-
-    if(strlen(htdig_parms->locale) > 0)
-    {
-        config->Add("locale", htdig_parms->locale);
     }
 
     if(strlen(htdig_parms->meta_description_factor) > 0)
@@ -269,6 +261,16 @@ int htdig_index_open(htdig_parameters_struct * htdig_parms)
         config->Add("start_url", htdig_parms->URL);
         free(myURL);
         myURL=NULL;
+    }
+    
+    if((htdig_parms->use_cookies == TRUE) || 
+        (config->Boolean("disable_cookies") == FALSE))
+    {
+        // Cookie jar dynamic creation.
+
+        _cookie_jar = new HtCookieMemJar ();    // new cookie jar
+        if (_cookie_jar)
+            HtHTTP::SetCookieJar (_cookie_jar);
     }
     
     //------- end custom filters from htdig_parms ----------
@@ -428,8 +430,8 @@ int htdig_index_open(htdig_parameters_struct * htdig_parms)
 
 
     htdig_index_open_flag = TRUE;
-
-    return(TRUE);
+    
+    return(htdig_index_open_flag);
 
 }
 
@@ -449,7 +451,7 @@ int htdig_index_open(htdig_parameters_struct * htdig_parms)
  *          codes
  *  
  *******************************************************/
-int htdig_index_simple_doc(htdig_simple_doc_struct * a_simple_doc)
+DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct * a_simple_doc)
 {
     int index_error = 0;
     //int ret = 0;
@@ -486,7 +488,7 @@ int htdig_index_simple_doc(htdig_simple_doc_struct * a_simple_doc)
  *          codes
  *   TODO  Blank/empty URL error?
  *******************************************************/
-int htdig_index_urls(void)
+DLLEXPORT int htdig_index_urls(void)
 {
 
     char * temp_URL_list = NULL;
@@ -605,7 +607,7 @@ int htdig_index_urls(void)
  *          codes
  *  
  *******************************************************/
-int htdig_index_close(void)
+DLLEXPORT int htdig_index_close(void)
 {
     int ret = -1;
 
@@ -614,13 +616,10 @@ int htdig_index_close(void)
         //delete a_basicdoc;
         //delete Indexer;
 
-        Indexer->FlushWordDB();
+        Indexer->CloseWordDB();
 
         if (_cookie_jar)
             delete _cookie_jar;
-
-        //if (max_hops != NULL)
-        //    free(max_hops);
 
         if (myURL != NULL)
             free(myURL);
@@ -655,8 +654,8 @@ int htdig_index_close(void)
 
         htdig_index_open_flag = FALSE;
     }
-
-    return(TRUE);
+    
+    return(htdig_index_open_flag);
 }
 
 /*******************************************************
@@ -671,7 +670,7 @@ int htdig_index_close(void)
  *  
  *******************************************************/
 
-int htdig_index_reset(void)
+DLLEXPORT int htdig_index_reset(void)
 {
     Indexer->FlushWordDB();
     a_basicdoc->Reset();
@@ -695,7 +694,7 @@ int htdig_index_reset(void)
  *
  *******************************************************/
 
-int htdig_get_max_head_length()
+DLLEXPORT int htdig_get_max_head_length()
 {
     int ret = -1;
 
@@ -724,8 +723,7 @@ int htdig_get_max_head_length()
  *******************************************************/
 
 
-//int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
-int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
+DLLEXPORT int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
 { 
     //int ret = FALSE;
     String the_URL(htdig_parms->URL);
@@ -786,9 +784,19 @@ int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
     if (config->Find ("locale").empty () && debug > 0)
         logEntry("Warning: unknown locale!\n");
 
-    if (strlen(htdig_parms->max_hops) > 0)
+    if (strlen(htdig_parms->max_hop_count) > 0)
     {
-        config->Add ("max_hop_count", htdig_parms->max_hops);
+        config->Add ("max_hop_count", htdig_parms->max_hop_count);
+    }
+    
+    if (strlen(htdig_parms->max_head_length) > 0)
+    {
+        config->Add ("max_head_length", htdig_parms->max_head_length);
+    }
+    
+    if (strlen(htdig_parms->max_doc_size) > 0)
+    {
+        config->Add ("max_doc_size", htdig_parms->max_doc_size);
     }
 
     if(strlen(htdig_parms->limit_urls_to) > 0)
@@ -814,11 +822,6 @@ int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
     if(strlen(htdig_parms->bad_querystr) > 0)
     {
         config->Add("bad_querystr", htdig_parms->bad_querystr);
-    }
-
-    if(strlen(htdig_parms->locale) > 0)
-    {
-        config->Add("locale", htdig_parms->locale);
     }
 
     if(strlen(htdig_parms->meta_description_factor) > 0)
@@ -1055,4 +1058,71 @@ int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
 
     //Success!
     return TRUE;
+}
+
+/*******************************************************
+ *
+ *   LIBHTDIG API FUNCTION
+ *
+ *   int htdig_index_obsolete_url(...)
+ * 
+ *
+ *   Remove URL from the index
+ *
+ *   Pass = return(TRUE)
+ *   Fail = return(XXX)  [Negative Value]
+ *   
+ *     
+ *******************************************************/
+
+DLLEXPORT int htdig_index_obsolete_url(char *url)
+{
+	DocumentRef *ref;
+
+	ref = docs[url];	// It might be nice to have just an Exists() here
+	if (ref)
+    {
+        //
+        // We already have an entry for this document in our database.
+        // mark it as obsolete
+        //words.Skip();
+        ref->DocState(Reference_obsolete);
+        docs.Add(*ref);
+        delete ref;
+    }
+
+    return(TRUE);
+}
+
+DLLEXPORT int htdig_index_mark_all_obsolete(void)
+{
+    Dictionary *del_ids = NULL;
+    del_ids = libhtdig_mark_all_docs_obsolete(&docs);
+
+    return(del_ids->Count());
+
+}
+
+DLLEXPORT int htdig_index_purge_db(void)
+{
+    String the_URL(""); //hard-coded empty for now
+    Dictionary		*discard_urls = new Dictionary;
+    Dictionary		*discard_ids = 0;
+    
+    if(htdig_index_open_flag != TRUE)
+        return(HTDIG_ERROR_INDEX_NOT_OPEN);
+
+    discard_urls->Add(the_URL, NULL);
+    
+    // We pass in our list of URLs (which may be empty)
+    // and we get back the list of IDs purged from the doc DB
+    // to make sure words with these IDs are purged
+    discard_ids = libhtdig_purgeDocs(discard_urls, &docs); 
+
+    //TextCollector Delete
+    Indexer->PurgeWords(discard_ids);
+    delete discard_urls;
+    discard_urls = NULL;
+
+    return(TRUE);
 }

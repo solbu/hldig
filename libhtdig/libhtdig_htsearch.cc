@@ -17,7 +17,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htsearch.cc,v 1.4 2004/05/28 13:15:29 lha Exp $
+// $Id: libhtdig_htsearch.cc,v 1.5 2005/05/12 05:48:35 nealr Exp $
 //
 //----------------------------------------------------------------
 
@@ -85,7 +85,8 @@ StringList boolean_keywords;
 Parser *parser = NULL;
 
 extern String configFile;
-extern int debug;
+//extern int debug;
+int debug;
 
 static HtConfiguration *config = NULL;
 Dictionary selected_collections;	// Multiple database support
@@ -101,6 +102,7 @@ StringList requiredWords;	  //TODO add this
 
 HtRegex limit_to;
 HtRegex exclude_these;
+HtRegex always_return_these;
 
 // List         searchWords;
 List *searchWords = NULL;
@@ -117,7 +119,7 @@ static ResultFetch *resultfetch = 0;
 // int main()
 //
 //int main(int ac, char **av)
-int htsearch_open(htsearch_parameters_struct * htsearch_parms)
+DLLEXPORT int htsearch_open(htsearch_parameters_struct * htsearch_parms)
 {
 	int ret = -1;
 	int override_config = 0;
@@ -221,8 +223,17 @@ int htsearch_open(htsearch_parameters_struct * htsearch_parms)
 
 	//------- custom filters from htsearch_parms ----------
 
-    //resrict,exclude,urlrewrite
+    //urlrewrite?
 
+	if (strlen(htsearch_parms->search_restrict) > 0)
+	{
+		config->Add("restrict", htsearch_parms->search_restrict);
+	}
+    
+	if (strlen(htsearch_parms->search_exclude) > 0)
+	{
+		config->Add("exclude", htsearch_parms->search_exclude);
+	}
 
 	if (strlen(htsearch_parms->meta_description_factor) > 0)
 	{
@@ -313,6 +324,12 @@ int htsearch_open(htsearch_parameters_struct * htsearch_parms)
 		config->Add("exclude", u);	// re-create the config attribute
 	}
 
+	if (strlen(htsearch_parms->search_alwaysreturn) > 0)
+    {
+		StringList l(htsearch_parms->search_alwaysreturn, " \t\r\n\001|");
+		always_return_these.setEscaped(l);
+    }
+
 	//
 	// Check url_part_aliases and common_url_parts for
 	// errors.
@@ -353,9 +370,9 @@ int htsearch_open(htsearch_parameters_struct * htsearch_parms)
 //
 //---------------------------------------------------------------------------------------
 
-int htsearch_query(htsearch_query_struct * htseach_query)
+DLLEXPORT int htsearch_query(htsearch_query_struct * htseach_query)
 {
-	int total_match_count = 0;
+	int match_count_acc = 0;
 
 	originalWords = htseach_query->raw_query;
 	originalWords.chop(" \t\r\n");
@@ -462,7 +479,6 @@ int htsearch_query(htsearch_query_struct * htseach_query)
 		reportError(form("Unable to read word database file '%s'\nDid you run htdig?", word_db.get()));
 		return (HTSEARCH_ERROR_WORDDB_READ);
 	}
-	// ResultList   *results = htsearch((char*)word_db, searchWords, parser);
 
 	String doc_index = config->Find("doc_index");
 	if (access((char *) doc_index, R_OK) < 0)
@@ -491,25 +507,27 @@ int htsearch_query(htsearch_query_struct * htseach_query)
 
 	// Perform search within the collection. Each collection stores its
 	// own result list.
-	total_match_count += htsearch(collection, *searchWords, parser);
+	match_count_acc += htsearch(collection, *searchWords, parser);
 	collection->setSearchWords(searchWords);
 	collection->setSearchWordsPattern(searchWordsPattern);
 	selected_collections.Add(configFile, collection);
 
 	if (parser->hadError())
+    {
 		errorMsg = parser->getErrorMessage();
+        delete parser;
+        return(HTSEARCH_ERROR_QUERYPARSER_ERROR);
+    }
 
 	delete parser;
-	//}
 
+	//total_matches = match_count_acc;
 
-	total_matches = total_match_count;
-
-	if (total_matches > 0)
+	if (match_count_acc > 0)
 	{
 
 		resultfetch = new ResultFetch(&selected_collections, collectionList);
-
+        
 		if (resultfetch->hasTemplateError())
 		{
 			reportError(form("Unable to read template file '%s'\nDoes it exist?",
@@ -517,25 +535,30 @@ int htsearch_query(htsearch_query_struct * htseach_query)
 
 			return (HTSEARCH_ERROR_TEMPLATE_ERROR);
 		}
+
 		resultfetch->setOriginalWords(originalWords);
-		resultfetch->setLimit(&limit_to);
+        resultfetch->setLimit(&limit_to);
 		resultfetch->setExclude(&exclude_these);
+		resultfetch->setAlwaysReturn(&always_return_these);
 		resultfetch->setLogicalWords(logicalWords);
+            
 		if (!errorMsg.empty())
+        {
 			resultfetch->displaySyntaxError(errorMsg);
+        }
 		else
 		{
-
 			matches_list = resultfetch->fetch();
 
-			//matches_list->Start_Get();
-
+            if(matches_list != 0)
+                total_matches = matches_list->Count();
+            else
+                total_matches = 0;
 		}
 
-	}					  //if ((total_matches > 0) && (desired_match_index == 0))
+	} //if ((match_count_acc > 0)
 
-
-	return (total_match_count);
+	return (total_matches);
 }
 
 //------------------  htsearch_get_nth_match (...)  -------------------------------------
@@ -555,78 +578,89 @@ int htsearch_query(htsearch_query_struct * htseach_query)
 //        
 //---------------------------------------------------------------------------------------
 
-int htsearch_get_nth_match(int desired_match_index, htsearch_query_match_struct * query_result)
+DLLEXPORT int htsearch_get_nth_match(int desired_match_index, htsearch_query_match_struct * query_result)
 {
 
-	ResultMatch *match = 0;
+	ResultMatch *match = NULL;
 	Dictionary *vars = 0;
 
 	if (total_matches == 0)
 	{
 		return (HTSEARCH_ERROR_NO_MATCH);
 	}
-	else if (desired_match_index >= total_matches)
+	else if (desired_match_index > total_matches)
 	{
 		return (HTSEARCH_ERROR_BAD_MATCH_INDEX);
 	}
 	else if ((total_matches > 0) && (desired_match_index < total_matches))
 	{
+
+        if(matches_list == NULL)
+		    return (HTSEARCH_ERROR_MATCHLIST_ERROR);
+
 		match = (ResultMatch *) matches_list->Nth(desired_match_index);
 
-		// DocumentRef  *ref = docDB[match->getID()];
-		Collection *collection = match->getCollection();
-		DocumentRef *ref = collection->getDocumentRef(match->getID());
-		if (!ref || ref->DocState() != Reference_normal)
-		{
-			// The document isn't present or shouldn't be displayed
-			return (HTSEARCH_ERROR_BAD_DOCUMENT);
-		}
+        if(match == NULL)
+        {
+            return (HTSEARCH_ERROR_BAD_DOCUMENT);
+        }
+        else
+        {
+            // DocumentRef  *ref = docDB[match->getID()];
+            Collection *collection = match->getCollection();
+            DocumentRef *ref = collection->getDocumentRef(match->getID());
+            if (!ref || ref->DocState() != Reference_normal)
+            {
+                // The document isn't present or shouldn't be displayed
+                return (HTSEARCH_ERROR_BAD_DOCUMENT);
+            }
 
-		ref->DocAnchor(match->getAnchor());
-		ref->DocScore(match->getScore());
-		vars = resultfetch->fetchMatch(match, ref, desired_match_index);
-		delete ref;
+            ref->DocAnchor(match->getAnchor());
+            ref->DocScore(match->getScore());
+            vars = resultfetch->fetchMatch(match, ref, desired_match_index);
+            delete ref;
 
-		String *value;
-		String key;
+            String *value;
+            String key;
 
-		key = "NSTARS";
-		value = (String *) vars->Find(key);
-		//cout << key.get() << "[" << value->get() << "]" << endl;
-		query_result->score = atoi(value->get());
+            key = "NSTARS";
+            value = (String *) vars->Find(key);
+            //cout << key.get() << "[" << value->get() << "]" << endl;
+            query_result->score = atoi(value->get());
 
-		key = "PERCENT";
-		value = (String *) vars->Find(key);
-		//cout << key.get() << "[" << value->get() << "]" << endl;
-		query_result->score_percent = atoi(value->get());
+            key = "PERCENT";
+            value = (String *) vars->Find(key);
+            //cout << key.get() << "[" << value->get() << "]" << endl;
+            query_result->score_percent = atoi(value->get());
 
-		key = "TITLE";
-		value = (String *) vars->Find(key);
-		//cout << key.get() << "[" << value->get() << "]" << endl;
-		snprintf(query_result->title, HTDIG_DOCUMENT_TITLE_L, "%s", value->get());
+            key = "TITLE";
+            value = (String *) vars->Find(key);
+            //cout << key.get() << "[" << value->get() << "]" << endl;
+            snprintf(query_result->title, HTDIG_DOCUMENT_TITLE_L, "%s", value->get());
 
-		key = "EXCERPT";
-		value = (String *) vars->Find(key);
-		//cout << key.get() << "[" << value->get() << "]" << endl;
-		snprintf(query_result->excerpt, HTDIG_DOCUMENT_EXCERPT_L, "%s", value->get());
+            key = "EXCERPT";
+            value = (String *) vars->Find(key);
+            //cout << key.get() << "[" << value->get() << "]" << endl;
+            snprintf(query_result->excerpt, HTDIG_DOCUMENT_EXCERPT_L, "%s", value->get());
 
-		key = "URL";
-		value = (String *) vars->Find(key);
-		//cout << key.get() << "[" << value->get() << "]" << endl;
-		snprintf(query_result->URL, HTDIG_MAX_FILENAME_PATH_L, "%s", value->get());
+            key = "URL";
+            value = (String *) vars->Find(key);
+            //cout << key.get() << "[" << value->get() << "]" << endl;
+            snprintf(query_result->URL, HTDIG_MAX_FILENAME_PATH_L, "%s", value->get());
 
-		String datefmt = config->Find("date_format");
-		key = "MODIFIED";
-		value = (String *) vars->Find(key);
-		//cout << key.get() << "[" << value->get() << "]" << endl;
-		mystrptime(value->get(), datefmt.get(), &(query_result->time_tm));
-		//cout << "[" << asctime(&query_result->time_tm) << "]" << endl;
+            String datefmt = config->Find("date_format");
+            key = "MODIFIED";
+            value = (String *) vars->Find(key);
+            //cout << key.get() << "[" << value->get() << "]" << endl;
+            mystrptime(value->get(), datefmt.get(), &(query_result->time_tm));
+            //cout << "[" << asctime(&query_result->time_tm) << "]" << endl;
 
-		key = "SIZE";
-		value = (String *) vars->Find(key);
-		//cout << key.get() << "[" << value->get() << "]" << endl;
-		query_result->size = atoi(value->get());
+            key = "SIZE";
+            value = (String *) vars->Find(key);
+            //cout << key.get() << "[" << value->get() << "]" << endl;
+            query_result->size = atoi(value->get());
 
+        }
 
 	}
 
@@ -640,7 +674,7 @@ int htsearch_get_nth_match(int desired_match_index, htsearch_query_match_struct 
 //
 //---------------------------------------------------------------------------------------
 
-int htsearch_close()
+DLLEXPORT int htsearch_close()
 {
 
 

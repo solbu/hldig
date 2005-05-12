@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ResultFetch.cc,v 1.5 2004/05/28 13:15:28 lha Exp $
+// $Id: ResultFetch.cc,v 1.6 2005/05/12 05:48:35 nealr Exp $
 //
 //--------------------------------------------------------------------
 
@@ -226,6 +226,7 @@ ResultFetch::fetch()
             }
         }
     }
+
     if (header)
     {
         //expandVariables(header);
@@ -236,56 +237,8 @@ ResultFetch::fetch()
     }
 
 
-    //neal
     return(matches);
 
-    /*
-
-    //
-    // Display the window of matches requested.
-    //
-    if (!currentTemplate->getStartTemplate().empty())
-    {
-        expandVariables(currentTemplate->getStartTemplate());
-    }
-
-    matches->Start_Get();
-    while ((match = (ResultMatch *) matches->Get_Next()) && numberDisplayed < number)
-    {
-        if (currentMatch >= startAt)
-        {
-            // DocumentRef  *ref = docDB[match->getID()];
-            Collection *collection = match->getCollection();
-            DocumentRef *ref = collection->getDocumentRef(match->getID());
-            if (!ref || ref->DocState() != Reference_normal)
-                continue;      // The document isn't present or shouldn't be displayed
-            ref->DocAnchor(match->getAnchor());
-            ref->DocScore(match->getScore());
-            fetchMatch(match, ref, currentMatch + 1);
-            numberDisplayed++;
-            delete ref;
-        }
-        currentMatch++;
-    }
-
-    if (!currentTemplate->getEndTemplate().empty())
-    {
-        expandVariables(currentTemplate->getEndTemplate());
-    }
-    if (footer)
-    {
-        //expandVariables(footer);
-    }
-    else
-    {
-        //displayFooter();
-    }
-    
-    if (wrapper)
-        delete wrapper;
-    delete matches;
-
-    */
 }
 
 //*****************************************************************************
@@ -293,9 +246,14 @@ ResultFetch::fetch()
 int
 ResultFetch::includeURL(const String & url)
 {
+    //if match override return without further checks
+    if (alwaysReturn && alwaysReturn->match(url, 1, 0) != 0)
+        return 1;
 
     if (limitTo && limitTo->match(url, 1, 0) == 0)
+    {
         return 0;
+    }
     else
     {
 

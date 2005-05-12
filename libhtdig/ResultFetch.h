@@ -17,7 +17,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ResultFetch.h,v 1.4 2004/05/28 13:15:29 lha Exp $
+// $Id: ResultFetch.h,v 1.5 2005/05/12 05:48:35 nealr Exp $
 //
 //--------------------------------------------------------------------
 
@@ -54,6 +54,7 @@ public:
 	
     // inline void		setResults(ResultList *results);
     // inline void		setSearchWords(List *searchWords);
+    inline void		setAlwaysReturn(HtRegex *);
     inline void		setLimit(HtRegex *);
     inline void		setExclude(HtRegex *);
     // inline void		setAllWordsPattern(StringMatch *);
@@ -103,6 +104,7 @@ protected:
     //
     // Pattern that all result URLs must match or exclude
     //
+    HtRegex		*alwaysReturn;
     HtRegex		*limitTo;
     HtRegex		*excludeFrom;
 
@@ -192,6 +194,11 @@ protected:
 };
 
 //*****************************************************************************
+
+inline void	ResultFetch::setAlwaysReturn(HtRegex * overrd)
+{
+    alwaysReturn = overrd;
+}
 inline void
 ResultFetch::setLimit(HtRegex *limit)
 {

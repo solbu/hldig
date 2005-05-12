@@ -1,6 +1,6 @@
 #libhtdig.so makefile for Unix systems
 
-LIBHTDIG_BUILD_VER = 3.2.1
+LIBHTDIG_BUILD_VER = 3.2.5
 
 
 #Berkeley DB Specific defines 
@@ -22,6 +22,7 @@ IMAGE_URL_PREFIX=\"/htdig\"
 
 DEFS= -DHAVE_CONFIG_H -DDEFAULT_CONFIG_FILE=$(DEFAULT_CONFIG_FILE) -DBIN_DIR=$(BIN_DIR) -DCOMMON_DIR=$(COMMON_DIR) 
 DEFS+= -DCONFIG_DIR=$(CONFIG_DIR) -DDATABASE_DIR=$(DATABASE_DIR) -DIMAGE_URL_PREFIX=$(IMAGE_URL_PREFIX)
+DEFS+= -DLIBHTDIG
 
 #LEX define based on your system
 LEX = flex
@@ -65,12 +66,20 @@ endif
 
 LIB_DIRS=
 
+LFLAGS = -lstdc++ 
+
+ifeq ($(ARCH),linux)
+LFLAGS = -lc -lstdc++ XXXX
+endif
+
 #use '-G' with Solaris
-LFLAGS = -lc -lstdc++ 
-#LFLAGS = -lc -lstdc++ -G
+ifeq ($(ARCH),sunos)
+LFLAGS = -lc -lstdc++ -G
+endif
 
 
-LIBZ  = -lz
+#LIBZ  = -lz
+LIBZ  = /usr/lib/libz.a
 #use this if you've built an -fPIC version of libz.a to link into the libhtdig.so
 #LIBZ  = -lz-fpic
 
@@ -81,7 +90,7 @@ BDB_C_OBJS += bt_compare.o bt_conv.o bt_curadj.o bt_cursor.o bt_delete.o bt_meth
 HTLIB_C_OBJS += getcwd.o mhash_md5.o regex.o vsnprintf.o memcmp.o mktime.o snprintf.o memcpy.o myqsort.o strerror.o memmove.o raise.o timegm.o
 
 #htlib c++ files
-HTLIB_CXX_OBJS += Configuration.o Database.o Dictionary.o DB2_db.o IntObject.o List.o Object.o ParsedString.o Queue.o QuotedStringList.o Stack.o String.o StringList.o StringMatch.o String_fmt.o good_strtok.o strcasecmp.o strptime.o HtCodec.o HtWordCodec.o HtVector.o HtHeap.o HtPack.o HtDateTime.o HtRegex.o HtRegexList.o HtRegexReplace.o HtRegexReplaceList.o HtVectorGeneric.o HtMaxMin.o HtWordType.o md5.o 
+HTLIB_CXX_OBJS += Configuration.o Database.o Dictionary.o DB2_db.o IntObject.o List.o Object.o ParsedString.o Queue.o QuotedStringList.o Stack.o String.o StringList.o StringMatch.o String_fmt.o good_strtok.o strcasecmp.o strptime.o HtCodec.o HtWordCodec.o HtVector.o HtHeap.o HtPack.o HtDateTime.o HtRegex.o HtRegexList.o HtRegexReplace.o HtRegexReplaceList.o HtVectorGeneric.o HtMaxMin.o HtWordType.o md5.o filecopy.o
 
 #htword c++ files
 HTWORD_CXX_OBJS += WordBitCompress.o WordContext.o WordCursor.o WordDB.o WordDBCompress.o WordDBInfo.o WordDBPage.o WordKey.o WordKeyInfo.o WordList.o WordMonitor.o WordRecord.o WordRecordInfo.o WordReference.o WordStat.o WordType.o 
@@ -96,21 +105,16 @@ HTNET_CXX_OBJS += Connection.o Transport.o HtHTTP.o HtFile.o HtNNTP.o HtCookie.o
 HTDIG_CXX_OBJS += Document.o ExternalTransport.o Parsable.o Retriever.o URLRef.o ExternalParser.o HTML.o Plaintext.o Server.o
 
 #htfuzzy c++ files
-HTFUZZY_CXX_OBJS += Accents.o EndingsDB.o Fuzzy.o Prefix.o Soundex.o Substring.o Synonym.o Endings.o Exact.o Metaphone.o Regexp.o Speling.o SuffixEntry.o filecopy.o
-
-#HTFUZZY_C_OBJS += filecopy.o
+HTFUZZY_CXX_OBJS += Accents.o EndingsDB.o Fuzzy.o Prefix.o Soundex.o Substring.o Synonym.o Endings.o Exact.o Metaphone.o Regexp.o Speling.o SuffixEntry.o
 
 #htsearch c++ files
 HTSEARCH_CXX_OBJS += Collection.o DocMatch.o  ResultList.o SplitMatches.o TemplateList.o Display.o  HtURLSeedScore.o ResultMatch.o Template.o WeightWord.o parser.o
 
 #libhtdig c++ files
-LIBHTDIG_CXX_OBJS += ResultFetch.o BasicDocument.o TextCollector.o libhtdig_htdig.o libhtdig_htmerge.o libhtdig_htfuzzy.o libhtdig_log.o libhtdig_htsearch.o
+LIBHTDIG_CXX_OBJS += ResultFetch.o BasicDocument.o TextCollector.o IndexPurge.o libhtdig_htdig.o libhtdig_htmerge.o libhtdig_htfuzzy.o libhtdig_log.o libhtdig_htsearch.o
 
 #htcommon lex & yacc targets
 LIBHTDIG_CXX_OBJS += conf_lexer.o conf_parser.o
-
-#libhtdig c files
-#LIBHTDIG_C_OBJS += filecopy.o
 
 LXX_TARGETS += conf_lexer.cc
 
@@ -120,9 +124,14 @@ OBJS += $(BDB_C_OBJS) $(HTLIB_C_OBJS) $(HTLIB_CXX_OBJS) $(HTWORD_CXX_OBJS)
 OBJS += $(HTCOMMON_CXX_OBJS) $(HTNET_CXX_OBJS) $(HTDIG_CXX_OBJS)
 OBJS += $(HTFUZZY_CXX_OBJS) $(HTFUZZY_C_OBJS) $(HTSEARCH_CXX_OBJS) $(LIBHTDIG_CXX_OBJS) $(LIBHTDIG_C_OBJS)
 
+SSL_INC  = -I/nfs/local/linux/openssl/openssl-0.9.7-stable-SNAP-20040331//include/openssl -DHAVE_SSL
+SSL_INC += -I/nfs/local/linux/openssl/openssl-0.9.7-stable-SNAP-20040331/include/
 
-libhtdig-3.2.0.so: $(OBJS) $(LXX_TARGETS) $(YXX_TARGETS)
-	$(CC) -shared $(LIB_DIRS) $(OTHER_OBJS) $(OBJS) -L/usr/local/lib $(LIBZ) $(LFLAGS) -Xlinker -h -Xlinker libhtdig.so.$(LIBHTDIG_BUILD_VER) -o libhtdig.so.$(LIBHTDIG_BUILD_VER)
+
+SSL_LIB = -L/nfs/local/linux/openssl/openssl-0.9.7-stable-SNAP-20040331//lib -lssl -lcrypto
+
+libhtdig.so.LIBHTDIG_BUILD_VER: $(OBJS) $(LXX_TARGETS) $(YXX_TARGETS)
+	$(CC) -shared $(LIB_DIRS) $(OTHER_OBJS) $(OBJS) $(LIBZ) $(LFLAGS) $(SSL_LIB) -Xlinker -h -Xlinker libhtdig.so.$(LIBHTDIG_BUILD_VER) -o libhtdig.so.$(LIBHTDIG_BUILD_VER)
 
 
 libhtdig.a: $(OBJS) $(LXX_TARGETS) $(YXX_TARGETS)
@@ -146,22 +155,22 @@ $(HTCOMMON_CXX_OBJS): %.o: ../htcommon/%.cc
 	$(CXX) $(INC_DIRS) $(DEFS) $(OPTS) $(DBG) -c $< -o $@
 
 $(HTNET_CXX_OBJS): %.o: ../htnet/%.cc
-	$(CXX) $(INC_DIRS) $(DEFS) $(OPTS) $(DBG) -c $< -o $@
+	$(CXX) $(INC_DIRS) $(DEFS) $(OPTS) $(SSL_INC) $(DBG) -c $< -o $@
 
 $(HTDIG_CXX_OBJS): %.o: ../htdig/%.cc
-	$(CXX) $(HTDIG_INC_DIR) $(INC_DIRS) $(DEFS) $(OPTS) $(DBG) -c $< -o $@
+	$(CXX) $(HTDIG_INC_DIR) $(INC_DIRS) $(DEFS) $(OPTS) $(SSL_INC) $(DBG) -c $< -o $@
 
 $(HTFUZZY_C_OBJS): %.o: ../htfuzzy/%.c
-	$(CC) $(INC_DIRS) $(DEFS) $(OPTS) $(DBG) -c $< -o $@
+	$(CC) $(INC_DIRS) $(DEFS) $(OPTS) $(SSL_INC) $(DBG) -c $< -o $@
 
 $(HTFUZZY_CXX_OBJS): %.o: ../htfuzzy/%.cc
-	$(CXX) $(INC_DIRS) $(DEFS) $(OPTS) $(DBG) -c $< -o $@
+	$(CXX) $(INC_DIRS) $(DEFS) $(OPTS) $(SSL_INC) $(DBG) -c $< -o $@
 
 $(HTSEARCH_CXX_OBJS): %.o: ../htsearch/%.cc
-	$(CXX) $(INC_DIRS) $(DEFS) $(OPTS) $(DBG) -c $< -o $@
+	$(CXX) $(INC_DIRS) $(DEFS) $(OPTS) $(SSL_INC) $(DBG) -c $< -o $@
 
 $(LIBHTDIG_CXX_OBJS): %.o: %.cc
-	$(CXX) $(HTDIG_INC_DIR) $(INC_DIRS) $(DEFS) $(OPTS) $(DBG) -c $< -o $@
+	$(CXX) $(HTDIG_INC_DIR) $(INC_DIRS) $(DEFS) $(SSL_INC) $(OPTS) $(DBG) -c $< -o $@
 
 $(LIBHTDIG_C_OBJS): %.o: %.c
 	$(CC) $(HTDIG_INC_DIR) $(INC_DIRS) $(DEFS) $(OPTS) $(DBG) -c $< -o $@

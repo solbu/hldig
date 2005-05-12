@@ -18,7 +18,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htmerge.cc,v 1.5 2004/05/28 13:15:29 lha Exp $
+// $Id: libhtdig_htmerge.cc,v 1.6 2005/05/12 05:48:35 nealr Exp $
 //
 //----------------------------------------------------------------
 
@@ -94,7 +94,7 @@ static String merge_configFile = 0;
 // Component procedures
 static int mergeDB ();
 
-int  htmerge_index_merge(htmerge_parameters_struct *htmerge_parms)
+DLLEXPORT int  htmerge_index_merge(htmerge_parameters_struct *htmerge_parms)
 {
     int ret = -1;
     int merge_ret = -1;

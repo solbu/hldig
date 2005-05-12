@@ -73,7 +73,7 @@ HTFUZZY_CXX_OBJS += Accents.obj EndingsDB.obj Fuzzy.obj Prefix.obj Soundex.obj S
 HTSEARCH_CXX_OBJS += Collection.obj DocMatch.obj  ResultList.obj SplitMatches.obj TemplateList.obj Display.obj  HtURLSeedScore.obj ResultMatch.obj Template.obj WeightWord.obj parser.obj
 
 #libhtdig c++ files
-LIBHTDIG_CXX_OBJS += ResultFetch.obj BasicDocument.obj TextCollector.obj libhtdig_htdig.obj libhtdig_htmerge.obj libhtdig_htfuzzy.obj libhtdig_log.obj libhtdig_htsearch.obj
+LIBHTDIG_CXX_OBJS += ResultFetch.obj BasicDocument.obj TextCollector.obj IndexPurge.obj libhtdig_htdig.obj libhtdig_htmerge.obj libhtdig_htfuzzy.obj libhtdig_log.obj libhtdig_htsearch.obj
 
 #htcommon lex & yacc targets
 LIBHTDIG_CXX_OBJS += conf_lexer.obj conf_parser.obj
@@ -89,7 +89,7 @@ OBJS += $(BDB_C_OBJS) $(HTLIB_C_OBJS) $(HTLIB_CXX_OBJS) $(HTWORD_CXX_OBJS)
 OBJS += $(HTCOMMON_CXX_OBJS) $(HTNET_CXX_OBJS) $(HTDIG_CXX_OBJS)
 OBJS += $(HTFUZZY_CXX_OBJS) $(HTFUZZY_C_OBJS) $(HTSEARCH_CXX_OBJS) $(LIBHTDIG_CXX_OBJS) $(LIBHTDIG_C_OBJS)
 
-OTHERLIBS =  L:/win32/lib/zlib114/zlib.lib ws2_32.lib
+OTHERLIBS +=  L:/win32/lib/zlib114/zlib.lib
 
 # -----------------------------------------------------------------------------
 

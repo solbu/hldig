@@ -19,7 +19,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: TextCollector.h,v 1.4 2004/05/28 13:15:29 lha Exp $
+// $Id: TextCollector.h,v 1.5 2005/05/12 05:48:35 nealr Exp $
 //
 //--------------------------------------------------------------------
 
@@ -54,8 +54,12 @@ class TextCollector
         			TextCollector(TextCollectorLog flags = TextCollector_noLog);
         virtual		~TextCollector();
     
-        int        IndexDoc(BasicDocument & adoc);
-        int        FlushWordDB();
+        int         IndexDoc(BasicDocument & adoc);
+
+        int         PurgeWords(Dictionary * discard_ids);
+        
+        int         FlushWordDB();
+        int         CloseWordDB();
     
         //
         // Report statistics about the parser

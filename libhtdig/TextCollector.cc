@@ -20,7 +20,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: TextCollector.cc,v 1.4 2004/05/28 13:15:29 lha Exp $
+// $Id: TextCollector.cc,v 1.5 2005/05/12 05:48:35 nealr Exp $
 //
 //--------------------------------------------------------------------
 
@@ -42,11 +42,12 @@
 #include "md5.h"
 #include "defaults.h"
 
+#include "IndexPurge.h"
+
 #include <signal.h>
 #include <stdio.h>
 
 #include <sys/timeb.h>
-
 
 //*****************************************************************************
 // TextCollector::TextCollector()
@@ -143,6 +144,7 @@ TextCollector::IndexDoc(BasicDocument & a_basicdoc)
 	DocumentRef *ref;
     time_t		date;
     int			old_document = 0;
+    int         was_obsolete = 0;
     static int		index = 0;
 
     //struct timeb tb;
@@ -167,6 +169,10 @@ TextCollector::IndexDoc(BasicDocument & a_basicdoc)
 			old_document = 0;
 		ref->DocBackLinks(ref->DocBackLinks() + 1);	// we had a new link
 		ref->DocAccessed(time(0));
+
+        if(ref->DocState() == Reference_obsolete)
+            was_obsolete = 1;
+        
 		ref->DocState(Reference_normal);
 		currenthopcount = ref->DocHopCount();
 	}
@@ -205,6 +211,60 @@ TextCollector::IndexDoc(BasicDocument & a_basicdoc)
     //printf("New Doc\n");
     //ftime(&tb);
     //fprintf(stderr, "[1] TIME: [%s] [%d]\n", ctime(&tb.time), tb.millitm);
+	
+    if (old_document)
+    {
+        if (doc->ModTime() == ref->DocTime())
+        {
+            words.Skip();
+            if (debug > 1)
+                cout << " retrieved but not changed" << endl;
+            words.Skip();
+        
+            if (urls_seen)
+            {
+                fprintf(urls_seen, "%s|%d|%s|%d|0|-55\n",
+                        (const char *) doc->Location(), doc->Length(), doc->ContentType(),
+                        (int) doc->ModTime());
+            }
+
+            if(was_obsolete)
+            {
+                docs.Add(*ref);
+                delete ref;
+            }
+            
+            return(1);
+        }
+        else
+        {
+            //
+            // Since we already had a record of this document and
+            // we were able to retrieve it, it must have changed
+            // since the last time we scanned it.  This means that
+            // we need to assign a new document ID to it and mark
+            // the old one as obsolete.
+            //
+
+            int old_docbacklinks = ref->DocBackLinks();
+            words.Skip();
+            ref->DocState(Reference_obsolete);
+            docs.Add(*ref);
+            delete ref;
+
+            current_id = docs.NextDocID();
+            word_context.DocID(current_id);
+            ref = new DocumentRef;
+            ref->DocID(current_id);
+            ref->DocURL(doc->Location());
+            ref->DocState(Reference_normal);
+            ref->DocAccessed(time(0));
+            ref->DocHopCount(0);
+            ref->DocBackLinks(old_docbacklinks-1);  //preserve old backlinks
+            if (debug > 4)
+                cout << " (changed) ";
+        }
+    }
 
 	RetrievedDocument(ref);
 
@@ -254,12 +314,51 @@ int TextCollector::FlushWordDB()
     }
 
     words.Flush();
-    words.Close();
+    
     return(1);
 }
-        
+
+int TextCollector::CloseWordDB()
+{
+    FlushWordDB();
+    words.Close();
+    
+    return(1);
+}
+
+
+int  TextCollector::PurgeWords(Dictionary * discard_ids)
+{
+    int found_closed = 0;
+    
+    if(words.isopen != 1)
+    {   
+        HtConfiguration* config= HtConfiguration::config();
+        words.Open(config->Find("word_db"), O_RDWR);
+        found_closed = 1;
+    }
+    
+    //delete the words for those document ids
+    DeleteWordData dwdata(*discard_ids); 
+    WordCursor* search = words.Cursor(libhtdig_delete_word, &dwdata);
+    search->Walk();
+    delete search;
+
+    delete discard_ids;
+    discard_ids = NULL;
+
+    if(found_closed == 1)
+    {
+        words.Flush();
+        words.Close();
+    }
+
+    return(1);
+}
+
+
 //*****************************************************************************
-// void TextCollector::RetrievedDocument(Document &doc, const String &url, DocumentRef *ref)
+// void TextCollector::RetrievedDocument(DocumentRef *ref)
 //   We found a document that needs to be parsed.  Since we don't know the
 //   document type, we'll let the Document itself return an appropriate
 //   Parsable object which we can call upon to parse the document contents.
@@ -515,3 +614,4 @@ TextCollector::got_noindex()
 		cout << "\nMETA ROBOT: Noindex " << current_ref->DocURL() << endl;
 	current_ref->DocState(Reference_noindex);
 }
+

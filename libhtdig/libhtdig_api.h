@@ -14,7 +14,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_api.h,v 1.4 2004/05/28 13:15:29 lha Exp $
+// $Id: libhtdig_api.h,v 1.5 2005/05/12 05:48:35 nealr Exp $
 //
 //----------------------------------------------------------------
 
@@ -31,6 +31,13 @@
 #define FALSE   0
 #endif
 
+#ifndef DLLEXPORT
+#ifdef _WIN32
+#define DLLEXPORT __declspec(dllexport)
+#else
+#define DLLEXPORT
+#endif
+#endif
 
 #define HTDIG_MAX_FILENAME_PATH_L            1024
 #define HTDIG_DOCUMENT_ID_L                    32
@@ -105,6 +112,7 @@
 
 
 
+#define  HTDIG_ERROR_INDEX_NOT_OPEN            -100
 #define  HTDIG_ERROR_CONFIG_READ               -101
 #define  HTDIG_ERROR_URL_PART                  -102
 #define  HTDIG_ERROR_URL_REWRITE               -103
@@ -113,17 +121,18 @@
 #define  HTDIG_ERROR_OPEN_CREATE_DOCDB         -106
 #define  HTDIG_ERROR_LOGFILE_OPEN              -107
 #define  HTDIG_ERROR_LOGFILE_CLOSE             -108
+#define  HTDIG_ERROR_EMPTY_INDEX               -109
 
-#define  HTDIG_ERROR_TESTURL_EXCLUDE           -109
-#define  HTDIG_ERROR_TESTURL_BADQUERY          -110
-#define  HTDIG_ERROR_TESTURL_EXTENSION         -111
-#define  HTDIG_ERROR_TESTURL_EXTENSION2        -112
-#define  HTDIG_ERROR_TESTURL_LIMITS            -113
-#define  HTDIG_ERROR_TESTURL_LIMITSNORM        -114
-#define  HTDIG_ERROR_TESTURL_SRCH_RESTRICT     -115
-#define  HTDIG_ERROR_TESTURL_SRCH_EXCLUDE      -116
-#define  HTDIG_ERROR_TESTURL_REWRITE_EMPTY     -117
-#define  HTDIG_ERROR_TESTURL_ROBOT_FORBID      -118
+#define  HTDIG_ERROR_TESTURL_EXCLUDE           -175
+#define  HTDIG_ERROR_TESTURL_BADQUERY          -176
+#define  HTDIG_ERROR_TESTURL_EXTENSION         -177
+#define  HTDIG_ERROR_TESTURL_EXTENSION2        -178
+#define  HTDIG_ERROR_TESTURL_LIMITS            -179
+#define  HTDIG_ERROR_TESTURL_LIMITSNORM        -180
+#define  HTDIG_ERROR_TESTURL_SRCH_RESTRICT     -181
+#define  HTDIG_ERROR_TESTURL_SRCH_EXCLUDE      -182
+#define  HTDIG_ERROR_TESTURL_REWRITE_EMPTY     -183
+#define  HTDIG_ERROR_TESTURL_ROBOT_FORBID      -184
 
 #define  HTSEARCH_ERROR_NO_MATCH               -201
 #define  HTSEARCH_ERROR_BAD_MATCH_INDEX        -202
@@ -137,6 +146,8 @@
 #define  HTSEARCH_ERROR_DOCINDEX_READ          -210
 #define  HTSEARCH_ERROR_DOCDB_READ             -211
 #define  HTSEARCH_ERROR_EXCERPTDB_READ         -212
+#define  HTSEARCH_ERROR_QUERYPARSER_ERROR      -213
+#define  HTSEARCH_ERROR_MATCHLIST_ERROR        -214
 
 #define  HTMERGE_ERROR_LOGFILE_OPEN            -301
 #define  HTMERGE_ERROR_LOGFILE_CLOSE           -302
@@ -232,14 +243,13 @@ typedef struct htdig_parameters_struct {
   char configFile[HTDIG_MAX_FILENAME_PATH_L];
   char DBpath[HTDIG_MAX_FILENAME_PATH_L];
   char credentials[HTDIG_MAX_FILENAME_PATH_L];
-  char max_hops[10];    //9 digit limit
   char minimalFile[HTDIG_MAX_FILENAME_PATH_L];
 
   //debugging & logfile
   char logFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
   int debug;            //0, 1 ,2, 3, 4, 5
   
-  //booelan values
+  //boolean values
   int initial;
   int create_text_database;
   int report_statistics;
@@ -253,13 +263,18 @@ typedef struct htdig_parameters_struct {
   char exclude_urls[HTDIG_MAX_FILENAME_PATH_L];
   char search_restrict[HTDIG_MAX_FILENAME_PATH_L];
   char search_exclude[HTDIG_MAX_FILENAME_PATH_L];
+  char search_alwaysreturn[HTDIG_MAX_FILENAME_PATH_L];
   char url_rewrite_rules[HTDIG_MAX_FILENAME_PATH_L];
   char bad_querystr[HTDIG_MAX_FILENAME_PATH_L];
+  
+  //misc overrides
   char locale[16];
   char title_factor[16];
   char text_factor[16];
   char meta_description_factor[16];
-  int  max_hop_count;
+  char max_hop_count[10];     //9 digit limit
+  char max_head_length[10];   //9 digit limit
+  char max_doc_size[10];      //9 digit limit
   
   //the rewritten URL - OUTGOING after htdig_index_test_url
   char rewritten_URL[HTDIG_MAX_FILENAME_PATH_L];
@@ -309,15 +324,20 @@ typedef struct htdig_simple_doc_struct {
 } htdig_simple_doc_struct;
 
 
-int htdig_index_open(htdig_parameters_struct *);
-int htdig_index_simple_doc(htdig_simple_doc_struct * );
-int htdig_index_urls(void);
-int htdig_index_reset(void);
-int htdig_index_close(void);
+DLLEXPORT int htdig_index_open(htdig_parameters_struct *);
+DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct * );
+DLLEXPORT int htdig_index_urls(void);
+DLLEXPORT int htdig_index_reset(void);
+DLLEXPORT int htdig_index_close(void);
 
-int htdig_index_test_url(htdig_parameters_struct *htparms);
+DLLEXPORT int htdig_index_test_url(htdig_parameters_struct *htparms);
+
+DLLEXPORT int htdig_index_obsolete_url(char *);
+DLLEXPORT int htdig_index_mark_all_obsolete(void);
+
+DLLEXPORT int htdig_index_purge_db(void);
     
-int htdig_get_max_head_length(void);
+DLLEXPORT int htdig_get_max_head_length(void);
 
 
 
@@ -377,7 +397,7 @@ typedef struct htmerge_parameters_struct {
 
 } htmerge_parameters_struct;
 
-int htmerge_index_merge(htmerge_parameters_struct *);
+DLLEXPORT int htmerge_index_merge(htmerge_parameters_struct *);
 
 
 
@@ -435,7 +455,7 @@ typedef struct htfuzzy_parameters_struct {
 
 
 // htfuzzy functions
-int htfuzzy_index(htfuzzy_parameters_struct *);
+DLLEXPORT int htfuzzy_index(htfuzzy_parameters_struct *);
 
 
 
@@ -479,6 +499,7 @@ typedef struct htsearch_parameters_struct {
   //filters
   char search_restrict[HTDIG_MAX_FILENAME_PATH_L];
   char search_exclude[HTDIG_MAX_FILENAME_PATH_L];
+  char search_alwaysreturn[HTDIG_MAX_FILENAME_PATH_L];
   char title_factor[16];
   char text_factor[16];
   char meta_description_factor[16];
@@ -599,15 +620,15 @@ typedef struct htsearch_query_match_struct {
 
 // htsearch functions
 
-int htsearch_open(htsearch_parameters_struct *);
-int htsearch_query(htsearch_query_struct *);
+DLLEXPORT int htsearch_open(htsearch_parameters_struct *);
+DLLEXPORT int htsearch_query(htsearch_query_struct *);
 
-int htsearch_get_nth_match(int, htsearch_query_match_struct *);
-int htsearch_close();
+DLLEXPORT int htsearch_get_nth_match(int, htsearch_query_match_struct *);
+DLLEXPORT int htsearch_close();
 
 //htsearch_free(indicator)
 
-char * htsearch_get_error();
+//DLLEXPORT char * htsearch_get_error();
 
 
 #endif /* LIBHTDIG_API_H */

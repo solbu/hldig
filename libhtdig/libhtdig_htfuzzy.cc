@@ -25,7 +25,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htfuzzy.cc,v 1.5 2004/05/28 13:15:29 lha Exp $
+// $Id: libhtdig_htfuzzy.cc,v 1.6 2005/05/12 05:48:35 nealr Exp $
 //
 //----------------------------------------------------------------
 
@@ -93,7 +93,7 @@ static HtConfiguration * config = NULL;
 //
 //int main(int ac, char **av)
 
-int htfuzzy_index(htfuzzy_parameters_struct * htfuzzy_parms)
+DLLEXPORT int htfuzzy_index(htfuzzy_parameters_struct * htfuzzy_parms)
 {
     String configFile = DEFAULT_CONFIG_FILE;
     int ret = 0;

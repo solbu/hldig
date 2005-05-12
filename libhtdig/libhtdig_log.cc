@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_log.cc,v 1.5 2004/05/28 13:15:29 lha Exp $
+// $Id: libhtdig_log.cc,v 1.6 2005/05/12 05:48:40 nealr Exp $
 //
 //--------------------------------------------------------------------
 
@@ -74,9 +74,7 @@ void reportError (char *msg)
     
     if(errorlog_fp != NULL)
     	fprintf(errorlog_fp, "%s  [ERROR] %s\n", ctime(&now), msg);
-
-    fprintf(stderr, "%s  [ERROR] %s\n", ctime(&now), msg);
-    
+ 
 }
 
 
