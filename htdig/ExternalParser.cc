@@ -13,7 +13,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ExternalParser.cc,v 1.29 2004/05/28 13:15:14 lha Exp $
+// $Id: ExternalParser.cc,v 1.30 2005/05/23 21:23:38 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -227,7 +227,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     int		get_file = (convertToType.length() != 0);
     String	newcontent;
 
-    StringList	cpargs(currentParser);
+    StringList	cpargs(currentParser, " \t");
     char   **parsargs = new char * [cpargs.Count() + 5];
     int    argi;
     for (argi = 0; argi < cpargs.Count(); argi++)
@@ -424,7 +424,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  {
 			metadatetags = new StringMatch();
 			metadatetags->IgnoreCase();
-			metadatetags->Pattern("date|dc.date|dc.date.created|dc.data.modified");
+			metadatetags->Pattern("date|dc.date|dc.date.created|dc.date.modified");
 		  }
     
 		  // <URL:http://www.w3.org/MarkUp/html-spec/html-spec_5.html#SEC5.2.5> 

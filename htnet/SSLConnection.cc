@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: SSLConnection.cc,v 1.6 2004/05/28 13:15:23 lha Exp $
+// $Id: SSLConnection.cc,v 1.7 2005/05/23 21:26:02 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -131,18 +131,20 @@ int SSLConnection::Read_Partial(char *buffer, int maxlength)
     {
       errno = 0;
 
-      if (timeout_value > 0) {
-          FD_SET_T fds;
-          FD_ZERO(&fds);
-          FD_SET(sock, &fds);
+      if (!SSL_pending(ssl)) {
+        if (timeout_value > 0) {
+            FD_SET_T fds;
+            FD_ZERO(&fds);
+            FD_SET(sock, &fds);
 
-          timeval tv;
-          tv.tv_sec = timeout_value;
-          tv.tv_usec = 0;
+            timeval tv;
+            tv.tv_sec = timeout_value;
+            tv.tv_usec = 0;
 
-          int selected = select(sock+1, &fds, 0, 0, &tv);
-          if (selected <= 0)
-              need_io_stop++;
+            int selected = select(sock+1, &fds, 0, 0, &tv);
+            if (selected <= 0)
+                need_io_stop++;
+        }
       }
 
       if (!need_io_stop)
