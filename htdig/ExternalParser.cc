@@ -13,7 +13,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ExternalParser.cc,v 1.30 2005/05/23 21:23:38 nealr Exp $
+// $Id: ExternalParser.cc,v 1.31 2005/07/12 16:26:07 grdetil Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -280,7 +280,11 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	// Call External Parser
 	execv(parsargs[0], parsargs);
 
-	exit(EXIT_FAILURE);
+	perror("execv");
+	write(STDERR_FILENO, "External parser error: Can't execute ", 37);
+	write(STDERR_FILENO, parseargs[0], strlen(parseargs[0]));
+	write(STDERR_FILENO, "\n", 1);
+	_exit(EXIT_FAILURE);
     }
 
     // Parent Process
