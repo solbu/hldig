@@ -1,6 +1,18 @@
-ht://Dig 3.2.0b6 README
+ht://Dig 4.0 README
 Copyright (c) 1995-2004 The ht://Dig Group
 Contributions from many, see htdoc/THANKS.html
+
+
+*** ht://Dig 4.0 interim README information ***
+
+We are in the process of upgrading ht://Dig to use a different backend
+database than what is currently used. This will cause enough changes to
+warrant a version change up to 4.0. Along with redesigning the backend
+database, htsearch is being looked at to possibly be broken into two
+separate modules, htsearch and htdisplay (display to be finished some
+time afterwards).
+
+
 
 ht://Dig is distributed under the GNU Library General Public License (LGPL).
 See the COPYING file for license information.

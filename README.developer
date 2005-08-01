@@ -1,5 +1,14 @@
-ht://Dig 3.2.0b4 README.developer
+ht://Dig 4.0 README.developer
 Copyright (c) 2002-2004 The ht://Dig Group
+
+--
+This document is in flux! Until the release of ht://Dig 4.0, please
+take a look at the refactor design documents in the /htdocs/refactor_4_0/
+directory to see what is going on with the codebase. Feel free to contact
+me about any questions/suggestions you might have, or if you'd like
+to volunteer. :)
+
+Anthony   aarnone@users.sourceforge.net
 
 --
 This README file is for newbie developers like myself.  As I learn stuff,
