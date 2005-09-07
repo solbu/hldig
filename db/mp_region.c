@@ -60,9 +60,6 @@ CDB___memp_open(dbenv)
 	TAILQ_INIT(&dbmp->dbmfq);
 	dbmp->dbenv = dbenv;
 
-	/* Clear locking for avoiding mp_alloc recursion */
-	dbmp->recursion_level = 0;
-
 	/*
 	 * Join/create the mpool region.  If this is a local region we don't
 	 * need much space because the most we'll store there is the pair of
@@ -305,14 +302,9 @@ CDB___memp_close(dbenv)
 	}
 
 	/* Discard DB_MPOOLFILEs. */
-	while ((dbmfp = TAILQ_FIRST(&dbmp->dbmfq)) != NULL) {
-	        if(F_ISSET(dbmfp, MP_CMPR)) {
-		  dbmfp->cmpr_context.weakcmpr = 0;
-		  F_CLR(dbmfp, MP_CMPR);
-	        }
-		if ((t_ret = CDB_memp_fclose(dbmfp)) != 0 && ret == 0)
+	while ((dbmfp = TAILQ_FIRST(&dbmp->dbmfq)) != NULL)
+		if ((t_ret = memp_fclose(dbmfp)) != 0 && ret == 0)
 			ret = t_ret;
-	}
 
 	/* Discard the thread mutex. */
 	if (dbmp->mutexp != NULL)

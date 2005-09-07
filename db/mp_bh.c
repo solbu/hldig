@@ -26,11 +26,6 @@ static const char sccsid[] = "@(#)mp_bh.c	11.5 (Sleepycat) 9/21/99";
 #include "db_shash.h"
 #include "mp.h"
 
-#ifdef DEBUG
-#include "WordMonitor.h"
-#include "db_page.h"
-#endif /* DEBUG */
-
 static int CDB___memp_upgrade __P((DB_MPOOL *, DB_MPOOLFILE *, MPOOLFILE *));
 
 /*
@@ -206,34 +201,8 @@ CDB___memp_pgread(dbmfp, bhp, can_create)
 		db_io.pagesize = db_io.bytes = pagesize;
 		db_io.pgno = bhp->pgno;
 		db_io.buf = bhp->buf;
-#ifdef DEBUG
-		/*
-		 * Prevent signal to occur during IO
-		 */
-		word_monitor_click();
-#endif /* DEBUG */
-		if(F_ISSET(dbmfp, MP_CMPR)) {
-		  ret = CDB___memp_cmpr(dbmfp, bhp, &db_io, DB_IO_READ, &nr);
-		} else {
-		  ret = CDB___os_io(&db_io, DB_IO_READ, &nr);
-		}
-#ifdef DEBUG
-		if(ret == 0) {
-		  PAGE* pp = (PAGE*)db_io.buf;
-		  word_monitor_add(WORD_MONITOR_READ, 1);
-		  switch(TYPE(pp)) {
-		  case P_IBTREE:
-		    word_monitor_add(WORD_MONITOR_PAGE_IBTREE, 1);
-		    break;
-		  case P_LBTREE:
-		    word_monitor_add(WORD_MONITOR_PAGE_LBTREE, 1);
-		    break;
-		  default:
-		    word_monitor_add(WORD_MONITOR_PAGE_UNKNOWN, 1);
-		    break;
-		  }
-		}
-#endif /* DEBUG */
+
+		ret = __os_io(&db_io, DB_IO_READ, &nr);
 	} else
 		ret = 0;
 
@@ -418,34 +387,8 @@ CDB___memp_pgwrite(dbmp, dbmfp, bhp, restartp, wrotep)
 	db_io.pagesize = db_io.bytes = mfp->stat.st_pagesize;
 	db_io.pgno = bhp->pgno;
 	db_io.buf = bhp->buf;
-#ifdef DEBUG
-	{
-	  PAGE* pp = (PAGE*)db_io.buf;
-	  word_monitor_add(WORD_MONITOR_WRITE, 1);
-	  switch(TYPE(pp)) {
-	  case P_IBTREE:
-	    word_monitor_add(WORD_MONITOR_PAGE_IBTREE, 1);
-	    break;
-	  case P_LBTREE:
-	    word_monitor_add(WORD_MONITOR_PAGE_LBTREE, 1);
-	    break;
-	  default:
-	    word_monitor_add(WORD_MONITOR_PAGE_UNKNOWN, 1);
-	    break;
-	  }
-	}
-	/*
-	 * Prevent signal to occur during IO
-	 */
-	word_monitor_click();
-#endif /* DEBUG */
-	if(F_ISSET(dbmfp, MP_CMPR)) {
-	  ret = CDB___memp_cmpr(dbmfp, bhp, &db_io, DB_IO_WRITE, &nw);
-	} else {
-	  ret = CDB___os_io(&db_io, DB_IO_WRITE, &nw);
-	}
-	if (ret != 0) {
-		CDB___db_panic(dbenv, ret);
+	if ((ret = __os_io(&db_io, DB_IO_WRITE, &nw)) != 0) {
+		__db_panic(dbenv, ret);
 		fail = "write";
 		goto syserr;
 	}

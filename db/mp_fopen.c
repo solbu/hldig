@@ -52,13 +52,6 @@ CDB_memp_fopen(dbenv, path, flags, mode, pagesize, finfop, retp)
 	    "CDB_memp_fopen", flags, DB_COMPRESS | DB_CREATE | DB_NOMMAP | DB_RDONLY)) != 0)
 		return (ret);
 
-	/*
-	 * Transparent I/O compression does not work on mmap'd files.
-	 */
-	if(LF_ISSET(DB_COMPRESS))
-	  LF_SET(DB_NOMMAP);
-
-
 	/* Require a non-zero pagesize. */
 	if (pagesize == 0) {
 		CDB___db_err(dbenv, "CDB_memp_fopen: pagesize not specified");
@@ -134,25 +127,16 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	dbmfp->ref = 1;
 	if (LF_ISSET(DB_RDONLY))
 		F_SET(dbmfp, MP_READONLY);
-	if (LF_ISSET(DB_COMPRESS))
-		F_SET(dbmfp, MP_CMPR);
 
 	if (path == NULL) {
 		if (LF_ISSET(DB_RDONLY)) {
 			CDB___db_err(dbenv,
-			    "CDB_memp_fopen: temporary files can't be readonly");
-			ret = EINVAL;
-			goto err;
-		}
-		if (LF_ISSET(DB_COMPRESS)) {
-			CDB___db_err(dbenv,
-			    "CDB_memp_fopen: temporary files can't be compressed");
+			    "memp_fopen: temporary files can't be readonly");
 			ret = EINVAL;
 			goto err;
 		}
 		last_pgno = 0;
 	} else {
-	       size_t disk_pagesize = F_ISSET(dbmfp, MP_CMPR) ? DB_CMPR_DIVIDE(dbenv, pagesize) : pagesize;
 		/* Get the real name for this file and open it. */
 		if ((ret = CDB___db_appname(dbenv,
 		    DB_APP_DATA, NULL, path, 0, NULL, &rpath)) != 0)
@@ -188,7 +172,7 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		}
 
 		/* Page sizes have to be a power-of-two, ignore mbytes. */
-		if (bytes % disk_pagesize != 0) {
+		if (bytes % pagesize != 0) {
 			CDB___db_err(dbenv,
 			    "%s: file size not a multiple of the pagesize",
 			    rpath);
@@ -196,8 +180,8 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 			goto err;
 		}
 
-		last_pgno = mbytes * (MEGABYTE / disk_pagesize);
-		last_pgno += bytes / disk_pagesize;
+		last_pgno = mbytes * (MEGABYTE / pagesize);
+		last_pgno += bytes / pagesize;
 
 		/* Correction: page numbers are zero-based, not 1-based. */
 		if (last_pgno != 0)
@@ -212,10 +196,6 @@ CDB___memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 			if ((ret = CDB___os_fileid(dbenv, rpath, 0, idbuf)) != 0)
 				goto err;
 			finfop->fileid = idbuf;
-		}
-		if (LF_ISSET(DB_COMPRESS)) {
-		  if((ret = CDB___memp_cmpr_open(dbenv, path, flags, mode, &dbmfp->cmpr_context)) != 0)
-		    goto err;
 		}
 	}
 
@@ -514,13 +494,6 @@ CDB_memp_fclose(dbmfp)
 			t_ret = ret;
 	}
 
-	if(F_ISSET(dbmfp, MP_CMPR)) {
-	  if((ret = CDB___memp_cmpr_close(&dbmfp->cmpr_context)) != 0)
-		CDB___db_err(dbmp->dbenv,
-			 "%s: %s", CDB___memp_fn(dbmfp), strerror(ret));
-	  F_CLR(dbmfp, MP_CMPR);
-	}
-	
 	/* Discard the thread mutex. */
 	if (dbmfp->mutexp != NULL)
 		CDB___db_mutex_free(dbenv, &dbmp->reginfo, dbmfp->mutexp);

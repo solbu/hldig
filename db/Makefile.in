@@ -232,7 +232,6 @@ libhtdb_la_SOURCES = \
 	log_register.c \
 	mp_alloc.c \
 	mp_bh.c \
-	mp_cmpr.c \
 	mp_fget.c \
 	mp_fopen.c \
 	mp_fput.c \
@@ -358,7 +357,7 @@ am_libhtdb_la_OBJECTS = bt_compare.lo bt_conv.lo bt_curadj.lo \
 	lock_deadlock.lo lock_region.lo lock_util.lo log.lo \
 	log_archive.lo log_auto.lo log_compare.lo log_findckp.lo \
 	log_get.lo log_method.lo log_put.lo log_rec.lo log_register.lo \
-	mp_alloc.lo mp_bh.lo mp_cmpr.lo mp_fget.lo mp_fopen.lo \
+	mp_alloc.lo mp_bh.lo mp_fget.lo mp_fopen.lo \
 	mp_fput.lo mp_fset.lo mp_method.lo mp_region.lo mp_register.lo \
 	mp_stat.lo mp_sync.lo mp_trickle.lo mut_fcntl.lo mut_pthread.lo \
 	mut_tas.lo mutex.lo os_abs.lo os_alloc.lo os_dir.lo os_errno.lo \

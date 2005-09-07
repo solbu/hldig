@@ -20,16 +20,4 @@ int CDB___memp_open __P((DB_ENV *));
 int CDB___memp_close __P((DB_ENV *));
 void CDB___memp_dump_region __P((DB_ENV *, char *, FILE *));
 int CDB___mp_xxx_fh __P((DB_MPOOLFILE *, DB_FH **));
-int CDB___memp_cmpr __P((DB_MPOOLFILE *, BH *, DB_IO *, int, ssize_t *));
-int CDB___memp_cmpr_read __P((DB_MPOOLFILE *, BH *, DB_IO *, ssize_t *));
-int CDB___memp_cmpr_write __P((DB_MPOOLFILE *, BH *, DB_IO *, ssize_t *));
-int CDB___memp_cmpr_inflate __P((const u_int8_t *, int, u_int8_t *, int, void *));
-int CDB___memp_cmpr_deflate __P((const u_int8_t *, int, u_int8_t **, int*, void *));
-u_int8_t CDB___memp_cmpr_coefficient __P((DB_ENV *dbenv));
-int CDB___memp_cmpr_open __P((DB_ENV *, const char *, int, int, CMPR_CONTEXT *));
-int CDB___memp_cmpr_close __P((CMPR_CONTEXT *));
-int CDB___memp_cmpr_alloc __P((DB_MPOOLFILE *, db_pgno_t *, BH *, int *));
-int CDB___memp_cmpr_free __P((DB_MPOOLFILE *, db_pgno_t));
-int CDB___memp_cmpr_alloc_chain __P((DB_MPOOL *, BH *, int));
-int CDB___memp_cmpr_free_chain __P((DB_MPOOL *, BH *));
 #endif /* _mp_ext_h_ */

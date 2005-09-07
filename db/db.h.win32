@@ -159,19 +159,6 @@ struct __db_dbt {
 	u_int32_t flags;
 };
 
-/*
- * Information from user specified page compression
- */
-struct __db_cmpr_info {
-    int (*compress)                     /* Compression function */
-	__P((const u_int8_t*, int, u_int8_t**, int*,void *));
-    int (*uncompress)                   /* Uncompression function */
-	__P((const u_int8_t*, int, u_int8_t*, int,void *));
-    u_int8_t coefficient;	        /* Compression factor is 1<<coefficient  */
-    u_int8_t max_npages;                /* Max number of pages  worst case */
-    u_int8_t zlib_flags;                /* Zlib Compresson Level */
-    void         *user_data;            /* Persistent information for compression functions */
-};
 
 /*
  * Flags understood by both CDB_db_create and CDB_db_env_create.

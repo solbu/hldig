@@ -13,8 +13,6 @@ struct __db_mpreg;	typedef struct __db_mpreg DB_MPREG;
 struct __mcache;	typedef struct __mcache MCACHE;
 struct __mpool;		typedef struct __mpool MPOOL;
 struct __mpoolfile;	typedef struct __mpoolfile MPOOLFILE;
-struct __cmpr;		typedef struct __cmpr CMPR;
-struct __cmpr_context;	typedef struct __cmpr_context CMPR_CONTEXT;
 
 /* We require at least 20K of cache. */
 #define	DB_CACHESIZE_MIN	( 20 * 1024)
@@ -45,10 +43,6 @@ struct __db_mpool {
 
 	int	    nc_reg;		/* N underlying cache regions. */
 	REGINFO	   *c_reginfo;		/* Underlying cache regions. */
-
-	/* I'm not sure if these need to be thread-protected... */
-	int         recursion_level;	/* limit recur'n from weak compr'n */
-
 };
 
 /*
@@ -62,15 +56,6 @@ struct __db_mpreg {
 					/* Pgin, pgout routines. */
 	int (*pgin) __P((db_pgno_t, void *, DBT *));
 	int (*pgout) __P((db_pgno_t, void *, DBT *));
-};
-
-/*
- * CMPR_CONTEXT --
- *	Shared compresssion information.
- */
-struct __cmpr_context {
-#define DB_CMPR_SUFFIX	"_weakcmpr"
-	DB 	     *weakcmpr;		/* Free weakcmpr pages pool. */
 };
 
 /*
@@ -115,11 +100,7 @@ struct __db_mpoolfile {
 #define	MP_READONLY	0x01		/* File is readonly. */
 #define	MP_UPGRADE	0x02		/* File descriptor is readwrite. */
 #define	MP_UPGRADE_FAIL	0x04		/* Upgrade wasn't possible. */
-#define	MP_CMPR		0x08		/* Transparent I/O compression. */
 	u_int32_t  flags;
-
-        CMPR_CONTEXT   cmpr_context;    /* Shared compression information */
-
 };
 
 /*
@@ -156,7 +137,7 @@ struct __mpool {
 	SH_TAILQ_HEAD(__mpfq) mpfq;	/* List of MPOOLFILEs. */
 
 	/*
-	 * We single-thread CDB_memp_sync and CDB_memp_fsync calls.
+	 * We single-thread memp_sync and memp_fsync calls.
 	 *
 	 * This mutex is intended *only* to single-thread access to the call,
 	 * it is not used to protect the lsn and lsn_cnt fields, the region
@@ -171,13 +152,6 @@ struct __mpool {
 
 #define	MP_LSN_RETRY	0x01		/* Retry all BH_WRITE buffers. */
 	u_int32_t  flags;
-
-	/* HACK!! */
-	/* a pointers allocated for this structure is (erroneously?) used */
-	/* in CDB___memp_alloc() to refer to a MCACHE structure.  Make sure */
-	/* the allocation is big enough. */
-	int	    dummy [100];
-
 };
 
 /*
@@ -236,50 +210,6 @@ struct __mpoolfile {
 	(dbmp)->c_reginfo[NCACHE((dbmp)->reginfo.primary, (bhp)->pgno)].primary
 
 /*
- * DB_CMPR --
- *      Page compression information
- *
- * !!!
- * There is no need to keep the length of the data wrote
- * in the page since it's already encoded in the compressed
- * data.
- */
-
-/*
- * Convert size to expected compressed size
- */
-#define DB_CMPR_DIVIDE(dbenv, size) ((size) >> CDB___memp_cmpr_coefficient(dbenv) )
-#define DB_CMPR_MULTIPLY(dbenv, size) ((size) << CDB___memp_cmpr_coefficient(dbenv) )
-
-
-struct __cmpr {
-#define DB_CMPR_FIRST	 	0x01 /* Head of chain. */
-#define DB_CMPR_INTERNAL	0x02 /* Weak compression data. */
-#define DB_CMPR_CHAIN	 	0x04 /* More data in next page. */
-#define DB_CMPR_FREE		0x08 /* Not in use. */
-
-  u_int16_t flags; 
-
-  /* 
-   * Filled if DB_CMPR_CHAIN set
-   */
-  db_pgno_t next;
-};
-
-/*
- * Reserved information at the beginning of each compressed page
- */
-#define DB_CMPR_OVERHEAD	sizeof(struct __cmpr)
-/*
- * Size of IO page, without the reserved information
- */
-#define DB_CMPR_PAGESIZE(io)	(io->pagesize - DB_CMPR_OVERHEAD)
-/*
- * Pointer to data within raw compressed buffer
- */
-#define DB_CMPR_DATA(io) (io->buf + DB_CMPR_OVERHEAD)
-
-/*
  * BH --
  *	Buffer header.
  */
@@ -294,12 +224,7 @@ struct __bh {
 #define	BH_LOCKED	0x008		/* Page is locked (I/O in progress). */
 #define	BH_TRASH	0x010		/* Page is garbage. */
 #define	BH_WRITE	0x020		/* Page scheduled for writing. */
-#define	BH_CMPR		0x040		/* Chain contains valid data. */
-#define	BH_CMPR_POOL	0x080		/* Chain allocated in pool. */
-#define	BH_CMPR_OS	0x100		/* Chain allocate with malloc. */
 	u_int16_t  flags;
-
-        db_pgno_t *chain;         	/* Compression chain. */
 
 	SH_TAILQ_ENTRY	q;		/* LRU queue. */
 	SH_TAILQ_ENTRY	hq;		/* MPOOL hash bucket queue. */
@@ -317,4 +242,3 @@ struct __bh {
 };
 
 #include "mp_ext.h"
-
