@@ -4268,33 +4268,6 @@ form during indexing and translated for results.
      </description>
    </attribute>
 
-   <attribute name="wordlist_compress" 
-              type="boolean" 
-              programs="all" 
-              version="3.2.0b1" 
-              category="Indexing:How" >
-     <default>true</default>
-     <example>true</example>
-     <description> 
-	Enables or disables the default compression system for the indexer. 
-	This currently compresses the index by a factor of 8. If the 
-	Zlib library is not found on the system, the default is false. 
-     </description>
-   </attribute>
-
-   <attribute name="wordlist_compress_zlib" 
-              type="boolean" 
-              programs="all" 
-              version="3.2.0b4" 
-              category="Indexing:How" >
-     <default>true</default>
-     <example>true</example>
-     <description> 
-	Enables or disables the zlib compression system for the indexer. 
-	wordlist_compress must be true to use this option!`
-     </description>
-   </attribute>
-
    <attribute name="wordlist_monitor" 
               type="boolean" 
               programs="all" 

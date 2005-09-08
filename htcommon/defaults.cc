@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.113 2004/06/19 01:18:55 lha Exp $
+// $Id: defaults.cc,v 1.113.2.1 2005/09/08 18:50:13 nealr Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -2777,19 +2777,6 @@ form during indexing and translated for results. \
 	is that the cache size should be at least 2% of the expected index size. The \
 	Berkeley DB file has 1% of internal pages that <em>must</em> be cached for good \
 	performances. Giving an additional 1% leaves room for caching leaf pages. \
-" }, \
-{ "wordlist_compress", "true",  \
-	"boolean", "all", "", "3.2.0b1", "Indexing:How", "wordlist_compress: false", " \
-	Enables or disables the default compression system for the indexer. \
-	This currently attempts to compress the index by a factor of 8. If the \
-	Zlib library is not found on the system, the default is false. \
-" }, \
-{ "wordlist_compress_zlib", "true",  \
-	"boolean", "all", "", "3.2.0b4", "Indexing:How", "wordlist_compress_zlib: false", " \
-	Enables or disables the zlib compression system for the indexer. \
-	Both <a href=\"#wordlist_compress\">wordlist_compress</a> and \
-	<a href=\"#compression_level\">compression_level</a> must be true \
-	(non-zero) to use this option!\
 " }, \
 { "wordlist_monitor", "false", \
 	"boolean", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor: true", " \
