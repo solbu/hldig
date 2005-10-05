@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.96 2004/07/11 10:28:22 lha Exp $
+// $Id: Retriever.cc,v 1.96.2.1 2005/10/05 18:20:05 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -27,14 +27,15 @@
 
 #include "Retriever.h"
 #include "htdig.h"
-#include "HtWordList.h"
-#include "WordRecord.h"
+//Anthony - remove htword stuff
+//#include "HtWordList.h"
+//#include "WordRecord.h"
+//#include "WordType.h"
 #include "URLRef.h"
 #include "Server.h"
 #include "Parsable.h"
 #include "Document.h"
 #include "StringList.h"
-#include "WordType.h"
 #include "Transport.h"
 #include "HtHTTP.h"			  // For HTTP statistics
 #include "md5.h"
@@ -57,9 +58,9 @@ static bool no_store_phrases;
 //*****************************************************************************
 // Retriever::Retriever()
 //
-Retriever::Retriever(RetrieverLog flags):
-words(*(HtConfiguration::config())),
-words_to_add (100, 0.75)
+Retriever::Retriever(RetrieverLog flags)
+//:words(*(HtConfiguration::config())),
+//words_to_add (100, 0.75)
 {
 	HtConfiguration *config = HtConfiguration::config();
 	FILE *urls_parsed;
@@ -73,26 +74,26 @@ words_to_add (100, 0.75)
 	// Initialize the flags for the various HTML factors
 	//
 
+// Anthony - remove no_store_phrases location factors
 	// text_factor
-	factor[0] = FLAG_TEXT;
+//	factor[0] = FLAG_TEXT;
 	// title_factor
-	factor[1] = FLAG_TITLE;
+//	factor[1] = FLAG_TITLE;
 	// heading factor (now generic)
-	factor[2] = FLAG_HEADING;
-	factor[3] = FLAG_HEADING;
-	factor[4] = FLAG_HEADING;
-	factor[5] = FLAG_HEADING;
-	factor[6] = FLAG_HEADING;
-	factor[7] = FLAG_HEADING;
+//	factor[2] = FLAG_HEADING;
+//	factor[3] = FLAG_HEADING;
+//	factor[4] = FLAG_HEADING;
+//	factor[5] = FLAG_HEADING;
+//	factor[6] = FLAG_HEADING;
+//	factor[7] = FLAG_HEADING;
 	// img alt text
-	//factor[8] = FLAG_KEYWORDS;
-	factor[8] = FLAG_TEXT;	  // treat alt text as plain text, until it has
-	// its own FLAG and factor.
+//	factor[8] = FLAG_TEXT;	// treat alt text as plain text, until it has
+				// its own FLAG and factor.
 	// keywords factor
-	factor[9] = FLAG_KEYWORDS;
+//	factor[9] = FLAG_KEYWORDS;
 	// META description factor
-	factor[10] = FLAG_DESCRIPTION;
-	factor[11] = FLAG_AUTHOR;
+//	factor[10] = FLAG_DESCRIPTION;
+//	factor[11] = FLAG_AUTHOR;
 
 	doc = new Document();
 	minimumWordLength = config->Value("minimum_word_length", 3);
@@ -134,6 +135,19 @@ words_to_add (100, 0.75)
 		}
 	}
 
+    
+    // Set up the document to put into the index. More fields
+    // can be added here.
+    index_doc["id"].second = "UnIndexed";
+    index_doc["url"].second = "Keyword";
+    index_doc["title"].second = "Keyword";
+    index_doc["contents"].second = "UnStored";
+    index_doc["author"].second = "Keyword";
+    index_doc["head"].second = "Keyword";
+    index_doc["meta_desc"].second = "Keyword";
+    index_doc["meta_email"].second = "Keyword";
+    index_doc["meta_notification"].second = "Keyword";
+    index_doc["meta_subject"].second = "Keyword";
 }
 
 
@@ -560,7 +574,7 @@ void Retriever::Start()
 			fclose(urls_parsed);
 		}
 	}
-	words.Close();
+//	words.Close();
 }
 
 
@@ -569,58 +583,63 @@ void Retriever::Start()
 //
 void Retriever::parse_url(URLRef & urlRef)
 {
-	HtConfiguration *config = HtConfiguration::config();
-	URL url;
-	DocumentRef *ref;
-	int old_document;
-	time_t date;
-	static int index = 0;
-	static int local_urls_only = config->Boolean("local_urls_only");
-	static int mark_dead_servers = config->Boolean("ignore_dead_servers");
-	Server *server;
+    HtConfiguration *config = HtConfiguration::config();
+    URL url;
+    DocumentRef *ref;
+    int old_document;
+    time_t date;
+    static int index = 0;
+    static int local_urls_only = config->Boolean("local_urls_only");
+    static int mark_dead_servers = config->Boolean("ignore_dead_servers");
+    Server *server;
 
-	url.parse(urlRef.GetURL().get());
+    // Clear out the contents, and the unique words
+    index_doc["contents"].first.clear();
+    unique_words.clear();
+    
+    url.parse(urlRef.GetURL().get());
 
-	currenthopcount = urlRef.GetHopCount();
+    currenthopcount = urlRef.GetHopCount();
 
-	ref = docs[url.get()];	  // It might be nice to have just an Exists() here
-	if (ref)
-	{
-		//
-		// We already have an entry for this document in our database.
-		// This means we can get the document ID and last modification
-		// time from there.
-		//
-		current_id = ref->DocID();
-		date = ref->DocTime();
-		if (ref->DocAccessed())
-			old_document = 1;
-		else				  // we haven't retrieved it yet, so we only have the first link
-			old_document = 0;
-		ref->DocBackLinks(ref->DocBackLinks() + 1);	// we had a new link
-		ref->DocAccessed(time(0));
-		ref->DocState(Reference_normal);
-		currenthopcount = ref->DocHopCount();
-	}
-	else
-	{
-		//
-		// Never seen this document before.  We need to create an
-		// entry for it.  This implies that it gets a new document ID.
-		//
-		date = 0;
-		current_id = docs.NextDocID();
-		ref = new DocumentRef;
-		ref->DocID(current_id);
-		ref->DocURL(url.get());
-		ref->DocState(Reference_normal);
-		ref->DocAccessed(time(0));
-		ref->DocHopCount(currenthopcount);
-		ref->DocBackLinks(1); // We had to have a link to get here!
-		old_document = 0;
-	}
+    ref = docs[url.get()];	  // It might be nice to have just an Exists() here
+    if (ref)
+    {
+        //
+        // We already have an entry for this document in our database.
+        // This means we can get the document ID and last modification
+        // time from there.
+        //
+        current_id = ref->DocID();
+        date = ref->DocTime();
+        if (ref->DocAccessed())
+            old_document = 1;
+        else                // we haven't retrieved it yet, so we only have the first link
+            old_document = 0;
+        ref->DocBackLinks(ref->DocBackLinks() + 1);	// we had a new link
+        ref->DocAccessed(time(0));
+        ref->DocState(Reference_normal);
+        currenthopcount = ref->DocHopCount();
+    }
+    else
+    {
+        //
+        // Never seen this document before.  We need to create an
+        // entry for it.  This implies that it gets a new document ID.
+        //
+        date = 0;
+        current_id = docs.NextDocID();
+        ref = new DocumentRef;
+        ref->DocID(current_id);
+        ref->DocURL(url.get());
+        ref->DocState(Reference_normal);
+        ref->DocAccessed(time(0));
+        ref->DocHopCount(currenthopcount);
+        ref->DocBackLinks(1); // We had to have a link to get here!
+        old_document = 0;
+    }
 
-	word_context.DocID(ref->DocID());
+// Anthony - remove all htword stuff
+//	word_context.DocID(ref->DocID());
 
 	if (debug > 0)
 	{
@@ -681,53 +700,37 @@ void Retriever::parse_url(URLRef & urlRef)
 	case Transport::Document_ok:
 		trackWords = 1;
 
-		if (check_unique_md5)
-		{
-			if (doc->StoredLength() > 0)
-			{
-				if (check_unique_date)
-				{
+		if (check_unique_md5) {
+			if (doc->StoredLength() > 0) {
+				if (check_unique_date) {
 					ddate = doc->ModTime();
-					if (ddate < time(NULL) - 10)
-					{	  // Unknown date was set to current time
+					if (ddate < time(NULL) - 10) { // Unknown date was set to current time
 						md5(bhash, doc->Contents(), doc->StoredLength(), &ddate, debug);
-					}
-					else
-					{
+					} else {
 						md5(bhash, doc->Contents(), doc->StoredLength(), 0, debug);
 					}
-				}
-				else
+				} else {
 					md5(bhash, doc->Contents(), doc->StoredLength(), 0, debug);
+                }
 
 				shash.append(bhash, MD5_LENGTH);
 				d_md5->Get(shash, sx);
 
-				if (!sx.empty())
-				{
-					if (debug > 1)
-					{
+				if (!sx.empty()) {
+					if (debug > 1) {
 						cout << " Detected duplicate by md5 hash" << endl;
 					}
-					words.Skip();
 					break; // Duplicate - don't index
-				}
-				else
-				{
+				} else {
 					d_md5->Put(shash, "x");
 				}
-
 			}
 		}
 
-		if (old_document)
-		{
-			if (doc->ModTime() == ref->DocTime())
-			{
-				words.Skip();
+		if (old_document) {
+			if (doc->ModTime() == ref->DocTime()) {
 				if (debug)
 					cout << " retrieved but not changed" << endl;
-				words.Skip();
 				break;
 			}
 			//
@@ -737,14 +740,14 @@ void Retriever::parse_url(URLRef & urlRef)
 			// we need to assign a new document ID to it and mark
 			// the old one as obsolete.
 			//
-			words.Skip();
 			int backlinks = ref->DocBackLinks();
 			ref->DocState(Reference_obsolete);
 			docs.Add(*ref);
 			delete ref;
 
 			current_id = docs.NextDocID();
-			word_context.DocID(current_id);
+// Anthony - remove all htword stuff
+//			word_context.DocID(current_id);
 			ref = new DocumentRef;
 			ref->DocID(current_id);
 			ref->DocURL(url.get());
@@ -758,14 +761,42 @@ void Retriever::parse_url(URLRef & urlRef)
 		RetrievedDocument(*doc, url.get(), ref);
 		// Hey! If this document is marked noindex, don't even bother
 		// adding new words. Mark this as gone and get rid of it!
-		if (ref->DocState() == Reference_noindex)
-		{
+		if (ref->DocState() == Reference_noindex) {
 			if (debug > 1)
 				cout << " ( " << ref->DocURL() << " ignored)";
-			words.Skip();
+		} else {
+#ifdef CLUCENE			
+			//Anthony Flush/commit CLucene here
+            
+//            CL_Doc index_doc;
+//            index_doc = new CL_Doc;
+//            pair<basic_string<char>, basic_string<char> > data_pair;
+
+            // Need to do something special for the DocID, since it's an
+            // integer; 32 digits should be long enough.
+            char temp_DocID[32];
+            sprintf(temp_DocID, "%d", current_id);
+            index_doc["id"].first = temp_DocID;
+            index_doc["url"].first = (url.get()).get();
+
+            // if we haven't been storing phrases, then we'll
+            // need to populate the contents field with the
+            // unique words that we've been storing
+            if (no_store_phrases) {
+                std::set<std::string>::iterator i;
+                for (i = unique_words.begin(); i != unique_words.end(); i++) {
+                    index_doc["contents"].first.insert(index_doc["contents"].first.size(), *i);
+                    index_doc["contents"].first.push_back(' ');
+                }
+            }
+            // Insert the document into the index
+			CLuceneAddDocToIndex(&index_doc);
+
+
+            //delete index_doc;
+#endif
 		}
-		else
-			words.Flush();
+	    
 		if (debug)
 			cout << " size = " << doc->Length() << endl;
 
@@ -780,7 +811,6 @@ void Retriever::parse_url(URLRef & urlRef)
 	case Transport::Document_not_changed:
 		if (debug)
 			cout << " not changed" << endl;
-		words.Skip();
 		break;
 
 	case Transport::Document_not_found:
@@ -788,7 +818,6 @@ void Retriever::parse_url(URLRef & urlRef)
 		if (debug)
 			cout << " not found" << endl;
 		recordNotFound(url.get(), urlRef.GetReferer().get(), Transport::Document_not_found);
-		words.Skip();
 		break;
 
 	case Transport::Document_no_host:
@@ -796,7 +825,6 @@ void Retriever::parse_url(URLRef & urlRef)
 		if (debug)
 			cout << " host not found" << endl;
 		recordNotFound(url.get(), urlRef.GetReferer().get(), Transport::Document_no_host);
-		words.Skip();
 
 		// Mark the server as being down
 		if (server && mark_dead_servers)
@@ -808,7 +836,6 @@ void Retriever::parse_url(URLRef & urlRef)
 		if (debug)
 			cout << " host not found (port)" << endl;
 		recordNotFound(url.get(), urlRef.GetReferer().get(), Transport::Document_no_port);
-		words.Skip();
 
 		// Mark the server as being down
 		if (server && mark_dead_servers)
@@ -819,14 +846,12 @@ void Retriever::parse_url(URLRef & urlRef)
 		ref->DocState(Reference_noindex);
 		if (debug)
 			cout << " not Parsable" << endl;
-		words.Skip();
 		break;
 
 	case Transport::Document_redirect:
 		if (debug)
 			cout << " redirect" << endl;
 		ref->DocState(Reference_obsolete);
-		words.Skip();
 		got_redirect(doc->Redirected(), ref, (urlRef.GetReferer()).get());
 		break;
 
@@ -834,35 +859,30 @@ void Retriever::parse_url(URLRef & urlRef)
 		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " not authorized" << endl;
-		words.Skip();
 		break;
 
 	case Transport::Document_not_local:
 		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " not local" << endl;
-		words.Skip();
 		break;
 
 	case Transport::Document_no_header:
 		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " no header" << endl;
-		words.Skip();
 		break;
 
 	case Transport::Document_connection_down:
 		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " connection down" << endl;
-		words.Skip();
 		break;
 
 	case Transport::Document_no_connection:
 		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " no connection" << endl;
-		words.Skip();
 		break;
 
 	case Transport::Document_not_recognized_service:
@@ -873,14 +893,12 @@ void Retriever::parse_url(URLRef & urlRef)
 		// Mark the server as being down
 		if (server && mark_dead_servers)
 			server->IsDead(1);
-		words.Skip();
 		break;
 
 	case Transport::Document_other_error:
 		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " other error" << endl;
-		words.Skip();
 		break;
 	}
 	docs.Add(*ref);
@@ -899,7 +917,8 @@ void Retriever::RetrievedDocument(Document & doc, const String & url, DocumentRe
 	n_links = 0;
 	current_ref = ref;
 	current_title = 0;
-	word_context.Anchor(0);
+// Anthony - remove all htword stuff
+//	word_context.Anchor(0);
 	current_time = 0;
 	current_head = 0;
 	current_meta_dsc = 0;
@@ -918,7 +937,7 @@ void Retriever::RetrievedDocument(Document & doc, const String & url, DocumentRe
 		ref->DocState(Reference_noindex);
 		return;
 	}
-
+/* Anthony - remove old store_phrases
 	// If just storing the first occurrence of each word in a document,
 	// we must now flush the words we saw in that document
 	if (no_store_phrases)
@@ -934,13 +953,13 @@ void Retriever::RetrievedDocument(Document & doc, const String & url, DocumentRe
 		wordRef.Location(entry->location);
 		wordRef.Flags(entry->flags);
 		wordRef.Word(key);
-		words.Replace(WordReference::Merge(wordRef, entry->context));
+//		words.Replace(WordReference::Merge(wordRef, entry->context));
 		// How do I clean up properly?
 		delete entry;
 	    }
-	    words_to_add.Release ();
+//	    words_to_add.Release ();
 	}
-
+*/
 	//
 	// We don't need to dispose of the parsable object since it will
 	// automatically be reused.
@@ -1434,106 +1453,114 @@ int Retriever::IsLocalURL(const String & url)
 //
 void Retriever::got_word(const char *word, int location, int heading)
 {
-	if (debug > 3)
-		cout << "word: " << word << '@' << location << endl;
-	if (heading >= (int) (sizeof(factor) / sizeof(factor[0])) || heading < 0)
-		heading = 0;		  // Assume it's just normal text
-	if (trackWords && strlen(word) >= (unsigned int) minimumWordLength)
-	{
-		String w = word;
-		HtWordReference wordRef;
+    if (debug > 3)
+        cout << "word: " << word << '@' << location << endl;
+    
+// Anthony - remove no_store_phrases location factors
+//    if (heading >= (int) (sizeof(factor) / sizeof(factor[0])) || heading < 0)
+//		heading = 0;		  // Assume it's just normal text
 
+    if (trackWords && strlen(word) >= (unsigned int) minimumWordLength)
+    {
+        String w = word;
+
+// Anthony - remove no_store_phrases location factors
 		// Record if word capitalised for "caps_factor".
 		// Only check first letter for efficiency.
-		int heading_flags = factor[heading];
-		if (isupper(word[0]))
-		    heading_flags |= FLAG_CAPITAL;
+//		int heading_flags = factor[heading];
+//		if (isupper(word[0]))
+//		    heading_flags |= FLAG_CAPITAL;
 
-		if (no_store_phrases)
-		{
-		    // Add new word, or mark existing word as also being at
+        if (no_store_phrases)
+	{
+            unique_words.insert(w.get());
+/* Anthony - remove old store_phrases
+   		    // Add new word, or mark existing word as also being at
 		    // this heading level
 		    word_entry *entry;
 		    if ((entry = (word_entry*)words_to_add.Find (w)) == NULL)
 		    {
-			words_to_add.Add(w, new word_entry (location, factor[heading], word_context));
-		    } else
+	    		words_to_add.Add(w, new word_entry (location, factor[heading], word_context));
+		    }
+            else
 		    {
 			entry->flags |= heading_flags;
 		    }
-		} else
-		{
-		    wordRef.Location(location);
-		    wordRef.Flags(heading_flags);
-		    wordRef.Word(w);
-		    words.Replace(WordReference::Merge(wordRef, word_context));
-		}
-
-		// Check for compound words...
-		String parts = word;
-		int added;
-		int nparts = 1;
-		do
-		{
-			added = 0;
-			char *start = parts.get();
-			char *punctp = 0, *nextp = 0, *p;
-			char punct;
-			int n;
-			while (*start)
-			{
-				p = start;
-				for (n = 0; n < nparts; n++)
-				{
-					while (HtIsStrictWordChar((unsigned char) *p))
-						p++;
-					punctp = p;
-					if (!*punctp && n + 1 < nparts)
-						break;
-					while (*p && !HtIsStrictWordChar((unsigned char) *p))
-						p++;
-					if (n == 0)
-						nextp = p;
-				}
-				if (n < nparts)
-					break;
-				punct = *punctp;
-				*punctp = '\0';
-				if (*start && (*p || start > parts.get()))
-				{
-					w = start;
-					HtStripPunctuation(w);
-					if (w.length() >= minimumWordLength)
-					{
-					        if (no_store_phrases)
-						{
-						    // Add new word, or mark existing word as also being at
-						    // this heading level
-						    word_entry *entry;
-						    if ((entry = (word_entry*)words_to_add.Find (w)) == NULL)
-						    {
-							words_to_add.Add(w, new word_entry (location, factor[heading], word_context));
-						    } else
-						    {
-							entry->flags |= factor[heading];
-						    }
-						} else
-						{
-						    wordRef.Word(w);
-						    words.Replace(WordReference::Merge(wordRef, word_context));
-						}
-						if (debug > 3)
-							cout << "word part: " << start << '@' << location << endl;
-					}
-					added++;
-				}
-				start = nextp;
-				*punctp = punct;
-			}
-			nparts++;
-		}
-		while (added > 2);
+*/
 	}
+        else
+	{
+#ifdef CLUCENE
+            index_doc["contents"].first.insert(index_doc["contents"].first.size(), w.get());
+            index_doc["contents"].first.push_back(' ');
+#endif
+	}
+
+	// Check for compound words...
+        String parts = word;
+        int added;
+        int nparts = 1;
+        
+        do
+        {
+            added = 0;
+            char *start = parts.get();
+            char *punctp = 0, *nextp = 0, *p;
+            char punct;
+            int n;
+            while (*start) {
+                p = start;
+                for (n = 0; n < nparts; n++) {
+                    while (HtIsStrictWordChar((unsigned char) *p))
+                        p++;
+                    punctp = p;
+                    if (!*punctp && n + 1 < nparts)
+                        break;
+                    while (*p && !HtIsStrictWordChar((unsigned char) *p))
+                        p++;
+                    if (n == 0)
+                        nextp = p;
+                }
+                if (n < nparts)
+                    break;
+                punct = *punctp;
+                *punctp = '\0';
+                if (*start && (*p || start > parts.get())) {
+                    w = start;
+                    HtStripPunctuation(w);
+                    if (w.length() >= minimumWordLength) {
+                        if (no_store_phrases) {
+                            unique_words.insert(w.get());
+/* Anthony - remove old store_phrases
+				    // Add new word, or mark existing word as also being at
+				    // this heading level
+				    word_entry *entry;
+				    if ((entry = (word_entry*)words_to_add.Find (w)) == NULL)
+				    {
+				      words_to_add.Add(w, new word_entry (location, factor[heading], word_context));
+				    }
+                           else
+				{
+				entry->flags |= factor[heading];
+				}
+*/
+                        } else {
+#ifdef CLUCENE
+                            index_doc["contents"].first.insert(index_doc["contents"].first.size(), w.get());
+                            index_doc["contents"].first.push_back(' ');
+#endif
+                        }
+                        if (debug > 3)
+                          cout << "word part: " << start << '@' << location << endl;
+                        }
+                        added++;
+                    }
+                    start = nextp;
+                    *punctp = punct;
+                }
+                nparts++;
+        } while (added > 2);
+    }
 }
 
 
@@ -1544,6 +1571,7 @@ void Retriever::got_title(const char *title)
 {
 	if (debug > 1)
 		cout << "\ntitle: " << title << endl;
+    index_doc["title"].first = title;
 	current_title = title;
 }
 
@@ -1555,6 +1583,7 @@ void Retriever::got_author(const char *author)
 {
 	if (debug > 1)
 		cout << "\nauthor: " << author << endl;
+    index_doc["author"].first = author;
 	current_ref->DocAuthor(author);
 }
 
@@ -1589,7 +1618,8 @@ void Retriever::got_anchor(const char *anchor)
 	if (debug > 2)
 		cout << "anchor: " << anchor << endl;
 	current_ref->AddAnchor(anchor);
-	word_context.Anchor(word_context.Anchor() + 1);
+// Anthony - remove all htword stuff
+    //	word_context.Anchor(word_context.Anchor() + 1);
 }
 
 
@@ -1598,14 +1628,14 @@ void Retriever::got_anchor(const char *anchor)
 //
 void Retriever::got_image(const char *src)
 {
-	URL url(src, *base);
-	const char *image = (const char *) url.get();
+    URL url(src, *base);
+    const char *image = (const char *) url.get();
 
-	if (debug > 2)
-		cout << "image: " << image << endl;
+    if (debug > 2)
+        cout << "image: " << image << endl;
 
-	if (images_seen)
-		fprintf(images_seen, "%s\n", image);
+    if (images_seen)
+        fprintf(images_seen, "%s\n", image);
 }
 
 
@@ -1613,12 +1643,12 @@ void Retriever::got_image(const char *src)
 //
 void Retriever::got_href(URL & url, const char *description, int hops)
 {
-	DocumentRef *ref = 0;
-	Server *server = 0;
-	int valid_url_code = 0;
+    DocumentRef *ref = 0;
+    Server *server = 0;
+    int valid_url_code = 0;
 
-	// Rewrite the URL (if need be) before we do anything to it.
-	url.rewrite();
+    // Rewrite the URL (if need be) before we do anything to it.
+    url.rewrite();
 
 	if (debug > 2)
 		cout << "href: " << url.get() << " (" << description << ')' << endl;
@@ -1657,7 +1687,7 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 		if (strcmp(url.get(), current_ref->DocURL()) == 0)
 		{
 			current_ref->DocBackLinks(current_ref->DocBackLinks() + 1);
-			current_ref->AddDescription(description, words);
+//			current_ref->AddDescription(description, words);
 		}
 		else
 		{
@@ -1683,7 +1713,7 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 				ref->DocURL(url.get());
 			}
 			ref->DocBackLinks(ref->DocBackLinks() + 1);	// This one!
-			ref->AddDescription(description, words);
+//			ref->AddDescription(description, words);
 
 			//
 			// If the dig is restricting by hop count, perform the check here 
@@ -1699,16 +1729,14 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 
 			docs.Add(*ref);
 
-			//
-			// Now put it in the list of URLs to still visit.
-			//
-			if (Need2Get(url.get()))
-			{
+            //
+            // Now put it in the list of URLs to still visit.
+            //
+			if (Need2Get(url.get())) {
 				if (debug > 1)
 					cout << "\n   pushing " << url.get() << endl;
 				server = (Server *) servers[url.signature()];
-				if (!server)
-				{
+				if (!server) {
 					//
 					// Hadn't seen this server, yet.  Register it
 					//
@@ -1724,7 +1752,7 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 				// Let's just be sure we're not pushing an empty URL
 				//
 				if (strlen(url.get()))
-					server->push(url.get(), ref->DocHopCount(), base->get(), IsLocalURL(url.get()));
+                    server->push(url.get(), ref->DocHopCount(), base->get(), IsLocalURL(url.get()));
 
 				String temp = url.get();
 				visited.Add(temp, 0);
@@ -1735,9 +1763,7 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 				cout << '*';
 			delete ref;
 		}
-	}
-	else
-	{
+    } else {
 		//
 		// Not a valid URL
 		//
@@ -1746,10 +1772,9 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 		if (debug == 1)
 			cout << '-';
 
-		if (urls_seen)
-		{
-			fprintf(urls_seen, "%s|||||%d\n", (const char *) url.get(), valid_url_code);
-		}
+		if (urls_seen) {
+            fprintf(urls_seen, "%s|||||%d\n", (const char *) url.get(), valid_url_code);
+        }
 
 	}
 	if (debug)
@@ -1819,7 +1844,7 @@ void Retriever::got_redirect(const char *new_url, DocumentRef * old_ref, const c
 			String *str;
 			while ((str = (String *) d->Get_Next()))
 			{
-				ref->AddDescription(str->get(), words);
+//				ref->AddDescription(str->get(), words);
 			}
 		}
 		if (ref->DocHopCount() > old_ref->DocHopCount())
@@ -1872,6 +1897,7 @@ void Retriever::got_head(const char *head)
 {
 	if (debug > 4)
 		cout << "head: " << head << endl;
+    index_doc["head"].first = head;
 	current_head = head;
 }
 
@@ -1882,6 +1908,7 @@ void Retriever::got_meta_dsc(const char *md)
 {
 	if (debug > 4)
 		cout << "meta description: " << md << endl;
+    index_doc["meta_desc"].first = md;
 	current_meta_dsc = md;
 }
 
@@ -1893,6 +1920,7 @@ void Retriever::got_meta_email(const char *e)
 {
 	if (debug > 1)
 		cout << "\nmeta email: " << e << endl;
+    index_doc["meta_email"].first = e;
 	current_ref->DocEmail(e);
 }
 
@@ -1904,6 +1932,7 @@ void Retriever::got_meta_notification(const char *e)
 {
 	if (debug > 1)
 		cout << "\nmeta notification date: " << e << endl;
+    index_doc["meta_notification"].first = e;
 	current_ref->DocNotification(e);
 }
 
@@ -1915,6 +1944,7 @@ void Retriever::got_meta_subject(const char *e)
 {
 	if (debug > 1)
 		cout << "\nmeta subect: " << e << endl;
+    index_doc["meta_subject"].first = e;
 	current_ref->DocSubject(e);
 }
 
