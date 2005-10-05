@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.h,v 1.29 2004/05/28 13:15:12 lha Exp $
+// $Id: DocumentRef.h,v 1.29.2.1 2005/10/05 20:08:06 aarnone Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -19,9 +19,12 @@
 
 #include "htString.h"
 #include "List.h"
-#include "HtWordList.h"
+// Anthony - remove htword stuff
+//#include "HtWordList.h"
 
 #include <time.h>
+#define CL_Doc std::map<std::string, std::pair<std::string, std::string> >
+#define unique_words_set std::set<std::string> 
 
 enum ReferenceState
 {
@@ -84,7 +87,8 @@ class DocumentRef : public Object
     void		DocLinks(int l)			{docLinks = l;}
     void                DocBackLinks(int l)             {docBackLinks = l;}
     void		Descriptions(List &l)		{descriptions = l;}
-    void		AddDescription(const char *d, HtWordList &words);
+// Anthony - not used
+//    void		AddDescription(const char *d, HtWordList &words);
     void		DocState(ReferenceState s)	{docState = s;}
     void		DocState(int s);
     void		DocSize(int s)			{docSize = s;}
@@ -100,11 +104,25 @@ class DocumentRef : public Object
 	
     void		Clear();			// Reset everything
 
+    void dumpUniqueWords();                // insert all of the unique words into the contents
+    void addUniqueWord(const char* word);  // add a unique word
+    void insertField(const char* fieldName, const char* fieldValue);
+    void appendField(const char* fieldName, const char* fieldValue);
+
     protected:
     //
     // These values will be stored when serializing
     //
 
+    // new hawtness hash that contains everything
+    CL_Doc contents;
+
+    // this will contain unique words (if that option is enabled)
+    // before the document is put into the index, this needs to 
+    // be flushed to the contents field
+    unique_words_set unique_words;
+
+// Anthony - old DocumentRef variables
     // This is the index number of the document in the database.
     int			docID;
     // This is the URL of the document.
