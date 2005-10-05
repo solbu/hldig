@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.h,v 1.28 2004/05/28 13:15:15 lha Exp $
+// $Id: Retriever.h,v 1.28.2.1 2005/10/05 18:15:15 aarnone Exp $
 //
 
 #ifndef _Retriever_h_
@@ -21,7 +21,8 @@
 #include "DocumentRef.h"
 #include "Dictionary.h"
 #include "Queue.h"
-#include "HtWordReference.h"
+// Anthony - remove wordDB stuff
+//#include "HtWordReference.h"
 #include "List.h"
 #include "StringList.h"
 #include "DocumentDB.h"
@@ -38,6 +39,13 @@
 #define  HTDIG_ERROR_TESTURL_ROBOT_FORBID      -118
 
 
+#ifdef CLUCENE
+
+#include "CLucene_API.h"
+
+#endif
+
+
 class URL;
 class Document;
 class URLRef;
@@ -49,6 +57,8 @@ enum  RetrieverLog {
     Retriever_Restart
 };
 
+// anthony - remove all htword stuff
+/*
 struct word_entry : public Object
 {
     		word_entry (int loc, int fl, HtWordReference& ref) :
@@ -58,7 +68,7 @@ struct word_entry : public Object
     int		flags;
     HtWordReference context;
 };
-
+*/
 class Retriever
 {
 public:
@@ -114,34 +124,41 @@ private:
     //
     // A hash to keep track of what we've seen
     //
-    Dictionary		visited;
+    Dictionary      visited;
     
-    URL			*base;
-    String		current_title;
-    String		current_head;
-    String		current_meta_dsc;
-    time_t		current_time;
-    int			current_id;
-    DocumentRef		*current_ref;
-    int			current_anchor_number;
-    int			trackWords;
-    int			n_links;
-    String		credentials;
-    HtWordReference	word_context;
-    HtWordList		words;
+    URL             *base;
+    String          current_title;
+    String          current_head;
+    String          current_meta_dsc;
+    String          current_content;
+    time_t          current_time;
+    int             current_id;
+    DocumentRef     *current_ref;
+    int             current_anchor_number;
+    int             trackWords;
+    int             n_links;
+    String          credentials;
+// Anthony - remove all htword stuff
+    //HtWordReference word_context;
 
-    Dictionary		words_to_add;
+// The old word DB data structures
+//    HtWordList      words;
+//    Dictionary      words_to_add;
+
+//    CL_Doc          index_doc;
+//    std::set<std::string> unique_words;
 	
-    int			check_unique_md5;
-    int			check_unique_date;
+    int             check_unique_md5;
+    int             check_unique_date;
 
 
     RetrieverLog log;
     //
     // These are weights for the words.  The index is the heading level.
     //
-    long int		factor[12];
-    int			currenthopcount;
+// Anthony - remove no_store_phrases location factors
+//    long int        factor[12];
+    int             currenthopcount;
 
     //
     // Some semi-constants...
