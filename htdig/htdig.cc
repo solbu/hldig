@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.cc,v 1.42 2004/05/28 13:15:16 lha Exp $
+// $Id: htdig.cc,v 1.42.2.1 2005/10/05 18:12:41 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -23,7 +23,8 @@
 #include "htdig.h"
 #include "defaults.h"
 #include "HtURLCodec.h"
-#include "WordContext.h"
+// Anthony - removing htword stuff
+//#include "WordContext.h"
 #include "HtDateTime.h"
 #include "HtURLRewriter.h"
 
@@ -35,6 +36,19 @@
 #include "HtCookieInFileJar.h"
 #include "HtHTTP.h"
 ////////////////////////////
+
+// Anthony
+////////////////////////////
+// For CLucene
+////////////////////////////
+
+#ifdef CLUCENE
+//  #include "CLucene_API.h"
+#endif
+
+////////////////////////////
+
+
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -69,7 +83,6 @@ HtDateTime		EndTime;
 
 void usage();
 void reportError(char *msg);
-
 
 //
 // Start of the program.
@@ -215,12 +228,13 @@ int main(int ac, char **av)
 	    config->Add("doc_db", configValue);
 	}
 
-	configValue = config->Find("word_db");
-	if (configValue.length() != 0)
-	{
-	    configValue << ".work";
-	    config->Add("word_db", configValue);
-	}
+    // Anthony - remove htword stuff
+//	configValue = config->Find("word_db");
+//	if (configValue.length() != 0)
+//	{
+//	    configValue << ".work";
+//	    config->Add("word_db", configValue);
+//	}
 
 	configValue = config->Find("doc_index");
 	if (configValue.length() != 0)
@@ -332,11 +346,30 @@ int main(int ac, char **av)
 			 filename.get()));
     }
 
-    const String		word_filename = config->Find("word_db");
+#ifdef CLUCENE
+    
+    // Anthony
+    
+    const String db_dir_filename = config->Find("database_dir");
+    cout << "Opening CLucene index here: " << db_dir_filename.get() << endl;
+     
+    int temp_empty = 1;
+    if (initial)
+        temp_empty = 1;
+    else
+        temp_empty = 0;
+    
+    CLuceneOpenIndex(form("%s/CLuceneDB", (char *)db_dir_filename.get()), initial ? 1 : 0);
+    cout << "Successfully opened index" << endl;
+
+#endif
+
+// Anthony - remove htword stuff
+//    const String word_filename = config->Find("word_db");
     if (initial)
     {
-       unlink(word_filename);
-       unlink((word_filename + "_weakcmpr").get());
+//       unlink(word_filename);
+//       unlink((word_filename + "_weakcmpr").get());
 
        // Remove "duplicate detection" database
        unlink(config->Find("md5_db"));
@@ -346,7 +379,8 @@ int main(int ac, char **av)
     }
 
     // Initialize htword
-    WordContext::Initialize(*config);
+// Anthony - removing htwords stuff
+//    WordContext::Initialize(*config);
 
     // Create the Retriever object which we will use to parse all the
     // HTML files.
@@ -432,13 +466,15 @@ int main(int ac, char **av)
 	if (initial)
 	    unlink(doc_list);
 	docs.DumpDB(doc_list);
-	const String word_dump = config->Find("word_dump");
-	if (initial)
-	    unlink(word_dump);
-	HtWordList words(*config);
-	if(words.Open(config->Find("word_db"), O_RDONLY) == OK) {
-	  words.Dump(word_dump);
-	}
+
+//Anthony - remove worddb stuff
+//	const String word_dump = config->Find("word_dump");
+//	if (initial)
+//	    unlink(word_dump);
+//	HtWordList words(*config);
+//	if(words.Open(config->Find("word_db"), O_RDONLY) == OK) {
+//	  words.Dump(word_dump);
+//	}
     }
 
     //
@@ -449,6 +485,16 @@ int main(int ac, char **av)
     if (images_seen)
 	fclose(images_seen);
 
+#ifdef CLUCENE
+    
+    // Anthony    
+
+    cout << "Closing CLucene index..." << endl;
+
+    CLuceneCloseIndex();
+
+#endif
+    
     //
     // If needed, report some statistics
     //
