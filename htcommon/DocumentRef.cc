@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.cc,v 1.53 2004/05/28 13:15:12 lha Exp $
+// $Id: DocumentRef.cc,v 1.53.2.1 2005/10/05 20:05:32 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -20,11 +20,12 @@
 
 #include "DocumentRef.h"
 #include "good_strtok.h"
-#include "WordRecord.h"
+// Anthony - remove htword stuff
+//#include "WordRecord.h"
+//#include "WordType.h"
+//#include "HtWordReference.h"
 #include "HtConfiguration.h"
 #include "HtURLCodec.h"
-#include "WordType.h"
-#include "HtWordReference.h"
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -466,6 +467,8 @@ void DocumentRef::Deserialize(String &stream)
 //*****************************************************************************
 // void DocumentRef::AddDescription(char *d, HtWordList &words)
 //
+// Anthony - remove since not used any longer, and also uses htword crap
+/*
 void DocumentRef::AddDescription(const char *d, HtWordList &words)
 {
     if (!d || !*d)
@@ -533,7 +536,7 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
     }
     descriptions.Add(new String(desc));
 }
-
+*/
 
 //*****************************************************************************
 // void DocumentRef::AddAnchor(char *a)
@@ -544,4 +547,22 @@ void DocumentRef::AddAnchor(const char *a)
     	docAnchors.Add(new String(a));
 }
 
+void DocumentRef::dumpUniqueWords()
+{
+  unique_words_set::iterator i;
+  for (i = unique_words.begin(); i != unique_words.end(); i++) {
+    index_doc["contents"].first.insert(index_doc["contents"].first.size(), *i);
+    index_doc["contents"].first.push_back(' ');
+  }
+}
 
+void DocumentRef::insertField(const char* fieldName, const char* fieldValue)
+{
+    contents[fieldName].first = fieldValue;
+}
+
+void DocumentRef::appendField(const char* fieldName, const char* fieldValue)
+{
+    contents[fieldName].first.insert(index_doc[fieldName].first.size(), fieldValue);
+    contents[fieldName].first.push_back(' ');
+}
