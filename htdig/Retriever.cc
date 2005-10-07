@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.96.2.1 2005/10/05 18:20:05 aarnone Exp $
+// $Id: Retriever.cc,v 1.96.2.2 2005/10/07 21:38:44 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -136,18 +136,10 @@ Retriever::Retriever(RetrieverLog flags)
 	}
 
     
-    // Set up the document to put into the index. More fields
-    // can be added here.
-    index_doc["id"].second = "UnIndexed";
-    index_doc["url"].second = "Keyword";
-    index_doc["title"].second = "Keyword";
-    index_doc["contents"].second = "UnStored";
-    index_doc["author"].second = "Keyword";
-    index_doc["head"].second = "Keyword";
-    index_doc["meta_desc"].second = "Keyword";
-    index_doc["meta_email"].second = "Keyword";
-    index_doc["meta_notification"].second = "Keyword";
-    index_doc["meta_subject"].second = "Keyword";
+    // Set up our indexDoc
+    //
+    indexDoc->initialize();
+    
 }
 
 
@@ -593,9 +585,8 @@ void Retriever::parse_url(URLRef & urlRef)
     static int mark_dead_servers = config->Boolean("ignore_dead_servers");
     Server *server;
 
-    // Clear out the contents, and the unique words
-    index_doc["contents"].first.clear();
-    unique_words.clear();
+    // Intialize the document
+    indexDoc->initialize();
     
     url.parse(urlRef.GetURL().get());
 
@@ -759,42 +750,34 @@ void Retriever::parse_url(URLRef & urlRef)
 				cout << " (changed) ";
 		}
 		RetrievedDocument(*doc, url.get(), ref);
-		// Hey! If this document is marked noindex, don't even bother
-		// adding new words. Mark this as gone and get rid of it!
-		if (ref->DocState() == Reference_noindex) {
+
+        if (ref->DocState() == Reference_noindex) {
 			if (debug > 1)
 				cout << " ( " << ref->DocURL() << " ignored)";
 		} else {
-#ifdef CLUCENE			
-			//Anthony Flush/commit CLucene here
-            
-//            CL_Doc index_doc;
-//            index_doc = new CL_Doc;
-//            pair<basic_string<char>, basic_string<char> > data_pair;
 
+            //Anthony Flush/commit CLucene here
+            
             // Need to do something special for the DocID, since it's an
             // integer; 32 digits should be long enough.
+            // 
             char temp_DocID[32];
             sprintf(temp_DocID, "%d", current_id);
-            index_doc["id"].first = temp_DocID;
-            index_doc["url"].first = (url.get()).get();
+            indexDoc->insertField("id", temp_DocID);
 
-            // if we haven't been storing phrases, then we'll
-            // need to populate the contents field with the
-            // unique words that we've been storing
+            // Add the URL
+            // 
+            indexDoc->insertField("url", (url.get()).get());
+
+            // If we haven't been storing phrases, then dump the unique words
+            // 
             if (no_store_phrases) {
-                std::set<std::string>::iterator i;
-                for (i = unique_words.begin(); i != unique_words.end(); i++) {
-                    index_doc["contents"].first.insert(index_doc["contents"].first.size(), *i);
-                    index_doc["contents"].first.push_back(' ');
-                }
+                indexDoc->dumpUniqueWords();
             }
+
             // Insert the document into the index
-			CLuceneAddDocToIndex(&index_doc);
-
-
-            //delete index_doc;
-#endif
+            // 
+			CLuceneAddDocToIndex(indexDoc);
 		}
 	    
 		if (debug)
@@ -1456,47 +1439,25 @@ void Retriever::got_word(const char *word, int location, int heading)
     if (debug > 3)
         cout << "word: " << word << '@' << location << endl;
     
-// Anthony - remove no_store_phrases location factors
-//    if (heading >= (int) (sizeof(factor) / sizeof(factor[0])) || heading < 0)
-//		heading = 0;		  // Assume it's just normal text
-
     if (trackWords && strlen(word) >= (unsigned int) minimumWordLength)
     {
         String w = word;
 
-// Anthony - remove no_store_phrases location factors
-		// Record if word capitalised for "caps_factor".
-		// Only check first letter for efficiency.
-//		int heading_flags = factor[heading];
-//		if (isupper(word[0]))
-//		    heading_flags |= FLAG_CAPITAL;
-
         if (no_store_phrases)
-	{
-            unique_words.insert(w.get());
-/* Anthony - remove old store_phrases
-   		    // Add new word, or mark existing word as also being at
-		    // this heading level
-		    word_entry *entry;
-		    if ((entry = (word_entry*)words_to_add.Find (w)) == NULL)
-		    {
-	    		words_to_add.Add(w, new word_entry (location, factor[heading], word_context));
-		    }
-            else
-		    {
-			entry->flags |= heading_flags;
-		    }
-*/
-	}
+        {
+            indexDoc->addUniqueWord(w.get());
+	    }
         else
-	{
-#ifdef CLUCENE
-            index_doc["contents"].first.insert(index_doc["contents"].first.size(), w.get());
-            index_doc["contents"].first.push_back(' ');
-#endif
-	}
+        {
+            indexDoc->appendField("contents", w.get());
+        }
 
-	// Check for compound words...
+        //
+        // Anthony - WHOA!! this will need some serious rewriting to get it
+        // unicode compliant. Everytime I see a ++ on a char*, the tiny
+        // clusters in my brain start to grow bigger
+        // 
+        // Check for compound words...
         String parts = word;
         int added;
         int nparts = 1;
@@ -1529,27 +1490,15 @@ void Retriever::got_word(const char *word, int location, int heading)
                     w = start;
                     HtStripPunctuation(w);
                     if (w.length() >= minimumWordLength) {
-                        if (no_store_phrases) {
-                            unique_words.insert(w.get());
-/* Anthony - remove old store_phrases
-				    // Add new word, or mark existing word as also being at
-				    // this heading level
-				    word_entry *entry;
-				    if ((entry = (word_entry*)words_to_add.Find (w)) == NULL)
-				    {
-				      words_to_add.Add(w, new word_entry (location, factor[heading], word_context));
-				    }
-                           else
-				{
-				entry->flags |= factor[heading];
-				}
-*/
-                        } else {
-#ifdef CLUCENE
-                            index_doc["contents"].first.insert(index_doc["contents"].first.size(), w.get());
-                            index_doc["contents"].first.push_back(' ');
-#endif
+                        if (no_store_phrases)
+                        {
+                            indexDoc->addUniqueWord(w.get());
                         }
+                        else
+                        {
+                            indexDoc->appendField("contents", w.get());
+                        }
+
                         if (debug > 3)
                           cout << "word part: " << start << '@' << location << endl;
                         }
@@ -1569,10 +1518,10 @@ void Retriever::got_word(const char *word, int location, int heading)
 //
 void Retriever::got_title(const char *title)
 {
-	if (debug > 1)
-		cout << "\ntitle: " << title << endl;
-    index_doc["title"].first = title;
-	current_title = title;
+    indexDoc->insertField("title", title);
+
+    if (debug > 1)
+        cout << "\ntitle: " << title << endl;
 }
 
 
@@ -1581,10 +1530,10 @@ void Retriever::got_title(const char *title)
 //
 void Retriever::got_author(const char *author)
 {
-	if (debug > 1)
-		cout << "\nauthor: " << author << endl;
-    index_doc["author"].first = author;
-	current_ref->DocAuthor(author);
+    indexDoc->insertField("author", author);
+
+    if (debug > 1)
+        cout << "\nauthor: " << author << endl;
 }
 
 
@@ -1610,16 +1559,23 @@ void Retriever::got_time(const char *time)
 	// the default--the date returned by the server...
 }
 
+
 //*****************************************************************************
 // void Retriever::got_anchor(const char *anchor)
 //
 void Retriever::got_anchor(const char *anchor)
 {
-	if (debug > 2)
-		cout << "anchor: " << anchor << endl;
-	current_ref->AddAnchor(anchor);
+// Anthony
+// This whole thing can go, since we're going to let CLucene
+// try its hand at highlighting (and it's in htsearch, anyway).
+// The call to this should probably be removed from the parser.
+// 
+//    if (debug > 2)
+//        cout << "anchor: " << anchor << endl;
+//    current_ref->AddAnchor(anchor);
+//    
 // Anthony - remove all htword stuff
-    //	word_context.Anchor(word_context.Anchor() + 1);
+//    word_context.Anchor(word_context.Anchor() + 1);
 }
 
 
@@ -1662,7 +1618,7 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 	// Check if this URL falls within the valid range of URLs.
 	//
 	valid_url_code = IsValidURL(url.get());
-	if (valid_url_code > 0)
+    if (valid_url_code > 0)
 	{
 		//
 		// It is valid.  Normalize it (resolve cnames for the server)
@@ -1687,6 +1643,7 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 		if (strcmp(url.get(), current_ref->DocURL()) == 0)
 		{
 			current_ref->DocBackLinks(current_ref->DocBackLinks() + 1);
+// Anthony - AddDescription is gone from DocumentRef for right now
 //			current_ref->AddDescription(description, words);
 		}
 		else
@@ -1713,6 +1670,7 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 				ref->DocURL(url.get());
 			}
 			ref->DocBackLinks(ref->DocBackLinks() + 1);	// This one!
+// Anthony - AddDescription is gone from DocumentRef for right now
 //			ref->AddDescription(description, words);
 
 			//
@@ -1834,6 +1792,8 @@ void Retriever::got_redirect(const char *new_url, DocumentRef * old_ref, const c
 		}
 		ref->DocURL(url.get());
 
+// Anthony - backlinks and descriptions are broken right now
+/*
 		//
 		// Copy the descriptions of the old DocRef to this one
 		//
@@ -1844,7 +1804,7 @@ void Retriever::got_redirect(const char *new_url, DocumentRef * old_ref, const c
 			String *str;
 			while ((str = (String *) d->Get_Next()))
 			{
-//				ref->AddDescription(str->get(), words);
+				ref->AddDescription(str->get(), words);
 			}
 		}
 		if (ref->DocHopCount() > old_ref->DocHopCount())
@@ -1852,8 +1812,10 @@ void Retriever::got_redirect(const char *new_url, DocumentRef * old_ref, const c
 
 		// Copy the number of backlinks
 		ref->DocBackLinks(old_ref->DocBackLinks());
+*/
 
-		docs.Add(*ref);
+// Anthony - this wil need to be replaced with a doc_index insert
+        docs.Add(*ref);
 
 		//
 		// Now put it in the list of URLs to still visit.
@@ -1895,10 +1857,10 @@ void Retriever::got_redirect(const char *new_url, DocumentRef * old_ref, const c
 //
 void Retriever::got_head(const char *head)
 {
-	if (debug > 4)
-		cout << "head: " << head << endl;
-    index_doc["head"].first = head;
-	current_head = head;
+    indexDoc->insertField("head", head);
+    
+    if (debug > 4)
+        cout << "head: " << head << endl;
 }
 
 //*****************************************************************************
@@ -1906,10 +1868,10 @@ void Retriever::got_head(const char *head)
 //
 void Retriever::got_meta_dsc(const char *md)
 {
-	if (debug > 4)
-		cout << "meta description: " << md << endl;
-    index_doc["meta_desc"].first = md;
-	current_meta_dsc = md;
+    indexDoc->insertField("meta_desc", md);
+    
+    if (debug > 4)
+        cout << "meta description: " << md << endl;
 }
 
 
@@ -1918,10 +1880,10 @@ void Retriever::got_meta_dsc(const char *md)
 //
 void Retriever::got_meta_email(const char *e)
 {
-	if (debug > 1)
+    indexDoc->insertField("meta_email", e);
+    
+	if (debug > 4)
 		cout << "\nmeta email: " << e << endl;
-    index_doc["meta_email"].first = e;
-	current_ref->DocEmail(e);
 }
 
 
@@ -1930,10 +1892,10 @@ void Retriever::got_meta_email(const char *e)
 //
 void Retriever::got_meta_notification(const char *e)
 {
-	if (debug > 1)
-		cout << "\nmeta notification date: " << e << endl;
-    index_doc["meta_notification"].first = e;
-	current_ref->DocNotification(e);
+    indexDoc->insertField("meta_notification", e);
+    
+    if (debug > 4)
+        cout << "\nmeta notification date: " << e << endl;
 }
 
 
@@ -1942,10 +1904,10 @@ void Retriever::got_meta_notification(const char *e)
 //
 void Retriever::got_meta_subject(const char *e)
 {
-	if (debug > 1)
-		cout << "\nmeta subect: " << e << endl;
-    index_doc["meta_subject"].first = e;
-	current_ref->DocSubject(e);
+    indexDoc->insertField("meta_subject", e);
+
+    if (debug > 4)
+        cout << "\nmeta subect: " << e << endl;
 }
 
 
@@ -1954,9 +1916,10 @@ void Retriever::got_meta_subject(const char *e)
 //
 void Retriever::got_noindex()
 {
-	if (debug > 1)
-		cout << "\nMETA ROBOT: Noindex " << current_ref->DocURL() << endl;
-	current_ref->DocState(Reference_noindex);
+    current_ref->DocState(Reference_noindex);
+
+    if (debug > 1)
+        cout << "\nMETA ROBOT: Noindex " << current_ref->DocURL() << endl;
 }
 
 
@@ -2050,3 +2013,4 @@ void Retriever::ReportStatistics(const String & name)
 	HtHTTP::ShowStatistics(cout) << endl;
 
 }
+

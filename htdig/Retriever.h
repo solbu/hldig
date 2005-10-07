@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.h,v 1.28.2.1 2005/10/05 18:15:15 aarnone Exp $
+// $Id: Retriever.h,v 1.28.2.2 2005/10/07 21:38:44 aarnone Exp $
 //
 
 #ifndef _Retriever_h_
@@ -105,7 +105,7 @@ public:
     void		got_meta_email(const char *);
     void		got_meta_notification(const char *);
     void		got_meta_subject(const char *);
-    void                got_noindex();
+    void        got_noindex();
 
     //
     // Allow for the indexing of protected sites by using a
@@ -145,11 +145,18 @@ private:
 //    HtWordList      words;
 //    Dictionary      words_to_add;
 
-//    CL_Doc          index_doc;
-//    std::set<std::string> unique_words;
+
+
+
+    
+    // Anthony - the new CLucene Document
+
+    DocumentRef     *indexDoc;
 	
-    int             check_unique_md5;
-    int             check_unique_date;
+
+
+
+    
 
 
     RetrieverLog log;
@@ -163,7 +170,10 @@ private:
     //
     // Some semi-constants...
     //
-    int			max_hop_count;
+    int             max_hop_count;
+    int             check_unique_md5;
+    int             check_unique_date;
+    int             minimumWordLength;
 	
     //
     // The list of server-specific information objects is indexed by
@@ -179,10 +189,7 @@ private:
 
     Database 		*d_md5;
 
-    String		notFound;
-
-    // Some useful constants
-    int              minimumWordLength;
+    String          notFound;
 
     //
     // Helper routines
