@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.cc,v 1.53.2.1 2005/10/05 20:05:32 aarnone Exp $
+// $Id: DocumentRef.cc,v 1.53.2.2 2005/10/07 21:36:13 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -538,6 +538,7 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
 }
 */
 
+
 //*****************************************************************************
 // void DocumentRef::AddAnchor(char *a)
 //
@@ -547,22 +548,100 @@ void DocumentRef::AddAnchor(const char *a)
     	docAnchors.Add(new String(a));
 }
 
+
+
+
+
+
+//****************************************************************
+// void DocumentRef::initialize()
+//
+// Set up the indexDocument with the required hash fields. If these
+// aren't set up, the cppAPI won't accept them (hopefully). Also,
+// delete anything that might still be in the document.
+//
+// NOTE: this can be improved... we should probably use an enum
+// here instead of all these silly strings. mmm... silly string.
+// 
+void DocumentRef::initialize()
+{
+    indexDoc.clear();
+    uniqueWords.clear();
+
+    indexDoc["id"].second = "UnIndexed";  // this might not be needed...
+    indexDoc["url"].second = "Keyword";
+    indexDoc["title"].second = "Keyword";
+    indexDoc["author"].second = "Keyword";
+    indexDoc["head"].second = "Keyword";
+    indexDoc["meta_desc"].second = "Keyword";
+    indexDoc["meta_email"].second = "Keyword";
+    indexDoc["meta_notification"].second = "Keyword";
+    indexDoc["meta_subject"].second = "Keyword";
+
+    indexDoc["contents"].second = "UnStored";
+}
+
+
+//*****************************************************************
+// void DocumentRef::dumpUniqueWords()
+//
+// Take the unique words that have been stored so far and append each
+// to the contents field of the indexDoc. then clear out the unique words.
+// 
+// NOTE: will need modification when unicode goes in (might be able to
+// replace with a bunch of appendField calls)
+// 
 void DocumentRef::dumpUniqueWords()
 {
-  unique_words_set::iterator i;
-  for (i = unique_words.begin(); i != unique_words.end(); i++) {
-    index_doc["contents"].first.insert(index_doc["contents"].first.size(), *i);
-    index_doc["contents"].first.push_back(' ');
-  }
+    uniqueWordsSet::iterator i;
+    for (i = uniqueWords.begin(); i != uniqueWords.end(); i++) {
+        indexDoc["contents"].first.insert(indexDoc["contents"].first.size(), *i);
+        indexDoc["contents"].first.push_back(' ');
+    }
+    uniqueWords.clear();
 }
 
-void DocumentRef::insertField(const char* fieldName, const char* fieldValue)
+
+//*****************************************************************
+// void addUniqueWord(const char* word)
+//
+// add a unique word to the uniqueWords set
+//
+// NOTE: will need modification when unicode goes in
+// 
+void DocumentRef::addUniqueWord(char* word)
 {
-    contents[fieldName].first = fieldValue;
+    uniqueWords.insert(word);
 }
 
-void DocumentRef::appendField(const char* fieldName, const char* fieldValue)
+
+//*****************************************************************
+// void DocumentRef::insertField(const char* fieldName, const char* fieldValue)
+//
+// Take the specified field text/value and insert into the indexDoc
+// at the specified field
+//
+// NOTE: will need modification when unicode goes in, the field value
+// will most likely be a string object
+// 
+void DocumentRef::insertField(const char* fieldName, char* fieldValue)
 {
-    contents[fieldName].first.insert(index_doc[fieldName].first.size(), fieldValue);
-    contents[fieldName].first.push_back(' ');
+    indexDoc[fieldName].first = fieldValue;
 }
+
+
+//*****************************************************************
+// void DocumentRef::appendField(const char* fieldName, const char* fieldValue)
+//
+// Append the specified field text/value to the specified field
+//
+// NOTE: will need modificatioin when Unicode goes in (the separator
+// will need to be a wide character)
+//
+void DocumentRef::appendField(const char* fieldName, char* fieldValue)
+{
+    indexDoc[fieldName].first.insert(indexDoc[fieldName].first.size(), fieldValue);
+    indexDoc[fieldName].first.push_back(' ');
+}
+
+
