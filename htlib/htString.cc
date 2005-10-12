@@ -1,7 +1,7 @@
 //
-// String.cc
+// htString.cc
 //
-// String: (interface in htString.h) Just Another String class.
+// htString: (interface in htString.h) Just Another String class.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: String.cc,v 1.40 2004/05/28 13:15:21 lha Exp $
+// $Id: htString.cc,v 1.1.2.1 2005/10/12 18:12:27 aarnone Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -42,21 +42,21 @@ using namespace std;
 const int MinimumAllocationSize = 4;	// Should be power of two.
 
 #ifdef NOINLINE
-String::String()
+htString::htString()
 {
-    Length = Allocated = 0;
-    Data = 0;
+//    Length = Allocated = 0;
+    Data = new basic_string<char_t>;
 }
 #endif
 
-String::String(int init)
+htString::htString(int init)
 {
-    Length = 0;
+//    Length = 0;
     Allocated = init >= MinimumAllocationSize ? init : MinimumAllocationSize;
     Data = new char[Allocated];
 }
 
-String::String(const char *s)
+htString::htString(const char_t *s)
 {
     Allocated = Length = 0;
     Data = 0;
@@ -69,7 +69,7 @@ String::String(const char *s)
       }
 }
 
-String::String(const char *s, int len)
+htString::htString(const char_t *s, int len)
 {
     Allocated = Length = 0;
     Data = 0;
@@ -77,7 +77,7 @@ String::String(const char *s, int len)
 	copy(s, len, len);
 }
 
-String::String(const String &s)
+htString::htString(const htString &s)
 {
     Allocated = Length = 0;
     Data = 0;
@@ -90,7 +90,7 @@ String::String(const String &s)
 // This can be used for performance reasons if it is known the
 // String will need to grow.
 //
-String::String(const String &s, int allocation_hint)
+htString::htString(const htString &s, int allocation_hint)
 {
     Allocated = Length = 0;
     Data = 0;
@@ -103,13 +103,13 @@ String::String(const String &s, int allocation_hint)
       }
 }
 
-String::~String()
+htString::~htString()
 {
     if (Allocated)
 	delete [] Data;
 }
 
-void String::operator = (const String &s)
+void htString::operator = (const htString &s)
 {
   if (s.length() > 0) 
     {
@@ -123,7 +123,7 @@ void String::operator = (const String &s)
     }
 }
 
-void String::operator = (const char *s)
+void htString::operator = (const char_t *s)
 {
     if (s)
     {
@@ -136,7 +136,7 @@ void String::operator = (const char *s)
 	Length = 0;
 }
 
-void String::append(const String &s)
+void htString::append(const htString &s)
 {
     if (s.length() == 0)
 	return;
@@ -147,7 +147,7 @@ void String::append(const String &s)
     Length = new_len;
 }
 
-void String::append(const char *s)
+void htString::append(const char_t *s)
 {
     if (!s)
 	return;
@@ -155,7 +155,7 @@ void String::append(const char *s)
     append(s,strlen(s));
 }
 
-void String::append(const char *s, int slen)
+void htString::append(const char_t *s, int slen)
 {
     if (!s || !slen)
 	return;
@@ -173,7 +173,7 @@ void String::append(const char *s, int slen)
     Length = new_len;
 }
 
-void String::append(char ch)
+void htString::append(char_t ch)
 {
     int new_len = Length +1;
     if (new_len + 1 > Allocated)
@@ -182,7 +182,7 @@ void String::append(char ch)
     Length = new_len;
 }
 
-int String::compare(const String& obj) const
+int htString::compare(const htString& obj) const
 {
     int	len;
     int	result;
@@ -217,7 +217,7 @@ int String::compare(const String& obj) const
     return result;
 }
 
-int String::nocase_compare(const String &s) const
+int htString::nocase_compare(const htString &s) const
 {
     const char	*p1 = get();
     const char	*p2 = s.get();
@@ -225,7 +225,7 @@ int String::nocase_compare(const String &s) const
     return mystrcasecmp(p1, p2);
 }
 
-int String::Write(int fd) const
+int htString::Write(int fd) const
 {
     int	left = Length;
     char	*wptr = Data;
@@ -243,7 +243,7 @@ int String::Write(int fd) const
     return left;
 }
 
-const char *String::get() const
+const char_t *htString::get() const
 {
   static const char	*null = "";
   if (!Allocated)
@@ -252,7 +252,7 @@ const char *String::get() const
   return Data;
 }
 
-char *String::get()
+char_t *htString::get()
 {
   static char	*null = "";
   if (!Allocated)
@@ -261,7 +261,7 @@ char *String::get()
   return Data;
 }
 
-char *String::new_char() const
+char_t *htString::new_char() const
 {
     char	*r;
     if (!Allocated)
@@ -277,7 +277,7 @@ char *String::new_char() const
 }
 
 
-int String::as_integer(int def) const
+int htString::as_integer(int def) const
 {
     if (Length <= 0)
 	return def;
@@ -285,7 +285,7 @@ int String::as_integer(int def) const
     return atoi(Data);
 }
 
-double String::as_double(double def) const
+double htString::as_double(double def) const
 {
     if (Length <= 0)
 	return def;
@@ -293,7 +293,7 @@ double String::as_double(double def) const
     return atof(Data);
 }
 
-String String::sub(int start, int len) const
+htString htString::sub(int start, int len) const
 {
     if (start > Length)
 	return 0;
@@ -301,15 +301,15 @@ String String::sub(int start, int len) const
     if (len > Length - start)
 	len = Length - start;
 
-    return String(Data + start, len);
+    return htString(Data + start, len);
 }
 
-String String::sub(int start) const
+htString htString::sub(int start) const
 {
     return sub(start, Length - start);
 }
 
-int String::indexOf(const char *str) const
+int htString::indexOf(const char_t *str) const
 {
     char	*c;    
     //
@@ -336,7 +336,7 @@ int String::indexOf(const char *str) const
     return -1;
 }
 
-int String::indexOf(char ch) const
+int htString::indexOf(char_t ch) const
 {
     int		i;
     for (i = 0; i < Length; i++)
@@ -347,7 +347,7 @@ int String::indexOf(char ch) const
     return -1;
 }
 
-int String::indexOf(char ch, int pos) const
+int htString::indexOf(char_t ch, int pos) const
 {
     if (pos >= Length)
       return -1;
@@ -359,7 +359,7 @@ int String::indexOf(char ch, int pos) const
     return -1;
 }
 
-int String::lastIndexOf(char ch, int pos) const
+int htString::lastIndexOf(char_t ch, int pos) const
 {
     if (pos >= Length)
 	return -1;
@@ -372,25 +372,25 @@ int String::lastIndexOf(char ch, int pos) const
     return -1;
 }
 
-int String::lastIndexOf(char ch) const
+int htString::lastIndexOf(char_t ch) const
 {
     return lastIndexOf(ch, Length - 1);
 }
 #ifdef NOINLINE
-String &String::operator << (const char *str)
+htString &htString::operator << (const char_t *str)
 {
     append(str);
     return *this;
 }
 
-String &String::operator << (char ch)
+htString &htString::operator << (char_t ch)
 {
     append(&ch, 1);
     return *this;
 }
 #endif
 
-String &String::operator << (int i)
+htString &htString::operator << (int i)
 {
     char	str[20];
     sprintf(str, "%d", i);
@@ -398,7 +398,7 @@ String &String::operator << (int i)
     return *this;
 }
 
-String &String::operator << (unsigned int i)
+htString &htString::operator << (unsigned int i)
 {
     char	str[20];
     sprintf(str, "%u", i);
@@ -406,7 +406,7 @@ String &String::operator << (unsigned int i)
     return *this;
 }
 
-String &String::operator << (long l)
+htString &htString::operator << (long l)
 {
     char	str[20];
     sprintf(str, "%ld", l);
@@ -414,13 +414,13 @@ String &String::operator << (long l)
     return *this;
 }
 
-String &String::operator << (const String &s)
+htString &htString::operator << (const htString &s)
 {
     append(s.get(), s.length());
     return *this;
 }
 
-char	String::operator >> (char c)
+char_t htString::operator >> (char_t c)
 {
     c = '\0';
 	
@@ -434,7 +434,7 @@ char	String::operator >> (char c)
     return c;
 }
 
-int String::lowercase()
+int htString::lowercase()
 {
   int converted = 0;
   for (int i = 0; i < Length; i++)
@@ -448,7 +448,7 @@ int String::lowercase()
 }
 
 
-int String::uppercase()
+int htString::uppercase()
 {
   int converted = 0;
   for (int i = 0; i < Length; i++)
@@ -462,7 +462,7 @@ int String::uppercase()
 }
 
 
-void String::replace(char c1, char c2)
+void htString::replace(char_t c1, char_t c2)
 {
     for (int i = 0; i < Length; i++)
 	if (Data[i] == c1)
@@ -470,7 +470,7 @@ void String::replace(char c1, char c2)
 }
 
 
-int String::remove(const char *chars)
+int htString::remove(const char_t *chars)
 {
     if (Length <= 0)
 	return 0;
@@ -492,7 +492,7 @@ int String::remove(const char *chars)
     return skipped;
 }
 
-String &String::chop(int n)
+htString &htString::chop(int n)
 {
     Length -= n;
     if (Length < 0)
@@ -501,7 +501,7 @@ String &String::chop(int n)
 }
 
 
-String &String::chop(char ch)
+htString &htString::chop(char_t ch)
 {
 	while (Length > 0 && Data[Length - 1] == ch)
 	    Length--;
@@ -509,7 +509,7 @@ String &String::chop(char ch)
 }
 
 
-String &String::chop(const char *str)
+htString &htString::chop(const char_t *str)
 {
 	while (Length > 0 && strchr(str, Data[Length - 1]))
 	    Length--;
@@ -517,14 +517,14 @@ String &String::chop(const char *str)
 }
 
 
-void String::Serialize(String &dest)
+void htString::Serialize(htString &dest)
 {
     dest.append((char *) &Length, sizeof(Length));
     dest.append(get(), Length);
 }
 
 
-void String::Deserialize(String &source, int &index)
+void htString::Deserialize(htString &source, int &index)
 {
     memcpy((char *) &Length, (char *) source.get() + index, sizeof(Length));
     index += sizeof(Length);
@@ -537,15 +537,15 @@ void String::Deserialize(String &source, int &index)
 //------------------------------------------------------------------------
 // Non member operators.
 //
-String operator + (const String &a, const String &b)
+htString operator + (const htString &a, const htString &b)
 {
-    String	result(a, a.length() + b.length());
+    htString	result(a, a.length() + b.length());
 	
     result.append(b);
     return result;
 }
 
-int operator == (const String &a, const String &b)
+int operator == (const htString &a, const htString &b)
 {
     if (a.Length != b.Length)
 	return 0;
@@ -553,33 +553,33 @@ int operator == (const String &a, const String &b)
     return a.compare(b) == 0;
 }
 
-int operator != (const String &a, const String &b)
+int operator != (const htString &a, const htString &b)
 {
     return a.compare(b) != 0;
 }
 
-int operator < (const String &a, const String &b)
+int operator < (const htString &a, const htString &b)
 {
     return a.compare(b) == -1;
 }
 
-int operator > (const String &a, const String &b)
+int operator > (const htString &a, const htString &b)
 {
     return a.compare(b) == 1;
 }
 
-int operator <= (const String &a, const String &b)
+int operator <= (const htString &a, const htString &b)
 {
     return a.compare(b) <= 0;
 }
 
-int operator >= (const String &a, const String &b)
+int operator >= (const htString &a, const htString &b)
 {
     return a.compare(b) >= 0;
 }
 
 #ifndef NOSTREAM
-ostream &operator << (ostream &o, const String &s)
+ostream &operator << (ostream &o, const htString &s)
 {
     o.write(s.Data, s.length());
     return o;
@@ -590,12 +590,12 @@ ostream &operator << (ostream &o, const String &s)
 // Private Methods.
 //
 
-void String::copy_data_from(const char *s, int len, int dest_offset)
+void htString::copy_data_from(const char_t *s, int len, int dest_offset)
 {
     memcpy(Data + dest_offset, s, len);
 }
 
-void String::allocate_space(int len)
+void htString::allocate_space(int len)
 {
     len++;				// In case we want to add a null.
 
@@ -612,7 +612,7 @@ void String::allocate_space(int len)
     Data = new char[Allocated];
 }
 
-void String::allocate_fix_space(int len)
+void htString::allocate_fix_space(int len)
 {
     len++;				// In case we want to add a null.
 
@@ -628,7 +628,7 @@ void String::allocate_fix_space(int len)
     Data = new char[Allocated];
 }
 
-void String::reallocate_space(int len)
+void htString::reallocate_space(int len)
 {
 	char	*old_data = 0;
 	int	 old_data_len = 0;
@@ -647,7 +647,7 @@ void String::reallocate_space(int len)
       }
 }
 
-void String::copy(const char *s, int len, int allocation_hint)
+void htString::copy(const char_t *s, int len, int allocation_hint)
 {
   if (len == 0 || allocation_hint == 0)
     return;         // We're not actually copying anything!
@@ -657,14 +657,14 @@ void String::copy(const char *s, int len, int allocation_hint)
 }
 
 #ifndef NOSTREAM
-void String::debug(ostream &o)
+void htString::debug(ostream &o)
 {
     o << "Length: " << Length << " Allocated: " << Allocated <<
 	" Data: " << ((void*) Data) << " '" << *this << "'\n";
 }
 #endif /* NOSTREAM */
 
-int String::readLine(FILE *in)
+int htString::readLine(FILE *in)
 {
     Length = 0;
     allocate_fix_space(2048);
@@ -701,7 +701,7 @@ int String::readLine(FILE *in)
 }
 
 #ifndef NOSTREAM
-istream &operator >> (istream &in, String &line)
+istream &operator >> (istream &in, htString &line)
 {
     line.Length = 0;
     line.allocate_fix_space(2048);
