@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.h,v 1.28.2.2 2005/10/07 21:38:44 aarnone Exp $
+// $Id: Retriever.h,v 1.28.2.3 2005/11/28 18:04:18 aarnone Exp $
 //
 
 #ifndef _Retriever_h_
@@ -21,6 +21,7 @@
 #include "DocumentRef.h"
 #include "Dictionary.h"
 #include "Queue.h"
+#include "IndexDB.h"
 // Anthony - remove wordDB stuff
 //#include "HtWordReference.h"
 #include "List.h"
@@ -71,60 +72,57 @@ struct word_entry : public Object
 */
 class Retriever
 {
-public:
+    public:
     //
     // Construction/Destruction
     //
-    			Retriever(RetrieverLog flags = Retriever_noLog);
-    virtual		~Retriever();
+                Retriever(RetrieverLog flags = Retriever_noLog);
+    virtual     ~Retriever();
 
     //
     // Getting it all started
     //
-    void		Initial(const String& url, int checked = 0);
-    void		Initial(List &list , int checked = 0);
-    void		Start();
+    void        Initial(const String& url, int checked = 0);
+    void        Initial(List &list , int checked = 0);
+    void        Start();
 
     //
     // Report statistics about the parser
     //
-    void		ReportStatistics(const String& name);
+    void        ReportStatistics(const String& name);
 	
     //
     // These are the callbacks that we need to write code for
     //
-    void		got_word(const char *word, int location, int heading);
-    void		got_href(URL &url, const char *description, int hops = 1);
-    void		got_title(const char *title);
-    void		got_author(const char *author);
-    void		got_time(const char *time);
-    void		got_head(const char *head);
-    void		got_meta_dsc(const char *md);
-    void		got_anchor(const char *anchor);
-    void		got_image(const char *src);
-    void		got_meta_email(const char *);
-    void		got_meta_notification(const char *);
-    void		got_meta_subject(const char *);
+    void        got_word(const char *word, int location, int heading);
+    void        got_href(URL &url, const char *description, int hops = 1);
+    void        got_title(const char *title);
+    void        got_author(const char *author);
+    void        got_time(const char *time);
+    void        got_head(const char *head);
+    void        got_meta_dsc(const char *md);
+    void        got_anchor(const char *anchor);
+    void        got_image(const char *src);
+    void        got_meta_email(const char *);
+    void        got_meta_notification(const char *);
+    void        got_meta_subject(const char *);
     void        got_noindex();
 
     //
     // Allow for the indexing of protected sites by using a
     // username/password
     //
-    void		setUsernamePassword(const char *credentials);
+    void        setUsernamePassword(const char *credentials);
 
     //
     // Routines for dealing with local filesystem access
     //
-    StringList *	GetLocal(const String &strurl);
-    StringList *	GetLocalUser(const String &url, StringList *defaultdocs);
-    int			IsLocalURL(const String &url);
+    StringList *    GetLocal(const String &strurl);
+    StringList *    GetLocalUser(const String &url, StringList *defaultdocs);
+    int             IsLocalURL(const String &url);
 
-private:
-    //
-    // A hash to keep track of what we've seen
-    //
-    Dictionary      visited;
+    
+    private:
     
     URL             *base;
     String          current_title;
@@ -133,39 +131,58 @@ private:
     String          current_content;
     time_t          current_time;
     int             current_id;
-    DocumentRef     *current_ref;
     int             current_anchor_number;
-    int             trackWords;
+//    int             trackWords;   ???
     int             n_links;
-    String          credentials;
-// Anthony - remove all htword stuff
-    //HtWordReference word_context;
-
-// The old word DB data structures
-//    HtWordList      words;
-//    Dictionary      words_to_add;
-
-
-
-
-    
-    // Anthony - the new CLucene Document
-
-    DocumentRef     *indexDoc;
-	
-
-
-
-    
-
-
-    RetrieverLog log;
-    //
-    // These are weights for the words.  The index is the heading level.
-    //
-// Anthony - remove no_store_phrases location factors
-//    long int        factor[12];
     int             currenthopcount;
+    String          credentials;
+
+
+    // HtWordReference word_context;
+
+    //
+    // The old word DB data structures
+    // 
+    // HtWordList      words;
+    // Dictionary      words_to_add;
+
+
+
+
+    
+    // 
+    // the CLucene document
+    // 
+    DocumentRef     *CLuceneDoc;
+
+    // 
+    // reference object to the index database
+    // 
+    IndexDBRef      *indexDoc;
+
+    // 
+    // the index database
+    // 
+    IndexDB         *indexDatabase;
+
+    //
+    // the document, which will retrieve itself
+    //
+    Document		*doc;
+
+    //
+    // the BDB document (old)
+    // 
+    //DocumentRef     *current_ref;
+
+    
+
+    //
+    // These are weights for the words.
+    // The index is the heading level.
+    // Anthony - remove no_store_phrases location factors
+    // 
+    // long int        factor[12];
 
     //
     // Some semi-constants...
@@ -176,18 +193,24 @@ private:
     int             minimumWordLength;
 	
     //
-    // The list of server-specific information objects is indexed by
-    // ip address and port number.  The list contains Server objects.
+    // A hash to keep track of what we've seen
+    //
+    Dictionary      visited;
+   
+    //
+    // a retriever log
+    //  
+    RetrieverLog log;
+    
+    //
+    // The list of server-specific information objects
+    // is indexed by ip address and port number.
+    // The list contains Server objects.
     //
     Dictionary		servers;
 
-    //
-    // For efficiency reasons, we will only use one document object which
-    // we reuse.
-    //
-    Document		*doc;
-
-    Database 		*d_md5;
+    // This is removed, as it exists in the indexDB now
+    //Database 		*d_md5;
 
     String          notFound;
 
@@ -198,7 +221,7 @@ private:
     int			IsValidURL(const String &url);
     void		RetrievedDocument(Document &, const String &url, DocumentRef *ref);
     void		parse_url(URLRef &urlRef);
-    void		got_redirect(const char *, DocumentRef *, const char * = 0);
+    void		got_redirect(const char *, IndexDBRef *, const char * = 0);
     void		recordNotFound(const String &url, const String &referer, int reason);
 };
 
