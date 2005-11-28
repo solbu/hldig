@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: IndexDBRef.h,v 1.1.2.1 2005/11/28 18:07:33 aarnone Exp $
+// $Id: IndexDBRef.h,v 1.1.2.2 2005/11/28 18:37:43 aarnone Exp $
 //
 
 #ifndef _IndexDBRef_h_
@@ -64,7 +64,6 @@ class IndexDBRef : public Object
     void        DocBacklinks(int i)         {backlinks = i;} 
 
 //    void        AddDescription(const char *d, HtWordList &words);
-//    void        DocState(int s);
  
 
     //

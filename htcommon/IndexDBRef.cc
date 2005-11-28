@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: IndexDBRef.cc,v 1.1.2.1 2005/11/28 18:07:33 aarnone Exp $
+// $Id: IndexDBRef.cc,v 1.1.2.2 2005/11/28 18:37:43 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -67,30 +67,6 @@ void IndexDBRef::Clear()
     hopCount = 0;
 }
 
-//*****************************************************************************
-// void IndexDBRef::DocState(int s)
-//
-/*
-void IndexDBRef::DocState(int s)
-{
-    // You can't easily do this with a cast, so we'll use a switch
-    switch(s)
-    {
-        case 0:
-            docState = Reference_normal;
-            break;
-        case 1:
-            docState = Reference_not_found;
-            break;
-        case 2:
-            docState = Reference_noindex;
-            break;
-        case 3:
-            docState = Reference_obsolete;
-            break;
-    }
-}
-*/
 
 enum
 {
@@ -240,34 +216,18 @@ void IndexDBRef::Serialize(String &s)
    }                                                                  \
  }
 
-//    addnum(DOC_ID, s, docID);
     addnum(DOC_TIME, s, time);
-//    addnum(DOC_ACCESSED, s, docAccessed);
-//    addnum(DOC_STATE, s, state);
-//    addnum(DOC_SIZE, s, docSize);
-//    addnum(DOC_LINKS, s, docLinks);
     addnum(DOC_BACKLINKS, s, backlinks);
     addnum(DOC_HOPCOUNT, s, hopCount);
+    
+// NOTE: the sig will go back in when MD5 is done
+//
 //    addnum(DOC_SIG, s, docSig);
-
-    // Use a temporary since the addstring macro will evaluate
-    // this multiple times.
-//    String tmps = HtURLCodec::instance()->encode(docURL);
-//    addstring(DOC_URL, s, tmps);
-    // This is done in the DocumentDB code through the excerpt database
-    //    addstring(DOC_HEAD, s, docHead);
-//    addstring(DOC_METADSC, s, docMetaDsc);
-//    addstring(DOC_TITLE, s, docTitle);
-
 
 // NOTE: descriptions will be going back in eventually
 // 
 //    addlist(DOC_DESCRIPTIONS, s, descriptions);
-//    addlist(DOC_ANCHORS, s, docAnchors);
 
-//    addstring(DOC_EMAIL, s, docEmail);
-//    addstring(DOC_NOTIFICATION, s, docNotification);
-//    addstring(DOC_SUBJECT, s, docSubject);
 }
 
 
@@ -381,67 +341,14 @@ void IndexDBRef::Deserialize(String &stream)
         case DOC_SIG:
             getnum(x, s, sig);
             break;
-        case DOC_DESCRIPTIONS:  // Taken out temporarily
-//            getlist(x, s, descriptions);
-            break;
-        case DOC_STATE:
-//            getnum(x, s, state);
+        case DOC_DESCRIPTIONS:
+            getlist(x, s, descriptions);
             break;
         case DOC_HOPCOUNT:
             getnum(x, s, hopCount);
             break;
         case DOC_BACKLINKS: 
             getnum(x, s, backlinks);
-            break;
-
-        case DOC_URL:           // No longer used
-            {
-                // Use a temporary since the addstring macro
-                // will evaluate this multiple times.
-//                String tmps;
-//                getstring(x, s, tmps);
-
-//                docURL = HtURLCodec::instance()->decode(tmps);
-	        }
-            break;
-        case DOC_ID:            // No longer used
-            //getnum(x, s, docID);
-            break;
-        case DOC_ACCESSED:      // No longer used
-            //getnum(x, s, docAccessed);
-            break;
-        case DOC_SIZE:          // No longer used
-            //getnum(x, s, docSize);
-            break;
-        case DOC_IMAGESIZE:     // No longer used
-            //getnum(x, s, throwaway);
-            break;
-        case DOC_LINKS:         // No longer used
-            //getnum(x, s, docLinks);
-            break;
-        case DOC_HEAD:          // No longer used
-            //getstring(x, s, docHead); docHeadIsSet = 1;
-            break;
-        case DOC_METADSC:       // No longer used
-            //getstring(x, s, docMetaDsc);
-            break;
-        case DOC_TITLE:         // No longer used
-            //getstring(x, s, docTitle);
-            break;
-        case DOC_ANCHORS:       // No longer used
-            //getlist(x, s, docAnchors);
-            break;
-        case DOC_EMAIL:         // No longer used
-            //getstring(x, s, docEmail);
-            break;
-        case DOC_NOTIFICATION:  // No longer used
-            //getstring(x, s, docNotification);
-            break;
-        case DOC_SUBJECT:       // No longer used
-            //getstring(x, s, docSubject);
-            break;
-        case DOC_STRING:
-            // This is just a debugging string. Ignore it.
             break;
 
         default:

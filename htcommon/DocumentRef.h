@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.h,v 1.29.2.3 2005/11/28 18:11:42 aarnone Exp $
+// $Id: DocumentRef.h,v 1.29.2.4 2005/11/28 18:37:43 aarnone Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -21,8 +21,6 @@
 #include "List.h"
 #include <map>
 #include <set>
-// Anthony - remove htword stuff
-//#include "HtWordList.h"
 
 #include <time.h>
 #ifdef UNICODE
@@ -40,8 +38,6 @@ typedef std::map<
 
 typedef std::set<std::basic_string<CHAR_T> > uniqueWordsSet;
 
-//typedef std::map<std::string, std::pair<std::string, std::string> > CL_Doc;
-//typedef std::set<std::string> uniqueWordsSet;
 
 enum ReferenceState
 {

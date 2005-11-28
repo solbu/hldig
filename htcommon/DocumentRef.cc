@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.cc,v 1.53.2.3 2005/11/28 18:11:42 aarnone Exp $
+// $Id: DocumentRef.cc,v 1.53.2.4 2005/11/28 18:37:43 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -20,10 +20,6 @@
 
 #include "DocumentRef.h"
 #include "good_strtok.h"
-// Anthony - remove htword stuff
-//#include "WordRecord.h"
-//#include "WordType.h"
-//#include "HtWordReference.h"
 #include "HtConfiguration.h"
 #include "HtURLCodec.h"
 #include <stdlib.h>
