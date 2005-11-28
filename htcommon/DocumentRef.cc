@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.cc,v 1.53.2.2 2005/10/07 21:36:13 aarnone Exp $
+// $Id: DocumentRef.cc,v 1.53.2.3 2005/11/28 18:11:42 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -30,12 +30,12 @@
 #include <ctype.h>
 
 #ifdef HAVE_STD
-#include <fstream>
-#ifdef HAVE_NAMESPACES
-using namespace std;
-#endif
+  #include <fstream>
+  #ifdef HAVE_NAMESPACES
+    using namespace std;
+  #endif
 #else
-#include <fstream.h>
+  #include <fstream.h>
 #endif /* HAVE_STD */
 
 // extern HtConfiguration config;
@@ -45,7 +45,7 @@ using namespace std;
 //
 DocumentRef::DocumentRef()
 {
-    Clear();
+    initialize();
 }
 
 
@@ -568,7 +568,6 @@ void DocumentRef::initialize()
     indexDoc.clear();
     uniqueWords.clear();
 
-    indexDoc["id"].second = "UnIndexed";  // this might not be needed...
     indexDoc["url"].second = "Keyword";
     indexDoc["title"].second = "Keyword";
     indexDoc["author"].second = "Keyword";
@@ -579,6 +578,8 @@ void DocumentRef::initialize()
     indexDoc["meta_subject"].second = "Keyword";
 
     indexDoc["contents"].second = "UnStored";
+    
+    indexDoc["time"].second = "UnIndexed";
 }
 
 
@@ -624,7 +625,7 @@ void DocumentRef::addUniqueWord(char* word)
 // NOTE: will need modification when unicode goes in, the field value
 // will most likely be a string object
 // 
-void DocumentRef::insertField(const char* fieldName, char* fieldValue)
+void DocumentRef::insertField(const char* fieldName, const char* fieldValue)
 {
     indexDoc[fieldName].first = fieldValue;
 }
@@ -638,7 +639,7 @@ void DocumentRef::insertField(const char* fieldName, char* fieldValue)
 // NOTE: will need modificatioin when Unicode goes in (the separator
 // will need to be a wide character)
 //
-void DocumentRef::appendField(const char* fieldName, char* fieldValue)
+void DocumentRef::appendField(const char* fieldName, const char* fieldValue)
 {
     indexDoc[fieldName].first.insert(indexDoc[fieldName].first.size(), fieldValue);
     indexDoc[fieldName].first.push_back(' ');

@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.h,v 1.29.2.2 2005/10/07 21:36:13 aarnone Exp $
+// $Id: DocumentRef.h,v 1.29.2.3 2005/11/28 18:11:42 aarnone Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -19,12 +19,29 @@
 
 #include "htString.h"
 #include "List.h"
+#include <map>
+#include <set>
 // Anthony - remove htword stuff
 //#include "HtWordList.h"
 
 #include <time.h>
-#define CL_Doc std::map<std::string, std::pair<std::string, std::string> >
-#define uniqueWordsSet std::set<std::string> 
+#ifdef UNICODE
+  #define CHAR_T wchar_t
+#else
+  #define CHAR_T char
+#endif /* UNICODE */
+
+typedef std::map<
+            std::basic_string<CHAR_T>,
+            std::pair<
+                std::basic_string<CHAR_T>,
+                std::basic_string<CHAR_T> > >
+        CL_Doc;
+
+typedef std::set<std::basic_string<CHAR_T> > uniqueWordsSet;
+
+//typedef std::map<std::string, std::pair<std::string, std::string> > CL_Doc;
+//typedef std::set<std::string> uniqueWordsSet;
 
 enum ReferenceState
 {
@@ -100,7 +117,7 @@ class DocumentRef : public Object
 
     void        DocState(int s);
     void        AddAnchor(const char *a);
-// Anthony - not used
+// Anthony - fix this up
 //    void        AddDescription(const char *d, HtWordList &words);
 	
     void        Clear();                    // Reset everything - deprecated
@@ -112,9 +129,11 @@ class DocumentRef : public Object
     
     void        dumpUniqueWords();          // insert all of the unique words into the contents
     void        addUniqueWord(char* word);  // add a unique word
-    void        insertField(const char* fieldName, char* fieldValue);
-    void        appendField(const char* fieldName, char* fieldValue);
+    void        insertField(const char* fieldName, const char* fieldValue);
+    void        appendField(const char* fieldName, const char* fieldValue);
 
+    CL_Doc*     contents() {return &indexDoc;}  // return a pointer to the the indexDoc
+    
     protected:
     //
     // These values will be stored when serializing
