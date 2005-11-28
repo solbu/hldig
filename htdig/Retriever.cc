@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.96.2.3 2005/11/28 18:04:17 aarnone Exp $
+// $Id: Retriever.cc,v 1.96.2.4 2005/11/28 18:24:08 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -27,10 +27,6 @@
 
 #include "Retriever.h"
 #include "htdig.h"
-//Anthony - remove htword stuff
-//#include "HtWordList.h"
-//#include "WordRecord.h"
-//#include "WordType.h"
 #include "URLRef.h"
 #include "Server.h"
 #include "Parsable.h"
@@ -59,8 +55,6 @@ static bool no_store_phrases;
 // Retriever::Retriever()
 //
 Retriever::Retriever(RetrieverLog flags)
-//:words(*(HtConfiguration::config())),
-//words_to_add (100, 0.75)
 {
     HtConfiguration *config = HtConfiguration::config();
     FILE *urls_parsed;
@@ -69,31 +63,6 @@ Retriever::Retriever(RetrieverLog flags)
     max_hop_count = config->Value("max_hop_count", 999999);
 
     no_store_phrases = !config->Boolean("store_phrases");
-
-	//
-	// Initialize the flags for the various HTML factors
-	//
-
-// Anthony - remove no_store_phrases location factors
-	// text_factor
-//	factor[0] = FLAG_TEXT;
-	// title_factor
-//	factor[1] = FLAG_TITLE;
-	// heading factor (now generic)
-//	factor[2] = FLAG_HEADING;
-//	factor[3] = FLAG_HEADING;
-//	factor[4] = FLAG_HEADING;
-//	factor[5] = FLAG_HEADING;
-//	factor[6] = FLAG_HEADING;
-//	factor[7] = FLAG_HEADING;
-	// img alt text
-//	factor[8] = FLAG_TEXT;	// treat alt text as plain text, until it has
-				// its own FLAG and factor.
-	// keywords factor
-//	factor[9] = FLAG_KEYWORDS;
-	// META description factor
-//	factor[10] = FLAG_DESCRIPTION;
-//	factor[11] = FLAG_AUTHOR;
 
     minimumWordLength = config->Value("minimum_word_length", 3);
 
@@ -123,22 +92,6 @@ Retriever::Retriever(RetrieverLog flags)
     check_unique_md5 = config->Boolean("check_unique_md5", 0);
     check_unique_date = config->Boolean("check_unique_date", 0);
 
-    //
-    // the MD5 database information will be contained in the
-    // index database, so this stuff isn't needed
-    // 
-/*
-    d_md5 = 0;
-    if (check_unique_md5)
-    {
-        d_md5 = Database::getDatabaseInstance(DB_HASH);
-
-        if (d_md5->OpenReadWrite(config->Find("md5_db"), 0666) != OK)
-        {
-            cerr << "DocumentDB::Open: " << config->Find("md5_db") << " " << strerror(errno) << "\n";
-        }
-    }
-*/
     //
     // Create the documentRef, which will be reused
     // 
@@ -567,7 +520,6 @@ void Retriever::Start()
             fclose(urls_parsed);
         }
     }
-//	words.Close();
 }
 
 
@@ -578,10 +530,8 @@ void Retriever::parse_url(URLRef & urlRef)
 {
     HtConfiguration *config = HtConfiguration::config();
     URL url;
-//    DocumentRef *ref;
     bool old_document;
     time_t date;
-//    static int index = 0;
     static int local_urls_only = config->Boolean("local_urls_only");
     static int mark_dead_servers = config->Boolean("ignore_dead_servers");
     Server *server;
@@ -615,7 +565,6 @@ void Retriever::parse_url(URLRef & urlRef)
         else
             indexDoc->DocHopCount(currenthopcount);
  
-//        indexDoc->DocState(Reference_normal);
     }
     else
     {
@@ -632,7 +581,6 @@ void Retriever::parse_url(URLRef & urlRef)
         indexDoc->DocHopCount(currenthopcount);
         indexDoc->DocBacklinks(1);
 
-//        indexDoc->DocState(Reference_normal);
     }
 
 //    if (debug > 0)
@@ -753,25 +701,9 @@ void Retriever::parse_url(URLRef & urlRef)
             // 
             indexDatabase->Delete(indexDoc->DocURL());
             
-            
-            // Anthony - remove all htword stuff
-            // word_context.DocID(current_id);
-//            ref = new DocumentRef;
-//            ref->DocID(current_id);
-//            ref->DocURL(url.get());
-//            ref->DocState(Reference_normal);
-//            ref->DocAccessed(time(0));
-//            ref->DocHopCount(currenthopcount);
-//            ref->DocBackLinks(backlinks);
             if (debug)
                 cout << " (changed) ";
         }
-
-        //
-        // This call has had its code moved into this function
-        // since it was such little amount of code
-        // 
-        //        RetrievedDocument(*doc, url.get(), indexDoc);
 
         //
         // start a new scope to make the compiler happy
@@ -781,18 +713,14 @@ void Retriever::parse_url(URLRef & urlRef)
             //
             // try to get a parsable object for this document
             //
-        cout << "going to try to get parsable object" << endl;
             Parsable *parsable = doc->getParsable();
-        cout << "got parsable object" << endl;
         
             if (parsable)
             {
                 //
                 // parse the document
                 // 
-        cout << "going to try to parse" << endl;
                 parsable->parse(*this, *base);
-        cout << "parsed!" << endl;
 
                 if (indexDoc->DocState() != indexDBRef_noindex)
                 {
@@ -862,14 +790,12 @@ void Retriever::parse_url(URLRef & urlRef)
         break;
 
     case Transport::Document_not_found:
-//        ref->DocState(Reference_not_found);
         if (debug)
             cout << " not found" << endl;
         recordNotFound(url.get(), urlRef.GetReferer().get(), Transport::Document_not_found);
         break;
 
     case Transport::Document_no_host:
-//        ref->DocState(Reference_not_found);
         if (debug)
             cout << " host not found" << endl;
         recordNotFound(url.get(), urlRef.GetReferer().get(), Transport::Document_no_host);
@@ -880,7 +806,6 @@ void Retriever::parse_url(URLRef & urlRef)
 		break;
 
 	case Transport::Document_no_port:
-//		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " host not found (port)" << endl;
 		recordNotFound(url.get(), urlRef.GetReferer().get(), Transport::Document_no_port);
@@ -891,50 +816,42 @@ void Retriever::parse_url(URLRef & urlRef)
 		break;
 
 	case Transport::Document_not_parsable:
-//		ref->DocState(Reference_noindex);
 		if (debug)
 			cout << " not Parsable" << endl;
 		break;
 
 	case Transport::Document_redirect:
-//		ref->DocState(Reference_obsolete);
 		if (debug)
 			cout << " redirect" << endl;
 		got_redirect(doc->Redirected(), indexDoc, (urlRef.GetReferer()).get());
 		break;
 
 	case Transport::Document_not_authorized:
-//		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " not authorized" << endl;
 		break;
 
 	case Transport::Document_not_local:
-//		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " not local" << endl;
 		break;
 
 	case Transport::Document_no_header:
-//		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " no header" << endl;
 		break;
 
 	case Transport::Document_connection_down:
-//		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " connection down" << endl;
 		break;
 
 	case Transport::Document_no_connection:
-//		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " no connection" << endl;
 		break;
 
 	case Transport::Document_not_recognized_service:
-//		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " service not recognized" << endl;
 
@@ -944,90 +861,10 @@ void Retriever::parse_url(URLRef & urlRef)
 		break;
 
 	case Transport::Document_other_error:
-//		ref->DocState(Reference_not_found);
 		if (debug)
 			cout << " other error" << endl;
 		break;
 	}
-//	docs.Add(*ref);
-//    delete indexDBRef;
-}
-
-
-//*****************************************************************************
-// void Retriever::RetrievedDocument(Document &doc, const String &url, DocumentRef *ref)
-//   We found a document that needs to be parsed.  Since we don't know the
-//   document type, we'll let the Document itself return an appropriate
-//   Parsable object which we can call upon to parse the document contents.
-//
-void Retriever::RetrievedDocument(Document & doc, const String & url, DocumentRef * ref)
-{
-/*
-    n_links = 0;
-	current_ref = ref;
-	current_title = 0;
-// Anthony - remove all htword stuff
-//	word_context.Anchor(0);
-	current_time = 0;
-	current_head = 0;
-	current_meta_dsc = 0;
-
-	//
-	// Create a parser object and let it have a go at the document.
-	// We will pass ourselves as a callback object for all the got_*()
-	// routines.
-	// This will generate the Parsable object as a specific parser
-	//
-	Parsable *parsable = doc.getParsable();
-	if (parsable)
-		parsable->parse(*this, *base);
-	else
-	{					  // If we didn't get a parser, then we should get rid of this!
-		ref->DocState(Reference_noindex);
-		return;
-	}
- Anthony - remove old store_phrases
-	// If just storing the first occurrence of each word in a document,
-	// we must now flush the words we saw in that document
-	if (no_store_phrases)
-	{
-	    DictionaryCursor cursor;
-	    char *key;
-	    HtWordReference wordRef;
-	    for (words_to_add.Start_Get (cursor);
-		    (key = words_to_add.Get_Next(cursor)); )
-	    {
-		word_entry *entry = (word_entry*) (words_to_add [key]);
-
-		wordRef.Location(entry->location);
-		wordRef.Flags(entry->flags);
-		wordRef.Word(key);
-//		words.Replace(WordReference::Merge(wordRef, entry->context));
-		// How do I clean up properly?
-		delete entry;
-	    }
-//	    words_to_add.Release ();
-	}
-
-	//
-	// We don't need to dispose of the parsable object since it will
-	// automatically be reused.
-	//
-
-	//
-	// Update the document reference
-	//
-//	ref->DocHead((char *) current_head);
-//	ref->DocMetaDsc((char *) current_meta_dsc);
-//	if (current_time == 0)
-//		ref->DocTime(doc.ModTime());
-//	else
-//		ref->DocTime(current_time);
-//	ref->DocTitle((char *) current_title);
-//	ref->DocSize(doc.Length());
-//	ref->DocAccessed(time(0));
-//	ref->DocLinks(n_links);
-*/
 }
 
 
@@ -1667,7 +1504,6 @@ void Retriever::got_image(const char *src)
 //
 void Retriever::got_href(URL & url, const char *description, int hops)
 {
-//    DocumentRef *ref = 0;
     Server *server = 0;
     int valid_url_code = 0;
 

@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.h,v 1.28.2.3 2005/11/28 18:04:18 aarnone Exp $
+// $Id: Retriever.h,v 1.28.2.4 2005/11/28 18:24:09 aarnone Exp $
 //
 
 #ifndef _Retriever_h_
@@ -22,8 +22,6 @@
 #include "Dictionary.h"
 #include "Queue.h"
 #include "IndexDB.h"
-// Anthony - remove wordDB stuff
-//#include "HtWordReference.h"
 #include "List.h"
 #include "StringList.h"
 #include "DocumentDB.h"
@@ -58,18 +56,8 @@ enum  RetrieverLog {
     Retriever_Restart
 };
 
-// anthony - remove all htword stuff
-/*
-struct word_entry : public Object
-{
-    		word_entry (int loc, int fl, HtWordReference& ref) :
-		    	location (loc), flags (fl), context (ref)
-			{};
-    int		location;
-    int		flags;
-    HtWordReference context;
-};
-*/
+
+
 class Retriever
 {
     public:
@@ -138,18 +126,6 @@ class Retriever
     String          credentials;
 
 
-    // HtWordReference word_context;
-
-    //
-    // The old word DB data structures
-    // 
-    // HtWordList      words;
-    // Dictionary      words_to_add;
-
-
-
-
-    
     // 
     // the CLucene document
     // 
@@ -169,20 +145,6 @@ class Retriever
     // the document, which will retrieve itself
     //
     Document		*doc;
-
-    //
-    // the BDB document (old)
-    // 
-    //DocumentRef     *current_ref;
-
-    
-
-    //
-    // These are weights for the words.
-    // The index is the heading level.
-    // Anthony - remove no_store_phrases location factors
-    // 
-    // long int        factor[12];
 
     //
     // Some semi-constants...
@@ -209,9 +171,6 @@ class Retriever
     //
     Dictionary		servers;
 
-    // This is removed, as it exists in the indexDB now
-    //Database 		*d_md5;
-
     String          notFound;
 
     //
@@ -219,7 +178,6 @@ class Retriever
     //
     int			Need2Get(const String &url);
     int			IsValidURL(const String &url);
-    void		RetrievedDocument(Document &, const String &url, DocumentRef *ref);
     void		parse_url(URLRef &urlRef);
     void		got_redirect(const char *, IndexDBRef *, const char * = 0);
     void		recordNotFound(const String &url, const String &referer, int reason);

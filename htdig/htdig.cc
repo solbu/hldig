@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.cc,v 1.42.2.2 2005/11/28 18:04:39 aarnone Exp $
+// $Id: htdig.cc,v 1.42.2.3 2005/11/28 18:24:09 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -23,8 +23,6 @@
 #include "htdig.h"
 #include "defaults.h"
 #include "HtURLCodec.h"
-// Anthony - removing htword stuff
-//#include "WordContext.h"
 #include "WordType.h"
 #include "HtDateTime.h"
 #include "HtURLRewriter.h"
@@ -225,14 +223,6 @@ int main(int ac, char **av)
             config->Add("doc_db", configValue);
         }
 
-// Anthony - remove htword stuff
-//    configValue = config->Find("word_db");
-//    if (configValue.length() != 0)
-//    {
-//        configValue << ".work";
-//        config->Add("word_db", configValue);
-//    }
-
         configValue = config->Find("doc_index");
         if (configValue.length() != 0)
         {
@@ -357,23 +347,11 @@ int main(int ac, char **av)
 
 #endif
 
-// Anthony - remove htword stuff
-//    const String word_filename = config->Find("word_db");
     if (initial)
     {
-//       unlink(word_filename);
-//       unlink((word_filename + "_weakcmpr").get());
-
-       // Remove "duplicate detection" database
-       unlink(config->Find("md5_db"));
-
        // using  -i,  also ignore seen-but-not-processed URLs from last pass
        unlink(config->Find("url_log"));
     }
-
-    // Initialize htword
-// Anthony - removing htwords stuff
-//    WordContext::Initialize(*config);
 
     //
     // this call was in the WordContext::Initialize
@@ -463,19 +441,10 @@ int main(int ac, char **av)
 
     if (create_text_database)
     {
-	const String doc_list = config->Find("doc_list");
-	if (initial)
-	    unlink(doc_list);
-	docs.DumpDB(doc_list);
-
-//Anthony - remove worddb stuff
-//	const String word_dump = config->Find("word_dump");
-//	if (initial)
-//	    unlink(word_dump);
-//	HtWordList words(*config);
-//	if(words.Open(config->Find("word_db"), O_RDONLY) == OK) {
-//	  words.Dump(word_dump);
-//	}
+        const String doc_list = config->Find("doc_list");
+        if (initial)
+            unlink(doc_list);
+        docs.DumpDB(doc_list);
     }
 
     //
