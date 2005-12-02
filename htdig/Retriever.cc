@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.96.2.4 2005/11/28 18:24:08 aarnone Exp $
+// $Id: Retriever.cc,v 1.96.2.5 2005/12/02 20:55:26 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -694,7 +694,10 @@ void Retriever::parse_url(URLRef & urlRef)
             //
             // erase old document from CLucene
             //
-            // NOT IMPLEMENTED - GET ON IT!
+            std::string temp = (indexDoc->DocURL()).get();
+                                                    // this temporary can be removed
+                                                    // when Unicode goes in
+            CLuceneDeleteURLFromIndex(&temp);
             
             // 
             // erase old document from indexDB (by URL)
