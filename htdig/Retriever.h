@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.h,v 1.28.2.4 2005/11/28 18:24:09 aarnone Exp $
+// $Id: Retriever.h,v 1.28.2.5 2005/12/07 19:21:03 aarnone Exp $
 //
 
 #ifndef _Retriever_h_
@@ -64,7 +64,7 @@ class Retriever
     //
     // Construction/Destruction
     //
-                Retriever(RetrieverLog flags = Retriever_noLog);
+    Retriever(RetrieverLog flags = Retriever_noLog, int initial = 0);
     virtual     ~Retriever();
 
     //
@@ -72,6 +72,8 @@ class Retriever
     //
     void        Initial(const String& url, int checked = 0);
     void        Initial(List &list , int checked = 0);
+    void        InitialFromDB();
+
     void        Start();
 
     //
@@ -179,7 +181,7 @@ class Retriever
     int			Need2Get(const String &url);
     int			IsValidURL(const String &url);
     void		parse_url(URLRef &urlRef);
-    void		got_redirect(const char *, IndexDBRef *, const char * = 0);
+    void		got_redirect(const char *, const char * = 0);
     void		recordNotFound(const String &url, const String &referer, int reason);
 };
 
