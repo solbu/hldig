@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: IndexDBRef.cc,v 1.1.2.2 2005/11/28 18:37:43 aarnone Exp $
+// $Id: IndexDBRef.cc,v 1.1.2.3 2005/12/07 19:16:31 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -103,8 +103,8 @@ enum
 //
 void IndexDBRef::Serialize(String &s)
 {
-    int		length;
-    String	*str;
+//    int		length;
+//    String	*str;
 
 //
 // The following macros make the serialization process a little easier
@@ -242,12 +242,12 @@ void IndexDBRef::Deserialize(String &stream)
     Clear();
     char    *s = stream.get();
     char    *end = s + stream.length();
-    int     length;
-    int     count;
-    int     i;
+//    int     length;
+//    int     count;
+//    int     i;
     int     x;
-    int     throwaway; // As the name sounds--used for old fields
-    String  *str;
+//    int     throwaway; // As the name sounds--used for old fields
+//    String  *str;
 
 // There is a problem with getting a numeric value into a
 // numeric unknown type that may be an enum (the other way
@@ -342,7 +342,7 @@ void IndexDBRef::Deserialize(String &stream)
             getnum(x, s, sig);
             break;
         case DOC_DESCRIPTIONS:
-            getlist(x, s, descriptions);
+//            getlist(x, s, descriptions);
             break;
         case DOC_HOPCOUNT:
             getnum(x, s, hopCount);
