@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.96.2.5 2005/12/02 20:55:26 aarnone Exp $
+// $Id: Retriever.cc,v 1.96.2.6 2005/12/07 19:22:30 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -54,7 +54,7 @@ static bool no_store_phrases;
 //*****************************************************************************
 // Retriever::Retriever()
 //
-Retriever::Retriever(RetrieverLog flags)
+Retriever::Retriever(RetrieverLog flags, int initial)
 {
     HtConfiguration *config = HtConfiguration::config();
     FILE *urls_parsed;
@@ -97,20 +97,35 @@ Retriever::Retriever(RetrieverLog flags)
     // 
     CLuceneDoc = new DocumentRef;
     
-    // 
-    // Set up our database object and open the database
     //
-    indexDatabase = new IndexDB;
-    {
-        String indexDBName = "indexDB.BDB";
-        indexDatabase->Open(indexDBName);
-    }
-    
-    //
-    // make the document, which will also be reused
+    // create the document, which will also be reused
     // 
     doc = new Document();
 
+    //
+    // create the indexDB
+    //
+    indexDatabase = new IndexDB;
+
+
+    //
+    // open the indexDB
+    // 
+    const String index_filename = config->Find("doc_index");
+    if (initial)
+        unlink(index_filename);
+
+    indexDatabase->Open(index_filename);
+
+    
+    //
+    // open the CLucene database (not an object
+    // because we're using the API)
+    // 
+    const String db_dir_filename = config->Find("database_dir");
+    cout << "Opening CLucene database here: " << db_dir_filename.get() << endl;
+     
+    CLuceneOpenIndex(form("%s/CLuceneDB", (char *)db_dir_filename.get()), initial ? 1 : 0);
 }
 
 
@@ -119,9 +134,26 @@ Retriever::Retriever(RetrieverLog flags)
 //
 Retriever::~Retriever()
 {
-//	if (d_md5)
-//		d_md5->Close();
+
+//    
+//    if (d_md5)
+//    {
+//        d_md5->Close();
+//        delete d_md5;
+//    }
+//    
+
+    // Delete the two documents we've been reusing
     delete doc;
+    delete CLuceneDoc;
+
+    // Close the indexDB and delete the reference
+    indexDatabase->Close();
+    delete indexDatabase;
+    
+
+    // Close the CLucene index
+    CLuceneCloseIndex();
 }
 
 
@@ -230,6 +262,19 @@ void Retriever::Initial(List & list, int from)
         Initial(str->get(), from);
     }
 }
+
+
+//****************************************************************************
+//
+// If the retriever determines that the initial list should contain
+// the list of previously-seen URLs, then this will do that.
+// 
+void Retriever::InitialFromDB() {
+    List *list = indexDatabase->URLs();
+    Initial(*list);
+    delete list;
+}
+
 
 //*****************************************************************************
 //
@@ -353,7 +398,7 @@ void Retriever::Start()
     HtConfiguration *config = HtConfiguration::config();
 
     //  
-    // Always sig . The delay bother me but a bad db is worst
+    // Always sig . The delay bothers me but a bad db is worst
     // 
     if (Retriever_noLog != log)
     {
@@ -363,10 +408,10 @@ void Retriever::Start()
     noSignal = 1;
 
 
-///////
-	//    Main loop. We keep on retrieving until a signal is received
-	//    or all the servers' queues are empty.
-///////
+    //
+    // Main loop. We keep on retrieving until a signal is received
+    // or all the servers' queues are empty.
+    //    
 
     win32_check_messages();
 
@@ -540,15 +585,15 @@ void Retriever::parse_url(URLRef & urlRef)
 
     currenthopcount = urlRef.GetHopCount();
 
-    //
     // 
-    // intialize the CLucene document
+    // intialize the CLucene document, to make it clean
     // 
     CLuceneDoc->initialize();
     
     // 
     // search for the URL in the indexDB
     // 
+    cout << "attempting retrieval of " << (url.get()).get() << " from index DB" << endl;
     indexDoc = indexDatabase->Exists(url.get());
     
     if (indexDoc)
@@ -564,10 +609,10 @@ void Retriever::parse_url(URLRef & urlRef)
             currenthopcount = indexDoc->DocHopCount();
         else
             indexDoc->DocHopCount(currenthopcount);
- 
     }
     else
     {
+cout << url.get() << " not found in indexDB" << endl;
         //
         // Never seen this document before.  We need to create a
         // new IndexDBRef for it
@@ -580,7 +625,6 @@ void Retriever::parse_url(URLRef & urlRef)
         indexDoc->DocURL(url.get());
         indexDoc->DocHopCount(currenthopcount);
         indexDoc->DocBacklinks(1);
-
     }
 
 //    if (debug > 0)
@@ -588,7 +632,7 @@ void Retriever::parse_url(URLRef & urlRef)
 //        //
 //        // Display progress
 //        //
-//        cout << index++ << ':' << current_id << ':' << currenthopcount << ':' << url.get() << ": ";
+//        cout << index++ << currenthopcount << ':' << url.get() << ": ";
 //        cout.flush();
 //    }
 
@@ -599,11 +643,14 @@ void Retriever::parse_url(URLRef & urlRef)
     doc->Url(url.get());
     doc->Referer(urlRef.GetReferer().get());
 
+    //
+    // Set the base URL
+    // 
     base = doc->Url();
 
     // 
     // Retrieve document, first trying local file access if possible.
-    // 
+    //
     Transport::DocStatus status;
     server = (Server *) servers[url.signature()];
     StringList *local_filenames = GetLocal(url.get());
@@ -628,10 +675,10 @@ void Retriever::parse_url(URLRef & urlRef)
     else
         status = Transport::Document_no_host;
 
-	//
-	// Determine what to do by looking at the status code returned by
-	// the Document retrieval process.
-	//
+    //
+    // Determine what to do by looking at the status code returned by
+    // the Document retrieval process.
+    //
     switch (status)
     {
 
@@ -679,12 +726,15 @@ void Retriever::parse_url(URLRef & urlRef)
  */
 
         //
-        // we were able to retrieve the document ok, so we'll
-        // trust the document header to have to correct time
+        // we were able to retrieve the document ok, so we can
+        // update the time that it was last seen. we will be overwriting
+        // either a zero (new document) or the last time we downloaded
+        // this document.
         // 
-        indexDoc->DocTime(doc->ModTime());
+        indexDoc->DocTime(time(0));
         
-        if (old_document) {
+        if (old_document)
+        {
             //
             // Since we already had a record of this document and
             // we were able to retrieve it, it must have changed
@@ -692,18 +742,21 @@ void Retriever::parse_url(URLRef & urlRef)
             //
 
             //
-            // erase old document from CLucene
+            // erase old document from CLucene (by URL)
             //
+            // this temporary string should be removed eventually
+            // 
+cout << "deleting " << (indexDoc->DocURL()).get() << " from DBs" << endl;
             std::string temp = (indexDoc->DocURL()).get();
-                                                    // this temporary can be removed
-                                                    // when Unicode goes in
             CLuceneDeleteURLFromIndex(&temp);
-            
-            // 
+//            int temp2 = CLuceneDeleteURLFromIndex(&temp);
+//            cout << "killed " << temp2 << " documents" << endl;
+
+            //
             // erase old document from indexDB (by URL)
-            // 
+            //
             indexDatabase->Delete(indexDoc->DocURL());
-            
+
             if (debug)
                 cout << " (changed) ";
         }
@@ -717,7 +770,7 @@ void Retriever::parse_url(URLRef & urlRef)
             // try to get a parsable object for this document
             //
             Parsable *parsable = doc->getParsable();
-        
+
             if (parsable)
             {
                 //
@@ -755,13 +808,22 @@ void Retriever::parse_url(URLRef & urlRef)
                         CLuceneDoc->dumpUniqueWords();
                     }
 
+
                     // 
-                    // Anthony - add new document to indexDB
+                    // At this point, we should be all set to insert the
+                    // new documents into the two databases. if they were
+                    // there before, they should have been deleted in the
+                    // if (old_document) code above
+                    // 
+
+                    cout << "adding " << (url.get()).get() << " to DBs" << endl;
+                    // 
+                    // Insert the index document into indexDB
                     //
                     indexDatabase->Add(*indexDoc);
 
                     // 
-                    // Insert the document into the index
+                    // Insert the real document into CLucene
                     // 
                     CLuceneAddDocToIndex(CLuceneDoc->contents());
                 }
@@ -769,8 +831,11 @@ void Retriever::parse_url(URLRef & urlRef)
             else
             {
                 //
-                // If we didn't get a parser, then we should get rid of this!
-                // 
+                // If we didn't get a parser, then we should get
+                // rid of the document. Essentially, just don't
+                // do anything with it, and it'll be overwritten
+                // on the next URL
+                //
                 if (debug > 1)
                     cout << " ( " << indexDoc->DocURL() << " ignored)";
             }
@@ -806,68 +871,69 @@ void Retriever::parse_url(URLRef & urlRef)
         // Mark the server as being down
         if (server && mark_dead_servers)
             server->IsDead(1);
-		break;
+        break;
 
-	case Transport::Document_no_port:
-		if (debug)
-			cout << " host not found (port)" << endl;
-		recordNotFound(url.get(), urlRef.GetReferer().get(), Transport::Document_no_port);
+    case Transport::Document_no_port:
+        if (debug)
+            cout << " host not found (port)" << endl;
+        recordNotFound(url.get(), urlRef.GetReferer().get(), Transport::Document_no_port);
 
-		// Mark the server as being down
-		if (server && mark_dead_servers)
-			server->IsDead(1);
-		break;
+        // Mark the server as being down
+        if (server && mark_dead_servers)
+            server->IsDead(1);
+        break;
 
-	case Transport::Document_not_parsable:
-		if (debug)
-			cout << " not Parsable" << endl;
-		break;
+    case Transport::Document_not_parsable:
+        if (debug)
+            cout << " not Parsable" << endl;
+        break;
 
-	case Transport::Document_redirect:
-		if (debug)
-			cout << " redirect" << endl;
-		got_redirect(doc->Redirected(), indexDoc, (urlRef.GetReferer()).get());
-		break;
+    case Transport::Document_redirect:
+        if (debug)
+            cout << " redirect" << endl;
+        got_redirect(doc->Redirected(), (urlRef.GetReferer()).get());
+        break;
 
-	case Transport::Document_not_authorized:
-		if (debug)
-			cout << " not authorized" << endl;
-		break;
+    case Transport::Document_not_authorized:
+        if (debug)
+            cout << " not authorized" << endl;
+        break;
 
-	case Transport::Document_not_local:
-		if (debug)
-			cout << " not local" << endl;
-		break;
+    case Transport::Document_not_local:
+        if (debug)
+            cout << " not local" << endl;
+        break;
 
-	case Transport::Document_no_header:
-		if (debug)
-			cout << " no header" << endl;
-		break;
+    case Transport::Document_no_header:
+        if (debug)
+            cout << " no header" << endl;
+        break;
 
-	case Transport::Document_connection_down:
-		if (debug)
-			cout << " connection down" << endl;
-		break;
+    case Transport::Document_connection_down:
+        if (debug)
+            cout << " connection down" << endl;
+        break;
 
-	case Transport::Document_no_connection:
-		if (debug)
-			cout << " no connection" << endl;
-		break;
+    case Transport::Document_no_connection:
+        if (debug)
+            cout << " no connection" << endl;
+        break;
 
-	case Transport::Document_not_recognized_service:
-		if (debug)
-			cout << " service not recognized" << endl;
+    case Transport::Document_not_recognized_service:
+        if (debug)
+            cout << " service not recognized" << endl;
 
-		// Mark the server as being down
-		if (server && mark_dead_servers)
-			server->IsDead(1);
-		break;
+        // Mark the server as being down
+        if (server && mark_dead_servers)
+            server->IsDead(1);
+        break;
 
-	case Transport::Document_other_error:
-		if (debug)
-			cout << " other error" << endl;
-		break;
+    case Transport::Document_other_error:
+        if (debug)
+            cout << " other error" << endl;
+        break;
 	}
+    delete indexDoc;
 }
 
 
@@ -1548,10 +1614,16 @@ void Retriever::got_href(URL & url, const char *description, int hops)
         // current document is never referenced before, as in a
         // start_url.
         // 
-		if (strcmp(url.get(), indexDoc->DocURL()) == 0)
-		{
-			indexDoc->DocBacklinks(indexDoc->DocBacklinks() + 1);
+
+
+        if (strcmp(url.get(), (indexDoc->DocURL()).get()) == 0)
+        {
+            //
+            // we can still update the backlink count and descriptions
+            // 
+
 // Anthony - AddDescription is gone from DocumentRef for right now
+//            indexDoc->DocBacklinks(indexDoc->DocBacklinks() + 1);
 //            indexDoc->AddDescription(description, words);
 		}
 		else
@@ -1559,7 +1631,12 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 			//
 			// First add it to the document database
 			//
-            
+/*********************************************
+ *
+ * This is taken out for right now, since we don't need to add the
+ * document to the indexBD right now, just add it to the queue.
+ * 
+ *             
             //
             // see if it's in the DB already
             // 
@@ -1591,21 +1668,20 @@ void Retriever::got_href(URL & url, const char *description, int hops)
             // Anthony - AddDescription is gone from DocumentRef for right now
             //ref->AddDescription(description, words);
 
-
 			//
 			// If the dig is restricting by hop count, perform
             // the check here too
-			if (currenthopcount + hops > max_hop_count)
-			{
-				delete new_ref;
-				return;
-			}
+            if (currenthopcount + hops > max_hop_count)
+            {
+//                delete new_ref;
+                return;
+            }
 
-			if (new_ref->DocHopCount() > currenthopcount + hops)
-				new_ref->DocHopCount(currenthopcount + hops);
+//            if (new_ref->DocHopCount() > currenthopcount + hops)
+//                new_ref->DocHopCount(currenthopcount + hops);
 
-			indexDatabase->Add(*new_ref);
-
+//            indexDatabase->Add(*new_ref);
+********************************/
             //
             // Now put it in the list of URLs to still visit.
             //
@@ -1629,7 +1705,7 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 				// Let's just be sure we're not pushing an empty URL
 				//
 				if (strlen(url.get()))
-                    server->push(url.get(), new_ref->DocHopCount(), base->get(), IsLocalURL(url.get()));
+                    server->push(url.get(), currenthopcount+hops, base->get(), IsLocalURL(url.get()));
 
 				String temp = url.get();
 				visited.Add(temp, 0);
@@ -1638,36 +1714,36 @@ void Retriever::got_href(URL & url, const char *description, int hops)
 			}
 			else if (debug)
 				cout << '*';
-			delete new_ref;
-		}
+//			delete new_ref;
+        }
     } else {
-		//
-		// Not a valid URL
-		//
-		if (debug > 1)
-			cout << "\nurl rejected: (level 1)" << url.get() << endl;
-		if (debug == 1)
-			cout << '-';
+        //
+        // Not a valid URL
+        //
+        if (debug > 1)
+            cout << "\nurl rejected: (level 1)" << url.get() << endl;
+        if (debug == 1)
+            cout << '-';
 
 		if (urls_seen) {
             fprintf(urls_seen, "%s|||||%d\n", (const char *) url.get(), valid_url_code);
         }
 
-	}
-	if (debug)
-		cout.flush();
+    }
+    if (debug)
+        cout.flush();
 }
 
 
 //*****************************************************************************
 // void Retriever::got_redirect(const char *new_url, DocumentRef *old_ref)
 //
-void Retriever::got_redirect(const char *new_url, IndexDBRef * old_ref, const char *referer)
+void Retriever::got_redirect(const char *new_url, const char *referer)
 {
     //
     // First we must piece together the new URL, which may be relative
     // 
-    URL parent(old_ref->DocURL());
+    URL parent(indexDoc->DocURL());
     URL url(new_url, parent);
 
     // Rewrite the URL (if need be) before we do anything to it.
@@ -1700,20 +1776,25 @@ void Retriever::got_redirect(const char *new_url, IndexDBRef * old_ref, const ch
         //
         // First add it to the document database
         //
-        IndexDBRef *new_ref = indexDatabase->Exists(url.get());
-        if (!new_ref)
+/****************
+ *
+ * this is taken out because we only need to add it to the queue right now
+ * 
+
+        IndexDBRef *temp_ref = indexDatabase->Exists(url.get());
+        if (!temp_ref)
         {
             //
             // Didn't see this one, yet.  Create a new reference
             // for it with a unique document ID
             //
-            new_ref = new IndexDBRef;
-            new_ref->DocHopCount(currenthopcount);
+            temp_ref = new IndexDBRef;
+            temp_ref->DocHopCount(currenthopcount);
         }
-        new_ref->DocURL(url.get());
+        temp_ref->DocURL(url.get());
 
 // Anthony - descriptions are broken right now
-/*
+
 		//
 		// Copy the descriptions of the old DocRef to this one
 		//
@@ -1724,23 +1805,28 @@ void Retriever::got_redirect(const char *new_url, IndexDBRef * old_ref, const ch
 			String *str;
 			while ((str = (String *) d->Get_Next()))
 			{
-				new_ref->AddDescription(str->get(), words);
+                new_ref->AddDescription(str->get(), words);
 			}
 		}
-*/
-        if (new_ref->DocHopCount() > old_ref->DocHopCount())
-            new_ref->DocHopCount(old_ref->DocHopCount());
+
+        if (temp_ref->DocHopCount() > temp_ref->DocHopCount())
+            temp_ref->DocHopCount(temp_ref->DocHopCount());
 
         // 
         // Copy the number of backlinks
         // 
-        new_ref->DocBacklinks(old_ref->DocBacklinks());
+        temp_ref->DocBacklinks(indexDoc->DocBacklinks());
 
 
         //
         // add the new reference to the index database
         // 
-        indexDatabase->Add(*new_ref);
+// 
+// taken out because I can't tell why we need to add this to the DB 
+// at this point - just adding it to the queue should be enough.
+//  
+//        indexDatabase->Add(*new_ref);
+****************************/
 
         //
         // Now put it in the list of URLs to still visit.
@@ -1764,15 +1850,15 @@ void Retriever::got_redirect(const char *new_url, IndexDBRef * old_ref, const ch
                 delete localRobotsFile;
             }
             if (!referer || strlen(referer) == 0)
-                server->push(url.get(), new_ref->DocHopCount(), base->get(), IsLocalURL(url.get()), 0);
+                server->push(url.get(), temp_ref->DocHopCount(), base->get(), IsLocalURL(url.get()), 0);
             else
-                server->push(url.get(), new_ref->DocHopCount(), referer, IsLocalURL(url.get()), 0);
+                server->push(url.get(), temp_ref->DocHopCount(), referer, IsLocalURL(url.get()), 0);
 
             String temp = url.get();
             visited.Add(temp, 0);
 		}
 
-		delete new_ref;
+		delete temp_ref;
 	}
 }
 
