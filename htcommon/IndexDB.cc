@@ -207,13 +207,13 @@ IndexDBRef *IndexDB::Exists(const String& u)
         String      url(u);
         String      data;
 
-        cout << "attempting retrieval of " << url << " from index DB" << endl;
         if (i_dbf->Get(HtURLCodec::instance()->encode(url), data) == NOTOK)
+        {
             return 0;
+        }
 
         IndexDBRef  *iref = new IndexDBRef;
 
-        cout << "attempting to deserialize " << data << endl;
         iref->Deserialize(data);
         iref->DocURL(url.get());
         return iref;
@@ -250,7 +250,6 @@ List *IndexDB::URLs()
     {
         return 0;
     }
-    
 }
 
 // End of IndexDB.cc
