@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.cc,v 1.42.2.3 2005/11/28 18:24:09 aarnone Exp $
+// $Id: htdig.cc,v 1.42.2.4 2005/12/07 19:24:00 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -70,7 +70,10 @@
 //
 int			debug = 0;
 int			report_statistics = 0;
-DocumentDB		docs;
+//DocumentDB		docs;  // removed - old BDB
+
+IndexDB         *indexDatabase; // the indexDB
+
 HtRegexList		limits;
 HtRegexList		limitsn;
 FILE			*urls_seen = NULL;
@@ -311,41 +314,32 @@ int main(int ac, char **av)
     limitsn.setEscaped(l, config->Boolean("case_sensitive"));
     l.Destroy();
 
+    
+    
     //
     // Open the document database
     //
-    const String		filename = config->Find("doc_db");
-    if (initial)
-        unlink(filename);
+// 
+// the original calls to open the docs database have been removed... yay
+//
 
-    const String		index_filename = config->Find("doc_index");
-    if (initial)
-        unlink(index_filename);
+//    const String		filename = config->Find("doc_db");
+//    if (initial)
+//        unlink(filename);
 
-    const String		head_filename = config->Find("doc_excerpt");
-    if (initial)
-        unlink(head_filename);
+//    const String index_filename = config->Find("doc_index");
+//    if (initial)
+//        unlink(index_filename);
 
-    if (docs.Open(filename, index_filename, head_filename) < 0)
-    {
-        reportError(form("Unable to open/create document database '%s'",
-            filename.get()));
-    }
+//    const String		head_filename = config->Find("doc_excerpt");
+//    if (initial)
+//        unlink(head_filename);
 
-#ifdef CLUCENE
-
-    //
-    // The CLucene database is opened here, but it doesn't have to be.
-    // We could probably do it in the retriever, since htdig should just
-    // be a small wrapper that really doesn't do much (just config things)
-    // 
-    const String db_dir_filename = config->Find("database_dir");
-    cout << "Opening CLucene index here: " << db_dir_filename.get() << endl;
-     
-    CLuceneOpenIndex(form("%s/CLuceneDB", (char *)db_dir_filename.get()), initial ? 1 : 0);
-    cout << "Successfully opened index" << endl;
-
-#endif
+//    if (docs.Open(filename, index_filename, head_filename) < 0)
+//    {
+//        reportError(form("Unable to open/create document database '%s'",
+//            filename.get()));
+//    }
 
     if (initial)
     {
@@ -364,13 +358,10 @@ int main(int ac, char **av)
     // In case this is just an update dig, we will add all existing
     // URLs?
     //
-    Retriever    retriever(Retriever_logUrl);
-    cout << "created retriever" << endl;
+    Retriever    retriever(Retriever_logUrl, initial);
     if (minimalFile.length() == 0)
     {
-        List	*list = docs.URLs();
-        retriever.Initial(*list);
-        delete list;
+        retriever.InitialFromDB();
 
         // Add start_url to the initial list of the retriever.
         // Don't check a URL twice!
@@ -428,7 +419,6 @@ int main(int ac, char **av)
     //
     // Go do it!
     //
-    cout << "starting retriever" << endl;
     retriever.Start();
 
     //
@@ -439,45 +429,37 @@ int main(int ac, char **av)
     // If the user so wants, create a text version of the document database.
     //
 
-    if (create_text_database)
-    {
-        const String doc_list = config->Find("doc_list");
-        if (initial)
-            unlink(doc_list);
-        docs.DumpDB(doc_list);
-    }
+//    if (create_text_database)
+//    {
+//        const String doc_list = config->Find("doc_list");
+//        if (initial)
+//            unlink(doc_list);
+//        docs.DumpDB(doc_list);
+//    }
 
     //
     // Cleanup
     //
     if (urls_seen)
-	fclose(urls_seen);
+        fclose(urls_seen);
     if (images_seen)
-	fclose(images_seen);
+        fclose(images_seen);
 
-#ifdef CLUCENE
-    
-    // Anthony    
 
-    cout << "Closing CLucene index..." << endl;
-
-    CLuceneCloseIndex();
-
-#endif
     
     //
     // If needed, report some statistics
     //
     if (report_statistics)
     {
-	retriever.ReportStatistics("htdig");
+        retriever.ReportStatistics("htdig");
     }
 
     // Shows End Time
     if (debug>0)
     {
-	EndTime.SettoNow();
-	cout << "ht://dig End Time: " << EndTime.GetAscTime() << endl;
+        EndTime.SettoNow();
+        cout << "ht://dig End Time: " << EndTime.GetAscTime() << endl;
     }
 
     if (_cookie_jar)
