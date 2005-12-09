@@ -34,32 +34,27 @@ public:
     IndexDB();
     ~IndexDB();
 
+    int         Open(const String& indexfilename);
+    int         Close();
+
 
     //
     // Standard database operations
     //
-    int         Open(const String& indexfilename);
-    int         Read(const String& indexfilename);
-    int         Close();
-
     int         Add(IndexDBRef & iref);
-    int         Delete(const String& url);
-    // These do not read in the excerpt
-    IndexDBRef  *operator[] (const String& u);
+    int         Delete(const String& u);
     IndexDBRef  *Exists(const String& u);
-    // You must call this to read the excerpt
 
-    //
-    // We will need to be able to iterate over the complete database.
-    //
 
-    // This returns a list of all the URLs, as String *
+    // 
+    // This returns a list of all the URLs (keys) in the DB
+    // 
     List        *URLs();
+
 
 private:
     Database    *i_dbf;
     int         isopen;
-    int         isread;
 };
 
 #endif

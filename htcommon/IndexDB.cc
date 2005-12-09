@@ -48,7 +48,7 @@ using namespace std;
 IndexDB::IndexDB()
 {
     isopen = 0;
-    isread = 0;
+    i_dbf = 0;
 }
 
 
@@ -68,54 +68,26 @@ IndexDB::~IndexDB()
 //
 int IndexDB::Open(const String& indexfilename)
 {
+    // 
     // If the database is already open, we'll close it
     // We might be opening this object with a new filename, so we'll be safe
+    // 
     Close();
-
-    i_dbf = 0;
 
     i_dbf = Database::getDatabaseInstance(DB_HASH);
 
-    if (i_dbf->OpenReadWrite(indexfilename, 0666) != OK) {
+    if (i_dbf->OpenReadWrite(indexfilename, 0666) == OK)
+    {
+        isopen = 1;
+        return OK;
+    }
+    else
+    {
         cerr << "IndexDB::Open: " << indexfilename << " " << strerror(errno) << "\n";
         return NOTOK;
     }
-    else
-        return OK;
 }
 
-
-//*****************************************************************************
-// int IndexDB::Read(char *filename, char *indexname, char *headname)
-//   We will attempt to open up an existing database
-//
-int IndexDB::Read(const String& indexfilename)
-{
-    // If the database is already open, we'll close it
-    // We might be opening this object with a new filename, so we'll be safe
-    Close();
-
-    i_dbf = 0;
-
-    if (!indexfilename.empty())
-    {
-        i_dbf = Database::getDatabaseInstance(DB_HASH);
-
-        if (i_dbf->OpenRead(indexfilename) != OK) {
-            return NOTOK;
-        }
-        else
-        {
-            isopen = 1;
-            isread = 1;
-            return OK;
-        }
-    }
-    else
-    {
-        return NOTOK;
-    }
-}
 
 
 //*****************************************************************************
@@ -125,13 +97,17 @@ int IndexDB::Read(const String& indexfilename)
 //
 int IndexDB::Close()
 {
-    if (!isopen) return OK;
+    //
+    // Check to see if it's closed already
+    // 
+    if (!isopen)
+        return OK;
 
-    isopen = 0;
-    isread = 0; 
     i_dbf->Close();
-    i_dbf = 0;
     delete i_dbf;
+
+    i_dbf = 0;
+    isopen = 0;
 
     return OK;
 }
@@ -147,8 +123,7 @@ int IndexDB::Add(IndexDBRef &iref)
         String value = 0;
         iref.Serialize(value);
         String key = iref.DocURL();
-
-        return i_dbf->Put(HtURLCodec::instance()->encode(key), value);
+        return i_dbf->Put(key, value);
     }
     else
     {
@@ -163,39 +138,17 @@ int IndexDB::Add(IndexDBRef &iref)
 //
 int IndexDB::Delete(const String& u)
 {
-    String  url(u);
-  
-    if (i_dbf == 0)
-      return NOTOK;
-    else
-      return i_dbf->Delete(HtURLCodec::instance()->encode(url));  
-}
-
-
-//*****************************************************************************
-// DocumentRef *IndexDB::operator [] (const String& u)
-//
-IndexDBRef *IndexDB::operator[] (const String& u)
-{
     if (i_dbf)
     {
-        String      url(u);
-        String      data;
-
-        if (i_dbf->Get(HtURLCodec::instance()->encode(url), data) == NOTOK)
-            return 0;
-
-        IndexDBRef  *iref = new IndexDBRef;
-
-        iref->Deserialize(data);
-        iref->DocURL(url.get());
-        return iref;
+        String  url(u);
+        return i_dbf->Delete(url);
     }
     else
     {
-        return 0;
+        return NOTOK;
     }
 }
+
 
 //*****************************************************************************
 // int IndexDB::Exists(const String& u)
@@ -207,10 +160,8 @@ IndexDBRef *IndexDB::Exists(const String& u)
         String      url(u);
         String      data;
 
-        if (i_dbf->Get(HtURLCodec::instance()->encode(url), data) == NOTOK)
-        {
+        if (i_dbf->Get(url, data) == NOTOK)
             return 0;
-        }
 
         IndexDBRef  *iref = new IndexDBRef;
 
@@ -229,19 +180,18 @@ IndexDBRef *IndexDB::Exists(const String& u)
 //*****************************************************************************
 // List *IndexDB::URLs()
 //   Return a list of all the URLs in the database
-//   Only available when there's an URL -> DocID index db handy.
 //
 List *IndexDB::URLs()
 {
-    List	*list = new List;
-    char	*coded_key;
-
     if (i_dbf)
     {
+        List    *list = new List;
+        char    *coded_key;
+
         i_dbf->Start_Get();
         while ((coded_key = i_dbf->Get_Next()))
         {
-            String *key = new String(HtURLCodec::instance()->decode(coded_key));
+            String *key = new String(coded_key);
             list->Add(key);
         }
         return list;
@@ -251,5 +201,6 @@ List *IndexDB::URLs()
         return 0;
     }
 }
+
 
 // End of IndexDB.cc
