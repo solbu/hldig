@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.96.2.6 2005/12/07 19:22:30 aarnone Exp $
+// $Id: Retriever.cc,v 1.96.2.7 2005/12/09 22:58:17 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -47,14 +47,15 @@
 
 static int noSignal;
 
-// no_store_phrases:
+// 
 // If true, only store first occurrence of each word in a document
+// 
 static bool no_store_phrases;
 
 //*****************************************************************************
 // Retriever::Retriever()
 //
-Retriever::Retriever(RetrieverLog flags, int initial)
+Retriever::Retriever(int initial, RetrieverLog flags)
 {
     HtConfiguration *config = HtConfiguration::config();
     FILE *urls_parsed;
@@ -113,14 +114,19 @@ Retriever::Retriever(RetrieverLog flags, int initial)
     // 
     const String index_filename = config->Find("doc_index");
     if (initial)
+    {
+        //
+        // delete the old one if this is an intial dig
+        // 
         unlink(index_filename);
+    }
 
+    cout << "Opening indexDB here: " << index_filename.get() << endl;
     indexDatabase->Open(index_filename);
 
     
     //
-    // open the CLucene database (not an object
-    // because we're using the API)
+    // open the CLucene database (not an object because we're using the API)
     // 
     const String db_dir_filename = config->Find("database_dir");
     cout << "Opening CLucene database here: " << db_dir_filename.get() << endl;
@@ -593,7 +599,6 @@ void Retriever::parse_url(URLRef & urlRef)
     // 
     // search for the URL in the indexDB
     // 
-    cout << "attempting retrieval of " << (url.get()).get() << " from index DB" << endl;
     indexDoc = indexDatabase->Exists(url.get());
     
     if (indexDoc)
@@ -612,7 +617,6 @@ void Retriever::parse_url(URLRef & urlRef)
     }
     else
     {
-cout << url.get() << " not found in indexDB" << endl;
         //
         // Never seen this document before.  We need to create a
         // new IndexDBRef for it
@@ -627,14 +631,12 @@ cout << url.get() << " not found in indexDB" << endl;
         indexDoc->DocBacklinks(1);
     }
 
-//    if (debug > 0)
-//    {
-//        //
-//        // Display progress
-//        //
-//        cout << index++ << currenthopcount << ':' << url.get() << ": ";
-//        cout.flush();
-//    }
+    if (debug > 0)
+    {
+        // Display progress
+        cout << index++ << currenthopcount << ':' << url.get() << ": ";
+        cout.flush();
+    }
 
     // 
     // Reset the document to clean out any old data
@@ -746,11 +748,8 @@ cout << url.get() << " not found in indexDB" << endl;
             //
             // this temporary string should be removed eventually
             // 
-cout << "deleting " << (indexDoc->DocURL()).get() << " from DBs" << endl;
             std::string temp = (indexDoc->DocURL()).get();
             CLuceneDeleteURLFromIndex(&temp);
-//            int temp2 = CLuceneDeleteURLFromIndex(&temp);
-//            cout << "killed " << temp2 << " documents" << endl;
 
             //
             // erase old document from indexDB (by URL)
@@ -774,7 +773,7 @@ cout << "deleting " << (indexDoc->DocURL()).get() << " from DBs" << endl;
             if (parsable)
             {
                 //
-                // parse the document
+                // we can pare this document. hooray for us!
                 // 
                 parsable->parse(*this, *base);
 
@@ -816,7 +815,6 @@ cout << "deleting " << (indexDoc->DocURL()).get() << " from DBs" << endl;
                     // if (old_document) code above
                     // 
 
-                    cout << "adding " << (url.get()).get() << " to DBs" << endl;
                     // 
                     // Insert the index document into indexDB
                     //
@@ -1412,6 +1410,11 @@ void Retriever::got_word(const char *word, int location, int heading)
     if (debug > 3)
         cout << "word: " << word << '@' << location << endl;
     
+    // 
+    // again, I have no idea what trackwords is for. is this some
+    // kind of lunatic config option that would acutally turn
+    // off indexing document words?
+    // 
     // if (trackWords && strlen(word) >= (unsigned int) minimumWordLength)
     if (strlen(word) >= (unsigned int) minimumWordLength)
     {
@@ -1432,6 +1435,7 @@ void Retriever::got_word(const char *word, int location, int heading)
         // clusters in my brain start to grow bigger
         // 
         // Check for compound words...
+        // 
         String parts = word;
         int added;
         int nparts = 1;
@@ -1570,6 +1574,8 @@ void Retriever::got_image(const char *src)
 
 
 //*****************************************************************************
+//
+// note: hops is set to 1 by default. the HTML parser will sometimes send a 0
 //
 void Retriever::got_href(URL & url, const char *description, int hops)
 {
@@ -1754,23 +1760,22 @@ void Retriever::got_redirect(const char *new_url, const char *referer)
 
     n_links++;
 
-	if (urls_seen)
-		fprintf(urls_seen, "%s\n", (const char *) url.get());
+    if (urls_seen)
+        fprintf(urls_seen, "%s\n", (const char *) url.get());
 
-	//
-	// Check if this URL falls within the valid range of URLs.
-	//
-	if (IsValidURL(url.get()) > 0)
-	{
-		//
-		// It is valid.  Normalize it (resolve cnames for the server)
-		// and check again...
-		//
-		if (debug > 2)
-		{
-			cout << "resolving '" << url.get() << "'\n";
-			cout.flush();
-		}
+    //
+    // Check if this URL falls within the valid range of URLs.
+    //
+    if (IsValidURL(url.get()) > 0)
+    {
+        //
+        // It is valid.  Normalize it (resolve cnames for the server)
+        // and check again...
+        //
+        if (debug > 2)
+        {
+            cout << "resolving '" << url.get() << "'" << endl;
+        }
 
         url.normalize();
         //
@@ -1850,15 +1855,15 @@ void Retriever::got_redirect(const char *new_url, const char *referer)
                 delete localRobotsFile;
             }
             if (!referer || strlen(referer) == 0)
-                server->push(url.get(), temp_ref->DocHopCount(), base->get(), IsLocalURL(url.get()), 0);
+                server->push(url.get(), currenthopcount, base->get(), IsLocalURL(url.get()), 0);
             else
-                server->push(url.get(), temp_ref->DocHopCount(), referer, IsLocalURL(url.get()), 0);
+                server->push(url.get(), currenthopcount, referer, IsLocalURL(url.get()), 0);
 
             String temp = url.get();
             visited.Add(temp, 0);
 		}
 
-		delete temp_ref;
+//		delete temp_ref;
 	}
 }
 

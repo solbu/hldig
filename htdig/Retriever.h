@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.h,v 1.28.2.5 2005/12/07 19:21:03 aarnone Exp $
+// $Id: Retriever.h,v 1.28.2.6 2005/12/09 22:58:17 aarnone Exp $
 //
 
 #ifndef _Retriever_h_
@@ -39,9 +39,7 @@
 
 
 #ifdef CLUCENE
-
-#include "CLucene_API.h"
-
+  #include "CLucene_API.h"
 #endif
 
 
@@ -64,7 +62,7 @@ class Retriever
     //
     // Construction/Destruction
     //
-    Retriever(RetrieverLog flags = Retriever_noLog, int initial = 0);
+    Retriever(int initial, RetrieverLog flags = Retriever_noLog);
     virtual     ~Retriever();
 
     //
@@ -82,7 +80,7 @@ class Retriever
     void        ReportStatistics(const String& name);
 	
     //
-    // These are the callbacks that we need to write code for
+    // Callback functions for handling document fields
     //
     void        got_word(const char *word, int location, int heading);
     void        got_href(URL &url, const char *description, int hops = 1);
@@ -122,7 +120,7 @@ class Retriever
     time_t          current_time;
     int             current_id;
     int             current_anchor_number;
-//    int             trackWords;   ???
+//    int             trackWords;   // ??? what is this for?
     int             n_links;
     int             currenthopcount;
     String          credentials;

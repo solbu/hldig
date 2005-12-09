@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.cc,v 1.42.2.4 2005/12/07 19:24:00 aarnone Exp $
+// $Id: htdig.cc,v 1.42.2.5 2005/12/09 22:58:03 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -313,34 +313,7 @@ int main(int ac, char **av)
     l.Create(config->Find("limit_normalized"), " \t");
     limitsn.setEscaped(l, config->Boolean("case_sensitive"));
     l.Destroy();
-
     
-    
-    //
-    // Open the document database
-    //
-// 
-// the original calls to open the docs database have been removed... yay
-//
-
-//    const String		filename = config->Find("doc_db");
-//    if (initial)
-//        unlink(filename);
-
-//    const String index_filename = config->Find("doc_index");
-//    if (initial)
-//        unlink(index_filename);
-
-//    const String		head_filename = config->Find("doc_excerpt");
-//    if (initial)
-//        unlink(head_filename);
-
-//    if (docs.Open(filename, index_filename, head_filename) < 0)
-//    {
-//        reportError(form("Unable to open/create document database '%s'",
-//            filename.get()));
-//    }
-
     if (initial)
     {
        // using  -i,  also ignore seen-but-not-processed URLs from last pass
@@ -348,30 +321,35 @@ int main(int ac, char **av)
     }
 
     //
-    // this call was in the WordContext::Initialize
-    // code, and we still need it
+    // this call was in the WordContext::Initialize code, and we still need it
     //
     WordType::Initialize(*config);
 
-    // Create the Retriever object which we will use to parse all the
-    // HTML files.
-    // In case this is just an update dig, we will add all existing
-    // URLs?
+
     //
-    Retriever    retriever(Retriever_logUrl, initial);
+    // Create the Retriever object
+    //
+    Retriever    retriever(initial, Retriever_logUrl);
+
+
+    //
+    // We need to give the retriever URLs to start from
+    //
     if (minimalFile.length() == 0)
     {
         retriever.InitialFromDB();
 
+        // 
         // Add start_url to the initial list of the retriever.
         // Don't check a URL twice!
-        // Beware order is important, if this bugs you could change 
-        // previous line retriever.Initial(*list, 0) to Initial(*list,1)
+        // 
         retriever.Initial(config->Find("start_url"), 1);
-      }
+    }
 
+    //
     // Handle list of URLs given in a file (stdin, if "-") specified as
     // argument to -m or as an optional trailing argument.
+    // 
     if (optind < ac)
     {
         if (debug)
@@ -429,6 +407,10 @@ int main(int ac, char **av)
     // If the user so wants, create a text version of the document database.
     //
 
+//
+// this will need to be replaced with a call to the retriever, since this file
+// no longer has access to the DB
+//
 //    if (create_text_database)
 //    {
 //        const String doc_list = config->Find("doc_list");
