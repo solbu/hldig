@@ -42,16 +42,5 @@ int CLuceneAddDocToIndex(std::map<std::string, std::pair<std::string, std::strin
 int CLuceneDeleteURLFromIndex(std::string * url);
 
 
-//Searching
-
-int CLuceneOpenSearch(char * target);
-
-int CLuceneDoQuery(char * query_text);
-
-int CLuceneSearchGetNth(int, clucene_query_hit_struct *);
-
-int CLuceneCloseSearch(void);
-
-
 #endif
 

@@ -15,10 +15,7 @@
 #endif
 #endif
 
-#include "SearchFiles.cpp"
 #include "IndexFiles.cpp"
-#include "DeleteFiles.cpp"
-#include "Statistics.cpp"
 #include <iostream>
 
 //Indexing
@@ -49,31 +46,4 @@ int CLuceneDeleteURLFromIndex(std::string * url)
 
 
 
-//Searching
-
-int CLuceneOpenSearch(char * index, char * query)
-{
-    return(lucene::demo::OpenSearch(query));
-}
-
-int CLuceneDoQuery(char * query)
-{
-    return(lucene::demo::DoQuery(query));
-}
-
-int CLuceneSearchGetNth(int n, clucene_query_hit_struct * hit_struct)
-{
-    Document nth_doc;
-
-    lucene::demo::SearchGetNth(n, nth_doc); 
-
-    //populate hit struct
-
-    return(1);
-}
-
-int CLuceneCloseSearch(void)
-{
-    return(lucene::demo::CloseSearch());
-}
 
