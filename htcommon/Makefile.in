@@ -207,7 +207,8 @@ EXTRA_DIST = conf_lexer.cxx conf_parser.cxx
 pkglib_LTLIBRARIES = libcommon.la
 
 libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc \
-	HtWordReference.cc HtWordList.cc defaults.cc \
+   	defaults.cc \
+	IndexDB.cc IndexDBRef.cc \
 	HtURLCodec.cc URL.cc URLTrans.cc \
 	HtZlibCodec.cc cgi.cc HtSGMLCodec.cc \
 	HtConfiguration.cc HtURLRewriter.cc \
@@ -218,8 +219,8 @@ libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(
 
 noinst_HEADERS = DocumentDB.h \
 	DocumentRef.h \
-	HtWordReference.h \
-	HtWordList.h \
+	IndexDB.h \
+	IndexDBRef.h \
 	HtURLCodec.h \
 	HtSGMLCodec.h \
 	URL.h \
@@ -246,7 +247,8 @@ LTLIBRARIES = $(pkglib_LTLIBRARIES)
 
 libcommon_la_LIBADD =
 am_libcommon_la_OBJECTS = DocumentDB.lo DocumentRef.lo \
-	HtWordReference.lo HtWordList.lo defaults.lo HtURLCodec.lo \
+    defaults.lo HtURLCodec.lo \
+	IndexDB.lo IndexDBRef.lo \
 	URL.lo URLTrans.lo HtZlibCodec.lo cgi.lo HtSGMLCodec.lo \
 	HtConfiguration.lo HtURLRewriter.lo conf_lexer.lo \
 	conf_parser.lo
