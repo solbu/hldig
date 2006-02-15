@@ -15,7 +15,8 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	HtRegexReplace.cc HtRegexReplaceList.cc \
 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc \
 	myqsort.c \
-	md5.cc mhash_md5.c 
+	md5.cc mhash_md5.c \
+	WordType.cc	
 
 libht_la_LIBADD=@LTLIBOBJS@
 # this includes regex.c
@@ -63,6 +64,7 @@ pkginclude_HEADERS = \
 	libdefs.h \
 	myqsort.h \
 	mhash_md5.h \
-	md5.h
+	md5.h \
+	WordType.h
 
 

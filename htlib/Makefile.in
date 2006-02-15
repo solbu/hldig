@@ -179,19 +179,18 @@ AUTOMAKE_OPTIONS = foreign no-dependencies
 INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
-		-I$(top_srcdir)/htword \
 		-I$(top_srcdir)/db -I$(top_builddir)/db \
 		$(LOCAL_DEFINES) $(PROFILING)
+#		-I$(top_srcdir)/htword 
 
 
 HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
-		$(top_builddir)/htword/libhtword.la \
 		$(top_builddir)/htlib/libht.la \
 		$(top_builddir)/htcommon/libcommon.la \
-		$(top_builddir)/htword/libhtword.la \
 		$(top_builddir)/db/libhtdb.la \
 		$(top_builddir)/htlib/libht.la
+#		$(top_builddir)/htword/libhtword.la 
 
 
 pkglib_LTLIBRARIES = libht.la
@@ -209,7 +208,8 @@ libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	HtRegexReplace.cc HtRegexReplaceList.cc \
 	HtVectorGeneric.cc HtMaxMin.cc HtWordType.cc \
 	myqsort.c \
-	md5.cc mhash_md5.c 
+	md5.cc mhash_md5.c \
+	WordType.cc
 
 
 libht_la_LIBADD = @LTLIBOBJS@
@@ -258,7 +258,8 @@ pkginclude_HEADERS = \
 	libdefs.h \
 	myqsort.h \
 	mhash_md5.h \
-	md5.h
+	md5.h \
+	WordType.h
 
 subdir = htlib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -276,7 +277,8 @@ am_libht_la_OBJECTS = Configuration.lo Database.lo Dictionary.lo \
 	raise.lo strerror.lo HtCodec.lo HtWordCodec.lo HtVector.lo \
 	HtHeap.lo HtPack.lo HtDateTime.lo HtRegex.lo HtRegexList.lo \
 	HtRegexReplace.lo HtRegexReplaceList.lo HtVectorGeneric.lo \
-	HtMaxMin.lo HtWordType.lo myqsort.lo md5.lo mhash_md5.lo
+	HtMaxMin.lo HtWordType.lo myqsort.lo md5.lo mhash_md5.lo \
+	WordType.lo
 libht_la_OBJECTS = $(am_libht_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/include
