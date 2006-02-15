@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ExternalParser.h,v 1.8 2004/05/28 13:15:14 lha Exp $
+// $Id: ExternalParser.h,v 1.8.2.1 2006/02/15 00:20:42 aarnone Exp $
 //
 
 #ifndef _ExternalParser_h_
@@ -22,6 +22,10 @@
 #include "htString.h"
 
 #include <stdio.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 class URL;
 
