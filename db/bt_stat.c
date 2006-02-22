@@ -258,8 +258,6 @@ CDB___bam_traverse(dbc, mode, root_pgno, callback, cookie)
 	case P_LBTREE:
 	case P_LRECNO:
 	case P_OVERFLOW:
-	case P_CMPR_FREE:
-	case P_CMPR_INTERNAL:
 		break;
 	default:
 pgerr:		return (CDB___db_pgfmt(dbc->dbp, h->pgno));
