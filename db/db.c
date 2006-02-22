@@ -117,12 +117,7 @@ CDB___db_open(dbp, name, subdb, type, flags, mode)
 	if (LF_ISSET(DB_EXCL) && !LF_ISSET(DB_CREATE))
 		return (CDB___db_ferr(dbenv, "DB->open", 1));
 	if (LF_ISSET(DB_RDONLY) && LF_ISSET(DB_CREATE))
-		return (CDB___db_ferr(dbenv, "DB->open", 1));
- 	/*
- 	 * Transparent I/O compression does not work on mmap'd files.
- 	 */
- 	if(LF_ISSET(DB_COMPRESS))
- 	  LF_SET(DB_NOMMAP);
+		return (__db_ferr(dbenv, "DB->open", 1));
 
 	switch (type) {
 	case DB_UNKNOWN:
@@ -199,8 +194,6 @@ CDB___db_open(dbp, name, subdb, type, flags, mode)
 	/* Convert any DB->open flags. */
 	if (LF_ISSET(DB_RDONLY))
 		F_SET(dbp, DB_AM_RDONLY);
-	if (LF_ISSET(DB_COMPRESS))
-		F_SET(dbp, DB_AM_CMPR);
 
 	/* Fill in the type. */
 	dbp->type = type;
@@ -575,23 +568,11 @@ CDB___db_dbenv_setup(dbp, name, flags)
 	case DB_UNKNOWN:
 		return (EINVAL);	/* Shouldn't be possible. */
 	}
-	/*
-	 * Better compression is achieved if the page does not contain random data.
-	 */
-	if(F_ISSET(dbp, DB_AM_CMPR))
-	  finfo.clear_len = 0;
-
 	finfo.pgcookie = &pgcookie;
 	finfo.fileid = dbp->fileid;
 	finfo.lsn_offset = 0;
 
 	pginfo.db_pagesize = dbp->pgsize;
-	/*
-	 * Forbiding byte swap when compression is enabled
-	 * makes things simpler for the compression.
-	 */
-	if(F_ISSET(dbp, DB_AM_SWAP) && LF_ISSET(DB_COMPRESS))
-	  return (EINVAL);
 	pginfo.needswap = F_ISSET(dbp, DB_AM_SWAP);
 	pgcookie.data = &pginfo;
 	pgcookie.size = sizeof(DB_PGINFO);
@@ -1041,17 +1022,6 @@ CDB___db_set_pgsize(dbp, fhp, name)
 		iopsize = 512;
 	if (iopsize > 16 * 1024)
 		iopsize = 16 * 1024;
-
-	/*
-	 * If compression is on, the minimum page size must be multiplied
-	 * by the compression factor.
-	 */
-#ifdef HAVE_LIBZ
-	if(F_ISSET(dbp, DB_AM_CMPR)) {
-	  if(iopsize < DB_CMPR_MULTIPLY(dbenv, DB_MIN_PGSIZE))
-	    iopsize = DB_CMPR_MULTIPLY(dbenv, DB_MIN_PGSIZE);
-	}
-#endif /* HAVE_LIBZ */
 
 	/*
 	 * Sheer paranoia, but we don't want anything that's not a power-of-2

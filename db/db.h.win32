@@ -89,11 +89,11 @@ typedef unsigned long ssize_t;
 #ifndef _MSC_VER /* WIN32 */
 #ifndef	__BIT_TYPES_DEFINED__
 #define	__BIT_TYPES_DEFINED__
-@u_int8_decl@
-@int16_decl@
-@u_int16_decl@
-@int32_decl@
-@u_int32_decl@
+typedef unsigned char u_int8_t;
+typedef short int16_t;
+typedef unsigned short u_int16_t;
+typedef int int32_t;
+typedef unsigned int u_int32_t;
 #endif
 
 @u_char_decl@
@@ -141,7 +141,6 @@ struct __db_txn_active;	typedef struct __db_txn_active DB_TXN_ACTIVE;
 struct __db_txn_stat;	typedef struct __db_txn_stat DB_TXN_STAT;
 struct __dbc;		typedef struct __dbc DBC;
 struct __fh_t;		typedef struct __fh_t DB_FH;
-struct __db_cmpr_info;	typedef struct __db_cmpr_info DB_CMPR_INFO;
 
 /* Key/data structure -- a Data-Base Thang. */
 struct __db_dbt {
@@ -158,7 +157,6 @@ struct __db_dbt {
 #define	DB_DBT_USERMEM	0x010		/* Return in user's memory. */
 	u_int32_t flags;
 };
-
 
 /*
  * Flags understood by both CDB_db_create and CDB_db_env_create.
@@ -213,7 +211,6 @@ struct __db_dbt {
 #define	DB_RDONLY	      0x000010	/* Read-only (O_RDONLY). */
 #define	DB_TRUNCATE	      0x000020	/* Discard existing DB (O_TRUNC). */
 #define	DB_FCNTL_LOCKING      0x000040	/* Undocumented: fcntl(2) locking. */
-#define DB_COMPRESS	      0x000080  /* Transparent I/O compression */
 
 /*
  * Flags understood by only DB->set_feedback's callback.
@@ -280,7 +277,6 @@ struct __db_env {
 	size_t		 mp_size;	/* DEPRECATED: Cachesize: bytes. */
 	int		 mp_ncache;	/* Number of cache regions. */
 	size_t		 mp_mmapsize;	/* Maximum file size for mmap. */
-	DB_CMPR_INFO   * mp_cmpr_info;  /* Compression info. */
 
 	/* Transactions. */
 	u_int32_t	 tx_max;	/* Maximum number of transactions. */
@@ -666,7 +662,6 @@ struct __db {
 #define	DB_RE_PAD	0x02000		/* Fixed-length record pad. */
 #define	DB_RE_RENUMBER	0x04000		/* DB_RENUMBER. */
 #define	DB_RE_SNAPSHOT	0x08000		/* DB_SNAPSHOT. */
-#define DB_AM_CMPR	0x10000         /* Transparent I/O compression */
 	u_int32_t flags;
 };
 
@@ -1040,16 +1035,6 @@ struct __db_mpool_fstat {
 	u_int32_t st_page_in;		/* Pages read in. */
 	u_int32_t st_page_out;		/* Pages written out. */
 };
-
-
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-#if defined(__cplusplus)
-}
-#endif
-
 
 #if defined(__cplusplus)
 extern "C" {

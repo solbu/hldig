@@ -42,16 +42,6 @@
 #define	P_BTREEMETA	9	/* Btree metadata page. */
 #define	P_QAMMETA	10	/* Queue metadata page. */
 #define	P_QAMDATA	11	/* Queue data page. */
-/*
- * These page types are artificially built by io compression
- * when trying to access a page number that is not the
- * beginning of a page compression chain.
- * Utilities that walk the file by incrementing the page
- * number can make use of these page types or safely consider
- * them as equivalent to P_INVALID.
- */
-#define	P_CMPR_INTERNAL	12	/*        Compression internal page. */
-#define	P_CMPR_FREE	13	/*        Compression free page. */
 
 /*
  * When we create pages in mpool, we ask mpool to clear some number of bytes
