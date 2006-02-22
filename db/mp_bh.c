@@ -202,7 +202,7 @@ CDB___memp_pgread(dbmfp, bhp, can_create)
 		db_io.pgno = bhp->pgno;
 		db_io.buf = bhp->buf;
 
-		ret = __os_io(&db_io, DB_IO_READ, &nr);
+		ret = CDB___os_io(&db_io, DB_IO_READ, &nr);
 	} else
 		ret = 0;
 
@@ -387,8 +387,8 @@ CDB___memp_pgwrite(dbmp, dbmfp, bhp, restartp, wrotep)
 	db_io.pagesize = db_io.bytes = mfp->stat.st_pagesize;
 	db_io.pgno = bhp->pgno;
 	db_io.buf = bhp->buf;
-	if ((ret = __os_io(&db_io, DB_IO_WRITE, &nw)) != 0) {
-		__db_panic(dbenv, ret);
+	if ((ret = CDB___os_io(&db_io, DB_IO_WRITE, &nw)) != 0) {
+		CDB___db_panic(dbenv, ret);
 		fail = "write";
 		goto syserr;
 	}
@@ -586,8 +586,8 @@ CDB___memp_bhfree(dbmp, bhp, free_mem)
 	 * If we're not reusing it immediately, free the buffer header
 	 * and data for real.
 	 */
-	       CDB___memp_cmpr_free_chain(dbmp, bhp);
 	if (free_mem) {
+           //--mc->stat.st_page_clean;  //This is in db-3.0.55
 	       CDB___db_shalloc_free(dbmp->c_reginfo[n_cache].addr, bhp);
 	}
 }

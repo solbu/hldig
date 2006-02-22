@@ -117,7 +117,7 @@ CDB___db_open(dbp, name, subdb, type, flags, mode)
 	if (LF_ISSET(DB_EXCL) && !LF_ISSET(DB_CREATE))
 		return (CDB___db_ferr(dbenv, "DB->open", 1));
 	if (LF_ISSET(DB_RDONLY) && LF_ISSET(DB_CREATE))
-		return (__db_ferr(dbenv, "DB->open", 1));
+		return (CDB___db_ferr(dbenv, "DB->open", 1));
 
 	switch (type) {
 	case DB_UNKNOWN:
