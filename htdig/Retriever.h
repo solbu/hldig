@@ -12,19 +12,21 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.h,v 1.28.2.6 2005/12/09 22:58:17 aarnone Exp $
+// $Id: Retriever.h,v 1.28.2.7 2006/03/01 23:43:09 aarnone Exp $
 //
 
 #ifndef _Retriever_h_
 #define _Retriever_h_
 
 #include "DocumentRef.h"
+#include "TidyParser.h"
+#include "IndexDB.h"
+#include "IndexDBRef.h"
+
 #include "Dictionary.h"
 #include "Queue.h"
-#include "IndexDB.h"
 #include "List.h"
 #include "StringList.h"
-#include "DocumentDB.h"
 
 #define  HTDIG_ERROR_TESTURL_EXCLUDE           -109
 #define  HTDIG_ERROR_TESTURL_BADQUERY          -110
@@ -36,11 +38,6 @@
 #define  HTDIG_ERROR_TESTURL_SRCH_EXCLUDE      -116
 #define  HTDIG_ERROR_TESTURL_REWRITE_EMPTY     -117
 #define  HTDIG_ERROR_TESTURL_ROBOT_FORBID      -118
-
-
-#ifdef CLUCENE
-  #include "CLucene_API.h"
-#endif
 
 
 class URL;
@@ -63,7 +60,8 @@ class Retriever
     // Construction/Destruction
     //
     Retriever(int initial, RetrieverLog flags = Retriever_noLog);
-    virtual     ~Retriever();
+    ~Retriever();
+    // virutal ~Retriever();
 
     //
     // Getting it all started
@@ -128,9 +126,17 @@ class Retriever
 
     // 
     // the CLucene document
-    // 
+    //
+    // moved to TidyParser, still in until got_*
+    // functions are gone
     DocumentRef     *CLuceneDoc;
 
+    //
+    // TidyParser object
+    //
+    TidyParser      *tparser;
+
+    
     // 
     // reference object to the index database
     // 
@@ -173,6 +179,11 @@ class Retriever
 
     String          notFound;
 
+    //
+    // add a URL to the queue
+    //
+    void addURL(std::string url);
+    
     //
     // Helper routines
     //

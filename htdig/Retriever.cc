@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.96.2.7 2005/12/09 22:58:17 aarnone Exp $
+// $Id: Retriever.cc,v 1.96.2.8 2006/03/01 23:43:07 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -97,6 +97,11 @@ Retriever::Retriever(int initial, RetrieverLog flags)
     // Create the documentRef, which will be reused
     // 
     CLuceneDoc = new DocumentRef;
+
+    //
+    // Create the TidyParser
+    //
+    tparser = new TidyParser;
     
     //
     // create the document, which will also be reused
@@ -152,6 +157,9 @@ Retriever::~Retriever()
     // Delete the two documents we've been reusing
     delete doc;
     delete CLuceneDoc;
+
+    // Delete the parser
+    delete tparser;
 
     // Close the indexDB and delete the reference
     indexDatabase->Close();
@@ -634,8 +642,8 @@ void Retriever::parse_url(URLRef & urlRef)
     if (debug > 0)
     {
         // Display progress
-        cout << index++ << currenthopcount << ':' << url.get() << ": ";
-        cout.flush();
+//        cout << index++ << currenthopcount << ':' << url.get() << ": ";
+//        cout.flush();
     }
 
     // 
@@ -764,7 +772,49 @@ void Retriever::parse_url(URLRef & urlRef)
         // start a new scope to make the compiler happy
         //
         {
+            //
+            // this will be the list of URLs from the document
+            //
+            std::set<std::string> URLlist;
 
+            //
+            // initialize the parser with the document's encoding, URL and time
+            // the time must be sprintf'ed into a char* first, though... 
+            //
+            char temp[32];
+            sprintf(temp, "%d", (int)indexDoc->DocTime());
+
+            tparser->initialize(doc->ContentType(), (char*)(url.get()).get(), temp);
+
+            //
+            // parse the actual document
+            //
+            URLlist = tparser->parseDoc(doc->Contents());
+
+            //
+            // insert the document into CLucene
+            //
+            tparser->commitDoc();
+            
+            // 
+            // Insert the index document into indexDB
+            //
+            indexDatabase->Add(*indexDoc);
+
+            //
+            // add all the URLs seen to the queue
+            //
+            std::set<std::string>::iterator i;
+            for (i = URLlist.begin(); i != URLlist.end(); i++)
+            {
+                addURL(*i);
+            }
+        }
+/*
+ *
+ * old parser calls
+ *
+ * 
             //
             // try to get a parsable object for this document
             //
@@ -820,7 +870,7 @@ void Retriever::parse_url(URLRef & urlRef)
                     //
                     indexDatabase->Add(*indexDoc);
 
-                    // 
+                    //
                     // Insert the real document into CLucene
                     // 
                     CLuceneAddDocToIndex(CLuceneDoc->contents());
@@ -838,7 +888,11 @@ void Retriever::parse_url(URLRef & urlRef)
                     cout << " ( " << indexDoc->DocURL() << " ignored)";
             }
         }
-
+    *
+    *
+    *
+    */
+    
         if (debug)
             cout << " size = " << doc->Length() << endl;
 
@@ -1573,6 +1627,121 @@ void Retriever::got_image(const char *src)
 }
 
 
+void Retriever::addURL(std::string newURL)
+{
+    //
+    // need to go back to the old htdig way
+    //
+    String URLstring = newURL.c_str();
+    URL url;
+    url.parse(URLstring);
+
+    Server *server = 0;
+    int valid_url_code = 0;
+
+    // Rewrite the URL (if need be) before we do anything to it.
+    url.rewrite();
+
+    if (debug > 2)
+        cout << "href: " << url.get() << " (" << "no description" << ')' << endl;
+
+    n_links++;
+
+    if (urls_seen)
+        fprintf(urls_seen, "%s\n", (const char *) url.get());
+
+    //
+    // Check if this URL falls within the valid range of URLs.
+    //
+    valid_url_code = IsValidURL(url.get());
+    if (valid_url_code > 0)
+    {
+        //
+        // It is valid.  Normalize it (resolve cnames for
+        // the server) and check again...
+        //
+        if (debug > 2)
+        {
+            cout << "resolving '" << url.get() << "'" << endl;
+        }
+
+        url.normalize();
+
+        // 
+        // If it is a backlink from the current document,
+        // just update that field.  Writing to the database
+        // is meaningless, as it will be overwritten.
+        // 
+        // Adding it as a new document may even be harmful, as
+        // that will be a duplicate.  This can happen if the
+        // current document is never referenced before, as in a
+        // start_url.
+        // 
+
+
+        if (strcmp(url.get(), (indexDoc->DocURL()).get()) == 0)
+        {
+            //
+            // we can still update the backlink count and descriptions
+            // 
+
+// Anthony - AddDescription is gone from DocumentRef for right now
+//            indexDoc->DocBacklinks(indexDoc->DocBacklinks() + 1);
+//            indexDoc->AddDescription(description, words);
+		}
+		else
+		{
+            //
+            // put it in the list of URLs to still visit.
+            //
+			if (Need2Get(url.get())) {
+				if (debug > 1)
+					cout << "\n   pushing " << url.get() << endl;
+				server = (Server *) servers[url.signature()];
+				if (!server) {
+					//
+					// Hadn't seen this server, yet.  Register it
+					//
+					String robotsURL = url.signature();
+					robotsURL << "robots.txt";
+					StringList *localRobotsFile = GetLocal(robotsURL.get());
+
+					server = new Server(url, localRobotsFile);
+					servers.Add(url.signature(), server);
+					delete localRobotsFile;
+				}
+				//
+				// Let's just be sure we're not pushing an empty URL
+				//
+				if (strlen(url.get()))
+                    server->push(url.get(), currenthopcount+1, base->get(), IsLocalURL(url.get()));
+
+				String temp = url.get();
+				visited.Add(temp, 0);
+				if (debug)
+					cout << '+';
+			}
+			else if (debug)
+				cout << '*';
+//			delete new_ref;
+        }
+    } else {
+        //
+        // Not a valid URL
+        //
+        if (debug > 1)
+            cout << "\nurl rejected: (level 1)" << url.get() << endl;
+        if (debug == 1)
+            cout << '-';
+
+		if (urls_seen) {
+            fprintf(urls_seen, "%s|||||%d\n", (const char *) url.get(), valid_url_code);
+        }
+
+    }
+    if (debug)
+        cout.flush();
+}
 //*****************************************************************************
 //
 // note: hops is set to 1 by default. the HTML parser will sometimes send a 0
