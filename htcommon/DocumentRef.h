@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.h,v 1.29.2.5 2006/02/14 22:57:16 aarnone Exp $
+// $Id: DocumentRef.h,v 1.29.2.6 2006/03/01 23:45:18 aarnone Exp $
 //
 
 #ifndef _DocumentRef_h_
@@ -19,22 +19,11 @@
 
 #include <map>
 #include <set>
-
 #include <time.h>
-#ifdef UNICODE
-  #define CHAR_T wchar_t
-#else
-  #define CHAR_T char
-#endif /* UNICODE */
 
-typedef std::map<
-            std::basic_string<CHAR_T>,
-            std::pair<
-                std::basic_string<CHAR_T>,
-                std::basic_string<CHAR_T> > >
-        CL_Doc;
+#include "CLuceneAPI.h"
 
-typedef std::set<std::basic_string<CHAR_T> > uniqueWordsSet;
+typedef std::set<std::string> uniqueWordsSet;
 
 class DocumentRef
 {
@@ -66,8 +55,6 @@ protected:
     // be flushed to the contents field
     // 
     uniqueWordsSet uniqueWords;
-
-
 
 };
 

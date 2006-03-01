@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.cc,v 1.53.2.5 2006/02/14 22:57:16 aarnone Exp $
+// $Id: DocumentRef.cc,v 1.53.2.6 2006/03/01 23:45:18 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -94,12 +94,12 @@ void DocumentRef::initialize()
 // 
 void DocumentRef::dumpUniqueWords()
 {
-    uniqueWordsSet::iterator i;
-    for (i = uniqueWords.begin(); i != uniqueWords.end(); i++) {
-        indexDoc["contents"].first.insert(indexDoc["contents"].first.size(), *i);
-        indexDoc["contents"].first.push_back(' ');
-    }
-    uniqueWords.clear();
+//    uniqueWordsSet::iterator i;
+//    for (i = uniqueWords.begin(); i != uniqueWords.end(); i++) {
+//        indexDoc["contents"].first.insert(indexDoc["contents"].first.size(), *i);
+//        indexDoc["contents"].first.push_back(' ');
+//    }
+//    uniqueWords.clear();
 }
 
 
@@ -112,36 +112,106 @@ void DocumentRef::dumpUniqueWords()
 // 
 void DocumentRef::addUniqueWord(char* word)
 {
-    uniqueWords.insert(word);
+//    uniqueWords.insert(word);
 }
 
 
 //*****************************************************************
 // void DocumentRef::insertField(const char* fieldName, const char* fieldValue)
 //
-// Take the specified field text/value and insert into the indexDoc
-// at the specified field
+// Take the specified field text/value (in UTF8) and insert 
+// into the indexDoc at the specified field, clearing the
+// field first.
 //
-// NOTE: will need modification when unicode goes in, the field value
-// will most likely be a string object
-// 
 void DocumentRef::insertField(const char* fieldName, const char* fieldValue)
 {
-    indexDoc[fieldName].first = fieldValue;
+
+    indexDoc[fieldName].first.clear();
+
+    wchar_t ucs2_char;
+    const char * counter = fieldValue;
+
+    while (counter[0])
+    {
+        if ((counter[0] & 0x80) == 0x00)
+        {
+            ucs2_char = *counter++;
+            indexDoc[fieldName].first.push_back(ucs2_char);
+        }
+        else if ((counter[1] & 0xC0) == 0x80) 
+        {
+            if ((counter[0] & 0xE0) == 0xC0)
+            {
+                ucs2_char = ((counter[0] & 0x1F) << 6) | (counter[1] & 0x3F);
+                indexDoc[fieldName].first.push_back(ucs2_char);
+                counter += 2;
+            }
+            else if (((counter[2] & 0xC0) == 0x80) && ((counter[0] & 0xF0) == 0xE0))
+            {
+                ucs2_char = ((counter[0] & 0x0F) << 12) |
+                    ((counter[1] & 0x3F) << 6) |
+                    (counter[2] & 0x3F);
+                indexDoc[fieldName].first.push_back(ucs2_char);
+                counter += 3;
+            }
+            else
+            {
+                counter++; // invalid character
+            }
+        }
+        else
+        {
+            counter++; // invalid character
+        }
+    }
 }
 
 
 //*****************************************************************
 // void DocumentRef::appendField(const char* fieldName, const char* fieldValue)
 //
-// Append the specified field text/value to the specified field
-//
-// NOTE: will need modificatioin when Unicode goes in (the separator
-// will need to be a wide character)
+// Append the specified field text/value to the specified field.
+// Similar to insertField, except the field is not cleared,
+// and a space is added.
 //
 void DocumentRef::appendField(const char* fieldName, const char* fieldValue)
 {
-    indexDoc[fieldName].first.insert(indexDoc[fieldName].first.size(), fieldValue);
+    wchar_t ucs2_char;
+    const char * counter = fieldValue;
+
+    while (counter[0])
+    {
+        if ((counter[0] & 0x80) == 0x00)
+        {
+            ucs2_char = *counter++;
+            indexDoc[fieldName].first.push_back(ucs2_char);
+        }
+        else if ((counter[1] & 0xC0) == 0x80) 
+        {
+            if ((counter[0] & 0xE0) == 0xC0)
+            {
+                ucs2_char = ((counter[0] & 0x1F) << 6) | (counter[1] & 0x3F);
+                indexDoc[fieldName].first.push_back(ucs2_char);
+                counter += 2;
+            }
+            else if (((counter[2] & 0xC0) == 0x80) && ((counter[0] & 0xF0) == 0xE0))
+            {
+                ucs2_char = ((counter[0] & 0x0F) << 12) |
+                    ((counter[1] & 0x3F) << 6) |
+                    (counter[2] & 0x3F);
+                indexDoc[fieldName].first.push_back(ucs2_char);
+                counter += 3;
+            }
+            else
+            {
+                counter++; // invalid character
+            }
+        }
+        else
+        {
+            counter++; // invalid character
+        }
+    }
     indexDoc[fieldName].first.push_back(' ');
 }
 
