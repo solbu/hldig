@@ -38,16 +38,21 @@ class TidyParser
     //
     // get the TidyDoc all set up and ready to parse
     // a buffer of text. also clear the URLlist and
-    // reset all the position flags.
+    // reset all the position flags. the encoding,
+    // URL and time can be sent in char*'s
     //
-    void initialize();
+    void initialize(char*, char*, char*);
     
     //
     // parse the buffer, return a set of
     // URLs seen during parsing
     // 
-    std::set<std::string> parseDoc();
+    std::set<std::string> parseDoc(char*);
     
+    //
+    // commit the CLucene document
+    //
+    void commitDoc();
  
     private:
 
@@ -80,9 +85,14 @@ class TidyParser
     bool inH2;
 
     //
-    // recursive call to traverse document parse tree.
+    // recursive call to traverse document parse tree
     //
     void nodeTraverse( TidyNode tnod );
+    
+    //
+    // detect a node type and change states
+    //
+    void stateChanger(TidyNode tnod, bool newState);
 
     //
     // kill the TidyDoc

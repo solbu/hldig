@@ -14,6 +14,8 @@
 #include "TidyParser.h"
 
 
+
+
 TidyParser::TidyParser()
 {
     tdoc = NULL;
@@ -25,13 +27,15 @@ TidyParser::~TidyParser()
     release();
 }
 
+
 void TidyParser::release()
 {
     tidyRelease(tdoc);
     tdoc = NULL;
 }
 
-void TidyParser::initialize()
+
+void TidyParser::initialize(char* encoding, char* docURL, char* docTime)
 {
     //
     // reset all flags
@@ -55,10 +59,59 @@ void TidyParser::initialize()
     tdoc = tidyCreate();
 
     //
+    // set up the encoding for this doc
+    //
+    tidySetCharEncoding( tdoc, encoding );
+
+    //
+    // keep the document nice and silent
+    //
+    tidyOptSetBool( tdoc, TidyShowWarnings, no );
+    tidyOptSetInt( tdoc, TidyShowErrors, 0 );
+    
+    //
     // kill the URLlist
     // 
     URLlist.clear();
+
+    //
+    // Add the URL to the CLucene doc
+    //
+    CLuceneDoc->insertField("url", docURL);
+
+    //
+    // add the time to the CLucene doc
+    //
+    CLuceneDoc->insertField("time", docTime);
+
 }
+
+
+std::set<std::string> TidyParser::parseDoc(char* input)
+{
+    //
+    // have HTMLtidy parse the contents
+    //
+    tidyParseString( tdoc, input );
+
+    //
+    // now that the tree has been built, traverse
+    // it and insert text into the CLucene doc
+    //
+    nodeTraverse( tidyGetRoot(tdoc) );
+
+    //
+    // return the URLs seen during tree traversal
+    //
+    return URLlist;
+}
+
+
+void TidyParser::commitDoc()
+{
+    CLuceneAddDocToIndex(CLuceneDoc->contents());
+}
+
 
 
 void TidyParser::nodeTraverse( TidyNode tnod )
@@ -68,73 +121,10 @@ void TidyParser::nodeTraverse( TidyNode tnod )
     //
     for( TidyNode child = tidyGetChild(tnod); child; child = tidyGetNext(child) )
     {
-        /*
-         * This isn't really necessary
-         * 
-        ctmbstr name = tidyNodeGetName( child );
-        if ( !name )
-        {
-            switch ( tidyNodeGetType(child) )
-            {
-                case TidyNode_Text:
-                    //
-                    // This is the important one. This means there's text
-                    // to insert into the CLucene document
-                    //
-                    name = "Text";
-                    break;
-                case TidyNode_Root:       name = "Root";                    break;
-                case TidyNode_DocType:    name = "DOCTYPE";                 break;
-                case TidyNode_Comment:    name = "Comment";                 break;
-                case TidyNode_ProcIns:    name = "Processing Instruction";  break;
-                case TidyNode_CDATA:      name = "CDATA";                   break;
-                case TidyNode_Section:    name = "XML Section";             break;
-                case TidyNode_Asp:        name = "ASP";                     break;
-                case TidyNode_Jste:       name = "JSTE";                    break;
-                case TidyNode_Php:        name = "PHP";                     break;
-                case TidyNode_XmlDecl:    name = "XML Declaration";         break;
-    
-                case TidyNode_Start:
-                case TidyNode_End:
-                case TidyNode_StartEnd:
-                default:
-                    assert( name != NULL ); // Shouldn't get here
-                    break;
-            }
-        }
-         *
-         *
-         */
-
         //
         // Change states if applicable
         //
-        switch ( tidyNodeGetId(child) )
-        {
-            case TidyTag_A:
-                inAnchor = true;
-                break;
-            case TidyTag_H1:
-                inH1 = true;
-                break;
-            case TidyTag_H2:
-                inH2 = true;
-                break;
-            case TidyTag_HTML:
-                inHTML = true;
-                break;
-            case TidyTag_HEAD:
-                inHead = true;
-                break;
-            case TidyTag_BODY:
-                inBody = true;
-                break;
-            case TidyTag_TITLE:
-                inTitle = true;
-                break;
-            default:
-                break;
-        }
+        stateChanger(child, true);
     
         //
         // If this is a text node, insert the text into the CLucene document
@@ -190,39 +180,45 @@ void TidyParser::nodeTraverse( TidyNode tnod )
     
         //
         // Leaving the node, so the state can be reset.
-        // HTMLtidy will not nest these states (supposedly)
-        // so we can just use toggles, instead of nesting
-        // depth counts. ( eg: <h1><h2><h1> ... </h1></h2></h1>
-        // will not occur in the HTMLtidy document tree )
-        //
-        switch ( tidyNodeGetId(child) )
-        {
-            case TidyTag_A:
-                inAnchor = false;
-                break;
-            case TidyTag_H1:
-                inH1 = false;
-                break;
-            case TidyTag_H2:
-                inH2 = false;
-                break;
-            case TidyTag_HTML:
-                inHTML = false;
-                break;
-            case TidyTag_HEAD:
-                inHead = false;
-                break;
-            case TidyTag_BODY:
-                inBody = false;
-                break;
-            case TidyTag_TITLE:
-                inTitle = false;
-                break;
-            default:
-                break;
-        }
+        // 
+        stateChanger(child, false);
     }
 }
 
+void TidyParser::stateChanger(TidyNode tnod, bool newState)
+{
+    //
+    // HTMLtidy will not nest these states (supposedly)
+    // so we can just use toggles, instead of a count of
+    // nesting depth. ( eg: <h1><h2><h1> ... </h1></h2></h1>
+    // will not occur in the HTMLtidy document tree )
+    //
+    switch ( tidyNodeGetId(tnod) )
+    {
+        case TidyTag_A:
+            inAnchor = newState;
+            break;
+        case TidyTag_H1:
+            inH1 = newState;
+            break;
+        case TidyTag_H2:
+            inH2 = newState;
+            break;
+        case TidyTag_HTML:
+            inHTML = newState;
+            break;
+        case TidyTag_HEAD:
+            inHead = newState;
+            break;
+        case TidyTag_BODY:
+            inBody = newState;
+            break;
+        case TidyTag_TITLE:
+            inTitle = newState;
+            break;
+        default:
+            break;
+    }
+}
 
 
