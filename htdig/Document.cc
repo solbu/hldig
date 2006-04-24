@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.cc,v 1.71 2004/05/28 13:15:14 lha Exp $
+// $Id: Document.cc,v 1.71.2.1 2006/04/24 23:47:01 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -30,10 +30,10 @@
 
 #include "Document.h"
 #include "StringList.h"
-#include "htdig.h"
-#include "HTML.h"
-#include "Plaintext.h"
-#include "ExternalParser.h"
+//#include "htdig.h"
+//#include "HTML.h"
+//#include "Plaintext.h"
+//#include "ExternalParser.h"
 #include "lib.h"
 
 #include "Transport.h"
@@ -95,7 +95,7 @@ Document::Document(char *u, int max_size)
    // Initialize some static variables of Transport
    // and the User Agent for every HtHTTP objects
 
-   HtHTTP::SetParsingController(ExternalParser::canParse);
+   //HtHTTP::SetParsingController(ExternalParser::canParse);
 
    // Set the default parser content-type string
    Transport::SetDefaultParserContentType ("text/");
@@ -708,6 +708,7 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
 //   then at our (limited) builtin list of parsers.  The user supplied
 //   parsers are external programs that will be used.
 //
+/*
 Parsable *
 Document::getParsable()
 {
@@ -766,7 +767,7 @@ Document::getParsable()
     parsable->setContents(contents.get(), contents.length());
     return parsable;
 }
-
+*/
 
 int Document::ShouldWeRetry(Transport::DocStatus DocumentStatus)
 {

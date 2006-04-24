@@ -16,13 +16,13 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.h,v 1.19 2004/05/28 13:15:14 lha Exp $
+// $Id: Document.h,v 1.19.2.1 2006/04/24 23:47:18 aarnone Exp $
 //
 //
 #ifndef _Document_h_
 #define _Document_h_
 
-#include "Parsable.h"
+//#include "Parsable.h"
 #include "Object.h"
 #include "URL.h"
 #include "htString.h"
@@ -35,7 +35,7 @@
 #include "ExternalTransport.h"
 #include "Server.h"
 
-
+extern int debug;
 class Connection;
 
 
@@ -75,7 +75,7 @@ public:
     //
     // Return an appropriate parsable object for the document type.
     //
-    Parsable			*getParsable();
+    //Parsable			*getParsable();
 
     //
     // Set the username and password to be used in any requests
