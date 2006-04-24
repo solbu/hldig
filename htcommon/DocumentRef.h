@@ -11,19 +11,13 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.h,v 1.29.2.6 2006/03/01 23:45:18 aarnone Exp $
+// $Id: DocumentRef.h,v 1.29.2.7 2006/04/24 23:55:29 aarnone Exp $
 //
 
 #ifndef _DocumentRef_h_
 #define _DocumentRef_h_
 
-#include <map>
-#include <set>
-#include <time.h>
-
-#include "CLuceneAPI.h"
-
-typedef std::set<std::string> uniqueWordsSet;
+#include "HtStdHeader.h"
 
 class DocumentRef
 {
@@ -40,7 +34,8 @@ public:
     void        addUniqueWord(char* word);  // add a unique word
     void        insertField(const char* fieldName, const char* fieldValue);
     void        appendField(const char* fieldName, const char* fieldValue);
-
+    char*       getField(const char* fieldName);
+    
     CL_Doc*     contents() {return &indexDoc;}  // return a pointer to the the indexDoc
     
 protected:
@@ -54,7 +49,7 @@ protected:
     // before the document is put into the index, this needs to 
     // be flushed to the contents field
     // 
-    uniqueWordsSet uniqueWords;
+    //uniqueWordsSet uniqueWords;
 
 };
 
