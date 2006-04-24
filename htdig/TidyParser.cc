@@ -35,18 +35,15 @@ void TidyParser::release()
 }
 
 
-void TidyParser::initialize(char* encoding, char* docURL, char* docTime)
+void TidyParser::initialize(DocumentRef * CluceneDocPointer, char* encoding)
 {
     //
     // reset all flags
     // 
-    inHTML = false;
     inHead = false;
     inTitle = false;
     inBody = false;
-    inAnchor = false;
-    inH1 = false;
-    inH2 = false;
+    inHeading = false;
 
     //
     // kill the TidyDoc
@@ -61,7 +58,14 @@ void TidyParser::initialize(char* encoding, char* docURL, char* docTime)
     //
     // set up the encoding for this doc
     //
-    tidySetCharEncoding( tdoc, encoding );
+    if (encoding)
+    {
+        tidySetCharEncoding( tdoc, encoding );
+    }
+    else
+    {
+        tidySetCharEncoding( tdoc, "utf8" );
+    }
 
     //
     // keep the document nice and silent
@@ -75,15 +79,15 @@ void TidyParser::initialize(char* encoding, char* docURL, char* docTime)
     URLlist.clear();
 
     //
-    // Add the URL to the CLucene doc
+    // set the pointer and clean the Clucene doc
     //
-    CLuceneDoc->insertField("url", docURL);
+    CLuceneDoc = CluceneDocPointer; 
 
     //
-    // add the time to the CLucene doc
+    // the robots control variables
     //
-    CLuceneDoc->insertField("time", docTime);
-
+    noIndex = false;
+    noFollow = false;
 }
 
 
@@ -101,17 +105,17 @@ std::set<std::string> TidyParser::parseDoc(char* input)
     nodeTraverse( tidyGetRoot(tdoc) );
 
     //
+    // the easiest way to implement no follow is to
+    // simply erase the outgoing links
+    //
+    if (noFollow)
+        URLlist.clear();
+
+    //
     // return the URLs seen during tree traversal
     //
     return URLlist;
 }
-
-
-void TidyParser::commitDoc()
-{
-    CLuceneAddDocToIndex(CLuceneDoc->contents());
-}
-
 
 
 void TidyParser::nodeTraverse( TidyNode tnod )
@@ -139,27 +143,121 @@ void TidyParser::nodeTraverse( TidyNode tnod )
             {
                 if (inTitle)
                 {
-                    //
-                    // in the title
-                    //
-                    CLuceneDoc->insertField("title", (char*)buf.bp);
+                    CLuceneDoc->appendField("doc-title", (char*)buf.bp);
+                    CLuceneDoc->appendField("title", (char*)buf.bp);
+                }
+                if (inHeading)
+                {
+                    CLuceneDoc->appendField("heading", (char*)buf.bp);
                 }
                 else
                 {
-                    //
-                    // in the body (or just not the title)
-                    //
                     CLuceneDoc->appendField("contents", (char*)buf.bp);
                 }
+
+                CLuceneDoc->appendField("stemmed", (char*)buf.bp);
+                CLuceneDoc->appendField("synonym", (char*)buf.bp);
             }
             tidyBufFree(&buf);
+        }
+        else if (tidyNodeIsMETA(child))
+        {
+            //
+            // find the meta name
+            //
+            TidyAttr metaAttr = tidyAttrGetNAME( child );
+            if (tidyAttrIsNAME(metaAttr))
+            {
+                char * metaVal = (char*)tidyAttrValue(metaAttr);
+                if (metaVal)
+                {
+                    if (!strcmp(metaVal, "htdig-noindex"))
+                    {
+                        //
+                        // the content does not matter, so only check the name
+                        //
+                        noIndex = true;
+                        break;
+                    }
+
+                    //
+                    // find the meta content
+                    //
+                    TidyAttr contentAttr = tidyAttrGetCONTENT( child );
+                    if (tidyAttrIsCONTENT(contentAttr))
+                    {
+                        char * contentVal = (char*)tidyAttrValue(contentAttr);
+                        if (contentVal)
+                        {
+
+                            if (!strcmp(metaVal, "htdig-keywords") || 
+                                    !strcmp(metaVal, "keywords"))
+                            {
+                                //
+                                // keywords
+                                //
+                                CLuceneDoc->appendField("keywords", contentVal);
+
+                                CLuceneDoc->appendField("stemmed", contentVal);
+                                CLuceneDoc->appendField("synonym", contentVal);
+                            }
+                            else if (!strcmp(metaVal, "description"))
+                            {
+                                //
+                                // meta description
+                                // 
+                                CLuceneDoc->appendField("doc-meta-desc", contentVal);
+                                CLuceneDoc->appendField("meta-desc", contentVal);
+
+                                CLuceneDoc->appendField("stemmed", contentVal);
+                                CLuceneDoc->appendField("synonym", contentVal);
+                            }
+                            else if (!strcmp(metaVal, "author"))
+                            {
+                                //
+                                // author
+                                //
+                                CLuceneDoc->appendField("doc-author", contentVal);
+                                CLuceneDoc->appendField("author", contentVal);
+                            }
+                            else if (!strcmp(metaVal, "htdig-email"))
+                            {
+                                //
+                                // notification email address
+                                //
+                                CLuceneDoc->appendField("doc-email", contentVal);
+                            }
+                            else if (!strcmp(metaVal, "htdig-email-subject"))
+                            {
+                                //
+                                // notification email subject
+                                //
+                                CLuceneDoc->appendField("doc-email-subject", contentVal);
+                            }
+                            else if (!strcmp(metaVal, "htdig-notification-date"))
+                            {
+                                //
+                                // notification email date
+                                //
+                                CLuceneDoc->appendField("doc-email-date", contentVal);
+                            }
+                            else if (!strcmp(metaVal, "robots"))
+                            {
+                                //
+                                // robot options
+                                //
+                            }
+                        }
+                    }
+                }
+            }
         }
         else if (tidyNodeIsA(child))
         {
             //
             // An anchor tag. Put the URL (if it exists) into
-            // the URLlist for return later. If it doesn't exist,
-            // just skip it.
+            // the URLlist for return later. Also, put the alt 
+            // text (if any) into the doc contents
             //
             TidyAttr anchorAttr = tidyAttrGetHREF( child );
             
@@ -171,13 +269,25 @@ void TidyParser::nodeTraverse( TidyNode tnod )
             {
                 //printf("found anchor, can't get HREF attr");
             }
+
+            anchorAttr = tidyAttrGetALT( child );
+            if (tidyAttrIsALT(anchorAttr))
+            {
+                char * altVal = (char*)tidyAttrValue(anchorAttr);
+                if (altVal)
+                {
+                    CLuceneDoc->appendField("contents", altVal);
+                    CLuceneDoc->appendField("stemmed", altVal);
+                    CLuceneDoc->appendField("synonym", altVal);
+                }
+            }
         }
 
         //
         // Recurse down from here
         //
         nodeTraverse( child );
-    
+
         //
         // Leaving the node, so the state can be reset.
         // 
@@ -195,18 +305,6 @@ void TidyParser::stateChanger(TidyNode tnod, bool newState)
     //
     switch ( tidyNodeGetId(tnod) )
     {
-        case TidyTag_A:
-            inAnchor = newState;
-            break;
-        case TidyTag_H1:
-            inH1 = newState;
-            break;
-        case TidyTag_H2:
-            inH2 = newState;
-            break;
-        case TidyTag_HTML:
-            inHTML = newState;
-            break;
         case TidyTag_HEAD:
             inHead = newState;
             break;
@@ -215,6 +313,11 @@ void TidyParser::stateChanger(TidyNode tnod, bool newState)
             break;
         case TidyTag_TITLE:
             inTitle = newState;
+            break;
+        case (TidyTag_H1 || TidyTag_H2 || TidyTag_H3 ||
+                TidyTag_H4 || TidyTag_H5 || TidyTag_H6 ||
+                TidyTag_B):
+            inHeading = newState;
             break;
         default:
             break;

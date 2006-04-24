@@ -12,18 +12,15 @@
 #ifndef _TidyParser_h_
 #define _TidyParser_h_
 
+#include "HtStdHeader.h"
+#include "DocumentRef.h"
+#include "CLuceneAPI.h"
+
 //
 // include the two HTMLtidy headers
 // 
 #include "tidy.h"
 #include "buffio.h"
-
-using namespace std;
-#include <iostream>
-//#include <ctype.h>
-#include <set>
-
-#include "DocumentRef.h"
 
 class TidyParser
 {
@@ -36,23 +33,24 @@ class TidyParser
     ~TidyParser();
 
     //
-    // get the TidyDoc all set up and ready to parse
-    // a buffer of text. also clear the URLlist and
-    // reset all the position flags. the encoding,
-    // URL and time can be sent in char*'s
+    // recieve the pointer to the Clucene document, and get the TidyDoc
+    // all set up and ready to parse a buffer of text. also clear the
+    // URLlist and reset all the position flags. the encoding is sent in a char*
     //
-    void initialize(char*, char*, char*);
-    
+    void initialize(DocumentRef *, char*);
+
+    //
+    // insert a field into the CLucene doc directly
+    //
+    void insertField(const char*, const char*);
+
     //
     // parse the buffer, return a set of
     // URLs seen during parsing
     // 
     std::set<std::string> parseDoc(char*);
-    
-    //
-    // commit the CLucene document
-    //
-    void commitDoc();
+
+    bool NoIndex() { return noIndex; }
  
     private:
 
@@ -71,18 +69,23 @@ class TidyParser
     // list of URLs seen during parsing. using
     // a std::set<> here so that the URLs are unique
     //
-    std::set<std::string> URLlist;
+    set<string> URLlist;
+
+    set<string> stemWords;
 
     //
     // position flags
     // 
-    bool inHTML;
     bool inHead;
     bool inTitle;
     bool inBody;
-    bool inAnchor;
-    bool inH1;
-    bool inH2;
+    bool inHeading;
+
+    //
+    // document/link handling tags
+    //
+    bool noIndex;
+    bool noFollow;
 
     //
     // recursive call to traverse document parse tree
