@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.9 2004/05/28 13:15:14 lha Exp $
+// $Id: ExternalTransport.cc,v 1.9.2.1 2006/04/24 23:48:19 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -18,7 +18,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "ExternalTransport.h"
-#include "htdig.h"
+//#include "htdig.h"
 #include "QuotedStringList.h"
 #include "URL.h"
 #include "Dictionary.h"
