@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.h,v 1.13 2004/05/28 13:15:16 lha Exp $
+// $Id: Server.h,v 1.13.2.1 2006/04/24 23:45:16 aarnone Exp $
 //
 
 #ifndef _Server_h_
@@ -25,7 +25,7 @@
 #include "URLRef.h"
 #include "HtDateTime.h"
 
-
+extern int debug;
 class Document;
 
 class Server : public Object
