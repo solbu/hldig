@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: IndexDBRef.cc,v 1.1.2.3 2005/12/07 19:16:31 aarnone Exp $
+// $Id: IndexDBRef.cc,v 1.1.2.4 2006/04/24 23:53:44 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -60,39 +60,32 @@ void IndexDBRef::Clear()
 {
     URL = 0;
     time = 0;
-//    descriptions.Destroy();
-    sig = 0;
-//    state = Reference_normal;
-    backlinks = 0;
+    docSize = 0;
     hopCount = 0;
+    backlinks = 0;
+
+    //
+    // everything is spiderable unless specified otherwise
+    //
+    spiderable = 1;
+
+    // sig = 0;
+    // descriptions.Destroy();
 }
 
 
 enum
 {
-    DOC_ID,             // 0
-    DOC_TIME,           // 1
-    DOC_ACCESSED,       // 2
-    DOC_STATE,          // 3
-    DOC_SIZE,           // 4
-    DOC_LINKS,          // 5
-    DOC_IMAGESIZE,      // 6 -- No longer used
-    DOC_HOPCOUNT,       // 7
-    DOC_URL,            // 8
-    DOC_HEAD,           // 9
-    DOC_TITLE,          // 10
-    DOC_DESCRIPTIONS,   // 11
-    DOC_ANCHORS,        // 12
-    DOC_EMAIL,          // 13
-    DOC_NOTIFICATION,   // 14
-    DOC_SUBJECT,        // 15
-    DOC_STRING,         // 16
-    DOC_METADSC,        // 17
-    DOC_BACKLINKS,      // 18
-    DOC_SIG             // 19
+    DOC_TIME,           // 0
+    DOC_SPIDERABLE,     // 1
+    DOC_SIZE,           // 2
+    DOC_HOPCOUNT,       // 3
+    DOC_BACKLINKS,      // 4
+    //DOC_SIG             // 5
+    //DOC_DESCRIPTIONS,   // 6
 };
 
-// Must be powers of two never reached by the DOC_... enums.
+// Must be powers of two never reached by the DOC_* enums.
 #define CHARSIZE_MARKER_BIT 64
 #define SHORTSIZE_MARKER_BIT 128
 
@@ -217,8 +210,11 @@ void IndexDBRef::Serialize(String &s)
  }
 
     addnum(DOC_TIME, s, time);
-    addnum(DOC_BACKLINKS, s, backlinks);
+    addnum(DOC_SIZE, s, docSize);
+    // add one to this so it actually gets serialized
+    addnum(DOC_SPIDERABLE, s, spiderable+1);
     addnum(DOC_HOPCOUNT, s, hopCount);
+    addnum(DOC_BACKLINKS, s, backlinks);
     
 // NOTE: the sig will go back in when MD5 is done
 //
@@ -338,11 +334,13 @@ void IndexDBRef::Deserialize(String &stream)
         case DOC_TIME:
             getnum(x, s, time);
             break;
-        case DOC_SIG:
-            getnum(x, s, sig);
+        case DOC_SIZE:
+            getnum(x, s, docSize);
             break;
-        case DOC_DESCRIPTIONS:
-//            getlist(x, s, descriptions);
+        case DOC_SPIDERABLE:
+            getnum(x, s, spiderable);
+            // subtract one, since we added one in serialization
+            spiderable--;
             break;
         case DOC_HOPCOUNT:
             getnum(x, s, hopCount);
@@ -350,7 +348,12 @@ void IndexDBRef::Deserialize(String &stream)
         case DOC_BACKLINKS: 
             getnum(x, s, backlinks);
             break;
-
+        //case DOC_SIG:
+        //     getnum(x, s, sig);
+        //     break;
+        //case DOC_DESCRIPTIONS:
+        //    getlist(x, s, descriptions);
+        //    break;
         default:
             cerr << "BAD TAG IN SERIALIZED DATA: " << x << endl;
             return;

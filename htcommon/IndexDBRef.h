@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: IndexDBRef.h,v 1.1.2.2 2005/11/28 18:37:43 aarnone Exp $
+// $Id: IndexDBRef.h,v 1.1.2.3 2006/04/24 23:53:44 aarnone Exp $
 //
 
 #ifndef _IndexDBRef_h_
@@ -22,14 +22,6 @@
 
 #include <time.h>
 
-
-enum indexDBRefState
-{
-    indexDBRef_normal,
-    indexDBRef_not_found,
-    indexDBRef_noindex,
-    indexDBRef_obsolete
-};
 
 class IndexDBRef : public Object
 {
@@ -46,22 +38,24 @@ class IndexDBRef : public Object
     //
     String          DocURL()                {return URL;}
     time_t          DocTime()               {return time;}
-//    List            *Descriptions()         {return &descriptions;}
-    indexDBRefState DocState()              {return state;}
     int             DocSig()                {return sig;} 
     int             DocHopCount()           {return hopCount;}
     int             DocBacklinks()          {return backlinks;}
+    int             DocSize()               {return docSize;}
+    int             DocSpiderable()         {return spiderable;}
+//    List            *Descriptions()         {return &descriptions;}
 
     //
     // Set functions
     // 
     void        DocURL(const char *u)       {URL = u;}
     void        DocTime(time_t t)           {time = t;}
-//    void        Descriptions(List &l)       {descriptions = l;}
-    void        DocState(indexDBRefState s) {state = s;}
     void        DocSig(int i)               {sig = i;}
     void        DocHopCount(int i)          {hopCount = i;}
     void        DocBacklinks(int i)         {backlinks = i;} 
+    void        DocSpiderable(int i)        {spiderable = i;}
+    void        DocSize(int i)              {docSize = i;}
+//    void        Descriptions(List &l)       {descriptions = l;}
 
 //    void        AddDescription(const char *d, HtWordList &words);
  
@@ -81,28 +75,39 @@ class IndexDBRef : public Object
 
 
     protected:
+    // This is the URL of the document.
+    String      URL;
+
+
     //
     // These values will be stored when serializing
     //
 
-    // This is the URL of the document.
-    String      URL;
     // This is the time specified in the document's header
     // Usually that's the last modified time, for servers that return it.
     time_t      time;
-    // This is a list of Strings, the text of links pointing to this document.
-    // (e.g. <a href="docURL">description</a>
-//    List        descriptions;
+
     // This is a signature of the document. (e.g. md5sum, checksum...)
     // This is currently unused.
     long int    sig;
-    // This is the state of the document--modified, normal, etc.
-    indexDBRefState  state;
+
     // This is a count of the number of hops from start_urls to here.
     int         hopCount;
+
     // This is a count of the links to the document (incoming links).
     int         backlinks;
 
+    // this is the size of the document
+    int         docSize;
+
+    // this denotes if the document is considered spiderable: 
+    // AKA it is not not retrievable (certain custom documents
+    // might not be spiderable)
+    int         spiderable;
+
+    // This is a list of Strings, the text of links pointing to this document.
+    // (e.g. <a href="docURL">description</a>
+    //List        descriptions;
 
 };
 
