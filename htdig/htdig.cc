@@ -10,43 +10,8 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.cc,v 1.42.2.5 2005/12/09 22:58:03 aarnone Exp $
+// $Id: htdig.cc,v 1.42.2.6 2006/04/24 23:50:20 aarnone Exp $
 //
-
-#ifdef HAVE_CONFIG_H
-#include "htconfig.h"
-#endif /* HAVE_CONFIG_H */
-
-#include "Document.h"
-#include "Retriever.h"
-#include "StringList.h"
-#include "htdig.h"
-#include "defaults.h"
-#include "HtURLCodec.h"
-#include "WordType.h"
-#include "HtDateTime.h"
-#include "HtURLRewriter.h"
-
-////////////////////////////
-// For cookie jar
-////////////////////////////
-#include "HtCookieJar.h"
-#include "HtCookieMemJar.h"
-#include "HtCookieInFileJar.h"
-#include "HtHTTP.h"
-////////////////////////////
-
-// Anthony
-////////////////////////////
-// For CLucene
-////////////////////////////
-
-#ifdef CLUCENE
-//  #include "CLucene_API.h"
-#endif
-
-////////////////////////////
-
 
 
 // If we have this, we probably want it.
@@ -56,56 +21,67 @@
   #include <getopt_local.h>
 #endif
 
-#ifdef HAVE_STD
-  #include <iostream>
-  #ifdef HAVE_NAMESPACES
-    using namespace std;
-  #endif
-#else
-  #include <iostream.h>
-#endif /* HAVE_STD */
+#include <unistd.h>
 
-//
-// Global variables
-//
-int			debug = 0;
-int			report_statistics = 0;
-//DocumentDB		docs;  // removed - old BDB
 
-IndexDB         *indexDatabase; // the indexDB
+#include <iostream>
+using namespace std;
 
-HtRegexList		limits;
-HtRegexList		limitsn;
-FILE			*urls_seen = NULL;
-FILE			*images_seen = NULL;
-String			configFile = DEFAULT_CONFIG_FILE;
-String			minimalFile = 0;
-HtDateTime		StartTime;
-HtDateTime		EndTime;
+#include "Spider.h"
 
 void usage();
-void reportError(char *msg);
 
 //
 // Start of the program.
 //
 int main(int ac, char **av)
 {
-    int			c;
+    int             c;
     extern char		*optarg;
-    String		credentials;
-    int			initial = 0;
-    int			alt_work_area = 0;
-    int			create_text_database = 0;
-    char		*max_hops = 0;
 
-    // Cookie jar dynamic creation.
-    HtCookieJar*        _cookie_jar = new HtCookieMemJar(); // new cookie jar
-    if (_cookie_jar)
-       HtHTTP::SetCookieJar(_cookie_jar);
+    String          minimalFile = 0;
+    htdig_parameters_struct * params = (htdig_parameters_struct *)malloc(sizeof(htdig_parameters_struct)); 
+
 
     //
-    // Parse command line arguments
+    // set up the parameter defaults
+    //
+    params->configFile[0] = '\0';
+    params->DBpath[0] = '\0';
+    params->credentials[0] = '\0';
+    params->minimalFile[0] = '\0';
+
+    //debugging & logfile
+    params->logFile[0] = '\0';   //location of log file
+    params->debug = 0;        //0, 1 ,2, 3, 4, 5
+
+    //boolean values
+    params->initial = 0;
+    params->create_text_database = 0;
+    params->report_statistics = 0;
+    params->alt_work_area = 0;
+    params->use_cookies = 1;
+
+    //spidering filters
+    params->URL[0] = '\0';
+    params->limit_urls_to[0] = '\0';
+    params->limit_normalized[0] = '\0';
+    params->exclude_urls[0] = '\0';
+    params->search_restrict[0] = '\0';
+    params->search_exclude[0] = '\0';
+    params->search_alwaysreturn[0] = '\0';
+    params->url_rewrite_rules[0] = '\0';
+    params->bad_querystr[0] = '\0';
+
+    //misc overrides
+    params->locale[0] = '\0';
+    params->max_hop_count[0] = '\0';     //9 digit limit
+    params->max_head_length[0] = '\0';   //9 digit limit
+    params->max_doc_size[0] = '\0';      //9 digit limit
+
+
+    //
+    // Parse command line arguments, overriding parameter defaults
     //
     while ((c = getopt(ac, av, "lsm:c:vith:u:a")) != -1)
     {
@@ -113,339 +89,136 @@ int main(int ac, char **av)
         switch (c)
         {
             case 'c':
-                configFile = optarg;
+                strcpy (params->configFile, optarg);
                 break;
             case 'v':
-                debug++;
+                params->debug++;
                 break;
             case 'i':
-                initial++;
+                params->initial = 1;
+                cout << "initial dig" << endl;
                 break;
             case 't':
-                create_text_database++;
+                params->create_text_database = 1;
                 break;
             case 'h':
-                max_hops = optarg;
+                strcpy(params->max_hop_count, optarg);
                 break;
             case 's':
-                report_statistics++;
+                params->report_statistics = 1;
                 break;
             case 'u':
-                credentials = optarg;
+                strcpy(params->credentials, optarg);
                 for (pos = 0; pos < strlen(optarg); pos++)
                     optarg[pos] = '*';
                 break;
             case 'a':
-                alt_work_area++;
+                params->alt_work_area = 1;
                 break;
             case 'm':
                 minimalFile = optarg;
-                max_hops = "0";
                 break;
             case '?':
+            default:
                 usage();
-                default:
                 break;
         }
     }
 
-    // Shows Start Time
-    if (debug>0)
-	cout << "ht://dig Start Time: " << StartTime.GetAscTime() << endl;
+    //1) htdig_open(.....)
+    //2) htdig_spider(.....)
+    //3) htdig_close()
     
+
     //
-    // First set all the defaults and then read the specified config
-    // file to override the defaults.
+    // if a minimal file was specified
     //
-	HtConfiguration* const config= HtConfiguration::config();
-    config->Defaults(&defaults[0]);
-    if (access((char*)configFile, R_OK) < 0)
+    if (minimalFile.length() != 0)
     {
-        reportError(form("Unable to find configuration file '%s'",
-        configFile.get()));
-    }
-    config->Read(configFile);
+        //
+        // this modification to the max_hop_count is stated
+        // in the ht://Dig help file
+        //
+        strcpy (params->max_hop_count, "0");
 
-    // Warn user if any obsolete options are found in config file
-    // For efficiency, check all fields here.  If different config
-    // files are used for searching, obsolete options may remain
-    char *deprecatedOptions [] = {
-        "heading_factor_1", "heading_factor_2", "heading_factor_3",
-        "heading_factor_4", "heading_factor_5", "heading_factor_6",
-        "modification_time_is_now", "pdf_parser", "translate_amp",
-        "translate_lt_gt", "translate_quot", "uncoded_db_compatible",
-        ""	// empty terminator
-    };
-    char **option;
-    for (option = deprecatedOptions; **option; option++)
-    {
-    if (!config->Find(*option).empty())
-        cout << "Warning: Configuration option " << *option <<
-    	" is no longer supported\n";
-    }
-
-    if (config->Find("locale").empty() && debug > 0)
-      cout << "Warning: unknown locale!\n";
-
-    if (max_hops)
-    {
-        config->Add("max_hop_count", max_hops);
-    }
-
-    // Set up credentials for this run
-    if (credentials.length())
-        config->Add("authorization", credentials);
-
-    //
-    // Check url_part_aliases and common_url_parts for
-    // errors.
-    String url_part_errors = HtURLCodec::instance()->ErrMsg();
-
-    if (url_part_errors.length() != 0)
-        reportError(form("Invalid url_part_aliases or common_url_parts: %s",
-            url_part_errors.get()));
-
-    //
-    // Check url_rewrite_rules for errors.
-    String url_rewrite_rules = HtURLRewriter::instance()->ErrMsg();
-    
-    if (url_rewrite_rules.length() != 0)
-        reportError(form("Invalid url_rewrite_rules: %s", url_rewrite_rules.get()));
-
-    //
-    // If indicated, change the database file names to have the .work
-    // extension
-    //
-    if (alt_work_area != 0)
-    {
-        String	configValue = config->Find("doc_db");
-
-        if (configValue.length() != 0)
+        //
+        // Handle list of URLs given in a file (stdin, if "-") specified as
+        // argument to -m or as an optional trailing argument.
+        // 
+        if (optind < ac)
         {
-            configValue << ".work";
-            config->Add("doc_db", configValue);
-        }
-
-        configValue = config->Find("doc_index");
-        if (configValue.length() != 0)
-        {
-            configValue << ".work";
-            config->Add("doc_index", configValue);
-        }
-
-        configValue = config->Find("doc_excerpt");
-        if (configValue.length() != 0)
-        {
-            configValue << ".work";
-            config->Add("doc_excerpt", configValue);
-        }
-
-        configValue = config->Find("md5_db");
-        if (configValue.length() != 0)
-        {
-            configValue << ".work";
-            config->Add("md5_db", configValue);
-        }
-    }
-    
-    // Imports the cookies file
-    const String CookiesInputFile = config->Find("cookies_input_file");
-    if (CookiesInputFile.length())
-    {
-        if (debug>0)
-            cout << "Importing Cookies input file " << CookiesInputFile << endl;
-
-        int result;
-        HtCookieJar::SetDebugLevel(debug); // Set the debug level
-        HtCookieInFileJar* cookie_file = new HtCookieInFileJar(CookiesInputFile, result);
-        if (cookie_file)
-        {
-            if (!result)
+            if (params->debug)
             {
-                if (debug>0)
-                    cookie_file->ShowSummary();
-                delete _cookie_jar;                         // Deletes previous cookie jar
-                _cookie_jar = (HtCookieJar*) cookie_file;   // set the imported one
-                HtHTTP::SetCookieJar(_cookie_jar);          // and set the new HTTP jar
+                if (minimalFile.length() != 0)
+                {
+                    cout << "Warning: argument " << av[optind] 
+                        << " overrides -m " << minimalFile << endl;
+                }
             }
-            else if (debug > 0)
-                cout << "Warning: Import failed! (" << CookiesInputFile << ")" << endl;
+            minimalFile = av[optind];
         }
-        else
-            reportError(form("Unable to load cookies file '%s' in memory",
-                CookiesInputFile.get()));
-    }
-
-    //
-    // If needed, we will create a list of every URL we come across.
-    //
-    if (config->Boolean("create_url_list"))
-    {
-        const String	filename = config->Find("url_list");
-        urls_seen = fopen(filename, initial ? "w" : "a");
-        if (urls_seen == 0)
+        if (strcmp (minimalFile.get(), "-") == 0)
         {
-            reportError(form("Unable to create URL file '%s'",
-                filename.get()));
-        }
-    }
-
-    //
-    // If needed, we will create a list of every image we come across.
-    //
-    if (config->Boolean("create_image_list"))
-    {
-        const String	filename = config->Find("image_list");
-        images_seen = fopen(filename, initial ? "w" : "a");
-        if (images_seen == 0)
-        {
-            reportError(form("Unable to create images file '%s'", filename.get()));
-        }
-    }
-
-    //
-    // Set up the limits list
-    //
-    StringList l(config->Find("limit_urls_to"), " \t");
-    limits.setEscaped(l, config->Boolean("case_sensitive"));
-    l.Destroy();
-
-    l.Create(config->Find("limit_normalized"), " \t");
-    limitsn.setEscaped(l, config->Boolean("case_sensitive"));
-    l.Destroy();
-    
-    if (initial)
-    {
-       // using  -i,  also ignore seen-but-not-processed URLs from last pass
-       unlink(config->Find("url_log"));
-    }
-
-    //
-    // this call was in the WordContext::Initialize code, and we still need it
-    //
-    WordType::Initialize(*config);
-
-
-    //
-    // Create the Retriever object
-    //
-    Retriever    retriever(initial, Retriever_logUrl);
-
-
-    //
-    // We need to give the retriever URLs to start from
-    //
-    if (minimalFile.length() == 0)
-    {
-        retriever.InitialFromDB();
-
-        // 
-        // Add start_url to the initial list of the retriever.
-        // Don't check a URL twice!
-        // 
-        retriever.Initial(config->Find("start_url"), 1);
-    }
-
-    //
-    // Handle list of URLs given in a file (stdin, if "-") specified as
-    // argument to -m or as an optional trailing argument.
-    // 
-    if (optind < ac)
-    {
-        if (debug)
-            if (minimalFile.length() != 0)
-                cout << "Warning: argument " << av[optind]
-                    << " overrides -m " << minimalFile << endl;
-        minimalFile = av[optind];
-    }
-    if (strcmp (minimalFile.get(), "-") == 0)
-    {
-        String str;
-        // Why not combine this with the code below, with  input = stdin ?
-        while (!cin.eof())
-        {
-            cin >> str;
-            str.chop("\r\n");       // (Why "\r\n" here and "\r\n\t " below?)
-            if (str.length() > 0)
-                retriever.Initial(str, 1);
-        }
-    }
-    else if (minimalFile.length() != 0)
-    {
-        FILE    *input = fopen(minimalFile.get(), "r");
-        char    buffer[1000];
-
-        if (input)
-        {
-            while (fgets(buffer, sizeof(buffer), input))
+            String str;
+            // Why not combine this with the code below, with  input = stdin ?
+            while (!cin.eof())
             {
-                String str(buffer);
-                str.chop("\r\n\t ");
+                cin >> str;
+                str.chop("\r\n");       // (Why "\r\n" here and "\r\n\t " below?)
                 if (str.length() > 0)
-                    retriever.Initial(str, 1);
+                {
+                    strcpy(params->URL, str.get());
+                }
             }
-            fclose(input);
         }
-        else
+        else if (minimalFile.length() != 0)
         {
-            cerr << "Could not open argument '" << minimalFile
-                << "' of flag -m\n";
-            exit (1);
+            FILE *input = fopen(minimalFile.get(), "r");
+            char buffer[1000];
+
+            if (input)
+            {
+                while (fgets(buffer, sizeof(buffer), input))
+                {
+                    String str(buffer);
+                    str.chop("\r\n\t ");
+                    if (str.length() > 0)
+                    {
+                        strcpy(params->URL, str.get());
+                    }
+                }
+                fclose(input);
+            }
+            else
+            {
+                cerr << "Could not open argument '" << minimalFile
+                    << "' of flag -m\n";
+                exit (1);
+            }
         }
     }
 
-    //
-    // Go do it!
-    //
-    retriever.Start();
+//    params->report_statistics = 1;
 
-    //
-    // All done with parsing.
-    //
+    Spider spider(params);
 
-    //
-    // If the user so wants, create a text version of the document database.
-    //
+    spider.openDBs(params);
+    spider.Start(params);
+    spider.closeDBs();
 
-//
-// this will need to be replaced with a call to the retriever, since this file
-// no longer has access to the DB
-//
-//    if (create_text_database)
-//    {
-//        const String doc_list = config->Find("doc_list");
-//        if (initial)
-//            unlink(doc_list);
-//        docs.DumpDB(doc_list);
-//    }
+/*
+    char temp;
+    cin >> temp;
 
-    //
-    // Cleanup
-    //
-    if (urls_seen)
-        fclose(urls_seen);
-    if (images_seen)
-        fclose(images_seen);
+    strcpy(params->DBpath, "/home/aarnone/nfs/digdir/db2");
+    params->initial = 1;
 
-
-    
-    //
-    // If needed, report some statistics
-    //
-    if (report_statistics)
-    {
-        retriever.ReportStatistics("htdig");
-    }
-
-    // Shows End Time
-    if (debug>0)
-    {
-        EndTime.SettoNow();
-        cout << "ht://dig End Time: " << EndTime.GetAscTime() << endl;
-    }
-
-    if (_cookie_jar)
-        delete _cookie_jar;
+    spider.openDBs(params);
+    cout << "DBs opened 2nd time" << endl;
+    spider.Start(params);
+    cout << "Second spider done" << endl;
+    spider.closeDBs();
+*/
 }
 
 
@@ -503,14 +276,5 @@ void usage()
 
 	
     exit(0);
-}
-
-//
-// Report an error and die
-//
-void reportError(char *msg)
-{
-    cout << "htdig: " << msg << "\n\n";
-    exit(1);
 }
 
