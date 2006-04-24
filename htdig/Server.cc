@@ -9,14 +9,17 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.cc,v 1.29 2004/05/28 13:15:16 lha Exp $
+// $Id: Server.cc,v 1.29.2.1 2006/04/24 23:45:38 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "htdig.h"
+#ifndef _MSC_VER /* _WIN32 */
+#include <unistd.h>
+#endif
+
 #include "Server.h"
 #include "good_strtok.h"
 #include "htString.h"
