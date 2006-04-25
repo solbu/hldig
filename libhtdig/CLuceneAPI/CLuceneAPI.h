@@ -1,67 +1,50 @@
 #ifndef _CLuceneAPI_h_
 #define _CLuceneAPI_h_
 
-#include <iostream>
-#include <time.h>
-#include <map>
-#include <string>
+#include "HtStdHeader.h"
 
-//#ifdef UNICODE
-//  #define CHAR_T wchar_t
-//#else
-//  #define CHAR_T char
-//#endif /* UNICODE */
 
-typedef std::map<
-            std::string,
-            std::pair<
-                std::wstring,
-                std::string> >
-        CL_Doc;
+//
+// ugly, but needed for the htsearch_query_match_struct
+//
+#include "libhtdig_api.h"
 
-//Indexing
 
-int CLuceneOpenIndex(char * target, int clearIndex);
+// 
+// Index operations
+// 
 
-int CLuceneCloseIndex(void);
+void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords);
+
+void CLuceneCloseIndex(void);
 
 int CLuceneAddDocToIndex(CL_Doc * doc);
 
 
-//Deleting
+// 
+// Deleting
+// 
 
-int CLuceneDeleteURLFromIndex(std::string * url);
-
-
-//Utility
-
-wchar_t * utf8_to_wchar(const char* input);
+int CLuceneDeleteURLFromIndex(string * url);
 
 
-/*
-//Searching
+// 
+// Searching
+// 
+
+void changeDefaultOperator();
+
+int CLuceneDoQuery(string * query_text);
+
+void CLuceneSearchGetNth(int, htsearch_query_match_struct *);
 
 
-typedef struct _clucene_query_hit_struct {
 
-//    char_t title[CLUCENE_DOCUMENT_TITLE_L];
-//    char_t URL[CLUCENE_MAX_FILENAME_PATH_L];
-//    char_t excerpt[CLUCENE_DOCUMENT_EXCERPT_L];
-    int  score;
-    int  score_percent;     //top result is 100%
-    struct tm time_tm;
-    int  size;
+// 
+// Utility
+// 
 
-} clucene_query_hit_struct;
-
-int CLuceneOpenSearch(char * target);
-
-int CLuceneDoQuery(char * query_text);
-
-int CLuceneSearchGetNth(int, clucene_query_hit_struct *);
-
-int CLuceneCloseSearch(void);
-*/
+wchar_t** convertStopWords(set<string> * stopWords);
 
 #endif // _CLuceneAPI_h_
 
