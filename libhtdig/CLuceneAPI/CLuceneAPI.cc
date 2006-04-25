@@ -1,68 +1,118 @@
 #include "CLuceneAPI.h"
 
 #include "CLucene.h"
-#include "CLucene/StdHeader.h"
-
-#include "CLucene/util/Reader.h"
-#include "CLucene/util/Misc.h"
-#include "CLucene/util/dirent.h"
-
-using namespace std;
-using namespace lucene::analysis;
-using namespace lucene::index;
-using namespace lucene::util;
-using namespace lucene::search;
-using namespace lucene::document;
+    
+CL_NS_USE(index)
+CL_NS_USE(util)
+CL_NS_USE(store)
+CL_NS_USE(search)
+CL_NS_USE(document)
+CL_NS_USE(queryParser)
+CL_NS_USE(analysis)
+CL_NS_USE2(analysis,standard)
 
 static int64_t str = lucene::util::Misc::currentTimeMillis();
 static IndexWriter* writer = NULL;
 static IndexReader* reader = NULL;
-static lucene::analysis::standard::StandardAnalyzer& an = *new lucene::analysis::standard::StandardAnalyzer();
+static IndexSearcher* searcher = NULL;
+static StandardAnalyzer* an = NULL;
+static Hits* hits = NULL;
+static QueryParser * parser = NULL;
+
+extern int debug;
 
 //
 // Index close / open
 // 
-int CLuceneOpenIndex(char * target, int clearIndex)
+void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
 {
+    //
+    // Create the analyser first, so writer can have it. the stop words
+    // will need to be extracted into a wchar_t array first
+    //
+    if (stopWords->size())
+    {
+        wchar_t ** stopArray = convertStopWords(stopWords);
+
+        an = _CLNEW StandardAnalyzer(stopArray);
+
+        for (int i = 0; i<stopWords->size(); i++)
+        {
+            free(stopArray[i]);
+        }
+        free(stopArray);
+    }
+    else
+    {
+        an = _CLNEW StandardAnalyzer();
+    }
+
+    //
+    // Create the query parser.. this needs to be declared
+    // beforehand so we can set options for it
+    //
+    parser = _CLNEW QueryParser(_T("contents"), an);
+
+    //
+    // Create the IndexWriter, unlocking the directory if
+    // necessary, and wiping the old index is requested
+    //
     if ( !clearIndex && IndexReader::indexExists(target) )
     {
         if ( IndexReader::isLocked(target) )
         {
-            printf("CLucene index was locked... unlocking it.\n");
+            if (debug > 1)
+                printf("CLucene index was locked... unlocking it.\n");
             IndexReader::unlock(target);
+            if (debug > 1)
+                printf("Unlock sucessful\n");
         }
 
-        writer = _CLNEW IndexWriter( target, &an, false);
+        writer = _CLNEW IndexWriter( target, an, false);
     }
     else
     {
-        writer = _CLNEW IndexWriter( target ,&an, true);
+        writer = _CLNEW IndexWriter( target, an, true);
     }
+    if (debug > 2)
+        cout << "IndexWriter... ";
     writer->setMaxFieldLength(IndexWriter::DEFAULT_MAX_FIELD_LENGTH);
 
     //
     // Create the reader - this will be used for deleting
     // 
     reader = IndexReader::open( target );
+    if (debug > 2)
+        cout << "IndexReader... ";
 
+    //
+    // Create the searcher - this will be used for.... searching!
+    //
+	searcher = _CLNEW IndexSearcher(reader);
+    if (debug > 2)
+        cout << "IndexSearcher... ";
+
+    //
+    // get the start time... useful for debugging
+    // 
     str = lucene::util::Misc::currentTimeMillis();
 
-    return(1);
+    if (debug > 2)
+        cout << "created." << endl;
 }
 
-int CLuceneCloseIndex()
+void CLuceneCloseIndex()
 {
-  	writer->optimize();
+    writer->optimize();
     writer->close();
+
     _CLDELETE(writer);
+    _CLDELETE(reader);
+    _CLDELETE(an);
+    _CLDELETE(searcher);
+    _CLDELETE(hits);
 
-    delete reader;
-    delete writer;
-    delete &an;
-
-    cout << _T("Indexing took: ") << (lucene::util::Misc::currentTimeMillis() - str) << _T("ms.") << endl << endl;
-
-    return(1);
+    //    cout << _T("Indexing took: ") << (lucene::util::Misc::currentTimeMillis() - str) << _T("ms.") << endl << endl;
 }
 
 
@@ -73,9 +123,9 @@ int CLuceneCloseIndex()
 int CLuceneAddDocToIndex(CL_Doc * doc)
 {
     //
-    // make a new, empty document
+    // make a new, empty document (make sure it's a CLucene document)
     //
-    Document& index_doc = *new Document();
+    lucene::document::Document index_doc;
 
     // 
     // Add each element of the hash. This assumes that the second
@@ -99,180 +149,168 @@ int CLuceneAddDocToIndex(CL_Doc * doc)
     CL_Doc::iterator i;
     for (i = doc->begin(); i != doc->end(); i++)
     {
-        if ((i->second).second == "Keyword")
+        if ((i->second).second == "Keyword" || (i->second).second == "keyword")
         {
-//            index_doc.add(Field::Keyword((wchar_t*)(i->first).data(), ((i->second).first).data()));
-            index_doc.add(*Field::Keyword(
-                        utf8_to_wchar((i->first).c_str()),
-                        ((i->second).first).c_str()) );
+            wchar_t * temp = utf8_to_wchar((i->first).c_str());
+            index_doc.add(*Field::Keyword(temp, ((i->second).first).c_str()) );
+            free(temp);
         }
         else if ((i->second).second == "UnIndexed" || (i->second).second == "unIndexed")
         {
-//            index_doc.add(*Field::UnIndexed((_CLNEW StringReader(i->first).data()), ((i->second).first).data()));
-            index_doc.add(*Field::UnIndexed(
-                        utf8_to_wchar((i->first).c_str()),
-                        ((i->second).first).c_str()) );
-
+            wchar_t * temp = utf8_to_wchar((i->first).c_str());
+            index_doc.add(*Field::UnIndexed(temp, ((i->second).first).c_str()) );
+            free(temp);
         }
         else if ((i->second).second == "UnStored" || (i->second).second == "unStored") 
         {
-//            index_doc.add(*Field::UnStored((_CLNEW StringReader(i->first).data()), ((i->second).first).data()));
-            index_doc.add(*Field::UnStored(
-                        utf8_to_wchar((i->first).c_str()),
-                        ((i->second).first).c_str()) );
-
+            wchar_t * temp = utf8_to_wchar((i->first).c_str());
+            index_doc.add(*Field::UnStored(temp, ((i->second).first).c_str()) );
+            free(temp);
         }
-        else if ((i->second).second == "Text") 
+        else if ((i->second).second == "Text" || (i->second).second == "text")
         {
-//            index_doc.add(*Field::Text(_CLNEW StringReader((i->first).data()), ((i->second).first).data()));
-            index_doc.add(*Field::Text(
-                        utf8_to_wchar((i->first).c_str()),
-                        ((i->second).first).c_str()) );
-
+            wchar_t * temp = utf8_to_wchar((i->first).c_str());
+            index_doc.add(*Field::Text(temp, ((i->second).first).c_str()) );
+            free(temp);
         }
         else
         {
+            //
             // Must be some other kind of field (or a typo)...
             // probably safer to ignore it. We could eventually
             // add some kind of logic to decide field type based
-            // on common field names, but that might be dangerous
+            // on common field names, but that sounds dangerous
+            //
         }
     }
 
+    //
+    // document assembled; add to index
+    //
     writer->addDocument( &index_doc );
 
-    delete &index_doc;
 
     return(1);
 }
 
 
-//
-// this function is designed to convery SMALL char*
-// from utf8 to wide characters. be careful about
-// using it to convert long strings, since this
-// function is O(2n) on the number of characters 
-//
-wchar_t * utf8_to_wchar(const char* value)
+wchar_t** convertStopWords(set<string> * stopWords)
 {
-    const char * counter;
-    int len = 0;
-        
-    //
-    // Find the number of characters in the stream.
-    //
-    counter = value;
+    wchar_t ** stopArray = (wchar_t **)calloc(stopWords->size(), sizeof(wchar_t *));
 
-    while (counter[0]) {
-        if ((counter[0] & 0x80) == 0x00)
-        {
-            len++;
-        }
-        else if ((counter[1] & 0xC0) == 0x80)
-        {
-            if ((counter[0] & 0xE0) == 0xC0)
-            {
-                len++;
-                counter += 2;
-            }
-            else if (((counter[2] & 0xC0) == 0x80) && ((counter[0] & 0xF0) == 0xE0))
-            {
-                len++;
-                counter += 3;
-            }
-            else
-            {
-                counter++; // invalid character
-            }
-        }
-        else
-        {
-            counter++; // invalid character
-        }
-    }
-
-    //
-    // create a wchar copy of the string
-    //
-    wchar_t *ucs2_str = (wchar_t *)calloc(len+1, sizeof(wchar_t));
-    wchar_t *ucs2_ptr = ucs2_str;
-    counter = value;
-
-    while (counter[0])
+    if (!stopArray)
     {
-        if ((counter[0] & 0x80) == 0x00)
-        {
-            *ucs2_ptr++ = *counter++;
-        }
-        else if ((counter[1] & 0xC0) == 0x80) 
-        {
-            if ((counter[0] & 0xE0) == 0xC0)
-            {
-                *ucs2_ptr++ = ((counter[0] & 0x1F) << 6) | (counter[1] & 0x3F);
-                counter += 2;
-            }
-            else if (((counter[2] & 0xC0) == 0x80) && ((counter[0] & 0xF0) == 0xE0))
-            {
-                *ucs2_ptr++ = ((counter[0] & 0x0F) << 12) |
-                    ((counter[1] & 0x3F) << 6) |
-                    (counter[2] & 0x3F);
-                counter += 3;
-            }
-            else
-            {
-                counter++; // invalid character
-            }
-        }
-        else
-        {
-            counter++; // invalid character
-        }
+        return NULL;
     }
-    *ucs2_ptr = '\0';
 
-    return ucs2_str;
+    set<string>::iterator i;
+    int j = 0;
+    for (i = stopWords->begin(); i != stopWords->end(); i++) {
+        stopArray[j] = utf8_to_wchar(i->c_str());
+        j++;
+    }
+
+    return stopArray;
 }
+
 
 //
 // Deleting
 // 
 int CLuceneDeleteURLFromIndex(std::string * url)
 {
-//    return reader->deleteTerm(new Term( (const wchar_t *) "url", url->c_str() ) );
+    wchar_t * temp = utf8_to_wchar(url->c_str());
+    int result = reader->deleteTerm(new Term( _T("url"), temp));
+    free(temp);
+
+    return result;
 }
 
 
 //
 // Searching
 //
+
+void changeDefaultOperator()
+{
+    parser->setOperator(QueryParser::AND_OPERATOR);
+}
+
+int CLuceneDoQuery(string * input)
+{
+    //
+    // contents is the default field. the query will need
+    // to contain references to the other fields. eg: title:(query text)
+    //
+    wchar_t * temp = utf8_to_wchar(input->c_str());
+    //Query * query = parser->parse(temp, _T("contents"), an);
+    Query * query = parser->parse(temp);
+
+    if (debug > 2)
+    {
+        wchar_t * converted_query = query->toString(_T("contents"));
+        char * converted_query_utf8 = wchar_to_utf8(converted_query);
+        cout << "Converted query before searching: " << converted_query_utf8 << endl;
+        free(converted_query);
+        free(converted_query_utf8);
+    }
+
+    hits = searcher->search( query );
+    if (debug > 1)
+    {
+        cout << "CLucene API: Search sucessful" << endl;
+    }
+    
+
+    free(temp);
+    return hits->length();
+}
+
+void CLuceneSearchGetNth(int n, htsearch_query_match_struct * hit_struct)
+{
+    lucene::document::Document doc = hits->doc(n);
+    char * temp;
+
+    temp = wchar_to_utf8(doc.get(_T("url")));
+    strcpy (hit_struct->URL, temp);
+    free(temp);
+
+    temp = wchar_to_utf8(doc.get(_T("title")));
+    strcpy (hit_struct->title, temp);
+    free(temp);
+
+    temp = wchar_to_utf8(doc.get(_T("size")));
+    hit_struct->size = atoi(temp);
+    free(temp);
+
+    temp = wchar_to_utf8(doc.get(_T("time")));
+    time_t tempTime = (time_t)atoi(temp);
+    gmtime_r(&tempTime, &(hit_struct->time_tm));
+    free(temp);
+
+    hit_struct->score = (int)(hits->score(n) * 10000);
+    hit_struct->score_percent = hit_struct->score / 100;
+
+// 
+// populate hit struct from doc, using wchar_to_utf8
+//
+// definition:
+//
 /*
+typedef struct htsearch_query_match_struct {
 
-int CLuceneOpenSearch(char * index, char * query)
-{
-    return(lucene::CLuceneAPI::OpenSearch(query));
-}
+    char title[HTDIG_DOCUMENT_TITLE_L];
+    char URL[HTDIG_MAX_FILENAME_PATH_L];
+    char excerpt[HTDIG_DOCUMENT_EXCERPT_L];
+    int  score;
+    int  score_percent;     //top result is 100%
+    struct tm time_tm;
+    int  size;
 
-int CLuceneDoQuery(char * query)
-{
-    return(lucene::CLuceneAPI::DoQuery(query));
-}
-
-int CLuceneSearchGetNth(int n, clucene_query_hit_struct * hit_struct)
-{
-    Document nth_doc;
-
-    lucene::CLuceneAPI::SearchGetNth(n, nth_doc); 
-
-    //populate hit struct
-
-    return(1);
-}
-
-int CLuceneCloseSearch(void)
-{
-    return(lucene::CLuceneAPI::CloseSearch());
-}
-
+} htsearch_query_match_struct;
 */
+}
+
+
 
 
