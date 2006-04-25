@@ -14,7 +14,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_api.h,v 1.5 2005/05/12 05:48:35 nealr Exp $
+// $Id: libhtdig_api.h,v 1.5.2.1 2006/04/25 21:57:49 aarnone Exp $
 //
 //----------------------------------------------------------------
 
@@ -56,22 +56,6 @@
 
 
 #define HTDIG_CUSTOM_TEXT_MIME_TYPE           "text/vnd.customdocument"
-
-//htfuzzy
-#define  HTDIG_ALG_ACCENTS                  0x00000100         //"accents"
-#define  HTDIG_ALG_ACCENTS_STR              "accents"
-
-#define  HTDIG_ALG_ENDINGS                  0x00001000         //"endings"     
-#define  HTDIG_ALG_ENDINGS_STR              "endings"     
-
-#define  HTDIG_ALG_METAPHONE                0x00000010         //"metaphone"
-#define  HTDIG_ALG_METAPHONE_STR            "metaphone"
-
-#define  HTDIG_ALG_SOUNDEX                  0x00000001         //"soundex"
-#define  HTDIG_ALG_SOUNDEX_STR              "soundex"
-
-#define  HTDIG_ALG_SYNONYMS                 0x00010000         //"synonyms"
-#define  HTDIG_ALG_SYNONYMS_STR             "synonyms"
 
 
 //searching
@@ -313,149 +297,27 @@ typedef struct htdig_parameters_struct {
 typedef struct htdig_simple_doc_struct {
     
     char location[HTDIG_MAX_FILENAME_PATH_L];
-    char documentid[HTDIG_DOCUMENT_ID_L];
+    char documentid [HTDIG_DOCUMENT_ID_L];
     char title[HTDIG_DOCUMENT_TITLE_L];
     char meta[HTDIG_DOCUMENT_META_L];
     char *contents;                               //MUST ALLOCATE & FREE!!!
     char content_type[HTDIG_DOCUMENT_CONTENT_TYPE_L];   //MIME-ISH string
-    //struct tm time_tm;                      // use to override index time
     time_t doc_time;
+    int spiderable;
+    int conetent_length;
     
 } htdig_simple_doc_struct;
 
 
 DLLEXPORT int htdig_index_open(htdig_parameters_struct *);
+DLLEXPORT int htdig_index_urls(htdig_parameters_struct * );
 DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct * );
-DLLEXPORT int htdig_index_urls(void);
-DLLEXPORT int htdig_index_reset(void);
 DLLEXPORT int htdig_index_close(void);
 
-DLLEXPORT int htdig_index_test_url(htdig_parameters_struct *htparms);
 
-DLLEXPORT int htdig_index_obsolete_url(char *);
-DLLEXPORT int htdig_index_mark_all_obsolete(void);
 
-DLLEXPORT int htdig_index_purge_db(void);
-    
 DLLEXPORT int htdig_get_max_head_length(void);
-
-
-
-
-//=============================================================================
-//===== HTDIG MERGING API =====================================================
-
-/**************************************************
- * HTDIG_DOCUMENTATION for  htmerge_parameters_struct
- *
- *   DEBUGGING PARAMETERS
- *
- *   int debug 
- *       Verbose mode.  This increases the verbosity of the
- *       program.  Using more than 2 is probably only useful
- *       for debugging purposes.  The default verbose mode
- *       gives a progress on what it is doing and where it is.
- *
- *   char logFile
- *        File to stream debugging & error messages to!
- *
- *  
- *   BOOLEAN PARAMETERS
- *
- *   int alt_work_area
- *       Use alternate work files.
- *       Tells htmerge to append .work to database files causing
- *       a second copy of the database to be built.  This allows
- *       original files to be used by htsearch during the indexing run.
- *
- *
- *   STRING PARAMETERS
- *       
- *   char configFile
- *       configfile
- *       Use the specified configuration file instead of the default.
- *
- *   char merge_configFile
- *       merge_configfile
- *       Merge the databases specified into the databases specified
- *       by -c or the default.
- *
- *
- *************************************************/
-
-typedef struct htmerge_parameters_struct {
-
-  char configFile[HTDIG_MAX_FILENAME_PATH_L];
-  char merge_configFile[HTDIG_MAX_FILENAME_PATH_L];
-
-  //debugging & logfile
-  char logFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
-  int debug;            //0, 1 ,2, 3, 4, 5
-  
-  //booelan values
-  int alt_work_area;
-
-} htmerge_parameters_struct;
-
-DLLEXPORT int htmerge_index_merge(htmerge_parameters_struct *);
-
-
-
-
-
-//=============================================================================
-//===== HTDIG HTFUZZY API =====================================================
-
-
-
-/**************************************************
- *   HTDIG_DOCUMENTATION for  htfuzzy_parameters_struct 
- * 
- *    DEBUGGING PARAMETERS
- *
- *    int debug 
- *        Verbose mode.  This increases the verbosity of the
- *         program.  Using more than 2 is probably only useful
- *         for debugging purposes.
- *         
- *    char logFile
- *         File to stream debugging & error messages to!
- *
- *         
- *    PARAMETERS
- *
- *    char configFile
- *        configfile
- *        Use the specified configuration file instead of the default.
- *
- *    int algorithms_flag
- *        Bitwise Flags to signal algorithms to be used
- *    
- *     soundex    == HTDIG_ALG_SOUNDEX
- *     metaphone  == HTDIG_ALG_METAPHONE
- *     accents    == HTDIG_ALG_ACCENTS
- *     endings    == HTDIG_ALG_ENDINGS
- *     synonyms   == HTDIG_ALG_SYNONYMS
- *     
- ***************************************************/
-
-
-typedef struct htfuzzy_parameters_struct {
-
-  char configFile[HTDIG_MAX_FILENAME_PATH_L];
-  int  algorithms_flag;
-
-  //debugging & logfile
-  char logFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
-  int debug;            //0, 1 ,2, 3, 4, 5
-  
-  //booelan values
-
-} htfuzzy_parameters_struct;
-
-
-// htfuzzy functions
-DLLEXPORT int htfuzzy_index(htfuzzy_parameters_struct *);
+DLLEXPORT int htdig_index_test_url(htdig_parameters_struct * );
 
 
 
@@ -490,6 +352,8 @@ typedef struct htsearch_parameters_struct {
 
   char configFile[HTDIG_MAX_FILENAME_PATH_L];
   char DBpath[HTDIG_MAX_FILENAME_PATH_L];
+//  char aliasesPath[HTDIG_MAX_FILENAME_PATH_L];
+//  char stopwordsPath[HTDIG_MAX_FILENAME_PATH_L];
   char locale[16];
 
   //debugging & logfile
