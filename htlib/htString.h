@@ -9,10 +9,14 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htString.h,v 1.24.2.3 2006/02/13 22:53:58 aarnone Exp $
+// $Id: htString.h,v 1.24.2.4 2006/04/25 21:36:59 aarnone Exp $
 //
 #ifndef __String_h
 #define __String_h
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "Object.h"
 
