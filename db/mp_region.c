@@ -303,7 +303,7 @@ CDB___memp_close(dbenv)
 
 	/* Discard DB_MPOOLFILEs. */
 	while ((dbmfp = TAILQ_FIRST(&dbmp->dbmfq)) != NULL)
-		if ((t_ret = memp_fclose(dbmfp)) != 0 && ret == 0)
+		if ((t_ret = CDB_memp_fclose(dbmfp)) != 0 && ret == 0)
 			ret = t_ret;
 
 	/* Discard the thread mutex. */
