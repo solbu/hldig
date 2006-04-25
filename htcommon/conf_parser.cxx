@@ -78,7 +78,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "conf_parser.yxx"
+
 
 //
 // conf_parser.yxx
@@ -92,7 +92,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: conf_parser.cxx,v 1.7 2004/06/10 14:48:38 angusgb Exp $
+// $Id: conf_parser.cxx,v 1.7.2.1 2006/04/25 22:15:13 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -142,14 +142,14 @@ int sn_debug=3;
 #endif
 
 #if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
-#line 50 "conf_parser.yxx"
+
 typedef union YYSTYPE {
 	char *str;
 	ConfigDefaults	*ConfLine;
 	HtConfiguration	*ConfLines;
 } YYSTYPE;
 /* Line 191 of yacc.c.  */
-#line 153 "conf_parser.cxx"
+
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
@@ -161,16 +161,9 @@ typedef union YYSTYPE {
 
 
 /* Line 214 of yacc.c.  */
-#line 165 "conf_parser.cxx"
+
 
 #if ! defined (yyoverflow) || YYERROR_VERBOSE
-
-# ifndef YYFREE
-#  define YYFREE free
-# endif
-# ifndef YYMALLOC
-#  define YYMALLOC malloc
-# endif
 
 /* The parser invokes alloca or malloc; define the necessary symbols.  */
 
@@ -196,8 +189,8 @@ typedef union YYSTYPE {
 #   include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
 #   define YYSIZE_T size_t
 #  endif
-#  define YYSTACK_ALLOC YYMALLOC
-#  define YYSTACK_FREE YYFREE
+#  define YYSTACK_ALLOC malloc
+#  define YYSTACK_FREE free
 # endif
 #endif /* ! defined (yyoverflow) || YYERROR_VERBOSE */
 
@@ -1059,12 +1052,12 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 66 "conf_parser.yxx"
-    { /* Whole config file */ ;}
+
+    { /* Whole config file */ }
     break;
 
   case 4:
-#line 69 "conf_parser.yxx"
+
     {   
   // name: value
                ((HtConfiguration *)aConf)->AddParsed(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
@@ -1076,26 +1069,26 @@ yyreduce:
 	       delete [] yyvsp[0].ConfLine->name; 
 	       delete [] yyvsp[0].ConfLine->value;
 	       delete yyvsp[0].ConfLine;
-               ;}
+               }
     break;
 
   case 5:
-#line 81 "conf_parser.yxx"
+
     {
           // <server www.gc.lviv.ua>
           //    server_max_docs: 456
           //    ... : ...
           // </server>
-	;}
+	}
     break;
 
   case 6:
-#line 87 "conf_parser.yxx"
-    { /* Ignore empty lines */  ;}
+
+    { /* Ignore empty lines */  }
     break;
 
   case 7:
-#line 90 "conf_parser.yxx"
+
     { 
   // locale: uk_UA.KOI8-U
                                         //
@@ -1104,31 +1097,31 @@ yyreduce:
                                         // in complex expression or not.
 					yyval.ConfLine=new ConfigDefaults;
 					yyval.ConfLine->name = yyvsp[-3].str; yyval.ConfLine->value=yyvsp[-1].str;
-					;}
+					}
     break;
 
   case 8:
-#line 100 "conf_parser.yxx"
+
     { 
 	  // max_head_length: 300000
 	  //
 	                                yyval.ConfLine=new ConfigDefaults;
 					yyval.ConfLine->name = yyvsp[-3].str; yyval.ConfLine->value=yyvsp[-1].str;
-					;}
+					}
     break;
 
   case 9:
-#line 106 "conf_parser.yxx"
+
     {
 	  // bad_extensions: .XLS .xls .pdf .PDF .doc .DOC 
 	  //
 	  yyval.ConfLine=new ConfigDefaults;
 	  yyval.ConfLine->name = yyvsp[-3].str; yyval.ConfLine->value=yyvsp[-1].str;
-	;}
+	}
     break;
 
   case 10:
-#line 112 "conf_parser.yxx"
+
     {
 	  // excude_urls:
 	  //
@@ -1136,11 +1129,11 @@ yyreduce:
 				    yyval.ConfLine->name = yyvsp[-2].str;
 				    yyval.ConfLine->value=new char[1];
 				    *yyval.ConfLine->value='\0';
-					;}
+					}
     break;
 
   case 11:
-#line 122 "conf_parser.yxx"
+
     {
 		      // check if "<param> ... </param>" are equal
 		      if (strcmp(yyvsp[-10].str,yyvsp[-2].str)!=0) {
@@ -1159,11 +1152,11 @@ yyreduce:
 		      delete yyvsp[-10].str; 
 		      delete yyvsp[-8].str;
 		      delete [] yyvsp[-2].str;
-		    ;}
+		    }
     break;
 
   case 12:
-#line 143 "conf_parser.yxx"
+
     {
   //aaa: nnn
   //bbb: ccc
@@ -1181,11 +1174,11 @@ yyreduce:
   delete yyvsp[0].ConfLine->name; 
   delete yyvsp[0].ConfLine->value;
   delete yyvsp[0].ConfLine;
-;}
+}
     break;
 
   case 13:
-#line 161 "conf_parser.yxx"
+
     {
 				yyvsp[-1].ConfLines->AddParsed(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
 				#ifdef DEBUG
@@ -1197,16 +1190,16 @@ yyreduce:
 				delete yyvsp[0].ConfLine->value;
 				delete yyvsp[0].ConfLine;
 				//$$=$1; //I think $$==$1
-			;}
+			}
     break;
 
   case 14:
-#line 173 "conf_parser.yxx"
-    { /* Ignore empty lines */  ;}
+
+    { /* Ignore empty lines */  }
     break;
 
   case 15:
-#line 176 "conf_parser.yxx"
+
     { 
 	// Paste 2 components. Reallocate memory for 2 components.
 	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
@@ -1218,11 +1211,11 @@ yyreduce:
 	strcat(yyval.str,yyvsp[0].str);
 	delete [] yyvsp[-1].str; 
 	delete [] yyvsp[0].str;
-	;}
+	}
     break;
 
   case 16:
-#line 189 "conf_parser.yxx"
+
     { 
 	// Paste 2 components. Reallocate memory for 2 components.
 	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
@@ -1234,11 +1227,11 @@ yyreduce:
 	strcat(yyval.str,yyvsp[0].str);
 	delete [] yyvsp[-1].str; 
 	delete [] yyvsp[0].str;
-	;}
+	}
     break;
 
   case 17:
-#line 202 "conf_parser.yxx"
+
     { 
 	// Paste 2 components. Reallocate memory for 2 components.
 	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
@@ -1250,11 +1243,11 @@ yyreduce:
 	strcat(yyval.str,yyvsp[0].str);
 	delete [] yyvsp[-1].str; 
 	delete [] yyvsp[0].str;
-	;}
+	}
     break;
 
   case 18:
-#line 215 "conf_parser.yxx"
+
     { 
 	// Paste 2 components. Reallocate memory for 2 components.
 	if ((yyval.str=new char[strlen(yyvsp[-1].str)+strlen(yyvsp[0].str)+1+1])==NULL) {
@@ -1266,11 +1259,11 @@ yyreduce:
 	strcat(yyval.str,yyvsp[0].str);
 	delete [] yyvsp[-1].str; 
 	delete [] yyvsp[0].str;
-	;}
+	}
     break;
 
   case 19:
-#line 228 "conf_parser.yxx"
+
     { 
 		char *old=yyval.str;
 		if ((yyval.str=new char [strlen(yyval.str)+strlen(yyvsp[0].str)+1+1])==NULL) {
@@ -1282,11 +1275,11 @@ yyreduce:
 		strcat(yyval.str," ");
 		strcat(yyval.str,yyvsp[0].str);
 		delete [] yyvsp[0].str;
-	;}
+	}
     break;
 
   case 20:
-#line 240 "conf_parser.yxx"
+
     {
 		char *old=yyval.str;
 		if ((yyval.str=new char [strlen(yyval.str)+strlen(yyvsp[0].str)+1+1])==NULL) {
@@ -1298,14 +1291,14 @@ yyreduce:
 		strcat(yyval.str," ");
 		strcat(yyval.str,yyvsp[0].str);
 		delete [] yyvsp[0].str;
-	;}
+	}
     break;
 
 
     }
 
-/* Line 1000 of yacc.c.  */
-#line 1309 "conf_parser.cxx"
+/* Line 993 of yacc.c.  */
+
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1530,7 +1523,7 @@ yyreturn:
 }
 
 
-#line 253 "conf_parser.yxx"
+
 
 int
 yyerror (char *s)  /* Called by yyparse on error */
@@ -1549,5 +1542,4 @@ yyerror (char *s)  /* Called by yyparse on error */
    // exit(1);
    return -1;
 }
-
 
