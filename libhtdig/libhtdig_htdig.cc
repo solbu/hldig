@@ -17,7 +17,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htdig.cc,v 1.6.2.1 2006/04/25 22:02:17 aarnone Exp $
+// $Id: libhtdig_htdig.cc,v 1.6.2.2 2006/04/27 00:49:44 aarnone Exp $
 //
 //-------------------------------------------------------------
 
@@ -137,6 +137,8 @@ DLLEXPORT int htdig_index_urls(htdig_parameters_struct * htdig_params)
 DLLEXPORT int htdig_index_close(void)
 {
     spider->closeDBs();
+
+    delete spider;
 
     return (TRUE);
 }
