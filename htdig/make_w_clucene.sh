@@ -6,7 +6,7 @@ rm -f clhtdig
 rm -f htdig.o
 
 # needed for the buffio.h and tidy.h from the TidyParser
-TIDY_INC='../HTMLTidy/build-tidy/include'
+TIDY_INC='../HTMLTidy/include'
 
 
 g++ -DHAVE_CONFIG_H -I. -I../libhtdig -I../libhtdig/CLuceneAPI -I../include -I../htlib -I../htnet -I../htcommon -I../db -I$TIDY_INC -g -O2 -Wall -fno-rtti -fno-exceptions -c -o htdig.o `test -f 'htdig.cc' || echo './'`htdig.cc
