@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Spider.cc,v 1.1.2.1 2006/04/24 23:40:25 aarnone Exp $
+// $Id: Spider.cc,v 1.1.2.2 2006/04/27 00:48:12 aarnone Exp $
 //
 
 
@@ -208,6 +208,21 @@ void Spider::openDBs(htdig_parameters_struct * params)
     }
 
     //
+    // if an alternate work area is asked for, append .work to the
+    // database filenames (CLucene's name is changed in the actuall
+    // openIndex call)
+    //
+    if (params->alt_work_area)
+    {
+        String configValue = config->Find("doc_index");
+        if (configValue.length() != 0)
+        {
+            configValue << ".work";
+            config->Add("doc_index", configValue);
+        }
+    }
+
+    //
     // open the indexDB
     // 
     const String index_filename = config->Find("doc_index");
@@ -223,13 +238,23 @@ void Spider::openDBs(htdig_parameters_struct * params)
 
     
     //
-    // open the CLucene database (not an object because we're using the API)
+    // open the CLucene database (not an object because we're using the API).
+    // if there's an alt work area needed, append .work to the drectory name
     // 
     const String db_dir_filename = config->Find("database_dir");
-    if (debug)
-        cout << "Opening CLucene database here: " << db_dir_filename.get() << endl;
-     
-    CLuceneOpenIndex(form("%s/CLuceneDB", (char *)db_dir_filename.get()), params->initial ? 1 : 0, &stopWords);
+    if (!params->alt_work_area) 
+    {
+        if (debug)
+            cout << "Opening CLucene database here: " << db_dir_filename.get() << endl;
+        CLuceneOpenIndex(form("%s/CLuceneDB", (char *)db_dir_filename.get()), params->initial ? 1 : 0, &stopWords);
+    }
+    else
+    {
+        if (debug)
+            cout << "Opening CLucene database here: " << db_dir_filename.get() << endl;
+        CLuceneOpenIndex(form("%s/CLuceneDB.work", (char *)db_dir_filename.get()), params->initial ? 1 : 0, &stopWords);
+
+    }
 }
 
 
