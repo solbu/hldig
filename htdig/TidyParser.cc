@@ -19,6 +19,7 @@
 TidyParser::TidyParser()
 {
     tdoc = NULL;
+    config= HtConfiguration::config();
 }
 
 
@@ -133,7 +134,7 @@ void TidyParser::nodeTraverse( TidyNode tnod )
         //
         // If this is a text node, insert the text into the CLucene document
         //
-        if ( tidyNodeIsText( child ))
+        if ( !inScript && tidyNodeIsText( child ))
         {
             TidyBuffer buf;
             
@@ -155,9 +156,11 @@ void TidyParser::nodeTraverse( TidyNode tnod )
                     CLuceneDoc->appendField("contents", (char*)buf.bp);
                 }
 
-                CLuceneDoc->appendField("stemmed", (char*)buf.bp);
-                CLuceneDoc->appendField("synonym", (char*)buf.bp);
-            }
+                if (config->Boolean("use_stemming"))
+                    CLuceneDoc->appendField("stemmed", (char*)buf.bp);
+                if (config->Boolean("use_synonyms"))
+                        CLuceneDoc->appendField("synonym", (char*)buf.bp);
+           }
             tidyBufFree(&buf);
         }
         else if (tidyNodeIsMETA(child))
@@ -198,8 +201,10 @@ void TidyParser::nodeTraverse( TidyNode tnod )
                                 //
                                 CLuceneDoc->appendField("keywords", contentVal);
 
-                                CLuceneDoc->appendField("stemmed", contentVal);
-                                CLuceneDoc->appendField("synonym", contentVal);
+                                if (config->Boolean("use_stemming"))
+                                    CLuceneDoc->appendField("stemmed", contentVal);
+                                if (config->Boolean("use_synonyms"))
+                                    CLuceneDoc->appendField("synonym", contentVal);
                             }
                             else if (!strcmp(metaVal, "description"))
                             {
@@ -209,8 +214,10 @@ void TidyParser::nodeTraverse( TidyNode tnod )
                                 CLuceneDoc->appendField("doc-meta-desc", contentVal);
                                 CLuceneDoc->appendField("meta-desc", contentVal);
 
-                                CLuceneDoc->appendField("stemmed", contentVal);
-                                CLuceneDoc->appendField("synonym", contentVal);
+                                if (config->Boolean("use_stemming"))
+                                    CLuceneDoc->appendField("stemmed", contentVal);
+                                if (config->Boolean("use_synonyms"))
+                                    CLuceneDoc->appendField("synonym", contentVal);
                             }
                             else if (!strcmp(metaVal, "author"))
                             {
@@ -277,8 +284,11 @@ void TidyParser::nodeTraverse( TidyNode tnod )
                 if (altVal)
                 {
                     CLuceneDoc->appendField("contents", altVal);
-                    CLuceneDoc->appendField("stemmed", altVal);
-                    CLuceneDoc->appendField("synonym", altVal);
+
+                    if (config->Boolean("use_stemming"))
+                        CLuceneDoc->appendField("stemmed", altVal);
+                    if (config->Boolean("use_synonyms"))
+                        CLuceneDoc->appendField("synonym", altVal);
                 }
             }
         }
@@ -310,6 +320,9 @@ void TidyParser::stateChanger(TidyNode tnod, bool newState)
             break;
         case TidyTag_BODY:
             inBody = newState;
+            break;
+        case TidyTag_SCRIPT:
+            inScript = newState;
             break;
         case TidyTag_TITLE:
             inTitle = newState;

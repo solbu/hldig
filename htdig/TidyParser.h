@@ -15,6 +15,7 @@
 #include "HtStdHeader.h"
 #include "DocumentRef.h"
 #include "CLuceneAPI.h"
+#include "HtConfiguration.h"
 
 //
 // include the two HTMLtidy headers
@@ -71,7 +72,10 @@ class TidyParser
     //
     set<string> URLlist;
 
-    set<string> stemWords;
+    //
+    // configuration for using in parsing
+    //
+    HtConfiguration *config;
 
     //
     // position flags
@@ -80,6 +84,7 @@ class TidyParser
     bool inTitle;
     bool inBody;
     bool inHeading;
+    bool inScript;
 
     //
     // document/link handling tags
