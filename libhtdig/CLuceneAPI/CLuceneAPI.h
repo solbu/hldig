@@ -2,12 +2,7 @@
 #define _CLuceneAPI_h_
 
 #include "HtStdHeader.h"
-
-
-//
-// ugly, but needed for the htsearch_query_match_struct
-//
-#include "libhtdig_api.h"
+#include "HtConfiguration.h"
 
 
 // 
@@ -27,24 +22,8 @@ int CLuceneAddDocToIndex(CL_Doc * doc);
 
 int CLuceneDeleteURLFromIndex(string * url);
 
+int CLuceneDeleteIDFromIndex(int id);
 
-// 
-// Searching
-// 
-
-void changeDefaultOperator();
-
-int CLuceneDoQuery(string * query_text);
-
-void CLuceneSearchGetNth(int, htsearch_query_match_struct *);
-
-
-
-// 
-// Utility
-// 
-
-wchar_t** convertStopWords(set<string> * stopWords);
 
 #endif // _CLuceneAPI_h_
 
