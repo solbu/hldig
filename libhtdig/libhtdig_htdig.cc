@@ -17,7 +17,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htdig.cc,v 1.6.2.2 2006/04/27 00:49:44 aarnone Exp $
+// $Id: libhtdig_htdig.cc,v 1.6.2.3 2006/07/26 23:44:28 aarnone Exp $
 //
 //-------------------------------------------------------------
 
@@ -31,12 +31,12 @@ using namespace std;
 extern "C" {
 #include "libhtdig_api.h"
 }
-#include "libhtdig_log.h"
 
 
 #include "Spider.h"
 
-static Spider * spider;
+static Spider * spider = NULL;
+static int openCount = 0;
 
 
 
@@ -62,6 +62,14 @@ static Spider * spider;
  
 DLLEXPORT int htdig_index_open(htdig_parameters_struct * htdig_params)
 {
+    openCount++;
+
+    if (openCount > 1)
+    {
+        cout << "HtDig: attempting to open index when already open" << endl;
+        return(FALSE);
+    }
+
     spider = new Spider(htdig_params);
 
     spider->openDBs(htdig_params);
@@ -87,17 +95,109 @@ DLLEXPORT int htdig_index_open(htdig_parameters_struct * htdig_params)
  *******************************************************/
 DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct * input)
 {
+    if (spider == NULL)
+    {
+        return (FALSE);
+    }
+
     singleDoc newDoc;
 
     newDoc["url"] = input->location;
+    newDoc["id"] = input->documentid;
     newDoc["title"] = input->title;
     newDoc["meta-desc"] = input->meta;
     newDoc["contents"] = input->contents;
     newDoc["content-type"] = input->content_type;
 
-    spider->addSingleDoc(&newDoc, input->doc_time, input->spiderable);
+    //
+    // always send false for addToSpiderQueue, but can probably be a changed in the API
+    //
+    return spider->addSingleDoc(&newDoc, input->doc_time, input->spiderable,  false);
+}
 
-    return(TRUE);
+
+//
+// NOTE: the caller must free the contents field!!!
+//
+DLLEXPORT htdig_simple_doc_struct * htdig_fetch_simple_doc(char * input)
+{
+    if (spider == NULL)
+    {
+        return (FALSE);
+    }
+
+    string url = input;
+
+    singleDoc * doc = spider->fetchSingleDoc(&url);
+
+    if (doc)
+    {
+        //cout << "in htdig api before fetch" << endl;
+        htdig_simple_doc_struct * output = (htdig_simple_doc_struct*) malloc(sizeof(htdig_simple_doc_struct));
+        //cout << "in htdig api after fetch" << endl;
+
+        //
+        // set all the "strings" to empty
+        //
+        output->title[0] = '\0';
+        output->meta[0] = '\0';
+        output->content_type[0] = '\0';
+        output->location[0] = '\0';
+
+
+        //
+        // last modified time (can be overriden by meta tags in the document)
+        //
+        output->doc_time = atoi((*doc)["doc-time"].c_str());
+
+        //
+        // length of the contents
+        //
+        output->content_length = (*doc)["contents"].length();
+
+        //
+        // title string
+        //
+        strncpy(output->title, (*doc)["title"].c_str(), HTDIG_DOCUMENT_TITLE_L);
+        output->title[HTDIG_DOCUMENT_TITLE_L - 1] = '\0';
+
+        //
+        // meta description
+        //
+        strncpy(output->meta, (*doc)["meta-desc"].c_str(), HTDIG_DOCUMENT_META_L);
+        output->meta[HTDIG_DOCUMENT_META_L - 1] = '\0';
+
+        //
+        // the content type (encoding and mime)
+        //
+        strncpy(output->content_type, (*doc)["content-type"].c_str(), HTDIG_DOCUMENT_CONTENT_TYPE_L);
+        output->content_type[HTDIG_DOCUMENT_CONTENT_TYPE_L - 1] = '\0';
+
+        //
+        // the contents field. this is just a char *, so it needs to be malloc'ed
+        //
+        output->contents = (char*)malloc((output->content_length * sizeof(char)) + 1);
+        strncpy(output->contents, (*doc)["contents"].c_str(), output->content_length);
+        output->contents[output->content_length - 1] = '\0';
+
+        //
+        // this should just contain the URL, but it can be adjusted based on URL redirects
+        //
+        strncpy(output->location, (*doc)["url"].c_str(), HTDIG_MAX_FILENAME_PATH_L);
+        output->location[HTDIG_MAX_FILENAME_PATH_L - 1] = '\0';
+
+        //
+        // documentid and spiderable aren't really useful, but what the heck
+        //
+        output->spiderable = 1;
+        output->documentid[0] = '\0';
+
+        return(output);
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 /*******************************************************
@@ -115,12 +215,37 @@ DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct * input)
  *******************************************************/
 DLLEXPORT int htdig_index_urls(htdig_parameters_struct * htdig_params)
 {
+    if (spider == NULL)
+    {
+        return (FALSE);
+    }
+
     spider->Start(htdig_params);
 
     return (TRUE);
 }
 
 
+DLLEXPORT int htdig_remove_doc_by_url(char * input)
+{
+    if (spider == NULL)
+    {
+        return (FALSE);
+    }
+
+    string url = input;
+    return spider->DeleteDoc(&url);
+}
+
+DLLEXPORT int htdig_remove_doc_by_id(int input)
+{
+    if (spider == NULL)
+    {
+        return (FALSE);
+    }
+
+    return spider->DeleteDoc(input);
+}
 
 /*******************************************************
  *
@@ -136,9 +261,24 @@ DLLEXPORT int htdig_index_urls(htdig_parameters_struct * htdig_params)
  *******************************************************/
 DLLEXPORT int htdig_index_close(void)
 {
-    spider->closeDBs();
+    openCount--;
+    if (openCount > 0)
+    {
+        cout << "Index not really closed" << endl;
+        return (TRUE);
+    }
+    else if (openCount < 0)
+    {
+        cout << "Index already closed" << endl;
+        openCount = 0;
+        return (TRUE);
+    }
 
-    delete spider;
+    if(spider != NULL)
+    {
+        delete spider;
+        spider = NULL;
+    }
 
     return (TRUE);
 }
@@ -232,8 +372,7 @@ DLLEXPORT int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
     config->Defaults (&defaults[0]);
     if (access ((char *) configFile, R_OK) < 0)
     {
-        reportError (form ("[HTDIG] Unable to find configuration file '%s'",
-                        configFile.get ()));
+        //reportError (form ("[HTDIG] Unable to find configuration file '%s'", configFile.get ()));
         return(HTDIG_ERROR_CONFIG_READ);
     }
     config->Read (configFile);
@@ -254,7 +393,7 @@ DLLEXPORT int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
     }
 
     if (config->Find ("locale").empty () && debug > 0)
-        logEntry("Warning: unknown locale!\n");
+        cout << "Warning: unknown locale!" << endl;
 
     if (strlen(htdig_parms->max_hop_count) > 0)
     {

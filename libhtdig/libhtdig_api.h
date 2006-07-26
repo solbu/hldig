@@ -14,7 +14,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_api.h,v 1.5.2.1 2006/04/25 21:57:49 aarnone Exp $
+// $Id: libhtdig_api.h,v 1.5.2.2 2006/07/26 23:44:28 aarnone Exp $
 //
 //----------------------------------------------------------------
 
@@ -52,7 +52,7 @@
 #define HTDIG_DEFAULT_EXCERPT_SIZE         524288
 
 //should be the same as the default value in HTDIG
-#define HTDIG_MAX_QUERY_L                     256       
+#define HTDIG_MAX_QUERY_L                     1024       
 
 
 #define HTDIG_CUSTOM_TEXT_MIME_TYPE           "text/vnd.customdocument"
@@ -304,14 +304,17 @@ typedef struct htdig_simple_doc_struct {
     char content_type[HTDIG_DOCUMENT_CONTENT_TYPE_L];   //MIME-ISH string
     time_t doc_time;
     int spiderable;
-    int conetent_length;
+    int content_length;
     
 } htdig_simple_doc_struct;
 
 
 DLLEXPORT int htdig_index_open(htdig_parameters_struct *);
 DLLEXPORT int htdig_index_urls(htdig_parameters_struct * );
-DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct * );
+DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct *);
+DLLEXPORT htdig_simple_doc_struct * htdig_fetch_simple_doc(char * );
+DLLEXPORT int htdig_remove_doc_by_url(char *);
+DLLEXPORT int htdig_remove_doc_by_id(int);
 DLLEXPORT int htdig_index_close(void);
 
 
@@ -474,10 +477,11 @@ typedef struct htsearch_query_match_struct {
     char title[HTDIG_DOCUMENT_TITLE_L];
     char URL[HTDIG_MAX_FILENAME_PATH_L];
     char excerpt[HTDIG_DOCUMENT_EXCERPT_L];
+    int  id;
     int  score;
     int  score_percent;     //top result is 100%
-    struct tm time_tm;
     int  size;
+    struct tm time_tm;
 
 } htsearch_query_match_struct;
 

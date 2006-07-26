@@ -17,13 +17,18 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htsearch.cc,v 1.5.2.1 2006/04/25 22:03:10 aarnone Exp $
+// $Id: libhtdig_htsearch.cc,v 1.5.2.2 2006/07/26 23:44:28 aarnone Exp $
 //
 //----------------------------------------------------------------
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
+
+#include <time.h>
+#include "HtStdHeader.h"
+
+#include "CLucene.h"
 
 extern "C"
 {
@@ -33,12 +38,24 @@ extern "C"
 #include <stdlib.h>
 #include <errno.h>
 #include <string>
+#include <ctype.h>
+#include <signal.h>
+
+#ifndef _WIN32
+#include <unistd.h>
+#endif
+
+
+// If we have this, we probably want it.
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#endif
+
 using namespace std;
 
-#include "libhtdig_log.h"
-#include "CLuceneAPI.h"
 #include "WordType.h"
 
+#include "libhtdig_log.h"
 
 //#include "htsearch.h"
 #include "defaults.h"
@@ -58,31 +75,9 @@ using namespace std;
 
 //define _XOPEN_SOURCE
 //#define _GNU_SOURCE
-#include <time.h>
-#include <ctype.h>
-#include <signal.h>
-
-#ifndef _WIN32
-#include <unistd.h>
-#endif
-
-
-// If we have this, we probably want it.
-#ifdef HAVE_GETOPT_H
-#include <getopt.h>
-#endif
 
 typedef void (*SIGNAL_HANDLER) (...);
 
-// ResultList *htsearch(const String&, List &, Parser *);
-//int htsearch(Collection *, List &, Parser *);
-
-//void setupWords(char *, List &, int, Parser *, String &);
-//void createLogicalWords(List &, String &, String &);
-//void reportError(char *);
-//void convertToBoolean(List & words);
-//void doFuzzy(WeightWord *, List &, List &);
-//void addRequiredWords(List &, StringList &);
 
 int minimum_word_length = 3;
 
@@ -113,8 +108,30 @@ HtRegex always_return_these;
 
 
 static int total_matches = 0;
-//static List *matches_list = 0;
-//static ResultFetch *resultfetch = 0;
+static string initial_query;
+
+    
+CL_NS_USE(index)
+CL_NS_USE(util)
+CL_NS_USE(store)
+CL_NS_USE(search)
+#ifndef _MSC_VER
+CL_NS_USE2(search, highlight)
+#endif
+CL_NS_USE(document)
+CL_NS_USE(queryParser)
+CL_NS_USE(analysis)
+CL_NS_USE2(analysis,standard)
+CL_NS_USE2(analysis,snowball)
+
+static int64_t str = lucene::util::Misc::currentTimeMillis();
+static IndexSearcher* searcher = NULL;
+static PerFieldAnalyzerWrapper* analyzer = NULL;
+static StandardAnalyzer* standardAnalyzer = NULL;
+static SnowballAnalyzer* snowballAnalyzer = NULL;
+static Hits* hits = NULL;
+static QueryParser * parser = NULL;
+
 
 
 //*****************************************************************************
@@ -123,6 +140,15 @@ static int total_matches = 0;
 // int main(int ac, char **av)
 DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
 {
+    if (searcher != NULL)
+    {
+        if (debug > 2)
+        {
+            cout << "HtSearch: tried to open searcher when already open" << endl;
+        }
+        return(TRUE);
+    }
+
     //int override_config = 0;
     //int cInd = 0;
     //StringMatch *searchWordsPattern = NULL;
@@ -285,36 +311,6 @@ DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
     }
 
     //
-    // Read in the badwords file (it's just a text file)
-    //
-/*
-    const       String filename = config->Find("bad_word_list");
-    FILE        *fl = fopen(filename, "r");
-    char        buffer[1000];
-    char        *word;
-    String      new_word;
-
-    while (fl && fgets(buffer, sizeof(buffer), fl))
-    {
-        word = strtok(buffer, "\r\n \t");
-        if (word && *word)
-        {
-            int flags;
-            new_word = word;
-            if((flags = WordType::Instance()->Normalize(new_word)) & WORD_NORMALIZE_NOTOK)
-            {
-                fprintf(stderr, "Reading bad words from %s found %s, ignored because %s\n",
-                        (const char*)filename, word, 
-                        (char*)WordType::Instance()->NormalizeStatus(flags & WORD_NORMALIZE_NOTOK));
-            }
-            else
-            {
-               stopWords.insert(new_word.get());
-            }
-        }
-    }
-*/
-    //
     // set up the stop word list
     //
     set<string> stopWords;
@@ -347,29 +343,74 @@ DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
                     stopWords.insert(line);
                     if (debug > 4)
                     {
-                        cout << '.' << line << '.' << endl;
+                        cout << line << endl;
                     }
                 }
             }
         }
         else if (debug)
         {
-            cout << "Unable to open stop word file" << endl;
+            cout << "HtSearch: unable to open stop word file, using default CLucene stop words" << endl;
         }
     }
     else if (debug > 1)
     {
-        cout << "Stop word file not specified, using default CLucene stop words" << endl;
+        cout << "HtSearch: stop word file not specified, using default CLucene stop words" << endl;
     }
 
     //
-    // open the CLucene database 
-    // 
+    // Create the searcher - this will be used for.... searching!
+    //
     const String db_dir_filename = config->Find("database_dir");
     if (debug)
-        cout << "Opening CLucene database here: " << db_dir_filename.get() << endl;
+        cout << "HtSearch: opening CLucene database here: " << db_dir_filename.get() << endl;
      
-    CLuceneOpenIndex(form("%s/CLuceneDB", (char *)db_dir_filename.get()), 0, &stopWords);
+	searcher = _CLNEW IndexSearcher(form("%s/CLuceneDB", (char *)db_dir_filename.get()));
+    if (debug > 3)
+        cout << "IndexSearcher... ";
+
+    //
+    // Create the analyzer. the stop words will need to be
+    // extracted into a wchar_t array (maybe).
+    //
+    if (stopWords.size())
+    {
+        wchar_t ** stopArray = convertStopWords(&stopWords);
+
+        standardAnalyzer = _CLNEW StandardAnalyzer(stopArray);
+        snowballAnalyzer = _CLNEW SnowballAnalyzer(_T("english"), stopArray);
+        analyzer = _CLNEW PerFieldAnalyzerWrapper(standardAnalyzer);
+        analyzer->addAnalyzer(_T("stemmed"), snowballAnalyzer);
+
+        for (unsigned int i = 0; i<stopWords.size(); i++)
+        {
+            free(stopArray[i]);
+        }
+        free(stopArray);
+    }
+    else
+    {
+        standardAnalyzer = _CLNEW StandardAnalyzer();
+        snowballAnalyzer = _CLNEW SnowballAnalyzer(_T("english"));
+        analyzer = _CLNEW PerFieldAnalyzerWrapper(standardAnalyzer);
+        analyzer->addAnalyzer(_T("stemmed"), snowballAnalyzer);
+    }
+
+    //
+    // Create the query parser.. this needs to be declared
+    // beforehand so we can set options for it
+    //
+    parser = _CLNEW QueryParser(_T("contents"), analyzer);
+    if (debug > 3)
+        cout << "QueryParser... ";
+
+    //
+    // get the start time... useful for debugging
+    // 
+    str = lucene::util::Misc::currentTimeMillis();
+
+    if (debug > 3)
+        cout << "created." << endl;
 
 	return (TRUE);
 }
@@ -382,12 +423,27 @@ DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
 
 DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
 {
-    string initial_query = htsearch_query->raw_query;
+    if (searcher == NULL)
+    {
+        if (debug > 2)
+        {
+            cout << "HtSearch: tried to perform search before htsearch_open" << endl;
+        }
+        return(FALSE);
+    }
+
+    if (hits != NULL)
+    {
+        _CLDELETE(hits);
+        hits = NULL;
+    }
+
+    initial_query = htsearch_query->raw_query;
     string final_query;
 
-    if (debug > 1)
+    if (debug > 2)
     {
-        cout << "Initial query = " << initial_query << endl;
+        cout << "Initial query: " << initial_query << endl;
     }
  
 
@@ -424,9 +480,10 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
         case HTSEARCH_ALG_BOOLEAN:
             break;
         case HTSEARCH_ALG_OR:
+            parser->setOperator(QueryParser::OR_OPERATOR);
             break;
         case HTSEARCH_ALG_AND:
-            changeDefaultOperator();
+            parser->setOperator(QueryParser::AND_OPERATOR);
             break;
     }
 
@@ -471,14 +528,61 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
  *
  *
  */
-    final_query = initial_query;
+    char factorString[32];
 
-    if (debug > 1)
+    sprintf(factorString, "%f", config->Double("text_factor"));
+    final_query += " contents:(" + initial_query + ")^" + factorString;
+
+    sprintf(factorString, "%f", config->Double("keyword_factor"));
+    final_query += " keywords:(" + initial_query + ")^" + factorString;
+
+    sprintf(factorString, "%f", config->Double("heading_factor"));
+    final_query += " heading:(" + initial_query + ")^" + factorString;
+
+    sprintf(factorString, "%f", config->Double("title_factor"));
+    final_query += " title:(" + initial_query + ")^" + factorString;
+
+    sprintf(factorString, "%f", config->Double("meta_description_factor"));
+    final_query += " meta-desc:(" + initial_query + ")^" + factorString;
+
+    sprintf(factorString, "%f", config->Double("author_factor"));
+    final_query += " author:(" + initial_query + ")^" + factorString;
+
+    final_query += " url:(" + initial_query + ")"; // no factor for URLs
+
+
+    if (config->Boolean("use_stemming"))
     {
-        cout << "Final query = " << final_query << endl;
+        sprintf(factorString, "%f", config->Double("stemming_factor"));
+        final_query += " stemmed:(" + initial_query + ")^" + factorString;
+    }
+    if (config->Boolean("use_synonyms"))
+    {
+        sprintf(factorString, "%f", config->Double("synonym_factor"));
+        final_query += " synonym:(" + initial_query + ")^" + factorString;
     }
 
-    total_matches = CLuceneDoQuery(&final_query);
+
+    if (debug > 2)
+    {
+        cout << "Final query: "<< final_query << endl;
+    }
+
+    wchar_t * temp = utf8_to_wchar(final_query.c_str());
+    Query * query = parser->parse(temp);
+    free(temp);
+
+    if (debug > 3)
+    {
+        wchar_t * converted_query = query->toString(_T("contents"));
+        char * converted_query_utf8 = wchar_to_utf8(converted_query);
+        cout << "Converted query before searching: " << converted_query_utf8 << endl;
+        free(converted_query);
+        free(converted_query_utf8);
+    }
+
+    hits = searcher->search( query );
+    total_matches = hits->length();
 
     if (debug > 1)
     {
@@ -505,16 +609,110 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
 //        
 //---------------------------------------------------------------------------------------
 
-DLLEXPORT int htsearch_get_nth_match(int n, htsearch_query_match_struct * query_result)
+DLLEXPORT int htsearch_get_nth_match(int n, htsearch_query_match_struct * hit_struct)
 {
-    if (n < total_matches)
+    if (searcher == NULL)
     {
-        CLuceneSearchGetNth(n, query_result);
-        return (TRUE);
+        if (debug > 2)
+        {
+            cout << "HtSearch: tried to get hit before htsearch_open" << endl;
+        }
+        return (FALSE);
+    }
+    else if (hits == NULL)
+    {
+        if (debug > 2)
+        {
+            cout << "HtSearch: tried to get match without doing search first" << endl;
+        }
+        return (FALSE);
+    }
+    else if (n > total_matches)
+    {
+        return (FALSE);
     }
     else
     {
-        return (FALSE);
+        lucene::document::Document doc = hits->doc(n);
+        char * temp;
+
+        //
+        // clear the strings in the match structure
+        //
+        hit_struct->URL[0] = '\0';
+        hit_struct->title[0] = '\0';
+        hit_struct->excerpt[0] = '\0';
+
+
+        temp = wchar_to_utf8(doc.get(_T("url")));
+        strncpy (hit_struct->URL, temp, HTDIG_MAX_FILENAME_PATH_L);
+        hit_struct->URL[HTDIG_MAX_FILENAME_PATH_L - 1] = '\0';
+        free(temp);
+
+
+        temp = wchar_to_utf8(doc.get(_T("doc-title")));
+        strncpy (hit_struct->title, temp, HTDIG_DOCUMENT_TITLE_L);
+        hit_struct->title[HTDIG_DOCUMENT_TITLE_L - 1] = '\0';
+        free(temp);
+
+        
+        //
+        // use the intial query for highlighting, because it hasn't been
+        // changed from its initial form. this is broken on windows
+        //
+#ifndef _MSC_VER
+        wchar_t * wtemp = utf8_to_wchar(initial_query.c_str());
+        Query * query = parser->parse(wtemp);
+        free(wtemp);
+
+        QueryScorer * scorer = _CLNEW QueryScorer(query);
+        Highlighter * highlighter = _CLNEW Highlighter(scorer);
+        wtemp = highlighter->getBestFragment(analyzer, _T("contents"), doc.get(_T("contents")));
+
+        if (wtemp)
+        {
+            temp = wchar_to_utf8(wtemp);
+            free(wtemp);
+        }
+        else
+        {
+#endif
+            //
+            // highlighter couldn't find anything... just use the top of the contents
+            //
+            temp = wchar_to_utf8(doc.get(_T("contents")));
+#ifndef _MSC_VER
+        }
+
+        _CLDELETE(scorer);
+        _CLDELETE(highlighter);
+#endif
+        strncpy (hit_struct->excerpt, temp, HTDIG_DOCUMENT_EXCERPT_L);
+        hit_struct->excerpt[HTDIG_DOCUMENT_EXCERPT_L - 1] = '\0';
+        free(temp);
+
+
+        temp = wchar_to_utf8(doc.get(_T("doc-size")));
+        hit_struct->size = atoi(temp);
+        free(temp);
+
+
+        temp = wchar_to_utf8(doc.get(_T("doc-id")));
+        hit_struct->id = atoi(temp);
+        free(temp);
+
+        
+        temp = wchar_to_utf8(doc.get(_T("doc-time")));
+        time_t tempTime = (time_t)atoi(temp);
+        tm * ptm = gmtime(&tempTime);
+        memcpy(&(hit_struct->time_tm), ptm, sizeof(tm));
+        free(temp);
+
+
+        hit_struct->score = (int)(hits->score(n) * 10000);
+        hit_struct->score_percent = hit_struct->score / 100;
+
+        return (TRUE);
     }
 }
 
@@ -522,9 +720,20 @@ DLLEXPORT int htsearch_get_nth_match(int n, htsearch_query_match_struct * query_
 DLLEXPORT int htsearch_close()
 {
     //
-    // Close the CLucene index
+    // Delete the CLucene objects
     //
-    CLuceneCloseIndex();
+    _CLDELETE(searcher);
+    _CLDELETE(analyzer);
+    _CLDELETE(parser);
+    //_CLDELETE(hits);
+
+    searcher = NULL;
+    analyzer = NULL;
+    parser = NULL;
+    hits = NULL;
+
+    if (debug > 1)
+        cout << _T("Indexing took: ") << (lucene::util::Misc::currentTimeMillis() - str) << _T("ms.") << endl << endl;
 
     return (TRUE);
 }
