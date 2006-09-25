@@ -17,7 +17,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htdig.cc,v 1.6.2.3 2006/07/26 23:44:28 aarnone Exp $
+// $Id: libhtdig_htdig.cc,v 1.6.2.4 2006/09/25 22:25:50 aarnone Exp $
 //
 //-------------------------------------------------------------
 
@@ -36,8 +36,8 @@ extern "C" {
 #include "Spider.h"
 
 static Spider * spider = NULL;
-static int openCount = 0;
-
+static HtDebug * debug = NULL;
+static bool indexOpen = false;
 
 
 /*******************************************************
@@ -60,19 +60,36 @@ static int openCount = 0;
  *
  *******************************************************/
  
-DLLEXPORT int htdig_index_open(htdig_parameters_struct * htdig_params)
+DLLEXPORT int htdig_index_open(htdig_parameters_struct * params)
 {
-    openCount++;
-
-    if (openCount > 1)
+    debug = HtDebug::Instance();
+    debug->setStdoutLevel(params->debug);
+    if (strlen(params->logFile) > 0)
     {
-        cout << "HtDig: attempting to open index when already open" << endl;
+        //
+        // if the logFile was specified, then set it up. also, kill stdout output.
+        //
+        if (debug->setLogfile(params->logFile) == false)
+        {
+            cout << "HtDig: Error opening log file ["<< params->logFile << "]" << endl;
+            cout << "Error:[" << errno << "], " << strerror(errno) << endl;
+            return (HTDIG_ERROR_LOGFILE_OPEN);
+        }
+        debug->setFileLevel(params->debug);
+        debug->setStdoutLevel(0);
+    }
+
+    if (indexOpen)
+    {
+        debug->outlog(0, "HtDig: [FAIL] attempting to open index when already open\n");
+        debug->close();
         return(FALSE);
     }
 
-    spider = new Spider(htdig_params);
+    spider = new Spider(params);
 
-    spider->openDBs(htdig_params);
+    spider->openDBs(params);
+    indexOpen = true;
 
     return (TRUE);
 }
@@ -95,8 +112,9 @@ DLLEXPORT int htdig_index_open(htdig_parameters_struct * htdig_params)
  *******************************************************/
 DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct * input)
 {
-    if (spider == NULL)
+    if (!indexOpen)
     {
+        cout << "HtDig: [FAIL] attempting to index simple doc when index not open" << endl;
         return (FALSE);
     }
 
@@ -121,17 +139,20 @@ DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct * input)
 //
 DLLEXPORT htdig_simple_doc_struct * htdig_fetch_simple_doc(char * input)
 {
-    if (spider == NULL)
+    if (!indexOpen)
     {
+        cout << "HtDig: [FAIL] attempting to fetch simple doc before index open\n" << endl;
         return (FALSE);
     }
 
     string url = input;
 
+    debug->outlog(0, "HtDig: entering htdig_fetch_simple_doc with url [%s]\n", input);
     singleDoc * doc = spider->fetchSingleDoc(&url);
 
     if (doc)
     {
+        debug->outlog(1, "fetch simple doc sucessful\n");
         //cout << "in htdig api before fetch" << endl;
         htdig_simple_doc_struct * output = (htdig_simple_doc_struct*) malloc(sizeof(htdig_simple_doc_struct));
         //cout << "in htdig api after fetch" << endl;
@@ -176,9 +197,9 @@ DLLEXPORT htdig_simple_doc_struct * htdig_fetch_simple_doc(char * input)
         //
         // the contents field. this is just a char *, so it needs to be malloc'ed
         //
-        output->contents = (char*)malloc((output->content_length * sizeof(char)) + 1);
+        output->contents = (char*)malloc((output->content_length + 1) * sizeof(char));
         strncpy(output->contents, (*doc)["contents"].c_str(), output->content_length);
-        output->contents[output->content_length - 1] = '\0';
+        output->contents[output->content_length] = '\0';
 
         //
         // this should just contain the URL, but it can be adjusted based on URL redirects
@@ -196,6 +217,7 @@ DLLEXPORT htdig_simple_doc_struct * htdig_fetch_simple_doc(char * input)
     }
     else
     {
+        debug->outlog(1, "fetch simple doc returning NULL\n");
         return NULL;
     }
 }
@@ -215,12 +237,15 @@ DLLEXPORT htdig_simple_doc_struct * htdig_fetch_simple_doc(char * input)
  *******************************************************/
 DLLEXPORT int htdig_index_urls(htdig_parameters_struct * htdig_params)
 {
-    if (spider == NULL)
+    if (!indexOpen)
     {
+        cout << "HtDig: [FAIL] attempting to index urls before index is opened" << endl;
         return (FALSE);
     }
 
+    debug->outlog(1, "About to start spider\n");
     spider->Start(htdig_params);
+    debug->outlog(1, "Spider run completed\n");
 
     return (TRUE);
 }
@@ -228,23 +253,30 @@ DLLEXPORT int htdig_index_urls(htdig_parameters_struct * htdig_params)
 
 DLLEXPORT int htdig_remove_doc_by_url(char * input)
 {
-    if (spider == NULL)
+    if (!indexOpen)
     {
+        cout << "HtDig: [FAIL] attempting to remove doc by URL before index is opened" << endl;
         return (FALSE);
     }
 
     string url = input;
-    return spider->DeleteDoc(&url);
+    int numDeleted = spider->DeleteDoc(&url);
+    debug->outlog(2, "HtDig: deleted %d documents by URL [%s]", numDeleted, input);
+    return numDeleted;
 }
+
 
 DLLEXPORT int htdig_remove_doc_by_id(int input)
 {
-    if (spider == NULL)
+    if (!indexOpen)
     {
+        cout << "HtDig: [FAIL] attempting to remove doc by ID before index is opened" << endl;
         return (FALSE);
     }
 
-    return spider->DeleteDoc(input);
+    int numDeleted = spider->DeleteDoc(input);
+    debug->outlog(2, "HtDig: deleted %d documents by ID [%d]", numDeleted, input);
+    return numDeleted;
 }
 
 /*******************************************************
@@ -261,25 +293,24 @@ DLLEXPORT int htdig_remove_doc_by_id(int input)
  *******************************************************/
 DLLEXPORT int htdig_index_close(void)
 {
-    openCount--;
-    if (openCount > 0)
+    if (!indexOpen)
     {
-        cout << "Index not really closed" << endl;
-        return (TRUE);
+        cout << "HtDig: Index already closed" << endl;
     }
-    else if (openCount < 0)
+    else if (spider == NULL)
     {
-        cout << "Index already closed" << endl;
-        openCount = 0;
-        return (TRUE);
+        cout << "HtDig: [???] indexOpen was true but spider was NULL." << endl;
     }
-
-    if(spider != NULL)
+    else
     {
+        debug->outlog(1, "HtDig: Closing index and deleting spider\n");
+        spider->closeDBs();
         delete spider;
         spider = NULL;
+        debug->close();
     }
 
+    indexOpen = false;
     return (TRUE);
 }
 
@@ -333,123 +364,34 @@ DLLEXPORT int htdig_get_max_head_length()
  *******************************************************/
 
 DLLEXPORT int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
-{ 
+{
     //int ret = FALSE;
-    String the_URL(htdig_parms->URL);
-    HtConfiguration* config= HtConfiguration::config();
-    Dictionary	invalids;
-    Dictionary	valids;
-    URL 	aUrl(the_URL);
-    String	rewritten_url(the_URL);
-    StringList	tmpList;
-    HtRegex		limitTo;
-    HtRegex		excludeFrom;
+    String      the_URL(htdig_parms->URL);
+    Dictionary  invalids;
+    Dictionary  valids;
+    URL         aUrl(the_URL);
+    String      rewritten_url(the_URL);
+    StringList  tmpList;
+    HtRegex     limitTo;
+    HtRegex     excludeFrom;
 
     HtRegexList limits;
     HtRegexList limitsn;
 
+    HtConfiguration * config= HtConfiguration::config();
+
     //initalize outgoing-parameter rewritten_URL
     htdig_parms->rewritten_URL[0] = 0;
     
-#ifdef DEBUG
-    //output relevant config variables
-    cout << "   bad_extensions = " << config->Find("bad_extensions")  << endl;
-    cout << "   valid_extensions = " << config->Find("valid_extensions")  << endl;
-    cout << "   exclude_urls = " << config->Find("exclude_urls") << endl;
-    cout << "   bad_querystr = " << config->Find("bad_querystr") << endl;
-    cout << "   limit_urls_to = " << config->Find("limit_urls_to") << endl;
-    cout << "   limit_normalized = " << config->Find("limit_normalized") << endl;
-    cout << "   restrict = " << config->Find("restrict") << endl;
-    cout << "   exclude = " << config->Find("exclude") << endl;
-#endif
+    //
+    // make sure we're starting with a clean slate
+    //
+    htdig_index_close();
+    htdig_index_open(htdig_parms);
 
-    //------------ read the config file if it is given ---------------
-    if (htdig_parms->configFile[0] != 0)
-        configFile = htdig_parms->configFile;
-
-    config = HtConfiguration::config ();
-
-    config->Defaults (&defaults[0]);
-    if (access ((char *) configFile, R_OK) < 0)
-    {
-        //reportError (form ("[HTDIG] Unable to find configuration file '%s'", configFile.get ()));
-        return(HTDIG_ERROR_CONFIG_READ);
-    }
-    config->Read (configFile);
-    
-    //---------- Now override config settings -----------------
-    
-    //------- override database path ------------
-    if(strlen(htdig_parms->DBpath) > 0)
-    {
-        config->Add("database_dir", htdig_parms->DBpath);
-    }
-
-    //------- custom filters from htdig_parms ----------
-
-    if(strlen(htdig_parms->locale) > 0)
-    {
-        config->Add("locale", htdig_parms->locale);
-    }
-
-    if (config->Find ("locale").empty () && debug > 0)
+    if (config->Find ("locale").empty ())
         cout << "Warning: unknown locale!" << endl;
 
-    if (strlen(htdig_parms->max_hop_count) > 0)
-    {
-        config->Add ("max_hop_count", htdig_parms->max_hop_count);
-    }
-    
-    if (strlen(htdig_parms->max_head_length) > 0)
-    {
-        config->Add ("max_head_length", htdig_parms->max_head_length);
-    }
-    
-    if (strlen(htdig_parms->max_doc_size) > 0)
-    {
-        config->Add ("max_doc_size", htdig_parms->max_doc_size);
-    }
-
-    if(strlen(htdig_parms->limit_urls_to) > 0)
-    {
-        config->Add("limit_urls_to", htdig_parms->limit_urls_to);
-    }
-    
-    if(strlen(htdig_parms->limit_normalized) > 0)
-    {
-        config->Add("limit_normalized", htdig_parms->limit_normalized);
-    }
-
-    if(strlen(htdig_parms->exclude_urls) > 0)
-    {
-        config->Add("exclude_urls", htdig_parms->exclude_urls);
-    }
-    
-    if(strlen(htdig_parms->url_rewrite_rules) > 0)
-    {
-        config->Add("url_rewrite_rules", htdig_parms->url_rewrite_rules);
-    }
-    
-    if(strlen(htdig_parms->bad_querystr) > 0)
-    {
-        config->Add("bad_querystr", htdig_parms->bad_querystr);
-    }
-
-    if(strlen(htdig_parms->meta_description_factor) > 0)
-    {
-        config->Add("meta_description_factor", htdig_parms->meta_description_factor);
-    }
-
-    if(strlen(htdig_parms->title_factor) > 0)
-    {
-        config->Add("title_factor", htdig_parms->title_factor);
-    }
-
-    if(strlen(htdig_parms->text_factor) > 0)
-    {
-        config->Add("text_factor", htdig_parms->text_factor);
-    }
-    
     //-------------------------------------------------------------------
     
 #ifdef DEBUG
@@ -549,8 +491,6 @@ DLLEXPORT int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
     char *ext = strrchr((char*)rewritten_url, '?');
     if (ext && badquerystr.match(ext, 0, 0) != 0)
     {
-        //if (debug > 2)
-        //    cout << endl << "   Rejected: item in bad query list ";
         return(HTDIG_ERROR_TESTURL_BADQUERY);
     }
 
@@ -668,6 +608,7 @@ DLLEXPORT int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
 
 
     //Success!
+    htdig_index_close();
     return TRUE;
 }
 
