@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: IndexDBRef.h,v 1.1.2.3 2006/04/24 23:53:44 aarnone Exp $
+// $Id: IndexDBRef.h,v 1.1.2.4 2006/09/25 22:40:39 aarnone Exp $
 //
 
 #ifndef _IndexDBRef_h_
@@ -38,6 +38,8 @@ class IndexDBRef : public Object
     //
     String          DocURL()                {return URL;}
     time_t          DocTime()               {return time;}
+    time_t          DocAltTime()            {return alt_time;}
+    time_t          DocExpired()            {return expired;}
     int             DocSig()                {return sig;} 
     int             DocHopCount()           {return hopCount;}
     int             DocBacklinks()          {return backlinks;}
@@ -50,6 +52,8 @@ class IndexDBRef : public Object
     // 
     void        DocURL(const char *u)       {URL = u;}
     void        DocTime(time_t t)           {time = t;}
+    void        DocAltTime(time_t t)        {alt_time = t;}
+    void        DocExpired(time_t e)        {expired = e;}
     void        DocSig(int i)               {sig = i;}
     void        DocHopCount(int i)          {hopCount = i;}
     void        DocBacklinks(int i)         {backlinks = i;} 
@@ -85,7 +89,18 @@ class IndexDBRef : public Object
 
     // This is the time specified in the document's header
     // Usually that's the last modified time, for servers that return it.
+    // Sometimes this will be overridden by meta information in the 
+    // document head.
     time_t      time;
+
+    // An alternate time that can be used to do time checking. Used mostly
+    // in the Spider's addSingleDoc.
+    time_t      alt_time;
+
+    // This is when the document is marked as expiring, as retruned by the
+    // web server. Like the time value, can also be overriden by a meta
+    // tag in the document head.
+    time_t      expired;
 
     // This is a signature of the document. (e.g. md5sum, checksum...)
     // This is currently unused.
@@ -96,6 +111,10 @@ class IndexDBRef : public Object
 
     // This is a count of the links to the document (incoming links).
     int         backlinks;
+
+    // This is the id for the document. This is available as an alternate
+    // identification method to URL (although the index is still URL based)
+    int         id;
 
     // this is the size of the document
     int         docSize;

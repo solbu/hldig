@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: IndexDBRef.cc,v 1.1.2.4 2006/04/24 23:53:44 aarnone Exp $
+// $Id: IndexDBRef.cc,v 1.1.2.5 2006/09/25 22:40:39 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -59,7 +59,10 @@ IndexDBRef::~IndexDBRef()
 void IndexDBRef::Clear()
 {
     URL = 0;
+    id = 0;
     time = 0;
+    alt_time = 0;
+    expired = 0;
     docSize = 0;
     hopCount = 0;
     backlinks = 0;
@@ -77,12 +80,15 @@ void IndexDBRef::Clear()
 enum
 {
     DOC_TIME,           // 0
-    DOC_SPIDERABLE,     // 1
-    DOC_SIZE,           // 2
-    DOC_HOPCOUNT,       // 3
-    DOC_BACKLINKS,      // 4
-    //DOC_SIG             // 5
-    //DOC_DESCRIPTIONS,   // 6
+    DOC_ALT_TIME,       // 1
+    DOC_EXPIRED,        // 2
+    DOC_SPIDERABLE,     // 3
+    DOC_SIZE,           // 4
+    DOC_HOPCOUNT,       // 5
+    DOC_BACKLINKS,      // 6
+    DOC_ID,             // 7
+    //DOC_SIG             // 8
+    //DOC_DESCRIPTIONS,   // 9
 };
 
 // Must be powers of two never reached by the DOC_* enums.
@@ -210,11 +216,14 @@ void IndexDBRef::Serialize(String &s)
  }
 
     addnum(DOC_TIME, s, time);
+    addnum(DOC_ALT_TIME, s, alt_time);
+    addnum(DOC_EXPIRED, s, expired);
     addnum(DOC_SIZE, s, docSize);
     // add one to this so it actually gets serialized
     addnum(DOC_SPIDERABLE, s, spiderable+1);
     addnum(DOC_HOPCOUNT, s, hopCount);
     addnum(DOC_BACKLINKS, s, backlinks);
+    addnum(DOC_ID, s, id);
     
 // NOTE: the sig will go back in when MD5 is done
 //
@@ -334,6 +343,12 @@ void IndexDBRef::Deserialize(String &stream)
         case DOC_TIME:
             getnum(x, s, time);
             break;
+        case DOC_ALT_TIME:
+            getnum(x, s, alt_time);
+            break;
+        case DOC_EXPIRED: 
+            getnum(x, s, expired);
+            break;
         case DOC_SIZE:
             getnum(x, s, docSize);
             break;
@@ -347,6 +362,9 @@ void IndexDBRef::Deserialize(String &stream)
             break;
         case DOC_BACKLINKS: 
             getnum(x, s, backlinks);
+            break;
+        case DOC_ID: 
+            getnum(x, s, id);
             break;
         //case DOC_SIG:
         //     getnum(x, s, sig);
