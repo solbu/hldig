@@ -4,13 +4,19 @@
 
 
 //
-// this function is designed to convert SMALL char*
-// strings from utf8 to wide characters. be careful
-// about using it to convert long strings, since
-// this function is O(2n) on the number of characters 
+// this function is designed to convert SMALL char* strings from utf8
+// to wide characters. be careful about using it to convert long
+// strings, since this function is O(2n) on the number of characters 
 //
 wchar_t * utf8_to_wchar(const char* value)
 {
+    if (value == NULL)
+    {
+        wchar_t *ucs2_str = (wchar_t *)malloc(sizeof(wchar_t));
+        ucs2_str[0] = '\0';
+        return ucs2_str;
+    }
+    
     const char * counter;
     int len = 0;
 
@@ -93,6 +99,13 @@ wchar_t * utf8_to_wchar(const char* value)
 
 char * wchar_to_utf8(const wchar_t* value)
 {
+    if (value == NULL)
+    {
+        char *char_str = (char *)malloc(sizeof(char));
+        char_str[0] = '\0';
+        return char_str;
+    }
+  
     const wchar_t * counter;
     int len = 0;
 
@@ -148,5 +161,33 @@ char * wchar_to_utf8(const wchar_t* value)
 
     return char_str;
 }
+
+
+
+wchar_t** convertStopWords(set<string> * stopWords)
+{
+    wchar_t ** stopArray = (wchar_t **)calloc(stopWords->size()+1, sizeof(wchar_t *));
+
+    if (!stopArray)
+    {
+        return NULL;
+    }
+
+    set<string>::iterator i;
+    int j = 0;
+    for (i = stopWords->begin(); i != stopWords->end(); i++) {
+        stopArray[j] = utf8_to_wchar(i->c_str());
+        j++;
+    }
+
+    //
+    // the CLucene stopword reader loops until the pointer isn't NULL, so give it a
+    // NULL to terminate at.
+    //
+    stopArray[stopWords->size()] = NULL;
+
+    return stopArray;
+}
+
 
 
