@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.cc,v 1.53.2.7 2006/04/24 23:55:29 aarnone Exp $
+// $Id: DocumentRef.cc,v 1.53.2.8 2006/09/25 22:39:48 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -56,6 +56,9 @@ void DocumentRef::initialize()
     indexDoc["doc-title"].first.clear();
     indexDoc["doc-size"].first.clear();
     indexDoc["doc-time"].first.clear();
+    indexDoc["doc-alt-time"].first.clear();
+    indexDoc["doc-id"].first.clear();
+    indexDoc["doc-expires"].first.clear();
 
     indexDoc["doc-meta-email"].first.clear();
     indexDoc["doc-meta-email-date"].first.clear();
@@ -75,13 +78,17 @@ void DocumentRef::initialize()
     indexDoc["url"].first.clear();
 
     //
-    // these fields will be returned verbatim - they
-    // are not for searching. these fileds should not be
-    // very large, as they will bloat the index
+    // these fields will be returned verbatim - they are not for
+    // searching. these fields should not be very large, as they
+    // will bloat the index (any field that starts with 'doc-' should
+    // be like this).
     //
     indexDoc["doc-title"].second = "UnIndexed";
     indexDoc["doc-size"].second = "UnIndexed";
     indexDoc["doc-time"].second = "UnIndexed";
+    indexDoc["doc-alt-time"].second = "UnIndexed";
+    indexDoc["doc-id"].second = "UnIndexed";
+    indexDoc["doc-expires"].second = "UnIndexed";
 
     indexDoc["doc-meta-email"].second = "UnIndexed";
     indexDoc["doc-meta-email-date"].second = "UnIndexed";
@@ -91,18 +98,21 @@ void DocumentRef::initialize()
     //
     // thse fields will be used in actual searching
     //
-    indexDoc["contents"].second = "UnStored";
+    indexDoc["contents"].second = "Text"; // must be in the index for highlighting
     indexDoc["keywords"].second = "UnStored";
     indexDoc["heading"].second = "UnStored";
     indexDoc["title"].second = "UnStored";
     indexDoc["meta-desc"].second = "UnStored";
 
+    //
+    // optional fields (can be turned on or off from configuration)
+    //
     indexDoc["stemmed"].second = "UnStored";
     indexDoc["synonym"].second = "UnStored";
 
     //
-    // these are special fields. they should be
-    // searchable, and may be returned
+    // these are special fields. they should be searchable,
+    // and may be returned
     //
     indexDoc["author"].second = "Keyword";
     indexDoc["url"].second = "Keyword";
