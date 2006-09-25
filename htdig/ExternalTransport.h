@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ExternalTransport.h,v 1.5 2004/05/28 13:15:14 lha Exp $
+// $Id: ExternalTransport.h,v 1.5.2.1 2006/09/25 23:00:03 aarnone Exp $
 //
 
 #ifndef _ExternalTransport_h_
@@ -18,6 +18,7 @@
 
 #include "Transport.h"
 #include "htString.h"
+#include "HtDebug.h"
 
 #include <stdio.h>
 
@@ -81,6 +82,8 @@ private:
     int			readLine(FILE *, String &);
     // Work out the DocStatus from the HTTP-style status codes
     DocStatus		GetDocumentStatus(ExternalTransport_Response *r);
+
+    HtDebug * debug;
 };
 
 #endif

@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.9.2.1 2006/04/24 23:48:19 aarnone Exp $
+// $Id: ExternalTransport.cc,v 1.9.2.2 2006/09/25 23:00:02 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -49,6 +49,8 @@ extern String		configFile;
 //
 ExternalTransport::ExternalTransport(const String &protocol)
 {
+    debug = HtDebug::Instance();
+
     if (canHandle(protocol))
     {
 	_Handler = ((String *)handlers->Find(protocol))->get();
@@ -151,8 +153,7 @@ Transport::DocStatus ExternalTransport::Request()
 
     if (pipe(stdout_pipe) == -1)
     {
-      if (debug)
-	cerr << "External transport error: Can't create pipe!" << endl;
+      debug->outlog(0, "[ERROR] External transport error: Can't create pipe!\n");
       delete [] handlargs;
       return GetDocumentStatus(_Response);
     }
@@ -167,8 +168,7 @@ Transport::DocStatus ExternalTransport::Request()
     }
     if (fork_result == -1)
     {
-      if (debug)
-	cerr << "Fork Failure in ExternalTransport" << endl;
+      debug->outlog(0, "[ERROR] Fork Failure in ExternalTransport\n");
       delete [] handlargs;
       return GetDocumentStatus(_Response);
     }
@@ -195,8 +195,7 @@ Transport::DocStatus ExternalTransport::Request()
     FILE *input = fdopen(stdout_pipe[0], "r");
     if (input == NULL)
     {
-      if (debug)
-	cerr << "Fdopen Failure in ExternalTransport" << endl;
+      debug->outlog(0, "[ERROR] Fdopen Failure in ExternalTransport\n");
       return GetDocumentStatus(_Response);
     }
     
@@ -215,8 +214,10 @@ Transport::DocStatus ExternalTransport::Request()
     while (in_header && readLine(input, line))
     {
 	line.chop('\r');
-	if (line.length() > 0 && debug > 2)
-	    cout << "Header line: " << line << endl;
+	if (line.length() > 0)
+    {
+	  debug->outlog(2, "Header line: %s\n", line.get());
+    }
 	token1 = strtok(line, "\t");
 	if (token1 == NULL)
 	  {
@@ -288,8 +289,7 @@ Transport::DocStatus ExternalTransport::Request()
 
     while ((bytesRead = fread(docBuffer, 1, sizeof(docBuffer), input)) > 0)
       {
-        if (debug > 2)
-	  cout << "Read " << bytesRead << " from document\n";
+        debug->outlog(2, "Read %d from document\n", bytesRead);
         if (_Response->_contents.length() + bytesRead > _max_document_size)
             bytesRead = _max_document_size - _Response->_contents.length();
         _Response->_contents.append(docBuffer, bytesRead);

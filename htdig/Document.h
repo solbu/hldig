@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.h,v 1.19.2.1 2006/04/24 23:47:18 aarnone Exp $
+// $Id: Document.h,v 1.19.2.2 2006/09/25 23:00:02 aarnone Exp $
 //
 //
 #ifndef _Document_h_
@@ -34,103 +34,98 @@
 #include "HtNNTP.h"
 #include "ExternalTransport.h"
 #include "Server.h"
+#include "HtDebug.h"
 
-extern int debug;
 class Connection;
 
 
 class Document : public Object
 {
-public:
-    //
-    // Construction/Destruction
-    //
-    Document(char *url = 0, int max_size = 0);
-    ~Document();
+    public:
+        //
+        // Construction/Destruction
+        //
+        Document(char *url = 0, int max_size = 0);
+        ~Document();
 
-    //
-    // Interface to the document.
-    //
-    void			Reset();
-    int				Length()	  {return document_length;}
-    int				ContentLength()	  {return contentLength;}
-    int				StoredLength()	  {return contents.length();}
-    char			*Contents()	  {return contents;}
-    void			Contents(char *s) {contents = s; document_length = contents.length();}
-    char			*ContentType()	  {return contentType.get();}
-    
-    //
-    // In case the retrieval process went through a redirect process,
-    // the new url can be gotten using the following call
-    //
-    char			*Redirected()		{return redirected_to;}
-    URL				*Url()			{return url;}
-    void			Url(const String &url);
-    void			Referer(const String &url);
-    time_t			ModTime()		{return modtime.GetTime_t();}
+        //
+        // Interface to the document.
+        //
+        void            Reset();
+        int             Length()            {return document_length;}
+        int             ContentLength()     {return contentLength;}
+        int             StoredLength()      {return contents.length();}
+        char            *Contents()         {return contents;}
+        void            Contents(char *s)   {contents = s; document_length = contents.length();}
+        char            *ContentType()      {return contentType.get();}
 
-    Transport::DocStatus	Retrieve(Server *server, HtDateTime date);
-    Transport::DocStatus	RetrieveLocal(HtDateTime date, StringList *filenames);
+        //
+        // In case the retrieval process went through a redirect process,
+        // the new url can be gotten using the following call
+        //
+        char            *Redirected()       {return redirected_to;}
+        URL             *Url()              {return url;}
+        time_t          ModTime()           {return modtime.GetTime_t();}
+        HtHTTP          *GetHTTPHandler() const { return HTTPConnect; }
+        void            Url(const String &url);
+        void            Referer(const String &url);
 
-    //
-    // Return an appropriate parsable object for the document type.
-    //
-    //Parsable			*getParsable();
+        Transport::DocStatus    Retrieve(Server *server, HtDateTime date);
+        Transport::DocStatus    RetrieveLocal(HtDateTime date, StringList *filenames);
 
-    //
-    // Set the username and password to be used in any requests
-    //
-    void			setUsernamePassword(const String& credentials)
-                                          { authorization = credentials;}
+        //
+        // Return an appropriate parsable object for the document type.
+        //
+        //Parsable			*getParsable();
 
-    void			setProxyUsernamePassword(const String& credentials)
-                                          { proxy_authorization = credentials;}
+        //
+        // Set the username and password to be used in any requests
+        //
+        void            setUsernamePassword(const String& credentials)      { authorization = credentials;}
 
-    HtHTTP *GetHTTPHandler() const { return HTTPConnect; }
-	
-private:
-    enum
-    {
-	Header_ok,
-	Header_not_found,
-	Header_not_changed,
-	Header_redirect,
-	Header_not_text,
-	Header_not_authorized
-    };
+        void            setProxyUsernamePassword(const String& credentials) { proxy_authorization = credentials;}
 
-    URL				*url;
-    URL				*proxy;
-    URL				*referer;
-    String			contents;
-    String			redirected_to;
-    String			contentType;
-    String			authorization;
-    String			proxy_authorization;
-    int				contentLength;
-    int				document_length;
-    HtDateTime			modtime;
-    int				max_doc_size;
-    int				num_retries;
+    private:
+        enum
+        {
+            Header_ok,
+            Header_not_found,
+            Header_not_changed,
+            Header_redirect,
+            Header_not_text,
+            Header_not_authorized
+        };
 
-    int				UseProxy();
+        URL             *url;
+        URL             *proxy;
+        URL             *referer;
+        String          contents;
+        String          redirected_to;
+        String          contentType;
+        String          authorization;
+        String          proxy_authorization;
+        int             contentLength;
+        int             document_length;
+        HtDateTime      modtime;
+        int             max_doc_size;
+        int             num_retries;
 
-    Transport			*transportConnect;
-    HtHTTP			*HTTPConnect;
-    HtHTTP			*HTTPSConnect;
-    HtFile			*FileConnect;
-    HtFTP                       *FTPConnect;
-    HtNNTP			*NNTPConnect;
-    ExternalTransport		*externalConnect;
-    
+        int				UseProxy();
 
- ///////
-    //    Tell us if we should retry to retrieve an URL depending on
-    //    the first returned document status
- ///////
+        Transport       *transportConnect;
+        HtHTTP          *HTTPConnect;
+        HtHTTP          *HTTPSConnect;
+        HtFile          *FileConnect;
+        HtFTP           *FTPConnect;
+        HtNNTP          *NNTPConnect;
+        ExternalTransport   *externalConnect;
 
-   int ShouldWeRetry(Transport::DocStatus DocumentStatus);    
-   
+
+        //
+        // Tell us if we should retry to retrieve an URL depending on the first returned document status
+        //
+        int             ShouldWeRetry(Transport::DocStatus DocumentStatus);    
+
 };
 
 #endif

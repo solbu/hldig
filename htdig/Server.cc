@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.cc,v 1.29.2.1 2006/04/24 23:45:38 aarnone Exp $
+// $Id: Server.cc,v 1.29.2.2 2006/09/25 23:00:03 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -32,6 +32,9 @@
 
 #include <ctype.h>
 #include "defaults.h"
+#include "HtDebug.h"
+
+extern HtDebug * debug;
 
 
 //*****************************************************************************
@@ -39,16 +42,17 @@
 //  u is the base URL for this server
 //
 Server::Server(URL u, StringList *local_robots_files)
-:
-    _host(u.host()),
-    _port(u.port()),
-    _bad_server(0),
-    _documents(0),
-   _accept_language(0)
+    :
+        _host(u.host()),
+        _port(u.port()),
+        _bad_server(0),
+        _documents(0),
+        _accept_language(0)
 {
-	HtConfiguration* config= HtConfiguration::config();
-    if (debug)
-      cout << endl << "New server: " << _host << ", " << _port << endl;
+    HtConfiguration* config= HtConfiguration::config();
+    debug = HtDebug::Instance();
+
+    debug->outlog(0, "\nNew server: %s,%d\n", _host.get(), _port);
 
     // We take it from the configuration
     _persistent_connections = config->Boolean("server", _host.get(),"persistent_connections");
@@ -61,18 +65,18 @@ Server::Server(URL u, StringList *local_robots_files)
 
     // Accept-Language directive
     StringList _accept_language_list(config->Find("server", _host.get(),
-      "accept_language"), " \t");
+                "accept_language"), " \t");
 
     _accept_language.trunc(); // maybe not needed
-    
+
     for (int i = 0; i < _accept_language_list.Count(); i++)
     {
-       if (i>0)
-       	 _accept_language << ",";   // for multiple choices
+        if (i>0)
+            _accept_language << ",";   // for multiple choices
 
-       	 _accept_language << _accept_language_list[i];
+        _accept_language << _accept_language_list[i];
     }
-    
+
     // Timeout setting
     _timeout = config->Value("server",_host.get(),"timeout");
 
@@ -83,131 +87,122 @@ Server::Server(URL u, StringList *local_robots_files)
     _tcp_wait_time = config->Value("server",_host.get(),"tcp_wait_time");
 
 
-    if (debug > 1)
-    {
-      cout << " - Persistent connections: " <<
-         (_persistent_connections?"enabled":"disabled") << endl;
+    debug->outlog(1, " - Persistent connections: %s\n", _persistent_connections?"enabled":"disabled");
+    debug->outlog(1, " - HEAD before GET: %s\n", _head_before_get?"enabled":"disabled");
 
-      cout << " - HEAD before GET: " <<
-         (_head_before_get?"enabled":"disabled") << endl;
-
-      cout << " - Timeout: " << _timeout << endl;
-      cout << " - Connection space: " << _connection_space << endl;
-      cout << " - Max Documents: " << _max_documents << endl;
-      cout << " - TCP retries: " << _tcp_max_retries << endl;
-      cout << " - TCP wait time: " << _tcp_wait_time << endl;
-      cout << " - Accept-Language: " << _accept_language << endl;
-
-    }
+    debug->outlog(1, " - Timeout: %d\n", _timeout);
+    debug->outlog(1, " - Connection space: %d\n", _connection_space);
+    debug->outlog(1, " - Max Documents: %d\n", _max_documents);
+    debug->outlog(1, " - TCP retries: %d\n", _tcp_max_retries);
+    debug->outlog(1, " - TCP wait time: %d\n", _tcp_wait_time);
+    debug->outlog(1, " - Accept-Language: %s\n", _accept_language.get());
 
     _last_connection.SettoNow();  // For getting robots.txt
 
     if (strcmp(u.service(),"http") == 0 || strcmp(u.service(),"https") == 0)
-      {
-	//
-	// Attempt to get a robots.txt file from the specified server
-	//
-	String	url;
-	url.trunc();
+    {
+        //
+        // Attempt to get a robots.txt file from the specified server
+        //
+        String	url;
+        url.trunc();
 
-	if (debug>1)
-	  cout << "Trying to retrieve robots.txt file" << endl;        
-	url << u.signature() << "robots.txt";
-	
-	static int	local_urls_only = config->Boolean("local_urls_only");
-	time_t 		timeZero = 0; // Right now we want to get this every time
-	Document	doc(url, 0);
-	Transport::DocStatus	status;
-	if (local_robots_files)
-	  {  
-	    if (debug > 1)
-	      cout << "Trying local files" << endl;
-	    status = doc.RetrieveLocal(timeZero, local_robots_files);
-	    if (status == Transport::Document_not_local)
-	      {
-		if (local_urls_only)
-		  status = Transport::Document_not_found;
-		else
-		  {
-		    if (debug > 1)
-		      cout << "Local retrieval failed, trying HTTP" << endl;
-		    status = doc.Retrieve(this, timeZero);
-		  }
-	      }
-	  }
-	else if (!local_urls_only)
+        debug->outlog(1, "Trying to retrieve robots.txt file\n");
+        url << u.signature() << "robots.txt";
+
+        static int	local_urls_only = config->Boolean("local_urls_only");
+        time_t 		timeZero = 0; // Right now we want to get this every time
+        Document	doc(url, 0);
+        Transport::DocStatus	status;
+        if (local_robots_files)
+        {  
+            debug->outlog(1, "Trying local files\n");
+            status = doc.RetrieveLocal(timeZero, local_robots_files);
+            if (status == Transport::Document_not_local)
+            {
+                if (local_urls_only)
+                    status = Transport::Document_not_found;
+                else
+                {
+                    debug->outlog(1, "Local retrieval failed, trying HTTP\n");
+                    status = doc.Retrieve(this, timeZero);
+                }
+            }
+        }
+        else if (!local_urls_only)
         {
-	  status = doc.Retrieve(this, timeZero);
+            status = doc.Retrieve(this, timeZero);
 
-          // Let's check if persistent connections are both
-          // allowed by the configuration and possible after
-          // having requested the robots.txt file.
+            // Let's check if persistent connections are both
+            // allowed by the configuration and possible after
+            // having requested the robots.txt file.
 
-          HtHTTP * http;
-          if (IsPersistentConnectionAllowed() &&
-                  ( http = doc.GetHTTPHandler()))
-          {
-              if (! http->isPersistentConnectionPossible())
-                  _persistent_connections=0;  // not possible. Let's disable
-                                              // them on this server.
-          }
+            HtHTTP * http;
+            if (IsPersistentConnectionAllowed() &&
+                    ( http = doc.GetHTTPHandler()))
+            {
+                if (! http->isPersistentConnectionPossible())
+                    _persistent_connections=0;  // not possible. Let's disable
+                // them on this server.
+            }
 
         }
-	else
-	  status = Transport::Document_not_found;
+        else
+            status = Transport::Document_not_found;
 
-	switch (status)
-	  {
-	  case Transport::Document_ok:
-	    //
-	    // Found a robots.txt file.  Go parse it.
-	    //
-	    robotstxt(doc);
-	    break;
-			
-	  case Transport::Document_not_found:
-	  case Transport::Document_not_parsable:
-	  case Transport::Document_redirect:
-	  case Transport::Document_not_authorized:
-	    //
-	    // These cases are for when there is no robots.txt file.
-	    // We will just go on happily without restrictions
-	    //
-	    break;
-			
-	  case Transport::Document_no_host:
-	  default:
-	    //
-	    // In all other cases the server could not be reached.
-	    // We will remember this fact so that no more attempts to
-	    // contact this server will be made.
-	    //
-	    _bad_server = 1;
-	    break;
-	  } // end switch
-      } // end if (http || https)
+        switch (status)
+        {
+            case Transport::Document_ok:
+                //
+                // Found a robots.txt file.  Go parse it.
+                //
+                robotstxt(doc);
+                break;
+
+            case Transport::Document_not_found:
+            case Transport::Document_not_parsable:
+            case Transport::Document_redirect:
+            case Transport::Document_not_authorized:
+                //
+                // These cases are for when there is no robots.txt file.
+                // We will just go on happily without restrictions
+                //
+                break;
+
+            case Transport::Document_no_host:
+            default:
+                //
+                // In all other cases the server could not be reached.
+                // We will remember this fact so that no more attempts to
+                // contact this server will be made.
+                //
+                _bad_server = 1;
+                break;
+        } // end switch
+    } // end if (http || https)
 }
 
 // Copy constructor
-Server::Server(const Server& rhs)
-:_host(_host),
-_port(rhs._port),
-_bad_server(rhs._bad_server),
-_connection_space(rhs._connection_space),
-_last_connection(rhs._last_connection),
-_paths(rhs._paths),
-_disallow(rhs._disallow),
-_documents(rhs._documents),
-_max_documents(rhs._max_documents),
-_persistent_connections(rhs._persistent_connections),
-_head_before_get(rhs._head_before_get),
-_disable_cookies(rhs._disable_cookies),
-_timeout(rhs._timeout),
-_tcp_wait_time(rhs._tcp_wait_time),
-_tcp_max_retries(rhs._tcp_max_retries),
-_user_agent(rhs._user_agent),
-_accept_language(rhs._accept_language)
+Server::Server(const Server& rhs):
+    _host(_host),
+    _port(rhs._port),
+    _bad_server(rhs._bad_server),
+    _connection_space(rhs._connection_space),
+    _last_connection(rhs._last_connection),
+    _paths(rhs._paths),
+    _disallow(rhs._disallow),
+    _documents(rhs._documents),
+    _max_documents(rhs._max_documents),
+    _persistent_connections(rhs._persistent_connections),
+    _head_before_get(rhs._head_before_get),
+    _disable_cookies(rhs._disable_cookies),
+    _timeout(rhs._timeout),
+    _tcp_wait_time(rhs._tcp_wait_time),
+    _tcp_max_retries(rhs._tcp_max_retries),
+    _user_agent(rhs._user_agent),
+    _accept_language(rhs._accept_language)
 {
+    // NULL
 }
 
 
@@ -225,7 +220,7 @@ Server::~Server()
 //
 void Server::robotstxt(Document &doc)
 {
-	HtConfiguration* config= HtConfiguration::config();
+    HtConfiguration* config= HtConfiguration::config();
     String	contents = doc.Contents();
     int		length;
     int		pay_attention = 0;
@@ -233,9 +228,8 @@ void Server::robotstxt(Document &doc)
     String	myname = config->Find("server", _host.get(), "robotstxt_name");
     int		seen_myname = 0;
     char	*name, *rest;
-    
-    if (debug > 1)
-	cout << "Parsing robots.txt file using myname = " << myname << "\n";
+
+    debug->outlog(1, "Parsing robots.txt file using myname = %s\n", myname.get());
 
     //
     // Go through the lines in the file and determine if we need to
@@ -243,108 +237,104 @@ void Server::robotstxt(Document &doc)
     //
     for (char *line = strtok(contents, "\r\n"); line; line = strtok(0, "\r\n"))
     {
-	if (debug > 2)
-	    cout << "Robots.txt line: " << line << endl;
+        debug->outlog(2, "Robots.txt line: %s\n", line);
 
-	//
-	// Strip comments
-	//
-	if (strchr(line, '#'))
-	{
-	    *(strchr(line, '#')) = '\0';
-	}
-	
-	name = good_strtok(line, ':');
-	if (!name)
-	    continue;
-	while (name && isspace(*name))  name++;
-	rest = good_strtok(NULL, '\r');
-	if (!rest)
-	    rest = "";
+        //
+        // Strip comments
+        //
+        if (strchr(line, '#'))
+        {
+            *(strchr(line, '#')) = '\0';
+        }
 
-	while (rest && isspace(*rest))
-	    rest++;
-			
-	length = strlen(rest);
-	if (length > 0)
-	{
-	    while (length > 0 && isspace(rest[length - 1]))
-		length--;
-	    rest[length] = '\0';
-	}
+        name = good_strtok(line, ':');
+        if (!name)
+            continue;
+        while (name && isspace(*name))  name++;
+        rest = good_strtok(NULL, '\r');
+        if (!rest)
+            rest = "";
 
-	if (mystrcasecmp(name, "user-agent") == 0)
-	{
-	    if (debug > 1)
-		cout << "Found 'user-agent' line: " << rest << endl;
+        while (rest && isspace(*rest))
+            rest++;
 
-	    if (*rest == '*' && !seen_myname)
-	    {
-		//
-		// This matches all search engines...
-		//
-		pay_attention = 1;
-	    }
-	    else if (mystrncasecmp(rest, (char*)myname, myname.length()) == 0)
-	    {
-		//
-		// This is for us!  This will override any previous patterns
-		// that may have been set.
-		//
-		if (!seen_myname)	// only take first section with our name
-		{
-		    seen_myname = 1;
-		    pay_attention = 1;
-		    pattern = 0;	// ignore previous User-agent: *
-		}
-		else
-		    pay_attention = 0;
-	    }
-	    else
-	    {
-		//
-		// This doesn't concern us
-		//
-		pay_attention = 0;
-	    }
-	}
-	else if (pay_attention && mystrcasecmp(name, "disallow") == 0)
-	{
-	    if (debug > 1)
-		cout << "Found 'disallow' line: " << rest << endl;
-				
-	    //
-	    // Add this path to our list to ignore
-	    //
-	    if (*rest)
-	    {
-		if (pattern.length())
-		    pattern << '|';
-		while (*rest)
-		{
-		    if (strchr("^.[$()|*+?{\\", *rest))
-			pattern << '\\';
-		    pattern << *rest++;
-		}
-	    }
-	}
-	//
-	// Ignore anything else (comments)
-	//
+        length = strlen(rest);
+        if (length > 0)
+        {
+            while (length > 0 && isspace(rest[length - 1]))
+                length--;
+            rest[length] = '\0';
+        }
+
+        if (mystrcasecmp(name, "user-agent") == 0)
+        {
+            debug->outlog(1, "Found 'user-agent' line: %s\n", rest);
+
+            if (*rest == '*' && !seen_myname)
+            {
+                //
+                // This matches all search engines...
+                //
+                pay_attention = 1;
+            }
+            else if (mystrncasecmp(rest, (char*)myname, myname.length()) == 0)
+            {
+                //
+                // This is for us!  This will override any previous patterns
+                // that may have been set.
+                //
+                if (!seen_myname)	// only take first section with our name
+                {
+                    seen_myname = 1;
+                    pay_attention = 1;
+                    pattern = 0;	// ignore previous User-agent: *
+                }
+                else
+                    pay_attention = 0;
+            }
+            else
+            {
+                //
+                // This doesn't concern us
+                //
+                pay_attention = 0;
+            }
+        }
+        else if (pay_attention && mystrcasecmp(name, "disallow") == 0)
+        {
+            debug->outlog(1, "Found 'disallow' line: %s\n", rest);
+
+            //
+            // Add this path to our list to ignore
+            //
+            if (*rest)
+            {
+                if (pattern.length())
+                    pattern << '|';
+                while (*rest)
+                {
+                    if (strchr("^.[$()|*+?{\\", *rest))
+                        pattern << '\\';
+                    pattern << *rest++;
+                }
+            }
+        }
+        //
+        // Ignore anything else (comments)
+        //
     }
 
     //
     // Compile the pattern (if any...)
     //
-    if (debug > 1)
-	cout << "Pattern: " << pattern << endl;
-		
+    debug->outlog(1, "Pattern: %s\n", pattern.get());
+
     // Empty "disallow" allows all, so don't make entry which matches all.
     if (!pattern.empty())
     {
-	String	fullpatt = "^[^:]*://[^/]*(";
-	fullpatt << pattern << ')';
-	_disallow.set(fullpatt, config->Boolean("case_sensitive"));
+        String	fullpatt = "^[^:]*://[^/]*(";
+        fullpatt << pattern << ')';
+        _disallow.set(fullpatt, config->Boolean("case_sensitive"));
     }
 }
 
@@ -353,28 +343,24 @@ void Server::robotstxt(Document &doc)
 // void Server::push(String &path, int hopcount, char *referer, int local, int newDoc)
 //
 void Server::push(const String &path, int hopcount, const String &referer,
-		  int local, int newDoc)
+        int local, int newDoc)
 {
     if (_bad_server && !local)
-	return;
+        return;
 
     if (IsDisallowed(path) != 0)
-      {
-	if (debug > 2)
-	  cout << endl << "   Rejected: forbidden by server robots.txt!";
-
-	return;
-      }
+    {
+        debug->outlog(2, "\n   Rejected: forbidden by server robots.txt!");
+        return;
+    }
 
     // We use -1 as no limit, but we also don't want
     // to forbid redirects from old places
-    if (_max_documents != -1 && newDoc &&
-	_documents >= _max_documents)
+    if (_max_documents != -1 && newDoc && _documents >= _max_documents)
     {
-       if (debug>2)     // Hey! we only want to get max_docs
-          cout << "Limit of " << _max_documents << " reached for " << _host << endl;
-        
-       return;
+        // Hey! we only want to get max_docs
+        debug->outlog(2, "Limit of %d docs reached for %s\n", _max_documents, _host.get());
+        return;
     }
 
     URLRef	*ref = new URLRef();
@@ -384,9 +370,7 @@ void Server::push(const String &path, int hopcount, const String &referer,
     _paths.Add(ref);
 
     if (newDoc)
-      _documents++;
-
-//     cout << "***** pushing '" << path << "' with '" << referer << "'\n";
+        _documents++;
 }
 
 
@@ -398,7 +382,7 @@ URLRef *Server::pop()
     URLRef	*ref = (URLRef *) _paths.Remove();
 
     if (!ref)
-	return 0;
+        return 0;
 
     return ref;
 }
@@ -412,17 +396,17 @@ URLRef *Server::pop()
 //
 void Server::delay()
 {
-  HtDateTime now;
+    HtDateTime now;
 
-  int time_taken = HtDateTime::GetDiff(now, _last_connection);  // arg1-arg2 > 0
+    int time_taken = HtDateTime::GetDiff(now, _last_connection);  // arg1-arg2 > 0
 
-  if (time_taken < _connection_space)
-    sleep(_connection_space - time_taken);
+    if (time_taken < _connection_space)
+        sleep(_connection_space - time_taken);
 
-  now.SettoNow();
-  _last_connection = now;  // Reset the clock for the next delay!
+    now.SettoNow();
+    _last_connection = now;  // Reset the clock for the next delay!
 
-  return;
+    return;
 }
 
 
@@ -434,5 +418,5 @@ void Server::reportStatistics(String &out, char *name)
     out << name << " " << _host << ":" << _port;
     out << " " << _documents << " document";
     if (_documents != 1)
-	out << "s";
+        out << "s";
 }

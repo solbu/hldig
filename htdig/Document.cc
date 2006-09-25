@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.cc,v 1.71.2.1 2006/04/24 23:47:01 aarnone Exp $
+// $Id: Document.cc,v 1.71.2.2 2006/09/25 23:00:02 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -47,6 +47,9 @@
 #include "ExternalTransport.h"
 
 #include "defaults.h"
+#include "HtDebug.h"
+
+extern HtDebug * debug;
 
 #if 1
 typedef void (*SIGNAL_HANDLER) (...);
@@ -73,39 +76,36 @@ Document::Document(char *u, int max_size)
     FTPConnect = 0;
     NNTPConnect = 0;
     externalConnect = 0;
-	HtConfiguration* config= HtConfiguration::config();
+    HtConfiguration* config= HtConfiguration::config();
 
     // We probably need to move assignment of max_doc_size, according
     // to a server or url configuration value. The same is valid for
     // max_retries.
 
     if (max_size > 0)
-	max_doc_size = max_size;
+        max_doc_size = max_size;
     else
-	max_doc_size = config->Value("max_doc_size");
+        max_doc_size = config->Value("max_doc_size");
 
-   if (config->Value("max_retries") > 0)
-      num_retries = config->Value("max_retries");
-   else num_retries = 2;
-   
-   // Initialize some static variables of Transport
+    if (config->Value("max_retries") > 0)
+        num_retries = config->Value("max_retries");
+    else num_retries = 2;
 
-   Transport::SetDebugLevel(debug);
+    // Initialize some static variables of Transport
+    // and the User Agent for every HtHTTP objects
 
-   // Initialize some static variables of Transport
-   // and the User Agent for every HtHTTP objects
+    //Transport::SetDebugLevel(debug);
+    //HtHTTP::SetParsingController(ExternalParser::canParse);
 
-   //HtHTTP::SetParsingController(ExternalParser::canParse);
-
-   // Set the default parser content-type string
-   Transport::SetDefaultParserContentType ("text/");
+    // Set the default parser content-type string
+    Transport::SetDefaultParserContentType ("text/");
 
     contents.allocate(max_doc_size + 100);
     contentType = "";
     contentLength = -1;
     if (u)
     {
-	Url(u);
+        Url(u);
     }
 }
 
@@ -115,31 +115,31 @@ Document::Document(char *u, int max_size)
 //
 Document::~Document()
 {
-   // We delete only the derived class objects
+    // We delete only the derived class objects
     if (HTTPConnect)
-      delete HTTPConnect;
+        delete HTTPConnect;
     if (HTTPSConnect)
-      delete HTTPSConnect;
+        delete HTTPSConnect;
     if (FileConnect)
-      delete FileConnect;
+        delete FileConnect;
     if (FTPConnect)
-      delete FTPConnect;
+        delete FTPConnect;
     if (NNTPConnect)
-      delete NNTPConnect;
+        delete NNTPConnect;
     if (externalConnect)
-      delete externalConnect;
-      
+        delete externalConnect;
+
     if (url)
-      delete url;
+        delete url;
     if (proxy)
-      delete proxy;
+        delete proxy;
     if (referer)
-      delete referer;
+        delete referer;
 
 #if MEM_DEBUG
     char *p = new char;
     cout << "==== Document deleted: " << this << " new at " <<
-	((void *) p) << endl;
+        ((void *) p) << endl;
     delete p;
 #endif
 }
@@ -150,16 +150,15 @@ Document::~Document()
 //   Restore the Document object to an initial state.
 //   We will not reset the authorization information since it can be reused.
 //
-void
-Document::Reset()
+void Document::Reset()
 {
     contentType = 0;
     contentLength = -1;
     if (url)
-      delete url;
+        delete url;
     url = 0;
     if (referer)
-      delete referer;
+        delete referer;
 
     referer = 0;
 
@@ -177,17 +176,16 @@ Document::Reset()
 // void Document::Url(const String &u)
 //   Set the URL for this document
 //
-void
-Document::Url(const String &u)
+void Document::Url(const String &u)
 {
     HtConfiguration* config= HtConfiguration::config();
     if (url)
-      delete url;
+        delete url;
     url = new URL(u);
 
     // Re-initialise the proxy
     if (proxy)
-    	delete proxy;
+        delete proxy;
     proxy = 0;
 
     // Get the proxy information for this URL
@@ -198,7 +196,7 @@ Document::Url(const String &u)
     {
         proxy = new URL(proxyURL);
         proxy->normalize();
-    	// set the proxy authorization information
+        // set the proxy authorization information
         setProxyUsernamePassword(config->Find(url,"http_proxy_authorization"));
     }
 
@@ -212,11 +210,10 @@ Document::Url(const String &u)
 // void Document::Referer(const String &u)
 //   Set the Referring URL for this document
 //
-void
-Document::Referer(const String &u)
+void Document::Referer(const String &u)
 {
     if (referer)
-      delete referer;
+        delete referer;
     referer = new URL(u);
 }
 
@@ -226,10 +223,9 @@ Document::Referer(const String &u)
 //   Returns 1 if the given url is to be retrieved from the proxy server,
 //   or 0 if it's not.
 //
-int
-Document::UseProxy()
+int Document::UseProxy()
 {
-	HtConfiguration* config= HtConfiguration::config();
+    HtConfiguration* config= HtConfiguration::config();
     static HtRegex *excludeProxy = 0;
 
     //
@@ -237,14 +233,14 @@ Document::UseProxy()
     //
     if (!excludeProxy)
     {
-    	excludeProxy = new HtRegex();
-	StringList l(config->Find("http_proxy_exclude"), " \t");
-	excludeProxy->setEscaped(l, config->Boolean("case_sensitive"));
-	l.Release();
+        excludeProxy = new HtRegex();
+        StringList l(config->Find("http_proxy_exclude"), " \t");
+        excludeProxy->setEscaped(l, config->Boolean("case_sensitive"));
+        l.Release();
     }
 
     if ((proxy) && (excludeProxy->match(url->get(), 0, 0) == 0))
-      return true;    // if the exclude pattern is empty, use the proxy
+        return true;    // if the exclude pattern is empty, use the proxy
     return false;
 }
 
@@ -253,354 +249,329 @@ Document::UseProxy()
 // DocStatus Document::Retrieve(HtDateTime date)
 //   Attempt to retrieve the document pointed to by our internal URL
 //
-Transport::DocStatus
-Document::Retrieve(Server *server, HtDateTime date)
+Transport::DocStatus Document::Retrieve(Server *server, HtDateTime date)
 {
-   // Right now we just handle http:// service
-   // Soon this will include file://
-   // as well as an ExternalTransport system
-   // eventually maybe ftp:// and a few others
+    // Right now we just handle http:// service
+    // Soon this will include file://
+    // as well as an ExternalTransport system
+    // eventually maybe ftp:// and a few others
 
-   Transport::DocStatus	status;
-   Transport_Response	*response = 0;
-   HtDateTime 		*ptrdatetime = 0;
-   int			useproxy = UseProxy();
-   int                  NumRetries;
-  
-   transportConnect = 0;
+    Transport::DocStatus	status;
+    Transport_Response	*response = 0;
+    HtDateTime 		*ptrdatetime = 0;
+    int			useproxy = UseProxy();
+    int                  NumRetries;
 
-   if (ExternalTransport::canHandle(url->service()))
-     {
-       if (externalConnect)
-	 {
-	   delete externalConnect;
+    transportConnect = 0;
+
+    if (ExternalTransport::canHandle(url->service()))
+    {
+        if (externalConnect)
+        {
+            delete externalConnect;
         }	
-       externalConnect = new ExternalTransport(url->service());
-       transportConnect = externalConnect;
-     }
+        externalConnect = new ExternalTransport(url->service());
+        transportConnect = externalConnect;
+    }
 #ifdef HAVE_SSL_H
-   else if (mystrncasecmp(url->service(), "https", 5) == 0)
-   {
-      if (!HTTPSConnect)
-      {
-         if (debug>4)
-            cout << "Creating an HtHTTPSecure object" << endl;
-      
-         HTTPSConnect = new HtHTTPSecure();
+    else if (mystrncasecmp(url->service(), "https", 5) == 0)
+    {
+        if (!HTTPSConnect)
+        {
+            debug->outlog(4, "Creating an HtHTTPSecure object\n");
 
-         if (!HTTPSConnect)
-               return Transport::Document_other_error;
-      }
-      
-      if (HTTPSConnect)
-      {
-         // Here we must set only thing for a HTTP request
-	  
-         HTTPSConnect->SetRequestURL(*url);
+            HTTPSConnect = new HtHTTPSecure();
 
-	 // Set the user agent which can vary per server
-	 HTTPSConnect->SetRequestUserAgent(server->UserAgent());
+            if (!HTTPSConnect)
+                return Transport::Document_other_error;
+        }
 
-	 // Set the accept language which can vary per server
-	 HTTPSConnect->SetAcceptLanguage(server->AcceptLanguage());
+        if (HTTPSConnect)
+        {
+            // Here we must set only thing for a HTTP request
 
-         // Set the referer
-         if (referer)
-            HTTPSConnect->SetRefererURL(*referer);
+            HTTPSConnect->SetRequestURL(*url);
 
-         // Let's disable the cookies if we decided that in the config file
-         if (server->DisableCookies())
-            HTTPSConnect->DisableCookies();
-         else HTTPSConnect->AllowCookies();
+            // Set the user agent which can vary per server
+            HTTPSConnect->SetRequestUserAgent(server->UserAgent());
 
-	  // We may issue a config paramater to enable/disable them
-         if (server->IsPersistentConnectionAllowed())
-         {
-            // Persistent connections allowed
-            HTTPSConnect->AllowPersistentConnection();
-         }
-         else HTTPSConnect->DisablePersistentConnection();
+            // Set the accept language which can vary per server
+            HTTPSConnect->SetAcceptLanguage(server->AcceptLanguage());
+
+            // Set the referer
+            if (referer)
+                HTTPSConnect->SetRefererURL(*referer);
+
+            // Let's disable the cookies if we decided that in the config file
+            if (server->DisableCookies())
+                HTTPSConnect->DisableCookies();
+            else HTTPSConnect->AllowCookies();
+
+            // We may issue a config paramater to enable/disable them
+            if (server->IsPersistentConnectionAllowed())
+            {
+                // Persistent connections allowed
+                HTTPSConnect->AllowPersistentConnection();
+            }
+            else HTTPSConnect->DisablePersistentConnection();
 
             // Head before Get option control
             if (server->HeadBeforeGet())
-               HTTPSConnect->EnableHeadBeforeGet();
+                HTTPSConnect->EnableHeadBeforeGet();
             else
-               HTTPSConnect->DisableHeadBeforeGet();
+                HTTPSConnect->DisableHeadBeforeGet();
 
-	  // http->SetRequestMethod(HtHTTP::Method_GET);
-         if (debug > 2)
-         {
-            cout << "Making HTTPS request on " << url->get();
-	      
+            // http->SetRequestMethod(HtHTTP::Method_GET);
+            debug->outlog(2, "Making HTTPS request on %s", url->get().get());
+
             if (useproxy)
-               cout << " via proxy (" << proxy->host() << ":" << proxy->port() << ")";
-	      
-            cout << endl;
-         }
-      }
+                debug->outlog(2, " via proxy (%s:%d)", proxy->host(), proxy->port());
 
-      HTTPSConnect->SetProxy(useproxy);
-      transportConnect = HTTPSConnect;
-   }
+            debug->outlog(2, "\n");
+        }
+
+        HTTPSConnect->SetProxy(useproxy);
+        transportConnect = HTTPSConnect;
+    }
 #endif
-   else if (mystrncasecmp(url->service(), "http", 4) == 0)
-   {
-      if (!HTTPConnect)
-      {
-         if (debug>4)
-            cout << "Creating an HtHTTPBasic object" << endl;
-      
-         HTTPConnect = new HtHTTPBasic();
+    else if (mystrncasecmp(url->service(), "http", 4) == 0)
+    {
+        if (!HTTPConnect)
+        {
+            debug->outlog(4, "Creating an HtHTTPBasic object\n");
 
-         if (!HTTPConnect)
-               return Transport::Document_other_error;
-      }
-      
-      if (HTTPConnect)
-      {
-         // Here we must set only thing for a HTTP request
-	  
-         HTTPConnect->SetRequestURL(*url);
+            HTTPConnect = new HtHTTPBasic();
 
-	 // Set the user agent which can vary per server
-	 HTTPConnect->SetRequestUserAgent(server->UserAgent());
+            if (!HTTPConnect)
+                return Transport::Document_other_error;
+        }
 
-	 // Set the accept language which can vary per server
-	 HTTPConnect->SetAcceptLanguage(server->AcceptLanguage());
+        if (HTTPConnect)
+        {
+            // Here we must set only thing for a HTTP request
 
-         // Set the referer
-         if (referer)
-            HTTPConnect->SetRefererURL(*referer);
-	  
-         // Let's disable the cookies if we decided that in the config file 
-         if (server->DisableCookies())
-            HTTPConnect->DisableCookies();
-         else HTTPConnect->AllowCookies();
+            HTTPConnect->SetRequestURL(*url);
 
-	  // We may issue a config paramater to enable/disable them
-         if (server->IsPersistentConnectionAllowed())
-         {
-            // Persistent connections allowed
-            HTTPConnect->AllowPersistentConnection();
-         }
-         else HTTPConnect->DisablePersistentConnection();
+            // Set the user agent which can vary per server
+            HTTPConnect->SetRequestUserAgent(server->UserAgent());
+
+            // Set the accept language which can vary per server
+            HTTPConnect->SetAcceptLanguage(server->AcceptLanguage());
+
+            // Set the referer
+            if (referer)
+                HTTPConnect->SetRefererURL(*referer);
+
+            // Let's disable the cookies if we decided that in the config file 
+            if (server->DisableCookies())
+                HTTPConnect->DisableCookies();
+            else HTTPConnect->AllowCookies();
+
+            // We may issue a config paramater to enable/disable them
+            if (server->IsPersistentConnectionAllowed())
+            {
+                // Persistent connections allowed
+                HTTPConnect->AllowPersistentConnection();
+            }
+            else HTTPConnect->DisablePersistentConnection();
 
             // Head before Get option control
             if (server->HeadBeforeGet())
-               HTTPConnect->EnableHeadBeforeGet();
+                HTTPConnect->EnableHeadBeforeGet();
             else
-               HTTPConnect->DisableHeadBeforeGet();
+                HTTPConnect->DisableHeadBeforeGet();
 
-	  // http->SetRequestMethod(HtHTTP::Method_GET);
-         if (debug > 2)
-         {
-            cout << "Making HTTP request on " << url->get();
-	      
+            // http->SetRequestMethod(HtHTTP::Method_GET);
+            debug->outlog(2, "Making HTTP request on %s", url->get().get());
+
             if (useproxy)
-               cout << " via proxy (" << proxy->host() << ":" << proxy->port() << ")";
-	      
-            cout << endl;
-         }
-      }
+                debug->outlog(2, " via proxy (%s:%d)", proxy->host().get(), proxy->port());
 
-      HTTPConnect->SetProxy(useproxy);
-      transportConnect = HTTPConnect;
-   }
-   else if (mystrncasecmp(url->service(), "file", 4) == 0)
-   {
-      if (!FileConnect)
-      {
-         if (debug>4)
-            cout << "Creating an HtFile object" << endl;
+            debug->outlog(2, "\n");
+        }
 
-         FileConnect = new HtFile();
+        HTTPConnect->SetProxy(useproxy);
+        transportConnect = HTTPConnect;
+    }
+    else if (mystrncasecmp(url->service(), "file", 4) == 0)
+    {
+        if (!FileConnect)
+        {
+            debug->outlog(4, "Creating an HtFile object\n");
 
-         if (!FileConnect)
-               return Transport::Document_other_error;
-      }
+            FileConnect = new HtFile();
 
-      if (FileConnect)
-      {
-         // Here we must set only thing for a file request
-	
-         FileConnect->SetRequestURL(*url);
-	
-         // Set the referer
-         if (referer)
-            FileConnect->SetRefererURL(*referer);
-	
-         if (debug > 2)
-            cout << "Making 'file' request on " << url->get() << endl;
-      }
+            if (!FileConnect)
+                return Transport::Document_other_error;
+        }
 
-      transportConnect = FileConnect;
-   } 
-   else if (mystrncasecmp(url->service(), "ftp", 3) == 0)
-     { 
-       // the following FTP handling is modeled very closely on 
-       // the prior 'file'-protocol handling, so beware of bugs
+        if (FileConnect)
+        {
+            // Here we must set only thing for a file request
 
-      if (!FTPConnect)
-      {
-         if (debug>4)
-            cout << "Creating an HtFTP object" << endl;
+            FileConnect->SetRequestURL(*url);
 
-         FTPConnect = new HtFTP();
+            // Set the referer
+            if (referer)
+                FileConnect->SetRefererURL(*referer);
 
-         if (!FTPConnect)
-               return Transport::Document_other_error;
-      }
-      if (FTPConnect)
-      {
-         // Here we must set only thing for a FTP request
-	
-         FTPConnect->SetRequestURL(*url);
-         ////////////////////////////////////////////////////    
-	 ///
-         /// stuff may be missing here or in need of change             
-         ///
-	 ///////////////////////////////////////////////////
+            debug->outlog(2, "Making 'file' request on %s\n", url->get().get());
+        }
 
-         // Set the referer
-         if (referer)
-            FTPConnect->SetRefererURL(*referer);
-	
-         if (debug > 2)
-            cout << "Making 'ftp' request on " << url->get() << endl;
-      }
+        transportConnect = FileConnect;
+    } 
+    else if (mystrncasecmp(url->service(), "ftp", 3) == 0)
+    { 
+        // the following FTP handling is modeled very closely on 
+        // the prior 'file'-protocol handling, so beware of bugs
 
-      transportConnect = FTPConnect;
-   } // end of else if (mystrncasecmp(url->service(), "ftp", 3) == 0)
+        if (!FTPConnect)
+        {
+            debug->outlog(4, "Creating an HtFTP object\n");
 
-   else if (mystrncasecmp(url->service(), "news", 4) == 0)
-   {
-      if (!NNTPConnect)
-      {
-         if (debug>4)
-            cout << "Creating an HtNNTP object" << endl;
+            FTPConnect = new HtFTP();
 
-         NNTPConnect = new HtNNTP();
+            if (!FTPConnect)
+                return Transport::Document_other_error;
+        }
+        if (FTPConnect)
+        {
+            // Here we must set only thing for a FTP request
 
-         if (!NNTPConnect)
-               return Transport::Document_other_error;
-      }
+            FTPConnect->SetRequestURL(*url);
+            ////////////////////////////////////////////////////    
+            ///
+            /// stuff may be missing here or in need of change             
+            ///
+            ///////////////////////////////////////////////////
 
-      if (NNTPConnect)
-      {
-         // Here we got an Usenet document request
-	
-         NNTPConnect->SetRequestURL(*url);
-	
-         if (debug > 2)
-            cout << "Making 'NNTP' request on " << url->get() << endl;
-      }
+            // Set the referer
+            if (referer)
+                FTPConnect->SetRefererURL(*referer);
 
-      transportConnect = NNTPConnect;
-   }
-   else
-   {
-      if (debug)
-      {
-         cout << '"' << url->service() <<
-            "\" not a recognized transport service. Ignoring\n";
-      }
-      
-      return Transport::Document_not_recognized_service;
-   }
-  
-   // Is a transport object pointer available?
-  
-   if (transportConnect)
-   {
-      // Set all the appropriate parameters
-      if (useproxy)
-      {
-         transportConnect->SetConnection(proxy);
-	 if (proxy_authorization.length())
-	     transportConnect->SetProxyCredentials(proxy_authorization);
-      }
-      else
-         transportConnect->SetConnection(url);
-      
-      // OK. Let's set the connection time out
-      transportConnect->SetTimeOut(server->TimeOut());
-      
-      // Let's set number of retries for a failed connection attempt
-      transportConnect->SetRetry(server->TcpMaxRetries());
-      
-      // ... And the wait time after a failure
-      transportConnect->SetWaitTime(server->TcpWaitTime());
-      
-      // OK. Let's set the maximum size of a document to be retrieved
-      transportConnect->SetRequestMaxDocumentSize(max_doc_size);
-      
-      // Let's set the credentials
-      transportConnect->SetCredentials(authorization);
-      
-      // Let's set the modification time (in order not to retrieve a
-      // document we already have)
-      transportConnect->SetRequestModificationTime(date);
-      
-      // Make the request
-      // Here is the main operation ... Let's make the request !!!
-      // We now perform a loop until we want to retry the request
+            debug->outlog(2, "Making 'ftp' request on %s\n", url->get().get());
+        }
 
-      NumRetries = 0;
-      
-      do
-      {
-         status = transportConnect->Request();
+        transportConnect = FTPConnect;
+    } // end of else if (mystrncasecmp(url->service(), "ftp", 3) == 0)
 
-         if (NumRetries++)
-            if(debug>0)
-               cout << ".";
+    else if (mystrncasecmp(url->service(), "news", 4) == 0)
+    {
+        if (!NNTPConnect)
+        {
+            debug->outlog(4, "Creating an HtNNTP object\n");
 
-      } while (ShouldWeRetry(status) && NumRetries < num_retries);
-      
-            
-      // Let's get out the info we need
-      response = transportConnect->GetResponse();
-      
-      if (response)
-      {
-         // We got the response
-	  
-         contents = response->GetContents();
-         contentType = response->GetContentType();
-         contentLength = response->GetContentLength();
-         ptrdatetime = response->GetModificationTime();
-         document_length = response->GetDocumentLength();
+            NNTPConnect = new HtNNTP();
 
-         // This test is ugly!  Can whoever put it here explain why it's
-         // needed?  Why would GetLocation() ever return a non-empty string
-         // from a Transport subclass that's not supposed to redirect?
-         if (transportConnect == HTTPConnect || transportConnect == HTTPSConnect || transportConnect == externalConnect)
-            redirected_to =  ((HtHTTP_Response *)response)->GetLocation();
+            if (!NNTPConnect)
+                return Transport::Document_other_error;
+        }
 
-         if (ptrdatetime)
-         {
-            // We got the modification date/time
-            modtime = *ptrdatetime;
-         }
+        if (NNTPConnect)
+        {
+            // Here we got an Usenet document request
 
-         // How to manage it when there's no modification date/time?
-	  
-         if (debug > 5)
-         {
-            cout << "Contents:\n" << contents << endl;
-            cout << "Content Type: " << contentType << endl;
-            cout << "Content Length: " << contentLength << endl;
-            cout << "Modification Time: " << modtime.GetISO8601() << endl;
-         }
-      }
-      
-      return status;
-      
-   }
-   else
-      return Transport::Document_not_found;
+            NNTPConnect->SetRequestURL(*url);
+
+            debug->outlog(2, "Making 'NNTP' request on %s\n", url->get().get());
+        }
+
+        transportConnect = NNTPConnect;
+    }
+    else
+    {
+        debug->outlog(0, "\"%s\" not a recognized transport service. Ignoring\n", url->service().get());
+
+        return Transport::Document_not_recognized_service;
+    }
+
+    // Is a transport object pointer available?
+
+    if (transportConnect)
+    {
+        // Set all the appropriate parameters
+        if (useproxy)
+        {
+            transportConnect->SetConnection(proxy);
+            if (proxy_authorization.length())
+                transportConnect->SetProxyCredentials(proxy_authorization);
+        }
+        else
+            transportConnect->SetConnection(url);
+
+        // OK. Let's set the connection time out
+        transportConnect->SetTimeOut(server->TimeOut());
+
+        // Let's set number of retries for a failed connection attempt
+        transportConnect->SetRetry(server->TcpMaxRetries());
+
+        // ... And the wait time after a failure
+        transportConnect->SetWaitTime(server->TcpWaitTime());
+
+        // OK. Let's set the maximum size of a document to be retrieved
+        transportConnect->SetRequestMaxDocumentSize(max_doc_size);
+
+        // Let's set the credentials
+        transportConnect->SetCredentials(authorization);
+
+        // Let's set the modification time (in order not to retrieve a
+        // document we already have)
+        transportConnect->SetRequestModificationTime(date);
+
+        // Make the request
+        // Here is the main operation ... Let's make the request !!!
+        // We now perform a loop until we want to retry the request
+
+        NumRetries = 0;
+
+        do
+        {
+            status = transportConnect->Request();
+
+            NumRetries++;
+            debug->outlog(0, ".");
+
+        } while (ShouldWeRetry(status) && NumRetries < num_retries);
+
+
+        // Let's get out the info we need
+        response = transportConnect->GetResponse();
+
+        if (response)
+        {
+            // We got the response
+
+            contents = response->GetContents();
+            contentType = response->GetContentType();
+            contentLength = response->GetContentLength();
+            ptrdatetime = response->GetModificationTime();
+            document_length = response->GetDocumentLength();
+
+            // This test is ugly!  Can whoever put it here explain why it's
+            // needed?  Why would GetLocation() ever return a non-empty string
+            // from a Transport subclass that's not supposed to redirect?
+            if (transportConnect == HTTPConnect || transportConnect == HTTPSConnect || transportConnect == externalConnect)
+                redirected_to =  ((HtHTTP_Response *)response)->GetLocation();
+
+            if (ptrdatetime)
+            {
+                // We got the modification date/time
+                modtime = *ptrdatetime;
+            }
+
+            // How to manage it when there's no modification date/time?
+
+            debug->outlog(5, "Contents:\n%s\nContent Type:%s\n", contents.get(), contentType.get());
+            debug->outlog(5, "Content Length:%d\nModification Time:%s\n", contentLength, modtime.GetISO8601());
+        }
+
+        return status;
+
+    }
+    else
+        return Transport::Document_not_found;
 }
-  
+
 //*****************************************************************************
 // DocStatus Document::RetrieveLocal(HtDateTime date, StringList *filenames)
 //   Attempt to retrieve the document pointed to by our internal URL
@@ -608,8 +579,7 @@ Document::Retrieve(Server *server, HtDateTime date)
 //   Document_not_changed or Document_not_local (in which case the
 //   retriever tries it again using the standard retrieve method).
 //
-Transport::DocStatus
-Document::RetrieveLocal(HtDateTime date, StringList *filenames)
+Transport::DocStatus Document::RetrieveLocal(HtDateTime date, StringList *filenames)
 {
     HtConfiguration* config= HtConfiguration::config();
     struct stat stat_buf;
@@ -620,55 +590,53 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
     // Loop through list of potential filenames until the list is exhausted
     // or a suitable file is found to exist as a regular file.
     while ((filename = (String *)filenames->Get_Next()) &&
-	   ((stat((char*)*filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
-        if (debug > 1)
-	    cout << "  tried local file " << *filename << endl;
-    
+            ((stat((char*)*filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
+        debug->outlog(1, "  tried local file %s\n", filename->get());
+
     if (!filename)
         return Transport::Document_not_local;
 
-    if (debug > 1)
-        cout << "  found existing file " << *filename << endl;
+    debug->outlog(1, "  found existing file ", filename->get());
 
     modtime = stat_buf.st_mtime;
     if (modtime <= date)
-      return Transport::Document_not_changed;
+        return Transport::Document_not_changed;
 
     char *ext = strrchr((char*)*filename, '.');
     if (ext == NULL)
-      return Transport::Document_not_local;
+        return Transport::Document_not_local;
     const String *type = HtFile::Ext2Mime (ext + 1);
 
     static Dictionary *bad_local_ext = 0;
     if (!bad_local_ext)
     {
-	// A list of bad extensions, separated by spaces or tabs
-	bad_local_ext = new Dictionary;
-	String	t = config->Find("bad_local_extensions");
-	String lowerp;
-	char	*p = strtok(t, " \t");
-	while (p)
-	{
-	  // Extensions are case insensitive
-	  lowerp = p;
-	  lowerp.lowercase();
-	  bad_local_ext->Add(lowerp, 0);
-	  p = strtok(0, " \t");
-	}
+        // A list of bad extensions, separated by spaces or tabs
+        bad_local_ext = new Dictionary;
+        String	t = config->Find("bad_local_extensions");
+        String lowerp;
+        char	*p = strtok(t, " \t");
+        while (p)
+        {
+            // Extensions are case insensitive
+            lowerp = p;
+            lowerp.lowercase();
+            bad_local_ext->Add(lowerp, 0);
+            p = strtok(0, " \t");
+        }
     }
     if (type == NULL || bad_local_ext->Exists(ext))
     {
-      if (debug > 1 && type != NULL)
-	cout << "\nBad local extension: " << *filename << endl;
-      return Transport::Document_not_local;
+        if (type != NULL) // ??? how is this ever supposed to happen?
+            debug->outlog(1, "\nBad local extension: %s\n", filename->get());
+        return Transport::Document_not_local;
     }
     else 
-      contentType = *type;
+        contentType = *type;
 
     // Open it
     FILE *f = fopen((char*)*filename, "r");
     if (f == NULL)
-      return Transport::Document_not_local;
+        return Transport::Document_not_local;
 
     //
     // Read in the document itself
@@ -680,23 +648,21 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
 
     while ((bytesRead = fread(docBuffer, 1, sizeof(docBuffer), f)) > 0)
     {
-	if (debug > 2)
-	    cout << "Read " << bytesRead << " from document\n";
-	if (contents.length() + bytesRead > max_doc_size)
-	    bytesRead = max_doc_size - contents.length();
-	contents.append(docBuffer, bytesRead);
-	if (contents.length() >= max_doc_size)
-	    break;
+        debug->outlog(2, "Read %d from document\n", bytesRead);
+        if (contents.length() + bytesRead > max_doc_size)
+            bytesRead = max_doc_size - contents.length();
+        contents.append(docBuffer, bytesRead);
+        if (contents.length() >= max_doc_size)
+            break;
     }
     fclose(f);
     document_length = contents.length();
     contentLength = stat_buf.st_size;
 
-    if (debug > 2)
-	cout << "Read a total of " << document_length << " bytes\n";
+    debug->outlog(2, "Read a total of %d bytes\n", document_length);
 
     if (document_length < contentLength)
-      document_length = contentLength;
+        document_length = contentLength;
     return Transport::Document_ok;
 }
 
@@ -709,77 +675,68 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
 //   parsers are external programs that will be used.
 //
 /*
-Parsable *
-Document::getParsable()
-{
-    static HTML			*html = 0;
-    static Plaintext		*plaintext = 0;
-    static ExternalParser	*externalParser = 0;
-    
-    Parsable	*parsable = 0;
+   Parsable * Document::getParsable()
+   {
+   static HTML			*html = 0;
+   static Plaintext		*plaintext = 0;
+   static ExternalParser	*externalParser = 0;
 
-    if (ExternalParser::canParse(contentType))
-    {
-	if (externalParser)
-	{
-	    delete externalParser;
-	}
-	externalParser = new ExternalParser(contentType);
-	parsable = externalParser;
-    }
-    else if (mystrncasecmp((char*)contentType, "text/html", 9) == 0)
-    {
-	if (!html)
-	    html = new HTML();
-	parsable = html;
-    }
-    else if (mystrncasecmp((char*)contentType, "text/plain", 10) == 0)
-    {
-	if (!plaintext)
-	    plaintext = new Plaintext();
-	parsable = plaintext;
-    }
-    else if (mystrncasecmp((char *)contentType, "text/css", 8) == 0)
-      {
-	return NULL;
-      }
-    else if (mystrncasecmp((char *)contentType, "text/", 5) == 0)
-    {
-	if (!plaintext)
-	    plaintext = new Plaintext();
-	parsable = plaintext;
-	if (debug > 1)
-	{
-	    cout << '"' << contentType <<
-		"\" not a recognized type.  Assuming text/plain\n";
-	}
-    }
-    else
-      {
-	if (debug > 1)
-	{
-	    cout << '"' << contentType <<
-		"\" not a recognized type.  Ignoring\n";
-	}
-	return NULL;
-      }
+   Parsable	*parsable = 0;
 
-    parsable->setContents(contents.get(), contents.length());
-    return parsable;
-}
-*/
+   if (ExternalParser::canParse(contentType))
+   {
+   if (externalParser)
+   {
+   delete externalParser;
+   }
+   externalParser = new ExternalParser(contentType);
+   parsable = externalParser;
+   }
+   else if (mystrncasecmp((char*)contentType, "text/html", 9) == 0)
+   {
+   if (!html)
+   html = new HTML();
+   parsable = html;
+   }
+   else if (mystrncasecmp((char*)contentType, "text/plain", 10) == 0)
+   {
+   if (!plaintext)
+   plaintext = new Plaintext();
+   parsable = plaintext;
+   }
+   else if (mystrncasecmp((char *)contentType, "text/css", 8) == 0)
+   {
+   return NULL;
+   }
+   else if (mystrncasecmp((char *)contentType, "text/", 5) == 0)
+   {
+   if (!plaintext)
+   plaintext = new Plaintext();
+   parsable = plaintext;
+   debug->outlog(1, "\"%s\" not a recognized type. Assuming text/plain\n", contentType.get());
+   }
+   else
+   {
+   debug->outlog(1, "\"%s\" not a recognized type. Ignoring\n", contentType.get());
+   return NULL;
+   }
+
+   parsable->setContents(contents.get(), contents.length());
+   return parsable;
+   }
+   */
 
 int Document::ShouldWeRetry(Transport::DocStatus DocumentStatus)
 {
 
-   if (DocumentStatus == Transport::Document_connection_down)
-      return 1;
-      
-   if (DocumentStatus == Transport::Document_no_connection)
-      return 1;
-      
-   if (DocumentStatus == Transport::Document_no_header)
-      return 1;
-      
-   return 0;
+    if (DocumentStatus == Transport::Document_connection_down)
+        return 1;
+
+    if (DocumentStatus == Transport::Document_no_connection)
+        return 1;
+
+    if (DocumentStatus == Transport::Document_no_header)
+        return 1;
+
+    return 0;
 }
