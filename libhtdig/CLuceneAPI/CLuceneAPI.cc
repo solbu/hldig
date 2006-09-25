@@ -20,7 +20,9 @@ static PerFieldAnalyzerWrapper* an = NULL;
 static SnowballAnalyzer* san = NULL;
 #endif
 
-extern int debug;
+#include "HtDebug.h"
+
+extern HtDebug * debug;
 
 //
 // Index close / open
@@ -59,8 +61,7 @@ void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
         an->addAnalyzer(_T("stemmed"), san);
 #endif
     }
-    if (debug > 2)
-        cout << "Analysers... ";
+    debug->outlog(2, "CLuceneAPI: Analysers... ");
 
     //
     // Create the IndexWriter, unlocking the directory if
@@ -70,8 +71,7 @@ void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
     {
         if ( IndexReader::isLocked(target) )
         {
-            if (debug > 2)
-                cout << "Unlocking CLucene...";
+            debug->outlog(2, "Unlocking index...");
             IndexReader::unlock(target);
         }
 
@@ -81,8 +81,7 @@ void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
     {
         writer = _CLNEW IndexWriter( target, an, true);
     }
-    if (debug > 2)
-        cout << "IndexWriter... ";
+    debug->outlog(2, "IndexWriter... ");
     writer->setMaxFieldLength(IndexWriter::DEFAULT_MAX_FIELD_LENGTH);
     writer->setMaxMergeDocs(config->Value("clucene_max_merge_docs", 300000));
 
@@ -90,16 +89,14 @@ void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
     // Create the reader - this will be used for deleting
     // 
     reader = IndexReader::open( target );
-    if (debug > 2)
-        cout << "IndexReader... ";
+    debug->outlog(2, "IndexReader... ");
 
     //
     // get the start time... useful for debugging
     // 
     str = lucene::util::Misc::currentTimeMillis();
 
-    if (debug > 2)
-        cout << "created." << endl;
+    debug->outlog(2, "created.\n");
 }
 
 void CLuceneCloseIndex()
@@ -122,8 +119,7 @@ void CLuceneCloseIndex()
     _CLDELETE(an);
     //_CLDELETE(san); // deleteing an will do this ???
 
-    if (debug > 1)
-        cout << _T("Indexing took: ") << (lucene::util::Misc::currentTimeMillis() - str) << _T("ms.") << endl << endl;
+    debug->outlog(1, "CLuceneAPI: Indexing took: %dms.\n", lucene::util::Misc::currentTimeMillis() - str);
 }
 
 
@@ -210,24 +206,19 @@ int CLuceneAddDocToIndex(CL_Doc * doc)
 // 
 int CLuceneDeleteURLFromIndex(std::string * url)
 {
-    wchar_t * wtemp;
-    Term * tempTerm;
-    int result;
+    wchar_t * wtemp = utf8_to_wchar(url->c_str());
 
-    wtemp = utf8_to_wchar(url->c_str());
-    tempTerm = new Term( _T("url"), wtemp);
+    Term * tempTerm = new Term( _T("url"), wtemp);
 
     wcout << "deleting " << tempTerm->field() << ":" << tempTerm->text() << endl;
 
-    result = reader->deleteDocuments(tempTerm);
+    int result = reader->deleteDocuments(tempTerm);
+
+    debug->outlog(0, "CLuceneAPI: deleting %s - deleted %d documents\n", url->c_str(), result);
 
     delete tempTerm;
     free(wtemp);
 
-    if (debug)
-    {
-        cout << "CLucene: deleting " << *url << " - deleted " << result << " documents" << endl;
-    }
     return result;
 }
 
@@ -237,20 +228,17 @@ int CLuceneDeleteURLFromIndex(std::string * url)
 //
 int CLuceneDeleteIDFromIndex(int id)
 {
-    char temp[32];
-    wchar_t * wtemp;
-    Term * tempTerm;
-    int result;
+    wchar_t * wtemp = (wchar_t *)malloc(sizeof(wchar_t) * 32);
+    swprintf(wtemp, 31, _T("%d"), id);
 
-    sprintf(temp, "%d", id);
-    wtemp = utf8_to_wchar(temp);
-    tempTerm = new Term( _T("doc-id"), wtemp);
+    Term * tempTerm = new Term( _T("doc-id"), wtemp);
 
-    result = reader->deleteDocuments(tempTerm);
+    int result = reader->deleteDocuments(tempTerm);
+
+    debug->outlog(0, "CLuceneAPI: deleting %d (id) - deleted %d documents\n", id, result);
 
     delete tempTerm;
     free(wtemp);
-    free(temp);
 
     return result;
 }
