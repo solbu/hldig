@@ -14,7 +14,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_api.h,v 1.5.2.2 2006/07/26 23:44:28 aarnone Exp $
+// $Id: libhtdig_api.h,v 1.5.2.3 2006/09/25 22:24:10 aarnone Exp $
 //
 //----------------------------------------------------------------
 
@@ -231,7 +231,8 @@ typedef struct htdig_parameters_struct {
 
   //debugging & logfile
   char logFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
-  int debug;            //0, 1 ,2, 3, 4, 5
+  char debugFile[HTDIG_MAX_FILENAME_PATH_L];   //location of debug messages file
+  int debug;            // debug level - 0, 1 ,2, 3, 4, 5
   
   //boolean values
   int initial;
@@ -361,6 +362,7 @@ typedef struct htsearch_parameters_struct {
 
   //debugging & logfile
   char logFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
+  char debugFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
   int debug;            //0, 1 ,2, 3, 4, 5
  
   //filters
