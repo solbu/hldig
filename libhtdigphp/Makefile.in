@@ -1,8 +1,0 @@
-# $Id: Makefile.in,v 1.1 2004/03/20 01:31:21 nealr Exp $
-
-LTLIBRARY_NAME        = libhtdigphp.la
-LTLIBRARY_SOURCES     = htdigphp.c
-LTLIBRARY_SHARED_NAME = htdigphp.la
-LTLIBRARY_SHARED_LIBADD = $(BZ2_SHARED_LIBADD)
-
-include $(top_srcdir)/build/dynlib.mk
