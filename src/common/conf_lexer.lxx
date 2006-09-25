@@ -1,0 +1,206 @@
+/*
+//
+// conf_lexer.lxx
+//
+//             This lexical parser is used to parse ht://Dig config
+//             files.  
+//
+//       Note:  The resulting .cxx file produces warnings of unused
+//		labels.  As at 2003-06-02, these have been manually
+//		removed, but they will reappear when  (f)lex  is re-run.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999-2004 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
+//
+// $Id: conf_lexer.lxx,v 1.1.2.1 2006/09/25 23:50:31 aarnone Exp $
+//
+*/
+%{
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+%}
+
+%option yylineno noyywrap nounput
+%x t_right
+%x incl
+%x bracket
+%x br_string
+
+%{
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+
+#include "HtConfiguration.h"
+//#include "Dictionary.h"
+#include "conf_parser.h"
+#define MAX_INCLUDE_DEPTH 10
+YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
+String *name_stack[MAX_INCLUDE_DEPTH];
+int lineno_stack[MAX_INCLUDE_DEPTH];
+int include_stack_ptr = 0;
+%}
+
+KEYWORD			[a-zA-Z_][a-zA-Z_0-9/]*
+NUMBER			[0-9]+
+STRING			[\x21-\xff]+
+BR_STRING		[^ \n\t<>]+
+%%
+
+^[[:space:]]*#.*\n	/*   Ignore comments     */
+^[[:space:]]*\n		/*   Ignore empty lines   */
+<*>[ \t]+		/*   Ignore spaces       */
+include[ \t]*:		BEGIN(incl);
+"<"                     { BEGIN(bracket); return(T_LEFT_BR); }
+<bracket>"/"                       return(T_SLASH);
+<bracket>">"            return(T_RIGHT_BR);
+<INITIAL,bracket>{KEYWORD}		{
+			//yylval.str = (char *)malloc(yyleng+1);
+                        yylval.str = new char[yyleng+1];
+                        strcpy(yylval.str,yytext);
+			return(T_KEYWORD);
+			}
+<br_string>{BR_STRING}	{
+			BEGIN(bracket);
+			yylval.str = new char[yyleng+1];
+			strcpy(yylval.str,yytext);
+			return(T_STRING);
+			}
+
+<t_right>{NUMBER}		{
+                        //yylval.str = (char*)malloc(yyleng+1);
+                        yylval.str = new char[yyleng+1];
+                        strcpy(yylval.str,yytext);
+			return(T_NUMBER);
+			}
+
+<INITIAL,bracket>:			{
+			if (YY_START==bracket)
+			    BEGIN(br_string);
+			else
+			BEGIN(t_right);
+                        return(T_DELIMITER);
+                        }
+
+<t_right>{STRING}\\\n	{
+			//yylval.str = (char *)malloc(yyleng+1-2);
+                        yylval.str = new char[yyleng+1-2];
+                        //strcpy(yylval.str,yytext);
+                        memcpy(yylval.str,yytext,yyleng-2);
+                        yylval.str[yyleng-2]='\0';
+			return(T_STRING);  
+			}
+
+<t_right>"\""[^\n]+"\"" {
+			yylval.str = new char[yyleng+1];
+			strcpy(yylval.str,yytext);
+                        return(T_STRING);
+                        }
+
+<t_right>{STRING}		{
+			//yylval.str = (char *)malloc(yyleng+1);
+                        yylval.str = new char[yyleng+1];
+                        strcpy(yylval.str,yytext);
+			return(T_STRING);
+			}
+<t_right>\\\n		
+			{
+			/*   Ignore newline after "\"    */
+			}
+<t_right>[ \t]*		
+			{
+			/*   Ignore spaces               */
+			}
+<incl>{STRING}		{ /* got the include file name */
+			if ( include_stack_ptr >= MAX_INCLUDE_DEPTH )
+			    {
+			    fprintf(stderr,"Includes nested too deeply\n");
+			    // exit(1);	// Seems too harsh!
+			    return(T_NEWLINE);
+			    }
+			include_stack[include_stack_ptr++] =
+			    YY_CURRENT_BUFFER;
+
+			HtConfiguration* config= HtConfiguration::config();
+			// handle ${var} in file name
+			String ParsedFilename =
+				config->ParseString(yytext);
+
+			if (ParsedFilename[0] != '/')
+			    {	// Given file name not fully qualified
+				// so strip dir. name from current one
+			    String str;
+			    if (include_stack_ptr > 1)
+				str = *name_stack[include_stack_ptr-2];
+			    else	// still at top level config
+				str = config->getFileName();
+			    int len = str.lastIndexOf('/') + 1;
+			    if (len > 0)
+				{	// Current name has directory path
+					// component, so use it for new name
+				str.chop(str.length() - len);
+				str << ParsedFilename;
+				ParsedFilename = str;
+				}
+			    }
+
+			yyin = fopen( ParsedFilename.get(), "r" );
+
+			if ( ! yyin ) {
+			    fprintf(stderr,"can't find file: %s\n",yytext);
+			    // exit(1);	// Seems too harsh!
+		            include_stack_ptr--;
+			    return(T_NEWLINE);
+			}
+			name_stack[include_stack_ptr-1] =
+					new String(ParsedFilename.get());
+			lineno_stack[include_stack_ptr-1] = yylineno;
+			yylineno = 1;
+		        yy_switch_to_buffer( yy_create_buffer( yyin, YY_BUF_SIZE ) );
+
+		        BEGIN(INITIAL);
+		        }
+
+<<EOF>> 		{
+		        if ( include_stack_ptr <= 0 )
+			    {
+			    static int termnext = 0;
+			    // fix to allow unterminated final line
+			    if (++termnext <= 1)
+				return(T_NEWLINE);
+			    termnext = 0;	// in case we're called again
+		            yyterminate();
+			    }
+		        else
+		            {
+			    delete name_stack[include_stack_ptr-1];
+			    yylineno = lineno_stack[include_stack_ptr-1];
+		            yy_delete_buffer( YY_CURRENT_BUFFER );
+		            yy_switch_to_buffer(
+		                 include_stack[--include_stack_ptr] );
+		            }
+		        }
+
+
+<bracket,t_right>\n			{
+			BEGIN(INITIAL);
+			return(T_NEWLINE);
+			}
+^[[:space:]]+
+
+\n			
+<*>.|\n		{ 
+	HtConfiguration* config= HtConfiguration::config();
+	String str;
+	if (include_stack_ptr > 0)
+	    str = *name_stack[include_stack_ptr-1];
+	else	// still at top level config
+	    str = config->getFileName();
+	fprintf(stderr,"Unknown char in file %s line %d: %s\n",str.get(),yylineno,yytext);
+	// exit(1); // Seems too harsh!
+	}
+%%

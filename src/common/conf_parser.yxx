@@ -1,0 +1,270 @@
+%{
+//
+// conf_parser.yxx
+//
+//             This syntax analyzer is used to parse ht://Dig config
+//             files.
+//
+// Part of the ht://Dig package   <http://www.htdig.org/>
+// Copyright (c) 1999-2004 The ht://Dig Group
+// For copyright details, see the file COPYING in your distribution
+// or the GNU Library General Public License (LGPL) version 2 or later
+// <http://www.gnu.org/copyleft/lgpl.html>
+//
+// $Id: conf_parser.yxx,v 1.1.2.1 2006/09/25 23:50:31 aarnone Exp $
+//
+
+#ifdef HAVE_CONFIG_H
+#include "htconfig.h"
+#endif /* HAVE_CONFIG_H */
+
+/* Bison version > 1.25 needed */
+/* TODO: 
+1. Better error handling
+2. ?
+*/
+#include <stdio.h> /* for debug */
+#include <stdlib.h>
+
+#ifdef HAVE_STD
+#include <iostream>
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif
+#else
+#include <iostream.h>
+#endif /* HAVE_STD */
+
+#include "HtConfiguration.h"
+#include "htString.h"
+/*#define YYDEBUG 1*/
+#define YYPARSE_PARAM aConf
+int yyerror(char *s);
+int yylex(void);  
+#undef DEBUG
+#ifdef DEBUG
+int sn_debug=3;
+#endif
+%}
+
+%union {
+	char *str;
+	ConfigDefaults	*ConfLine;
+	HtConfiguration	*ConfLines;
+}
+
+%token NUM T_DELIMITER T_NEWLINE T_RIGHT_BR T_LEFT_BR T_SLASH
+%token <str> T_STRING T_KEYWORD T_NUMBER
+%type <str> list 
+%type <ConfLine> simple_expression
+%type <ConfLines> simple_expression_list
+
+/* Grammar follows */
+%%
+
+input:
+         | input block { /* Whole config file */ }
+;
+
+block:        simple_expression		{   
+  // name: value
+               ((HtConfiguration *)aConf)->AddParsed($1->name,$1->value);
+	       #ifdef DEBUG
+	       if (sn_debug>=2) {
+		 cout<<"Added to conf: "<<$1->name<<":"<<$1->value<<endl;
+	       }
+	       #endif
+	       delete [] $1->name; 
+	       delete [] $1->value;
+	       delete $1;
+               }
+        | complex_expression {
+          // <server www.gc.lviv.ua>
+          //    server_max_docs: 456
+          //    ... : ...
+          // </server>
+	}
+        | T_NEWLINE	{ /* Ignore empty lines */  }
+;
+
+simple_expression:      T_KEYWORD T_DELIMITER T_STRING T_NEWLINE	{ 
+  // locale: uk_UA.KOI8-U
+                                        //
+					// We can't do inserting into config
+					// here because we don't know if it's
+                                        // in complex expression or not.
+					$$=new ConfigDefaults;
+					$$->name = $1; $$->value=$3;
+					}
+
+	| T_KEYWORD T_DELIMITER T_NUMBER T_NEWLINE	{ 
+	  // max_head_length: 300000
+	  //
+	                                $$=new ConfigDefaults;
+					$$->name = $1; $$->value=$3;
+					}
+	| T_KEYWORD T_DELIMITER list T_NEWLINE		{
+	  // bad_extensions: .XLS .xls .pdf .PDF .doc .DOC 
+	  //
+	  $$=new ConfigDefaults;
+	  $$->name = $1; $$->value=$3;
+	}
+	| T_KEYWORD T_DELIMITER T_NEWLINE	{
+	  // excude_urls:
+	  //
+	                            $$=new ConfigDefaults;
+				    $$->name = $1;
+				    $$->value=new char[1];
+				    *$$->value='\0';
+					}
+;
+
+complex_expression:	T_LEFT_BR T_KEYWORD T_DELIMITER T_STRING T_RIGHT_BR T_NEWLINE simple_expression_list T_LEFT_BR T_SLASH T_KEYWORD T_RIGHT_BR T_NEWLINE {
+		      // check if "<param> ... </param>" are equal
+		      if (strcmp($2,$10)!=0) {
+			// todo: setup error string, return with error.
+			// Inform about line number
+			cerr<<"Brackets mismatch: Opened: "<<$2<<" Closed: "<<$10<<endl;
+			// exit(1);
+		      }
+		      // Oll right. Append set of parameters to object($2)
+		      ((HtConfiguration *)aConf)->Add($2,$4,$7);
+		      #ifdef DEBUG
+		      if (sn_debug >= 2) {
+			cout<<"Added to conf: "<<$2<<":"<<$4<<":"<<$7<<endl;
+		      }
+		      #endif
+		      delete $2; 
+		      delete $4;
+		      delete [] $10;
+		    } 
+                 ;
+
+simple_expression_list:   simple_expression	{
+  //aaa: nnn
+  //bbb: ccc
+  // ...
+  //
+  // First entry. We need to create conf to store it.
+  HtConfiguration *expressionList=new HtConfiguration();
+  expressionList->AddParsed($1->name,$1->value);
+  $$=expressionList;
+  #ifdef DEBUG
+  if (sn_debug>=2) {
+    cout<<"Create list of properties: "<<expressionList<<endl;
+  }
+  #endif
+  delete $1->name; 
+  delete $1->value;
+  delete $1;
+}
+                        | simple_expression_list simple_expression {
+				$1->AddParsed($2->name,$2->value);
+				#ifdef DEBUG
+				if (sn_debug>=2) {
+				  cout<<$2->name<<":"<<$2->value<<" added to "<<$1<<endl;
+				}
+				#endif
+				delete $2->name; 
+				delete $2->value;
+				delete $2;
+				//$$=$1; //I think $$==$1
+			}
+			| T_NEWLINE	{ /* Ignore empty lines */  }
+                      ;
+
+list:	  T_STRING T_STRING			{ 
+	// Paste 2 components. Reallocate memory for 2 components.
+	if (($$=new char[strlen($1)+strlen($2)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy($$,$1);
+	strcat($$," ");		// Delimiter in list
+	strcat($$,$2);
+	delete [] $1; 
+	delete [] $2;
+	}
+
+	|  T_NUMBER T_STRING			{ 
+	// Paste 2 components. Reallocate memory for 2 components.
+	if (($$=new char[strlen($1)+strlen($2)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy($$,$1);
+	strcat($$," ");		// Delimiter in list
+	strcat($$,$2);
+	delete [] $1; 
+	delete [] $2;
+	}
+
+	 | T_STRING T_NUMBER			{ 
+	// Paste 2 components. Reallocate memory for 2 components.
+	if (($$=new char[strlen($1)+strlen($2)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy($$,$1);
+	strcat($$," ");		// Delimiter in list
+	strcat($$,$2);
+	delete [] $1; 
+	delete [] $2;
+	}
+
+	 | T_NUMBER T_NUMBER			{ 
+	// Paste 2 components. Reallocate memory for 2 components.
+	if (($$=new char[strlen($1)+strlen($2)+1+1])==NULL) {
+		fprintf(stderr,"Can't allocate memory\n");
+		exit(1);
+	}
+	strcpy($$,$1);
+	strcat($$," ");		// Delimiter in list
+	strcat($$,$2);
+	delete [] $1; 
+	delete [] $2;
+	}
+
+	| list T_STRING			{ 
+		char *old=$$;
+		if (($$=new char [strlen($$)+strlen($2)+1+1])==NULL) {
+		  fprintf(stderr,"Can't reallocate memory\n");
+		  exit(1);
+		}
+		strcpy($$,old);
+		delete [] old;
+		strcat($$," ");
+		strcat($$,$2);
+		delete [] $2;
+	}
+	| list T_NUMBER		{
+		char *old=$$;
+		if (($$=new char [strlen($$)+strlen($2)+1+1])==NULL) {
+		  fprintf(stderr,"Can't reallocate memory\n");
+		  exit(1);
+		}
+		strcpy($$,old);
+		delete [] old;
+		strcat($$," ");
+		strcat($$,$2);
+		delete [] $2;
+	}
+;
+%%
+int
+yyerror (char *s)  /* Called by yyparse on error */
+{
+   extern int yylineno;
+   extern int include_stack_ptr;
+   extern String *name_stack[];
+   HtConfiguration* config= HtConfiguration::config();
+   String str;
+   if (include_stack_ptr > 0)
+	str = *name_stack[include_stack_ptr-1];
+   else	// still at top level config
+	str = config->getFileName();
+   //fprintf (stderr, "%s\nIn line %d\n",s,yylineno);
+   fprintf(stderr,"Error in file %s line %d: %s\n",str.get(),yylineno,s);
+   // exit(1);
+   return -1;
+}

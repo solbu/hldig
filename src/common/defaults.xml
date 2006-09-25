@@ -1,0 +1,4352 @@
+<!DOCTYPE HtdigAttributes SYSTEM "defaults.dtd" >
+<HtdigAttributes>
+   <attribute name="accents_db" 
+              type="string" 
+              programs="htfuzzy htsearch" 
+              version="all" 
+              category="File Layout" >
+     <default>${database_base}.accents.db</default>
+     <example>${database_base}.uml.db</example>
+     <description> 
+	The database file used for the fuzzy "accents" search 
+	algorithm. This database is created by 
+	<ref type="program">htfuzzy</ref> and used by 
+	<ref type="program">htsearch</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="accept_language" 
+              type="string_list" 
+              programs="htdig" 
+              version="3.2.0b4" 
+              category="Indexing:Out" 
+              block="Server" >
+     <default></default>
+     <example>en-us en it</example>
+     <description> 
+	This attribute allows you to restrict the set of natural languages 
+	that are preferred as a response to an HTTP request performed by the 
+	digger. This can be done by putting one or more language tags 
+	(as defined by RFC 1766) in the preferred order, separated by spaces. 
+	By doing this, when the server performs a content negotiation based 
+	on the 'accept-language' given by the HTTP user agent, a different 
+	content can be shown depending on the value of this attribute. If 
+	set to an empty list, no language will be sent and the server default 
+	will be returned. 
+     </description>
+   </attribute>
+
+   <attribute name="add_anchors_to_excerpt" 
+              type="boolean" 
+              programs="htsearch" 
+              version="3.1.0" 
+              category="Presentation:How" >
+     <default>true</default>
+     <example>no</example>
+     <description> 
+	If set to true, the first occurrence of each matched 
+	word in the excerpt will be linked to the closest 
+	anchor in the document. This only has effect if the 
+	<strong>EXCERPT</strong> variable is used in the output 
+	template and the excerpt is actually going to be displayed. 
+     </description>
+   </attribute>
+
+   <attribute name="allow_double_slash" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.2.0b4" 
+              category="Indexing:Out" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	If set to true, strings of multiple slashes ('/') in URL paths 
+	will be left intact, rather than being collapsed. This is necessary 
+	for some search engine URLs which use slashes to separate fields rather 
+	than to separate directory components.  However, it can lead to multiple database 
+	entries refering to the same file, and it causes '/foo//../' to 
+	be equivalent to '/foo/', rather than to '/'. 
+     </description>
+   </attribute>
+
+   <attribute name="allow_in_form" 
+              type="string_list" 
+              programs="htsearch" 
+              version="3.1.0" 
+              category="Searching:UI" >
+     <default></default>
+     <example>search_algorithm search_results_header</example>
+     <description>	Allows the specified config file attributes to be specified
+	in search forms as separate fields. This could be used to
+	allow form writers to design their own headers and footers
+	and specify them in the search form. Another example would
+	be to offer a menu of search_algorithms in the form.
+	<codeblock>
+	&lt;SELECT NAME="search_algorithm"&gt;
+	&lt;OPTION VALUE="exact:1 prefix:0.6 synonyms:0.5 endings:0.1" SELECTED&gt;fuzzy
+	&lt;OPTION VALUE="exact:1"&gt;exact
+	&lt;/SELECT&gt;
+	</codeblock>
+	The general idea behind this is to make an input parameter out
+	of any configuration attribute that's not already automatically
+	handled by an input parameter. You can even make up your own
+	configuration attribute names, for purposes of passing data from
+	the search form to the results output. You're not restricted to
+	the existing attribute names. The attributes listed in the
+	allow_in_form list will be settable in the search form using
+	input parameters of the same name, and will be propagated to
+	the follow-up search form in the results template using template
+	variables of the same name in upper-case.
+	You can also make select lists out of any of these input
+	parameters, in the follow-up search form, using the
+	<ref type="attr">build_select_lists</ref>
+	configuration attribute.
+</description>
+   </attribute>
+
+   <attribute name="allow_numbers" 
+              type="boolean" 
+              programs="htdig htsearch" 
+              version="all" 
+              category="Indexing:What" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	If set to true, numbers are considered words. This 
+	means that searches can be done on number as well as 
+	regular words. All the same rules apply to numbers as 
+	to words. See the description of 
+	<ref type="attr">valid_punctuation</ref> for the 
+	rules used to determine what a word is. 
+     </description>
+   </attribute>
+
+   <attribute name="allow_space_in_url" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.2.0b6" 
+              category="Indexing:Where" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	If set to true, htdig will handle URLs that contain
+	embedded spaces. Technically, this is a violation of
+	<em>RFC 2396</em>, which says spaces should be stripped out
+	(as htdig does by default).  However, many web browsers
+	and HTML code generators violate this standard already,
+	so enabling this attribute allows htdig to handle these
+	non-compliant URLs.  Even with this attribute set, htdig
+	still strips out all white space (leading, trailing and
+	embedded), except that space characters embedded within
+	the URL will be encoded as %20.
+     </description>
+   </attribute>
+
+   <attribute name="allow_virtual_hosts" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.0.8b2" 
+              category="Indexing:Where" >
+     <default>true</default>
+     <example>false</example>
+     <description> 
+	If set to true, htdig will index virtual web sites as 
+	expected. If false, all URL host names will be 
+	normalized into whatever the DNS server claims the IP 
+	address to map to. If this option is set to false, 
+	there is no way to index either "soft" or "hard" 
+	virtual web sites. 
+     </description>
+   </attribute>
+
+   <attribute name="anchor_target" 
+              type="string" 
+              programs="htdig" 
+              version="3.1.6" 
+              category="Presentation:How" >
+     <default></default>
+     <example>body</example>
+     <description> 
+	When the first matched word in the excerpt is linked 
+	to the closest anchor in the document, this string 
+	can be set to specify a target in the link so the 
+	resulting page is displayed in the desired frame. 
+	This value will only be used if the 
+	<ref type="attr">add_anchors_to_excerpt</ref> 
+	attribute is set to true, the <strong>EXCERPT</strong> 
+	variable is used in the output template and the 
+	excerpt is actually displayed with a link. 
+     </description>
+   </attribute>
+
+   <attribute name="any_keywords" 
+              type="boolean" 
+              programs="htsearch" 
+              version="3.2.0b2" 
+              category="Searching:Method" >
+     <default>false</default>
+     <example>yes</example>
+     <description> 
+	If set to true, the words in the <strong>keywords</strong> 
+	input parameter in the search form will be joined with logical 
+	ORs rather than ANDs, so that any of the words provided will do. 
+	Note that this has nothing to do with limiting the search to 
+	words in META keywords tags. See the <a href="hts_form.html"> 
+	search form</a> documentation for details on this. 
+     </description>
+   </attribute>
+
+   <attribute name="author_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="??" 
+              category="Searching:Ranking" >
+     <default>1</default>
+     <example>1</example>
+     <description> 
+	TO BE COMPLETED<br/> 
+	See also <ref type="attr">heading_factor</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="authorization" 
+              type="string" 
+              programs="htdig" 
+              version="3.1.4" 
+              category="Indexing:Out" 
+              block="URL" >
+     <default></default>
+     <example>mypassword</example>
+     <description> 
+	This tells htdig to send the supplied 
+	<em>username</em><strong>:</strong><em>password</em> with each HTTP request. 
+	The credentials will be encoded using the "Basic" authentication 
+	scheme. There <em>must</em> be a colon (:) between the username and 
+	password.<br/> 
+	This attribute can also be specified on htdig's command line using 
+	the -u option, and will be blotted out so it won't show up in a 
+	process listing. If you use it directly in a configuration file, 
+	be sure to protect it so it is readable only by you, and do not 
+	use that same configuration file for htsearch. 
+     </description>
+   </attribute>
+
+   <attribute name="backlink_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="3.1.0" 
+              category="Searching:Ranking" >
+     <default>1000</default>
+     <example>501.1</example>
+     <description> 
+	This is a weight of "how important" a page is, based on 
+	the number of URLs pointing to it. It's actually 
+	multiplied by the ratio of the incoming URLs (backlinks) 
+	and outgoing URLs (links on the page), to balance out pages 
+	with lots of links to pages that link back to them. The ratio 
+	gives lower weight to "link farms", which often have many 
+	links to them.  This factor can 
+	be changed without changing the database in any way. 
+	However, setting this value to something other than 0 
+	incurs a slowdown on search results. 
+     </description>
+   </attribute>
+
+   <attribute name="bad_extensions" 
+              type="string_list" 
+              programs="htdig" 
+              version="all" 
+              category="Indexing:Where" 
+              block="URL" >
+     <default>.wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram .tgz .bin .rpm .mpg .mov .avi .css</default>
+     <example>.foo .bar .bad</example>
+     <description> 
+	This is a list of extensions on URLs which are 
+	considered non-parsable. This list is used mainly to 
+	supplement the MIME-types that the HTTP server provides 
+	with documents. Some HTTP servers do not have a correct 
+	list of MIME-types and so can advertise certain 
+	documents as text while they are some binary format. 
+	If the list is empty, then all extensions are acceptable, 
+	provided they pass other criteria for acceptance or rejection. 
+	See also <ref type="attr">valid_extensions</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="bad_querystr" 
+              type="pattern_list" 
+              programs="htdig" 
+              version="3.1.0" 
+              category="Indexing:Where" 
+              block="URL" >
+     <default></default>
+     <example>forum=private section=topsecret&amp;passwd=required</example>
+     <description> 
+	This is a list of CGI query strings to be excluded from 
+	indexing. This can be used in conjunction with CGI-generated 
+	portions of a website to control which pages are 
+	indexed. 
+     </description>
+   </attribute>
+
+   <attribute name="bad_word_list" 
+              type="string" 
+              programs="htdig htsearch" 
+              version="all" 
+              category="Indexing:What,Searching:Method" >
+     <default>${common_dir}/bad_words</default>
+     <example>${common_dir}/badwords.txt</example>
+     <description> 
+	This specifies a file which contains words which should 
+	be excluded when digging or searching. This list should 
+	include the most common words or other words that you 
+	don't want to be able to search on (things like <em> 
+	sex</em> or <em>smut</em> are examples of these.)<br/> 
+	The file should contain one word per line. A sample 
+	bad words file is located in the <code>contrib/examples</code> 
+	directory. 
+     </description>
+   </attribute>
+
+   <attribute name="bin_dir" 
+              type="string" 
+              programs="all" 
+              version="all" 
+              category="File Layout" >
+     <default configmacro="true">BIN_DIR</default>
+     <example>/usr/local/bin</example>
+     <description> 
+	This is the directory in which the executables 
+	related to ht://Dig are installed. It is never used 
+	directly by any of the programs, but other attributes 
+	can be defined in terms of this one. 
+	<p> 
+	The default value of this attribute is determined at 
+	compile time. 
+	</p> 
+     </description>
+   </attribute>
+
+   <attribute name="boolean_keywords" 
+              type="string list" 
+              programs="htsearch" 
+              version="3.1.6" 
+	      category="Presentation:How" >
+     <default configmacro="true">and or not</default>
+     <example>et ou non</example>
+     <description> 
+	These three strings are used as the keywords used in
+	constructing the LOGICAL_WORDS template variable,
+	and in parsing the <a href="hts_form.html#words">words</a> input
+	parameter when the <a href="hts_form.html#method">method</a> parameter
+	or <ref type="attr">match_method</ref> attribute
+	is set to <code>boolean</code>.
+	See also the <ref type="attr">boolean_syntax_errors</ref> attribute.
+     </description>
+   </attribute>
+
+   <attribute name="boolean_syntax_errors" 
+              type="quoted string list" 
+              programs="htsearch" 
+              version="3.1.6" 
+	      category="Presentation:How" >
+     <default configmacro="true">Expected 'a search word, a quoted phrase, a boolean expression between ()' 'at the end' 'instead of' 'end of expression' quotes</default>
+     <example> Attendait "un mot" "&agrave; la fin" "au lieu de" "fin d'expression" "points de quotation" </example>
+     <description> 
+	These six strings are used as the keywords used to
+	construct various syntax error messages for errors encountered in
+	parsing the <a href="hts_form.html#words">words</a> input
+	parameter when the <a href="hts_form.html#method">method</a> parameter
+	or <ref type="attr">match_method</ref> attribute
+	is set to <code>boolean</code>.
+	They are used in conjunction with the
+	<ref type="attr">boolean_keywords</ref> attribute, and comprise all
+	English-specific parts of these error messages.  The order in which
+	the strings are put together may not be ideal, or even gramatically
+	correct, for all languages, but they can be used to make fairly
+	intelligible messages in many languages.
+     </description>
+   </attribute>
+
+   <attribute name="build_select_lists" 
+              type="quoted_string_list" 
+              programs="htsearch" 
+              version="3.2.0b1" 
+              category="Searching:UI" >
+     <default></default>
+     <example>MATCH_LIST matchesperpage matches_per_page_list \ 
+				1 1 1 matches_per_page "Previous Amount" \ 
+		RESTRICT_LIST,multiple restrict restrict_names 2 1 2 restrict "" \ 
+		FORMAT_LIST,radio format template_map 3 2 1 template_name ""</example>
+     <description> 
+	This list allows you to define any htsearch input parameter as 
+	a select list for use in templates, provided you also define 
+	the corresponding name list attribute which enumerates all the 
+	choices to put in the list. It can be used for existing input 
+	parameters, as well as any you define using the 
+	<ref type="attr">allow_in_form</ref> 
+	attribute. The entries in this list each consist of an octuple, 
+	a set of eight strings defining the variables and how they are to 
+	be used to build a select list. The attribute can contain many 
+	of these octuples. The strings in the string list are merely 
+	taken eight at a time. For each octuple of strings specified in 
+	build_select_lists, the elements have the following meaning:  
+	<ol> 
+	   <li>the name of the template variable to be defined as a list, 
+	   optionally followed by a comma and the type of list, and 
+	   optional formatting codes</li> 
+	   <li>the input parameter name that the select list will set</li>  
+	   <li>the name of the user-defined attribute containing the 
+	   name list</li> 
+	   <li>the tuple size used in the name list above</li>  
+	   <li>the index into a name list tuple for the value</li>  
+	   <li>the index for the corresponding label on the selector</li> 
+	   <li>the configuration attribute where the default value for 
+	   this input parameter is defined</li> 
+	   <li>the default label, if not an empty string, which will be 
+	   used as the label for an additional list item for the current 
+	   input parameter value if it doesn't match any value in the 
+	   given list</li> 
+	</ol> 
+	See the <a href="hts_selectors.html">select list documentation</a> 
+	for more information on this attribute. 
+     </description>
+   </attribute>
+
+   <attribute name="caps_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="??" 
+              category="Searching:Ranking" >
+     <default>1</default>
+     <example>1</example>
+     <description> 
+	TO BE COMPLETED<br/> 
+	See also <ref type="attr">heading_factor</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="case_sensitive" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.1.0b2" 
+              category="Indexing:Where" >
+     <default>true</default>
+     <example>false</example>
+     <description> 
+	This specifies whether ht://Dig should consider URLs 
+	case-sensitive or not. If your server is case-insensitive, 
+	you should probably set this to false. 
+     </description>
+   </attribute>
+
+   <attribute name="check_unique_date" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.2.0b3" 
+              category="" 
+              block="Global" >
+     <default>false</default>
+     <example>false</example>
+     <description> 
+	Include the modification date of the page in the MD5 hash, to reduce the 
+	problem with identical but physically separate pages in different parts of the tree pointing to 
+	different pages.  
+     </description>
+   </attribute>
+
+   <attribute name="check_unique_md5" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.2.0b3" 
+              category="" 
+              block="Global" >
+     <default>false</default>
+     <example>false</example>
+     <description> 
+	Uses the MD5 hash of pages to reject aliases, prevents multiple entries 
+	in the index caused by such things as symbolic links 
+	Note: May not do the right thing for incremental update 
+     </description>
+   </attribute>
+
+   <attribute name="collection_names" 
+              type="string_list" 
+              programs="htsearch" 
+              version="3.2.0b2" 
+              category="" >
+     <default></default>
+     <example>htdig_docs htdig_bugs</example>
+     <description> 
+	This is a list of config file names that are used for searching multiple databases. 
+	Simply put, htsearch will loop through the databases specified by each of these config 
+	files and present the result of the search on all of the databases. 
+	The corresponding config files are looked up in the <ref type="attr">config_dir</ref> directory. 
+	Each listed config file <strong>must</strong> exist, as well as the corresponding databases. 
+     </description>
+   </attribute>
+
+   <attribute name="common_dir" 
+              type="string" 
+              programs="all" 
+              version="all" 
+              category="File Layout" >
+     <default configmacro="true">COMMON_DIR</default>
+     <example>/tmp</example>
+     <description> 
+	Specifies the directory for files that will or can be 
+	shared among different search databases. The default 
+	value for this attribute is defined at compile time. 
+     </description>
+   </attribute>
+
+   <attribute name="common_url_parts" 
+              type="string_list" 
+              programs="all" 
+              version="3.1.0" 
+              category="URLs" >
+     <default>http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .gif .jpg .jpeg /index.html /index.htm .com/ .com mailto:</default>
+     <example>//www.htdig.org/ml/ \ 
+.html \ 
+http://dev.htdig.org/ \ 
+http://www.htdig.org/</example>
+     <description> 
+	Sub-strings often found in URLs stored in the 
+	database.  These are replaced in the database by an 
+	internal space-saving encoding.  If a string 
+	specified in <ref type="attr">url_part_aliases</ref>, 
+	overlaps any string in common_url_parts, the 
+	common_url_parts string is ignored.<br/> 
+	Note that when this attribute is changed, the 
+	database should be rebuilt, unless the effect of 
+	"changing" the affected URLs in the database is 
+	wanted.<br/> 
+     </description>
+   </attribute>
+
+   <attribute name="compression_level" 
+              type="integer" 
+              programs="htdig" 
+              version="3.1.0" 
+              category="Indexing:How" >
+     <default>0</default>
+     <example>6</example>
+     <description> 
+	If specified and the <a 
+	href="http://www.cdrom.com/pub/infozip/zlib/">zlib</a> 
+	compression library was available when compiled, 
+	this attribute controls 
+	the amount of compression used in the <ref type="attr">doc_excerpt</ref> file. 
+     </description>
+   </attribute>
+
+   <attribute name="config" 
+              type="string" 
+              programs="all" 
+              version="??" 
+              category="File Layout" >
+     <default configmacro="true">DEFAULT_CONFIG_FILE</default>
+     <example></example>
+     <description> 
+	Name of configuration file to load. 
+	For security reasons, restrictions are placed on the values which 
+	can be specified on the command line to 
+	<ref type="program">htsearch</ref>. 
+	The default value of this attribute is determined at 
+	compile time. 
+     </description>
+   </attribute>
+
+   <attribute name="config_dir" 
+              type="string" 
+              programs="all" 
+              version="all" 
+              category="File Layout" >
+     <default configmacro="true">CONFIG_DIR</default>
+     <example>/var/htdig/conf</example>
+     <description> 
+	This is the directory which contains all configuration 
+	files related to ht://Dig. It is never used 
+	directly by any of the programs, but other attributes 
+	or the <ref type="attr">include</ref> directive 
+	can be defined in terms of this one. 
+	<p> 
+	The default value of this attribute is determined at 
+	compile time. 
+	</p> 
+     </description>
+   </attribute>
+
+   <attribute name="cookies_input_file" 
+              type="string" 
+              programs="htdig" 
+              version="3.2.0b4" 
+              category="Indexing:Connection" >
+     <default></default>
+     <example>${common_dir}/cookies.txt</example>
+     <description> 
+	Specifies the location of the file used for importing cookies
+	for the crawl. These cookies will be preloaded into htdig's
+	in-memory cookie jar, but aren't written back to the file.
+	Cookies are specified according to Netscape's format
+	(tab-separated fields). If this attribute is left blank,
+	no cookie file will be read.
+	<p> 
+	For more information, see the sample cookies.txt file in the
+	ht://Dig source distribution.
+	</p> 
+     </description>
+   </attribute>
+
+   <attribute name="create_image_list" 
+              type="boolean" 
+              programs="htdig" 
+              version="all" 
+              category="Extra Output" >
+     <default>false</default>
+     <example>yes</example>
+     <description> 
+	If set to true, a file with all the image URLs that 
+	were seen will be created, one URL per line. This list 
+	will not be in any order and there will be lots of 
+	duplicates, so after htdig has completed, it should be 
+	piped through <code>sort -u</code> to get a unique list. 
+     </description>
+   </attribute>
+
+   <attribute name="create_url_list" 
+              type="boolean" 
+              programs="htdig" 
+              version="all" 
+              category="Extra Output" >
+     <default>false</default>
+     <example>yes</example>
+     <description> 
+	If set to true, a file with all the URLs that were seen 
+	will be created, one URL per line. This list will not 
+	be in any order and there will be lots of duplicates, 
+	so after htdig has completed, it should be piped 
+	through <code>sort -u</code> to get a unique list. 
+     </description>
+   </attribute>
+
+   <attribute name="database_base" 
+              type="string" 
+              programs="all" 
+              version="all" 
+              category="File Layout" >
+     <default>${database_dir}/db</default>
+     <example>${database_dir}/sales</example>
+     <description> 
+	This is the common prefix for files that are specific 
+	to a search database. Many different attributes use 
+	this prefix to specify filenames. Several search 
+	databases can share the same directory by just changing 
+	this value for each of the databases. 
+     </description>
+   </attribute>
+
+   <attribute name="database_dir" 
+              type="string" 
+              programs="all" 
+              version="all" 
+              category="File Layout" >
+     <default configmacro="true">DATABASE_DIR</default>
+     <example>/var/htdig</example>
+     <description> 
+	This is the directory which contains all database and 
+	other files related to ht://Dig. It is never used 
+	directly by any of the programs, but other attributes 
+	are defined in terms of this one. 
+	<p> 
+	The default value of this attribute is determined at 
+	compile time. 
+	</p> 
+     </description>
+   </attribute>
+
+   <attribute name="date_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="3.1.0" 
+              category="Searching:Ranking" >
+     <default>0</default>
+     <example>0.35</example>
+     <description> 
+	This factor, gives higher 
+	rankings to newer documents and lower rankings to older 
+	documents. Before setting this factor, it's advised to 
+	make sure your servers are returning accurate dates 
+	(check the dates returned in the long format). 
+	Additionally, setting this to a nonzero value incurs a 
+	small performance hit on searching. 
+     </description>
+   </attribute>
+
+   <attribute name="date_format" 
+              type="string" 
+              programs="htsearch" 
+              version="3.1.2" 
+              category="Presentation:How" >
+     <default></default>
+     <example>%Y-%m-%d</example>
+     <description> 
+	This format string determines the output format for 
+	modification dates of documents in the search results. 
+	It is interpreted by your system's <em>strftime</em> 
+	function. Please refer to your system's manual page 
+	for this function, for a description of available 
+	format codes. If this format string is empty, as it 
+	is by default,  
+	<ref type="program">htsearch</ref> 
+	will pick a format itself. In this case, the <ref type="attr">iso_8601</ref> attribute can be used 
+	to modify the appearance of the date. 
+     </description>
+   </attribute>
+
+   <attribute name="description_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="3.1.0b3" 
+              category="Searching:Ranking" >
+     <default>150</default>
+     <example>350</example>
+     <description> 
+	Plain old "descriptions" are the text of a link pointing 
+	to a document. This factor gives weight to the words of 
+	these descriptions of the document. Not surprisingly, 
+	these can be pretty accurate summaries of a document's 
+	content. See also <ref type="attr">heading_factor</ref> 
+	and <ref type="attr">meta_description_factor</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="description_meta_tag_names" 
+              type="number" 
+              programs="htsearch" 
+              version="3.1.6" 
+              category="Searching:Ranking" >
+     <default>description</default>
+     <example>"description htdig-description"</example>
+     <description> 
+	The words in this list are used to search for descriptions in HTML 
+	<em>META</em> tags. This list can contain any number of strings 
+	that each will be seen as the name for whatever description 
+	convention is used. While words in any of the specified 
+	description contents will be indexed, only the last meta tag 
+	containing a description will be kept as the meta description 
+	field for the document, for use in search results. The order in 
+	which the names are specified in this configuration attribute 
+	is irrelevant, as it is the order in which the tags appear in 
+	the documents that matters.<br/> The <em>META</em> tags have the 
+	following format:<br/> 
+	<code>   &lt;META name="<em>somename</em>" 
+	                       content="<em>somevalue</em>"&gt; </code><br/> 
+	See also <ref type="attr">meta_description_factor</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="disable_cookies" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.2.0b4" 
+              category="Indexing:Connection" 
+              block="Server" >
+     <default>true</default>
+     <example>true</example>
+     <description> 
+        This option, if set to true, will disable HTTP cookies. 
+     </description>
+   </attribute>
+
+   <attribute name="doc_db" 
+              type="string" 
+              programs="all" 
+              version="all" 
+              category="File Layout" >
+     <default>${database_base}.docdb</default>
+     <example>${database_base}documents.db</example>
+     <description> 
+	This file will contain a Berkeley database of documents 
+	indexed by document number. It contains all the information 
+	gathered for each document, except the document excerpts 
+	which are stored in the <ref type="attr">doc_excerpt</ref> file. 
+     </description>
+   </attribute>
+
+   <attribute name="doc_excerpt" 
+              type="string" 
+              programs="all" 
+              version="3.2.0b1" 
+              category="File Layout" >
+     <default>${database_base}.excerpts</default>
+     <example>${database_base}excerpts.db</example>
+     <description> 
+	This file will contain a Berkeley database of document excerpts 
+	indexed by document number. It contains all the text 
+	gathered for each document, so this file can become 
+	rather large if <ref type="attr">max_head_length</ref> is set to a large value. 
+	The size can be reduced by setting the 
+	<ref type="attr">compression_level</ref>, 
+	if supported on your system. 
+     </description>
+   </attribute>
+
+   <attribute name="doc_index" 
+              type="string" 
+              programs="htdig" 
+              version="all" 
+              category="File Layout" >
+     <default>${database_base}.docs.index</default>
+     <example>documents.index.db</example>
+     <description> 
+	This file contains a mapping of document numbers to URLs and is 
+	used by htdig during indexing. It is used on updates if it exists. 
+     </description>
+   </attribute>
+
+   <attribute name="doc_list" 
+              type="string" 
+              programs="htdig htdump htload" 
+              version="all" 
+              category="File Layout" >
+     <default>${database_base}.docs</default>
+     <example>/tmp/documents.text</example>
+     <description> 
+	This file is basically a text version of the file 
+	specified in <ref type="attr">doc_db</ref>. Its 
+	only use is to have a human readable database of all 
+	documents. The file is easy to parse with tools like 
+	perl or tcl. 
+     </description>
+   </attribute>
+
+   <attribute name="endday" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.1.6" 
+              category="Searching:Method" >
+     <default></default>
+     <example>31</example>
+     <description> 
+	Day component of last date allowed as last-modified date 
+	of returned docutments. 
+	This is most usefully specified as a 
+	<a href="hts_form.html#startyear">GCI argument</a>. 
+	See also <ref type="attr">startyear</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="end_ellipses" 
+              type="string" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:Text" >
+     <default>&lt;strong&gt;&lt;code&gt; ...&lt;/code&gt;&lt;/strong&gt;</default>
+     <example>...</example>
+     <description> 
+	When excerpts are displayed in the search output, this 
+	string will be appended to the excerpt if there is text 
+	following the text displayed. This is just a visual 
+	reminder to the user that the excerpt is only part of 
+	the complete document. 
+     </description>
+   </attribute>
+
+   <attribute name="end_highlight" 
+              type="string" 
+              programs="htsearch" 
+              version="3.1.4" 
+              category="Presentation:Text" >
+     <default>&lt;/strong&gt;</default>
+     <example>&lt;/font&gt;</example>
+     <description> 
+	When excerpts are displayed in the search output, matched 
+	words will be highlighted using <ref type="attr">start_highlight</ref> and this string. 
+	You should ensure that highlighting tags are balanced, 
+	that is, this string should close any formatting 
+	tag opened by start_highlight. 
+     </description>
+   </attribute>
+
+   <attribute name="endings_affix_file" 
+              type="string" 
+              programs="htfuzzy" 
+              version="all" 
+              category="File Layout" >
+     <default>${common_dir}/english.aff</default>
+     <example>/var/htdig/affix_rules</example>
+     <description> 
+	Specifies the location of the file which contains the 
+	affix rules used to create the endings search algorithm 
+	databases. Consult the documentation on 
+	<ref type="program">htfuzzy</ref> for more information on the 
+	format of this file. 
+     </description>
+   </attribute>
+
+   <attribute name="endings_dictionary" 
+              type="string" 
+              programs="htfuzzy" 
+              version="all" 
+              category="File Layout" >
+     <default>${common_dir}/english.0</default>
+     <example>/var/htdig/dictionary</example>
+     <description> 
+	Specifies the location of the file which contains the 
+	dictionary used to create the endings search algorithm 
+	databases. Consult the documentation on 
+	<ref type="program">htfuzzy</ref> for more information on the 
+	format of this file. 
+     </description>
+   </attribute>
+
+   <attribute name="endings_root2word_db" 
+              type="string" 
+              programs="htfuzzy htsearch" 
+              version="all" 
+              category="File Layout" >
+     <default>${common_dir}/root2word.db</default>
+     <example>/var/htdig/r2w.db</example>
+     <description> 
+	This attributes specifies the database filename to be 
+	used in the 'endings' fuzzy search algorithm. The 
+	database maps word roots to all legal words with that 
+	root. For more information about this and other fuzzy 
+	search algorithms, consult the 
+	<ref type="program">htfuzzy</ref> documentation.<br/> 
+	Note that the default value uses the 
+	<ref type="attr">common_dir</ref> attribute instead of the 
+	<ref type="attr">database_dir</ref> attribute. 
+	This is because this database can be shared with 
+	different search databases. 
+     </description>
+   </attribute>
+
+   <attribute name="endings_word2root_db" 
+              type="string" 
+              programs="htfuzzy htsearch" 
+              version="all" 
+              category="File Layout" >
+     <default>${common_dir}/word2root.db</default>
+     <example>/var/htdig/w2r.bm</example>
+     <description> 
+	This attributes specifies the database filename to be 
+	used in the 'endings' fuzzy search algorithm. The 
+	database maps words to their root. For more information 
+	about this and other fuzzy search algorithms, consult 
+	the <ref type="program">htfuzzy</ref> 
+	documentation.<br/> 
+	Note that the default value uses the 
+	<ref type="attr">common_dir</ref> attribute instead of the 
+	<ref type="attr">database_dir</ref> attribute. 
+	This is because this database can be shared with 
+	different search databases. 
+     </description>
+   </attribute>
+
+   <attribute name="endmonth" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.1.6" 
+              category="Searching:Method" >
+     <default></default>
+     <example>12</example>
+     <description> 
+	Month component of last date allowed as last-modified date 
+	of returned docutments. 
+	This is most usefully specified as a 
+	<a href="hts_form.html#startyear">GCI argument</a>. 
+	See also <ref type="attr">startyear</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="endyear" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.1.6" 
+              category="Searching:Method" >
+     <default></default>
+     <example>2002</example>
+     <description> 
+	Year component of last date allowed as last-modified date 
+	of returned docutments. 
+	This is most usefully specified as a 
+	<a href="hts_form.html#startyear">GCI argument</a>. 
+	See also <ref type="attr">startyear</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="excerpt_length" 
+              type="integer" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:How" >
+     <default>300</default>
+     <example>500</example>
+     <description> 
+	This is the maximum number of characters the displayed 
+	excerpt will be limited to. The first matched word will 
+	be highlighted in the middle of the excerpt so that there is 
+	some surrounding context.<br/> 
+	The <ref type="attr">start_ellipses</ref> and 
+	<ref type="attr">end_ellipses</ref> are used to 
+	indicate that the document contains text before and 
+	after the displayed excerpt respectively. 
+	The <ref type="attr">start_highlight</ref> and 
+	<ref type="attr">end_highlight</ref> are used to 
+	specify what formatting tags are used to highlight matched words. 
+     </description>
+   </attribute>
+
+   <attribute name="excerpt_show_top" 
+              type="boolean" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:How" >
+     <default>false</default>
+     <example>yes</example>
+     <description> 
+	If set to true, the excerpt of a match will always show 
+	the top of the matching document. If it is false (the 
+	default), the excerpt will attempt to show the part of 
+	the document that actually contains one of the words. 
+     </description>
+   </attribute>
+
+   <attribute name="exclude" 
+              type="pattern_list" 
+              programs="htsearch" 
+              version="3.2.0b4" 
+              category="Searching:Method" >
+     <default></default>
+     <example>myhost.com/mailarchive/</example>
+     <description> 
+	If a URL contains any of the space separated patterns, it will be 
+	discarded in the searching phase. This is used to exclude certain 
+	URLs from search results. The list can be specified from within 
+	the configuration file, and can be overridden with the "exclude" 
+	input parameter in the search form. 
+     </description>
+   </attribute>
+
+   <attribute name="exclude_urls" 
+              type="pattern_list" 
+              programs="htdig" 
+              version="all" 
+              category="Indexing:Where" 
+              block="URL" >
+     <default>/cgi-bin/ .cgi</default>
+     <example>students.html cgi-bin</example>
+     <description> 
+	If a URL contains any of the space separated patterns, 
+	it will be rejected. This is used to exclude such 
+	common things such as an infinite virtual web-tree 
+	which start with cgi-bin. 
+     </description>
+   </attribute>
+
+   <attribute name="external_parsers" 
+              type="quoted_string_list" 
+              programs="htdig" 
+              version="3.0.7" 
+              category="External:Parsers" >
+     <default></default>
+     <example>text/html /usr/local/bin/htmlparser \ 
+	application/pdf /usr/local/bin/parse_doc.pl \ 
+	application/msword-&gt;text/plain "/usr/local/bin/mswordtotxt -w" \ 
+	application/x-gunzip-&gt;user-defined /usr/local/bin/ungzipper</example>
+     <description> 
+			This attribute is used to specify a list of 
+			content-type/parsers that are to be used to parse 
+			documents that cannot by parsed by any of the internal 
+			parsers. The list of external parsers is examined 
+			before the builtin parsers are checked, so this can be 
+			used to override the internal behavior without 
+			recompiling htdig.<br/> 
+			 The external parsers are specified as pairs of 
+			strings. The first string of each pair is the 
+			content-type that the parser can handle while the 
+			second string of each pair is the path to the external 
+			parsing program. If quoted, it may contain parameters, 
+			separated by spaces.<br/> 
+			 External parsing can also be done with external 
+			converters, which convert one content-type to 
+			another. To do this, instead of just specifying 
+			a single content-type as the first string 
+			of a pair, you specify two types, in the form 
+			<em>type1</em><strong>-&gt;</strong><em>type2</em>, 
+			as a single string with no spaces. The second 
+			string will define an external converter 
+			rather than an external parser, to convert 
+			the first type to the second. If the second 
+			type is <strong>user-defined</strong>, then 
+			it's up to the converter script to put out a 
+			"Content-Type: <em>type</em>" header followed 
+			by a blank line, to indicate to htdig what type it 
+			should expect for the output, much like what a CGI 
+			script would do. The resulting content-type must 
+			be one that htdig can parse, either internally, 
+			or with another external parser or converter.<br/> 
+			 Only one external parser or converter can be 
+			specified for any given content-type. However, 
+			an external converter for one content-type can be 
+			chained to the internal parser for the same type, 
+			by appending <strong>-internal</strong> to the 
+			second type string (e.g. text/html-&gt;text/html-internal) 
+			to perform external preprocessing on documents of 
+			this type before internal parsing. 
+			There are two internal parsers, for text/html and 
+			text/plain.<p> 
+			 The parser program takes four command-line 
+			parameters, not counting any parameters already 
+			given in the command string:<br/> 
+			<em>infile content-type URL configuration-file</em><br/> 
+			</p>
+<table border="1"> 
+			  <tr> 
+				<th> 
+				  Parameter 
+				</th> 
+				<th> 
+				  Description 
+				</th> 
+				<th> 
+				  Example 
+				</th> 
+			  </tr> 
+			  <tr> 
+				<td valign="top"> 
+				  infile 
+				</td> 
+				<td> 
+				  A temporary file with the contents to be parsed. 
+				</td> 
+				<td> 
+				  /var/tmp/htdext.14242 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<td valign="top"> 
+				  content-type 
+				</td> 
+				<td> 
+				  The MIME-type of the contents. 
+				</td> 
+				<td> 
+				  text/html 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<td valign="top"> 
+				  URL 
+				</td> 
+				<td> 
+				  The URL of the contents. 
+				</td> 
+				<td> 
+				  http://www.htdig.org/attrs.html 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<td valign="top"> 
+				  configuration-file 
+				</td> 
+				<td> 
+				  The configuration-file in effect. 
+				</td> 
+				<td> 
+				  /etc/htdig/htdig.conf 
+				</td> 
+			  </tr> 
+			</table><p> 
+			The external parser is to write information for 
+			htdig on its standard output. Unless it is an 
+			external converter, which will output a document 
+			of a different content-type, then its output must 
+			follow the format described here.<br/> 
+			 The output consists of records, each record terminated 
+			with a newline. Each record is a series of (unless 
+			expressively allowed to be empty) non-empty tab-separated 
+			fields. The first field is a single character 
+			that specifies the record type. The rest of the fields 
+			are determined by the record type. 
+			</p>
+<table border="1"> 
+			  <tr> 
+				<th> 
+				  Record type 
+				</th> 
+				<th> 
+				  Fields 
+				</th> 
+				<th> 
+				  Description 
+				</th> 
+			  </tr> 
+			  <tr> 
+				<th rowspan="3" valign="top"> 
+				  w 
+				</th> 
+				<td valign="top"> 
+				  word 
+				</td> 
+				<td> 
+				  A word that was found in the document. 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<td valign="top"> 
+				  location 
+				</td> 
+				<td> 
+				  A number indicating the normalized location of 
+				  the word within the document. The number has to 
+				  fall in the range 0-1000 where 0 means the top of 
+				  the document. 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<td valign="top"> 
+				  heading level 
+				</td> 
+				<td> 
+				  A heading level that is used to compute the 
+				  weight of the word depending on its context in 
+				  the document itself. The level is in the range of 
+				  0-10 and are defined as follows: 
+				  <dl compact="true"> 
+					<dt> 
+					  0 
+					</dt> 
+					<dd> 
+					  Normal text 
+					</dd> 
+					<dt> 
+					  1 
+					</dt> 
+					<dd> 
+					  Title text 
+					</dd> 
+					<dt> 
+					  2 
+					</dt> 
+					<dd> 
+					  Heading 1 text 
+					</dd> 
+					<dt> 
+					  3 
+					</dt> 
+					<dd> 
+					  Heading 2 text 
+					</dd> 
+					<dt> 
+					  4 
+					</dt> 
+					<dd> 
+					  Heading 3 text 
+					</dd> 
+					<dt> 
+					  5 
+					</dt> 
+					<dd> 
+					  Heading 4 text 
+					</dd> 
+					<dt> 
+					  6 
+					</dt> 
+					<dd> 
+					  Heading 5 text 
+					</dd> 
+					<dt> 
+					  7 
+					</dt> 
+					<dd> 
+					  Heading 6 text 
+					</dd> 
+					<dt> 
+					  8 
+					</dt> 
+					<dd> 
+					  <em>unused</em> 
+					</dd> 
+					<dt> 
+					  9 
+					</dt> 
+					<dd> 
+					  <em>unused</em> 
+					</dd> 
+					<dt> 
+					  10 
+					</dt> 
+					<dd> 
+					  Keywords 
+					</dd> 
+				  </dl> 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<th rowspan="2" valign="top"> 
+				  u 
+				</th> 
+				<td valign="top"> 
+				  document URL 
+				</td> 
+				<td> 
+				  A hyperlink to another document that is 
+				  referenced by the current document.  It must be 
+				  complete and non-relative, using the URL parameter to 
+				  resolve any relative references found in the document. 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<td valign="top"> 
+				  hyperlink description 
+				</td> 
+				<td> 
+				  For HTML documents, this would be the text 
+				  between the &lt;a href...&gt; and &lt;/a&gt; 
+				  tags. 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<th valign="top"> 
+				  t 
+				</th> 
+				<td valign="top"> 
+				  title 
+				</td> 
+				<td> 
+				  The title of the document 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<th valign="top"> 
+				  h 
+				</th> 
+				<td valign="top"> 
+				  head 
+				</td> 
+				<td> 
+				  The top of the document itself. This is used to 
+				  build the excerpt. This should only contain 
+				  normal ASCII text 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<th valign="top"> 
+				  a 
+				</th> 
+				<td valign="top"> 
+				  anchor 
+				</td> 
+				<td> 
+				  The label that identifies an anchor that can be 
+				  used as a target in an URL. This really only 
+				  makes sense for HTML documents. 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<th valign="top"> 
+				  i 
+				</th> 
+				<td valign="top"> 
+				  image URL 
+				</td> 
+				<td> 
+				  An URL that points at an image that is part of 
+				  the document. 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<th rowspan="3" valign="top"> 
+				  m 
+				</th> 
+				<td valign="top"> 
+				  http-equiv 
+				</td> 
+				<td> 
+				  The HTTP-EQUIV attribute of a 
+				  <a href="meta.html"><em>META</em> tag</a>. 
+				  May be empty. 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<td valign="top"> 
+				  name 
+				</td> 
+				<td> 
+				  The NAME attribute of this 
+				  <a href="meta.html"><em>META</em> tag</a>. 
+				  May be empty. 
+				</td> 
+			  </tr> 
+			  <tr> 
+				<td valign="top"> 
+				  contents 
+				</td> 
+				<td> 
+				  The CONTENTS attribute of this 
+				  <a href="meta.html"><em>META</em> tag</a>. 
+				  May be empty. 
+				</td> 
+			  </tr> 
+			</table> 
+	<p><em>See also FAQ questions <ref type="faq">4.8</ref> and <ref type="faq">4.9</ref> for more 
+	examples.</em></p> 
+     </description>
+   </attribute>
+
+   <attribute name="external_protocols" 
+              type="quoted_string_list" 
+              programs="htdig" 
+              version="3.2.0b1" 
+              category="External:Protocols" >
+     <default></default>
+     <example>https /usr/local/bin/handler.pl \ 
+	ftp /usr/local/bin/ftp-handler.pl</example>
+     <description> 
+	This attribute is a bit like <ref type="attr">external_parsers</ref> 
+	since it specifies a list of protocols/handlers that are used to download documents 
+	that cannot be retrieved using the internal methods. This enables htdig to index 
+	documents with URL schemes it does not understand, or to use more advanced authentication 
+	for the documents it is retrieving. This list is checked before HTTP or other methods, 
+	so this can override the internal behavior without writing additional code for htdig.<br/> 
+	  The external protocols are specified as pairs of strings, the first being the URL scheme that 
+	the script can handle while the second is the path to the script itself. If the second is 
+	quoted, then additional command-line arguments may be given.<br/> 
+	If the external protocol does not contain a colon (:), it is assumed 
+	to have the standard format 
+	"protocol://[usr[:password]@]address[:port]/path". 
+	If it ends with a colon, then it is assumed to have the simpler format 
+	"protocol:path". If it ends with "://" then the standard form is 
+	again assumed. <br/> 
+	If the external protocol does not contain a colon (:), it is assumed 
+	to have the standard format 
+	"protocol://[usr[:password]@]address[:port]/path". 
+	If it ends with a colon, then it is assumed to have the simpler format 
+	"protocol:path". If it ends with "://" then the standard form is 
+	again assumed. <br/> 
+	  The program takes three command-line parameters, not counting any parameters already given  
+	in the command string:<br/> 
+	<em>protocol URL configuration-file</em><br/> 
+	<table border="1"> 
+	  <tr> 
+		<th> 
+		  Parameter 
+		</th> 
+		<th> 
+		  Description 
+		</th> 
+		<th> 
+		  Example 
+		</th> 
+	  </tr> 
+	  <tr> 
+		<td valign="top"> 
+		  protocol 
+		</td> 
+		<td> 
+		  The URL scheme to be used. 
+		</td> 
+		<td> 
+		  https 
+		</td> 
+	  </tr> 
+	  <tr> 
+		<td valign="top"> 
+		  URL 
+		</td> 
+		<td> 
+		  The URL to be retrieved. 
+		</td> 
+		<td> 
+		  https://www.htdig.org:8008/attrs.html 
+		</td> 
+	  </tr> 
+	  <tr> 
+		<td valign="top"> 
+		  configuration-file 
+		</td> 
+		<td> 
+		  The configuration-file in effect. 
+		</td> 
+		<td> 
+		  /etc/htdig/htdig.conf 
+		</td> 
+	  </tr> 
+	</table><p> 
+	The external protocol script is to write information for htdig on the  
+	standard output. The output must follow the form described here. The output  
+	consists of a header followed by a blank line, followed by the contents of  
+	the document. Each record in the header is terminated with a newline.  
+	Each record is a series of (unless expressively allowed to be empty) non-empty  
+	tab-separated fields. The first field is a single character that specifies the  
+	record type. The rest of the fields are determined by the record type. 
+	</p>
+<table border="1"> 
+	  <tr> 
+		<th> 
+		  Record type 
+		</th> 
+		<th> 
+		  Fields 
+		</th> 
+		<th> 
+		  Description 
+		</th> 
+	  </tr> 
+	  <tr> 
+		<th valign="top"> 
+		  s 
+		</th> 
+		<td valign="top"> 
+		  status code 
+		</td> 
+		<td> 
+		  An HTTP-style status code, e.g. 200, 404. Typical codes include: 
+		    <dl compact="true"> 
+			<dt> 
+			  200 
+			</dt> 
+			<dd> 
+			  Successful retrieval 
+			</dd> 
+			<dt> 
+			  304 
+			</dt> 
+			<dd> 
+			  Not modified (for example, if the document hasn't changed) 
+			</dd> 
+			<dt> 
+			  301 
+			</dt> 
+			<dd> 
+			  Redirect (to another URL) 
+			</dd> 
+			<dt> 
+			  401 
+			</dt> 
+			<dd> 
+			  Not authorized 
+			</dd> 
+			<dt> 
+			  404 
+			</dt> 
+			<dd> 
+			  Not found 
+			</dd> 
+		  </dl> 
+		</td> 
+	  </tr> 
+	  <tr> 
+		<th valign="top"> 
+		  r 
+		</th> 
+		<td valign="top"> 
+		  reason 
+		</td> 
+		<td> 
+		  A text string describing the status code, e.g "Redirect" or "Not Found." 
+		</td> 
+	  </tr> 
+	  <tr> 
+		<th valign="top"> 
+		  m 
+		</th> 
+		<td valign="top"> 
+		  status code 
+		</td> 
+		<td> 
+		  The modification time of this document. While the code is fairly flexible 
+		  about the time/date formats it accepts, it is recommended to use something 
+		  standard, like RFC1123: Sun, 06 Nov 1994 08:49:37 GMT, or ISO-8601:  
+		  1994-11-06 08:49:37 GMT. 
+		</td> 
+	  </tr> 
+	  <tr> 
+		<th valign="top"> 
+		  t 
+		</th> 
+		<td valign="top"> 
+		  content-type 
+		</td> 
+		<td> 
+		  A valid MIME type for the document, like text/html or text/plain. 
+		</td> 
+	  </tr> 
+	  <tr> 
+		<th valign="top"> 
+		  l 
+		</th> 
+		<td valign="top"> 
+		  content-length 
+		</td> 
+		<td> 
+		  The length of the document on the server, which may not necessarily 
+		  be the length of the buffer returned. 
+		</td> 
+	  </tr> 
+	  <tr> 
+		<th valign="top"> 
+		  u 
+		</th> 
+		<td valign="top"> 
+		  url 
+		</td> 
+		<td> 
+		  The URL of the document, or in the case of a redirect, the URL 
+		  that should be indexed as a result of the redirect. 
+		</td> 
+	  </tr> 
+      </table>	   
+     </description>
+   </attribute>
+
+   <attribute name="extra_word_characters" 
+              type="string" 
+              programs="htdig htsearch" 
+              version="3.1.2" 
+              category="Indexing:What" >
+     <default></default>
+     <example>_</example>
+     <description> 
+	These characters are considered part of a word. 
+	In contrast to the characters in the 
+	<ref type="attr">valid_punctuation</ref> 
+	attribute, they are treated just like letter 
+	characters.<br/> 
+	Note that the <ref type="attr">locale</ref> attribute 
+	is normally used to configure which characters 
+	constitute letter characters. 
+     </description>
+   </attribute>
+
+   <attribute name="head_before_get" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.2.0b1" 
+              category="Indexing:Connection" 
+              block="Server" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	This option works only if we take advantage of persistent connections (see 
+	persistent_connections attribute). If set to true an HTTP/1.1 <em>HEAD</em> 
+	call is made in order to retrieve header information about a document. 
+	If the status code and the content-type returned let the document be parsable, 
+	then a following 'GET' call is made. 
+     </description>
+   </attribute>
+
+   <attribute name="heading_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="3.2.0b1" 
+              category="Searching:Ranking" >
+     <default>5</default>
+     <example>20</example>
+     <description> 
+			This is a factor which will be used to multiply the 
+			weight of words between &lt;h1&gt; and &lt;/h1&gt; 
+			tags, as well as headings of levels &lt;h2&gt; through 
+			&lt;h6&gt;. It is used to assign the level of importance 
+			to headings. Setting a factor to 0 will cause words 
+			in these headings to be ignored. The number may be a 
+	floating point number. See also 
+	<ref type="attr">author_factor</ref> 
+	<ref type="attr">backlink_factor</ref> 
+	<ref type="attr">caps_factor</ref> 
+	<ref type="attr">date_factor</ref> 
+	<ref type="attr">description_factor</ref> 
+	<ref type="attr">keywords_factor</ref> 
+	<ref type="attr">meta_description_factor</ref> 
+	<ref type="attr">text_factor</ref> 
+	<ref type="attr">title_factor</ref> 
+	<ref type="attr">url_text_factor</ref> 
+     </description>
+   </attribute>
+
+   <attribute name="htnotify_prefix_file" 
+              type="string" 
+              programs="htnotify" 
+              version="3.2.0b3" 
+              category="Extra Output" >
+     <default></default>
+     <example>${common_dir}/notify_prefix.txt</example>
+     <description> 
+	Specifies the file containing text to be inserted in each mail  
+	message sent by htnotify before the list of expired webpages. If omitted,  
+	nothing is inserted. 
+     </description>
+   </attribute>
+
+   <attribute name="htnotify_replyto" 
+              type="string" 
+              programs="htnotify" 
+              version="3.2.0b3" 
+              category="Extra Output" >
+     <default></default>
+     <example>design-group@foo.com</example>
+     <description> 
+	This specifies the email address that htnotify email messages 
+	include in the Reply-to: field. 
+     </description>
+   </attribute>
+
+   <attribute name="htnotify_sender" 
+              type="string" 
+              programs="htnotify" 
+              version="all" 
+              category="Extra Output" >
+     <default>webmaster@www</default>
+     <example>bigboss@yourcompany.com</example>
+     <description> 
+	This specifies the email address that htnotify email 
+	messages get sent out from. The address is forged using 
+	/usr/lib/sendmail. Check htnotify/htnotify.cc for 
+	detail on how this is done. 
+     </description>
+   </attribute>
+
+   <attribute name="htnotify_suffix_file" 
+              type="string" 
+              programs="htnotify" 
+              version="3.2.0b3" 
+              category="Extra Output" >
+     <default></default>
+     <example>${common_dir}/notify_suffix.txt</example>
+     <description> 
+	Specifies the file containing text to be inserted in each mail message  
+	sent by htnotify after the list of expired webpages. If omitted, htnotify  
+	will insert a standard message. 
+     </description>
+   </attribute>
+
+   <attribute name="htnotify_webmaster" 
+              type="string" 
+              programs="htnotify" 
+              version="3.2.0b3" 
+              category="Extra Output" >
+     <default>ht://Dig Notification Service</default>
+     <example>Notification Service</example>
+     <description> 
+	This provides a name for the From field, in addition to the email address 
+	for the email messages sent out by htnotify. 
+     </description>
+   </attribute>
+
+   <attribute name="http_proxy" 
+              type="string" 
+              programs="htdig" 
+              version="3.0" 
+              category="Indexing:Connection" 
+              block="URL" >
+     <default></default>
+     <example>3128</example>
+     <description> 
+	When this attribute is set, all HTTP document 
+	retrievals will be done using the HTTP-PROXY protocol. 
+	The URL specified in this attribute points to the host 
+	and port where the proxy server resides.<br/> 
+	The use of a proxy server greatly improves performance 
+	of the indexing process. 
+     </description>
+   </attribute>
+
+   <attribute name="http_proxy_authorization" 
+              type="string" 
+              programs="htdig" 
+              version="3.2.0b4" 
+              category="Indexing:Connection" 
+              block="URL" >
+     <default></default>
+     <example>mypassword</example>
+     <description> 
+	This tells htdig to send the supplied 
+	<em>username</em><strong>:</strong><em>password</em> with each HTTP request, 
+	when using a proxy with authorization requested. 
+	The credentials will be encoded using the "Basic" authentication 
+	scheme. There <em>must</em> be a colon (:) between the username and 
+	password. 
+     </description>
+   </attribute>
+
+   <attribute name="http_proxy_exclude" 
+              type="pattern_list" 
+              programs="htdig" 
+              version="3.1.0b3" 
+              category="Indexing:Connection" >
+     <default></default>
+     <example>//intranet.foo.com/</example>
+     <description> 
+	When this is set, URLs matching this will not use the 
+	proxy. This is useful when you have a mixture of sites 
+	near to the digging server and far away. 
+     </description>
+   </attribute>
+
+   <attribute name="ignore_alt_text" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.1.6" 
+              category="Indexing:What" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	If set, this causes the text of the ALT field in an &lt;IMG...&gt; tag 
+	not to be indexed as part of the text of the document, nor included in 
+	excerpts. 
+     </description>
+   </attribute>
+
+   <attribute name="ignore_dead_servers" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.1.6" 
+              category="Indexing:Connection" >
+     <default>true</default>
+     <example>false</example>
+     <description> 
+	Determines whether htdig will continue to index URLs from a 
+	server after an attempted connection to the server fails as 
+	&quot;no host found&quot; or &quot;host not found (port).&quot; If 
+	set to false, htdig will try <em>every</em> URL from that server. 
+     </description>
+   </attribute>
+
+   <attribute name="image_list" 
+              type="string" 
+              programs="htdig" 
+              version="all" 
+              category="Extra Output" >
+     <default>${database_base}.images</default>
+     <example>allimages</example>
+     <description> 
+	This is the file that a list of image URLs gets written 
+	to by <ref type="program">htdig</ref> when the 
+	<ref type="attr">create_image_list</ref> is set to 
+	true. As image URLs are seen, they are just appended to 
+	this file, so after htdig finishes it is probably a 
+	good idea to run <code>sort -u</code> on the file to 
+	eliminate duplicates from the file. 
+     </description>
+   </attribute>
+
+   <attribute name="image_url_prefix" 
+              type="string" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:Text" >
+     <default configmacro="true">IMAGE_URL_PREFIX</default>
+     <example>/images/htdig</example>
+     <description> 
+	This specifies the directory portion of the URL used 
+	to display star images. This attribute isn't directly 
+	used by htsearch, but is used in the default URL for 
+	the <ref type="attr">star_image</ref> and 
+	<ref type="attr">star_blank</ref> attributes, and 
+	other attributes may be defined in terms of this one. 
+	<p> 
+	The default value of this attribute is determined at 
+	compile time. 
+	</p> 
+     </description>
+   </attribute>
+
+   <attribute name="include" 
+              type="string" 
+              programs="all" 
+              version="3.1.0" 
+              category="" >
+     <default></default>
+     <example>${config_dir}/htdig.conf</example>
+     <description> 
+	This is not quite a configuration attribute, but 
+	rather a directive. It can be used within one 
+	configuration file to include the definitions of 
+	another file. The last definition of an attribute 
+	is the one that applies, so after including a file, 
+	any of its definitions can be overridden with 
+	subsequent definitions. This can be useful when 
+	setting up many configurations that are mostly the 
+	same, so all the common attributes can be maintained 
+	in a single configuration file. The include directives 
+	can be nested, but watch out for nesting loops. 
+     </description>
+   </attribute>
+
+   <attribute name="iso_8601" 
+              type="boolean" 
+              programs="htsearch htnotify" 
+              version="3.1.0b2" 
+              category="Presentation:How,Extra Output" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	This sets whether dates should be output in ISO 8601 
+	format. For example, this was written on: 1998-10-31 11:28:13 EST. 
+	See also the <ref type="attr">date_format</ref> attribute, which 
+	can override any date format that 
+	<ref type="program">htsearch</ref> 
+	picks by default.<br/> 
+	This attribute also affects the format of the date 
+	<ref type="program">htnotify</ref> expects to find 
+	in a <strong>htdig-notification-date</strong> field. 
+     </description>
+   </attribute>
+
+   <attribute name="keywords" 
+              type="string_list" 
+              programs="htsearch" 
+              version="??" 
+              category="Searching:Method" >
+     <default></default>
+     <example>documentation</example>
+     <description> 
+	Keywords which <strong>must</strong> be found on all pages returned, 
+    	even if the "or" ("Any") <ref type="attr">method</ref> is 
+	selected. 
+     </description>
+   </attribute>
+
+   <attribute name="keywords_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="all" 
+              category="Searching:Ranking" >
+     <default>100</default>
+     <example>12</example>
+     <description> 
+	This is a factor which will be used to multiply the 
+	weight of words in the list of keywords of a document. 
+	The number may be a floating point number. See also the 
+	<ref type="attr">heading_factor</ref>attribute. 
+     </description>
+   </attribute>
+
+   <attribute name="keywords_meta_tag_names" 
+              type="string_list" 
+              programs="htdig" 
+              version="3.0.6" 
+              category="Indexing:What" >
+     <default>keywords htdig-keywords</default>
+     <example>keywords description</example>
+     <description>	The words in this list are used to search for keywords 
+	in HTML <em>META</em> tags. This list can contain any 
+	number of strings that each will be seen as the name 
+	for whatever keyword convention is used.<br/> 
+	The <em>META</em> tags have the following format: 
+    <codeblock> 
+    &lt;META name="<em>somename</em>" content="<em>somevalue</em>"&gt; 
+    </codeblock> 
+</description>
+   </attribute>
+
+   <attribute name="limit_normalized" 
+              type="pattern_list" 
+              programs="htdig" 
+              version="3.1.0b2" 
+              category="Indexing:Where" >
+     <default></default>
+     <example>//www.mydomain.com</example>
+     <description> 
+	This specifies a set of patterns that all URLs have to 
+	match against in order for them to be included in the 
+	search. Unlike the limit_urls_to attribute, this is done 
+	<strong>after</strong> the URL is normalized and the 
+	<ref type="attr">server_aliases</ref> 
+	attribute is applied. This allows filtering after any 
+	hostnames and DNS aliases are resolved. Otherwise, this 
+	attribute is the same as the <ref type="attr">limit_urls_to</ref> attribute. 
+     </description>
+   </attribute>
+
+   <attribute name="limit_urls_to" 
+              type="pattern_list" 
+              programs="htdig" 
+              version="all" 
+              category="Indexing:Where" >
+     <default>${start_url}</default>
+     <example>.sdsu.edu kpbs [.*\.html]</example>
+     <description> 
+	This specifies a set of patterns that all URLs have to 
+	match against in order for them to be included in the 
+	search. Any number of strings can be specified, 
+	separated by spaces. If multiple patterns are given, at 
+	least one of the patterns has to match the URL.<br/> 
+	Matching, by default, is a case-insensitive string match on the URL 
+	to be used, unless the <ref type="attr">case_sensitive</ref>  
+	attribute is set. The match will be performed <em>after</em> 
+	the relative references have been converted to a valid 
+	URL. This means that the URL will <em>always</em> start 
+	with <code>http://</code>.<br/> 
+	Granted, this is not the perfect way of doing this, 
+	but it is simple enough and it covers most cases. 
+     </description>
+   </attribute>
+
+   <attribute name="local_default_doc" 
+              type="string_list" 
+              programs="htdig" 
+              version="3.0.8b2" 
+              category="Indexing:Where" 
+              block="Server" >
+     <default>index.html</default>
+     <example>default.html default.htm index.html index.htm</example>
+     <description> 
+	Set this to the default documents in a directory used by the 
+	server. This is used for local filesystem access to 
+	translate URLs like http://foo.com/ into something like 
+	/home/foo.com/index.html<br/> 
+	The list should only contain names that the local server 
+	recognizes as default documents for directory URLs, as defined 
+	by the DirectoryIndex setting in Apache's srm.conf, for example. 
+	As of version 3.1.5, this can be a string list rather than a single name, 
+	and htdig will use the first name that works. Since this requires a 
+	loop, setting the most common name first will improve performance. 
+	Special characters can be embedded in these names using %xx hex encoding. 
+     </description>
+   </attribute>
+
+   <attribute name="local_urls" 
+              type="string_list" 
+              programs="htdig" 
+              version="3.0.8b2" 
+              category="Indexing:Where" >
+     <default></default>
+     <example>//www.foo.com/=/usr/www/htdocs/</example>
+     <description> 
+	Set this to tell ht://Dig to access certain URLs through 
+	local filesystems. At first ht://Dig will try to access 
+	pages with URLs matching the patterns through the 
+	filesystems specified. If it cannot find the file, or 
+	if it doesn't recognize the file name extension, it will 
+	try the URL through HTTP instead. Note the example--the 
+	equal sign and the final slashes in both the URL and the 
+	directory path are critical. 
+	<br/>The fallback to HTTP can be disabled by setting the 
+	<ref type="attr">local_urls_only</ref> attribute to true. 
+	To access user directory URLs through the local filesystem, 
+	set <ref type="attr">local_user_urls</ref>.  The only 
+	file name extensions currently recognized for local filesystem 
+	access are .html, .htm, .txt, .asc, .ps, .eps and .pdf. For 
+	anything else, htdig must ask the HTTP server for the file, 
+	so it can determine the MIME content-type of it. 
+	As of version 3.1.5, you can provide multiple mappings of a given 
+	URL to different directories, and htdig will use the first 
+	mapping that works. 
+	Special characters can be embedded in these names using %xx hex encoding. 
+	For example, you can use %3D to embed an "=" sign in an URL pattern. 
+     </description>
+   </attribute>
+
+   <attribute name="local_urls_only" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.1.4" 
+              category="Indexing:Where" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	Set this to tell ht://Dig to access files only through the  
+	local filesystem, for URLs matching the patterns in the 
+	<ref type="attr">local_urls</ref> or 
+	<ref type="attr">local_user_urls</ref> attribute. If it cannot  
+	find the file, it will give up rather than trying HTTP or another protocol. 
+     </description>
+   </attribute>
+
+   <attribute name="local_user_urls" 
+              type="string_list" 
+              programs="htdig" 
+              version="3.0.8b2" 
+              category="Indexing:Where" >
+     <default></default>
+     <example>//www.my.org/=/home/,/www/</example>
+     <description> 
+	Set this to access user directory URLs through the local 
+	filesystem. If you leave the "path" portion out, it will 
+	look up the user's home directory in /etc/password (or NIS 
+	or whatever). As with <ref type="attr">local_urls</ref>, 
+	if the files are not found, ht://Dig will try with HTTP or the 
+	appropriate protocol. Again, note the 
+	example's format. To map http://www.my.org/~joe/foo/bar.html 
+	to /home/joe/www/foo/bar.html, try the example below. 
+	<br/>The fallback to HTTP can be disabled by setting the 
+	<ref type="attr">local_urls_only</ref> attribute to true. 
+	As of version 3.1.5, you can provide multiple mappings of a given 
+	URL to different directories, and htdig will use the first 
+	mapping that works. 
+	Special characters can be embedded in these names using %xx hex encoding. 
+	For example, you can use %3D to embed an "=" sign in an URL pattern. 
+     </description>
+   </attribute>
+
+   <attribute name="locale" 
+              type="string" 
+              programs="htdig" 
+              version="3.0" 
+              category="Indexing:What,Presentation:How" >
+     <default>C</default>
+     <example>en_US</example>
+     <description> 
+	Set this to whatever locale you want your search 
+	database cover. It affects the way international 
+	characters are dealt with. On most systems a list of 
+	legal locales can be found in /usr/lib/locale. Also 
+	check the <strong>setlocale(3C)</strong> man page. 
+	Note that depending the locale you choose, and whether 
+	your system's locale implementation affects floating 
+	point input, you may need to specify the decimal point 
+	as a comma rather than a period. This will affect 
+	settings of <ref type="attr">search_algorithm</ref> 
+	and any of the scoring factors. 
+     </description>
+   </attribute>
+
+   <attribute name="logging" 
+              type="boolean" 
+              programs="htsearch" 
+              version="3.1.0b2" 
+              category="Extra Output" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	This sets whether htsearch should use the syslog() to log 
+	search requests. If set, this will log requests with a 
+	default level of LOG_INFO and a facility of LOG_LOCAL5. For 
+	details on redirecting the log into a separate file or other 
+	actions, see the <strong>syslog.conf(5)</strong> man 
+	page. To set the level and facility used in logging, change 
+	LOG_LEVEL and LOG_FACILITY in the include/htconfig.h file 
+	before compiling. 
+	<dl> 
+	  <dt> 
+	    Each line logged by htsearch contains the following: 
+	  </dt> 
+	  <dd> 
+	    REMOTE_ADDR [config] (match_method) [words] 
+	    [logicalWords] (matches/matches_per_page) - 
+	    page, HTTP_REFERER 
+	  </dd> 
+	</dl> 
+	where any of the above are null or empty, it 
+	either puts in '-' or 'default' (for config). 
+     </description>
+   </attribute>
+
+   <attribute name="maintainer" 
+              type="string" 
+              programs="htdig" 
+              version="all" 
+              category="Indexing:Out" 
+              block="Server" >
+     <default>bogus@unconfigured.htdig.user</default>
+     <example>ben.dover@uptight.com</example>
+     <description> 
+	This should be the email address of the person in 
+	charge of the digging operation. This string is added 
+	to the user-agent: field when the digger sends a 
+	request to a server. 
+     </description>
+   </attribute>
+
+   <attribute name="match_method" 
+              type="string" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Searching:Method" >
+     <default>and</default>
+     <example>boolean</example>
+     <description> 
+	This is the default method for matching that htsearch 
+	uses. The valid choices are: 
+	<ul> 
+	  <li> or </li> 
+	  <li> and </li> 
+	  <li> boolean </li> 
+	</ul> 
+	This attribute will only be used if the HTML form that 
+	calls htsearch didn't have the <a href="hts_form.html#method">method</a> 
+	value set. 
+     </description>
+   </attribute>
+
+   <attribute name="matches_per_page" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Searching:Method" >
+     <default>10</default>
+     <example>999</example>
+     <description> 
+	If this is set to a relatively small number, the 
+	matches will be shown in pages instead of all at once. 
+	This attribute will only be used if the HTML form that 
+	calls htsearch didn't have the 
+	<a href="hts_form.html#matchesperpage">matchesperpage</a> value set. 
+     </description>
+   </attribute>
+
+   <attribute name="max_connection_requests" 
+              type="integer" 
+              programs="htdig" 
+              version="3.2.0b1" 
+              category="Indexing:Connection" >
+     <default>-1</default>
+     <example>100</example>
+     <description> 
+	This attribute tells htdig to limit the number of requests it will 
+	send to a server using a single, persistent HTTP connection. This 
+	only applies when the 
+	<ref type="attr">persistent_connections</ref> 
+	attribute is set. You may set the limit as high as you want, 
+	but it must be at least 1. A value of -1 specifies no limit. 
+	Requests in the queue for a server will be combined until either 
+	the limit is reached, or the queue is empty. 
+     </description>
+   </attribute>
+
+   <attribute name="max_description_length" 
+              type="integer" 
+              programs="htdig" 
+              version="all" 
+              category="Indexing:What" >
+     <default>60</default>
+     <example>40</example>
+     <description> 
+	While gathering descriptions of URLs, 
+	<ref type="program">htdig</ref> will only record those 
+	descriptions which are shorter than this length. This 
+	is used mostly to deal with broken HTML. (If a 
+	hyperlink is not terminated with a &lt;/a&gt; the 
+	description will go on until the end of the document.) 
+     </description>
+   </attribute>
+
+   <attribute name="max_descriptions" 
+              type="integer" 
+              programs="htdig" 
+              version="all" 
+              category="Indexing:What" >
+     <default>5</default>
+     <example>15</example>
+     <description> 
+	While gathering descriptions of URLs, 
+	<ref type="program">htdig</ref> will only record up to this 
+	number of descriptions, in the order in which it encounters 
+	them. This is used to prevent the database entry for a document 
+	from growing out of control if the document has a huge number 
+	of links to it. 
+     </description>
+   </attribute>
+
+   <attribute name="max_doc_size" 
+              type="integer" 
+              programs="htdig" 
+              version="3.0" 
+              category="Indexing:What" 
+              block="URL" >
+     <default>100000</default>
+     <example>5000000</example>
+     <description> 
+	This is the upper limit to the amount of data retrieved 
+	for documents. This is mainly used to prevent 
+	unreasonable memory consumption since each document 
+	will be read into memory by <ref type="program">htdig</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="max_excerpts" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.1.6" 
+              category="Presentation:How" 
+              block="URL" >
+     <default>1</default>
+     <example>10</example>
+     <description> 
+	This value determines the maximum number of excerpts 
+	that can be displayed for one matching document in the 
+	search results. 
+     </description>
+   </attribute>
+
+   <attribute name="max_head_length" 
+              type="integer" 
+              programs="htdig" 
+              version="all" 
+              category="Indexing:How" >
+     <default>512</default>
+     <example>50000</example>
+     <description> 
+	For each document retrieved, the top of the document is 
+	stored. This attribute determines the size of this 
+	block. The text that will be stored is only the text; 
+	no markup is stored.<br/> 
+	We found that storing 50,000 bytes will store about 
+	95% of all the documents completely. This really 
+	depends on how much storage is available and how much 
+	you want to show. 
+     </description>
+   </attribute>
+
+   <attribute name="max_hop_count" 
+              type="integer" 
+              programs="htdig" 
+              version="all" 
+              category="Indexing:Where" >
+     <default>999999</default>
+     <example>4</example>
+     <description> 
+	Instead of limiting the indexing process by URL 
+	pattern, it can also be limited by the number of hops 
+	or clicks a document is removed from the starting URL. 
+	<br/> 
+	The starting page or pages will have hop count 0. 
+     </description>
+   </attribute>
+
+   <attribute name="max_keywords" 
+              type="integer" 
+              programs="htdig" 
+              version="3.2.0b1" 
+              category="Indexing:What" >
+     <default>-1</default>
+     <example>10</example>
+     <description> 
+	This attribute can be used to limit the number of keywords 
+	per document that htdig will accept from meta keywords tags. 
+	A value of -1 or less means no limit. This can help combat meta 
+	keyword spamming, by limiting the amount of keywords that will be 
+	indexed, but it will not completely prevent irrelevant matches 
+	in a search if the first few keywords in an offending document 
+	are not relevant to its contents. 
+     </description>
+   </attribute>
+
+   <attribute name="max_meta_description_length" 
+              type="integer" 
+              programs="htdig" 
+              version="3.1.0b1" 
+              category="Indexing:How" >
+     <default>512</default>
+     <example>1000</example>
+     <description> 
+	While gathering descriptions from meta description tags, 
+	<ref type="program">htdig</ref> will only store up to  
+	this much of the text for each document. 
+     </description>
+   </attribute>
+
+   <attribute name="max_prefix_matches" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.1.0b1" 
+              category="Searching:Method" >
+     <default>1000</default>
+     <example>100</example>
+     <description> 
+	The Prefix fuzzy algorithm could potentially match a 
+	very large number of words. This value limits the 
+	number of words each prefix can match. Note 
+	that this does not limit the number of documents that 
+	are matched in any way. 
+     </description>
+   </attribute>
+
+   <attribute name="max_retries" 
+              type="number" 
+              programs="htdig" 
+              version="3.2.0b1" 
+              category="Indexing:Connection" >
+     <default>3</default>
+     <example>6</example>
+     <description> 
+	 This option set the maximum number of retries when retrieving a document 
+	 fails (mainly for reasons of connection). 
+     </description>
+   </attribute>
+
+   <attribute name="max_stars" 
+              type="number" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:How" >
+     <default>4</default>
+     <example>6</example>
+     <description> 
+	When stars are used to display the score of a match, 
+	this value determines the maximum number of stars that 
+	can be displayed. 
+     </description>
+   </attribute>
+
+   <attribute name="maximum_page_buttons" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.2.0b3" 
+              category="Presentation:How" >
+     <default>${maximum_pages}</default>
+     <example>20</example>
+     <description> 
+	This value limits the number of page links that will be 
+	included in the page list at the bottom of the search 
+	results page. By default, it takes on the value of the 
+	<ref type="attr">maximum_pages</ref> 
+	attribute, but you can set it to something lower to allow 
+	more pages than buttons. In this case, pages above this 
+	number will have no corresponding button. 
+     </description>
+   </attribute>
+
+   <attribute name="maximum_pages" 
+              type="integer" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:How" >
+     <default>10</default>
+     <example>20</example>
+     <description> 
+	This value limits the number of page links that will be 
+	included in the page list at the bottom of the search 
+	results page. As of version 3.1.4, this will limit the 
+	total number of matching documents that are shown. 
+	You can make the number of page buttons smaller than the 
+	number of allowed pages by setting the 
+	<ref type="attr">maximum_page_buttons</ref> 
+	attribute. 
+     </description>
+   </attribute>
+
+   <attribute name="maximum_word_length" 
+              type="integer" 
+              programs="htdig htsearch" 
+              version="3.1.3" 
+              category="Indexing:What" >
+     <default>32</default>
+     <example>15</example>
+     <description> 
+	This sets the maximum length of words that will be 
+	indexed. Words longer than this value will be silently 
+	truncated when put into the index, or searched in the 
+	index. 
+     </description>
+   </attribute>
+
+   <attribute name="md5_db" 
+              type="string" 
+              programs="htdig" 
+              version="3.2.0b3" 
+              category="File Layout" >
+     <default>${database_base}.md5hash.db</default>
+     <example>${database_base}.md5.db</example>
+     <description> 
+	This file holds a database of md5 and date hashes of pages to 
+	catch and eliminate duplicates of pages. See also the 
+	<ref type="attr">check_unique_md5</ref> and 
+	<ref type="attr">check_unique_date</ref> attributes. 
+     </description>
+   </attribute>
+
+   <attribute name="meta_description_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="3.1.0b1" 
+              category="Searching:Ranking" >
+     <default>50</default>
+     <example>20</example>
+     <description> 
+	This is a factor which will be used to multiply the 
+	weight of words in any META description tags in a document. 
+	The number may be a floating point number. See also the 
+	<ref type="attr">heading_factor</ref> attribute and the 
+	<ref type="attr">description_factor</ref> attribute. 
+     </description>
+   </attribute>
+
+   <attribute name="metaphone_db" 
+              type="string" 
+              programs="htfuzzy htsearch" 
+              version="all" 
+              category="File Layout" >
+     <default>${database_base}.metaphone.db</default>
+     <example>${database_base}.mp.db</example>
+     <description> 
+	The database file used for the fuzzy "metaphone" search 
+	algorithm. This database is created by 
+	<ref type="program">htfuzzy</ref> and used by 
+	<ref type="program">htsearch</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="method_names" 
+              type="quoted_string_list" 
+              programs="htsearch" 
+              version="all" 
+              category="Searching:UI" >
+     <default>and All or Any boolean Boolean</default>
+     <example>or Or and And</example>
+     <description> 
+	These values are used to create the <strong> 
+	method</strong> menu. It consists of pairs. The first 
+	element of each pair is one of the known methods, the 
+	second element is the text that will be shown in the 
+	menu for that method. This text needs to be quoted if 
+	it contains spaces. 
+	See the <a href="hts_selectors.html">select list documentation</a> 
+	for more information on how this attribute is used. 
+     </description>
+   </attribute>
+
+   <attribute name="mime_types" 
+              type="string" 
+              programs="htdig" 
+              version="3.2.0b1" 
+              category="Indexing:Where" >
+     <default>${config_dir}/mime.types</default>
+     <example>/etc/mime.types</example>
+     <description> 
+	This file is used by htdig for local file access and resolving 
+	file:// URLs to ensure the files are parsable. If you are running 
+	a webserver with its own MIME file, you should set this attribute 
+	to point to that file. 
+     </description>
+   </attribute>
+
+   <attribute name="minimum_prefix_length" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.1.0b1" 
+              category="Searching:Method" >
+     <default>1</default>
+     <example>2</example>
+     <description> 
+	This sets the minimum length of prefix matches used by the 
+	"prefix" fuzzy matching algorithm. Words shorter than this 
+	will not be used in prefix matching. 
+     </description>
+   </attribute>
+
+   <attribute name="minimum_speling_length" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.2.0b1" 
+              category="Searching:Method" >
+     <default>5</default>
+     <example>3</example>
+     <description> 
+	This sets the minimum length of words used by the 
+	"speling" fuzzy matching algorithm. Words shorter than this 
+	will not be used in this fuzzy matching. 
+     </description>
+   </attribute>
+
+   <attribute name="minimum_word_length" 
+              type="integer" 
+              programs="htdig htsearch" 
+              version="all" 
+              category="Indexing:What" >
+     <default>3</default>
+     <example>2</example>
+     <description> 
+	This sets the minimum length of words that will be 
+	indexed. Words shorter than this value will be silently 
+	ignored but still put into the excerpt.<br/> 
+	Note that by making this value less than 3, a lot more 
+	words that are very frequent will be indexed. It might 
+	be advisable to add some of these to the
+	<ref type="attr">bad_word_list</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="multimatch_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="3.1.6" 
+              category="Searching:Ranking" >
+     <default>1</default>
+     <example>1000</example>
+     <description> 
+	This factor gives higher rankings to documents that have more than
+	one matching search word when the <strong>or</strong>
+	<ref type="attr">match_method</ref> is used.
+	In version 3.1.6, the matching words' combined scores were multiplied
+	by this factor for each additional matching word.  Currently, this
+	multiplier is applied at most once.
+     </description>
+   </attribute>
+
+   <attribute name="next_page_text" 
+              type="string" 
+              programs="htsearch" 
+              version="3.1.0" 
+              category="Presentation:Text" >
+     <default>[next]</default>
+     <example>&lt;img src="/htdig/buttonr.gif"&gt;</example>
+     <description> 
+	The text displayed in the hyperlink to go to the next 
+	page of matches. 
+     </description>
+   </attribute>
+
+   <attribute name="no_excerpt_show_top" 
+              type="boolean" 
+              programs="htsearch" 
+              version="3.1.0b3" 
+              category="Presentation:How" >
+     <default>false</default>
+     <example>yes</example>
+     <description> 
+	If no excerpt is available, this option will act the 
+	same as <ref type="attr">excerpt_show_top</ref>, that is, 
+	it will show the top of the document. 
+     </description>
+   </attribute>
+
+   <attribute name="no_excerpt_text" 
+              type="string" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Presentation:Text" >
+     <default>&lt;em&gt;(None of the search words were found in the top of this document.)&lt;/em&gt;</default>
+     <example></example>
+     <description> 
+	This text will be displayed in place of the excerpt if 
+	there is no excerpt available. If this attribute is set 
+	to nothing (blank), the excerpt label will not be 
+	displayed in this case. 
+     </description>
+   </attribute>
+
+   <attribute name="no_next_page_text" 
+              type="string" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Presentation:Text" >
+     <default>[next]</default>
+     <example></example>
+     <description> 
+	The text displayed where there would normally be a 
+	hyperlink to go to the next page of matches. 
+     </description>
+   </attribute>
+
+   <attribute name="no_page_list_header" 
+              type="string" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Presentation:Text" >
+     <default></default>
+     <example>&lt;hr noshade size=2&gt;All results on this page.&lt;br&gt;</example>
+     <description> 
+	This text will be used as the value of the PAGEHEADER 
+	variable, for use in templates or the 
+	<ref type="attr">search_results_footer</ref> 
+	file, when all search results fit on a single page. 
+     </description>
+   </attribute>
+
+   <attribute name="no_page_number_text" 
+              type="quoted_string_list" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Presentation:Text" >
+     <default></default>
+     <example>&lt;strong&gt;1&lt;/strong&gt; &lt;strong&gt;2&lt;/strong&gt; \ 
+				  &lt;strong&gt;3&lt;/strong&gt; &lt;strong&gt;4&lt;/strong&gt; \ 
+				  &lt;strong&gt;5&lt;/strong&gt; &lt;strong&gt;6&lt;/strong&gt; \ 
+				  &lt;strong&gt;7&lt;/strong&gt; &lt;strong&gt;8&lt;/strong&gt; \ 
+				  &lt;strong&gt;9&lt;/strong&gt; &lt;strong&gt;10&lt;/strong&gt; 
+</example>
+     <description> 
+	The text strings in this list will be used when putting 
+	together the PAGELIST variable, for use in templates or 
+	the <ref type="attr">search_results_footer</ref> 
+	file, when search results fit on more than page. The PAGELIST 
+	is the list of links at the bottom of the search results page. 
+	There should be as many strings in the list as there are 
+	pages allowed by the <ref type="attr">maximum_page_buttons</ref> 
+	attribute. If there are not enough, or the list is empty, 
+	the page numbers alone will be used as the text for the links. 
+	An entry from this list is used for the current page, as the 
+	current page is shown in the page list without a hypertext link, 
+	while entries from the <ref type="attr">page_number_text</ref> list are used for the links to other pages. 
+	The text strings can contain HTML tags to highlight page numbers 
+	or embed images. The strings need to be quoted if they contain 
+	spaces. 
+     </description>
+   </attribute>
+
+   <attribute name="no_prev_page_text" 
+              type="string" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Presentation:Text" >
+     <default>[prev]</default>
+     <example></example>
+     <description> 
+	The text displayed where there would normally be a 
+	hyperlink to go to the previous page of matches. 
+     </description>
+   </attribute>
+
+   <attribute name="no_title_text" 
+              type="string" 
+              programs="htsearch" 
+              version="3.1.0" 
+              category="Presentation:Text" >
+     <default>filename</default>
+     <example>"No Title Found"</example>
+     <description> 
+	This specifies the text to use in search results when no 
+	title is found in the document itself. If it is set to 
+	filename, htsearch will use the name of the file itself, 
+	enclosed in brackets (e.g. [index.html]). 
+     </description>
+   </attribute>
+
+   <attribute name="noindex_end" 
+              type="string" 
+              programs="htdig" 
+              version="3.1.0" 
+              category="Indexing:What" >
+     <default>&lt;!--/htdig_noindex--&gt;</default>
+     <example>&lt;/SCRIPT&gt;</example>
+     <description> 
+	This string marks the end of a section of an HTML file that should be 
+	completely ignored when indexing. It works together with 
+	<ref type="attr">noindex_start</ref>. 
+	As in the defaults, this can be SGML comment  
+	declarations that can be inserted anywhere in the documents to exclude  
+	different sections from being indexed. However, existing tags can also be  
+	used; this is especially useful to exclude some sections from being indexed  
+	where the files to be indexed can not be edited. The example shows how 
+	SCRIPT sections in 'uneditable' documents can be skipped. 
+	Note that the match for this string is case insensitive. 
+     </description>
+   </attribute>
+
+   <attribute name="noindex_start" 
+              type="string" 
+              programs="htdig" 
+              version="3.1.0" 
+              category="Indexing:What" >
+     <default>&lt;!--htdig_noindex--&gt;</default>
+     <example>&lt;SCRIPT</example>
+     <description> 
+	This string marks the start of a section of an HTML file that should be 
+	completely ignored when indexing. It works together with 
+	<ref type="attr">noindex_end</ref>. 
+	As in the defaults, this can be SGML comment 
+	declarations that can be inserted anywhere in the documents to exclude 
+	different sections from being indexed. However, existing tags can also be 
+	used; this is especially useful to exclude some sections from being indexed 
+	where the files to be indexed can not be edited. The example shows how 
+	SCRIPT sections in 'uneditable' documents can be skipped; note how 
+	noindex_start does not contain an ending &gt;: this allows for all SCRIPT 
+	tags to be matched regardless of attributes defined (different types or 
+	languages). Note that the match for this string is case insensitive. 
+     </description>
+   </attribute>
+
+   <attribute name="nothing_found_file" 
+              type="string" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:Files" >
+     <default>${common_dir}/nomatch.html</default>
+     <example>/www/searching/nothing.html</example>
+     <description> 
+	This specifies the file which contains the <code> 
+	HTML</code> text to display when no matches were found. 
+	The file should contain a complete <code>HTML</code> 
+	document.<br/> 
+	Note that this attribute could also be defined in 
+	terms of <ref type="attr">database_base</ref> to 
+	make is specific to the current search database. 
+     </description>
+   </attribute>
+
+   <attribute name="nph" 
+              type="boolean" 
+              programs="htsearch" 
+              version="3.2.0b2" 
+              category="Presentation:How" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	This attribute determines whether htsearch sends out full HTTP 
+	headers as required for an NPH (non-parsed header) CGI. Some 
+	servers assume CGIs will act in this fashion, for example MS 
+	IIS. If your server does not send out full HTTP headers, you 
+	should set this to true. 
+     </description>
+   </attribute>
+
+   <attribute name="page_list_header" 
+              type="string" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Presentation:Text" >
+     <default>&lt;hr noshade size=2&gt;Pages:&lt;br&gt;</default>
+     <example></example>
+     <description> 
+	This text will be used as the value of the PAGEHEADER 
+	variable, for use in templates or the 
+	<ref type="attr">search_results_footer</ref> 
+	file, when all search results fit on more than one page. 
+     </description>
+   </attribute>
+
+   <attribute name="page_number_separator" 
+              type="quoted_string_list" 
+              programs="htsearch" 
+              version="3.1.4" 
+              category="Presentation:Text" >
+     <default>" "</default>
+     <example>"&lt;/td&gt; &lt;td&gt;"</example>
+     <description> 
+	The text strings in this list will be used when putting 
+	together the PAGELIST variable, for use in templates or 
+	the <ref type="attr">search_results_footer</ref> 
+	file, when search results fit on more than page. The PAGELIST 
+	is the list of links at the bottom of the search results page. 
+	The strings in the list will be used in rotation, and will 
+	separate individual entries taken from 
+	<ref type="attr">page_number_text</ref> and 
+	<ref type="attr">no_page_number_text</ref>. 
+	There can be as many or as few strings in the list as you like. 
+	If there are not enough for the number of pages listed, it goes 
+	back to the start of the list. If the list is empty, a space is 
+	used. The text strings can contain HTML tags. The strings need 
+	to be quoted if they contain spaces, or to specify an empty string. 
+     </description>
+   </attribute>
+
+   <attribute name="page_number_text" 
+              type="quoted_string_list" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Presentation:Text" >
+     <default></default>
+     <example>&lt;em&gt;1&lt;/em&gt; &lt;em&gt;2&lt;/em&gt; \ 
+				  &lt;em&gt;3&lt;/em&gt; &lt;em&gt;4&lt;/em&gt; \ 
+				  &lt;em&gt;5&lt;/em&gt; &lt;em&gt;6&lt;/em&gt; \ 
+				  &lt;em&gt;7&lt;/em&gt; &lt;em&gt;8&lt;/em&gt; \ 
+				  &lt;em&gt;9&lt;/em&gt; &lt;em&gt;10&lt;/em&gt; 
+</example>
+     <description> 
+	The text strings in this list will be used when putting 
+	together the PAGELIST variable, for use in templates or 
+	the <ref type="attr">search_results_footer</ref> 
+	file, when search results fit on more than page. The PAGELIST 
+	is the list of links at the bottom of the search results page. 
+	There should be as many strings in the list as there are 
+	pages allowed by the <ref type="attr">maximum_page_buttons</ref> 
+	attribute. If there are not enough, or the list is empty, 
+	the page numbers alone will be used as the text for the links. 
+	Entries from this list are used for the links to other pages, 
+	while an entry from the <ref type="attr">no_page_number_text</ref> list is used for the current page, as the 
+	current page is shown in the page list without a hypertext link. 
+	The text strings can contain HTML tags to highlight page numbers 
+	or embed images. The strings need to be quoted if they contain 
+	spaces. 
+     </description>
+   </attribute>
+
+   <attribute name="persistent_connections" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.2.0b1" 
+              category="Indexing:Connection" 
+              block="Server" >
+     <default>true</default>
+     <example>false</example>
+     <description> 
+	If set to true, when servers make it possible, htdig can take advantage 
+	of persistent connections, as defined by HTTP/1.1 (<em>RFC2616</em>). This permits 
+	to reduce the number of open/close operations of connections, when retrieving 
+	a document with HTTP. 
+     </description>
+   </attribute>
+
+   <attribute name="plural_suffix" 
+              type="string" 
+              programs="htsearch" 
+              version="3.2.0b2" 
+              category="Presentation: Text" >
+     <default>s</default>
+     <example>en</example>
+     <description> 
+	Specifies the value of the PLURAL_MATCHES template 
+	variable used in the header, footer and template files. 
+	This can be used for localization for non-English languages 
+	where 's' is not the appropriate suffix. 
+     </description>
+   </attribute>
+
+   <attribute name="prefix_match_character" 
+              type="string" 
+              programs="htsearch" 
+              version="3.1.0b1" 
+              category="Searching:Method" >
+     <default>*</default>
+     <example>ing</example>
+     <description> 
+	A null prefix character means that prefix matching should be 
+	applied to every search word. Otherwise a match is 
+	returned only if the word does not end in the characters specified. 
+     </description>
+   </attribute>
+
+   <attribute name="prev_page_text" 
+              type="string" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Presentation:Text" >
+     <default>[prev]</default>
+     <example>&lt;img src="/htdig/buttonl.gif"&gt;</example>
+     <description> 
+	The text displayed in the hyperlink to go to the 
+	previous page of matches. 
+     </description>
+   </attribute>
+
+   <attribute name="regex_max_words" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.2.0b1" 
+              category="Searching:Method" >
+     <default>25</default>
+     <example>10</example>
+     <description> 
+	The "regex" fuzzy algorithm could potentially match a 
+	very large number of words. This value limits the 
+	number of words each regular expression can match. Note 
+	that this does not limit the number of documents that 
+	are matched in any way. 
+     </description>
+   </attribute>
+
+   <attribute name="remove_bad_urls" 
+              type="boolean" 
+              programs="htpurge" 
+              version="all" 
+              category="Indexing:How" 
+              block="Server" >
+     <default>true</default>
+     <example>true</example>
+     <description> 
+	If TRUE, htpurge will remove any URLs which were marked 
+	as unreachable by htdig from the database. If FALSE, it 
+	will not do this. When htdig is run in initial mode, 
+	documents which were referred to but could not be 
+	accessed should probably be removed, and hence this 
+	option should then be set to TRUE, however, if htdig is 
+	run to update the database, this may cause documents on 
+	a server which is temporarily unavailable to be 
+	removed. This is probably NOT what was intended, so 
+	hence this option should be set to FALSE in that case. 
+     </description>
+   </attribute>
+
+   <attribute name="remove_default_doc" 
+              type="string_list" 
+              programs="htdig" 
+              version="3.1.0" 
+              category="Indexing:How" >
+     <default>index.html</default>
+     <example>default.html default.htm index.html index.htm</example>
+     <description> 
+	Set this to the default documents in a directory used by the 
+	servers you are indexing. These document names will be stripped 
+	off of URLs when they are normalized, if one of these names appears 
+	after the final slash, to translate URLs like 
+	http://foo.com/index.html into http://foo.com/<br/> 
+	Note that you can disable stripping of these names during 
+	normalization by setting the list to an empty string. 
+	The list should only contain names that all servers you index 
+	recognize as default documents for directory URLs, as defined 
+	by the DirectoryIndex setting in Apache's srm.conf, for example. 
+	This only applies to http:// and https:// URLS. 
+     </description>
+   </attribute>
+
+   <attribute name="remove_unretrieved_urls" 
+              type="boolean" 
+              programs="htpurge" 
+              version="3.2.0b1" 
+              category="Indexing:How" 
+              block="Server" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	If TRUE, htpurge will remove any URLs which were discovered 
+	and included as stubs in the database but not yet retrieved. If FALSE, it 
+	will not do this. When htdig is run in initial mode with no restrictions  
+	on hopcount or maximum documents, these should probably be removed and set 
+	to true. However, if you are hoping to index a small set of documents and  
+	eventually get to the rest, you should probably leave this as false. 
+     </description>
+   </attribute>
+
+   <attribute name="restrict" 
+              type="pattern_list" 
+              programs="htsearch" 
+              version="3.2.0b4" 
+              category="Searching:Method" >
+     <default></default>
+     <example>//www.acme.com/widgets/</example>
+     <description> 
+	This specifies a set of patterns that all URLs have to 
+	match against in order for them to be included in the search 
+	results. Any number of strings can be specified, separated by 
+	spaces. If multiple patterns are given, at least one of the 
+	patterns has to match the URL. The list can be specified 
+	from within the configuration file, and can be overridden 
+	with the "restrict" input parameter in the search form. Note 
+	that the restrict list does not take precedence over the 
+	<ref type="attr">exclude</ref> list - if a URL matches patterns 
+	in both lists it is still excluded from the search results. 
+     </description>
+   </attribute>
+
+   <attribute name="robotstxt_name" 
+              type="string" 
+              programs="htdig" 
+              version="3.0.7" 
+              category="Indexing:Out" 
+              block="Server" >
+     <default>htdig</default>
+     <example>myhtdig</example>
+     <description> 
+	Sets the name that htdig will look for when parsing 
+	robots.txt files. This can be used to make htdig appear 
+	as a different spider than ht://Dig. Useful to 
+	distinguish between a private and a global index. 
+     </description>
+   </attribute>
+
+   <attribute name="script_name" 
+              type="string" 
+              programs="htsearch" 
+              version="3.1.4" 
+              category="Presentation:Text" >
+     <default></default>
+     <example>/search/results.shtml</example>
+     <description> 
+	Overrides the value of the SCRIPT_NAME 
+	environment attribute. This is useful if 
+	htsearch is not being called directly as a CGI 
+	program, but indirectly from within a dynamic 
+	.shtml page using SSI directives. Previously, 
+	you needed a wrapper script to do this, but 
+	this configuration attribute makes wrapper 
+	scripts obsolete for SSI and possibly for 
+	other server scripting languages, as 
+	well. (You still need a wrapper script when 
+	using PHP, though.)<br/> 
+	Check out the <code>contrib/scriptname</code> 
+	directory for a small example. Note that this 
+	attribute also affects the value of the <a 
+	href="hts_templates.html#CGI">CGI</a> variable 
+	used in htsearch templates. 
+     </description>
+   </attribute>
+
+   <attribute name="search_algorithm" 
+              type="string_list" 
+              programs="htsearch" 
+              version="all" 
+              category="Searching:Method" >
+     <default>exact:1</default>
+     <example>0.3</example>
+     <description> 
+			Specifies the search algorithms and their weight to use 
+			when searching. Each entry in the list consists of the 
+			algorithm name, followed by a colon (:) followed by a 
+			weight multiplier. The multiplier is a floating point 
+			number between 0 and 1. Note that depending on your 
+			<ref type="attr">locale</ref> setting, and whether your 
+			system's locale implementation affects floating point 
+			input, you may need to specify the decimal point as a 
+			comma rather than a period.<br/> 
+			<strong>Note:</strong>If the exact  
+			method is not listed, the search may not work since the  
+			original terms will not be used.<br/> 
+			Current algorithms supported are: 
+			<dl> 
+			  <dt> 
+				exact 
+			  </dt> 
+			  <dd> 
+				The default exact word matching algorithm. This 
+				will find only exactly matched words. 
+			  </dd> 
+			  <dt> 
+				soundex 
+			  </dt> 
+			  <dd> 
+				Uses a slightly modified soundex algorithm to match 
+				words. This requires that the soundex database be 
+				present. It is generated with the 
+				<ref type="program">htfuzzy</ref> program. 
+			  </dd> 
+			  <dt> 
+				metaphone 
+			  </dt> 
+			  <dd> 
+				Uses the metaphone algorithm for matching words. 
+				This algorithm is more specific to the english 
+				language than soundex. It requires the metaphone 
+				database, which is generated with the <ref type="program">htfuzzy</ref> program. 
+			  </dd> 
+			  <dt> 
+				accents 
+			  </dt> 
+			  <dd> 
+				Uses the accents algorithm for matching words. 
+				This algorithm will treat all accented letters 
+				as equivalent to their unaccented counterparts. 
+				It requires the accents database, which is 
+				generated with the <ref type="program">htfuzzy</ref> program. 
+			  </dd> 
+			  <dt> 
+				endings 
+			  </dt> 
+			  <dd> 
+				This algorithm uses language specific word endings 
+				to find matches. Each word is first reduced to its 
+				word root and then all known legal endings are used 
+				for the matching. This algorithm uses two databases 
+				which are generated with <ref type="program">htfuzzy</ref>. 
+			  </dd> 
+			  <dt> 
+				synonyms 
+			  </dt> 
+			  <dd> 
+				Performs a dictionary lookup on all the words. This 
+				algorithm uses a database generated with the <ref type="program">htfuzzy</ref> program. 
+			  </dd> 
+			<dt> 
+			substring 
+			</dt> 
+			<dd> 
+			  Matches all words containing the queries as 
+			  substrings. Since this requires checking every word in 
+			  the database, this can really slow down searches 
+			  considerably. 
+			</dd> 
+			<dt> 
+			  prefix 
+			</dt> 
+			<dd> 
+			  Matches all words beginning with the query 
+			  strings. Uses the option <ref type="attr">prefix_match_character</ref> 
+			  to decide whether a query requires prefix 
+			  matching. For example "abc*" would perform prefix 
+			  matching on "abc" since * is the default 
+			  prefix_match_character. 
+			</dd> 
+			<dt> 
+			regex 
+			</dt> 
+			<dd> 
+			  Matches all words that match the patterns given as regular  
+			  expressions. Since this requires checking every word in 
+			  the database, this can really slow down searches 
+			  considerably. 
+			</dd> 
+			<dt> 
+			speling 
+			</dt> 
+			<dd> 
+			  A simple fuzzy algorithm that tries to find one-off spelling  
+			  mistakes, such as transposition of two letters or an extra character. 
+			  Since this usually generates just a few possibilities, it is  
+			  relatively quick. 
+			</dd> 
+			</dl> 
+     </description>
+   </attribute>
+
+   <attribute name="search_results_footer" 
+              type="string" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:Files" >
+     <default>${common_dir}/footer.html</default>
+     <example>/usr/local/etc/ht/end-stuff.html</example>
+     <description> 
+			This specifies a filename to be output at the end of 
+			search results. While outputting the footer, some 
+			variables will be expanded. Variables use the same 
+			syntax as the Bourne shell. If there is a variable VAR, 
+			the following will all be recognized: 
+			<ul> 
+			  <li> 
+				$VAR 
+			  </li> 
+			  <li> 
+				$(VAR) 
+			  </li> 
+			  <li> 
+				${VAR} 
+			  </li> 
+			</ul> 
+	The following variables are available.  See 
+	<a href="hts_template.html">hts_template.html</a> for a complete 
+	list. 
+			<dl> 
+			  <dt> 
+				MATCHES 
+			  </dt> 
+			  <dd> 
+				The number of documents that were matched. 
+			  </dd> 
+			  <dt> 
+				PLURAL_MATCHES 
+			  </dt> 
+			  <dd> 
+				If MATCHES is not 1, this will be the string "s", 
+				else it is an empty string. This can be used to say 
+				something like "$(MATCHES) 
+				document$(PLURAL_MATCHES) were found" 
+			  </dd> 
+			  <dt> 
+				MAX_STARS 
+			  </dt> 
+			  <dd> 
+				The value of the <ref type="attr">max_stars</ref> 
+				attribute. 
+			  </dd> 
+			  <dt> 
+				LOGICAL_WORDS 
+			  </dt> 
+			  <dd> 
+				A string of the search words with either "and" or 
+				"or" between the words, depending on the type of 
+				search. 
+			  </dd> 
+			  <dt> 
+				WORDS 
+			  </dt> 
+			  <dd> 
+				A string of the search words with spaces in 
+				between. 
+			  </dd> 
+			  <dt> 
+				PAGEHEADER 
+			  </dt> 
+			  <dd> 
+				This expands to either the value of the 
+				<ref type="attr">page_list_header</ref> or 
+				<ref type="attr">no_page_list_header</ref> 
+				attribute depending on how many pages there are. 
+			  </dd> 
+			</dl> 
+			Note that this file will <strong>NOT</strong> be output 
+			if no matches were found. In this case the 
+			<ref type="attr">nothing_found_file</ref> 
+			attribute is used instead. 
+			Also, this file will not be output if it is 
+			overridden by defining the 
+			<ref type="attr">search_results_wrapper</ref> 
+			attribute. 
+     </description>
+   </attribute>
+
+   <attribute name="search_results_header" 
+              type="string" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:Files" >
+     <default>${common_dir}/header.html</default>
+     <example>/usr/local/etc/ht/start-stuff.html</example>
+     <description> 
+			This specifies a filename to be output at the start of 
+			search results. While outputting the header, some 
+			variables will be expanded. Variables use the same 
+			syntax as the Bourne shell. If there is a variable VAR, 
+			the following will all be recognized: 
+			<ul> 
+			  <li> 
+				$VAR 
+			  </li> 
+			  <li> 
+				$(VAR) 
+			  </li> 
+			  <li> 
+				${VAR} 
+			  </li> 
+			</ul> 
+	The following variables are available.  See 
+	<a href="hts_template.html">hts_template.html</a> for a complete 
+	list. 
+	<!-- Do these need to be listed for both _footer and _header? --> 
+			<dl> 
+			  <dt> 
+				MATCHES 
+			  </dt> 
+			  <dd> 
+				The number of documents that were matched. 
+			  </dd> 
+			  <dt> 
+				PLURAL_MATCHES 
+			  </dt> 
+			  <dd> 
+				If MATCHES is not 1, this will be the string "s", 
+				else it is an empty string. This can be used to say 
+				something like "$(MATCHES) 
+				document$(PLURAL_MATCHES) were found" 
+			  </dd> 
+			  <dt> 
+				MAX_STARS 
+			  </dt> 
+			  <dd> 
+				The value of the <ref type="attr">max_stars</ref> 
+				attribute. 
+			  </dd> 
+			  <dt> 
+				LOGICAL_WORDS 
+			  </dt> 
+			  <dd> 
+				A string of the search words with either "and" or 
+				"or" between the words, depending on the type of 
+				search. 
+			  </dd> 
+			  <dt> 
+				WORDS 
+			  </dt> 
+			  <dd> 
+				A string of the search words with spaces in 
+				between. 
+			  </dd> 
+			</dl> 
+			Note that this file will <strong>NOT</strong> be output 
+			if no matches were found. In this case the 
+			<ref type="attr">nothing_found_file</ref> 
+			attribute is used instead. 
+			Also, this file will not be output if it is 
+			overridden by defining the 
+			<ref type="attr">search_results_wrapper</ref> 
+			attribute. 
+     </description>
+   </attribute>
+
+   <attribute name="search_results_order" 
+              type="string_list" 
+              programs="htsearch" 
+              version="3.2.0b2" 
+              category="Searching:Ranking" >
+     <default></default>
+     <example>/docs/|faq.html * /maillist/ /testresults/</example>
+     <description> 
+	This specifies a list of patterns for URLs in 
+	search results.  Results will be displayed in the 
+	specified order, with the search algorithm result 
+	as the second order.  Remaining areas, that do not 
+	match any of the specified patterns, can be placed 
+	by using * as the pattern.  If no * is specified, 
+	one will be implicitly placed at the end of the 
+	list.<br/> 
+	See also <ref type="attr">url_seed_score</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="search_results_wrapper" 
+              type="string" 
+              programs="htsearch" 
+              version="3.1.0" 
+              category="Presentation:Files" >
+     <default></default>
+     <example>${common_dir}/wrapper.html</example>
+     <description> 
+	This specifies a filename to be output at the start and 
+	end of search results. This file replaces the 
+	<ref type="attr">search_results_header</ref> and 
+	<ref type="attr">search_results_footer</ref> 
+	files, with the contents of both in one file, and uses the 
+	pseudo-variable <strong>$(HTSEARCH_RESULTS)</strong> as a 
+	separator for the header and footer sections. 
+	If the filename is not specified, the file is unreadable, 
+	or the pseudo-variable above is not found, htsearch reverts 
+	to the separate header and footer files instead. 
+	While outputting the wrapper, 
+	some variables will be expanded, just as for the 
+	<ref type="attr">search_results_header</ref> and 
+	<ref type="attr">search_results_footer</ref> 
+	files.<br/> 
+	Note that this file will <strong>NOT</strong> be output 
+	if no matches were found. In this case the 
+	<ref type="attr">nothing_found_file</ref> 
+	attribute is used instead. 
+     </description>
+   </attribute>
+
+   <attribute name="search_rewrite_rules" 
+              type="string list" 
+              programs="htsearch" 
+              version="3.1.6" 
+              category="URLs" >
+     <default></default>
+     <example> http://(.*)\\.mydomain\\.org/([^/]*)  http://\\2.\\1.com \
+	       http://www\\.myschool\\.edu/myorgs/([^/]*)  http://\\1.org
+     </example>
+     <description> 
+	This is a list of pairs, <em>regex</em> <em>replacement</em>, used
+	to rewrite URLs in the search results. The left hand string is a
+	regular expression; the right hand string is a literal string with
+	embedded placeholders for fragments that matched inside brackets in the
+	regular expression. \0 is the whole matched string, \1 to \9 are
+	bracketted substrings. The backslash must be doubled-up in the
+	attribute setting to get past the variable expansion parsing. Rewrite
+	rules are applied sequentially to each URL before it is displayed
+	or checked against the <ref type="attr">restrict</ref> or
+	<ref type="attr">exclude</ref> lists. Rewriting does not stop once a
+	match has been made, so multiple rules may affect a given URL. See
+	also <ref type="attr">url_part_aliases</ref> which allows URLs
+	to be of one form during indexing and translated for results,
+	and <ref type="attr">url_rewrite_rules</ref> which allows URLs
+	to be rewritten while indexing.
+     </description>
+   </attribute>
+
+   <attribute name="server_aliases" 
+              type="string_list" 
+              programs="htdig" 
+              version="3.1.0b2" 
+              category="Indexing:Where" >
+     <default></default>
+     <example>foo.mydomain.com:80=www.mydomain.com:80 \ 
+				  bar.mydomain.com:80=www.mydomain.com:80 
+</example>
+     <description> 
+	This attribute tells the indexer that servers have several 
+	DNS aliases, which all point to the same machine and are NOT 
+	virtual hosts. This allows you to ensure pages are indexed 
+	only once on a given machine, despite the alias used in a URL. 
+	As shown in the example, the mapping goes from left to right, 
+	so the server name on the right hand side is the one that is 
+	used. As of version 3.1.3, the port number is optional, and is 
+	assumed to be 80 if omitted. There is no easy way to map all 
+	ports from one alias to another without listing them all. 
+     </description>
+   </attribute>
+
+   <attribute name="server_max_docs" 
+              type="integer" 
+              programs="htdig" 
+              version="3.1.0b3" 
+              category="Indexing:Where" 
+              block="Server" >
+     <default>-1</default>
+     <example>50</example>
+     <description> 
+	This attribute tells htdig to limit the dig to retrieve a maximum 
+	number of documents from each server. This can cause 
+	unusual behavior on update digs since the old URLs are 
+	stored alphabetically. Therefore, update digs will add 
+	additional URLs in pseudo-alphabetical order, up to the 
+	limit of the attribute. However, it is most useful to 
+	partially index a server as the URLs of additional 
+	documents are entered into the database, marked as never 
+	retrieved.<br/> 
+	A value of -1 specifies no limit. 
+     </description>
+   </attribute>
+
+   <attribute name="server_wait_time" 
+              type="integer" 
+              programs="htdig" 
+              version="3.1.0b3" 
+              category="Indexing:Connection" 
+              block="Server" >
+     <default>0</default>
+     <example>20</example>
+     <description> 
+	This attribute tells htdig to ensure a server has had a 
+	delay (in seconds) from the beginning of the last 
+	connection. This can be used to prevent "server abuse" 
+	by digging without delay. It's recommended to set this 
+	to 10-30 (seconds) when indexing servers that you don't 
+	monitor yourself. Additionally, this attribute can slow 
+	down local indexing if set, which may or may not be what 
+	you intended. 
+     </description>
+   </attribute>
+
+   <attribute name="sort" 
+              type="string" 
+              programs="htsearch" 
+              version="3.1.0" 
+              category="Presentation:How" >
+     <default>score</default>
+     <example>revtime</example>
+     <description> 
+	This is the default sorting method that htsearch 
+	uses to determine the order in which matches are displayed. 
+	The valid choices are: 
+	<table border="0"> 
+	<tr> 
+	<td> 
+	<ul> 
+	     <li> score </li> 
+	     <li> time </li> 
+	     <li> title </li> 
+	</ul> 
+	</td> 
+	<td> 
+	<ul> 
+	     <li> revscore </li> 
+	     <li> revtime </li> 
+	     <li> revtitle </li> 
+	</ul> 
+	</td> 
+	</tr> 
+	</table> 
+	This attribute will only be used if the HTML form that 
+	calls htsearch didn't have the <strong>sort</strong> 
+	value set. The words date and revdate can be used instead 
+	of time and revtime, as both will sort by the time that 
+	the document was last modified, if this information is 
+	given by the server. The default is to sort by the score, 
+	which ranks documents by best match. The sort methods that 
+	begin with "rev" simply reverse the order of the 
+	sort. Note that setting this to something other than 
+	"score" will incur a slowdown in searches. 
+     </description>
+   </attribute>
+
+   <attribute name="sort_names" 
+              type="quoted_string_list" 
+              programs="htsearch" 
+              version="3.1.0" 
+              category="Searching:UI" >
+     <default>score Score time Time title Title revscore 'Reverse Score' revtime 'Reverse Time' revtitle 'Reverse Title'</default>
+     <example>score 'Best Match' time Newest title A-Z \ 
+				  revscore 'Worst Match' revtime Oldest revtitle Z-A 
+</example>
+     <description> 
+	These values are used to create the <strong> 
+	sort</strong> menu. It consists of pairs. The first 
+	element of each pair is one of the known sort methods, the 
+	second element is the text that will be shown in the 
+	menu for that sort method. This text needs to be quoted if 
+	it contains spaces. 
+	See the <a href="hts_selectors.html">select list documentation</a> 
+	for more information on how this attribute is used. 
+     </description>
+   </attribute>
+
+   <attribute name="soundex_db" 
+              type="string" 
+              programs="htfuzzy htsearch" 
+              version="all" 
+              category="File Layout" >
+     <default>${database_base}.soundex.db</default>
+     <example>${database_base}.snd.db</example>
+     <description> 
+	The database file used for the fuzzy "soundex" search 
+	algorithm. This database is created by 
+	<ref type="program">htfuzzy</ref> and used by 
+	<ref type="program">htsearch</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="star_blank" 
+              type="string" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:Text" >
+     <default>${image_url_prefix}/star_blank.gif</default>
+     <example>//www.somewhere.org/icons/noelephant.gif</example>
+     <description> 
+	This specifies the URL to use to display a blank of the 
+	same size as the star defined in the 
+	<ref type="attr">star_image</ref> attribute or in the 
+	<ref type="attr">star_patterns</ref> attribute. 
+     </description>
+   </attribute>
+
+   <attribute name="star_image" 
+              type="string" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:Text" >
+     <default>${image_url_prefix}/star.gif</default>
+     <example>//www.somewhere.org/icons/elephant.gif</example>
+     <description> 
+	This specifies the URL to use to display a star. This 
+	allows you to use some other icon instead of a star. 
+	(We like the star...)<br/> 
+	The display of stars can be turned on or off with the 
+	<ref type="attr">use_star_image</ref> 
+	attribute and the maximum number of stars that can be 
+	displayed is determined by the 
+	<ref type="attr">max_stars</ref> attribute.<br/> 
+	Even though the image can be changed, the ALT value 
+	for the image will always be a '*'. 
+     </description>
+   </attribute>
+
+   <attribute name="star_patterns" 
+              type="string_list" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Presentation:How" >
+     <default></default>
+     <example>http://www.sdsu.edu /sdsu.gif \ 
+				  http://www.ucsd.edu /ucsd.gif 
+</example>
+     <description> 
+	This attribute allows the star image to be changed 
+	depending on the URL or the match it is used for. This 
+	is mainly to make a visual distinction between matches 
+	on different web sites. The star image could be 
+	replaced with the logo of the company the match refers 
+	to.<br/> 
+	It is advisable to keep all the images the same size 
+	in order to line things up properly in a short result 
+	listing.<br/> 
+	The format is simple. It is a list of pairs. The first 
+	element of each pair is a pattern, the second element 
+	is a URL to the image for that pattern. 
+     </description>
+   </attribute>
+
+   <attribute name="startday" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.1.6" 
+              category="Searching:Method" >
+     <default></default>
+     <example>1</example>
+     <description> 
+	Day component of first date allowed as last-modified date 
+	of returned docutments. 
+	This is most usefully specified as a 
+	<a href="hts_form.html#startyear">GCI argument</a>. 
+	See also <ref type="attr">startyear</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="start_ellipses" 
+              type="string" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:Text" >
+     <default>&lt;strong&gt;&lt;code&gt;... &lt;/code&gt;&lt;/strong&gt;</default>
+     <example>...</example>
+     <description> 
+	When excerpts are displayed in the search output, this 
+	string will be prepended to the excerpt if there is 
+	text before the text displayed. This is just a visual 
+	reminder to the user that the excerpt is only part of 
+	the complete document. 
+     </description>
+   </attribute>
+
+   <attribute name="start_highlight" 
+              type="string" 
+              programs="htsearch" 
+              version="3.1.4" 
+              category="Presentation:Text" >
+     <default>&lt;strong&gt;</default>
+     <example>&lt;font color="#FF0000"&gt;</example>
+     <description> 
+	When excerpts are displayed in the search output, matched 
+	words will be highlighted using this string and 
+	<ref type="attr">end_highlight</ref>. 
+	You should ensure that highlighting tags are balanced, 
+	that is, any formatting tags that this string 
+	opens should be closed by end_highlight. 
+     </description>
+   </attribute>
+
+   <attribute name="startmonth" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.1.6" 
+              category="Searching:Method" >
+     <default></default>
+     <example>1</example>
+     <description> 
+	Month component of first date allowed as last-modified date 
+	of returned docutments. 
+	This is most usefully specified as a 
+	<a href="hts_form.html#startyear">GCI argument</a>. 
+	See also <ref type="attr">startyear</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="start_url" 
+              type="string_list" 
+              programs="htdig" 
+              version="all" 
+              category="Indexing:Where" >
+     <default>http://www.htdig.org/</default>
+     <example>//www.somewhere.org/alldata/index.html</example>
+     <description> 
+	This is the list of URLs that will be used to start a 
+	dig when there was no existing database. Note that 
+	multiple URLs can be given here. 
+	<br/>Note also that the value of <em>start_url</em>
+	will be the default value for
+	<href type="attr">limit_urls_to</ref>, so if
+	you set start_url to the URLs for specific files,
+	rather than a site or subdirectory URL, you may need
+	to set limit_urls_to to something less restrictive
+	so htdig doesn't reject links in the documents.
+     </description>
+   </attribute>
+
+   <attribute name="startyear" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.1.6" 
+              category="Searching:Method" >
+     <default>1970</default>
+     <example>2001</example>
+     <description> 
+	This specifies the year of the cutoff start date for 
+	search results. If the start or end date are specified, 
+	only results with a last modified date within this 
+	range are shown. 
+	See also <ref type="attr">startday</ref>, 
+	<ref type="attr">startmonth</ref>, 
+	<ref type="attr">endday</ref>, 
+	<ref type="attr">endmonth</ref>, 
+	<a href="endyear">endyear</a>. 
+	These are most usefully specified as a 
+	<a href="hts_form.html#startyear">GCI argument</a>.<br/> 
+	For each component, if a negative number is given, 
+	it is taken as relative to the current date. 
+	Relative days can span several months or even years if desired, 
+	and relative months can span several years. A startday of 
+	-90 will select matching documents modified within 
+	the last 90 days. 
+     </description>
+   </attribute>
+
+   <attribute name="substring_max_words" 
+              type="integer" 
+              programs="htsearch" 
+              version="3.0.8b1" 
+              category="Searching:Method" >
+     <default>25</default>
+     <example>100</example>
+     <description> 
+	The Substring fuzzy algorithm could potentially match a 
+	very large number of words. This value limits the 
+	number of words each substring pattern can match. Note 
+	that this does not limit the number of documents that 
+	are matched in any way. 
+     </description>
+   </attribute>
+
+   <attribute name="synonym_db" 
+              type="string" 
+              programs="htsearch htfuzzy" 
+              version="3.0" 
+              category="File Layout" >
+     <default>${common_dir}/synonyms.db</default>
+     <example>${database_base}.syn.db</example>
+     <description> 
+	Points to the database that <ref type="program">htfuzzy</ref> creates when the <strong>synonyms</strong> 
+	algorithm is used.<br/> 
+	<ref type="program">htsearch</ref> 
+	uses this to perform synonym dictionary lookups. 
+     </description>
+   </attribute>
+
+   <attribute name="synonym_dictionary" 
+              type="string" 
+              programs="htfuzzy" 
+              version="3.0" 
+              category="File Layout" >
+     <default>${common_dir}/synonyms</default>
+     <example>/usr/dict/synonyms</example>
+     <description> 
+	This points to a text file containing the synonym 
+	dictionary used for the synonyms search algorithm.<br/> 
+	Each line of this file has at least two words. The 
+	first word is the word to replace, the rest of the 
+	words are synonyms for that word. 
+     </description>
+   </attribute>
+
+   <attribute name="syntax_error_file" 
+              type="string" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:Files" >
+     <default>${common_dir}/syntax.html</default>
+     <example>${common_dir}/synerror.html</example>
+     <description> 
+	This points to the file which will be displayed if a 
+	boolean expression syntax error was found. 
+     </description>
+   </attribute>
+
+   <attribute name="tcp_max_retries" 
+              type="integer" 
+              programs="htdig" 
+              version="3.2.0b1" 
+              category="Indexing:Connection" 
+              block="Server" >
+     <default>1</default>
+     <example>6</example>
+     <description> 
+	 This option set the maximum number of attempts when a connection 
+	 <ref type="attr">timeout</ref>s. 
+	 After all these retries, the connection attempt results &lt;timed out&gt;. 
+     </description>
+   </attribute>
+
+   <attribute name="tcp_wait_time" 
+              type="integer" 
+              programs="htdig" 
+              version="3.2.0b1" 
+              category="Indexing:Connection" 
+              block="Server" >
+     <default>5</default>
+     <example>10</example>
+     <description> 
+	 This attribute sets the wait time (in seconds) after a connection 
+	 fails and the <ref type="attr">timeout</ref> is raised. 
+     </description>
+   </attribute>
+
+   <attribute name="template_map" 
+              type="quoted_string_list" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Presentation:Files,Searching:UI" >
+     <default>Long builtin-long builtin-long Short builtin-short builtin-short</default>
+     <example>Short short ${common_dir}/short.html \ 
+				  Normal normal builtin-long \ 
+				  Detailed detail ${common_dir}/detail.html 
+</example>
+     <description> 
+	This maps match template names to internal names and 
+	template file names. It is a list of triplets. The 
+	first element in each triplet is the name that will be 
+	displayed in the FORMAT menu. The second element is the 
+	name used internally and the third element is a 
+	filename of the template to use.<br/> 
+	There are two predefined templates, namely <strong> 
+	builtin-long</strong> and <strong> 
+	builtin-short</strong>. If the filename is one of 
+	those, they will be used instead.<br/> 
+	More information about templates can be found in the 
+	<ref type="program">htsearch</ref> 
+	documentation.  The particular template is selecterd by the 
+	<a href="hts_form.html#format">format</a> cgi argument, and the 
+	default is given by <ref type="attr">template_name</ref> in 
+	the config file. 
+     </description>
+   </attribute>
+
+   <attribute name="template_name" 
+              type="string" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Searching:UI,Presentation:How" >
+     <default>builtin-long</default>
+     <example>long</example>
+     <description> 
+	Specifies the default template if no
+	<a href="hts_form.html#format">format</a> field is given by the 
+	search form. This needs to map to the 
+	<ref type="attr">template_map</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="template_patterns" 
+              type="string_list" 
+              programs="htsearch" 
+              version="3.1.4" 
+              category="Presentation:How" >
+     <default></default>
+     <example>http://www.sdsu.edu ${common_dir}/sdsu.html \ 
+				  http://www.ucsd.edu ${common_dir}/ucsd.html 
+</example>
+     <description> 
+	This attribute allows the results template to be changed 
+	depending on the URL or the match it is used for. This 
+	is mainly to make a visual distinction between matches 
+	on different web sites. The results for each site could 
+	thus be shown in a style matching that site.<br/> 
+	The format is simply a list of pairs. The first 
+	element of each pair is a pattern, the second element 
+	is the name of the template file for that pattern.<br/> 
+	More information about templates can be found in the 
+	<ref type="program">htsearch</ref> 
+	documentation.<br/> 
+	Normally, when using this template selection method, you 
+	would disable user selection of templates via the <strong>format</strong> 
+	input parameter in search forms, as the two methods were not 
+	really designed to interact. Templates selected by URL patterns 
+	would override any user selection made in the form. If you want 
+	to use the two methods together, see the notes on 
+	<a href="hts_selectors.html#template_patterns">combining</a> 
+	them for an example of how to do this. 
+     </description>
+   </attribute>
+
+   <attribute name="text_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="3.0" 
+              category="Searching:Ranking" >
+     <default>1</default>
+     <example>0</example>
+     <description> 
+	This is a factor which will be used to multiply the 
+	weight of words that are not in any special part of a 
+	document. Setting a factor to 0 will cause normal words 
+	to be ignored. The number may be a floating point 
+	number. See also the <ref type="attr">heading_factor</ref> 
+	attribute. 
+     </description>
+   </attribute>
+
+   <attribute name="timeout" 
+              type="integer" 
+              programs="htdig" 
+              version="all" 
+              category="Indexing:Connection" 
+              block="Server" >
+     <default>30</default>
+     <example>42</example>
+     <description> 
+	Specifies the time the digger will wait to complete a 
+	network read. This is just a safeguard against 
+	unforeseen things like the all too common 
+	transformation from a network to a notwork.<br/> 
+	The timeout is specified in seconds. 
+     </description>
+   </attribute>
+
+   <attribute name="title_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="all" 
+              category="Searching:Ranking" >
+     <default>100</default>
+     <example>12</example>
+     <description> 
+	This is a factor which will be used to multiply the 
+	weight of words in the title of a document. Setting a 
+	factor to 0 will cause words in the title to be 
+	ignored. The number may be a floating point number. See 
+	also the <ref type="attr">heading_factor</ref> attribute. 
+     </description>
+   </attribute>
+
+   <attribute name="url_list" 
+              type="string" 
+              programs="htdig" 
+              version="all" 
+              category="Extra Output" >
+     <default>${database_base}.urls</default>
+     <example>/tmp/urls</example>
+     <description> 
+	This file is only created if 
+	<ref type="attr">create_url_list</ref> is set to 
+	true. It will contain a list of all URLs that were 
+	seen. 
+     </description>
+   </attribute>
+
+   <attribute name="url_log" 
+              type="string" 
+              programs="htdig" 
+              version="3.1.0" 
+              category="Extra Output" >
+     <default>${database_base}.log</default>
+     <example>/tmp/htdig.progress</example>
+     <description> 
+	If <ref type="program">htdig</ref> is run with the -l option 
+	and interrupted, it will write out its progress to this 
+	file. Note that if it has a large number of URLs to write, 
+	it may take some time to exit. This can especially happen 
+	when running update digs and the run is interrupted soon 
+	after beginning. 
+     </description>
+   </attribute>
+
+   <attribute name="url_part_aliases" 
+              type="string_list" 
+              programs="all" 
+              version="3.1.0" 
+              category="URLs" >
+     <default></default>
+     <example>http://search.example.com/~htdig *site \ 
+				   http://www.htdig.org/this/ *1 \ 
+				   .html *2
+     </example>
+     <example>http://www.htdig.org/ *site \ 
+				   http://www.htdig.org/that/ *1 \ 
+				   .htm *2 
+</example>
+     <description> 
+	A list of translations pairs <em>from</em> and 
+	<em>to</em>, used when accessing the database. 
+	If a part of an URL matches with the 
+	<em>from</em>-string of each pair, it will be 
+	translated into the <em>to</em>-string just before 
+	writing the URL to the database, and translated 
+	back just after reading it from the database.<br/> 
+	This is primarily used to provide an easy way to 
+	rename parts of URLs for e.g. changing 
+	www.example.com/~htdig to www.htdig.org.  Two 
+	different configuration files for digging and 
+	searching are then used, with url_part_aliases 
+	having different <em>from</em> strings, but 
+	identical <em>to</em>-strings.<br/> 
+	See also <ref type="attr">common_url_parts</ref>.<br/> 
+	Strings that are normally incorrect in URLs or 
+	very seldom used, should be used as 
+	<em>to</em>-strings, since extra storage will be 
+	used each time one is found as normal part of a 
+	URL.  Translations will be performed with priority 
+	for the leftmost longest match.	 Each 
+	<em>to</em>-string must be unique and not be a 
+	part of any other <em>to</em>-string.<br/> 
+	Note that when this attribute is changed, the 
+	database should be rebuilt, unless the effect of 
+	"moving" the affected URLs in the database is 
+	wanted, as described above.<br/> 
+	<strong>Please note:</strong> Don't just copy the 
+	example below into a single configuration file. 
+	There are two separate settings of 
+	<em>url_part_aliases</em> below; the first one is 
+	for the configuration file to be used by htdig, 
+	htmerge, and htnotify, and the second one is for the 
+	configuration file to be used by htsearch. 
+     </description>
+   </attribute>
+
+   <attribute name="url_rewrite_rules" 
+              type="string_list" 
+              programs="htdig" 
+              version="3.2.0b3" 
+              category="URLs" >
+     <default></default>
+     <example>(.*)\\?JServSessionIdroot=.*		\\1 \ 
+			(.*)\\&amp;JServSessionIdroot=.*		\\1 \ 
+			(.*)&amp;context=.*				\\1</example>
+     <description> 
+	This is a list of pairs, <em>regex</em> <em>replacement</em> used to 
+	permanently rewrite URLs as they are indexed. The left hand string is 
+	a regex; the right hand string is  a literal string with embedded 
+	placeholders for fragments that matched  inside brackets in the 
+	regex. \0 is the whole matched string, \1 to \9 are  bracketted 
+	substrings. Rewrite rules are applied sequentially to each  
+	incoming URL  before normalization occurs. Rewriting does not stop 
+	once a match has been made, so multiple rules may affect a given URL. 
+	See also <ref type="attr">url_part_aliases</ref> which 
+	allows URLs to be of one  
+form during indexing and translated for results. 
+     </description>
+   </attribute>
+
+   <attribute name="url_seed_score" 
+              type="string_list" 
+              programs="htsearch" 
+              version="3.2.0b2" 
+              category="Searching::Ranking" >
+     <default></default>
+     <example>/mailinglist/ *.5-1e6  
+	      /docs/|/news/ *1.5  
+	      /testresults/ &quot;*.7 -200&quot;  
+	      /faq-area/ *2+10000</example>
+     <description> 
+	This is a list of pairs, <em>pattern</em> 
+	<em>formula</em>, used to weigh the score of 
+	hits, depending on the URL of the document.<br/> 
+	The <em>pattern</em> part is a substring to match 
+	against the URL.  Pipe ('|') characters can be 
+	used in the pattern to concatenate substrings for 
+	web-areas that have the same formula.<br/> 
+	The formula describes a <em>factor</em> and a 
+	<em>constant</em>, by which the hit score is 
+	weighed.  The <em>factor</em> part is multiplied 
+	to the original score, then the <em>constant</em> 
+	part is added.<br/> 
+	The format of the formula is the factor part: 
+	&quot;*<em>N</em>&quot; optionally followed by comma and 
+	spaces, followed by the constant part : 
+	&quot;+<em>M</em>&quot;, where the plus sign may be emitted 
+	for negative numbers.  Either part is optional, 
+	but must come in this order.<br/> 
+	The numbers <em>N</em> and <em>M</em> are floating 
+	point constants.<br/> 
+	More straightforward is to think of the format as 
+	&quot;newscore = oldscore*<em>N</em>+<em>M</em>&quot;, 
+	but with the &quot;newscore = oldscore&quot; part left out. 
+     </description>
+   </attribute>
+
+   <attribute name="url_text_factor" 
+              type="number" 
+              programs="htsearch" 
+              version="??" 
+              category="Searching:Ranking" >
+     <default>1</default>
+     <example>1</example>
+     <description> 
+	TO BE COMPLETED<br/> 
+	See also <ref type="attr">heading_factor</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="use_doc_date" 
+              type="boolean" 
+              programs="htdig" 
+              version="3.2.0b1" 
+              category="Indexing:How" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	If set to true, htdig will use META date tags in documents, 
+	overriding the modification date returned by the server. 
+	Any documents that do not have META date tags will retain 
+	the last modified date returned by the server or found on 
+	the local file system. 
+     </description>
+   </attribute>
+
+   <attribute name="use_meta_description" 
+              type="boolean" 
+              programs="htsearch" 
+              version="3.1.0b1" 
+              category="Presentation:How" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	If set to true, any META description tags will be used as 
+	excerpts by htsearch. Any documents that do not have META 
+	descriptions will retain their normal excerpts. 
+     </description>
+   </attribute>
+
+   <attribute name="use_star_image" 
+              type="boolean" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:How" >
+     <default>true</default>
+     <example>no</example>
+     <description> 
+	If set to true, the <ref type="attr">star_image</ref> attribute is used to display upto 
+	<ref type="attr">max_stars</ref> images for 
+	each match. 
+     </description>
+   </attribute>
+
+   <attribute name="user_agent" 
+              type="string" 
+              programs="htdig" 
+              version="3.1.0b2" 
+              category="Indexing:Out" 
+              block="Server" >
+     <default>htdig</default>
+     <example>htdig-digger</example>
+     <description> 
+	This allows customization of the user_agent: field sent when 
+	the digger requests a file from a server. 
+     </description>
+   </attribute>
+
+   <attribute name="valid_extensions" 
+              type="string_list" 
+              programs="htdig" 
+              version="3.1.4" 
+              category="Indexing:Where" 
+              block="URL" >
+     <default></default>
+     <example>.html .htm .shtml</example>
+     <description> 
+	This is a list of extensions on URLs which are 
+	the only ones considered acceptable. This list is used to 
+	supplement the MIME-types that the HTTP server provides 
+	with documents. Some HTTP servers do not have a correct 
+	list of MIME-types and so can advertise certain 
+	documents as text while they are some binary format. 
+	If the list is empty, then all extensions are acceptable, 
+	provided they pass other criteria for acceptance or rejection. 
+	If the list is not empty, only documents with one of the 
+	extensions in the list are parsed. 
+	See also <ref type="attr">bad_extensions</ref>. 
+     </description>
+   </attribute>
+
+   <attribute name="valid_punctuation" 
+              type="string" 
+              programs="htdig htsearch" 
+              version="all" 
+              category="Indexing:What" >
+     <default>.-_/!#$%^&amp;'</default>
+     <example>-'</example>
+     <description> 
+	This is the set of characters which will be deleted 
+	from the document before determining what a word is. 
+	This means that if a document contains something like 
+	<code>Andrew's</code> the digger will see this as <code> 
+	Andrews</code>.<br/> 
+	The same transformation is performed on the keywords 
+	the search engine gets.<br/> 
+	See also the <ref type="attr">extra_word_characters</ref> 
+	attribute. 
+     </description>
+   </attribute>
+
+   <attribute name="version" 
+              type="string" 
+              programs="htsearch" 
+              version="all" 
+              category="Presentation:Text" >
+     <default configmacro="true">VERSION</default>
+     <example>3.2.0</example>
+     <description> 
+	This specifies the value of the VERSION 
+	variable which can be used in search templates. 
+	The default value of this attribute is determined 
+	at compile time, and will not normally be set 
+	in configuration files. 
+     </description>
+   </attribute>
+
+   <attribute name="word_db" 
+              type="string" 
+              programs="all" 
+              version="all" 
+              category="File Layout" >
+     <default>${database_base}.words.db</default>
+     <example>${database_base}.allwords.db</example>
+     <description> 
+	This is the main word database. It is an index of all 
+	the words to a list of documents that contain the 
+	words. This database can grow large pretty quickly. 
+     </description>
+   </attribute>
+
+   <attribute name="word_dump" 
+              type="string" 
+              programs="htdig htdump htload" 
+              version="3.2.0b1" 
+              category="File Layout" >
+     <default>${database_base}.worddump</default>
+     <example>/tmp/words.txt</example>
+     <description> 
+	This file is basically a text version of the file 
+	specified in <ref type="attr">word_db</ref>. Its 
+	only use is to have a human readable database of all 
+	words. The file is easy to parse with tools like 
+	perl or tcl. 
+     </description>
+   </attribute>
+
+   <attribute name="wordlist_cache_size" 
+              type="integer" 
+              programs="all" 
+              version="3.2.0b1" 
+              category="Indexing:How" >
+     <default>10000000</default>
+     <example>40000000</example>
+     <description> 
+	Size of memory cache used by Berkeley DB (DB used by the indexer) 
+	IMPORTANT: It  makes a <strong>huge</strong> difference. The rule  
+	is that the cache size should be at least 2% of the expected index size. The 
+	Berkeley DB file has 1% of internal pages that *must* be cached for good 
+	performances. Giving an additional 1% leaves room for caching leaf pages. 
+     </description>
+   </attribute>
+
+   <attribute name="wordlist_monitor" 
+              type="boolean" 
+              programs="all" 
+              version="3.2.0b1" 
+              category="Extra Output" >
+     <default>false</default>
+     <example>true</example>
+     <description> 
+	This enables monitoring of what's happening in the indexer. 
+	It can help to detect performance/configuration problems. 
+     </description>
+   </attribute>
+
+   <attribute name="wordlist_monitor_period" 
+              type="number" 
+              programs="all" 
+              version="3.2.0b1" 
+              category="Extra Output" >
+     <default>0</default>
+     <example>.1</example>
+     <description> 
+	Sets the number of seconds between each monitor output. 
+     </description>
+   </attribute>
+
+   <attribute name="wordlist_monitor_output" 
+              type="string" 
+              programs="all" 
+              version="3.2.0b1" 
+              category="Extra Output" >
+     <default></default>
+     <example>myfile</example>
+     <description> 
+	Print monitoring output on file instead of the default stderr. 
+     </description>
+   </attribute>
+
+   <attribute name="wordlist_page_size" 
+              type="integer" 
+              programs="all" 
+              version="3.2.0b1" 
+              category="Indexing:How" >
+     <default>0</default>
+     <example>8192</example>
+     <description> 
+	Size of pages used by Berkeley DB (DB used by the indexer) 
+     </description>
+   </attribute>
+
+   <attribute name="wordlist_verbose" 
+              type="integer" 
+              programs="" 
+              version="" 
+              category="" >
+     <default></default>
+     <example>true</example>
+     <description> 
+	wordlist_verbose 1 walk logic<br/>    
+	wordlist_verbose 2 walk logic details<br/>    
+	wordlist_verbose 2 walk logic lots of details<br/>    
+     </description>
+   </attribute>
+
+   <attribute name="wordlist_wordkey_description" 
+              type="string" 
+              programs="all" 
+              version="3.2.0b1" 
+              category="Indexing:How" >
+     <default>Word/DocID 32/Flags 8/Location 16</default>
+     <nodocs/>
+   </attribute>
+
+   <attribute name="wordlist_wordrecord_description" 
+              type="string" 
+              programs="all" 
+              version="3.2.0b1" 
+              category="Indexing:How" >
+     <default>DATA</default>
+     <nodocs/>
+   </attribute>
+
+</HtdigAttributes>
