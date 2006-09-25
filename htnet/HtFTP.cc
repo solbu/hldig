@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtFTP.cc,v 1.7 2004/05/28 13:15:23 lha Exp $ 
+// $Id: HtFTP.cc,v 1.7.2.1 2006/09/25 23:09:30 aarnone Exp $ 
 //
 
 #ifdef HAVE_CONFIG_H
@@ -25,6 +25,9 @@
 #include "Dictionary.h"
 #include "StringList.h"
 #include "defaults.h" // for config
+#include "HtDebug.h"
+
+extern HtDebug * debug;
 
 #include <signal.h>
 #include <sys/types.h>
@@ -176,8 +179,7 @@ HtFTP::DocStatus HtFTP::Request()
 
        _response._contents << "</head><body></body></html>\n";
 
-       if (debug > 4)
-	 cout << " Directory listing: " << endl << _response._contents << endl;
+       debug->outlog(4, " Directory listing: \n%s\n", _response._contents.get());
 
        _response._content_length = stat_buf.st_size;
        _response._document_length = _response._contents.length();
@@ -233,8 +235,7 @@ HtFTP::DocStatus HtFTP::Request()
    _response._document_length = _response._contents.length();
    _response._status_code = 0;
 
-   if (debug > 2)
-     cout << "Read a total of " << _response._document_length << " bytes\n";
+   debug->outlog(2, "Read a total of %d bytes\n", _response._document_length);
    return Transport::Document_ok;
 }
 

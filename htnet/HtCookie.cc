@@ -31,7 +31,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCookie.cc,v 1.14 2004/05/28 13:15:22 lha Exp $
+// $Id: HtCookie.cc,v 1.14.2.1 2006/09/25 23:09:30 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -55,9 +55,6 @@ using namespace std;
    //    Static variables initialization
 ///////
 
-   // Debug level
-   int HtCookie::debug = 0;
-
 // Precompiled constants regarding the cookies file format (field order)
 #define COOKIES_FILE_DOMAIN	0
 #define COOKIES_FILE_FLAG	1
@@ -69,217 +66,220 @@ using namespace std;
 
 
 // Default constructor
-HtCookie::HtCookie()
-:   name(0),
-   value(0),
-   path(0),
-   domain(0),
-   expires(0),
-   isSecure(false),
-   isDomainValid(true),
-   srcURL(0),
-   issue_time(),
-   max_age(-1),
-   rfc_version(0)
+HtCookie::HtCookie():
+    name(0),
+    value(0),
+    path(0),
+    domain(0),
+    expires(0),
+    isSecure(false),
+    isDomainValid(true),
+    srcURL(0),
+    issue_time(),
+    max_age(-1),
+    rfc_version(0)
 {
+    debug = HtDebug::Instance();
 }
 
 
 // Constructor that accepts a name and a value
 // and the calling URL
-HtCookie::HtCookie(const String &aName, const String &aValue,
-    const String& aURL)
-:   name(aName),
-   value(aValue),
-   path(0),
-   domain(0),
-   expires(0),
-   isSecure(false),
-   isDomainValid(true),
-   srcURL(aURL),
-   issue_time(),
-   max_age(-1),
-   rfc_version(0)
+HtCookie::HtCookie(const String &aName, const String &aValue, const String& aURL):
+    name(aName),
+    value(aValue),
+    path(0),
+    domain(0),
+    expires(0),
+    isSecure(false),
+    isDomainValid(true),
+    srcURL(aURL),
+    issue_time(),
+    max_age(-1),
+    rfc_version(0)
 {
+    debug = HtDebug::Instance();
 }
 
 
 // Constructor from a server response header
-HtCookie::HtCookie(const String &setCookieLine, const String& aURL)
-:   name(0),
-   value(0),
-   path(0),
-   domain(0),
-   expires(0),
-   isSecure(false),
-   isDomainValid(true),
-   srcURL(aURL),
-   issue_time(),
-   max_age(-1),
-   rfc_version(0)
+HtCookie::HtCookie(const String &setCookieLine, const String& aURL):
+    name(0),
+    value(0),
+    path(0),
+    domain(0),
+    expires(0),
+    isSecure(false),
+    isDomainValid(true),
+    srcURL(aURL),
+    issue_time(),
+    max_age(-1),
+    rfc_version(0)
 {
+    debug = HtDebug::Instance();
 
-   String cookieLineStr(setCookieLine);
-   char * token;
-   const char * str;
+    String cookieLineStr(setCookieLine);
+    char * token;
+    const char * str;
 
-   if (debug > 5)
-      cout << "Creating cookie from response header: " << cookieLineStr << endl;
+    debug->outlog(5, "Creating cookie from response header: %s\n", cookieLineStr.get());
 
-   // Parse the cookie line
-   token = strtok(cookieLineStr, "=");
-   if (token != NULL)
-   {
-      SetName(token);
-      token = strtok(NULL, ";");
-      SetValue(token);
-   }
+    // Parse the cookie line
+    token = strtok(cookieLineStr, "=");
+    if (token != NULL)
+    {
+        SetName(token);
+        token = strtok(NULL, ";");
+        SetValue(token);
+    }
 
-   // Get all the fields returned by the server
-   while ((str = strtok(NULL, "=")))
-   {
-      const char * ctoken;
+    // Get all the fields returned by the server
+    while ((str = strtok(NULL, "=")))
+    {
+        const char * ctoken;
 
-      token = stripAllWhitespace(str);
-    
-      if (mystrcasecmp(token, "path") == 0)
-      {
-      	 // Let's grab the path
-      	 ctoken = strtok(NULL, ";");
-      	 SetPath(ctoken);
-      }
-      else if (mystrcasecmp(token, "expires") == 0)
-	  {
-         // Let's grab the expiration date
-      	 HtDateTime dt;
-	
-      	 ctoken = strtok(NULL, ";");
+        token = stripAllWhitespace(str);
 
-      	 if (ctoken && SetDate(ctoken, dt))
-      	    SetExpires(&dt);
-         else
-            SetExpires(0);
-      } else if (mystrcasecmp(token, "secure") == 0)
-         SetIsSecure(true);
-      else if (mystrcasecmp(token, "domain") == 0)
-      {
-         ctoken = strtok(NULL, ";");
-         SetDomain(ctoken);
-      }
-      else if (mystrcasecmp(token, "max-age") == 0)
-      {
-         ctoken = strtok(NULL, ";");
-         SetMaxAge(atoi(ctoken));
-      }
-      else if (mystrcasecmp(token, "version") == 0)
-      {
-         ctoken = strtok(NULL, ";");
-         SetVersion(atoi(ctoken));
-      }
+        if (mystrcasecmp(token, "path") == 0)
+        {
+            // Let's grab the path
+            ctoken = strtok(NULL, ";");
+            SetPath(ctoken);
+        }
+        else if (mystrcasecmp(token, "expires") == 0)
+        {
+            // Let's grab the expiration date
+            HtDateTime dt;
 
-      if (token)
-	     delete[](token);
+            ctoken = strtok(NULL, ";");
 
-   }
+            if (ctoken && SetDate(ctoken, dt))
+                SetExpires(&dt);
+            else
+                SetExpires(0);
+        } else if (mystrcasecmp(token, "secure") == 0)
+            SetIsSecure(true);
+        else if (mystrcasecmp(token, "domain") == 0)
+        {
+            ctoken = strtok(NULL, ";");
+            SetDomain(ctoken);
+        }
+        else if (mystrcasecmp(token, "max-age") == 0)
+        {
+            ctoken = strtok(NULL, ";");
+            SetMaxAge(atoi(ctoken));
+        }
+        else if (mystrcasecmp(token, "version") == 0)
+        {
+            ctoken = strtok(NULL, ";");
+            SetVersion(atoi(ctoken));
+        }
 
-   if (debug>3)
-      printDebug();
+        if (token)
+            delete[](token);
+
+    }
+
+    if (debug->getLevel() > 3)
+        printDebug();
 
 }
 
 
 // Constructor from a line of a cookie file (according to Netscape format)
-HtCookie::HtCookie(const String &CookieFileLine)
-:   name(0),
-   value(0),
-   path(0),
-   domain(0),
-   expires(0),
-   isSecure(false),
-   isDomainValid(true),
-   srcURL(0),
-   issue_time(),
-   max_age(-1),
-   rfc_version(0)
+HtCookie::HtCookie(const String &CookieFileLine):
+    name(0),
+    value(0),
+    path(0),
+    domain(0),
+    expires(0),
+    isSecure(false),
+    isDomainValid(true),
+    srcURL(0),
+    issue_time(),
+    max_age(-1),
+    rfc_version(0)
 {
+    debug = HtDebug::Instance();
 
-   String cookieLineStr(CookieFileLine);
-   char * token;
-   const char * str;
+    String cookieLineStr(CookieFileLine);
+    char * token;
+    const char * str;
 
-   if (debug > 5)
-      cout << "Creating cookie from a cookie file line: " << cookieLineStr << endl;
+    debug->outlog(5, "Creating cookie from a cookie file line: %s\n", cookieLineStr.get());
 
-   // Parse the cookie line
-   if ((str = strtok(cookieLineStr, "\t")))
-   {
-       int num_field = 0;
-       int expires_value; // Holds the expires value that will be read
+    // Parse the cookie line
+    if ((str = strtok(cookieLineStr, "\t")))
+    {
+        int num_field = 0;
+        int expires_value; // Holds the expires value that will be read
 
-       // According to the field number, set the appropriate object member's value       
-       do
-       {
-       
-          token = stripAllWhitespace(str);
-	  
-	  switch(num_field)
-	  {
-	     case COOKIES_FILE_DOMAIN:
-	        SetDomain(token);
-	        break;
-	     case COOKIES_FILE_FLAG:
-	        // Ignored
-	        break;
-	     case COOKIES_FILE_PATH:
-	        SetPath(token);
-	        break;
-	     case COOKIES_FILE_SECURE:
-	        if (mystrcasecmp(token, "false"))
-		   SetIsSecure(true);
-		else
-		   SetIsSecure(false);
-	        break;
-	     case COOKIES_FILE_EXPIRES:
-		if ((expires_value = atoi(token) > 0)) // Sets the expires value only if > 0
-		{
-		   time_t tmp = atoi(token);	// avoid ambiguous arg list
-		   expires = new HtDateTime(tmp);
-		}
-	        break;
-	     case COOKIES_FILE_NAME:
-	        SetName(token);
-	        break;
-	     case COOKIES_FILE_VALUE:
-	        SetValue(token);
-		break;
-	  }
+        // According to the field number, set the appropriate object member's value       
+        do
+        {
 
-          ++num_field;
-       } while((str = strtok(NULL, "\t")));
-   }
+            token = stripAllWhitespace(str);
 
-   if (debug>3)
-      printDebug();
+            switch(num_field)
+            {
+                case COOKIES_FILE_DOMAIN:
+                    SetDomain(token);
+                    break;
+                case COOKIES_FILE_FLAG:
+                    // Ignored
+                    break;
+                case COOKIES_FILE_PATH:
+                    SetPath(token);
+                    break;
+                case COOKIES_FILE_SECURE:
+                    if (mystrcasecmp(token, "false"))
+                        SetIsSecure(true);
+                    else
+                        SetIsSecure(false);
+                    break;
+                case COOKIES_FILE_EXPIRES:
+                    if ((expires_value = atoi(token) > 0)) // Sets the expires value only if > 0
+                    {
+                        time_t tmp = atoi(token);	// avoid ambiguous arg list
+                        expires = new HtDateTime(tmp);
+                    }
+                    break;
+                case COOKIES_FILE_NAME:
+                    SetName(token);
+                    break;
+                case COOKIES_FILE_VALUE:
+                    SetValue(token);
+                    break;
+            }
+
+            ++num_field;
+        } while((str = strtok(NULL, "\t")));
+    }
+
+    if (debug->getLevel() > 3)
+        printDebug();
 
 }
 
 
 // Copy constructor
-HtCookie::HtCookie(const HtCookie& rhs)
-:   name(rhs.name),
-   value(rhs.value),
-   path(rhs.path),
-   domain(rhs.domain),
-   expires(0),
-   isSecure(rhs.isSecure),
-   isDomainValid(rhs.isDomainValid),
-   srcURL(rhs.srcURL),
-   issue_time(rhs.issue_time),
-   max_age(rhs.max_age),
-   rfc_version(rhs.rfc_version)
+HtCookie::HtCookie(const HtCookie& rhs):
+    name(rhs.name),
+    value(rhs.value),
+    path(rhs.path),
+    domain(rhs.domain),
+    expires(0),
+    isSecure(rhs.isSecure),
+    isDomainValid(rhs.isDomainValid),
+    srcURL(rhs.srcURL),
+    issue_time(rhs.issue_time),
+    max_age(rhs.max_age),
+    rfc_version(rhs.rfc_version)
 {
-	if (rhs.expires)
-		expires = new HtDateTime(*rhs.expires);
+    debug = HtDebug::Instance();
+
+    if (rhs.expires)
+        expires = new HtDateTime(*rhs.expires);
 }
 
 // Destructor
@@ -426,9 +426,7 @@ int HtCookie::SetDate(const char *datestring, HtDateTime &dt)
    if (df == DateFormat_NotRecognized)
    {
       // Not recognized
-      if (debug > 0)
-      cout << "Cookie '" << name
-      	 << "' date format not recognized: " << datestring << endl;
+      debug->outlog(0, "Cookie '%s' date format not recognized: %d\n", name.get(), datestring);
     
       return false;
    }
@@ -453,9 +451,7 @@ int HtCookie::SetDate(const char *datestring, HtDateTime &dt)
       	 break;
 
       default:
-         if (debug > 0)
-            cout << "Cookie '" << name
-      	       << "' date format not handled: " << (int)df << endl;
+         debug->outlog(0, "Cookie '%s' date format not handled: %d\n", name.get(), (int)df);
       	 break;
    }
 

@@ -19,7 +19,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtFile.h,v 1.6 2004/05/28 13:15:23 lha Exp $ 
+// $Id: HtFile.h,v 1.6.2.1 2006/09/25 23:09:31 aarnone Exp $ 
 //
 
 #ifndef _HTFILE_H
@@ -28,7 +28,6 @@
 #include "Transport.h"
 #include "URL.h"
 #include "htString.h"
-
 
 // In advance declarations
 

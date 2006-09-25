@@ -29,7 +29,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCookie.h,v 1.10 2004/05/28 13:15:23 lha Exp $ 
+// $Id: HtCookie.h,v 1.10.2.1 2006/09/25 23:09:30 aarnone Exp $ 
 //
 
 #ifndef _HTCOOKIE_H
@@ -42,102 +42,98 @@
 #include "Object.h"
 #include "htString.h"
 #include "HtDateTime.h"
+#include "HtDebug.h"
+
 
 class HtCookie : public Object
 {
-   public:
+    public:
 
-   ///////
-      //    Construction/Destruction
-   ///////
+        ///////
+        //    Construction/Destruction
+        ///////
 
-      HtCookie(); // default constructor
-      HtCookie(const String &setCookieLine, const String& aURL);
-      HtCookie(const String &aName, const String &aValue, const String& aURL);
-      HtCookie(const String &line);	// From a line of cookie file
-      HtCookie(const HtCookie& rhs); // default constructor
-      
-      ~HtCookie();   // Destructor
+        HtCookie(); // default constructor
+        HtCookie(const String &setCookieLine, const String& aURL);
+        HtCookie(const String &aName, const String &aValue, const String& aURL);
+        HtCookie(const String &line);	// From a line of cookie file
+        HtCookie(const HtCookie& rhs); // default constructor
 
-   ///////
-      //    Public Interface
-   ///////
+        ~HtCookie();   // Destructor
 
-      void SetName(const String &aName) { name = aName; }
-      void SetValue(const String &aValue) { value = aValue; }
-      void SetPath(const String &aPath) { path = aPath; }
-      void SetDomain(const String &aDomain) { domain = aDomain; }
-      void SetExpires(const HtDateTime *aDateTime);
-      void SetIsSecure(const bool flag) { isSecure = flag; }
-      void SetIsDomainValid(const bool flag) { isDomainValid = flag; }
-      void SetSrcURL(const String &aURL) { srcURL = aURL; }
-	  void SetMaxAge(const int ma) { max_age = ma; }
-      void SetVersion(const int vs) { rfc_version = vs; }
+        ///////
+        //    Public Interface
+        ///////
 
-      const String &GetName() const { return name; }
-      const String &GetValue()const { return value; }
-      const String &GetPath()const { return path; }
-      const String &GetDomain()const { return domain; }
-      const HtDateTime *GetExpires() const { return expires; }
-      const bool getIsSecure() const { return isSecure; }
-      const bool getIsDomainValid() const { return isDomainValid; }
-      const String &GetSrcURL()const { return srcURL; }
-      const int GetMaxAge()const { return max_age; }
-      const HtDateTime &GetIssueTime() const { return issue_time; }
-	  const int GetVersion() const { return rfc_version; }
+        void SetName(const String &aName) { name = aName; }
+        void SetValue(const String &aValue) { value = aValue; }
+        void SetPath(const String &aPath) { path = aPath; }
+        void SetDomain(const String &aDomain) { domain = aDomain; }
+        void SetExpires(const HtDateTime *aDateTime);
+        void SetIsSecure(const bool flag) { isSecure = flag; }
+        void SetIsDomainValid(const bool flag) { isDomainValid = flag; }
+        void SetSrcURL(const String &aURL) { srcURL = aURL; }
+        void SetMaxAge(const int ma) { max_age = ma; }
+        void SetVersion(const int vs) { rfc_version = vs; }
 
-      // Print debug info
+        const String &GetName() const { return name; }
+        const String &GetValue()const { return value; }
+        const String &GetPath()const { return path; }
+        const String &GetDomain()const { return domain; }
+        const HtDateTime *GetExpires() const { return expires; }
+        const bool getIsSecure() const { return isSecure; }
+        const bool getIsDomainValid() const { return isDomainValid; }
+        const String &GetSrcURL()const { return srcURL; }
+        const int GetMaxAge()const { return max_age; }
+        const HtDateTime &GetIssueTime() const { return issue_time; }
+        const int GetVersion() const { return rfc_version; }
+
+        // Print debug info
 #ifndef _MSC_VER /* _WIN32 */
-      virtual ostream &printDebug(ostream &out = std::cout);
+        virtual ostream &printDebug(ostream &out = std::cout);
 #else
-      virtual ostream &printDebug(ostream &out = cout);
+        virtual ostream &printDebug(ostream &out = cout);
 #endif
-      
-      // Set the debug level
-      static void SetDebugLevel (int d) { debug=d;}
 
-      // Copy operator overload
-      const HtCookie &operator = (const HtCookie &rhs);
+        // Copy operator overload
+        const HtCookie &operator = (const HtCookie &rhs);
 
-   protected:
+    protected:
 
-   ///////
-      //    Date formats enumeration
-   ///////
+        ///////
+        //    Date formats enumeration
+        ///////
 
-      enum DateFormat
-      {
-      	 DateFormat_RFC1123,
-      	 DateFormat_RFC850,
-      	 DateFormat_AscTime,
-      	 DateFormat_NotRecognized
-      };
+        enum DateFormat
+        {
+            DateFormat_RFC1123,
+            DateFormat_RFC850,
+            DateFormat_AscTime,
+            DateFormat_NotRecognized
+        };
 
-   ///////
-      //    Protected methods
-   ///////
+        ///////
+        //    Protected methods
+        ///////
 
-      char * stripAllWhitespace(const char * str);
-      int SetDate(const char * datestring, HtDateTime &dt);
-      DateFormat RecognizeDateFormat(const char * datestring);
+        char * stripAllWhitespace(const char * str);
+        int SetDate(const char * datestring, HtDateTime &dt);
+        DateFormat RecognizeDateFormat(const char * datestring);
 
-      String name;
-      String value;  
-      String path;
-      String domain;
-      HtDateTime * expires;
-      bool isSecure;
-      bool isDomainValid;
-      String srcURL;
-      HtDateTime issue_time;	// When the cookie has been created
-	  int max_age;				// rfc2109: lifetime of the cookie, in seconds
-	  int rfc_version;
+        String name;
+        String value;  
+        String path;
+        String domain;
+        HtDateTime * expires;
+        bool isSecure;
+        bool isDomainValid;
+        String srcURL;
+        HtDateTime issue_time;	// When the cookie has been created
+        int max_age;				// rfc2109: lifetime of the cookie, in seconds
+        int rfc_version;
 
-   ///////
-      //    Debug level
-   ///////
-
-      static int debug;
+        // Debugger output
+        HtDebug * debug;
 
 };
 

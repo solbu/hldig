@@ -30,7 +30,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCookieJar.h,v 1.6 2004/05/28 13:15:23 lha Exp $ 
+// $Id: HtCookieJar.h,v 1.6.2.1 2006/09/25 23:09:30 aarnone Exp $ 
 //
 
 #ifndef _HTCOOKIE_JAR_H
@@ -93,13 +93,6 @@ class HtCookieJar : public Object
       // returns 0 if not valid
       virtual int GetDomainMinNumberOfPeriods(const String& domain) const;
       
-      // Set its debug level and HtCookie class'
-      static void SetDebugLevel (int d)
-      {
-      	 debug=d;  // internal one
-      	 HtCookie::SetDebugLevel(d);  // HtCookie's debug level
-      }   
-
       // Show summary (abstract)
       virtual ostream &ShowSummary (ostream &out) = 0;
 
@@ -115,12 +108,6 @@ class HtCookieJar : public Object
       
       // Print debug info
       virtual void printDebug() = 0;
-
-      ///////
-         //    Debug level
-      ///////
-
-      static int debug;
 
 };
 

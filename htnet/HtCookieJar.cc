@@ -26,7 +26,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCookieJar.cc,v 1.6 2004/05/28 13:15:23 lha Exp $ 
+// $Id: HtCookieJar.cc,v 1.6.2.1 2006/09/25 23:09:30 aarnone Exp $ 
 //
 
 #include "HtCookieJar.h"
@@ -34,9 +34,6 @@
 ///////
    //    Static variables initialization
 ///////
-
-   // Debug level
-   int HtCookieJar::debug = 0;
 
 ///////
    // 	 Writes the HTTP request line given a cookie
@@ -59,6 +56,7 @@
 int HtCookieJar::WriteCookieHTTPRequest(const HtCookie &Cookie,
    String &RequestString, const int &NumCookies)
 {
+    HtDebug * debug = HtDebug::Instance();
    
    switch (Cookie.GetVersion())
    {
@@ -71,17 +69,13 @@ int HtCookieJar::WriteCookieHTTPRequest(const HtCookie &Cookie,
             RequestString << "; " ;
 
          // Print complete debug info
-         if (debug > 6)
-         {
-            cout << "Cookie (RFC2109) info: NAME=" << Cookie.GetName()
-	       << " VALUE="<< Cookie.GetValue()
-      	       << " PATH=" << Cookie.GetPath();
+         debug->outlog(6, "Cookie (RFC2109) info: NAME=%s VALUE=%s PATH=%s",
+                Cookie.GetName().get(), Cookie.GetValue().get(), Cookie.GetPath().get());
 
-            if (Cookie.GetExpires())
-         	 cout << " EXPIRES=" << Cookie.GetExpires()->GetRFC850();
+         if (Cookie.GetExpires())
+         	    debug->outlog(6, " EXPIRES=%s", Cookie.GetExpires()->GetRFC850());
 
-            cout << endl;
-         }
+         debug->outlog(6, "\n");
 	 
          // Prepare cookie line for HTTP protocol
          RequestString << Cookie.GetName() << "=" << Cookie.GetValue();
@@ -102,17 +96,13 @@ int HtCookieJar::WriteCookieHTTPRequest(const HtCookie &Cookie,
       	    RequestString << "; " ;
 
       	 // Print complete debug info
-      	 if (debug > 6)
-      	 {
-      	    cout << "Cookie (Netscape spec) info: NAME=" << Cookie.GetName()
-      	       << " VALUE=" << Cookie.GetValue()
-      	       << " PATH=" << Cookie.GetPath();
+      	 debug->outlog(6, "Cookie (Netscape spec) info: NAME=%s VALUE=%s PATH=%s",
+                 Cookie.GetName().get(), Cookie.GetValue().get(), Cookie.GetPath().get());
 
-      	    if (Cookie.GetExpires())
-      	       cout << " EXPIRES=" << Cookie.GetExpires()->GetRFC850();
+      	 if (Cookie.GetExpires())
+      	    debug->outlog(6, " EXPIRES=%s", Cookie.GetExpires()->GetRFC850());
 
-      	    cout << endl;
-      	 }
+      	 debug->outlog(6, "\n");
 
       	 // Prepare cookie line for HTTP protocol
       	 RequestString << Cookie.GetName() << "=" << Cookie.GetValue();

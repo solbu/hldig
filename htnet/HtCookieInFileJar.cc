@@ -38,13 +38,14 @@
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
 ///////////////////////////////////////////////////////////////
-// $Id: HtCookieInFileJar.cc,v 1.5 2004/05/28 13:15:23 lha Exp $
+// $Id: HtCookieInFileJar.cc,v 1.5.2.1 2006/09/25 23:09:30 aarnone Exp $
 ///////////////////////////////////////////////////////////////
 
 #ifndef __HtCookieInFileJar_H
 #include "HtCookieInFileJar.h"
 #endif
 
+#include "HtDebug.h"
 #include <stdio.h>
 
 #define MAX_COOKIE_LINE 16384
@@ -98,8 +99,8 @@ int HtCookieInFileJar::Load()
 			if (!Cookie->GetName().length()
 				|| !AddCookieForHost (Cookie, Cookie->GetSrcURL()))
 			{
-				if (debug > 2)
-					cout << "Discarded cookie line: " << buf;
+                HtDebug * debug = HtDebug::Instance();
+                debug->outlog(2, "Discarded cookie line: %s", buf);
 				delete Cookie;
 			}
 			
@@ -114,7 +115,7 @@ int HtCookieInFileJar::Load()
 // Outputs a summary of the cookies that have been imported
 ostream &HtCookieInFileJar::ShowSummary(ostream &out)
 {
-
+    HtDebug * debug = HtDebug::Instance();
 	char * key;
 	int num_cookies = 0; // Global number of cookies
   
@@ -135,7 +136,7 @@ ostream &HtCookieInFileJar::ShowSummary(ostream &out)
 			++num_cookies;
 			out << "  " << num_cookies << ". " << cookie->GetName()
 				<< ": " << cookie->GetValue() << " (Domain: " << cookie->GetDomain();
-			if (debug > 1)
+			if (debug->getLevel() > 1)
 			{
 				out << " - Path: " << cookie->GetPath();
 				if (cookie->GetExpires())

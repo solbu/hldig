@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtNNTP.cc,v 1.5 2004/05/28 13:15:23 lha Exp $
+// $Id: HtNNTP.cc,v 1.5.2.1 2006/09/25 23:09:31 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -26,6 +26,9 @@
 #include "lib.h"
 #include "Transport.h"
 #include "HtNNTP.h"
+#include "HtDebug.h"
+
+extern HtDebug * debug;
 
 #include <signal.h>
 #include <sys/types.h>
@@ -173,8 +176,7 @@ int HtNNTP::ParseHeader()
       {
          // Found a not-empty line
 	
-         if (debug > 3)
-            cout << "Header line: " << line << endl;
+         debug->outlog(3, "Header line: %s\n", line.get());
 	
          // Status - Line check
          char	*token = line.get();
@@ -189,8 +191,7 @@ int HtNNTP::ParseHeader()
 
     if (_response._modification_time == NULL)
     {
-      if (debug > 3)
-         cout << "No modification time returned: assuming now" << endl;
+      debug->outlog(3, "No modification time returned: assuming now\n");
 
          //Set the modification time
       _response._modification_time = new HtDateTime;
