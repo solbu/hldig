@@ -17,7 +17,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htsearch.cc,v 1.5.2.2 2006/07/26 23:44:28 aarnone Exp $
+// $Id: libhtdig_htsearch.cc,v 1.5.2.3 2006/09/25 22:26:48 aarnone Exp $
 //
 //----------------------------------------------------------------
 
@@ -57,24 +57,14 @@ using namespace std;
 
 #include "libhtdig_log.h"
 
-//#include "htsearch.h"
 #include "defaults.h"
-//#include "WeightWord.h"
-//#include "parser.h"
-//#include "ResultFetch.h"
 #include "cgi.h"
-//#include "WordRecord.h"
-//#include "HtWordList.h"
 #include "StringList.h"
 #include "IntObject.h"
 #include "HtURLCodec.h"
 #include "HtURLRewriter.h"
-//#include "WordContext.h"
 #include "HtRegex.h"
-//#include "Collection.h"
-
-//define _XOPEN_SOURCE
-//#define _GNU_SOURCE
+#include "HtDebug.h"
 
 typedef void (*SIGNAL_HANDLER) (...);
 
@@ -85,12 +75,11 @@ StringList boolean_keywords;
 
 
 extern String configFile;
-extern int debug;
 
 static HtConfiguration *config = NULL;
+static HtDebug *debug = NULL;
 //Dictionary selected_collections;	// Multiple database support
 //Collection *collection = NULL;
-String errorMsg;
 
 String originalWords;
 String origPattern;
@@ -140,12 +129,29 @@ static QueryParser * parser = NULL;
 // int main(int ac, char **av)
 DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
 {
+    //
+    // set up the debug log. any exit conditions other than true should close the debug log
+    //
+    debug = HtDebug::Instance();
+    debug->setStdoutLevel(params->debug);
+    if (strlen(params->logFile) > 0)
+    {
+        //
+        // if the logFile was specified, then set it up. also, kill stdout output.
+        //
+        if (debug->setLogfile(params->logFile) == false)
+        {
+            cout << "HtSearch: Error opening log file ["<< params->logFile << "]" << endl;
+            cout << "Error:[" << errno << "], " << strerror(errno) << endl;
+            return (HTSEARCH_ERROR_LOGFILE_OPEN);
+        }
+        debug->setFileLevel(params->debug);
+        debug->setStdoutLevel(0);
+    }
+
     if (searcher != NULL)
     {
-        if (debug > 2)
-        {
-            cout << "HtSearch: tried to open searcher when already open" << endl;
-        }
+        debug->outlog(2, "HtSearch: tried to open searcher when already open\n");
         return(TRUE);
     }
 
@@ -156,21 +162,6 @@ DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
     String logicalWords;
     String logicalPattern;
     StringList requiredWords;
-
-    debug = params->debug;
-
-
-    if (params->logFile[0] != 0)
-    {
-        if (logOpen(params->logFile) == FALSE)
-        {
-            reportError(form("[HTDIG] Error opening log file [%s] . Error:[%d], %s\n", 
-                        params->logFile, errno, strerror(errno)));
-			return (HTSEARCH_ERROR_LOGFILE_OPEN);
-		}
-	}
-
-	errorMsg = "";
 
 	//
 	// Setup the configuration database.
@@ -191,7 +182,8 @@ DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
 
         if (access((char *) configFile, R_OK) < 0)
         {
-            reportError(form("Unable to read configuration file '%s'", configFile.get()));
+            debug->outlog(0, "Unable to read configuration file '%s'\n", configFile.get());
+            debug->close();
             return (HTSEARCH_ERROR_CONFIG_READ);
         }
     }
@@ -287,6 +279,7 @@ DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
     if (url_part_errors.length() != 0)
     {
         reportError(form("Invalid url_part_aliases or common_url_parts: %s", url_part_errors.get()));
+        debug->close();
         return (HTSEARCH_ERROR_URL_PART);
     }
 
@@ -320,10 +313,8 @@ DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
         ifstream infile(stopWordsFilename.c_str());
         if (infile.is_open())
         {
-            if (debug > 4)
-            {
-                cout << "Stopwords from " << stopWordsFilename << ":" << endl;
-            }
+            debug->outlog(4, "Stopwords from %s :\n", stopWordsFilename.c_str());
+
             char line[255];
             while (infile.good())
             {
@@ -341,33 +332,29 @@ DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
                 else
                 {
                     stopWords.insert(line);
-                    if (debug > 4)
-                    {
-                        cout << line << endl;
-                    }
+
+                    debug->outlog(4, "%s\n", line);
                 }
             }
         }
-        else if (debug)
+        else
         {
-            cout << "HtSearch: unable to open stop word file, using default CLucene stop words" << endl;
+            debug->outlog(0, "HtSearch: unable to open stop word file, using default CLucene stop words\n");
         }
     }
-    else if (debug > 1)
+    else
     {
-        cout << "HtSearch: stop word file not specified, using default CLucene stop words" << endl;
+        debug->outlog(1, "HtSearch: stop word file not specified, using default CLucene stop words\n");
     }
 
     //
     // Create the searcher - this will be used for.... searching!
     //
     const String db_dir_filename = config->Find("database_dir");
-    if (debug)
-        cout << "HtSearch: opening CLucene database here: " << db_dir_filename.get() << endl;
+    debug->outlog(0, "HtSearch: Opening CLucene database here: %s\n", db_dir_filename.get());
      
 	searcher = _CLNEW IndexSearcher(form("%s/CLuceneDB", (char *)db_dir_filename.get()));
-    if (debug > 3)
-        cout << "IndexSearcher... ";
+    debug->outlog(3, "IndexSearcher... ");
 
     //
     // Create the analyzer. the stop words will need to be
@@ -401,16 +388,14 @@ DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
     // beforehand so we can set options for it
     //
     parser = _CLNEW QueryParser(_T("contents"), analyzer);
-    if (debug > 3)
-        cout << "QueryParser... ";
+    debug->outlog(3, "QueryParser... ");
 
     //
     // get the start time... useful for debugging
     // 
     str = lucene::util::Misc::currentTimeMillis();
 
-    if (debug > 3)
-        cout << "created." << endl;
+    debug->outlog(3, "created.\n");
 
 	return (TRUE);
 }
@@ -423,12 +408,11 @@ DLLEXPORT int htsearch_open(htsearch_parameters_struct * params)
 
 DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
 {
+    debug = HtDebug::Instance();
     if (searcher == NULL)
     {
-        if (debug > 2)
-        {
-            cout << "HtSearch: tried to perform search before htsearch_open" << endl;
-        }
+        debug->outlog(2, "HtSearch: tried to perform search before htsearch_open\n");
+        debug->close();
         return(FALSE);
     }
 
@@ -441,10 +425,7 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
     initial_query = htsearch_query->raw_query;
     string final_query;
 
-    if (debug > 2)
-    {
-        cout << "Initial query: " << initial_query << endl;
-    }
+    debug->outlog(2, "Initial query: %s\n", initial_query.c_str());
  
 
     //
@@ -537,6 +518,10 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
     final_query += " keywords:(" + initial_query + ")^" + factorString;
 
     sprintf(factorString, "%f", config->Double("heading_factor"));
+    final_query += " doc-id:(" + initial_query + ")^" + factorString;
+
+    sprintf(factorString, "%f", config->Double("title_factor"));
+    sprintf(factorString, "%f", config->Double("heading_factor"));
     final_query += " heading:(" + initial_query + ")^" + factorString;
 
     sprintf(factorString, "%f", config->Double("title_factor"));
@@ -563,20 +548,18 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
     }
 
 
-    if (debug > 2)
-    {
-        cout << "Final query: "<< final_query << endl;
-    }
+    debug->outlog(2, "Final query: %s\n", final_query.c_str());
 
     wchar_t * temp = utf8_to_wchar(final_query.c_str());
+    //wchar_t * temp = utf8_to_wchar(initial_query.c_str());
     Query * query = parser->parse(temp);
     free(temp);
 
-    if (debug > 3)
+    if (debug->getLevel() > 3)
     {
         wchar_t * converted_query = query->toString(_T("contents"));
         char * converted_query_utf8 = wchar_to_utf8(converted_query);
-        cout << "Converted query before searching: " << converted_query_utf8 << endl;
+        debug->outlog(3, "Converted query before searching: %s\n", converted_query_utf8);
         free(converted_query);
         free(converted_query_utf8);
     }
@@ -584,10 +567,7 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
     hits = searcher->search( query );
     total_matches = hits->length();
 
-    if (debug > 1)
-    {
-        cout << "CLucene found " << total_matches << " results" << endl;
-    }
+    debug->outlog(1, "CLucene found %d results\n", total_matches);
 
     return total_matches;
 }
@@ -611,24 +591,22 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
 
 DLLEXPORT int htsearch_get_nth_match(int n, htsearch_query_match_struct * hit_struct)
 {
+    debug = HtDebug::Instance();
     if (searcher == NULL)
     {
-        if (debug > 2)
-        {
-            cout << "HtSearch: tried to get hit before htsearch_open" << endl;
-        }
+        debug->outlog (2, "HtSearch: tried to get hit before htsearch_open\n");
+        debug->close();
         return (FALSE);
     }
     else if (hits == NULL)
     {
-        if (debug > 2)
-        {
-            cout << "HtSearch: tried to get match without doing search first" << endl;
-        }
+        debug->outlog (2, "HtSearch: tried to get match without doing search first\n");
+        debug->close();
         return (FALSE);
     }
     else if (n > total_matches)
     {
+        debug->close();
         return (FALSE);
     }
     else
@@ -651,7 +629,17 @@ DLLEXPORT int htsearch_get_nth_match(int n, htsearch_query_match_struct * hit_st
 
 
         temp = wchar_to_utf8(doc.get(_T("doc-title")));
-        strncpy (hit_struct->title, temp, HTDIG_DOCUMENT_TITLE_L);
+        //
+        // if there is no title, then just use the URL
+        //
+        if (strlen(temp) > 0)
+        {
+            strncpy (hit_struct->title, temp, HTDIG_DOCUMENT_TITLE_L);
+        }
+        else
+        {
+            strncpy (hit_struct->title, hit_struct->URL, HTDIG_DOCUMENT_TITLE_L);
+        }
         hit_struct->title[HTDIG_DOCUMENT_TITLE_L - 1] = '\0';
         free(temp);
 
@@ -719,6 +707,11 @@ DLLEXPORT int htsearch_get_nth_match(int n, htsearch_query_match_struct * hit_st
 
 DLLEXPORT int htsearch_close()
 {
+    if (searcher == NULL)
+    {
+        return (TRUE);
+    }
+
     //
     // Delete the CLucene objects
     //
@@ -732,8 +725,8 @@ DLLEXPORT int htsearch_close()
     parser = NULL;
     hits = NULL;
 
-    if (debug > 1)
-        cout << _T("Indexing took: ") << (lucene::util::Misc::currentTimeMillis() - str) << _T("ms.") << endl << endl;
+    debug->outlog(1, "Searching took: %d ms.\n", (lucene::util::Misc::currentTimeMillis() - str));
+    debug->close();
 
     return (TRUE);
 }
