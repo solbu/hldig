@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.113.2.1 2005/09/08 18:50:13 nealr Exp $
+// $Id: defaults.cc,v 1.113.2.2 2006/09/25 22:38:03 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -349,6 +349,20 @@ ConfigDefaults	defaults[] =
 	Uses the MD5 hash of pages to reject aliases, prevents multiple entries \
 	in the index caused by such things as symbolic links \
 	Note: May not do the right thing for incremental update \
+" }, \
+{ "clucene_max_merge_docs", "300000",  \
+	"number", "htdig", "", "4.0", "", "clucene_max_merge_docs: 1000000", " \
+	This tells CLucene the maximum nuber of documents that can be stored in one segment. \
+    If you are having trouble with index files becoming so large that they excede the \
+    maximum operating system file size, this can be adjusted down. On the other hand, if too \
+    many files are being created in the CLucene index, then this can be adjusted up. \
+" }, \
+{ "clucene_optimize", "false",  \
+	"boolean", "htdig", "", "4.0", "", "clucene_optimize: true", " \
+	This will cause the CLucene index to be optimized before closing after \
+    each dig. Optimization will cause ALL segments to be merged into a single segment. \
+    Consequently, this will negate any setting for <a href=\"#clucene_max_merge_docs\">clucene_max_merge_docs</a>. \
+    An optimized index is slightly faster for searching. \
 " }, \
 { "collection_names", "", \
 	"string list", "htsearch", "", "3.2.0b2", "", "collection_names: htdig_docs htdig_bugs", " \
@@ -1186,6 +1200,23 @@ http://www.htdig.org/", " \
 	same, so all the common attributes can be maintained \
 	in a single configuration file. The include directives \
 	can be nested, but watch out for nesting loops. \
+" }, \
+{ "index_timeout", "0", \
+	"number", "htdig", "", "4.0", "", "index_timeout: 6000", " \
+    This will allow you to specify the longest amount of time the \
+    indexer should run for. After this many seconds, indexing will \
+    be terminated, and and any URLs discovered but not visited will be \
+    written to the <a href=\"http://www.htdig.org/attrs.html#url_log\">url_log</a> \
+    The default value of zero will disable the timer. \
+" }, \
+{ "index_timeout_precise", "0", \
+	"number", "htdig", "", "4.0", "", "index_timeout_precise: 5000", " \
+    This option is similar to <a href=\"http://www.htdig.org/attrs.html#index_timeout\">index_timeout</a>, \
+    except the timer will only be running when the indexer is actually being \
+    executed (not swapped out for another process). After this many seconds, indexing \
+    will be terminated, and and any URLs discovered but not visited will be \
+    written to the <a href=\"http://www.htdig.org/attrs.html#url_log\">url_log</a> \
+    The default value of zero will disable the timer. \
 " }, \
 { "iso_8601", "false",  \
 	"boolean", "htsearch htnotify", "", "3.1.0b2", "Presentation:How,Extra Output", "iso_8601: true", " \
@@ -2406,6 +2437,16 @@ http://www.htdig.org/", " \
 	-90 will select matching documents modified within \
 	the last 90 days. \
 " }, \
+{ "stemming_factor", "1",  \
+	"number", "htsearch", "", "3.0", "Searching:Ranking", "stemming_factor: 0", " \
+	This is a factor which will weight stemmed versions of words \
+    found in documents. There is only one stemmed field \
+    that incorporates text from all other fields. Setting \
+    a factor to 0 will cause all stemmed words \
+	to be ignored. The number may be a floating point \
+	number. See also the <a href=\"#synonym_factor\"> synonym_factor</a> \
+	attribute. \
+" }, \
 { "store_phrases", "true",  \
 	"boolean", "htdig", "", "3.2.0b5", "Indexing:How", "startyear: false", " \
 	Causes htdig to record all occurrences of each word in a document, \
@@ -2422,6 +2463,16 @@ http://www.htdig.org/", " \
 	number of words each substring pattern can match. Note \
 	that this does not limit the number of documents that \
 	are matched in any way. \
+" }, \
+{ "synonym_factor", "1",  \
+	"number", "htsearch", "", "3.0", "Searching:Ranking", "synonym_factor: 0", " \
+	This is a factor which will weight synonyms of words \
+    found in documents. There is only one synonym field \
+    that incorporates text from all other fields. Setting \
+    a factor to 0 will cause synonyms \
+	to be ignored. The number may be a floating point \
+	number. See also the <a href=\"#stemming_factor\"> stemming_factor</a> \
+	attribute. \
 " }, \
 { "synonym_db", "${common_dir}/synonyms.db",  \
 	"string", "htsearch htfuzzy", "", "3.0", "File Layout", "synonym_db: ${database_base}.syn.db", " \
@@ -2704,6 +2755,18 @@ form during indexing and translated for results. \
 	<em><a href=\"#max_stars\">max_stars</a></em> images for \
 	each match. \
 " }, \
+{ "use_stemming", "true",  \
+	"boolean", "htdig", "", "3.2.0b5", "Indexing:How", "use_stemming: false", " \
+	Causes htdig to generate and use stemmed words when indexing and searching \
+" }, \
+{ "use_synonyms", "false",  \
+	"boolean", "htdig", "", "3.2.0b5", "Indexing:How", "use_synonyms: true", " \
+	Causes htdig to generate and store \
+    synonyms for every word seen \
+    during indexing, and \
+    to use sysnonym searching methods \
+" }, \
+
 { "user_agent", "htdig",  \
 	"string", "htdig", "Server", "3.1.0b2", "Indexing:Out", "user_agent: htdig-digger", " \
 	This allows customization of the user_agent: field sent when \
