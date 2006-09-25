@@ -75,6 +75,11 @@ void TidyParser::initialize(DocumentRef * CluceneDocPointer, char* encoding)
     tidyOptSetInt( tdoc, TidyShowErrors, 0 );
     
     //
+    // set up various options that will be nice to use
+    //
+    tidyOptSetBool(tdoc, TidyQuoteNbsp, no);
+
+    //
     // kill the URLlist
     // 
     URLlist.clear();
@@ -89,6 +94,7 @@ void TidyParser::initialize(DocumentRef * CluceneDocPointer, char* encoding)
     //
     noIndex = false;
     noFollow = false;
+    singleNoIndex = false;
 }
 
 
@@ -134,7 +140,7 @@ void TidyParser::nodeTraverse( TidyNode tnod )
         //
         // If this is a text node, insert the text into the CLucene document
         //
-        if ( !inScript && tidyNodeIsText( child ))
+        if ( !inStyle && !inScript && tidyNodeIsText( child ))
         {
             TidyBuffer buf;
             
@@ -147,13 +153,14 @@ void TidyParser::nodeTraverse( TidyNode tnod )
                     CLuceneDoc->appendField("doc-title", (char*)buf.bp);
                     CLuceneDoc->appendField("title", (char*)buf.bp);
                 }
-                if (inHeading)
-                {
-                    CLuceneDoc->appendField("heading", (char*)buf.bp);
-                }
                 else
                 {
                     CLuceneDoc->appendField("contents", (char*)buf.bp);
+
+                    if (inHeading)
+                    {
+                        CLuceneDoc->appendField("heading", (char*)buf.bp);
+                    }
                 }
 
                 if (config->Boolean("use_stemming"))
@@ -248,11 +255,26 @@ void TidyParser::nodeTraverse( TidyNode tnod )
                                 //
                                 CLuceneDoc->appendField("doc-email-date", contentVal);
                             }
-                            else if (!strcmp(metaVal, "robots"))
+                            else if (!strcmp(metaVal, "robots") && !singleNoIndex)
                             {
                                 //
                                 // robot options
                                 //
+                                if (strstr(contentVal, "nofollow") != NULL)
+                                {
+                                    noFollow = true;
+                                }
+                                if (strstr(contentVal, "noindex") != NULL)
+                                {
+                                    noIndex = true;
+                                    break;
+                                }
+                                if (strstr(contentVal, "none") != NULL)
+                                {
+                                    noIndex = true;
+                                    noFollow = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -299,6 +321,15 @@ void TidyParser::nodeTraverse( TidyNode tnod )
         nodeTraverse( child );
 
         //
+        // if we came back with noIndex, just finish up.
+        //
+        if (noIndex)
+        {
+            break;
+        }
+
+
+        //
         // Leaving the node, so the state can be reset.
         // 
         stateChanger(child, false);
@@ -323,6 +354,9 @@ void TidyParser::stateChanger(TidyNode tnod, bool newState)
             break;
         case TidyTag_SCRIPT:
             inScript = newState;
+            break;
+        case TidyTag_STYLE:
+            inStyle = newState;
             break;
         case TidyTag_TITLE:
             inTitle = newState;

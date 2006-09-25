@@ -52,6 +52,8 @@ class TidyParser
     std::set<std::string> parseDoc(char*);
 
     bool NoIndex() { return noIndex; }
+    
+    void setSingleNoIndex (bool val) {singleNoIndex = val;};
  
     private:
 
@@ -85,12 +87,14 @@ class TidyParser
     bool inBody;
     bool inHeading;
     bool inScript;
+    bool inStyle;
 
     //
     // document/link handling tags
     //
-    bool noIndex;
     bool noFollow;
+    bool noIndex;
+    bool singleNoIndex; // will be used to only respect htdig-specific noindex tags (robots META is ignored)
 
     //
     // recursive call to traverse document parse tree
