@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Spider.h,v 1.1.2.1 2006/04/24 23:40:25 aarnone Exp $
+// $Id: Spider.h,v 1.1.2.2 2006/09/25 23:05:41 aarnone Exp $
 //
 
 #ifndef _Spider_h_
@@ -20,11 +20,11 @@
 #endif //HAVE_CONFIG_H
 
 #include "HtConfiguration.h"
+#include "HtDebug.h"
 #include "defaults.h"
 
 #include "HtStdHeader.h"
 #include "libhtdig_api.h"
-#include "libhtdig_log.h"
 #include "List.h"
 #include "TidyParser.h"
 #include "Dictionary.h"
@@ -51,7 +51,6 @@
 ////////////////////////////
 
 extern String configFile;
-extern int debug;
 
 class Spider
 {
@@ -69,6 +68,12 @@ class Spider
     void        closeDBs();
 
     //
+    // used by the singnal handling function to kill the spider
+    // gracefully. will fill url_log with unvisited URLs
+    //
+    void        interruptClose(int);
+
+    //
     // Getting it all started
     //
     void        Start(htdig_parameters_struct * params);
@@ -76,7 +81,22 @@ class Spider
     //
     // Index a single document
     //
-    void        addSingleDoc(singleDoc * newDoc, time_t docTime, int spiderable);
+    int        addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, bool addToSpiderQueue);
+
+    //
+    // Fetch a single document from its URL. return a single doc
+    //
+    singleDoc*  fetchSingleDoc(string * url);
+
+    //
+    // delete a document based on its URL
+    //
+    int         DeleteDoc(string * input);
+
+    //
+    // delete a document based on its doc-id
+    //
+    int         DeleteDoc(int input);
 
     private:
 
@@ -109,7 +129,7 @@ class Spider
     //
     // commit both documents
     //
-    void        commitDoc();
+    void        commitDocs();
 
     //
     // Report statistics about the parser
@@ -166,7 +186,9 @@ class Spider
     int             minimumWordLength;
     int             local_urls_only;
     int             mark_dead_servers;
-	    
+    int             die_on_timer;
+    bool            DBsOpen;
+ 
     HtConfiguration *config;
     Server          *currentServer;
     URL             *base;
@@ -207,6 +229,12 @@ class Spider
     // used in the statistics report
     //
     String          notFound;
+
+    void sig_handlers(int, int);
+    void sig_phandler(void);
+    void win32_check_messages(void);
+
+
 };
 
 #endif // _Spider_h_

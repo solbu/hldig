@@ -9,29 +9,25 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Spider.cc,v 1.1.2.2 2006/04/27 00:48:12 aarnone Exp $
+// $Id: Spider.cc,v 1.1.2.3 2006/09/25 23:05:41 aarnone Exp $
 //
 
 
 
 #include "Spider.h"
 
-
-
-//
-// function prototypes
-//
-static void sigexit(int);
-static void sigpipe(int);
-static void sig_handlers(void);
-static void sig_phandler(void);
-static void win32_check_messages(void);
-static int noSignal;
+HtDebug * debug;
 
 //
-// program-wide debug level
+// Global signal handling functions and Spider pointer.
+// The function(s) will use the Spider pointer to call
+// member functions of a specific Spider instance. the
+// Spider object pointer should not be used elsewhere 
+// (to maintain program stability).
 //
-int debug;
+void sigpipe(int);
+void sigexit(int);
+static Spider * interruptHandlerSpiderPointer = NULL;
 
 //
 // program-wide config file location
@@ -41,24 +37,50 @@ String configFile = DEFAULT_CONFIG_FILE;
 //
 // Cookie jar object - yet another ugly global!
 //
-static HtCookieJar* _cookie_jar;
+static HtCookieJar* _cookie_jar = NULL;
 
 
 //*****************************************************************************
 // Spider::Spider()
 //
+
 Spider::Spider(htdig_parameters_struct * params)
 {
     //
-    // set the debug level. should probably be done first,
+    // set up the debug output. should probably be done first,
     // since many other functions may use it
     //
-    debug = params->debug;
-
-    if (debug)
+    debug = HtDebug::Instance();
+    if (strlen(params->debugFile) > 0)
     {
-        cout << "ht://Dig Start Time: " << StartTime.GetAscTime() << endl;
+        //
+        // if the debug output file was specified, then set it up. also, kill stdout output.
+        //
+        if (debug->setLogfile(params->debugFile) == false)
+        {
+            cout << "HtDig: Error opening debug output file ["<< params->debugFile << "]" << endl;
+            cout << "Turning on stdout debugging" << endl;
+            debug->setStdoutLevel(params->debug);
+        }
+        else
+        {
+            debug->setFileLevel(params->debug);
+        }
     }
+    else
+    {
+        debug->setStdoutLevel(params->debug);
+    }
+
+    DBsOpen = false;
+
+    doc = NULL;
+    indexDoc = NULL;
+    CLuceneDoc = NULL;
+    _cookie_jar = NULL;
+    config = NULL;
+
+    debug->outlog(0, "ht://Dig Start Time: %s\n", StartTime.GetAscTime());
 
     //
     // setup the configuration. do this early, since other
@@ -117,7 +139,18 @@ Spider::Spider(htdig_parameters_struct * params)
     // because it relies on some of the setup configuration
     // that has just been initialized
     //
+    if (doc != NULL)
+    {
+        delete doc;
+        doc = NULL;
+    }
     doc = new Document;
+
+    //  
+    // Always sig. The delay bothers me but a bad db is worse
+    // 
+    //sig_handlers(config->Value("index_timeout"), config->Value("index_timeout_precise"));
+    //sig_phandler();
 }
 
 
@@ -127,30 +160,52 @@ Spider::Spider(htdig_parameters_struct * params)
 //
 Spider::~Spider()
 {
-    //closeDBs();
-
-    delete doc;
+    if (doc != NULL)
+    {
+        delete doc;
+        doc = NULL;
+    }
     
-    if (_cookie_jar)
+    if (DBsOpen)
+    {
+        closeDBs();
+    }
+
+    config = NULL;
+
+    //
+    // the spider is about to die, so get rid of the the this pointer
+    //
+    interruptHandlerSpiderPointer = NULL;
+
+    if (_cookie_jar != NULL)
+    {
         delete _cookie_jar;
+        _cookie_jar = NULL;
+    }
 
     if (urls_seen)
         fclose(urls_seen);
     if (images_seen)
         fclose(images_seen);
-    logClose();
 
-    if (debug)
-    {
-        EndTime.SettoNow();
-        cout << "ht://Dig End Time: " << EndTime.GetAscTime() << endl;
-    }
+    if (report_statistics)
+        ReportStatistics("htdig");
+
+    EndTime.SettoNow();
+    debug->outlog(0, "ht://Dig End Time: %s\n", EndTime.GetAscTime());
+    debug->close();
 }
 
 
 
 void Spider::openDBs(htdig_parameters_struct * params)
 {
+    if(DBsOpen)
+    {
+        return;
+    }
+
     //
     // set up the stop word list
     //
@@ -161,10 +216,8 @@ void Spider::openDBs(htdig_parameters_struct * params)
         ifstream infile(stopWordsFilename.c_str());
         if (infile.is_open())
         {
-            if (debug > 4)
-            {
-                cout << "Stopwords from " << stopWordsFilename << ":" << endl;
-            }
+            debug->outlog(4, "Stopwords from [%s]:\n", stopWordsFilename.c_str());
+
             char line[255];
             while (infile.good())
             {
@@ -182,21 +235,18 @@ void Spider::openDBs(htdig_parameters_struct * params)
                 else
                 {
                     stopWords.insert(line);
-                    if (debug > 4)
-                    {
-                        cout << '.' << line << '.' << endl;
-                    }
+                    debug->outlog(4, "%s\n", line);
                 }
             }
         }
-        else if (debug)
+        else 
         {
-            cout << "Unable to open stop word file" << endl;
+            debug->outlog(0, "Unable to open stop word file\n");
         }
     }
-    else if (debug > 1)
+    else
     {
-        cout << "Stop word file not specified, using default CLucene stop words" << endl;
+        debug->outlog(1, "Stop word file not specified, using default CLucene stop words\n");
     }
 
     //
@@ -228,12 +278,10 @@ void Spider::openDBs(htdig_parameters_struct * params)
     const String index_filename = config->Find("doc_index");
     if (params->initial)
     {
-        if (debug)
-            cout << "Deleting old indexDB...";
+        debug->outlog(0, "Deleting old indexDB\n");
         unlink(index_filename);
     }
-    if (debug)
-        cout << "Opening indexDB here: " << index_filename.get() << endl;
+    debug->outlog(0, "Opening indexDB here: %s\n", index_filename.get());
     indexDatabase.Open(index_filename);
 
     
@@ -244,17 +292,17 @@ void Spider::openDBs(htdig_parameters_struct * params)
     const String db_dir_filename = config->Find("database_dir");
     if (!params->alt_work_area) 
     {
-        if (debug)
-            cout << "Opening CLucene database here: " << db_dir_filename.get() << endl;
+        debug->outlog(0, "Opening CLucene database here: %s\n", db_dir_filename.get());
         CLuceneOpenIndex(form("%s/CLuceneDB", (char *)db_dir_filename.get()), params->initial ? 1 : 0, &stopWords);
     }
     else
     {
-        if (debug)
-            cout << "Opening CLucene database here: " << db_dir_filename.get() << endl;
+        debug->outlog(0, "Opening CLucene database (working copy) here: %s\n", db_dir_filename.get());
         CLuceneOpenIndex(form("%s/CLuceneDB.work", (char *)db_dir_filename.get()), params->initial ? 1 : 0, &stopWords);
 
     }
+
+    DBsOpen = true;
 }
 
 
@@ -262,14 +310,16 @@ void Spider::openDBs(htdig_parameters_struct * params)
 
 void Spider::closeDBs()
 {
-    // Close the indexDB
-    indexDatabase.Close();
+    if (DBsOpen)
+    {
+        // Close the indexDB
+        indexDatabase.Close();
 
-    // Close the CLucene index
-    CLuceneCloseIndex();
+        // Close the CLucene index
+        CLuceneCloseIndex();
 
-    if (report_statistics)
-        ReportStatistics("htdig");
+        DBsOpen = false;
+    }
 }
 
 
@@ -291,11 +341,7 @@ void Spider::setupConfigurationFile(htdig_parameters_struct * params)
 
         if (access((char*)configFile, R_OK) < 0)
         {
-            if (debug)
-            {
-                cout << "Unable to find configuration file '" << configFile.get() << "'" << endl;
-            }
-            reportError(form("Unable to find configuration file '%s'", configFile.get()));
+            debug->outlog(0, "Unable to find configuration file [%s]\n", configFile.get());
         }
         else
         {
@@ -311,10 +357,9 @@ void Spider::setupSpiderFilters(htdig_parameters_struct * params)
         config->Add("locale", params->locale);
     }
 
-    if (config->Find ("locale").empty () && debug > 0)
+    if (config->Find ("locale").empty ())
     {
-        cout << "Warning: unknown locale!" << endl;
-        //logEntry("Warning: unknown locale!\n");
+        debug->outlog(0, "Warning: unknown locale!\n");
     }
 
     if (strlen(params->max_hop_count) > 0)
@@ -445,7 +490,6 @@ void Spider::initializeQueue(htdig_parameters_struct * params)
     }
 }
 
-
 void Spider::setupLogFiles(htdig_parameters_struct * params)
 {
     urls_seen = NULL;
@@ -464,7 +508,7 @@ void Spider::setupLogFiles(htdig_parameters_struct * params)
     //
     if(strlen(params->logFile) > 0)
     {
-        logOpen(params->logFile);
+        config->Add("url_list", params->logFile);
     }
 
     //
@@ -476,11 +520,7 @@ void Spider::setupLogFiles(htdig_parameters_struct * params)
         urls_seen = fopen(filename, params->initial ? "w" : "a");
         if (urls_seen == 0)
         {
-            if (debug)
-            {
-                cout << "Unable to create URL file " << filename.get() << endl;
-            }
-            reportError(form("Unable to create URL file '%s'", filename.get()));
+            debug->outlog(0, "Unable to create URL file [%s]\n", filename.get());
         }
     }
 
@@ -493,11 +533,7 @@ void Spider::setupLogFiles(htdig_parameters_struct * params)
         images_seen = fopen(filename, params->initial ? "w" : "a");
         if (images_seen == 0)
         {
-            if (debug)
-            {
-                cout << "Unable to create images file " << filename.get() << endl;
-            }
-            reportError(form("Unable to create images file '%s'", filename.get()));
+            debug->outlog(0, "Unable to create images file [%s]\n", filename.get());
         }
     }
 }
@@ -519,6 +555,11 @@ void Spider::setupLimitsList()
 
 void Spider::setupCookieJar()
 {
+    if (_cookie_jar != NULL)
+    {
+        delete _cookie_jar;
+        _cookie_jar = NULL;
+    }
     _cookie_jar = new HtCookieMemJar();
     if (_cookie_jar)
     {
@@ -529,32 +570,29 @@ void Spider::setupCookieJar()
     const String CookiesInputFile = config->Find("cookies_input_file");
     if (CookiesInputFile.length())
     {
-        if (debug)
-            cout << "Importing Cookies input file " << CookiesInputFile << endl;
+        debug->outlog(0, "Importing Cookies input file [%s]", CookiesInputFile.get());
 
         int result;
-        HtCookieJar::SetDebugLevel(debug); // Set the debug level
+        //HtCookieJar::SetDebugLevel(debug->getLevel()); // Set the debug level
         HtCookieInFileJar* cookie_file = new HtCookieInFileJar(CookiesInputFile, result);
         if (cookie_file)
         {
             if (!result)
             {
-                if (debug>0)
+                if (debug->getLevel() > 0)
                     cookie_file->ShowSummary();
                 delete _cookie_jar;                         // Deletes previous cookie jar
                 _cookie_jar = (HtCookieJar*) cookie_file;   // set the imported one
                 HtHTTP::SetCookieJar(_cookie_jar);          // and set the new HTTP jar
             }
-            else if (debug > 0)
-                cout << "Warning: Import failed! (" << CookiesInputFile << ")" << endl;
+            else
+            {
+                debug->outlog(0, "Warning: Import failed from [%s]\n", CookiesInputFile.get());
+            }
         }
         else
         {
-            if (debug)
-            {
-                cout << "Unable to load cookies file " << CookiesInputFile.get() << endl;
-            }
-            reportError(form("Unable to load cookies file '%s' in memory", CookiesInputFile.get()));
+            debug->outlog(0, "Unable to load cookies file [%s]\n", CookiesInputFile.get());
         }
     }
 }
@@ -588,21 +626,13 @@ void Spider::checkURLErrors()
     String url_part_errors = HtURLCodec::instance()->ErrMsg();
     if (url_part_errors.length() != 0)
     {
-        if (debug)
-        {
-            cout << "Invalid url_part_aliases or common_url_parts: " << url_part_errors.get() << endl;
-        }
-        reportError(form("Invalid url_part_aliases or common_url_parts: %s", url_part_errors.get()));
+        debug->outlog(0, "Invalid url_part_aliases or common_url_parts: %s\n", url_part_errors.get());
     }
 
     String url_rewrite_rules = HtURLRewriter::instance()->ErrMsg();
     if (url_rewrite_rules.length() != 0)
     {
-        if (debug)
-        {
-            cout << "Invalid url_rewrite_rules: " << url_rewrite_rules.get() << endl;
-        }
-        reportError(form("Invalid url_rewrite_rules: %s", url_rewrite_rules.get()));
+        debug->outlog(0, "Invalid url_rewrite_rules: %s\n", url_rewrite_rules.get());
     }
 }
 
@@ -637,15 +667,15 @@ void Spider::Initial(const String & list, int from)
     StringList tokens(list, " \t");
     String sig;
     String url;
-    Server *server;
+    Server * server = NULL;
 
     for (int i = 0; i < tokens.Count(); i++)
     {
         URL u(tokens[i]);
         url = u.get();	// get before u.signature() resolves aliases
         server = (Server *) servers[u.signature()];
-        if (debug > 2)
-            cout << "\t" << from << ":" << url;
+        debug->outlog(2, "\t%d:%s", from, url.get());
+
         if (!server)
         {
             String robotsURL = u.signature();
@@ -659,25 +689,21 @@ void Spider::Initial(const String & list, int from)
 
         if (from && visited.Exists(url))
         {
-            if (debug > 2)
-                cout << " skipped" << endl;
+            debug->outlog(2, " skipped\n");
             continue;
         }
         else if (IsValidURL(url) != 1)
         {
-            if (debug > 2)
-                cout << endl;
+            debug->outlog(2, "\n");
             continue;
         }
 
         if (from != 3)
         {
-            if (debug > 2)
-                cout << " pushed";
+            debug->outlog(2, " pushed");
             server->push(u.get(), 0, 0, IsLocalURL(url.get()));
 		}
-        if (debug > 2)
-            cout << endl;
+        debug->outlog(2, "\n");
         visited.Add(url, 0);
     }
 }
@@ -745,14 +771,6 @@ void Spider::Start(htdig_parameters_struct * params)
 
     HtConfiguration *config = HtConfiguration::config();
 
-    //  
-    // Always sig. The delay bothers me but a bad db is worse
-    // 
-    sig_handlers();
-    sig_phandler();
-    noSignal = 1;
-
-
     //
     // Main loop. We keep on retrieving until a signal is received
     // or all the servers' queues are empty.
@@ -760,7 +778,7 @@ void Spider::Start(htdig_parameters_struct * params)
 
     win32_check_messages();
 
-    while (more && noSignal)
+    while (more)
     {
         more = 0;
 
@@ -791,10 +809,9 @@ void Spider::Start(htdig_parameters_struct * params)
 
         win32_check_messages();
 
-        while ((server = (Server *) servers.Get_NextElement()) && noSignal)
+        while ((server = (Server *) servers.Get_NextElement()))
         {
-            if (debug > 1)
-                cout << "pick: " << server->host() << ", # servers = " << servers.Count() << endl;
+            debug->outlog(1, "pick: %s, # servers = %d\n", server->host().get(), servers.Count());
 
             // We already know if a server supports HTTP pers. connections,
             // because we asked it for the robots.txt file (constructor of
@@ -815,15 +832,15 @@ void Spider::Start(htdig_parameters_struct * params)
                     max_connection_requests =
                         config->Value("server", server->host(), "max_connection_requests");
 
-                if (debug > 2)
+                if (debug->getLevel() > 2)
                 {
 
-                    cout << "> " << server->host() << " supports HTTP persistent connections";
+                    debug->outlog(2, "> %s supports HTTP persistent connections", server->host().get());
 
                     if (max_connection_requests == -1)
-                        cout << " (" << "infinite" << ")" << endl;
+                        debug->outlog(2, " (infinite)\n");
                     else
-                        cout << " (" << max_connection_requests << ")" << endl;
+                        debug->outlog(2," (%d)\n", max_connection_requests);
 
                 }
 
@@ -835,8 +852,7 @@ void Spider::Start(htdig_parameters_struct * params)
 
                 max_connection_requests = 1;
 
-                if (debug > 2)
-                    cout << "> " << server->host() << " with a traditional HTTP connection" << endl;
+                debug->outlog(2, "> %s with a traditional HTTP connection\n", server->host().get());
 
 			}
 
@@ -848,8 +864,13 @@ void Spider::Start(htdig_parameters_struct * params)
             // Loop until interrupted, too many requests, or done.
             // ('noSignal' must be before 'pop', or the popped
             // URL will not be included in  url_log  file, below.)
-            while (noSignal && ((max_connection_requests == -1) ||
-              (count < max_connection_requests)) && (ref = server->pop()))
+            while (
+                    //noSignal
+                    //&&
+                    ((max_connection_requests == -1) || (count < max_connection_requests))
+                    &&
+                    (ref = server->pop())
+                  )
             {
                 count++;
 
@@ -858,7 +879,6 @@ void Spider::Start(htdig_parameters_struct * params)
                 // fact that we are not done yet by setting the 'more'
                 // variable. So, we have to restart scanning the queue.
                 //
-
                 more = 1;
 
                 //
@@ -866,13 +886,14 @@ void Spider::Start(htdig_parameters_struct * params)
                 // We'll check with the server to see if we need to sleep()
                 // before parsing it.
                 //
-
                 parse_url(*ref);
                 delete ref;
 
+                //
                 // We reached the maximum number of connections (either with
                 // or without persistent connections) and we must pause and
                 // respect the 'net ethic'.
+                //
                 if ((max_connection_requests - count) == 0)
                     server->delay();    // This will pause if needed
                 // and reset the time
@@ -883,97 +904,296 @@ void Spider::Start(htdig_parameters_struct * params)
         }
     }
     win32_check_messages();
-
-
-    //
-    // if we exited on signal, try to clean up
-    //   close the DBs
-    //   log the URLs not yet parsed
-    //
-    if (!noSignal)
-    {
-        closeDBs();
-
-        String filelog = config->Find("url_log");
-        FILE *urls_parsed = fopen((char *) filelog, "w");
-
-        if (urls_parsed == 0)
-        {
-            cout << "Unable to create URL log file '" << filelog.get() << "'" << endl;
-            reportError(form("Unable to create URL log file '%s'", filelog.get()));
-        }
-        else
-        {
-            servers.Start_Get();
-            while ((server = (Server *) servers.Get_NextElement()))
-            {
-                while (NULL != (ref = server->pop()))
-                {
-                    fprintf(urls_parsed, "%s\n", (const char *) ref->GetURL().get());
-                    delete ref;
-                }
-            }
-            fclose(urls_parsed);
-        }
-    }
 }
+
+
+
+singleDoc * Spider::fetchSingleDoc(string * url)
+{
+    Transport::DocStatus status = Transport::Document_ok;
+    String tempURLString = url->c_str();
+
+    debug->outlog(2, "Attempting to fetch ");
+
+    do {
+        Server * server = NULL;
+        URL * tempURL = new URL(tempURLString);
+        URLRef * tempURLRef = new URLRef;
+        tempURLRef->SetURL(*tempURL);
+
+        debug->outlog(2, "%s\n", tempURLRef->GetURL().get().get());
+
+        server = (Server *) servers[tempURL->signature()];
+        if (!server)
+        {
+            String robotsURL = tempURL->signature();
+            robotsURL << "robots.txt";
+            StringList *localRobotsFile = GetLocal(robotsURL);
+
+            //
+            // create a new server. the ownership of these objects pass to the
+            // 'servers' Dictionary object, so no deleting!
+            //
+            server = new Server(*tempURL, localRobotsFile);
+            servers.Add(tempURL->signature(), server);
+
+            delete localRobotsFile;
+        }
+
+        //
+        // now that everything is set up, try to retrieve the actual
+        // document. since we definitely want this, send a time of zero
+        // to the retriever, so it gets fetched every time.
+        //
+        status = retrieveDoc(*tempURLRef, 0);
+
+        if (status == Transport::Document_redirect)
+        {
+            tempURLString = doc->Redirected();
+            debug->outlog(2, " (redirect) \n");
+        }
+
+        delete tempURL;
+        delete tempURLRef;
+
+    } while (status == Transport::Document_redirect);
+
+    //
+    // redirects are all done, and the retrieval was either a success or not
+    //
+    if (status != Transport::Document_ok)
+    {
+        //
+        // awww... the documents was marked spiderable, but wasn't retrievable
+        //
+        debug->outlog(2, " FAIL.\n");
+        return 0;
+    }
+    debug->outlog(2, " success.\n");
+
+    //
+    // a new pointer to a Clucene document
+    //
+    if (CLuceneDoc != NULL)
+    {
+        delete CLuceneDoc;
+        CLuceneDoc = NULL;
+    }
+    CLuceneDoc = new DocumentRef;
+
+    //
+    // this will be neccessary so parseDoc doesn't explode. however,
+    // the whoe object can be thrown away after parsing
+    //
+    if (indexDoc != NULL)
+    {
+        delete indexDoc;
+        indexDoc = NULL;
+    }
+    indexDoc = new IndexDBRef;
+
+    //
+    // parse the actual document. the URLs seen can be ignored, as
+    // can the noIndex flag (the noIndex flag is the return value 
+    // of parseDoc)
+    //
+    config->Add("use_stemming", "false");
+    config->Add("use_synonyms", "false");
+    
+    debug->outlog(2, "Parse initializing\n");
+    parseDoc(doc->Contents(), false);
+    debug->outlog(2, "Parse complete\n");
+
+    singleDoc * newDoc = new singleDoc;
+
+    //
+    // get the URL fromt he tempURLString, since it will
+    // be the final URL after redirects happen
+    //
+    (*newDoc)["url"] = tempURLString.get();
+
+    char * temp;
+
+    temp = CLuceneDoc->getField("title");
+    (*newDoc)["title"] = temp;
+    free(temp);
+
+    temp = CLuceneDoc->getField("meta-desc");
+    (*newDoc)["meta-desc"] = temp;
+    free(temp);
+
+    temp = CLuceneDoc->getField("keywords");
+    (*newDoc)["meta-desc"] += temp;
+    free(temp);
+
+    temp = CLuceneDoc->getField("contents");
+    (*newDoc)["contents"] = temp;
+    free(temp);
+
+    char tempTime[32];
+    sprintf(tempTime, "%d", (int)doc->ModTime());
+    (*newDoc)["doc-time"] = tempTime;
+
+    (*newDoc)["content-type"] = doc->ContentType();
+
+    if (CLuceneDoc != NULL)
+    {
+        delete CLuceneDoc;
+        CLuceneDoc = NULL;
+    }
+    if (indexDoc != NULL)
+    {
+        delete indexDoc;
+        indexDoc = NULL;
+    }
+
+    return newDoc;
+}
+
 
 
 // -------------------------------------------------------
 //
-// add a simple document - no HTML parsing is required
+// add a simple document - if the document is marked as spiderable, try
+// to retrieve and parse it like a regular document. this requires 
+// creating a server object (or more if redirects happen) and also
+// a robots.txt retrieve, so this can be a bit slow. if the addToSpiderQueue flag
+// is set to false, the spiderable flag will be set to false before inserting into
+// the indexDB, so that this document will not be revisited on future spidering runs.
 //
-void Spider::addSingleDoc(singleDoc * newDoc, time_t docTime, int spiderable)
+int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, bool addToSpiderQueue)
 {
+    bool needToDelete = false;
+
+    debug->outlog(0, "Index Single: %s", (*newDoc)["url"].c_str());
+
     //
-    // get teh old odcument information out of the indexDB 
+    // get the old odcument information out of the indexDB 
     // 
+    if (indexDoc != NULL)
+    {
+        delete indexDoc;
+        indexDoc = NULL;
+    }
     indexDoc = indexDatabase.Exists((*newDoc)["url"].c_str());
 
     if (indexDoc)
     {
-        if (docTime < indexDoc->DocTime())
+        //
+        // if the alternate time given is greater (aka newer) than the
+        // time stored in the indexDB, or if the alternate time stored in
+        // the indexDB is zero, this document needs to be replaced 
+        //
+        if ( (altTime > indexDoc->DocAltTime()) || (indexDoc->DocAltTime() == 0) )
+        {
+            //
+            // don't actualy delete until after retrieval and parsing are
+            // done, in case something goes wrong
+            //
+            debug->outlog(0, " (changed)");
+            needToDelete = true;
+        }
+        else
         {
             //
             // the document hasn't changed, so just return
             //
+            debug->outlog(0, " (not changed)\n");
             delete indexDoc;
-            return;
+            indexDoc = NULL;
+            return 1;
         }
-
-        //
-        // erase old document from CLucene (by URL)
-        // 
-        CLuceneDeleteURLFromIndex(&(*newDoc)["url"]);
-
-        //
-        // erase old document from indexDB (by URL)
-        //
-        indexDatabase.Delete(indexDoc->DocURL());
     }
     delete indexDoc;
+    indexDoc = NULL;
+
 
     if (spiderable)
     {
         //
-        // set up the urlRef
+        // try to spider the URL, while handling redirects
         //
-        URLRef * urlRef = new URLRef;
-        String tempURLstring = (*newDoc)["url"].c_str(); 
-        urlRef->SetURL(tempURLstring);
 
-        if (retrieveDoc(*urlRef, docTime) != Transport::Document_ok)
+        Transport::DocStatus status = Transport::Document_ok;
+        String tempURLString = (*newDoc)["url"].c_str();
+
+        do {
+            Server * server;
+            URL * tempURL = new URL(tempURLString);
+            URLRef * tempURLRef = new URLRef;
+            tempURLRef->SetURL(*tempURL);
+
+            server = (Server *) servers[tempURL->signature()];
+            //
+            // if the server isn't already in the list, add it
+            //
+            if (!server)
+            {
+                String robotsURL = tempURL->signature();
+                robotsURL << "robots.txt";
+                StringList *localRobotsFile = GetLocal(robotsURL);
+
+                //
+                // create a new server. the ownership of these objects pass to the 'servers'
+                // Dictionary object, so no deleting!
+                //
+                server = new Server(*tempURL, localRobotsFile);
+                servers.Add(tempURL->signature(), server);
+
+                delete localRobotsFile;
+            }
+
+            //
+            // now that everything is set up, try to retrieve the actual document. since
+            // this document was specifically requested with the addSingle call, use
+            // zero as the time, so it will be retrieved every time.
+            //
+            status = retrieveDoc(*tempURLRef, 0);
+
+            if (status == Transport::Document_redirect)
+            {
+                tempURLString = doc->Redirected();
+                debug->outlog(2, "%s (redirect)\n", tempURLString.get());
+            }
+
+            delete tempURL;
+            delete tempURLRef;
+
+        } while (status == Transport::Document_redirect);
+
+        //
+        // redirects are all done, and the retrieval was either a success or not
+        //
+        if (status != Transport::Document_ok)
         {
             //
             // awww... the documents was marked spiderable, but wasn't retrievable
             //
-            return;
+            debug->outlog(2, " FAIL\n");
+            return 0;
         }
+        debug->outlog(2, " success\n");
+        
+    }
+    else
+    {
+        //
+        // retrieve doc usually does these steps, but since this
+        // isn't spiderable, it has to be done manually
+        //
+        doc->Reset();
+        doc->Url((*newDoc)["url"].c_str());
+        debug->outlog(2, "Not Retrieving [%s]\n", (*newDoc)["url"].c_str());
     }
 
     //
     // set up the indexDoc
     //
+    if (indexDoc != NULL)
+    {
+        delete indexDoc;
+        indexDoc = NULL;
+    }
     indexDoc = new IndexDBRef;
 
     indexDoc->DocURL((*newDoc)["url"].c_str());
@@ -989,17 +1209,32 @@ void Spider::addSingleDoc(singleDoc * newDoc, time_t docTime, int spiderable)
     {
         indexDoc->DocSize((*newDoc)["contents"].length());
     }
-    indexDoc->DocTime(docTime);
-    indexDoc->DocSpiderable(spiderable);
-    // hopcount is irrelevant
-    // backlink count is irrelevant
+    indexDoc->DocTime(doc->ModTime());
+    indexDoc->DocAltTime(altTime);
+    // hopcount is irrelevant (as in the default will be fine)
+    // backlink count is irrelevant (as in the default will be fine)
 
-
-
+    //
+    // if the document is to be added to the queue for next time the regular spider
+    // runs, then addToSpiderQueue and spiderable need to be set to true.
+    //
+    if (addToSpiderQueue && spiderable)
+    {
+        indexDoc->DocSpiderable(1);
+    }
+    else
+    {
+        indexDoc->DocSpiderable(0);
+    }
 
     //
     // a new pointer to a Clucene document
     //
+    if (CLuceneDoc != NULL)
+    {
+        delete CLuceneDoc;
+        CLuceneDoc = NULL;
+    }
     CLuceneDoc = new DocumentRef;
 
     //
@@ -1008,17 +1243,17 @@ void Spider::addSingleDoc(singleDoc * newDoc, time_t docTime, int spiderable)
     // therefore, wait until after parsing and then replace these
     // parsed-out fields. stemmed and synonm fields are treated as normal.
     //
-    CLuceneDoc->appendField("stemmed", (*newDoc)["title"].c_str());
-    CLuceneDoc->appendField("synonym", (*newDoc)["title"].c_str());
+    if (config->Boolean("use_stemming"))
+    {
+        CLuceneDoc->appendField("stemmed", (*newDoc)["title"].c_str());
+        CLuceneDoc->appendField("stemmed", (*newDoc)["meta-desc"].c_str());
+    }
 
-    CLuceneDoc->appendField("stemmed", (*newDoc)["meta-desc"].c_str());
-    CLuceneDoc->appendField("synonym", (*newDoc)["meta-desc"].c_str());
-
-    //
-    // initialize the parser. the encoding is unknown (or at least not
-    // specified), so just use the default: utf8
-    //
-    tparser.initialize(CLuceneDoc, NULL);
+    if (config->Boolean("use_synonyms"))
+    {
+        CLuceneDoc->appendField("synonym", (*newDoc)["meta-desc"].c_str());
+        CLuceneDoc->appendField("synonym", (*newDoc)["title"].c_str());
+    }
 
     //
     // parse the actual document. the URLs seen can be ignored, as
@@ -1056,10 +1291,50 @@ void Spider::addSingleDoc(singleDoc * newDoc, time_t docTime, int spiderable)
         CLuceneDoc->appendField("doc-meta-desc", (*newDoc)["meta-desc"].c_str());
     }
 
-    commitDoc();
+    //
+    // Add the URL to the CLucene doc
+    //
+    CLuceneDoc->insertField("url", (*newDoc)["url"].c_str());
 
-    delete CLuceneDoc;
-    delete indexDoc;
+    //
+    // add the document ID
+    //
+    CLuceneDoc->insertField("doc-id", (*newDoc)["id"].c_str());
+
+
+    //
+    // if the document is already in the DBs, erase it now that
+    // the parsing is complete (success)
+    //
+    if (needToDelete)
+    {
+        DeleteDoc(&(*newDoc)["url"]);
+    }
+
+    //
+    // commit the new document to both DBs
+    //
+    commitDocs();
+
+    if (urls_seen)
+    {
+        fprintf(urls_seen, "%s|%d|%s|%d|%d|1\n",
+                (indexDoc->DocURL()).get(), indexDoc->DocSize(),
+                doc->ContentType(), (int)indexDoc->DocTime(), currenthopcount);
+    }
+
+    if (CLuceneDoc != NULL)
+    {
+        delete CLuceneDoc;
+        CLuceneDoc = NULL;
+    }
+    if (indexDoc != NULL)
+    {
+        delete indexDoc;
+        indexDoc = NULL;
+    }
+
+    return 1;
 }
 
 
@@ -1078,16 +1353,17 @@ void Spider::parse_url(URLRef & urlRef)
     currenthopcount = urlRef.GetHopCount();
     currentServer = NULL;
 
-    if (debug > 0)
-    {
-        // Display progress
-        cout << indexCount++ << currenthopcount << ':' << url.get() << ": ";
-        cout.flush();
-    }
+    // Display progress
+    debug->outlog(0, "%d %d : %s :", indexCount++, currenthopcount, url.get().get());
 
     // 
     // search for the URL in the indexDB
     // 
+    if (indexDoc != NULL)
+    {
+        delete indexDoc;
+        indexDoc = NULL;
+    }
     indexDoc = indexDatabase.Exists(url.get());
     
     if (indexDoc)
@@ -1097,11 +1373,26 @@ void Spider::parse_url(URLRef & urlRef)
         //
         if (indexDoc->DocSpiderable() == 0)
         {
-            if (debug)
+            debug->outlog(0, " (marked not spiderable)\n");
+            if (indexDoc != NULL)
             {
-                cout << " marked not spiderable" << endl;
+                delete indexDoc;
+                indexDoc = NULL;
             }
-            delete indexDoc;
+            return;
+        }
+
+        //
+        // if the document has not yet expired, don't spider
+        //
+        if (indexDoc->DocExpired() > (int)time(NULL))
+        {
+            debug->outlog(0, " (not expired)\n");
+            if (indexDoc != NULL)
+            {
+                delete indexDoc;
+                indexDoc = NULL;
+            }
             return;
         }
 
@@ -1136,6 +1427,11 @@ void Spider::parse_url(URLRef & urlRef)
         //
         old_document = false;
 
+        if (indexDoc != NULL)
+        {
+            delete indexDoc;
+            indexDoc = NULL;
+        }
         indexDoc = new IndexDBRef;
         indexDoc->DocURL(url.get());
         indexDoc->DocTime(0);
@@ -1166,17 +1462,12 @@ void Spider::parse_url(URLRef & urlRef)
             //
             // erase old document from CLucene (by URL)
             // 
-            CLuceneDeleteURLFromIndex( new string(indexDoc->DocURL().get()) );
+            string * tempURL = new string(indexDoc->DocURL().get());
+            DeleteDoc(tempURL);
+            delete tempURL;
 
-            //
-            // erase old document from indexDB (by URL)
-            //
-            indexDatabase.Delete(indexDoc->DocURL());
 
-            if (debug)
-            {
-                cout << " (changed) ";
-            }
+            debug->outlog(0, " (changed) ");
         }
         indexDoc->DocSize(doc->Length());
         indexDoc->DocTime(doc->ModTime());
@@ -1190,6 +1481,11 @@ void Spider::parse_url(URLRef & urlRef)
         // HTML document, there's no need for special field
         // inserts or anything.
         //
+        if (CLuceneDoc != NULL)
+        {
+            delete CLuceneDoc;
+            CLuceneDoc = NULL;
+        }
         CLuceneDoc = new DocumentRef;
 
         //
@@ -1201,12 +1497,9 @@ void Spider::parse_url(URLRef & urlRef)
             //
             // Sucess! insert the documents
             //
-            commitDoc(); 
+            commitDocs(); 
 
-            if (debug)
-            {
-                cout << " size = " << indexDoc->DocSize() << endl;
-            }
+            debug->outlog(0, " size = %d\n", indexDoc->DocSize());
 
             if (urls_seen)
             {
@@ -1215,32 +1508,33 @@ void Spider::parse_url(URLRef & urlRef)
                         doc->ContentType(), (int)indexDoc->DocTime(), currenthopcount);
             }
         }
-        else if (debug)
+        else
         {
             //
             // if the document was marked no index, then don't insert into
             // either database to keep them in sync
             //
-            cout << "marked 'noindex'" << endl;
+            debug->outlog(0, "marked 'noindex'\n");
         }
-        delete CLuceneDoc;
+        if (CLuceneDoc != NULL)
+        {
+            delete CLuceneDoc;
+            CLuceneDoc = NULL;
+        }
 
         break;
 
     case Transport::Document_not_changed:
-        if (debug)
-            cout << " not changed" << endl;
+        debug->outlog(0, " not changed\n");
         break;
 
     case Transport::Document_not_found:
-        if (debug)
-            cout << " not found" << endl;
+        debug->outlog(0, " not found\n");
         recordNotFound(url.get(), urlRef.GetReferer().get(), Transport::Document_not_found);
         break;
 
     case Transport::Document_no_host:
-        if (debug)
-            cout << " host not found" << endl;
+        debug->outlog(0, " host not found\n");
         recordNotFound(url.get(), urlRef.GetReferer().get(), Transport::Document_no_host);
 
         // Mark the current server as being down
@@ -1249,8 +1543,7 @@ void Spider::parse_url(URLRef & urlRef)
         break;
 
     case Transport::Document_no_port:
-        if (debug)
-            cout << " host not found (port)" << endl;
+        debug->outlog(0, " host not found (port)\n");
         recordNotFound(url.get(), urlRef.GetReferer().get(), Transport::Document_no_port);
 
         // Mark the current server as being down
@@ -1259,44 +1552,36 @@ void Spider::parse_url(URLRef & urlRef)
         break;
 
     case Transport::Document_not_parsable:
-        if (debug)
-            cout << " not Parsable" << endl;
+        debug->outlog(0, " not Parsable\n");
         break;
 
     case Transport::Document_redirect:
-        if (debug)
-            cout << " redirect" << endl;
+        debug->outlog(0, " redirect");
         got_redirect(doc->Redirected(), (urlRef.GetReferer()).get());
         break;
 
     case Transport::Document_not_authorized:
-        if (debug)
-            cout << " not authorized" << endl;
+        debug->outlog(0, " not authorized\n");
         break;
 
     case Transport::Document_not_local:
-        if (debug)
-            cout << " not local" << endl;
+        debug->outlog(0, " not local\n");
         break;
 
     case Transport::Document_no_header:
-        if (debug)
-            cout << " no header" << endl;
+        debug->outlog(0, " no header\n");
         break;
 
     case Transport::Document_connection_down:
-        if (debug)
-            cout << " connection down" << endl;
+        debug->outlog(0, " connection down\n");
         break;
 
     case Transport::Document_no_connection:
-        if (debug)
-            cout << " no connection" << endl;
+        debug->outlog(0, " no connection\n");
         break;
 
     case Transport::Document_not_recognized_service:
-        if (debug)
-            cout << " service not recognized" << endl;
+        debug->outlog(0, " service not recognized\n");
 
         // Mark the current server as being down
         if (currentServer && mark_dead_servers)
@@ -1304,11 +1589,14 @@ void Spider::parse_url(URLRef & urlRef)
         break;
 
     case Transport::Document_other_error:
-        if (debug)
-            cout << " other error" << endl;
+        debug->outlog(0, " other error\n");
         break;
 	}
-    delete indexDoc;
+    if (indexDoc != NULL)
+    {
+        delete indexDoc;
+        indexDoc = NULL;
+    }
 }
 
 // -----------------------------------------------------------
@@ -1345,8 +1633,7 @@ Transport::DocStatus Spider::retrieveDoc(URLRef & urlRef, time_t date)
     StringList *local_filenames = GetLocal(url.get());
     if (local_filenames)
     {
-        if (debug > 1)
-            cout << "Trying local files" << endl;
+        debug->outlog(1, "Trying local files\n");
         status = doc->RetrieveLocal(date, local_filenames);
         if (status == Transport::Document_not_local)
         {
@@ -1354,8 +1641,7 @@ Transport::DocStatus Spider::retrieveDoc(URLRef & urlRef, time_t date)
                 status = doc->Retrieve(currentServer, date);
             else
                 status = Transport::Document_no_host;
-            if (debug > 1)
-                cout << "Local retrieval failed, trying HTTP" << endl;
+            debug->outlog(1, "Local retrieval failed, trying HTTP\n");
         }
         delete local_filenames;
     }
@@ -1369,7 +1655,7 @@ Transport::DocStatus Spider::retrieveDoc(URLRef & urlRef, time_t date)
 
 // ------------------------------------------------------------
 //
-// Pre:  - indexDoc has ALL of its fields filled
+// Pre:  - doc has ALL of its fields filled
 //       - CLucene document has been initialized, and any important text 
 //           has been inserted into the appropriate fields - some exceptions: 
 //           size, time and URL will be added here
@@ -1387,6 +1673,19 @@ Transport::DocStatus Spider::retrieveDoc(URLRef & urlRef, time_t date)
 //
 bool Spider::parseDoc(char * contents, bool follow)
 {
+    // finalEncoding = doc->convert()
+    // if finalEncoding == plaintext
+    // {
+    //   CLuceneDoc->InsertField("contents", doc->contents);
+    // }
+    // else if finalEncoding == html
+    // {
+    //   execute code below
+    // }
+    // else
+    // {
+    //   return false
+    // } 
     //
     // initialize the parser with the CLucene doc and
     // with the encoding type 
@@ -1398,20 +1697,20 @@ bool Spider::parseDoc(char * contents, bool follow)
     // add the time to the CLucene doc
     //
     char tempTime[32];
-    sprintf(tempTime, "%d", (int)indexDoc->DocTime());
+    sprintf(tempTime, "%d", (int)doc->ModTime());
     CLuceneDoc->insertField("doc-time", tempTime);
 
     //
     // add the document size to the CLucene doc
     //
     char tempSize[32];
-    sprintf(tempSize, "%d", indexDoc->DocSize());
+    sprintf(tempSize, "%d", doc->Length());
     CLuceneDoc->insertField("doc-size", tempSize);
 
     //
     // Add the URL to the CLucene doc
     //
-    CLuceneDoc->insertField("url", (indexDoc->DocURL()).get());
+    CLuceneDoc->insertField("url", (doc->Url()->get()).get());
 
     //
     // parse the actual document, recieving the parsed
@@ -1419,8 +1718,6 @@ bool Spider::parseDoc(char * contents, bool follow)
     //
     set<string> URLlist = tparser.parseDoc(contents);
 
-    //tparser.commitDoc();
-    
     //
     // now that parsing is finished, the 'true' time is
     // known (the time might have been specified in a meta tag)
@@ -1452,15 +1749,52 @@ bool Spider::parseDoc(char * contents, bool follow)
 }
 
 
+int Spider::DeleteDoc(string * input)
+{
+    //
+    // delete fromt he indexDB
+    //
+    String temp = input->c_str();
+    indexDatabase.Delete(temp);
+
+    //
+    // delete from CLucene, and return number of documents deleted (hopefully only one)
+    //
+    return CLuceneDeleteURLFromIndex(input);
+
+}
+
+
+int Spider::DeleteDoc(int input)
+{
+    // 
+    // TODO: the URL associated with the doc-id will need to be
+    // returned (probably from CLucene, meaning the CLuceneAPI will need
+    // to change), so the document can be deleted from the indexDB.
+    //
+
+    return CLuceneDeleteIDFromIndex(input);
+}
+
 
 // ----------------------------------------------------------
 //
-// Pre:  - both documents are ready to insert
+// Pre:  - document(s) are ready to insert.
+//          NOTE: if the indexDB insert bool is false, then only insert the document
+//          into CLucene. This can be useful if the document is to be searchable,
+//          but not used in the regualr spidering process. Additionaly, It is the
+//          responsibilty of the calling program (indexSingleDoc is currently the only
+//          function that uses this option) to keep track of the URL or docID of such a
+//          document, since it will need special handling - it will never be updated
+//          or deleted thorugh normal crawler operation.
 //
-// Post: - both documents have been inserted
+// Post: - document(s) have been inserted
 //
-void Spider::commitDoc()
+void Spider::commitDocs()
 {
+    debug->outlog(2, "IndexDB inserting %s\n", indexDoc->DocURL().get());
+    debug->outlog(2, "CLucene inserting %s\n", CLuceneDoc->getField("url"));
+
     //
     // Insert the index document into indexDB
     //
@@ -1554,9 +1888,8 @@ int Spider::IsValidURL(const String & u)
 	}
 	if (excludes->match(url, 0, 0) != 0)
 	{
-		if (debug > 2)
-			cout << endl << "   Rejected: item in exclude list ";
-		return (HTDIG_ERROR_TESTURL_EXCLUDE);
+        debug->outlog(2, "\n   Rejected: item in exclude list ");
+        return (HTDIG_ERROR_TESTURL_EXCLUDE);
 	}
 
 	//
@@ -1580,9 +1913,8 @@ int Spider::IsValidURL(const String & u)
 	char *ext = strrchr((char *) url, '?');
 	if (ext && badquerystr->match(ext, 0, 0) != 0)
 	{
-		if (debug > 2)
-			cout << endl << "   Rejected: item in bad query list ";
-		return (HTDIG_ERROR_TESTURL_BADQUERY);
+        debug->outlog(2, "\n   Rejected: item in bad query list ");
+        return (HTDIG_ERROR_TESTURL_BADQUERY);
 	}
 
 	//
@@ -1602,9 +1934,8 @@ int Spider::IsValidURL(const String & u)
 		lowerext.lowercase();
 		if (invalids.Exists(lowerext))
 		{
-			if (debug > 2)
-				cout << endl << "   Rejected: Extension is invalid!";
-			return (HTDIG_ERROR_TESTURL_EXTENSION);
+            debug->outlog(2, "\n   Rejected: Extension is invalid!");
+            return (HTDIG_ERROR_TESTURL_EXTENSION);
 		}
 	}
 	//
@@ -1612,9 +1943,8 @@ int Spider::IsValidURL(const String & u)
 	//
 	if (ext && valids.Count() > 0 && !valids.Exists(lowerext))
 	{
-		if (debug > 2)
-			cout << endl << "   Rejected: Extension is not valid!";
-		return (HTDIG_ERROR_TESTURL_EXTENSION2);
+        debug->outlog(2, "\n   Rejected: Extension is not valid!");
+        return (HTDIG_ERROR_TESTURL_EXTENSION2);
 	}
 
 	//
@@ -1622,9 +1952,8 @@ int Spider::IsValidURL(const String & u)
 	//
 	if (limits.match(url, 1, 0) == 0)
 	{
-		if (debug > 1)
-			cout << endl << "   Rejected: URL not in the limits! ";
-		return (HTDIG_ERROR_TESTURL_LIMITS);
+        debug->outlog(1, "\n   Rejected: URL not in the limits! ");
+        return (HTDIG_ERROR_TESTURL_LIMITS);
 	}
 	//
 	// Likewise if not in list of normalized urls
@@ -1632,25 +1961,22 @@ int Spider::IsValidURL(const String & u)
 	// Warning!
 	// should be last in checks because of aUrl normalization
 	//
-		// signature()  implicitly normalizes the URL.  Be efficient...
+    // signature()  implicitly normalizes the URL.  Be efficient...
 	Server *server = (Server *) servers[aUrl.signature()];
-//	aUrl.normalize();
+    //aUrl.normalize();
 	if (limitsn.match(aUrl.get(), 1, 0) == 0)
 	{
-		if (debug > 2)
-			cout << endl << "   Rejected: not in \"limit_normalized\" list!";
-		return (HTDIG_ERROR_TESTURL_LIMITSNORM);
+        debug->outlog(2, "\n   Rejected: not in \"limit_normalized\" list!");
+        return (HTDIG_ERROR_TESTURL_LIMITSNORM);
 	}
 
 	//
-	// After that gauntlet, check to see if the server allows it
-	// (robots.txt)
+	// After that gauntlet, check to see if the server allows it (robots.txt)
 	//
 	if (server && server->IsDisallowed(url) != 0)
 	{
-		if (debug > 2)
-			cout << endl << "   Rejected: forbidden by server robots.txt!";
-		return (HTDIG_ERROR_TESTURL_ROBOT_FORBID);
+        debug->outlog(2, "\n   Rejected: forbidden by server robots.txt!");
+        return (HTDIG_ERROR_TESTURL_ROBOT_FORBID);
 	}
 
 	return (1);
@@ -1951,8 +2277,7 @@ void Spider::addURL(URL * url)
     // Rewrite the URL (if need be) before we do anything to it.
     url->rewrite();
 
-    if (debug > 2)
-        cout << "new href: " << url->get() << " (" << "no description" << ')' << endl;
+    debug->outlog(2, "new href: %s (no description)\n", url->get().get());
 
 #ifndef LIBHTDIG
     if (urls_seen)
@@ -1969,10 +2294,7 @@ void Spider::addURL(URL * url)
         // It is valid.  Normalize it (resolve cnames for
         // the server) and check again...
         //
-        if (debug > 2)
-        {
-            cout << "resolving '" << url->get() << "'" << endl;
-        }
+        debug->outlog(2, "resolving [%s]\n", url->get().get());
 
         url->normalize();
 
@@ -2004,10 +2326,7 @@ void Spider::addURL(URL * url)
             // put it in the list of URLs to still visit.
             //
             if (Need2Get(url->get())) {
-                if (debug > 1)
-                {
-                    cout << "\n   pushing " << url->get() << endl;
-                }
+                debug->outlog(1, "\n   pushing [%s]\n", url->get().get());
                 
                 server = (Server *) servers[url->signature()];
 
@@ -2036,14 +2355,11 @@ void Spider::addURL(URL * url)
                 String temp = url->get();
                 visited.Add(temp, 0);
 
-                if (debug)
-                {
-                    cout << '+';
-                }
+                debug->outlog(0, "+");
             }
-			else if (debug)
+			else 
             {
-                cout << '*';
+                debug->outlog(0, "*");
             }
         }
     }
@@ -2052,18 +2368,14 @@ void Spider::addURL(URL * url)
         //
         // Not a valid URL
         //
-        if (debug > 1)
-            cout << "\nurl rejected: (level 1)" << url->get() << endl;
-        if (debug == 1)
-            cout << '-';
+        debug->outlog(1, "\nurl rejected: (level 1) %s\n", url->get().get());
+        debug->outlog(0, "-");
 
         if (urls_seen)
         {
             fprintf(urls_seen, "%s|||||%d\n", (const char *) url->get(), valid_url_code);
         }
     }
-    if (debug)
-        cout.flush();
 }
 
 
@@ -2081,10 +2393,7 @@ void Spider::got_redirect(const char *new_url, const char *referer)
     // Rewrite the URL (if need be) before we do anything to it.
     url.rewrite();
 
-    if (debug > 2)
-    {
-        cout << "redirect: " << url.get() << endl;
-    }
+    debug->outlog(2, "redirect: [%s]\n", url.get().get());
 
     if (urls_seen)
     {
@@ -2100,10 +2409,7 @@ void Spider::got_redirect(const char *new_url, const char *referer)
         // It is valid.  Normalize it (resolve cnames for the server)
         // and check again...
         //
-        if (debug > 2)
-        {
-            cout << "resolving '" << url.get() << "'" << endl;
-        }
+        debug->outlog(2, "resolving [%s]\n", url.get().get());
 
         url.normalize();
         //
@@ -2111,8 +2417,7 @@ void Spider::got_redirect(const char *new_url, const char *referer)
         //
         if (Need2Get(url.get()))
         {
-            if (debug > 1)
-                cout << "   pushing " << url.get() << endl;
+            debug->outlog(1, "   pushing [%s]\n", url.get().get());
             Server *server = (Server *) servers[url.signature()];
             if (!server)
             {
@@ -2239,68 +2544,158 @@ void Spider::ReportStatistics(const String & name)
     cout << "===============" << endl;
 }
 
-/*
-// *****************************************************************************
-// Place a log entry into the error log
-//
-void logEntry (char *msg)
+
+
+
+void Spider::interruptClose(int signal)
 {
-    if(error_log != NULL)
+    Server *server;
+    URLRef *ref;
+
+    //
+    // close both databases
+    //
+    closeDBs();
+
+    delete doc;
+    
+    if (_cookie_jar)
+        delete _cookie_jar;
+
+    if (urls_seen)
+        fclose(urls_seen);
+    if (images_seen)
+        fclose(images_seen);
+
+    //
+    // create the URL log
+    //
+    String filelog = config->Find("url_log");
+    FILE *urls_parsed = fopen((char *) filelog, "w");
+
+    if (urls_parsed == 0)
     {
-        time_t now = time(NULL);
-    	fprintf(error_log, "[%s] %s\n", ctime(&now), msg);
+        cout << "Unable to create URL log file '" << filelog.get() << "' - dumping to screen" << endl;
+        cout << "--- Start URL dump ---" << endl;
+    }
+        
+    servers.Start_Get();
+    while ((server = (Server *) servers.Get_NextElement()))
+    {
+        while (NULL != (ref = server->pop()))
+        {
+            if (urls_parsed == 0)
+            {
+                cout << ref->GetURL().get() << endl;
+            }
+            else
+            {
+                fprintf(urls_parsed, "%s\n", (const char *) ref->GetURL().get());
+            }
+            delete ref;
+        }
     }
 
-}
-
-
-// *****************************************************************************
-// Report an error to the error log
-//
-void reportError (char *msg)
-{
-    if(error_log != NULL)
+    if (urls_parsed == 0)
     {
-        time_t now = time(NULL);
-    	fprintf(error_log, "%s  [ERROR] %s\n", ctime(&now), msg);
+        cout << "--- End URL dump ---" << endl;
+    }
+    else
+    {
+        fclose(urls_parsed);
+    }
+
+    //interruptClose();
+    //if (signal == SIGALRM && die_on_timer == 0)
+    //{
+    //    seturn signal handlers to original states
+    //    return control to calling program ???? 
+    //}
+    //else
+    {
+        exit(1);
     }
 }
 
-*/
 
-static void sigexit(int)
-{
-    noSignal = 0;   //don't exit here.. just set the flag.
-}
-
-static void sigpipe(int)
-{
-}
 
 //*****************************************************************************
 // static void sig_handlers
 //   initialise signal handlers
 //
-static void sig_handlers(void)
+void Spider::sig_handlers(int indexTimeout, int indexTimeoutPrecise)
 {
 #ifndef _MSC_VER /* _WIN32 */
+    if (interruptHandlerSpiderPointer == NULL)
+    {  
+        interruptHandlerSpiderPointer = this;
+    }
+    else
+    {
+        //
+        // only assign the global variable ONCE
+        //
+        cerr << "Tried to reassign interruptHandlerSpiderPointer! " << endl;
+    }
+
     //POSIX SIGNALS
     struct sigaction action;
 
 	/* SIGINT, SIGQUIT, SIGTERM */
     action.sa_handler = sigexit;
+
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     if (sigaction(SIGINT, &action, NULL) != 0)
-        reportError("Cannot install SIGINT handler\n");
+        cout << "Cannot install SIGINT handler" << endl;
     if (sigaction(SIGABRT, &action, NULL) != 0)
-        reportError("Cannot install SIGINT handler\n");
+        cout << "Cannot install SIGABRT handler" << endl;
     if (sigaction(SIGQUIT, &action, NULL) != 0)
-        reportError("Cannot install SIGQUIT handler\n");
+        cout << "Cannot install SIGQUIT handler" << endl;
     if (sigaction(SIGTERM, &action, NULL) != 0)
-        reportError("Cannot install SIGTERM handler\n");
+         cout << "Cannot install SIGTERM handler" << endl;
     if (sigaction(SIGHUP, &action, NULL) != 0)
-        reportError("Cannot install SIGHUP handler\n");
+        cout << "Cannot install SIGHUP handler" << endl;
+    if (sigaction(SIGALRM, &action, NULL) != 0)
+        cout << "Cannot install SIGALRM handler" << endl;
+
+    if (indexTimeout > 0)
+    {
+        struct itimerval itimer;
+
+        //
+        // non-repeating
+        //
+        itimer . it_interval . tv_sec = 0;
+        itimer . it_interval . tv_usec = 0;
+ 
+        itimer . it_value . tv_sec = indexTimeout;
+        itimer . it_value . tv_usec = 0;
+
+        if (setitimer (ITIMER_REAL, &itimer, NULL) < 0)
+        {
+            cout << "Could not setitimer for index_timeout" << endl;
+        }
+    }
+
+    if (indexTimeoutPrecise > 0)
+    {
+        struct itimerval itimer;
+
+        //
+        // non-repeating
+        //
+        itimer . it_interval . tv_sec = 0;
+        itimer . it_interval . tv_usec = 0;
+ 
+        itimer . it_value . tv_sec = indexTimeoutPrecise;
+        itimer . it_value . tv_usec = 0;
+
+        if (setitimer (ITIMER_VIRTUAL, &itimer, NULL) < 0)
+        {
+            cout << "Could not setitimer for index_timeout_precise" << endl;
+        }
+    }
 #else
     //ANSI C signal handling - Limited to supported Windows signals.
     signal(SIGINT, sigexit); 
@@ -2310,7 +2705,7 @@ static void sig_handlers(void)
 
 
 
-static void sig_phandler(void)
+void Spider::sig_phandler(void)
 {
 #ifndef _MSC_VER /* _WIN32 */
     struct sigaction action;
@@ -2321,7 +2716,6 @@ static void sig_phandler(void)
     if (sigaction(SIGPIPE, &action, NULL) != 0)
     {
         cout << "Cannot install SIGPIPE handler" << endl;
-        reportError("Cannot install SIGPIPE handler\n");
     }
 #endif //_MSC_VER /* _WIN32 */
 }
@@ -2331,7 +2725,7 @@ static void sig_phandler(void)
 // static void win32_check_messages
 //   Check WIN32 messages!
 //
-static void win32_check_messages(void)
+void Spider::win32_check_messages(void)
 {
 #ifdef _MSC_VER /* _WIN32 */
 // NEAL - NEEDS FINISHING/TESTING
@@ -2369,6 +2763,15 @@ static void win32_check_messages(void)
     DispatchMessage(&msg);
 #endif
 #endif //_MSC_VER /* _WIN32 */
+}
+
+void sigexit(int signal)
+{
+    interruptHandlerSpiderPointer->interruptClose(signal);
+}
+
+void sigpipe(int)
+{
 }
 
 
