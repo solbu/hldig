@@ -1,0 +1,20 @@
+*** env/db_salloc.c.orig        Tue Oct 19 17:22:12 1999
+--- env/db_salloc.c     Wed Dec 31 19:00:00 1969
+***************
+*** 94,101 ****
+           */
+          ++len;
+  #endif
+!       align = align <= sizeof(size_t) ?
+!           sizeof(size_t) : ALIGN(align, sizeof(size_t));
+  
+        /* Walk the list, looking for a slot. */
+        for (elp = SH_LIST_FIRST((struct __head *)p, __data);
+--- 94,100 ----
+           */
+          ++len;
+  #endif
+!       align = 8;
+  
+        /* Walk the list, looking for a slot. */
+        for (elp = SH_LIST_FIRST((struct __head *)p, __data);
