@@ -1,9 +1,0 @@
-Berkeley DB-3.0.55 in a single directory
-
-Contains a patch to compress pages on the fly.
-
-The prefix-symbols.sh script was run to prefix all external 
-symbols with CDB_ so that no conflict with an original library
-can occur.
-
-Tested on RedHat-6.2 and Solaris-2.6
