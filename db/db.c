@@ -641,11 +641,18 @@ CDB___db_file_setup(dbp, name, flags, mode, meta_pgno, zerop)
 	 * we can't close it because that would discard the caller's lock.
 	 * Save it until we close the DB handle.
 	 */
-	if (LF_ISSET(DB_FCNTL_LOCKING)) {
+	if (LF_ISSET(DB_FCNTL_LOCKING)) 
+	{
 		if ((ret = CDB___os_malloc(sizeof(*fhp), NULL, &fhp)) != 0)
+		{	
 			return (ret);
-	} else
+		}
+	}
+    else
+	{
 		fhp = &fh;
+        memset(fhp, 0, sizeof(*fhp)); // this is so insure and similar utilities don't complain
+	}
 	F_CLR(fhp, DB_FH_VALID);
 
 	/*
