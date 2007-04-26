@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.1.2.1 2006/09/25 23:50:32 aarnone Exp $
+// $Id: defaults.cc,v 1.1.2.2 2007/04/26 16:19:44 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -140,6 +140,13 @@ ConfigDefaults	defaults[] =
 	there is no way to index either \"soft\" or \"hard\" \
 	virtual web sites. \
 " }, \
+{ "alwaysreturn", "",  \
+	"pattern list", "htsearch", "", "4.0", "Searching:Method", "alwaysreturn: important.com/docs/", " \
+	If a URL contains any of the space separated patterns, it will be \
+	returned in the searching phase. This setting overrides both the \
+	exclude and restrict options. The list can be specified from within \
+	the configuration file, and can be overridden with the API. \
+" }, \
 { "anchor_target", "",  \
 	"string", "htsearch", "", "3.1.6", "Presentation:How", "anchor_target: body", " \
 	When the first matched word in the excerpt is linked \
@@ -168,12 +175,14 @@ ConfigDefaults	defaults[] =
 	See also <a href=\"#heading_factor\">heading_factor</a>. \
 " }, \
 { "authorization", "",  \
-	"string", "htdig", "URL", "3.1.4", "Indexing:Out", "authorization: myusername:mypassword", " \
+	"string list", "htdig", "URL", "4.0", "Indexing:Out", "authorization: myserver|myusername|mypassword", " \
 	This tells htdig to send the supplied \
-	<em>username</em><strong>:</strong><em>password</em> with each HTTP request. \
+	<em>username</em><strong>:</strong><em>password</em> with each HTTP request \
+    to the specified server. Different servers/pages can be represened \
+    with regular expressions. When a new page is encountered, the list \
+    is traversed in order, so the most specific entry should be at the top. \
 	The credentials will be encoded using the \"Basic\" authentication \
-	scheme. There <em>must</em> be a colon (:) between the username and \
-	password.<br> \
+	scheme. There <em>must</em> be a pipe character (|) between the fields.<br> \
 	This attribute can also be specified on htdig's command line using \
 	the -u option, and will be blotted out so it won't show up in a \
 	process listing. If you use it directly in a configuration file, \
@@ -1164,7 +1173,7 @@ http://www.htdig.org/", " \
     	even if the \"or\" (\"Any\") <a href=\"#method\">method</a> is \
 	selected. \
 " }, \
-{ "keywords_factor", "100",  \
+{ "keywords_factor", "35",  \
 	"number", "htsearch", "", "all", "Searching:Ranking", "keywords_factor: 12", " \
 	This is a factor which will be used to multiply the \
 	weight of words in the list of \
@@ -1462,7 +1471,7 @@ http://www.htdig.org/", " \
 	truncated when put into the index, or searched in the \
 	index. \
 " }, \
-{ "meta_description_factor", "50",  \
+{ "meta_description_factor", "35",  \
 	"number", "htsearch", "", "3.1.0b1", "Searching:Ranking", "meta_description_factor: 20", " \
 	This is a factor which will be used to multiply the \
 	weight of words in any META description tags in a document. \
@@ -1983,12 +1992,13 @@ http://www.htdig.org/", " \
 	the last 90 days. \
 " }, \
 { "stemming_factor", "1",  \
-	"number", "htsearch", "", "3.0", "Searching:Ranking", "stemming_factor: 0", " \
+	"number", "htsearch", "", "4.0", "Searching:Ranking", "stemming_factor: 3", " \
 	This is a factor which will weight stemmed versions of words \
     found in documents. There is only one stemmed field \
     that incorporates text from all other fields. Setting \
     a factor to 0 will cause all stemmed words \
-	to be ignored. The number may be a floating point \
+	to be ignored in searching (though this won't delete them from the index). \
+    The number may be a floating point \
 	number. See also the <a href=\"#synonym_factor\"> synonym_factor</a> \
 	attribute. \
 " }, \
@@ -2013,6 +2023,17 @@ http://www.htdig.org/", " \
 	"string", "htsearch", "", "all", "Presentation:Files", "syntax_error_file: ${common_dir}/synerror.html", " \
 	This points to the file which will be displayed if a \
 	boolean expression syntax error was found. \
+" }, \
+{ "synonym_factor", "1",  \
+	"number", "htsearch", "", "4.0", "Searching:Ranking", "synonym_factor: 3", " \
+	This is a factor which will weight synonyms of words \
+    found in documents. There is only one synonym field \
+    that incorporates text from all other fields. Setting \
+    a factor to 0 will cause all synonyms \
+	to be ignored in searching (though this won't delete them from the index). \
+    The number may be a floating point \
+	number. See also the <a href=\"#stemming_factor\"> stemming_factor</a> \
+	attribute. \
 " }, \
 { "tcp_max_retries", "1",  \
 	"integer", "htdig", "Server", "3.2.0b1", "Indexing:Connection", "tcp_max_retries: 6", " \
@@ -2097,7 +2118,7 @@ http://www.htdig.org/", " \
 	transformation from a network to a notwork.<br> \
 	The timeout is specified in seconds. \
 " }, \
-{ "title_factor", "100",  \
+{ "title_factor", "50",  \
 	"number", "htsearch", "", "all", "Searching:Ranking", "title_factor: 12", " \
 	This is a factor which will be used to multiply the \
 	weight of words in the title of a document. Setting a \
@@ -2267,6 +2288,12 @@ form during indexing and translated for results. \
 	excerpts by htsearch. Any documents that do not have META \
 	descriptions will retain their normal excerpts. \
 " }, \
+{ "use_score_smoothing", "false",  \
+	"boolean", "htsearch", "", "4.0", "", "use_score_smoothing: true", " \
+	This will attempt to smooth out search result scores using a logarithmic function. \
+    Mostly usefull if you are afraid of scores on results being highly dissimilar, like \
+    one very high score and the rest near zero. \
+" }, \
 { "use_star_image", "true",  \
 	"boolean", "htsearch", "", "all", "Presentation:How", "use_star_image: no", " \
 	If set to true, the <em><a href=\"#star_image\"> \
@@ -2275,11 +2302,11 @@ form during indexing and translated for results. \
 	each match. \
 " }, \
 { "use_stemming", "true",  \
-	"boolean", "htdig", "", "3.2.0b5", "Indexing:How", "use_stemming: false", " \
+	"boolean", "htdig", "", "4.0", "Indexing:How", "use_stemming: false", " \
 	Causes htdig to generate and use stemmed words when indexing and searching \
 " }, \
 { "use_synonyms", "false",  \
-	"boolean", "htdig", "", "3.2.0b5", "Indexing:How", "use_synonyms: true", " \
+	"boolean", "htdig", "", "4.0", "Indexing:How", "use_synonyms: true", " \
 	Causes htdig to generate and store \
     synonyms for every word seen \
     during indexing, and \
