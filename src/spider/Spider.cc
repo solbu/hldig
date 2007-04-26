@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Spider.cc,v 1.1.2.1 2006/09/25 23:51:13 aarnone Exp $
+// $Id: Spider.cc,v 1.1.2.2 2007/04/26 17:05:15 aarnone Exp $
 //
 
 
@@ -235,8 +235,9 @@ void Spider::openDBs(htdig_parameters_struct * params)
         ifstream infile(stopWordsFilename.c_str());
         if (infile.is_open())
         {
-            debug->outlog(4, "Stopwords from [%s]:\n", stopWordsFilename.c_str());
+            debug->outlog(4, "Using stopword file [%s]\n", stopWordsFilename.c_str());
 
+            debug->outlog(6, "Stopwords: ");
             while (infile.good())
             {
                 char line[255];
@@ -245,27 +246,28 @@ void Spider::openDBs(htdig_parameters_struct * params)
 
                 lineLength = strlen(line);
                 while (lineLength > 0 &&
-                        (line[lineLength] == '\n' ||
-                         line[lineLength] == '\r' ||
-                         line[lineLength] == ' ')
+                        (line[lineLength - 1] == '\n' ||
+                         line[lineLength - 1] == '\r' ||
+                         line[lineLength - 1] == ' ')
                       )
                 {
-                    line[lineLength] = '\0';
+                    line[lineLength - 1] = '\0';
                     lineLength--;
                 }
                 //
                 // it might have been trimmed to zero length, or possibly a comment
                 //
-                if (lineLength == 0 || line[0] == '#')
+                if (lineLength <= 0 || line[0] == '#')
                 {
                     continue;
                 }
                 else
                 {
                     stopWords.insert(line);
-                    debug->outlog(4, "%s\n", line);
+                    debug->outlog(6, "%s ", line);
                 }
             }
+            debug->outlog(6, "\n");
         }
         else 
         {
@@ -309,9 +311,9 @@ void Spider::openDBs(htdig_parameters_struct * params)
         debug->outlog(0, "Deleting old indexDB\n");
         unlink(index_filename);
     }
-    debug->outlog(0, "Opening indexDB here: %s", index_filename.get());
+    debug->outlog(0, "Opening indexDB here: [%s]\n", index_filename.get());
     indexDatabase.Open(index_filename);
-    debug->outlog(0, " ... success\n");
+    debug->outlog(0, "indexDB open succeeded\n");
 
     
     //
@@ -321,16 +323,15 @@ void Spider::openDBs(htdig_parameters_struct * params)
     const String db_dir_filename = config->Find("database_dir");
     if (!params->alt_work_area) 
     {
-        debug->outlog(0, "Opening CLucene database here: %s", db_dir_filename.get());
+        debug->outlog(0, "Opening CLucene database here: [%s]\n", db_dir_filename.get());
         CLuceneOpenIndex(form("%s/CLuceneDB", (char *)db_dir_filename.get()), params->initial ? 1 : 0, &stopWords);
-        debug->outlog(0, " ... success\n");
     }
     else
     {
-        debug->outlog(0, "Opening CLucene database (working copy) here: %s", db_dir_filename.get());
+        debug->outlog(0, "Opening CLucene database (working copy) here: [%s]\n", db_dir_filename.get());
         CLuceneOpenIndex(form("%s/CLuceneDB.work", (char *)db_dir_filename.get()), params->initial ? 1 : 0, &stopWords);
-        debug->outlog(0, " ... success\n");
     }
+    debug->outlog(0, "CLucene database open succeeded\n");
 
     DBsOpen = true;
 }
@@ -376,6 +377,7 @@ void Spider::setupConfigurationFile(htdig_parameters_struct * params)
         else
         {
             config->Read(configFile);
+            debug->outlog(0, "Using configuration file [%s]\n", configFile.get());
         }
     }
 }
@@ -434,7 +436,7 @@ void Spider::setupSpiderFilters(htdig_parameters_struct * params)
 
     if(strlen(params->credentials) > 0)
     {
-        config->Add("authorization", credentials);
+        config->Add("authorization", params->credentials);
     }
 
 }
@@ -462,7 +464,10 @@ void Spider::initializeQueue(htdig_parameters_struct * params)
         // there are URLs specified, index these 
         // instead of doing a usual dig
         //
-        String str;
+        String str = params->URL;
+        Initial(str, 1);
+
+        /*
         char * temp_URL_list = strdup(params->URL);
         char * temp_url = strtok(temp_URL_list, URL_SEPCHARS);
         while (temp_url != NULL)
@@ -475,6 +480,7 @@ void Spider::initializeQueue(htdig_parameters_struct * params)
             temp_url = strtok(NULL, URL_SEPCHARS);
         }
         free(temp_URL_list);
+        */
     }
     else
     {
@@ -1092,12 +1098,22 @@ singleDoc * Spider::fetchSingleDoc(string * url)
 // a robots.txt retrieve, so this can be a bit slow. if the addToSpiderQueue flag
 // is set to false, the spiderable flag will be set to false before inserting into
 // the indexDB, so that this document will not be revisited on future spidering runs.
+// in order to ensure document uniqueness, the doc-name field of the singleDoc will
+// actually hold the URL of spiderable documents, and be stored as such. this is
+// slightly counterintuitive (since the url field isn't used for spidering), but 
+// this will allow the same web address to be stored under different unique names.
+// remember, the actual URL in the url field will always be reserved for regular
+// spider runs.
+//
+// TODO: make a real documentation paragraph that explains what the options are for 
+// this function, in non-confusing terms
 //
 int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, bool addToSpiderQueue)
 {
     bool needToDelete = false;
 
-    debug->outlog(0, "Index Single: URL=[%s] ID=[%s]", (*newDoc)["url"].c_str(), (*newDoc)["id"].c_str());
+    debug->outlog(0, "Index Single: URL=[%s] Name=[%s] ID=[%s]",
+            (*newDoc)["url"].c_str(), (*newDoc)["name"].c_str(), (*newDoc)["id"].c_str());
 
     //
     // get the old document information out of the indexDB 
@@ -1138,9 +1154,9 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
 
             if (urls_seen)
             {
-                fprintf(urls_seen, "%s|%d|%d|%s|%d|1|2\n",
-                        (indexDoc->DocURL()).get(), indexDoc->DocID(), indexDoc->DocSize(),
-                        doc->ContentType(), (int)indexDoc->DocTime());
+                fprintf(urls_seen, "%s|%s|%d|%s|%d|1|%d|2\n",
+                        (indexDoc->DocURL()).get(), indexDoc->DocID().get(), indexDoc->DocSize(),
+                        doc->ContentType(), (int)indexDoc->DocTime(), (int)time(NULL));
             }
 
             delete indexDoc;
@@ -1149,6 +1165,15 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
             return 1;
         }
     }
+    else
+    {
+        if (indexDoc != NULL)
+        {
+            delete indexDoc;
+            indexDoc = NULL;
+        }
+        debug->outlog(0, " (new document)");
+    }
     debug->outlog(0, "\n");
 
     if (spiderable)
@@ -1156,9 +1181,10 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
         //
         // try to spider the URL, while handling redirects
         //
+        debug->outlog(2, "AddSingle: Attempting to retrieve [%s]", (*newDoc)["name"].c_str());
 
         Transport::DocStatus status = Transport::Document_ok;
-        String tempURLString = (*newDoc)["url"].c_str();
+        String tempURLString = (*newDoc)["name"].c_str();
 
         do {
             Server * server;
@@ -1191,12 +1217,12 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
             // this document was specifically requested with the addSingle call, use
             // zero as the time, so it will be retrieved every time.
             //
-            status = retrieveDoc(*tempURLRef, indexDoc->DocTime());
+            status = retrieveDoc(*tempURLRef, 0);
 
             if (status == Transport::Document_redirect)
             {
                 tempURLString = doc->Redirected();
-                debug->outlog(2, "%s (redirect)\n", tempURLString.get());
+                debug->outlog(2, "AddSingle: %s (redirect)\n", tempURLString.get());
             }
 
             delete tempURL;
@@ -1212,16 +1238,17 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
             //
             // awww... the documents was marked spiderable, but wasn't retrievable
             //
-            debug->outlog(2, " FAIL\n");
+            debug->outlog(2, "AddSingle: marked spiderable, but retrieve FAIL\n");
 
             if (urls_seen)
             {
-                fprintf(urls_seen, "%s||||||%d\n", (indexDoc->DocURL()).get(), HTDIG_ERROR_ADD_SINGLE_RETRIEVE);
+                fprintf(urls_seen, "%s||||||%d|%d\n", (indexDoc->DocURL()).get(),
+                       (int)time(NULL), HTDIG_ERROR_ADD_SINGLE_RETRIEVE);
             }
 
             return 0;
         }
-        debug->outlog(2, " success\n");
+        debug->outlog(2, "AddSingle: retrieve success\n");
         
     }
     else
@@ -1231,8 +1258,8 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
         // isn't spiderable, it has to be done manually
         //
         doc->Reset();
-        doc->Url((*newDoc)["url"].c_str());
-        debug->outlog(2, "Not Retrieving [%s]\n", (*newDoc)["url"].c_str());
+        //doc->Url((*newDoc)["name"].c_str());
+        debug->outlog(2, "AddSingle: Not Retrieving [%s]\n", (*newDoc)["url"].c_str());
     }
 
     //
@@ -1246,22 +1273,30 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
     indexDoc = new IndexDBRef;
 
     indexDoc->DocURL((*newDoc)["url"].c_str());
+    indexDoc->DocName((*newDoc)["name"].c_str());
+    indexDoc->DocID((*newDoc)["id"].c_str());
+    // indexDoc hopcount is irrelevant (as in the default will be fine)
+    // indexDoc backlink count is irrelevant (as in the default will be fine)
     if(spiderable)
     {
+        //
+        // since this is spiderable, and there hasn't been an error yet, doc
+        // should actually have the real length of the spiderable document now,
+        // and the real time
+        //
         indexDoc->DocSize(doc->Length());
-     
-        //
-        // external parsing ???????
-        //
+        indexDoc->DocTime(doc->ModTime());
     }
     else
     {
+        //
+        // not spiderable, so just use the length of the given contents
+        // and the alternate time
+        //
         indexDoc->DocSize((*newDoc)["contents"].length());
+        indexDoc->DocTime(altTime);
     }
-    indexDoc->DocTime(doc->ModTime());
     indexDoc->DocAltTime(altTime);
-    // hopcount is irrelevant (as in the default will be fine)
-    // backlink count is irrelevant (as in the default will be fine)
 
     //
     // if the document is to be added to the queue for next time the regular spider
@@ -1269,10 +1304,12 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
     //
     if (addToSpiderQueue && spiderable)
     {
+        debug->outlog(2, "AddSingle: Adding [%s] to future spider runs\n", (*newDoc)["url"].c_str());
         indexDoc->DocSpiderable(1);
     }
     else
     {
+        debug->outlog(2, "AddSingle: Omitting [%s] from future spider runs\n", (*newDoc)["url"].c_str());
         indexDoc->DocSpiderable(0);
     }
 
@@ -1290,7 +1327,7 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
     // the title and meta description need to be added to the CLucene
     // document. however, these might also be discovered during parsing.
     // therefore, wait until after parsing and then replace these
-    // parsed-out fields. stemmed and synonm fields are treated as normal.
+    // parsed-out fields. stemmed and synonym fields are treated as normal.
     //
     if (config->Boolean("use_stemming"))
     {
@@ -1300,20 +1337,22 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
 
     if (config->Boolean("use_synonyms"))
     {
-        CLuceneDoc->appendField("synonym", (*newDoc)["meta-desc"].c_str());
         CLuceneDoc->appendField("synonym", (*newDoc)["title"].c_str());
+        CLuceneDoc->appendField("synonym", (*newDoc)["meta-desc"].c_str());
     }
 
     //
     // parse the actual document. the URLs seen can be ignored, as
-    // can the noIndex flag (obviously someone wants it in the index)
+    // can the returned noIndex flag (obviously someone wants it in the index)
     //
     if (spiderable)
     {
+        debug->outlog(2, "AddSingle: Parsing contents from retrieved document\n");
         parseDoc(doc->Contents(), false);
     }
     else
     {
+        debug->outlog(2, "AddSingle: Parsing contents from passed-in document\n");
         parseDoc((char*)(*newDoc)["contents"].c_str(), false);
     }
 
@@ -1341,19 +1380,7 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
         free(temp);
 
         CLuceneDoc->insertField("meta-desc", (*newDoc)["meta-desc"].c_str());
-        CLuceneDoc->insertField("doc-meta-desc", (*newDoc)["meta-desc"].c_str());
     }
-
-    //
-    // Add the URL to the CLucene doc
-    //
-    CLuceneDoc->insertField("url", (*newDoc)["url"].c_str());
-
-    //
-    // add the document ID
-    //
-    CLuceneDoc->insertField("doc-id", (*newDoc)["id"].c_str());
-
 
     //
     // if the document is already in the DBs, erase it now that
@@ -1371,9 +1398,9 @@ int Spider::addSingleDoc(singleDoc * newDoc, time_t altTime, int spiderable, boo
 
     if (urls_seen)
     {
-        fprintf(urls_seen, "%s|%d|%d|%s|%d|1|1\n",
-                (indexDoc->DocURL()).get(), indexDoc->DocID(), indexDoc->DocSize(),
-                doc->ContentType(), (int)indexDoc->DocTime());
+        fprintf(urls_seen, "%s|%s|%d|%s|%d|1|%d|1\n",
+                (*newDoc)["url"].c_str(), (*newDoc)["id"].c_str(), indexDoc->DocSize(),
+                doc->ContentType(), (int)indexDoc->DocTime(), (int)time(NULL));
     }
 
     if (CLuceneDoc != NULL)
@@ -1453,6 +1480,7 @@ void Spider::parse_url(URLRef & urlRef)
         // We already have an entry for this document in our database.
         //
         old_document = true;
+        debug->outlog(0, " (existing document)\n");
 
         //
         // this can VASTLY overinflate the backcount number... this
@@ -1478,6 +1506,7 @@ void Spider::parse_url(URLRef & urlRef)
         // Never seen this document before.  We need to create a
         // new IndexDBRef for it
         //
+        debug->outlog(0, " (new document)\n");
         old_document = false;
 
         if (indexDoc != NULL)
@@ -1487,7 +1516,10 @@ void Spider::parse_url(URLRef & urlRef)
         }
         indexDoc = new IndexDBRef;
         indexDoc->DocURL(url.get());
+        indexDoc->DocName(url.get());   // name and URL are the same for spiderable docs.
+        indexDoc->DocID("0");
         indexDoc->DocTime(0);
+        indexDoc->DocAltTime(0);
         indexDoc->DocHopCount(currenthopcount);
         indexDoc->DocBacklinks(1);
         indexDoc->DocSpiderable(1);
@@ -1504,6 +1536,15 @@ void Spider::parse_url(URLRef & urlRef)
 
     case Transport::Document_ok:
 
+        //
+        // there's some text there, so try to parse it
+        // 
+        if (doc->parse() == false)
+        {
+            debug->outlog(0, " external parse failed\n");
+            break;
+        }
+
         if (old_document)
         {
             //
@@ -1511,6 +1552,7 @@ void Spider::parse_url(URLRef & urlRef)
             // we were able to retrieve it, it must have changed
             // since the last time we scanned it. So...
             //
+            debug->outlog(0, "%s has changed\n", indexDoc->DocURL().get());
 
             //
             // erase old document from CLucene (by URL)
@@ -1518,21 +1560,15 @@ void Spider::parse_url(URLRef & urlRef)
             string * tempURL = new string(indexDoc->DocURL().get());
             DeleteDoc(tempURL);
             delete tempURL;
-
-
-            debug->outlog(0, " (changed) ");
         }
         indexDoc->DocSize(doc->Length());
         indexDoc->DocTime(doc->ModTime());
-
-        //
-        // external parsing using doc->ContentType() or doc->getParsable()
-        //
+        indexDoc->DocAltTime(doc->ModTime());
 
         //
         // create the CLuceneDoc. since this is a standard
-        // HTML document, there's no need for special field
-        // inserts or anything.
+        // HTML document, the only special field is the doc-name,
+        // which is the same as the actual URL
         //
         if (CLuceneDoc != NULL)
         {
@@ -1542,8 +1578,13 @@ void Spider::parse_url(URLRef & urlRef)
         CLuceneDoc = new DocumentRef;
 
         //
-        // parse the contents of the retrieved doc. by now, they should be
-        // converted by external parsers, too
+        // Add the Name to the CLucene doc
+        //
+        debug->outlog(5, "Adding name field to CLuceneDoc\n");
+        CLuceneDoc->insertField("doc-name", (doc->Url()->get()).get());
+
+        //
+        // parse the contents of the retrieved doc.
         //
         if (parseDoc(doc->Contents()))
         {
@@ -1556,9 +1597,9 @@ void Spider::parse_url(URLRef & urlRef)
 
             if (urls_seen)
             {
-                fprintf(urls_seen, "%s||%d|%d|%s|%d|%d|1\n",
-                        (indexDoc->DocURL()).get(), indexDoc->DocID(), indexDoc->DocSize(),
-                        doc->ContentType(), (int)indexDoc->DocTime(), currenthopcount);
+                fprintf(urls_seen, "%s|%s|%d|%s|%d|%d|%d|1\n",
+                        (indexDoc->DocURL()).get(), indexDoc->DocID().get(), indexDoc->DocSize(),
+                        doc->ContentType(), (int)indexDoc->DocTime(), currenthopcount, (int)time(NULL));
             }
         }
         else
@@ -1690,11 +1731,11 @@ Transport::DocStatus Spider::retrieveDoc(URLRef & urlRef, time_t date)
         status = doc->RetrieveLocal(date, local_filenames);
         if (status == Transport::Document_not_local)
         {
+            debug->outlog(1, "Local retrieval failed, trying HTTP\n");
             if (currentServer && !currentServer->IsDead() && !local_urls_only)
                 status = doc->Retrieve(currentServer, date);
             else
                 status = Transport::Document_no_host;
-            debug->outlog(1, "Local retrieval failed, trying HTTP\n");
         }
         delete local_filenames;
     }
@@ -1708,16 +1749,16 @@ Transport::DocStatus Spider::retrieveDoc(URLRef & urlRef, time_t date)
 
 // ------------------------------------------------------------
 //
-// Pre:  - doc has ALL of its fields filled
-//       - CLucene document has been initialized, and any important text 
-//           has been inserted into the appropriate fields - some exceptions: 
-//           size, time and URL will be added here
-//       - contents contains the document in parsable form (external parsing is done)
+// Pre:  - indexDoc has ALL of its fields filled
+//       - CLucene document has been initialized, and any custom text 
+//           has been inserted into the appropriate fields
+//       - some fields that are done in this function: 
+//           size, time, alt-time, id, name, and URL
+//       - contents contains the document in HTML or plaintext form
 //       - follow set to whether the URLs found in parsing are to be followed or not
 //
-// Post: - doc contents have been translated to html with external parsers
-//       - doc contents have been parsed by HTMLTidy into the CLucene document
-//       - the indexDoc time might have been updated after parsing
+// Post: - contents have been parsed by HTMLTidy into the CLucene document
+//       - the indexDoc time might have been updated after parsing (from META info)
 //       - All URLs from parsing have been added to the queue
 //       - indexDoc and CLuceneDoc are ready to be inserted into the DBs (though
 //           further modification is possible)
@@ -1726,22 +1767,8 @@ Transport::DocStatus Spider::retrieveDoc(URLRef & urlRef, time_t date)
 //
 bool Spider::parseDoc(char * contents, bool follow)
 {
-    char tempTime[32];
-    char tempSize[32];
+    char tempField[32]; // used in the sprintf calls
 
-    // finalEncoding = doc->convert()
-    // if finalEncoding == plaintext
-    // {
-    //   CLuceneDoc->InsertField("contents", doc->contents);
-    // }
-    // else if finalEncoding == html
-    // {
-    //   execute code below
-    // }
-    // else
-    // {
-    //   return false
-    // } 
     //
     // initialize the parser with the CLucene doc and
     // with the encoding type 
@@ -1751,24 +1778,44 @@ bool Spider::parseDoc(char * contents, bool follow)
     //tparser.initialize(CLuceneDoc, doc->ContentType());
 
     //
+    // Add the URL to the CLucene doc
+    //
+    debug->outlog(5, "Adding url field to CLuceneDoc\n");
+    CLuceneDoc->insertField("url", indexDoc->DocURL().get());
+
+    //
+    // Add the name to the CLucene doc
+    //
+    debug->outlog(5, "Adding doc-name field to CLuceneDoc\n");
+    CLuceneDoc->insertField("doc-name", indexDoc->DocName().get());
+
+    //
+    // add the ID to the CLucene doc
+    //
+    debug->outlog(5, "Adding id field to CLuceneDoc\n");
+    CLuceneDoc->insertField("id", indexDoc->DocID().get());
+
+    //
     // add the time to the CLucene doc
     //
     debug->outlog(5, "Adding doc-time field to CLuceneDoc\n");
-    sprintf(tempTime, "%d", (int)doc->ModTime());
-    CLuceneDoc->insertField("doc-time", tempTime);
+    sprintf(tempField, "%d", (int)indexDoc->DocTime());
+    CLuceneDoc->insertField("doc-time", tempField);
+
+    //
+    // add the alternate time to the CLucene doc
+    //
+    debug->outlog(5, "Adding doc-alt-time field to CLuceneDoc\n");
+    sprintf(tempField, "%d", (int)indexDoc->DocAltTime());
+    CLuceneDoc->insertField("doc-alt-time", tempField);
 
     //
     // add the document size to the CLucene doc
     //
     debug->outlog(5, "Adding doc-size field to CLuceneDoc\n");
-    sprintf(tempSize, "%d", doc->Length());
-    CLuceneDoc->insertField("doc-size", tempSize);
+    sprintf(tempField, "%d", indexDoc->DocSize());
+    CLuceneDoc->insertField("doc-size", tempField);
 
-    //
-    // Add the URL to the CLucene doc
-    //
-    debug->outlog(5, "Adding url field to CLuceneDoc\n");
-    CLuceneDoc->insertField("url", (doc->Url()->get()).get());
 
     //
     // parse the actual document, recieving the parsed urls in return
@@ -1777,15 +1824,16 @@ bool Spider::parseDoc(char * contents, bool follow)
     set<string> URLlist = tparser.parseDoc(contents);
     debug->outlog(3, "Parse complete, retrieved URLlist from TidyParser\n");
 
+
     //
     // now that parsing is finished, the 'true' time is
     // known (the time might have been specified in a meta tag)
     // 
     debug->outlog(5, "Adding parsed out doc-time to IndexDoc\n");
-    char* tempTime2 = CLuceneDoc->getField("doc-time");
-    time_t t = atoi(tempTime2);
+    char* tempTime = CLuceneDoc->getField("doc-time");
+    time_t t = atoi(tempTime);
     indexDoc->DocTime(mktime(gmtime(&t)));
-    free(tempTime2);
+    free(tempTime);
 
     //
     // add all the URLs seen to the queue (if there are any), but only if follow says to
@@ -1833,9 +1881,10 @@ int Spider::DeleteDoc(string * input)
 int Spider::DeleteDoc(int input)
 {
     // 
-    // TODO: the URL associated with the doc-id will need to be
+    // TODO: the URL associated with the document id will need to be
     // returned (probably from CLucene, meaning the CLuceneAPI will need
-    // to change), so the document can be deleted from the indexDB.
+    // to change), so the document can be deleted from the indexDB. for
+    // now, this will cause inconsistencies between the IndexDB and CLucene
     //
 
     return CLuceneDeleteIDFromIndex(input);
@@ -2437,7 +2486,7 @@ void Spider::addURL(URL * url)
 
         if (urls_seen)
         {
-            fprintf(urls_seen, "%s|||||%d\n", (const char *) url->get(), valid_url_code);
+            fprintf(urls_seen, "%s||||||%d|%d\n", (const char *) url->get(), (int)time(NULL), valid_url_code);
         }
     }
 }
