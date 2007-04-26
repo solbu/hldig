@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: IndexDBRef.h,v 1.1.2.1 2006/09/25 23:50:31 aarnone Exp $
+// $Id: IndexDBRef.h,v 1.1.2.2 2007/04/26 16:26:15 aarnone Exp $
 //
 
 #ifndef _IndexDBRef_h_
@@ -37,25 +37,27 @@ class IndexDBRef : public Object
     // Get functions
     //
     String          DocURL()                {return URL;}
+    String          DocName()               {return doc_name;}
+    String          DocID()                 {return id;} 
     time_t          DocTime()               {return time;}
     time_t          DocAltTime()            {return alt_time;}
     time_t          DocExpired()            {return expired;}
-    int             DocID()                 {return id;} 
     int             DocSig()                {return sig;} 
     int             DocHopCount()           {return hopCount;}
     int             DocBacklinks()          {return backlinks;}
-    int             DocSize()               {return docSize;}
     int             DocSpiderable()         {return spiderable;}
+    int             DocSize()               {return docSize;}
 //    List            *Descriptions()         {return &descriptions;}
 
     //
     // Set functions
     // 
     void        DocURL(const char *u)       {URL = u;}
+    void        DocName(const char *u)      {doc_name = u;}
+    void        DocID(const char *u)        {id = u;}
     void        DocTime(time_t t)           {time = t;}
     void        DocAltTime(time_t t)        {alt_time = t;}
     void        DocExpired(time_t e)        {expired = e;}
-    void        DocID(int i)                {id = i;}
     void        DocSig(int i)               {sig = i;}
     void        DocHopCount(int i)          {hopCount = i;}
     void        DocBacklinks(int i)         {backlinks = i;} 
@@ -81,13 +83,27 @@ class IndexDBRef : public Object
 
 
     protected:
-    // This is the URL of the document.
+
+    // 
+    // This is the URL of the document (the key for BDB).
+    //
     String      URL;
 
 
     //
-    // These values will be stored when serializing
+    // The rest of these variables will be stored when serializing
     //
+
+    // for normal spider runs, this is just a copy of the URL. however, for
+    // documents added through add_single, this will be the name of the doc_name
+    // parameter passed in to the function (which may or may not be spiderable).
+    // So, for instance, if you want to add a text document that is in memory, URL
+    // will be something like 'TXTDOC05' and doc_name will be 'myfile.txt'
+    String      doc_name;
+
+    // This is the id for the document. This is available as an alternate
+    // identification method to URL (although the index is still URL based)
+    String      id;
 
     // This is the time specified in the document's header
     // Usually that's the last modified time, for servers that return it.
@@ -114,16 +130,12 @@ class IndexDBRef : public Object
     // This is a count of the links to the document (incoming links).
     int         backlinks;
 
-    // This is the id for the document. This is available as an alternate
-    // identification method to URL (although the index is still URL based)
-    int         id;
-
     // this is the size of the document
     int         docSize;
 
     // this denotes if the document is considered spiderable: 
     // AKA it is not not retrievable (certain custom documents
-    // might not be spiderable)
+    // might not be spiderable - see doc_name)
     int         spiderable;
 
     // This is a list of Strings, the text of links pointing to this document.

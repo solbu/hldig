@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: IndexDBRef.cc,v 1.1.2.1 2006/09/25 23:50:31 aarnone Exp $
+// $Id: IndexDBRef.cc,v 1.1.2.2 2007/04/26 16:26:15 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -64,6 +64,7 @@ IndexDBRef::~IndexDBRef()
 void IndexDBRef::Clear()
 {
     URL = 0;
+    doc_name = 0;
     id = 0;
     time = 0;
     alt_time = 0;
@@ -92,8 +93,9 @@ enum
     DOC_HOPCOUNT,       // 5
     DOC_BACKLINKS,      // 6
     DOC_ID,             // 7
-    //DOC_SIG             // 8
-    //DOC_DESCRIPTIONS,   // 9
+    DOC_NAME,           // 8
+    //DOC_SIG             // 9
+    //DOC_DESCRIPTIONS,   // 10
 };
 
 // Must be powers of two never reached by the DOC_* enums.
@@ -107,8 +109,8 @@ enum
 //
 void IndexDBRef::Serialize(String &s)
 {
-//    int		length;
-//    String	*str;
+    int     length;
+//    String  *str;
 
 //
 // The following macros make the serialization process a little easier
@@ -223,12 +225,12 @@ void IndexDBRef::Serialize(String &s)
     addnum(DOC_TIME, s, time);
     addnum(DOC_ALT_TIME, s, alt_time);
     addnum(DOC_EXPIRED, s, expired);
+    addnum(DOC_SPIDERABLE, s, spiderable+1); // add one to this so it actually gets serialized
     addnum(DOC_SIZE, s, docSize);
-    // add one to this so it actually gets serialized
-    addnum(DOC_SPIDERABLE, s, spiderable+1);
     addnum(DOC_HOPCOUNT, s, hopCount);
     addnum(DOC_BACKLINKS, s, backlinks);
-    addnum(DOC_ID, s, id);
+    addstring(DOC_ID, s, id);
+    addstring(DOC_NAME, s, doc_name);
     
 // NOTE: the sig will go back in when MD5 is done
 //
@@ -252,7 +254,7 @@ void IndexDBRef::Deserialize(String &stream)
     Clear();
     char    *s = stream.get();
     char    *end = s + stream.length();
-//    int     length;
+    int     length;
 //    int     count;
 //    int     i;
     int     x;
@@ -359,8 +361,7 @@ void IndexDBRef::Deserialize(String &stream)
             break;
         case DOC_SPIDERABLE:
             getnum(x, s, spiderable);
-            // subtract one, since we added one in serialization
-            spiderable--;
+            spiderable--; // subtract one, since we added one in serialization
             break;
         case DOC_HOPCOUNT:
             getnum(x, s, hopCount);
@@ -369,7 +370,10 @@ void IndexDBRef::Deserialize(String &stream)
             getnum(x, s, backlinks);
             break;
         case DOC_ID: 
-            getnum(x, s, id);
+            getstring(x, s, id);
+            break;
+        case DOC_NAME: 
+            getstring(x, s, doc_name);
             break;
         //case DOC_SIG:
         //     getnum(x, s, sig);
