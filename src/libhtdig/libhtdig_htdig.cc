@@ -17,7 +17,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htdig.cc,v 1.1.2.1 2006/09/25 23:50:49 aarnone Exp $
+// $Id: libhtdig_htdig.cc,v 1.1.2.2 2007/04/26 16:56:20 aarnone Exp $
 //
 //-------------------------------------------------------------
 
@@ -85,9 +85,14 @@ DLLEXPORT int htdig_index_open(htdig_parameters_struct * params)
         return(FALSE);
     }
 
+    htdigapi_debug->outlog(1, "HtDigAPI: Creating new Spider\n");
     htdigapi_spider = new Spider(params);
+    htdigapi_debug->outlog(1, "HtDigAPI: Successfully created new Spider\n");
 
+    htdigapi_debug->outlog(1, "HtDigAPI: Opening DBs\n");
     htdigapi_spider->openDBs(params);
+    htdigapi_debug->outlog(1, "HtDigAPI: Successfully opened DBs\n");
+
     htdigapi_indexOpen = true;
 
     return (TRUE);
@@ -112,6 +117,7 @@ DLLEXPORT int htdig_index_open(htdig_parameters_struct * params)
 DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct * input)
 {
     HtDebug * htdigapi_debug = HtDebug::Instance();
+    htdigapi_debug->outlog(2, "HtDigAPI: Entered htdig_index_simple_doc\n");
 
     if (!htdigapi_indexOpen)
     {
@@ -122,6 +128,7 @@ DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct * input)
     singleDoc newDoc;
 
     newDoc["url"] = input->location;
+    newDoc["name"] = input->name;
     newDoc["id"] = input->documentid;
     newDoc["title"] = input->title;
     newDoc["meta-desc"] = input->meta;
@@ -137,6 +144,7 @@ DLLEXPORT int htdig_index_simple_doc(htdig_simple_doc_struct * input)
     //
     // always send false for addToSpiderQueue, but can probably be a changed in the API
     //
+    htdigapi_debug->outlog(2, "HtDigAPI: Entering addSingleDoc\n");
     return htdigapi_spider->addSingleDoc(&newDoc, input->doc_time, input->spiderable,  false);
 }
 
@@ -161,10 +169,8 @@ DLLEXPORT htdig_simple_doc_struct * htdig_fetch_simple_doc(char * input)
 
     if (doc)
     {
-        htdigapi_debug->outlog(1, "fetch simple doc sucessful\n");
-        //cout << "in htdig api before fetch" << endl;
+        htdigapi_debug->outlog(0, "HtDigAPI: fetch simple doc sucessful\n");
         htdig_simple_doc_struct * output = (htdig_simple_doc_struct*) malloc(sizeof(htdig_simple_doc_struct));
-        //cout << "in htdig api after fetch" << endl;
 
         //
         // set all the "strings" to empty
@@ -226,7 +232,7 @@ DLLEXPORT htdig_simple_doc_struct * htdig_fetch_simple_doc(char * input)
     }
     else
     {
-        htdigapi_debug->outlog(1, "fetch simple doc returning NULL\n");
+        htdigapi_debug->outlog(0, "HtDigAPI: fetch simple doc returning NULL\n");
         return NULL;
     }
 }
