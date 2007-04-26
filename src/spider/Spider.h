@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Spider.h,v 1.1.2.1 2006/09/25 23:51:13 aarnone Exp $
+// $Id: Spider.h,v 1.1.2.2 2007/04/26 17:00:29 aarnone Exp $
 //
 
 #ifndef _Spider_h_
@@ -94,7 +94,7 @@ class Spider
     int         DeleteDoc(string * input);
 
     //
-    // delete a document based on its doc-id
+    // delete a document based on its id
     //
     int         DeleteDoc(int input);
 
