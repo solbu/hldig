@@ -12,13 +12,13 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ExternalParser.h,v 1.1.2.1 2006/09/25 23:51:12 aarnone Exp $
+// $Id: ExternalParser.h,v 1.1.2.2 2007/04/26 16:59:35 aarnone Exp $
 //
 
 #ifndef _ExternalParser_h_
 #define _ExternalParser_h_
 
-#include "Parsable.h"
+//#include "Parsable.h"
 #include "htString.h"
 
 #include <stdio.h>
@@ -30,31 +30,38 @@
 class URL;
 
 
-class ExternalParser : public Parsable
+class ExternalParser
 {
 public:
     //
     // Construction/Destruction
     //
-                        ExternalParser(char *contentType);
-    virtual		~ExternalParser();
+    ExternalParser(char *contentType);
+    ~ExternalParser();
 
     //
-    // Main parser interface.
+    // Main parser interface. returns parsed text
     //
-    virtual void	parse(Retriever &retriever, URL &);
+    char*       externalParse(URL &base);
+    //virtual void	parse(Retriever &retriever, URL &);
 
     //
-    // Check if the given contentType has an external parser associated
-    // with it
+    // Check if the given contentType has an external parser associated with it
     //
-    static int		canParse(char *contentType);
-    
+    static int  canParse(char *contentType);
+
+    //
+    // ummm... set the contents
+    //
+    void        setContents(char *data, int length);
+
 private:
-    String		currentParser;
-    String		contentType;
+    String      currentParser;
+    String      contentType;
 
-    int			readLine(FILE *, String &);
+    String      *contents;
+
+    int         readLine(FILE *, String &);
 };
 
 #endif
