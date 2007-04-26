@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.cc,v 1.1.2.1 2006/09/25 23:50:30 aarnone Exp $
+// $Id: DocumentRef.cc,v 1.1.2.2 2007/04/26 16:16:18 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -58,17 +58,17 @@ void DocumentRef::initialize()
 {
     //uniqueWords.clear();
 
-    indexDoc["doc-title"].first.clear();
+    indexDoc["doc-name"].first.clear();
     indexDoc["doc-size"].first.clear();
-    indexDoc["doc-time"].first.clear();
     indexDoc["doc-alt-time"].first.clear();
-    indexDoc["doc-id"].first.clear();
     indexDoc["doc-expires"].first.clear();
+
+    indexDoc["doc-title"].first.clear();
+    indexDoc["doc-time"].first.clear();
 
     indexDoc["doc-meta-email"].first.clear();
     indexDoc["doc-meta-email-date"].first.clear();
     indexDoc["doc-meta-email-subject"].first.clear();
-    indexDoc["doc-meta-desc"].first.clear();
 
     indexDoc["contents"].first.clear();
     indexDoc["keywords"].first.clear();
@@ -79,8 +79,9 @@ void DocumentRef::initialize()
     indexDoc["stemmed"].first.clear();
     indexDoc["synonym"].first.clear();
 
-    indexDoc["author"].first.clear();
     indexDoc["url"].first.clear();
+    indexDoc["author"].first.clear();
+    indexDoc["id"].first.clear();
 
     //
     // these fields will be returned verbatim - they are not for
@@ -88,17 +89,17 @@ void DocumentRef::initialize()
     // will bloat the index (any field that starts with 'doc-' should
     // be like this).
     //
-    indexDoc["doc-title"].second = "UnIndexed";
+    indexDoc["doc-name"].second = "UnIndexed";
     indexDoc["doc-size"].second = "UnIndexed";
-    indexDoc["doc-time"].second = "UnIndexed";
     indexDoc["doc-alt-time"].second = "UnIndexed";
-    indexDoc["doc-id"].second = "UnIndexed";
     indexDoc["doc-expires"].second = "UnIndexed";
+
+    indexDoc["doc-title"].second = "Keyword";       // needed for sorting
+    indexDoc["doc-time"].second = "Keyword";        // needed for sorting
 
     indexDoc["doc-meta-email"].second = "UnIndexed";
     indexDoc["doc-meta-email-date"].second = "UnIndexed";
     indexDoc["doc-meta-email-subject"].second = "UnIndexed";
-    indexDoc["doc-meta-desc"].second = "UnIndexed";
 
     //
     // thse fields will be used in actual searching
@@ -112,15 +113,19 @@ void DocumentRef::initialize()
     //
     // optional fields (can be turned on or off from configuration)
     //
+    //indexDoc["stemmed"].second = "UnStored";
     indexDoc["stemmed"].second = "UnStored";
     indexDoc["synonym"].second = "UnStored";
 
     //
-    // these are special fields. they should be searchable,
-    // and may be returned
+    // these are special fields. they should be searchable, and may be returned.
+    // They can be declared as text, since there is a special analyzer specified
+    // for these field names (or at least there should be in the CLuceneAPI and
+    // the searching code).
     //
-    indexDoc["author"].second = "Keyword";
-    indexDoc["url"].second = "Keyword";
+    indexDoc["url"].second = "Text";
+    indexDoc["author"].second = "Text";
+    indexDoc["id"].second = "Text";
 }
 
 
