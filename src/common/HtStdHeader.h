@@ -8,6 +8,8 @@
 #include <map>
 #include <set>
 #include <string>
+#include <vector>
+#include <utility>
 #include <iostream>
 #include <fstream>
 #include <signal.h>
