@@ -51,6 +51,8 @@ void TidyParser::initialize(DocumentRef * CluceneDocPointer, char* encoding)
     inTitle = false;
     inBody = false;
     inHeading = false;
+    inScript = false;
+    inStyle = false;
 
     //
     // kill the TidyDoc
@@ -152,47 +154,66 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
         //
         // If this is a text node, insert the text into the CLucene document
         //
-        if ( !inStyle && !inScript && tidyNodeIsText( child ))
+        if (tidyNodeIsText( child ))
         {
-            TidyBuffer buf;
-
-            debug->outlog(6, "Text node");
-
-            tidyBufInit(&buf);
-            tidyNodeGetText(tdoc, child, &buf);
-            if (buf.bp)
+            if ( !inStyle && !inScript )
             {
-                if (inTitle)
-                {
-                    CLuceneDoc->appendField("doc-title", (char*)buf.bp);
-                    CLuceneDoc->appendField("title", (char*)buf.bp);
+                debug->outlog(6, "Text node");
 
-                    debug->outlog(6, " (inTitle)");
-                }
-                else
-                {
-                    CLuceneDoc->appendField("contents", (char*)buf.bp);
+                TidyBuffer buf;
 
-                    if (inHeading)
+                tidyBufInit(&buf);
+                tidyNodeGetText(tdoc, child, &buf);
+                if (buf.bp)
+                {
+                    if (inTitle)
                     {
-                        CLuceneDoc->appendField("heading", (char*)buf.bp);
-                        debug->outlog(5, " (inHeading)");
+                        CLuceneDoc->appendField("doc-title", (char*)buf.bp);
+                        CLuceneDoc->appendField("title", (char*)buf.bp);
+
+                        debug->outlog(6, " (inTitle)");
+                    }
+                    else
+                    {
+                        CLuceneDoc->appendField("contents", (char*)buf.bp);
+
+                        if (inHeading)
+                        {
+                            CLuceneDoc->appendField("heading", (char*)buf.bp);
+                            debug->outlog(5, " (inHeading)");
+                        }
+                    }
+
+                    //
+                    // careful! this will print LOTS of text to the outlog
+                    //
+                    debug->outlog(7, ": %s", (char*)buf.bp);
+
+                    if (config->Boolean("use_stemming"))
+                        CLuceneDoc->appendField("stemmed", (char*)buf.bp);
+                    if (config->Boolean("use_synonyms"))
+                        CLuceneDoc->appendField("synonym", (char*)buf.bp);
+                }
+                tidyBufFree(&buf);
+
+                debug->outlog(6, "\n");
+            }
+            else
+            {
+                debug->outlog(6, "Text node ignored (style or script)");
+                if (debug->getLevel() > 7)
+                {
+                    TidyBuffer buf;
+
+                    tidyBufInit(&buf);
+                    tidyNodeGetText(tdoc, child, &buf);
+                    if (buf.bp)
+                    {
+                        debug->outlog(7, ": %s", (char*)buf.bp);
                     }
                 }
-
-                //
-                // careful! this will print LOTS of text to the outlog
-                //
-                debug->outlog(7, ": %s", (char*)buf.bp);
-
-                if (config->Boolean("use_stemming"))
-                    CLuceneDoc->appendField("stemmed", (char*)buf.bp);
-                if (config->Boolean("use_synonyms"))
-                        CLuceneDoc->appendField("synonym", (char*)buf.bp);
+                debug->outlog(6, "\n");
             }
-            tidyBufFree(&buf);
-
-            debug->outlog(6, "\n");
         }
         else if (tidyNodeIsMETA(child))
         {
@@ -246,7 +267,6 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
                                     //
                                     // meta description
                                     // 
-                                    CLuceneDoc->appendField("doc-meta-desc", contentVal);
                                     CLuceneDoc->appendField("meta-desc", contentVal);
 
                                     if (config->Boolean("use_stemming"))
@@ -362,6 +382,10 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
             }
             debug->outlog(6, "\n");
         }
+        else
+        {
+            debug->outlog(6, "UNKNOWN node\n");
+        }
 
         //
         // Recurse down from here
@@ -371,14 +395,16 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
         //
         // Leaving the node, so the state can be reset.
         // 
-        debug->outlog(6, "stateChanger false\n");
+        debug->outlog(6, "stateChanger false: \n");
         stateChanger(child, false);
+        debug->outlog(6, "\n");
     }
     debug->outlog(5, "Finished looping through nodes at depth = %d\n", depth);
 }
 
 void TidyParser::stateChanger(TidyNode tnod, bool newState)
 {
+    HtDebug * debug = HtDebug::Instance();
     //
     // HTMLtidy will not nest these states (supposedly)
     // so we can just use toggles, instead of a count of
@@ -388,26 +414,33 @@ void TidyParser::stateChanger(TidyNode tnod, bool newState)
     switch ( tidyNodeGetId(tnod) )
     {
         case TidyTag_HEAD:
+            debug->outlog(6,"TidyTag_HEAD");
             inHead = newState;
             break;
         case TidyTag_BODY:
+            debug->outlog(6,"TidyTag_BODY");
             inBody = newState;
             break;
         case TidyTag_SCRIPT:
+            debug->outlog(6,"TidyTag_SCRIPT");
             inScript = newState;
             break;
         case TidyTag_STYLE:
+            debug->outlog(6,"TidyTag_STYLE");
             inStyle = newState;
             break;
         case TidyTag_TITLE:
+            debug->outlog(6,"TidyTag_TITLE");
             inTitle = newState;
             break;
         case (TidyTag_H1 || TidyTag_H2 || TidyTag_H3 ||
                 TidyTag_H4 || TidyTag_H5 || TidyTag_H6 ||
                 TidyTag_B):
+            debug->outlog(6,"TidyTag_ heading");
             inHeading = newState;
             break;
         default:
+            debug->outlog(6,"TidyTag_ notSpecified");
             break;
     }
 }
