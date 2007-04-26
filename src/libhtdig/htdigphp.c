@@ -20,7 +20,7 @@
 //
 // --------------------------------------------------
 
-/* $Id: htdigphp.c,v 1.1.2.1 2006/09/25 23:50:49 aarnone Exp $ */
+/* $Id: htdigphp.c,v 1.1.2.2 2007/04/26 16:50:36 aarnone Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -31,8 +31,8 @@
 
 
 /* PHP Includes */
-#include "ext/standard/file.h"
-#include "ext/standard/info.h"
+//#include "ext/standard/file.h"
+//#include "ext/standard/info.h"
 
 /* for fileno() */
 #include <stdio.h>
@@ -97,10 +97,10 @@ PHP_MINIT_FUNCTION(htdig)
 
 PHP_MINFO_FUNCTION(htdig)
 {
-    php_info_print_table_start();
-    php_info_print_table_row(2, "HtDig Support", "Enabled");
-    php_info_print_table_row(2, "HtDig Version", "4.0");
-    php_info_print_table_end();
+    //php_info_print_table_start();
+    //php_info_print_table_row(2, "HtDig Support", "Enabled");
+    //php_info_print_table_row(2, "HtDig Version", "4.0");
+    //php_info_print_table_end();
 }
 
 /* 
@@ -221,7 +221,7 @@ PHP_FUNCTION(htsearch_open)
         htsearch_params.locale[1] = 0;
     }
     
-    if (zend_hash_find(config_array_ht, "restrict", sizeof("restrict"), 
+    if (zend_hash_find(config_array_ht, "search_restrict", sizeof("search_restrict"), 
                         (void **) &pvalue) == SUCCESS)
     {
         convert_to_string_ex(pvalue);
@@ -233,7 +233,7 @@ PHP_FUNCTION(htsearch_open)
         htsearch_params.search_restrict[1] = 0;
     }
     
-    if (zend_hash_find(config_array_ht, "exclude", sizeof("exclude"), 
+    if (zend_hash_find(config_array_ht, "search_exclude", sizeof("search_exclude"), 
                         (void **) &pvalue) == SUCCESS)
     {
         convert_to_string_ex(pvalue);
@@ -245,7 +245,7 @@ PHP_FUNCTION(htsearch_open)
         htsearch_params.search_exclude[1] = 0;
     }
     
-    if (zend_hash_find(config_array_ht, "alwaysret", sizeof("alwaysret"), 
+    if (zend_hash_find(config_array_ht, "search_alwaysreturn", sizeof("search_alwaysreturn"), 
                         (void **) &pvalue) == SUCCESS)
     {
         convert_to_string_ex(pvalue);
@@ -293,6 +293,17 @@ PHP_FUNCTION(htsearch_open)
         htsearch_params.meta_description_factor[1] = 0;
     }
 
+    if (zend_hash_find(config_array_ht, "keyword_factor", sizeof("keyword_factor"), 
+                        (void **) &pvalue) == SUCCESS)
+    {
+        convert_to_string_ex(pvalue);
+        sprintf(htsearch_params.keyword_factor, Z_STRVAL_PP(pvalue));
+    }
+    else
+    {
+        htsearch_params.keyword_factor[0] = 0;  //NULL terminator
+        htsearch_params.keyword_factor[1] = 0;
+    }
 
     
     snprintf(time_format, TIME_FORMAT_SIZE, "%s", DEFAULT_TIME_FORMAT);
@@ -327,6 +338,7 @@ PHP_FUNCTION(htsearch_query)
     HashTable *query_array_ht;
     htsearch_query_struct the_query;
     int array_size = 0;
+    int query_specified = 0;
 
     num_search_results = 0;
 
@@ -359,12 +371,55 @@ PHP_FUNCTION(htsearch_query)
         //SEPARATE_ZVAL(pvalue);
         convert_to_string_ex(pvalue);
         sprintf(the_query.raw_query, Z_STRVAL_PP(pvalue));
+        query_specified = 1;
     }
-    else
+
+    if (zend_hash_find(query_array_ht, "optional_query", sizeof("optional_query"), 
+                        (void **) &pvalue) == SUCCESS)
     {
-        php_error(E_WARNING, "'raw_query' key not in array parameter");
+        convert_to_string_ex(pvalue);
+        sprintf(the_query.optional_query, Z_STRVAL_PP(pvalue));
+        query_specified = 1;
+    }
+
+    if (zend_hash_find(query_array_ht, "required_query", sizeof("required_query"), 
+                        (void **) &pvalue) == SUCCESS)
+    {
+        convert_to_string_ex(pvalue);
+        sprintf(the_query.required_query, Z_STRVAL_PP(pvalue));
+        query_specified = 1;
+    }
+
+    if (zend_hash_find(query_array_ht, "forbidden_query", sizeof("forbidden_query"), 
+                        (void **) &pvalue) == SUCCESS)
+    {
+        convert_to_string_ex(pvalue);
+        sprintf(the_query.forbidden_query, Z_STRVAL_PP(pvalue));
+        query_specified = 1;
+    }
+
+    if (zend_hash_find(query_array_ht, "prefix_query", sizeof("prefix_query"), 
+                        (void **) &pvalue) == SUCCESS)
+    {
+        convert_to_string_ex(pvalue);
+        sprintf(the_query.prefix_query, Z_STRVAL_PP(pvalue));
+        query_specified = 1;
+    }
+
+    if (zend_hash_find(query_array_ht, "synonym_query", sizeof("synonym_query"), 
+                        (void **) &pvalue) == SUCCESS)
+    {
+        convert_to_string_ex(pvalue);
+        sprintf(the_query.synonym_query, Z_STRVAL_PP(pvalue));
+        query_specified = 1;
+    }
+
+    if (query_specified == 0)
+    {
+        php_error(E_WARNING, "No query specified in any possible query field");
         return;
     }
+
 
     if (zend_hash_find(query_array_ht, "algorithm", sizeof("algorithm"), 
                         (void **) &pvalue) == SUCCESS)
@@ -471,7 +526,6 @@ PHP_FUNCTION(htsearch_get_nth_match)
     htsearch_query_match_struct result;
     int result_num;
     int ret = 0;
-    char local_time_str[TIME_FORMAT_SIZE];
 
     if (ZEND_NUM_ARGS() != 1 || zend_get_parameters_ex(1, &result_num_arg) == FAILURE)
         WRONG_PARAM_COUNT;
@@ -493,21 +547,14 @@ PHP_FUNCTION(htsearch_get_nth_match)
 
     if(ret > 0)
     {
-
-        strftime(local_time_str, TIME_FORMAT_SIZE, time_format, &result.time_tm);
-        //fprintf(stderr, "time:[%s]\n", asctime(&result.time_tm));
-
         add_assoc_string(return_value, "title",          result.title,         1);
         add_assoc_string(return_value, "URL",            result.URL,           1);
+        add_assoc_string(return_value, "name",           result.name,          1);
         add_assoc_string(return_value, "excerpt",        result.excerpt,       1);
-        add_assoc_string(return_value, "time",           local_time_str,       1);
-        add_assoc_long(  return_value, "id",             result.id              );
-        add_assoc_long(  return_value, "score",          result.score           );
-        add_assoc_long(  return_value, "scorepercent",   result.score_percent   );
-        add_assoc_long(  return_value, "size",           result.size            );
-        //add_assoc_long(  return_value, "size",           result.size            );
-
-        //fprintf(stderr, "%s\n", result.title);
+        add_assoc_long  (return_value, "time",           result.time            );
+        add_assoc_long  (return_value, "id",             result.id              );
+        add_assoc_long  (return_value, "size",           result.size            );
+        add_assoc_double(return_value, "score",          result.score           );
     }
     else
     {

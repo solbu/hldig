@@ -14,7 +14,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_api.h,v 1.1.2.1 2006/09/25 23:50:49 aarnone Exp $
+// $Id: libhtdig_api.h,v 1.1.2.2 2007/04/26 16:51:33 aarnone Exp $
 //
 //----------------------------------------------------------------
 
@@ -135,6 +135,8 @@
 #define  HTSEARCH_ERROR_QUERYPARSER_ERROR      -213
 #define  HTSEARCH_ERROR_MATCHLIST_ERROR        -214
 #define  HTSEARCH_ERROR_INDEX_NOT_FOUND        -215
+#define  HTSEARCH_ERROR_OPEN_ERROR             -216
+#define  HTSEARCH_ERROR_QUERY_ERROR            -217
 
 #define  HTMERGE_ERROR_LOGFILE_OPEN            -301
 #define  HTMERGE_ERROR_LOGFILE_CLOSE           -302
@@ -301,6 +303,7 @@ typedef struct htdig_parameters_struct {
 typedef struct htdig_simple_doc_struct {
     
     char location[HTDIG_MAX_FILENAME_PATH_L];
+    char name[HTDIG_MAX_FILENAME_PATH_L];
     char documentid [HTDIG_DOCUMENT_ID_L];
     char title[HTDIG_DOCUMENT_TITLE_L];
     char meta[HTDIG_DOCUMENT_META_L];
@@ -357,11 +360,11 @@ DLLEXPORT int htdig_index_test_url(htdig_parameters_struct * );
 
 typedef struct htsearch_parameters_struct {
 
-  char configFile[HTDIG_MAX_FILENAME_PATH_L];
   char DBpath[HTDIG_MAX_FILENAME_PATH_L];
+  char configFile[HTDIG_MAX_FILENAME_PATH_L];
+  char locale[16];
 //  char aliasesPath[HTDIG_MAX_FILENAME_PATH_L];
 //  char stopwordsPath[HTDIG_MAX_FILENAME_PATH_L];
-  char locale[16];
 
   //debugging & logfile
   char logFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
@@ -372,9 +375,12 @@ typedef struct htsearch_parameters_struct {
   char search_restrict[HTDIG_MAX_FILENAME_PATH_L];
   char search_exclude[HTDIG_MAX_FILENAME_PATH_L];
   char search_alwaysreturn[HTDIG_MAX_FILENAME_PATH_L];
+
+  //boost values
   char title_factor[16];
   char text_factor[16];
   char meta_description_factor[16];
+  char keyword_factor[16];
   
 } htsearch_parameters_struct;
 
@@ -439,7 +445,13 @@ typedef struct htsearch_parameters_struct {
 typedef struct htsearch_query_struct {
 
   char raw_query[HTDIG_MAX_QUERY_L];
-  
+
+  char optional_query[HTDIG_MAX_QUERY_L];
+  char required_query[HTDIG_MAX_QUERY_L];
+  char forbidden_query[HTDIG_MAX_QUERY_L];
+  char prefix_query[HTDIG_MAX_QUERY_L];
+  char synonym_query[HTDIG_MAX_QUERY_L];
+
   int  algorithms_flag;
   int  sortby_flag;
   int format;
@@ -479,14 +491,14 @@ typedef struct htsearch_query_struct {
 
 typedef struct htsearch_query_match_struct {
 
-    char title[HTDIG_DOCUMENT_TITLE_L];
-    char URL[HTDIG_MAX_FILENAME_PATH_L];
-    char excerpt[HTDIG_DOCUMENT_EXCERPT_L];
-    int  id;
-    int  score;
-    int  score_percent;     //top result is 100%
-    int  size;
-    struct tm time_tm;
+    char    title[HTDIG_DOCUMENT_TITLE_L];
+    char    URL[HTDIG_MAX_FILENAME_PATH_L];
+    char    name[HTDIG_MAX_FILENAME_PATH_L];
+    char    excerpt[HTDIG_DOCUMENT_EXCERPT_L];
+    int     id;
+    double  score;  // 0 < score <= 1
+    int     size;
+    time_t  time;
 
 } htsearch_query_match_struct;
 
