@@ -14,7 +14,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: WordType.cc,v 1.1.2.1 2006/09/25 23:50:31 aarnone Exp $
+// $Id: WordType.cc,v 1.1.2.2 2007/04/26 16:17:57 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -85,7 +85,7 @@ WordType::WordType(const Configuration &config)
 	    new_word = word;
 	    if((flags = Normalize(new_word)) & WORD_NORMALIZE_NOTOK) {
             HtDebug * debug = HtDebug::Instance();
-            debug->outlog(4, "WordType::WordType: reading bad words from %s found %s, ignored because %s\n",
+            debug->outlog(6, "WordType::WordType: reading bad words from %s found %s, ignored because %s\n",
                     (const char*)filename, word, (char*)NormalizeStatus(flags & WORD_NORMALIZE_NOTOK));
 	    } else {
 	      badwords.Add(new_word, 0);
