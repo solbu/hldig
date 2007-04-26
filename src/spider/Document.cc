@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.cc,v 1.1.2.1 2006/09/25 23:51:12 aarnone Exp $
+// $Id: Document.cc,v 1.1.2.2 2007/04/26 16:58:22 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -33,7 +33,7 @@
 //#include "htdig.h"
 //#include "HTML.h"
 //#include "Plaintext.h"
-//#include "ExternalParser.h"
+#include "ExternalParser.h"
 #include "lib.h"
 
 #include "Transport.h"
@@ -92,7 +92,7 @@ Document::Document(char *u, int max_size)
     // and the User Agent for every HtHTTP objects
 
     //Transport::SetDebugLevel(debug);
-    //HtHTTP::SetParsingController(ExternalParser::canParse);
+    HtHTTP::SetParsingController(ExternalParser::canParse);
 
     debug = HtDebug::Instance();
 
@@ -203,8 +203,33 @@ void Document::Url(const String &u)
         setProxyUsernamePassword(config->Find(url,"http_proxy_authorization"));
     }
 
+    // 
     // Set the authorization information
-    setUsernamePassword(config->Find(url,"authorization"));
+    //
+    if (config->Find("authorization").length())
+    {
+        int num_patterns; 
+        StringList auth_list(config->Find("authorization"), " \t\r\n\001");
+
+        num_patterns = auth_list.Count();
+        for(int i = 0; i < num_patterns; i++)
+        {
+            StringList auth_entry(auth_list[i], "|");
+            if (auth_entry.Count() == 3)
+            {
+                HtRegex docName(auth_entry[0]);
+
+                if (docName.match(url->get(), 1, 0) != 0)
+                {
+                    String found_auth;
+                    found_auth << auth_entry[1]  << ":" << auth_entry[2];
+                    setUsernamePassword(found_auth);
+                    break;
+                }
+            }
+        }
+    }
+
 
 }
 
@@ -328,7 +353,7 @@ Transport::DocStatus Document::Retrieve(Server *server, HtDateTime date)
             debug->outlog(2, "Making HTTPS request on %s", url->get().get());
 
             if (useproxy)
-                debug->outlog(2, " via proxy (%s:%d)", proxy->host(), proxy->port());
+                debug->outlog(2, " via proxy (%s:%d)", proxy->host().get(), proxy->port());
 
             debug->outlog(2, "\n");
         }
@@ -671,63 +696,75 @@ Transport::DocStatus Document::RetrieveLocal(HtDateTime date, StringList *filena
 
 
 //*****************************************************************************
-// Parsable *Document::getParsable()
-//   Given the content-type of a document, returns a document parser.
-//   This will first look through the list of user supplied parsers and
-//   then at our (limited) builtin list of parsers.  The user supplied
-//   parsers are external programs that will be used.
+// bool Document::parse()
+//      Will attempt to parse the document with external parsers. If the 
+//      document is already in a form parsable by the HTML parser, this will
+//      do nothing. If not, it will attempt to parse the document and replace
+//      contents with the result of the external parse. Also, invalid types
+//      are tossed. if the contents wind up in a form that the HTML parser can
+//      handle (eg: HTML), true is returned
 //
-/*
-   Parsable * Document::getParsable()
-   {
-   static HTML			*html = 0;
-   static Plaintext		*plaintext = 0;
-   static ExternalParser	*externalParser = 0;
+bool Document::parse()
+{
+//    static HTML			*html = 0;
+//    static Plaintext		*plaintext = 0;
+    static ExternalParser	*externalParser = 0;
 
-   Parsable	*parsable = 0;
+//    Parsable    *parsable = 0;
 
-   if (ExternalParser::canParse(contentType))
-   {
-   if (externalParser)
-   {
-   delete externalParser;
-   }
-   externalParser = new ExternalParser(contentType);
-   parsable = externalParser;
-   }
-   else if (mystrncasecmp((char*)contentType, "text/html", 9) == 0)
-   {
-   if (!html)
-   html = new HTML();
-   parsable = html;
-   }
-   else if (mystrncasecmp((char*)contentType, "text/plain", 10) == 0)
-   {
-   if (!plaintext)
-   plaintext = new Plaintext();
-   parsable = plaintext;
-   }
-   else if (mystrncasecmp((char *)contentType, "text/css", 8) == 0)
-   {
-   return NULL;
-   }
-   else if (mystrncasecmp((char *)contentType, "text/", 5) == 0)
-   {
-   if (!plaintext)
-   plaintext = new Plaintext();
-   parsable = plaintext;
-   debug->outlog(1, "\"%s\" not a recognized type. Assuming text/plain\n", contentType.get());
-   }
-   else
-   {
-   debug->outlog(1, "\"%s\" not a recognized type. Ignoring\n", contentType.get());
-   return NULL;
-   }
+    if (ExternalParser::canParse(contentType))
+    {
+        char * convertedText;
+        if (externalParser)
+        {
+            delete externalParser;
+        }
+        externalParser = new ExternalParser(contentType);
+        externalParser->setContents(contents.get(), contents.length());
+        convertedText = externalParser->externalParse(*url);
+        if (convertedText)
+        {
+            //
+            // success! set the contents to the converted text
+            //
+            contents = 0;
+            contents = convertedText;
 
-   parsable->setContents(contents.get(), contents.length());
-   return parsable;
-   }
-   */
+            return true;
+        }
+        else
+        {
+            //
+            // awww... couldn't convert it
+            //
+            return false;
+        }
+    }
+    else if (mystrncasecmp((char*)contentType, "text/html", 9) == 0)
+    {
+        return true;
+    }
+    else if (mystrncasecmp((char*)contentType, "text/plain", 10) == 0)
+    {
+        return true;
+    }
+    else if (mystrncasecmp((char *)contentType, "text/css", 8) == 0)
+    {
+        return false;
+    }
+    else if (mystrncasecmp((char *)contentType, "text/", 5) == 0)
+    {
+        debug->outlog(1, "\"%s\" not a recognized type. Assuming text/plain\n", contentType.get());
+        return true;
+    }
+    else
+    {
+        debug->outlog(1, "\"%s\" not a recognized type. Ignoring\n", contentType.get());
+        return false;
+    }
+}
+
+
 
 int Document::ShouldWeRetry(Transport::DocStatus DocumentStatus)
 {

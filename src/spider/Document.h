@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.h,v 1.1.2.1 2006/09/25 23:51:12 aarnone Exp $
+// $Id: Document.h,v 1.1.2.2 2007/04/26 16:58:23 aarnone Exp $
 //
 //
 #ifndef _Document_h_
@@ -77,6 +77,11 @@ class Document : public Object
         // Return an appropriate parsable object for the document type.
         //
         //Parsable			*getParsable();
+
+        //
+        // Parse the contents using external parsers (if needed)
+        //
+        bool            parse();
 
         //
         // Set the username and password to be used in any requests
