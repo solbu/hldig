@@ -15,11 +15,10 @@ CL_NS_USE2(analysis,snowball)
 
 static int64_t str = lucene::util::Misc::currentTimeMillis();
 static IndexWriter* writer = NULL;
-static IndexReader* reader = NULL;
+//static IndexReader* reader = NULL;
+//static IndexModifier * modifier = NULL;
 static PerFieldAnalyzerWrapper* an = NULL;
-#ifndef _MSC_VER
-static SnowballAnalyzer* san = NULL;
-#endif
+static char indexDir[256];
 
 #include "HtDebug.h"
 
@@ -33,6 +32,8 @@ void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
         HtDebug * debug = HtDebug::Instance();
         HtConfiguration * config = HtConfiguration::config();
 
+        strcpy(indexDir, target);
+
         //
         // Create the analyser first, so writer can have it. the stop words
         // will need to be extracted into a wchar_t array first.
@@ -43,10 +44,7 @@ void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
 
             an = _CLNEW PerFieldAnalyzerWrapper(_CLNEW StandardAnalyzer(stopArray));
 
-#ifndef _MSC_VER
-            san = _CLNEW SnowballAnalyzer(_T("english"), stopArray);
-            an->addAnalyzer(_T("stemmed"), san);
-#endif
+            an->addAnalyzer(_T("stemmed"), _CLNEW SnowballAnalyzer(_T("english"), stopArray));
 
             for (int i = 0; i<stopWords->size(); i++)
             {
@@ -58,40 +56,63 @@ void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
         {
             an = _CLNEW PerFieldAnalyzerWrapper(_CLNEW StandardAnalyzer());
 
-#ifndef _MSC_VER
-            san = _CLNEW SnowballAnalyzer(_T("english"));
-            an->addAnalyzer(_T("stemmed"), san);
-#endif
+            an->addAnalyzer(_T("stemmed"), _CLNEW SnowballAnalyzer(_T("english")));
         }
+        //
+        // add special analyzers for special fields
+        //
+        an->addAnalyzer(_T("url"), _CLNEW WhitespaceAnalyzer());
+        an->addAnalyzer(_T("id"), _CLNEW WhitespaceAnalyzer());
+        an->addAnalyzer(_T("author"), _CLNEW WhitespaceAnalyzer());
+
         debug->outlog(2, "CLuceneAPI: Analysers... ");
+
 
         //
         // Create the IndexWriter, unlocking the directory if
-        // necessary, and wiping the old index is requested
+        // necessary, and wiping the old index if requested
         //
-        if ( !clearIndex && IndexReader::indexExists(target) )
+        Directory* dir = NULL;
+        if (IndexReader::indexExists(indexDir))
         {
-            if ( IndexReader::isLocked(target) )
+            if (IndexReader::isLocked(indexDir) )
             {
                 debug->outlog(2, "Unlocking index...");
-                IndexReader::unlock(target);
+                IndexReader::unlock(indexDir);
             }
-
-            writer = _CLNEW IndexWriter( target, an, false);
+            //
+            // the index exists, but if clearIndex is set to true, destroy it
+            //
+            //dir = FSDirectory::getDirectory(indexDir, clearIndex ? true : false);
+            writer = _CLNEW IndexWriter( indexDir, an, clearIndex? true : false);
+            //writer = _CLNEW IndexWriter( indexDir, an, false);
         }
         else
         {
-            writer = _CLNEW IndexWriter( target, an, true);
+            //
+            // no index exists, so create a new one
+            //
+            //dir = FSDirectory::getDirectory(indexDir, true);
+            writer = _CLNEW IndexWriter( indexDir, an, true);
         }
-        debug->outlog(2, "IndexWriter... ");
+        //modifier = _CLNEW IndexModifier( indexDir, an, true );
+        //
+        // set up the max merge docs so the individual index files don't get too large
+        // also, using the compound file should be off, since this will bloat file sizes
+        //
+        //modifier->setMaxMergeDocs(config->Value("clucene_max_merge_docs", 300000));
+        //modifier->setUseCompoundFile(false);
+        //debug->outlog(2, "IndexModifier... ");
+
+
         writer->setMaxFieldLength(IndexWriter::DEFAULT_MAX_FIELD_LENGTH);
         writer->setMaxMergeDocs(config->Value("clucene_max_merge_docs", 300000));
+        debug->outlog(2, "IndexWriter... ");
 
         //
         // Create the reader - this will be used for deleting
         // 
-        reader = IndexReader::open( target );
-        debug->outlog(2, "IndexReader... ");
+        //debug->outlog(2, "IndexReader... ");
 
         //
         // get the start time... useful for debugging
@@ -104,6 +125,7 @@ void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
     {
         HtDebug * debug = HtDebug::Instance();
         debug->outlog(-1, "Exception in CLuceneAPI (CLuceneOpenIndex): [%s]\n", e.what());
+        debug->close();
         throw;
     }
 }
@@ -115,21 +137,23 @@ void CLuceneCloseIndex()
         HtDebug * debug = HtDebug::Instance();
         HtConfiguration * config = HtConfiguration::config();
 
-        if (config->Boolean("clucene_optimize"))
-        {
-            writer->optimize();
-        }
-        writer->close();
-
         //
         // commit any deletions
         //
-        reader->commit();
+        //reader->commit();
 
+        if (config->Boolean("clucene_optimize"))
+        {
+            //modifier->optimize();
+            writer->optimize();
+        }
+        //modifier->close();
+        writer->close();
+
+        //_CLDELETE(modifier);
         _CLDELETE(writer);
-        _CLDELETE(reader);
+        //_CLDELETE(reader);
         _CLDELETE(an);
-        //_CLDELETE(san); // deleteing an will do this ???
 
         debug->outlog(1, "CLuceneAPI: Indexing took: %dms.\n", lucene::util::Misc::currentTimeMillis() - str);
     }
@@ -137,6 +161,7 @@ void CLuceneCloseIndex()
     {
         HtDebug * debug = HtDebug::Instance();
         debug->outlog(-1, "\nException in CLuceneAPI (CLuceneCloseIndex): [%s]\n", e.what());
+        debug->close();
         throw;
     }
 }
@@ -170,9 +195,6 @@ int CLuceneAddDocToIndex(CL_Doc * doc)
         // stored in the first value of the pair (which is the second
         // element of the CL_Doc).
         //
-        // During insert, the field types need to be typecast to non-const,
-        // since that is required by CLucene.
-        // 
 
         CL_Doc::iterator i;
         for (i = doc->begin(); i != doc->end(); i++)
@@ -215,6 +237,7 @@ int CLuceneAddDocToIndex(CL_Doc * doc)
         //
         // document assembled; add to index
         //
+        //modifier->addDocument( &index_doc );
         writer->addDocument( &index_doc );
 
 
@@ -224,6 +247,7 @@ int CLuceneAddDocToIndex(CL_Doc * doc)
     {
         HtDebug * debug = HtDebug::Instance();
         debug->outlog(-1, "\nException in CLuceneAPI (CLuceneAddDocToIndex): [%s]\n", e.what());
+        debug->close();
         throw;
     }
 }
@@ -238,16 +262,28 @@ int CLuceneDeleteURLFromIndex(std::string * url)
     {
         HtDebug * debug = HtDebug::Instance();
         wchar_t * wtemp = utf8_to_wchar(url->c_str());
+        
+        writer->close();
+        _CLDELETE(writer); 
 
-        Term * tempTerm = new Term( _T("url"), wtemp);
-        //wcout << "deleting " << tempTerm->field() << ":" << tempTerm->text() << endl;
+        Term * tempTerm = _CLNEW Term( _T("url"), wtemp);
+
+        //int result = modifier->deleteDocuments(tempTerm);
+
+        IndexReader * reader = IndexReader::open( indexDir );
 
         int result = reader->deleteDocuments(tempTerm);
 
-        debug->outlog(0, "CLuceneAPI: deleting %s - deleted %d documents\n", url->c_str(), result);
+        reader->commit();
+        reader->close();
 
-        delete tempTerm;
+        _CLDELETE(reader);
+        _CLDELETE(tempTerm);
         free(wtemp);
+
+        debug->outlog(0, "CLuceneAPI: deleting %s (url field) - deleted %d documents\n", url->c_str(), result);
+
+        writer = _CLNEW IndexWriter(indexDir, an, false);
 
         return result;
     }
@@ -255,13 +291,14 @@ int CLuceneDeleteURLFromIndex(std::string * url)
     {
         HtDebug * debug = HtDebug::Instance();
         debug->outlog(-1, "\nException in CLuceneAPI (CLuceneDeleteURLFromIndex): [%s]\n", e.what());
+        debug->close();
         throw;
     }
 }
 
 
 //
-// delete using the doc-id field
+// delete using the id field
 //
 int CLuceneDeleteIDFromIndex(int id)
 {
@@ -271,14 +308,27 @@ int CLuceneDeleteIDFromIndex(int id)
         wchar_t * wtemp = (wchar_t *)malloc(sizeof(wchar_t) * 32);
         swprintf(wtemp, 31, _T("%d"), id);
 
-        Term * tempTerm = new Term( _T("doc-id"), wtemp);
+        writer->close();
+        _CLDELETE(writer); 
+
+        Term * tempTerm = _CLNEW Term( _T("id"), wtemp);
+
+        //int result = modifier->deleteDocuments(tempTerm);
+
+        IndexReader * reader = IndexReader::open( indexDir );
 
         int result = reader->deleteDocuments(tempTerm);
 
-        debug->outlog(0, "CLuceneAPI: deleting %d (id) - deleted %d documents\n", id, result);
+        reader->commit();
+        reader->close();
 
-        delete tempTerm;
+        _CLDELETE(reader);
+        _CLDELETE(tempTerm);
         free(wtemp);
+
+        debug->outlog(0, "CLuceneAPI: deleting %d (id field) - deleted %d documents\n", id, result);
+
+        writer = _CLNEW IndexWriter(indexDir, an, false);
 
         return result;
     }
@@ -286,6 +336,7 @@ int CLuceneDeleteIDFromIndex(int id)
     {
         HtDebug * debug = HtDebug::Instance();
         debug->outlog(-1, "\nException in CLuceneAPI (CLuceneDeleteIDFromIndex): [%s]\n", e.what());
+        debug->close();
         throw;
     }
 }
