@@ -11,7 +11,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: DocumentRef.cc,v 1.1.2.2 2007/04/26 16:16:18 aarnone Exp $
+// $Id: DocumentRef.cc,v 1.1.2.3 2007/05/01 22:47:01 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -75,6 +75,7 @@ void DocumentRef::initialize()
     indexDoc["heading"].first.clear();
     indexDoc["title"].first.clear();
     indexDoc["meta-desc"].first.clear();
+    indexDoc["backlink"].first.clear();
 
     indexDoc["stemmed"].first.clear();
     indexDoc["synonym"].first.clear();
@@ -109,6 +110,7 @@ void DocumentRef::initialize()
     indexDoc["heading"].second = "UnStored";
     indexDoc["title"].second = "UnStored";
     indexDoc["meta-desc"].second = "UnStored";
+    indexDoc["backlink"].second = "UnStored";
 
     //
     // optional fields (can be turned on or off from configuration)
@@ -188,6 +190,9 @@ void DocumentRef::appendField(const char* fieldName, const char* fieldValue)
 {
     wchar_t ucs2_char;
     const char * counter = fieldValue;
+    HtDebug * debug = HtDebug::Instance();
+
+    debug->outlog(5, "DocumentRef: Adding to CL_Doc field \"%s\": [%s]\n", fieldName, fieldValue);
 
     while (counter[0])
     {
