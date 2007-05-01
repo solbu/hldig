@@ -14,7 +14,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_api.h,v 1.1.2.2 2007/04/26 16:51:33 aarnone Exp $
+// $Id: libhtdig_api.h,v 1.1.2.3 2007/05/01 22:45:21 aarnone Exp $
 //
 //----------------------------------------------------------------
 
@@ -263,6 +263,7 @@ typedef struct htdig_parameters_struct {
   char text_factor[16];
   char meta_description_factor[16];
   char max_hop_count[10];     //9 digit limit
+  char session_max_docs[10];  //9 digit limit
   char max_head_length[10];   //9 digit limit
   char max_doc_size[10];      //9 digit limit
   

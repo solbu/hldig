@@ -17,7 +17,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htsearch.cc,v 1.1.2.2 2007/04/26 16:57:07 aarnone Exp $
+// $Id: libhtdig_htsearch.cc,v 1.1.2.3 2007/05/01 22:45:21 aarnone Exp $
 //
 //----------------------------------------------------------------
 
@@ -502,6 +502,7 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
         fieldInfo.push_back( pair<wstring, double>(wstring(_T("title")), config->Double("title_factor")) );
         fieldInfo.push_back( pair<wstring, double>(wstring(_T("meta-desc")), config->Double("meta_description_factor")) );
         fieldInfo.push_back( pair<wstring, double>(wstring(_T("keywords")), config->Double("keywords_factor")) );
+        fieldInfo.push_back( pair<wstring, double>(wstring(_T("backlink")), config->Double("backlink_factor")) );
 
         fieldInfo.push_back( pair<wstring, double>(wstring(_T("heading")), config->Double("heading_factor")) );
         fieldInfo.push_back( pair<wstring, double>(wstring(_T("author")), config->Double("author_factor")) );
@@ -931,7 +932,8 @@ DLLEXPORT int htsearch_get_nth_match(int n, htsearch_query_match_struct * hit_st
         hit_struct->title[HTDIG_DOCUMENT_TITLE_L - 1] = '\0';
         free(temp);
 
-        
+        htsearchapi_debug->outlog (4, "HtSearch: Match #%d retrieved, doing highlighting\n", n);
+
         //
         // use the intial query for highlighting, because it hasn't been
         // changed from its initial form. this is broken on windows
@@ -968,10 +970,11 @@ DLLEXPORT int htsearch_get_nth_match(int n, htsearch_query_match_struct * hit_st
             temp = wchar_to_utf8(doc.get(_T("contents")));
         }
 
-
         strncpy (hit_struct->excerpt, temp, HTDIG_DOCUMENT_EXCERPT_L);
         hit_struct->excerpt[HTDIG_DOCUMENT_EXCERPT_L - 1] = '\0';
         free(temp);
+
+        htsearchapi_debug->outlog (4, "HtSearch: Match #%d highlighted, setting score, time and size\n", n);
 
         temp = wchar_to_utf8(doc.get(_T("doc-size")));
         hit_struct->size = atoi(temp);
