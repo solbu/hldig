@@ -342,4 +342,27 @@ int CLuceneDeleteIDFromIndex(int id)
 }
 
 
-
+//
+// return the number of docs in the index. return -1 if the index isn't open
+//
+int CLuceneNumIndexDocs()
+{
+    try
+    {
+        if (writer == NULL)
+        {
+            return -1;
+        }
+        else
+        {
+            return writer->docCount();
+        }
+    }
+    catch (CLuceneError& e)
+    {
+        HtDebug * debug = HtDebug::Instance();
+        debug->outlog(-1, "\nException in CLuceneAPI (CLuceneNumIndexDocs): [%s]\n", e.what());
+        debug->close();
+        throw;
+    }
+}

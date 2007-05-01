@@ -25,5 +25,12 @@ int CLuceneDeleteURLFromIndex(string * url);
 int CLuceneDeleteIDFromIndex(int id);
 
 
+//
+// Utility
+//
+
+int CLuceneNumIndexDocs(void);
+
+
 #endif // _CLuceneAPI_h_
 
