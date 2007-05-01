@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Spider.h,v 1.1.2.2 2007/04/26 17:00:29 aarnone Exp $
+// $Id: Spider.h,v 1.1.2.3 2007/05/01 23:03:11 aarnone Exp $
 //
 
 #ifndef _Spider_h_
@@ -27,6 +27,7 @@
 #include "libhtdig_api.h"
 #include "List.h"
 #include "TidyParser.h"
+#include "SitemapParser.h"
 #include "Dictionary.h"
 #include "HtDateTime.h"
 #include "WordType.h"
@@ -127,6 +128,11 @@ class Spider
     bool        parseDoc(char * contents, bool follow = true);
 
     //
+    // parse a Sitemap file, and add its links to the queue
+    //
+    void        parseSitemap(char * contents);
+
+    //
     // commit both documents
     //
     void        commitDocs();
@@ -145,7 +151,7 @@ class Spider
     //
     // add a URL to the queue
     //
-    void            addURL(URL * url);
+    void            addURL(URL * url, facet_list facets, int hops, time_t t);
     
     //
     // More helper routines
@@ -153,7 +159,7 @@ class Spider
     int             Need2Get (const String &url);
     int             IsValidURL (const String &url);
     void            parse_url (URLRef &urlRef);
-    void            got_redirect (const char *, const char * = 0);
+    void            got_redirect (const char *, const char *, facet_list);
     void            recordNotFound (const String &url, const String &referer, int reason);
 
     //
@@ -166,6 +172,7 @@ class Spider
 
 
     TidyParser      tparser;        // TidyParser object
+    SitemapParser   sparser;        // Sitemap Parser
 
     IndexDBRef      * indexDoc;     // reference object to current index database entry
 
@@ -181,6 +188,9 @@ class Spider
     // Some more variables
     //
     int             max_hop_count;
+    int             session_max_docs;
+    int             index_max_docs;
+    int             spider_max_docs;
     int             check_unique_md5;
     int             check_unique_date;
     int             minimumWordLength;
@@ -202,6 +212,9 @@ class Spider
     int             currenthopcount;
     String          credentials;
     int             indexCount; // current count of documents seen
+    int             session_current_docs; // count of documents inserted into index this run
+    int             index_current_docs; // count of documents in index total
+    int             spider_current_docs; // count of documents in index total
 
 
     //

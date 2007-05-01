@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Spider.cc,v 1.1.2.2 2007/04/26 17:05:15 aarnone Exp $
+// $Id: Spider.cc,v 1.1.2.3 2007/05/01 23:03:11 aarnone Exp $
 //
 
 
@@ -135,12 +135,15 @@ Spider::Spider(htdig_parameters_struct * params)
     //
     report_statistics   = params->report_statistics;
     max_hop_count       = config->Value("max_hop_count", 999999);
+    session_max_docs    = config->Value("server_max_docs", -1);
+    index_max_docs      = config->Value("index_max_docs");
+    spider_max_docs     = config->Value("spider_max_docs");
     minimumWordLength   = config->Value("minimum_word_length", 3);
     check_unique_md5    = config->Boolean("check_unique_md5", 0);
     check_unique_date   = config->Boolean("check_unique_date", 0);
     local_urls_only     = config->Boolean("local_urls_only");
     mark_dead_servers   = config->Boolean("ignore_dead_servers");
-    
+
     //
     // set up the wordtype static object (to be removed)
     //
@@ -439,6 +442,10 @@ void Spider::setupSpiderFilters(htdig_parameters_struct * params)
         config->Add("authorization", params->credentials);
     }
 
+    if(strlen(params->session_max_docs) > 0)
+    {
+        config->Add("session_max_docs", params->session_max_docs);
+    }
 }
 
 void Spider::initializeQueue(htdig_parameters_struct * params)
@@ -704,6 +711,7 @@ void Spider::Initial(const String & list, int from)
     String sig;
     String url;
     Server * server = NULL;
+    facet_list dummy;
 
     for (int i = 0; i < tokens.Count(); i++)
     {
@@ -737,7 +745,7 @@ void Spider::Initial(const String & list, int from)
         if (from != 3)
         {
             debug->outlog(2, " pushed");
-            server->push(u.get(), 0, 0, IsLocalURL(url.get()));
+            server->push(u.get(), 0, dummy, 0, 0, IsLocalURL(url.get()));
 		}
         debug->outlog(2, "\n");
         visited.Add(url, 0);
@@ -798,7 +806,13 @@ void Spider::Start(htdig_parameters_struct * params)
     Server *server;
     URLRef *ref;
     indexCount = 0;
+    session_current_docs = 0;
     currenthopcount = 0;
+    index_current_docs = CLuceneNumIndexDocs();
+    spider_current_docs = CLuceneNumIndexDocs();
+
+    debug->outlog(1, "Current number of documents in index: %d\n", index_current_docs);
+    debug->outlog(1, "Current number of spidered documents in index: %d\n", spider_current_docs);
 
     //
     // initialize the spider queue.
@@ -883,18 +897,14 @@ void Spider::Start(htdig_parameters_struct * params)
             }
             else
             {
-
                 // No HTTP persistent connections. So we request only 1 document.
 
                 max_connection_requests = 1;
 
                 debug->outlog(2, "> %s with a traditional HTTP connection\n", server->host().get());
-
-			}
-
+            }
 
             count = 0;
-
             win32_check_messages();
 
             // Loop until interrupted, too many requests, or done.
@@ -903,11 +913,28 @@ void Spider::Start(htdig_parameters_struct * params)
             while (
                     //noSignal
                     //&&
-                    ((max_connection_requests == -1) || (count < max_connection_requests))
-                    &&
+                    ((max_connection_requests == -1) || (count < max_connection_requests)) &&
                     (ref = server->pop())
                   )
             {
+
+                if (session_current_docs > session_max_docs)
+                {
+                    debug->outlog(1, "session_max_docs (%d) reached.\n", session_max_docs);
+                    break;
+                }
+                if((index_max_docs != -1) && (index_current_docs > index_max_docs))
+                {
+                    debug->outlog(1, "index_max_docs (%d) reached.\n", index_max_docs);
+                    break;
+                }
+                if((spider_max_docs != -1) && (spider_current_docs > spider_max_docs))
+                {
+                    debug->outlog(1, "spider_max_docs (%d) reached.\n", spider_max_docs);
+                    break;
+                }
+
+
                 count++;
 
                 //
@@ -1433,9 +1460,6 @@ void Spider::parse_url(URLRef & urlRef)
     currenthopcount = urlRef.GetHopCount();
     currentServer = NULL;
 
-    // Display progress
-    debug->outlog(0, "%d %d : %s :", indexCount++, currenthopcount, url.get().get());
-
     // 
     // search for the URL in the indexDB
     // 
@@ -1525,6 +1549,16 @@ void Spider::parse_url(URLRef & urlRef)
         indexDoc->DocSpiderable(1);
     }
 
+    if (urlRef.GetTime() > indexDoc->DocTime())
+    {
+        indexDoc->DocTime(urlRef.GetTime());
+    }
+
+    //
+    // Display progress
+    //
+    debug->outlog(0, "%d %d : %s :", indexCount++, currenthopcount, url.get().get());
+
     Transport::DocStatus status = retrieveDoc(urlRef, indexDoc->DocTime());
 
     //
@@ -1535,6 +1569,15 @@ void Spider::parse_url(URLRef & urlRef)
     {
 
     case Transport::Document_ok:
+
+        //
+        // If it's a Sitemap, then skip all the regular parsing
+        //
+        if (doc->isSitemap())
+        {
+            parseSitemap(doc->Contents());
+            break;
+        }
 
         //
         // there's some text there, so try to parse it
@@ -1559,6 +1602,7 @@ void Spider::parse_url(URLRef & urlRef)
             // 
             string * tempURL = new string(indexDoc->DocURL().get());
             DeleteDoc(tempURL);
+            spider_current_docs--;
             delete tempURL;
         }
         indexDoc->DocSize(doc->Length());
@@ -1580,8 +1624,16 @@ void Spider::parse_url(URLRef & urlRef)
         //
         // Add the Name to the CLucene doc
         //
-        debug->outlog(5, "Adding name field to CLuceneDoc\n");
         CLuceneDoc->insertField("doc-name", (doc->Url()->get()).get());
+
+        //
+        // Add the facets to the CLucene doc
+        //
+        facet_list facets = urlRef.GetFacets();
+        for (facet_list::iterator i = facets.begin(); i != facets.end(); i++)
+        {
+            CLuceneDoc->appendField(i->first.c_str(), i->second.c_str());
+        }
 
         //
         // parse the contents of the retrieved doc.
@@ -1593,6 +1645,7 @@ void Spider::parse_url(URLRef & urlRef)
             //
             commitDocs(); 
 
+            spider_current_docs++;
             debug->outlog(0, " size = %d\n", indexDoc->DocSize());
 
             if (urls_seen)
@@ -1651,7 +1704,7 @@ void Spider::parse_url(URLRef & urlRef)
 
     case Transport::Document_redirect:
         debug->outlog(0, " redirect");
-        got_redirect(doc->Redirected(), (urlRef.GetReferer()).get());
+        got_redirect(doc->Redirected(), (urlRef.GetReferer()).get(), urlRef.GetFacets());
         break;
 
     case Transport::Document_not_authorized:
@@ -1780,39 +1833,33 @@ bool Spider::parseDoc(char * contents, bool follow)
     //
     // Add the URL to the CLucene doc
     //
-    debug->outlog(5, "Adding url field to CLuceneDoc\n");
     CLuceneDoc->insertField("url", indexDoc->DocURL().get());
 
     //
     // Add the name to the CLucene doc
     //
-    debug->outlog(5, "Adding doc-name field to CLuceneDoc\n");
     CLuceneDoc->insertField("doc-name", indexDoc->DocName().get());
 
     //
     // add the ID to the CLucene doc
     //
-    debug->outlog(5, "Adding id field to CLuceneDoc\n");
     CLuceneDoc->insertField("id", indexDoc->DocID().get());
 
     //
     // add the time to the CLucene doc
     //
-    debug->outlog(5, "Adding doc-time field to CLuceneDoc\n");
     sprintf(tempField, "%d", (int)indexDoc->DocTime());
     CLuceneDoc->insertField("doc-time", tempField);
 
     //
     // add the alternate time to the CLucene doc
     //
-    debug->outlog(5, "Adding doc-alt-time field to CLuceneDoc\n");
     sprintf(tempField, "%d", (int)indexDoc->DocAltTime());
     CLuceneDoc->insertField("doc-alt-time", tempField);
 
     //
     // add the document size to the CLucene doc
     //
-    debug->outlog(5, "Adding doc-size field to CLuceneDoc\n");
     sprintf(tempField, "%d", indexDoc->DocSize());
     CLuceneDoc->insertField("doc-size", tempField);
 
@@ -1821,7 +1868,7 @@ bool Spider::parseDoc(char * contents, bool follow)
     // parse the actual document, recieving the parsed urls in return
     //
     debug->outlog(3, "Sending contents into TidyParser\n");
-    set<string> URLlist = tparser.parseDoc(contents);
+    list <FacetCollection> URLlist = tparser.parseDoc(contents);
     debug->outlog(3, "Parse complete, retrieved URLlist from TidyParser\n");
 
 
@@ -1829,7 +1876,7 @@ bool Spider::parseDoc(char * contents, bool follow)
     // now that parsing is finished, the 'true' time is
     // known (the time might have been specified in a meta tag)
     // 
-    debug->outlog(5, "Adding parsed out doc-time to IndexDoc\n");
+    debug->outlog(5, "Adding parsed out doc-time to IndexDoc from parsed CLucene Doc\n");
     char* tempTime = CLuceneDoc->getField("doc-time");
     time_t t = atoi(tempTime);
     indexDoc->DocTime(mktime(gmtime(&t)));
@@ -1841,15 +1888,14 @@ bool Spider::parseDoc(char * contents, bool follow)
     if (follow)
     {
         debug->outlog(4, "Follow was set to true, adding URLlist to queue\n");
-        set<string>::iterator i;
-        for (i = URLlist.begin(); i != URLlist.end(); i++)
+        for (list<FacetCollection>::iterator i = URLlist.begin(); i != URLlist.end(); i++)
         {
             // 
             // create a new URL object with the current URL as its parent
             // 
-            debug->outlog(2, "Looking at [%s] for possible queue insertion\n", (*i).c_str());
-            URL * tempURL = new URL((*i).c_str(), *base);
-            addURL(tempURL);
+            debug->outlog(2, "Looking at [%s] for possible queue insertion\n", i->getURL().c_str());
+            URL * tempURL = new URL(i->getURL().c_str(), *base);
+            addURL(tempURL, i->getFacets(), 1, 0);
             delete tempURL;
         }
     }
@@ -1860,6 +1906,36 @@ bool Spider::parseDoc(char * contents, bool follow)
 
     return !tparser.NoIndex();
 }
+
+
+void Spider::parseSitemap(char * contents)
+{
+    //
+    // initialize the parser
+    //
+    debug->outlog(3, "Initializing SitemapParser\n");
+    sparser.initialize();
+
+    //
+    // parse the actual document, recieving the parsed entries in return
+    //
+    debug->outlog(3, "Sending contents into SitemapParser\n");
+    list<FacetCollection> URLlist = sparser.parseDoc(contents);
+    debug->outlog(3, "Parse complete, retrieved SitemapEntry list from SitemapParser\n");
+
+    for (list < FacetCollection >::iterator i = URLlist.begin(); i != URLlist.end(); i++)
+    {
+        // 
+        // create a new URL object with the current URL as its parent
+        // 
+        debug->outlog(2, "Looking at [%s] for possible queue insertion\n", i->getURL().c_str());
+        URL * tempURL = new URL(i->getURL().c_str(), *base);
+        addURL(tempURL, i->getFacets(), 0, i->getTime());
+        delete tempURL;
+    }
+}
+
+
 
 
 int Spider::DeleteDoc(string * input)
@@ -1873,8 +1949,8 @@ int Spider::DeleteDoc(string * input)
     //
     // delete from CLucene, and return number of documents deleted (hopefully only one)
     //
+    index_current_docs--;
     return CLuceneDeleteURLFromIndex(input);
-
 }
 
 
@@ -1887,6 +1963,7 @@ int Spider::DeleteDoc(int input)
     // now, this will cause inconsistencies between the IndexDB and CLucene
     //
 
+    index_current_docs--;
     return CLuceneDeleteIDFromIndex(input);
 }
 
@@ -1909,6 +1986,8 @@ void Spider::commitDocs()
     debug->outlog(2, "IndexDB inserting %s\n", indexDoc->DocURL().get());
     debug->outlog(2, "CLucene inserting %s\n", CLuceneDoc->getField("url"));
 
+    session_current_docs++;
+
     //
     // Insert the index document into indexDB
     //
@@ -1917,6 +1996,7 @@ void Spider::commitDocs()
     //
     // insert the document into CLucene 
     //
+    index_current_docs++;
     CLuceneAddDocToIndex(CLuceneDoc->contents());
 }
 
@@ -2002,7 +2082,7 @@ int Spider::IsValidURL(const String & u)
 	}
 	if (excludes->match(url, 0, 0) != 0)
 	{
-        debug->outlog(2, "\n   Rejected: item in exclude list ");
+        debug->outlog(2, "IsValidURL: Rejected: item in exclude list ");
         return (HTDIG_ERROR_TESTURL_EXCLUDE);
 	}
 
@@ -2027,7 +2107,7 @@ int Spider::IsValidURL(const String & u)
 	char *ext = strrchr((char *) url, '?');
 	if (ext && badquerystr->match(ext, 0, 0) != 0)
 	{
-        debug->outlog(2, "\n   Rejected: item in bad query list ");
+        debug->outlog(2, "IsValidURL: Rejected: item in bad query list ");
         return (HTDIG_ERROR_TESTURL_BADQUERY);
 	}
 
@@ -2048,7 +2128,7 @@ int Spider::IsValidURL(const String & u)
 		lowerext.lowercase();
 		if (invalids.Exists(lowerext))
 		{
-            debug->outlog(2, "\n   Rejected: Extension is invalid!");
+            debug->outlog(2, "IsValidURL: Rejected: Extension is invalid!");
             return (HTDIG_ERROR_TESTURL_EXTENSION);
 		}
 	}
@@ -2057,7 +2137,7 @@ int Spider::IsValidURL(const String & u)
 	//
 	if (ext && valids.Count() > 0 && !valids.Exists(lowerext))
 	{
-        debug->outlog(2, "\n   Rejected: Extension is not valid!");
+        debug->outlog(2, "IsValidURL: Rejected: Extension is not valid!");
         return (HTDIG_ERROR_TESTURL_EXTENSION2);
 	}
 
@@ -2066,7 +2146,7 @@ int Spider::IsValidURL(const String & u)
 	//
 	if (limits.match(url, 1, 0) == 0)
 	{
-        debug->outlog(1, "\n   Rejected: URL not in the limits! ");
+        debug->outlog(1, "IsValidURL: Rejected: URL not in the limits! ");
         return (HTDIG_ERROR_TESTURL_LIMITS);
 	}
 	//
@@ -2080,7 +2160,7 @@ int Spider::IsValidURL(const String & u)
     //aUrl.normalize();
 	if (limitsn.match(aUrl.get(), 1, 0) == 0)
 	{
-        debug->outlog(2, "\n   Rejected: not in \"limit_normalized\" list!");
+        debug->outlog(2, "IsValidURL: Rejected: not in \"limit_normalized\" list!");
         return (HTDIG_ERROR_TESTURL_LIMITSNORM);
 	}
 
@@ -2089,7 +2169,7 @@ int Spider::IsValidURL(const String & u)
 	//
 	if (server && server->IsDisallowed(url) != 0)
 	{
-        debug->outlog(2, "\n   Rejected: forbidden by server robots.txt!");
+        debug->outlog(2, "IsValidURL: Rejected: forbidden by server robots.txt!");
         return (HTDIG_ERROR_TESTURL_ROBOT_FORBID);
 	}
 
@@ -2383,7 +2463,7 @@ int Spider::IsLocalURL(const String & url)
 // void Spider::addURL(URL * url)
 //   add a URL to the queue
 //
-void Spider::addURL(URL * url)
+void Spider::addURL(URL * url, facet_list facets, int hops, time_t t)
 {
     Server *server = 0;
     int valid_url_code = 0;
@@ -2391,7 +2471,7 @@ void Spider::addURL(URL * url)
     // Rewrite the URL (if need be) before we do anything to it.
     url->rewrite();
     
-    debug->outlog(3, "addURL: [%s]\n", url->get().get());
+    debug->outlog(3, "addURL: checking IsValidURL [%s]\n", url->get().get());
 
 #ifndef LIBHTDIG
     if (urls_seen)
@@ -2402,36 +2482,29 @@ void Spider::addURL(URL * url)
     // Check if this URL falls within the valid range of URLs.
     //
     valid_url_code = IsValidURL(url->get());
+
     if (valid_url_code > 0)
     {
         //
         // It is valid.  Normalize it (resolve cnames for the server) and check again...
         //
-        debug->outlog(2, "resolving [%s]\n", url->get().get());
+        debug->outlog(3, "addURL: resolving [%s]\n", url->get().get());
 
         url->normalize();
-
-        // 
-        // If it is a backlink from the current document,
-        // just update that field.  Writing to the database
-        // is meaningless, as it will be overwritten.
-        // 
-        // Adding it as a new document may even be harmful, as
-        // that will be a duplicate.  This can happen if the
-        // current document is never referenced before, as in a
-        // start_url.
-        // 
-
 
         if (strcmp(url->get(), (indexDoc->DocURL()).get()) == 0)
         {
             //
-            // we can still update the backlink count and descriptions
-            // 
-
-// Anthony - AddDescription is gone from DocumentRef for right now
-//            indexDoc->DocBacklinks(indexDoc->DocBacklinks() + 1);
-//            indexDoc->AddDescription(description, words);
+            // link to self
+            //
+            debug->outlog(3, "addURL: [%s] linked to self\n", url->get().get());            
+        }
+        else if (currenthopcount + hops > max_hop_count)
+        {
+            //
+            // If the dig is restricting by hop count, perform the check here, too
+            //
+            debug->outlog(2, "addURL: [%s] over hop limit\n", url->get().get());            
         }
         else
         {
@@ -2439,7 +2512,7 @@ void Spider::addURL(URL * url)
             // put it in the list of URLs to still visit.
             //
             if (Need2Get(url->get())) {
-                debug->outlog(1, "\n   pushing [%s]\n", url->get().get());
+                debug->outlog(1, "pushing [%s]\n", url->get().get());
                 
                 server = (Server *) servers[url->signature()];
 
@@ -2462,7 +2535,7 @@ void Spider::addURL(URL * url)
                 //
 				if (strlen(url->get()))
                 {
-                    server->push(url->get(), currenthopcount+1, base->get(), IsLocalURL(url->get()));
+                    server->push(url->get(), currenthopcount+hops, facets, t, base->get(), IsLocalURL(url->get()));
                 }
 
                 String temp = url->get();
@@ -2481,7 +2554,7 @@ void Spider::addURL(URL * url)
         //
         // Not a valid URL
         //
-        debug->outlog(1, "\nurl rejected: (level 1) %s\n", url->get().get());
+        debug->outlog(1, "addURL: rejected: (not IsValidURL) [%s]\n", url->get().get());
         debug->outlog(0, "-");
 
         if (urls_seen)
@@ -2493,9 +2566,9 @@ void Spider::addURL(URL * url)
 
 
 //*****************************************************************************
-// void Spider::got_redirect(const char *new_url, DocumentRef *old_ref)
+// void Spider::got_redirect(const char *new_url, const char *referer, facet_list facets)
 //
-void Spider::got_redirect(const char *new_url, const char *referer)
+void Spider::got_redirect(const char *new_url, const char *referer, facet_list facets)
 {
     //
     // First we must piece together the new URL, which may be relative
@@ -2548,11 +2621,11 @@ void Spider::got_redirect(const char *new_url, const char *referer)
 
             if (!referer || strlen(referer) == 0)
             {
-                server->push(url.get(), currenthopcount, base->get(), IsLocalURL(url.get()), 0);
+                server->push(url.get(), currenthopcount, facets, 0, base->get(), IsLocalURL(url.get()), 0);
             }
             else
             {
-                server->push(url.get(), currenthopcount, referer, IsLocalURL(url.get()), 0);
+                server->push(url.get(), currenthopcount, facets, 0, referer, IsLocalURL(url.get()), 0);
             }
 
             String temp = url.get();
