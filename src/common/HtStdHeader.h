@@ -9,6 +9,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <list>
 #include <utility>
 #include <iostream>
 #include <fstream>
