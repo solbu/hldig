@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: URLRef.cc,v 1.1.2.1 2006/09/25 23:51:13 aarnone Exp $
+// $Id: URLRef.cc,v 1.1.2.2 2007/05/01 22:52:46 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -26,6 +26,7 @@
 URLRef::URLRef()
 {
   hopcount = 0;
+  _time = 0;
 }
 
 
@@ -48,5 +49,15 @@ int URLRef::compare(const URLRef& to) const
   return hopcount - to.hopcount;
 }
 
+
+void URLRef::AddBacklink(string text)
+{
+    facet_entry newBacklink;
+
+    newBacklink.first = "backlink";
+    newBacklink.second = text;
+
+    _facets.push_back(newBacklink);
+}
 
 
