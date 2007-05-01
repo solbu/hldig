@@ -106,7 +106,7 @@ void TidyParser::initialize(DocumentRef * CluceneDocPointer, char* encoding)
 }
 
 
-std::set<std::string> TidyParser::parseDoc(char* input)
+list <FacetCollection> TidyParser::parseDoc(char* input)
 {
     HtDebug * debug = HtDebug::Instance();
     //
@@ -145,6 +145,8 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
     debug->outlog(5, "Looping through nodes at depth = %d\n", depth);
     for( TidyNode child = tidyGetChild(tnod); child; child = tidyGetNext(child) )
     {
+        bool traverseChild = true;
+
         //
         // Change states if applicable
         //
@@ -340,6 +342,9 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
         }
         else if (tidyNodeIsA(child))
         {
+            FacetCollection newFacet;
+            traverseChild = false;
+
             debug->outlog(6, "Anchor node");
 
             //
@@ -354,11 +359,29 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
                 if (anchorVal)
                 {
                     debug->outlog(6, ": [%s]", anchorVal);
-                    URLlist.insert(anchorVal);
+                    newFacet.setURL(anchorVal);
+
                 }
                 else
                 {
                     debug->outlog(6, ": [unable to get anchor node HREF value]", anchorVal);
+                }
+            }
+
+            //
+            // backlink text
+            //
+            TidyNode backlinkNode = tidyGetChild(child);
+            if (tidyNodeGetType( backlinkNode ) == TidyNode_Text)
+            {
+                TidyBuffer backlinkText;
+                tidyBufInit(&backlinkText);
+                tidyNodeGetText(tdoc, backlinkNode, &backlinkText);
+
+                anchorAttr = tidyAttrGetTEXT(backlinkNode);
+                if (backlinkText.bp)
+                {
+                    newFacet.addFacet("backlink", (char*)backlinkText.bp);
                 }
             }
 
@@ -381,6 +404,8 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
                 }
             }
             debug->outlog(6, "\n");
+
+            URLlist.push_back(newFacet);
         }
         else
         {
@@ -388,9 +413,12 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
         }
 
         //
-        // Recurse down from here
+        // Recurse down from here (if necessary)
         //
-        nodeTraverse( child, depth + 1 );
+        if (traverseChild)
+        {
+            nodeTraverse( child, depth + 1 );
+        }
 
         //
         // Leaving the node, so the state can be reset.

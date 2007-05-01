@@ -16,6 +16,7 @@
 #include "DocumentRef.h"
 #include "CLuceneAPI.h"
 #include "HtConfiguration.h"
+#include "FacetCollection.h"
 
 //
 // include the two HTMLtidy headers
@@ -46,10 +47,10 @@ class TidyParser
     void insertField(const char*, const char*);
 
     //
-    // parse the buffer, return a set of
-    // URLs seen during parsing
+    // parse the buffer, return a set of URLs with
+    // associated backlink text seen during parsing
     // 
-    std::set<std::string> parseDoc(char*);
+    list <FacetCollection> parseDoc(char*);
 
     bool NoIndex() { return noIndex; }
     
@@ -72,7 +73,7 @@ class TidyParser
     // list of URLs seen during parsing. using
     // a std::set<> here so that the URLs are unique
     //
-    set<string> URLlist;
+    list <FacetCollection> URLlist;
 
     //
     // configuration for using in parsing
