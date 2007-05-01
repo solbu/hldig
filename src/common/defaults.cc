@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: defaults.cc,v 1.1.2.2 2007/04/26 16:19:44 aarnone Exp $
+// $Id: defaults.cc,v 1.1.2.3 2007/05/01 22:48:12 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -189,18 +189,11 @@ ConfigDefaults	defaults[] =
 	be sure to protect it so it is readable only by you, and do not \
 	use that same configuration file for htsearch. \
 " }, \
-{ "backlink_factor", "0.1",  \
-	"number", "htsearch", "", "3.1.0", "Searching:Ranking", "backlink_factor: 501.1", " \
-	This is a weight of \"how important\" a page is, based on \
-	the number of URLs pointing to it. It's actually \
-	multiplied by the ratio of the incoming URLs (backlinks) \
-	and outgoing URLs (links on the page), to balance out pages \
-	with lots of links to pages that link back to them. The ratio \
-	gives lower weight to \"link farms\", which often have many \
-	links to them.  This factor can \
-	be changed without changing the database in any way. \
-	However, setting this value to something other than 0 \
-	incurs a slowdown on search results. \
+{ "backlink_factor", "35",  \
+	"number", "htsearch", "", "3.1.0", "Searching:Ranking", "backlink_factor: 100", " \
+	This is a factor which will be used to multiply the \
+	weight of words that are used in links from other pages to a \
+    specific document. \
 " }, \
 { "bad_extensions", ".wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif .jpg .jpeg .aiff .class .map .ram .tgz .bin .rpm .mpg .mov .avi .css",  \
 	"string list", "htdig", "URL", "all", "Indexing:Where", "bad_extensions: .foo .bar .bad", " \
@@ -1137,6 +1130,15 @@ http://www.htdig.org/", " \
 	in a single configuration file. The include directives \
 	can be nested, but watch out for nesting loops. \
 " }, \
+{ "index_max_docs", "-1", \
+	"number", "htdig", "", "4.1.0", "", "index_max_docs: 100000", " \
+    This will allow you to specify the maximum number of searchable \
+    documents in the index. When a dig is started, CLucene is queried \
+    for the number of unique documents. Insertions count toward this \
+    limit, and count against it. If the limit is reached during a dig, \
+    the dig is halted and all pages remaining in the work queue are \
+    dicarded. A value of -1 means no limit. \
+" }, \
 { "index_timeout", "0", \
 	"number", "htdig", "", "4.0", "", "index_timeout: 6000", " \
     This will allow you to specify the longest amount of time the \
@@ -1876,6 +1878,23 @@ http://www.htdig.org/", " \
 	down local indexing if set, which may or may not be what \
 	you intended. \
 " }, \
+{ "session_max_docs", "-1",  \
+	"integer", "htdig", "Server", "4.1.0", "Indexing:Where", "session_max_docs: 1000", " \
+	This attribute tells htdig to limit the dig to retrieve a maximum \
+	number of documents total. Every time a page is successfully \
+    added to the index, it will caount against this number. \
+    When the total is reached, the dig is halted and a message \
+    is printed to the log indicating the reason for halting. \
+    This can be useful as a debugging or index size control.<br> \
+	A value of -1 specifies no limit. \
+" }, \
+{ "sitemap_prefix", "htdig_sitemap_",  \
+	"string", "htdig", "Server", "4.1.0", "Indexing:Parsing", "sitemap_prefix: custom_sitemap_", " \
+	When a URL is downloaded, and its filename begins with \
+    this string, it will be treated as a Sitemap or Sitemap \
+    index file. Any links in this fille will be given a free \
+    hop (towards max_hop_count). \
+" }, \
 { "sort", "score",  \
 	"string", "htsearch", "", "3.1.0", "Presentation:How", "sort: revtime", " \
 	This is the default sorting method that htsearch \
@@ -1923,6 +1942,16 @@ http://www.htdig.org/", " \
 	it contains spaces. \
 	See the <a href=\"hts_selectors.html\">select list documentation</a> \
 	for more information on how this attribute is used. \
+" }, \
+{ "spider_max_docs", "-1", \
+	"number", "htdig", "", "4.1.0", "", "spider_max_docs: 100000", " \
+    This will allow you to specify the maximum number of searchable \
+    documents in the index. This is similar to <a href=\"#index_max_docs\"> \
+    index_max_docs</a>, but this only counts documents encountered during \
+    spidering runs (not index_single_doc insertions). \
+    If the limit is reached during a dig, \
+    the dig is halted and all pages remaining in the work queue are \
+    dicarded. A value of -1 means no limit. \
 " }, \
 { "startday", "",  \
 	"integer", "htsearch", "", "3.1.6", "Searching:Method", "startday: 1", " \
