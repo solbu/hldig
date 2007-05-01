@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.cc,v 1.1.2.2 2007/04/26 16:58:22 aarnone Exp $
+// $Id: Document.cc,v 1.1.2.3 2007/05/01 22:49:17 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -764,6 +764,25 @@ bool Document::parse()
     }
 }
 
+
+bool Document::isSitemap()
+{
+    HtConfiguration* config= HtConfiguration::config();
+
+    String prefix = config->Find("sitemap_prefix");
+    String cur_url = url->get().sub(url->get().lastIndexOf('/')+1,prefix.length());
+
+    debug->outlog(3, "Sitemap check: %s vs. %s\n", prefix.get(), cur_url.get());
+
+    if (prefix == cur_url)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 int Document::ShouldWeRetry(Transport::DocStatus DocumentStatus)

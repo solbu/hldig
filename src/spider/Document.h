@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.h,v 1.1.2.2 2007/04/26 16:58:23 aarnone Exp $
+// $Id: Document.h,v 1.1.2.3 2007/05/01 22:49:17 aarnone Exp $
 //
 //
 #ifndef _Document_h_
@@ -82,6 +82,11 @@ class Document : public Object
         // Parse the contents using external parsers (if needed)
         //
         bool            parse();
+
+        //
+        // Checks if the current contents are a sitemap file or not
+        //
+        bool            isSitemap();
 
         //
         // Set the username and password to be used in any requests
