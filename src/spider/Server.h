@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.h,v 1.1.2.1 2006/09/25 23:51:13 aarnone Exp $
+// $Id: Server.h,v 1.1.2.2 2007/05/01 22:50:44 aarnone Exp $
 //
 
 #ifndef _Server_h_
@@ -61,8 +61,8 @@ class Server : public Object
         // This will check to see if the server is up if the URL is not local
         // if it's down, it simply will not be added
         //
-        void push(const String &path, int hopcount, const String &referer,
-                int local = 0, int newDoc = 1);
+        void push(const String &path, int hopcount, facet_list facets, time_t t,
+                const String &referer, int local = 0, int newDoc = 1);
 
         //
         // Return the next URL from the queue for this server.

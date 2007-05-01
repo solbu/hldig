@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.cc,v 1.1.2.1 2006/09/25 23:51:13 aarnone Exp $
+// $Id: Server.cc,v 1.1.2.2 2007/05/01 22:50:44 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -343,8 +343,8 @@ void Server::robotstxt(Document &doc)
 //*****************************************************************************
 // void Server::push(String &path, int hopcount, char *referer, int local, int newDoc)
 //
-void Server::push(const String &path, int hopcount, const String &referer,
-        int local, int newDoc)
+void Server::push(const String &path, int hopcount, facet_list facets, time_t t,
+        const String &referer, int local, int newDoc)
 {
     if (_bad_server && !local)
         return;
@@ -368,6 +368,8 @@ void Server::push(const String &path, int hopcount, const String &referer,
     ref->SetURL(path);
     ref->SetHopCount(hopcount);
     ref->SetReferer(referer);
+    ref->SetFacets(facets);
+    ref->SetTime(t);
     _paths.Add(ref);
 
     if (newDoc)
@@ -421,3 +423,4 @@ void Server::reportStatistics(String &out, char *name)
     if (_documents != 1)
         out << "s";
 }
+
