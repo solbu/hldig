@@ -14,11 +14,7 @@ CL_DIR = $(ROOT_DIR)/CLucene
 CL_CONTRIB_DIR = $(CL_DIR)/contributions
 TIDY_DIR = $(ROOT_DIR)/HTMLTidy
 
-ifdef PHP5
 LIBHTDIG_BUILD_VER = 4.1.1
-else
-LIBHTDIG_BUILD_VER = 4.1.0
-endif
 
 libhtdig = $(LIB_DIR)/libhtdig.so.$(LIBHTDIG_BUILD_VER)
 libhtdigphp = $(LIB_DIR)/libhtdigphp.so.$(LIBHTDIG_BUILD_VER)
@@ -54,7 +50,7 @@ TIDY_INC_DIR = -I$(TIDY_DIR)/include
 INC_DIRS= -I$(SRC_DIR)/libhtdig -I$(SRC_DIR)/CLuceneAPI -I$(SRC_DIR)/spider -I$(SRC_DIR)/common -I$(SRC_DIR)/config -I$(SRC_DIR)/network $(BDB_INC_DIR) $(TIDY_INC_DIR) $(CL_INC_DIR) $(CL_CONTRIB_INC_DIR)
 
 #system specific PHP information
-ifdef PHP5
+ifndef PHP4
 PHP_INC_DIRS = $(INC_DIRS) -I/nfs/local/linux/include/php-5.2.2-82/ -I/nfs/local/linux/include/php-5.2.2-82/main -I/nfs/local/linux/include/php-5.2.2-82/Zend -I/nfs/local/linux/include/php-5.2.2-82/TSRM
 else
 PHP_INC_DIRS = $(INC_DIRS) -I/nfs/local/linux/include/php-4.1.2-80/ -I/nfs/local/linux/include/php-4.1.2-80/main -I/nfs/local/linux/include/php-4.1.2-80/Zend -I/nfs/local/linux/include/php-4.1.2-80/TSRM
