@@ -14,7 +14,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_api.h,v 1.1.2.3 2007/05/01 22:45:21 aarnone Exp $
+// $Id: libhtdig_api.h,v 1.1.2.4 2007/05/16 18:11:37 aarnone Exp $
 //
 //----------------------------------------------------------------
 
@@ -241,6 +241,7 @@ typedef struct htdig_parameters_struct {
   
   //boolean values
   int initial;
+  int analyze_text;
   int create_text_database;
   int report_statistics;
   int alt_work_area;

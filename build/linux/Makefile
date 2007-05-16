@@ -50,10 +50,10 @@ TIDY_INC_DIR = -I$(TIDY_DIR)/include
 INC_DIRS= -I$(SRC_DIR)/libhtdig -I$(SRC_DIR)/CLuceneAPI -I$(SRC_DIR)/spider -I$(SRC_DIR)/common -I$(SRC_DIR)/config -I$(SRC_DIR)/network $(BDB_INC_DIR) $(TIDY_INC_DIR) $(CL_INC_DIR) $(CL_CONTRIB_INC_DIR)
 
 #system specific PHP information
-PHP_INC_DIRS = $(INC_DIRS) -I/nfs/local/src/php/php-4.1.2-80/linux/ -I/nfs/local/src/php/php-4.1.2-80/linux/main -I/nfs/local/src/php/php-4.1.2-80/linux/Zend -I/nfs/local/src/php/php-4.1.2-80/linux/TSRM
+PHP_INC_DIRS = $(INC_DIRS) -I/nfs/local/linux/include/php-4.1.2-80/ -I/nfs/local/linux/include/php-4.1.2-80/main -I/nfs/local/linux/include/php-4.1.2-80/Zend -I/nfs/local/linux/include/php-4.1.2-80/TSRM
 
 #system specific SSL library information
-SSL_INC  = -I/nfs/local/linux/openssl/openssl-0.9.7-stable-SNAP-20040331/include/openssl -DHAVE_SSL
+SSL_INC  = -I/nfs/local/linux/openssl/openssl-0.9.7-stable-SNAP-20040331/include/openssl -DHAVE_SSL -DHAVE_SSL_H
 SSL_INC += -I/nfs/local/linux/openssl/openssl-0.9.7-stable-SNAP-20040331/include/
 SSL_LIB = -L/nfs/local/linux/openssl/openssl-0.9.7-stable-SNAP-20040331/lib -lssl -lcrypto
 
@@ -95,7 +95,7 @@ BDB_C_OBJS = $(addprefix $(OBJS_DIR)/, bt_compare.o bt_conv.o bt_curadj.o bt_cur
 NETWORK_CXX_OBJS = $(addprefix $(OBJS_DIR)/, Connection.o Transport.o HtHTTP.o HtFile.o HtNNTP.o HtCookie.o HtCookieJar.o HtCookieMemJar.o HtHTTPBasic.o HtHTTPSecure.o SSLConnection.o HtFTP.o HtCookieInFileJar.o)
 
 #htdig c++ files
-SPIDER_CXX_OBJS = $(addprefix $(OBJS_DIR)/, ExternalTransport.o Spider.o Document.o URLRef.o Server.o TidyParser.o)
+SPIDER_CXX_OBJS = $(addprefix $(OBJS_DIR)/, ExternalTransport.o Spider.o Document.o URLRef.o Server.o TidyParser.o ExternalParser.o)
 
 # CLuceneAPI files
 CLAPI_CXX_OBJS = $(addprefix $(OBJS_DIR)/, CLuceneAPI.o )

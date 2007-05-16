@@ -22,17 +22,76 @@ static char indexDir[256];
 
 #include "HtDebug.h"
 
+
+//
+// The "almost" standard analyzer. it provides stopword
+// removal, whitespace, and lowercasing, but doesn't do
+// any of the standardAnalyzer tokenizing. essentially
+// for when you don't trust StandardAnalyzer
+//
+CL_NS_DEF2(analysis,almostStandard)
+
+class AlmostStandardAnalyzer : public Analyzer
+{
+    private:
+        CL_NS(util)::CLSetList<TCHAR*> stopSet;
+    public:
+        AlmostStandardAnalyzer();
+        AlmostStandardAnalyzer( TCHAR** stopWords);
+        ~AlmostStandardAnalyzer();
+
+
+        TokenStream* tokenStream(const TCHAR* fieldName, CL_NS(util)::Reader* reader);
+};
+
+
+AlmostStandardAnalyzer::AlmostStandardAnalyzer(): stopSet(false)
+{
+    StopFilter::fillStopTable( &stopSet,CL_NS(analysis)::StopAnalyzer::ENGLISH_STOP_WORDS);
+}
+
+AlmostStandardAnalyzer::AlmostStandardAnalyzer( TCHAR** stopWords): stopSet(false)
+{
+    StopFilter::fillStopTable( &stopSet,stopWords );
+}
+
+AlmostStandardAnalyzer::~AlmostStandardAnalyzer()
+{}
+
+
+TokenStream* AlmostStandardAnalyzer::tokenStream(const TCHAR* fieldName, Reader* reader)
+{
+    TokenStream* ret = _CLNEW LowerCaseTokenizer(reader);
+    ret = _CLNEW StopFilter(ret,true, &stopSet);
+    return ret;
+}
+
+CL_NS_END2
+CL_NS_USE2(analysis,almostStandard)
+
 //
 // Index close / open
 // 
-void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
+void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords, bool useStandardAnalyzer)
 {
     try
     {
         HtDebug * debug = HtDebug::Instance();
         HtConfiguration * config = HtConfiguration::config();
+        wchar_t * stemmer_name;
 
         strcpy(indexDir, target);
+
+        //
+        // figure out the stemmer name
+        //
+        String cfg_locale = config->Find("locale");
+        stemmer_name = utf8_to_wchar(get_stemmer_name(cfg_locale.get()));
+
+        if ( (stemmer_name) && (wcslen(stemmer_name)) )
+            debug->outlog(2, "CLuceneAPI: Found [%s] in list of stemmers. get_stemmer_name(..) returns [%s] \n", cfg_locale.get(), get_stemmer_name(cfg_locale.get()));
+        else
+            debug->outlog(2, "CLuceneAPI: Couldn't find [%s] in list of stemmers.  get_stemmer_name(..) returns [%s]\n", cfg_locale.get(), get_stemmer_name(cfg_locale.get()));
 
         //
         // Create the analyser first, so writer can have it. the stop words
@@ -42,9 +101,15 @@ void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
         {
             wchar_t ** stopArray = convertStopWords(stopWords);
 
-            an = _CLNEW PerFieldAnalyzerWrapper(_CLNEW StandardAnalyzer(stopArray));
+            if (useStandardAnalyzer)
+                an = _CLNEW PerFieldAnalyzerWrapper(_CLNEW StandardAnalyzer(stopArray));
+            else
+                an = _CLNEW PerFieldAnalyzerWrapper(_CLNEW AlmostStandardAnalyzer(stopArray));
 
-            an->addAnalyzer(_T("stemmed"), _CLNEW SnowballAnalyzer(_T("english"), stopArray));
+            if ( (stemmer_name) && (wcslen(stemmer_name)))
+                an->addAnalyzer(_T("stemmed"), _CLNEW SnowballAnalyzer(stemmer_name, stopArray));
+            else
+                config->Add("use_stemming", "false"); // no stemming for this run
 
             for (int i = 0; i<stopWords->size(); i++)
             {
@@ -54,10 +119,19 @@ void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords)
         }
         else
         {
-            an = _CLNEW PerFieldAnalyzerWrapper(_CLNEW StandardAnalyzer());
+            if (useStandardAnalyzer)
+                an = _CLNEW PerFieldAnalyzerWrapper(_CLNEW StandardAnalyzer());
+            else
+                an = _CLNEW PerFieldAnalyzerWrapper(_CLNEW AlmostStandardAnalyzer());
 
-            an->addAnalyzer(_T("stemmed"), _CLNEW SnowballAnalyzer(_T("english")));
+
+            if ( (stemmer_name) && (wcslen(stemmer_name)) )
+                an->addAnalyzer(_T("stemmed"), _CLNEW SnowballAnalyzer(stemmer_name));
+            else
+                config->Add("use_stemming", "false"); // no stemming for this run
         }
+        free(stemmer_name);
+
         //
         // add special analyzers for special fields
         //
@@ -339,6 +413,79 @@ int CLuceneDeleteIDFromIndex(int id)
         debug->close();
         throw;
     }
+}
+
+
+typedef struct stem_data
+{
+    char stemmer_name[20];
+    char name_win32[6];
+    char name_solaris[6];
+    char name_linux[6];
+    char sqlserver[40];
+    char oracle[40];
+} stem_data;
+
+
+static stem_data stemmer_langs[] = {
+    // stemmer      WIN32  SOLARIS  LINUX   SQL Server Lang        Oracle (NLS_LANG)
+    {"english",    "enu", "en_US", "en_US", "English",             "AMERICAN_AMERICA.UTF8"},
+    {"english",    "eng", "en_UK", "en_AU", "British English",     "ENGLISH_AUSTRALIA.UTF8"},
+    {"english",    "eng", "en_UK", "en_GB", "British English",     "ENGLISH_UNITED KINGDOM.UTF8"},
+
+    {"german",     "deu", "de",    "de_DE", "German",              "GERMAN_GERMANY.UTF8"},
+
+    {"spanish",    "esp", "es",    "es_ES", "Spanish",             "SPANISH_SPAIN.UTF8"},
+
+    {"finnish",    "fin", "en_US", "fi_FI", "Finnish",             "FINNISH_FINLAND.UTF8"},
+
+    {"french",     "frc", "fr_CA", "fr_CA", "French",              "CANADIAN FRENCH_CANADA.UTF8"},
+    {"french",     "fra", "fr",    "fr_FR", "French",              "FRENCH_FRANCE.UTF8"},
+
+    {"italian",    "ita", "it",    "it_IT", "Italian",             "ITALIAN_ITALY.UTF8"},
+
+    {"dutch",      "nld", "nl",    "nl_NL", "Dutch",               "DUTCH_THE NETHERLANDS.UTF8"},
+
+    {"portuguese", "ptb", "pt_BR", "pt_BR", "Brazilian",           "BRAZILIAN PORTUGUESE_BRAZIL.UTF8"},
+
+    {"swedish",    "sve", "sv",    "sv_SE", "Swedish",             "SWEDISH_SWEDEN.UTF8"},
+
+    {"danish",     "dan", "da_DK", "da_DK", "Danish",              "DANISH_DENMARK.UTF8"},
+
+    {"norwegian",  "nor", "no_NO", "no_NO", "Norwegian",           "NORWEGIAN_NORWAY.UTF8"},
+
+    {"",           "plk", "pl",    "pl_PL", "Polish",              "POLISH_POLAND.UTF8"},        // no stemmer
+    {"",           "csy", "cz",    "cs_CZ", "Czech",               "CZECH_CZECH REPUBLIC.UTF8"}, // no stemmer
+    {"",           ""   , "",      "",      "",                    "",},
+};
+
+
+const char * get_stemmer_name(char * input)
+{
+    int i = 0;
+    HtDebug * debug = HtDebug::Instance();
+   
+    if(!strcmp(input, "C"))
+        return NULL;
+ 
+    debug->outlog(2, "CLuceneAPI: get_stemmer_name (%s)\n", input);
+
+    while (strlen(stemmer_langs[i].stemmer_name) > 0)
+    {
+        if (!strcmp(input, stemmer_langs[i].name_win32) ||
+            !strcmp(input, stemmer_langs[i].name_solaris) ||
+            !strcmp(input, stemmer_langs[i].name_linux) ||
+            !strcmp(input, stemmer_langs[i].sqlserver) ||
+            !strcmp(input, stemmer_langs[i].oracle))
+        {
+                debug->outlog(2, "CLuceneAPI: get_stemmer_name returning [%s]\n", stemmer_langs[i].stemmer_name);
+                return stemmer_langs[i].stemmer_name;
+        }
+        i++;
+    }
+
+    debug->outlog(2, "CLuceneAPI: get_stemmer_name returning NULL\n");
+    return NULL;
 }
 
 

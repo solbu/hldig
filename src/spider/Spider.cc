@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Spider.cc,v 1.1.2.3 2007/05/01 23:03:11 aarnone Exp $
+// $Id: Spider.cc,v 1.1.2.4 2007/05/16 18:11:38 aarnone Exp $
 //
 
 
@@ -327,12 +327,14 @@ void Spider::openDBs(htdig_parameters_struct * params)
     if (!params->alt_work_area) 
     {
         debug->outlog(0, "Opening CLucene database here: [%s]\n", db_dir_filename.get());
-        CLuceneOpenIndex(form("%s/CLuceneDB", (char *)db_dir_filename.get()), params->initial ? 1 : 0, &stopWords);
+        CLuceneOpenIndex(form("%s/CLuceneDB", (char *)db_dir_filename.get()), params->initial ? 1 : 0,
+                &stopWords, params->analyze_text ? true : false);
     }
     else
     {
         debug->outlog(0, "Opening CLucene database (working copy) here: [%s]\n", db_dir_filename.get());
-        CLuceneOpenIndex(form("%s/CLuceneDB.work", (char *)db_dir_filename.get()), params->initial ? 1 : 0, &stopWords);
+        CLuceneOpenIndex(form("%s/CLuceneDB.work", (char *)db_dir_filename.get()), params->initial ? 1 : 0,
+                &stopWords, params->analyze_text ? true : false);
     }
     debug->outlog(0, "CLucene database open succeeded\n");
 

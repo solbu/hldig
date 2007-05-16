@@ -97,6 +97,32 @@ wchar_t * utf8_to_wchar(const char* value)
 }
 
 
+
+//
+// it is possible to accidently chop half of a UTF8 character
+// from the end of a string. This will fix that (assuming the
+// string is still null terminated)
+//
+void sanitize_utf8_string(char * value)
+{
+    char* end = value;
+
+    if (!*end)
+        return; // don't do anything on an empty string
+
+    while (*end)
+        end++; // find the end of the string
+
+    end--; // move back to the first non-null byte
+
+    while (((*end & 0xC0) == 0x80) && (end != value))
+        end--; // remove any trail bytes
+
+    *end = '\0'; // null terminate the string
+}
+
+
+
 char * wchar_to_utf8(const wchar_t* value)
 {
     if (value == NULL)

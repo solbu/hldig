@@ -50,6 +50,8 @@ wchar_t * utf8_to_wchar(const char* input);
 
 char * wchar_to_utf8(const wchar_t* input);
 
+void sanitize_utf8_string(char * value);
+
 //
 // must free the returned wchar_t array!!!!!
 //

@@ -17,7 +17,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htsearch.cc,v 1.1.2.3 2007/05/01 22:45:21 aarnone Exp $
+// $Id: libhtdig_htsearch.cc,v 1.1.2.4 2007/05/16 18:11:37 aarnone Exp $
 //
 //----------------------------------------------------------------
 
@@ -420,6 +420,7 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
 
         if (strlen(htsearch_query->optional_query) > 0)
         {
+            htsearchapi_debug->outlog(4, "HtSearch: optional query: [%s]\n", htsearch_query->optional_query);
             wtemp = utf8_to_wchar(htsearch_query->optional_query);
             optional_query = _CLNEW StringReader(wtemp);
 
@@ -431,6 +432,7 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
 
         if (strlen(htsearch_query->required_query) > 0)
         {
+            htsearchapi_debug->outlog(4, "HtSearch: required query: [%s]\n", htsearch_query->required_query);
             wtemp = utf8_to_wchar(htsearch_query->required_query);
             required_query = _CLNEW StringReader(wtemp);
 
@@ -442,6 +444,7 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
 
         if (strlen(htsearch_query->forbidden_query) > 0)
         {
+            htsearchapi_debug->outlog(4, "HtSearch: forbidden query: [%s]\n", htsearch_query->forbidden_query);
             wtemp = utf8_to_wchar(htsearch_query->forbidden_query);
             forbidden_query = _CLNEW StringReader(wtemp);
             free(wtemp);
@@ -449,6 +452,7 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
 
         if (strlen(htsearch_query->prefix_query) > 0)
         {
+            htsearchapi_debug->outlog(4, "HtSearch: prefix query: [%s]\n", htsearch_query->prefix_query);
             wtemp = utf8_to_wchar(htsearch_query->prefix_query);
             prefix_query = _CLNEW StringReader(wtemp);
             free(wtemp);
@@ -456,6 +460,7 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
 
         if (strlen(htsearch_query->synonym_query) > 0)
         {
+            htsearchapi_debug->outlog(4, "HtSearch: synonym query: [%s]\n", htsearch_query->synonym_query);
             wtemp = utf8_to_wchar(htsearch_query->synonym_query);
             synonym_query = _CLNEW StringReader(wtemp);
             free(wtemp);
@@ -582,9 +587,9 @@ DLLEXPORT int htsearch_query(htsearch_query_struct * htsearch_query)
         {
             TokenStream * required_tokens;
             Token required_token;
-            SimpleAnalyzer simpleAnalyzer;
+            WhitespaceAnalyzer whitespaceAnalyzer;
 
-            required_tokens = simpleAnalyzer.tokenStream(_T("doesn't matter"), required_query);
+            required_tokens = whitespaceAnalyzer.tokenStream(_T("doesn't matter"), required_query);
             
             while (required_tokens->next(&required_token) != false)
             {
@@ -1017,6 +1022,14 @@ DLLEXPORT int htsearch_get_nth_match(int n, htsearch_query_match_struct * hit_st
         {
             hit_struct->score = cl_hits->score(n);
         }
+
+        //
+        // sanitize the return strings (since they've been truncated)
+        //
+        sanitize_utf8_string(hit_struct->URL);
+        sanitize_utf8_string(hit_struct->name);
+        sanitize_utf8_string(hit_struct->title);
+        sanitize_utf8_string(hit_struct->excerpt);
 
         return (TRUE);
     }

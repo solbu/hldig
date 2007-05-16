@@ -9,7 +9,7 @@
 // Index operations
 // 
 
-void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords);
+void CLuceneOpenIndex(char * target, int clearIndex, set<string> * stopWords, bool useStandardAnalyzer);
 
 void CLuceneCloseIndex(void);
 
@@ -24,6 +24,10 @@ int CLuceneDeleteURLFromIndex(string * url);
 
 int CLuceneDeleteIDFromIndex(int id);
 
+//
+// utility
+//
+const char * get_stemmer_name(char * input);
 
 //
 // Utility
