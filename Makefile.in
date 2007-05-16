@@ -185,24 +185,24 @@ AUTOMAKE_OPTIONS = foreign no-dependencies
 INCLUDES = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
-		-I$(top_srcdir)/htword \
 		-I$(top_srcdir)/db -I$(top_builddir)/db \
 		$(LOCAL_DEFINES) $(PROFILING)
+#		-I$(top_srcdir)/htword 
 
 
 HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
-		$(top_builddir)/htword/libhtword.la \
 		$(top_builddir)/htlib/libht.la \
 		$(top_builddir)/htcommon/libcommon.la \
-		$(top_builddir)/htword/libhtword.la \
 		$(top_builddir)/db/libhtdb.la \
 		$(top_builddir)/htlib/libht.la
+#		$(top_builddir)/htword/libhtword.la 
 
 
 @TESTS_TRUE@TESTDIR = test
 
-SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include htdoc $(TESTDIR)
+SUBDIRS = db htlib htcommon htnet htfuzzy htdb htdig htsearch httools installdir include htdoc $(TESTDIR)
+#htword
 
 EXTRA_DIST = .version Makefile.config ChangeLog.0 contrib
 subdir = .
@@ -223,8 +223,9 @@ DIST_COMMON = README $(srcdir)/Makefile.in $(srcdir)/configure \
 	$(top_srcdir)/Makefile.config COPYING ChangeLog Makefile.am \
 	acinclude.m4 aclocal.m4 config.guess config.sub configure \
 	configure.in install-sh ltmain.sh missing mkinstalldirs
-DIST_SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig \
+DIST_SUBDIRS = db htlib htcommon htnet htfuzzy htdb htdig \
 	htsearch httools installdir include htdoc test
+#htword
 all: all-recursive
 
 .SUFFIXES:

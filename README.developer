@@ -1,6 +1,12 @@
 ht://Dig 4.0 README.developer
 Copyright (c) 2002-2004 The ht://Dig Group
 
+----------------------------------------------------
+
+    to build on linux, read build/linux/README
+
+----------------------------------------------------
+
 --
 This document is in flux! Until the release of ht://Dig 4.0, please
 take a look at the refactor design documents in the /htdocs/refactor_4_0/

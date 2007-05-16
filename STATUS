@@ -1,60 +1,47 @@
-STATUS of ht://Dig branch 3-2-x
+STATUS of ht://Dig branch htdig_4_0
 
-RELEASES:
-   3.2.0b6: Scheduled: 31 May 2004.
-   3.2.0b5: Released:  10 Nov 2003.
-   3.2.0b4: Cancelled.
-   3.2.0b3: Released:  22 Feb 2001.
-   3.2.0b2: Released:  11 Apr 2000.
-   3.2.0b1: Released:   4 Feb 2000.
+RELEASES (these correspond to CVS tags):
+    htdig_4_0_beta (previous tag)
+    htdig_4_0_0    (this tag)
 
-(Please note that everything added here should have a tracker PR# so
-we can be sure they're fixed. Geoff is currently trying to add PR#s for
-what's currently here.)
+CHANGES:
+    htdig_4_0_beta (february '07) did not have complete CJK support
+    htdig_4_0_0 has CJK support
 
 SHOWSTOPPERS:
+    none
 
 KNOWN BUGS:
-(none serious.
-See <http://sourceforge.net/tracker/?atid=104593&group_id=4593&func=browse>.)
+    none
 
 PENDING PATCHES (available but need work):
-* Gilles's configuration parsing patches need testing before committing.
-* Memory improvements to htmerge. (Backed out b/c htword API changed.)
-* Mifluz merge.  (Is this still pending??)
 
 NEEDED FEATURES:
-* Quim's new htsearch/qtest query parser framework.
-* File/Database locking. PR#405764.
+    Sitemap integration (see http://sitemaps.org for protocol)
+    PHP5 support for libhtdigphp
+    Index size limits (by number of documents)
+    Session (single crawl) limits (by number of documents)
 
 TESTING:
-* httools programs: 
-  (htload a test file, check a few characteristics, htdump and compare)
-* Tests for new config file parser
-* Duplicate document detection while indexing
-* Major revisions to ExternalParser.cc, including fork/exec instead of popen,
-  argument handling for parser/converter, allowing binary output from an
-  external converter.
-* ExternalTransport needs testing of changes similar to ExternalParser.
+    done
 
 DOCUMENTATION:
-* List of supported platforms/compilers is ancient. (PR#405279)
-* Document all of htsearch's mappings of input parameters to config attributes
-   to template variables. (Relates to PR#405278.)
-  Should we make sure these config attributes are all documented in
-  defaults.cc, even if they're only set by input parameters and never
-  in the config file?
-* Split attrs.html into categories for faster loading.
-* Turn defaults.cc into an XML file for generating documentation and 
-  defaults.cc.
-* require.html is not updated to list new features and disk space
-   requirements of 3.2.x (e.g. regex matching, database compression.)
-   PRs# 405280 #405281.
-* Htfuzzy could use more documentation on what each fuzzy algorithm
-   does. PR#405714.
-* Document the list of all installed files and default
-   locations. PR#405715.
+    here's a copy of the checking message:
+Final checkin for 4.0.0 version (and associated tag).
+First "gold" version of htdig 4.0 rework.
+
+FEATURES (some may be in 4_0_0_beta tag):
+Major multi-year effort to refactor and modernize htdig.
+Some highlights:
+    UTF-8 support
+    BDB word index replaced with CLucene for searching
+    CJK language support
+    HTTP protocol changes
+    Major code changes
+    htsearch removed, replaced with php and c++ API
+    libhtdig updated to be main interface to package
+    index maintenance utilities removed
+See htdig40_refactor.pdf for more details (forthcoming)
 
 OTHER ISSUES:
-* Can htsearch actually search while an index is being created?
-* The code needs a security audit, esp. htsearch. PR#405765.
+
