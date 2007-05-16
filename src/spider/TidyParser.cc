@@ -145,8 +145,6 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
     debug->outlog(5, "Looping through nodes at depth = %d\n", depth);
     for( TidyNode child = tidyGetChild(tnod); child; child = tidyGetNext(child) )
     {
-        bool traverseChild = true;
-
         //
         // Change states if applicable
         //
@@ -343,7 +341,6 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
         else if (tidyNodeIsA(child))
         {
             FacetCollection newFacet;
-            traverseChild = false;
 
             debug->outlog(6, "Anchor node");
 
@@ -413,12 +410,9 @@ void TidyParser::nodeTraverse( TidyNode tnod, int depth )
         }
 
         //
-        // Recurse down from here (if necessary)
+        // Recurse down from here
         //
-        if (traverseChild)
-        {
-            nodeTraverse( child, depth + 1 );
-        }
+        nodeTraverse( child, depth + 1 );
 
         //
         // Leaving the node, so the state can be reset.

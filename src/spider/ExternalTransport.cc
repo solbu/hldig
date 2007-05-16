@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: ExternalTransport.cc,v 1.1.2.1 2006/09/25 23:51:12 aarnone Exp $
+// $Id: ExternalTransport.cc,v 1.1.2.2 2007/05/16 20:23:06 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -323,6 +323,7 @@ Transport::DocStatus ExternalTransport::GetDocumentStatus(ExternalTransport_Resp
 { 
    // The default is 'not found' if we can't figure it out...
    DocStatus returnStatus = Document_not_found;
+   HtDebug * debug = HtDebug::Instance();
    int statuscode = r->GetStatusCode();
 
    if (statuscode == 200)
@@ -339,6 +340,8 @@ Transport::DocStatus ExternalTransport::GetDocumentStatus(ExternalTransport_Resp
 	    returnStatus = Document_redirect;      	 // Redirection 3xx
    else if (statuscode == 401)
 	    returnStatus = Document_not_authorized;   // Unauthorized
+
+   debug->outlog(0, " [HTTP:%d] ", statuscode);
 
    return returnStatus;
 }

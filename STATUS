@@ -1,12 +1,14 @@
 STATUS of ht://Dig branch htdig_4_0
 
 RELEASES (these correspond to CVS tags):
-    htdig_4_0_beta (previous tag)
-    htdig_4_0_0    (this tag)
+    htdig_4_0_beta
+    htdig_4_0_0
+    htdig_4_1_0    (this tag)
 
 CHANGES:
     htdig_4_0_beta (february '07) did not have complete CJK support
-    htdig_4_0_0 has CJK support
+    htdig_4_0_0    (april '07)    has CJK support
+    htdig_4_1_0    (may '07)      has Sitemap / backlink support
 
 SHOWSTOPPERS:
     none
@@ -17,22 +19,36 @@ KNOWN BUGS:
 PENDING PATCHES (available but need work):
 
 NEEDED FEATURES:
-    Sitemap integration (see http://sitemaps.org for protocol)
-    PHP5 support for libhtdigphp
-    Index size limits (by number of documents)
-    Session (single crawl) limits (by number of documents)
+    <a rel="nofollow"> support
+    PHP5 by default
+    HTMLTidy recognizes (and converts) non-UTF-8 charsets
+    Upgrades to htsearch to support phrases / equivalencies
+
+WISHLIST FEATURES:
+    build system cleanup
+        build/linux/Makefile revamp
+        automake cleanup
+    C++ API: STL map<> used for parameters
+    htsearch.php (or some kind of CGI)
+    SWIG wrappers for htdig and htsearch. Python, Perl, PHP, Ruby, etc...
+    Resource-limited crawling options'
+    Solr / Lucene interface instead of CLucene??
+    configuration GUI / parser that uses XML
+    multi-index search
+    more...
+
 
 TESTING:
     done
 
 DOCUMENTATION:
-    here's a copy of the checking message:
-Final checkin for 4.0.0 version (and associated tag).
-First "gold" version of htdig 4.0 rework.
+   See htdig40_refactor.pdf for more details
 
 FEATURES (some may be in 4_0_0_beta tag):
+
 Major multi-year effort to refactor and modernize htdig.
-Some highlights:
+
+4_0_0 features:
     UTF-8 support
     BDB word index replaced with CLucene for searching
     CJK language support
@@ -41,7 +57,14 @@ Some highlights:
     htsearch removed, replaced with php and c++ API
     libhtdig updated to be main interface to package
     index maintenance utilities removed
-See htdig40_refactor.pdf for more details (forthcoming)
+
+4_1_0 features:
+    Sitemap integration (see http://sitemaps.org for protocol)
+    PHP5 support for libhtdigphp
+    Index size limits (by number of documents)
+    Session (single crawl) limits (by number of documents)
+
+See htdig40_refactor.pdf for more details
 
 OTHER ISSUES:
 

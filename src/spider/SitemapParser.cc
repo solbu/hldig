@@ -155,7 +155,7 @@ void SitemapParser::nodeTraverse( TidyNode tnod )
 
                 if (!strcmp(dataName, "loc"))
                 {
-                    debug->outlog(7, "URL = [%s]\n", strlen((char *)buf.bp), (char *)buf.bp);
+                    debug->outlog(7, "URL = [%s]\n", (char *)buf.bp);
                     newFacet.setURL((char *)buf.bp);
                 }
                 else if (!strcmp(dataName, "lastmod"))
@@ -173,7 +173,7 @@ void SitemapParser::nodeTraverse( TidyNode tnod )
                     TidyAttr nameAttr = tidyAttrGetNAME( facetData );
                     ctmbstr facetName = tidyNodeGetName( facetData );
 
-                    if (tidyAttrIsNAME(nameAttr) && !strcmp(facetName, "textfield"))
+                    if (tidyAttrIsNAME(nameAttr) && !strcmp(facetName, "textField"))
                     {
                         TidyBuffer buf;
                         char * nameVal = (char*)tidyAttrValue(nameAttr);
@@ -197,6 +197,8 @@ void SitemapParser::nodeTraverse( TidyNode tnod )
                 debug->outlog(7, "Not processing %s node\n", dataName);
             }
         }
+
+        URLlist.push_back(newFacet);
     }
 }
 

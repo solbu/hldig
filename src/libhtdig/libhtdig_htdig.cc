@@ -17,7 +17,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htdig.cc,v 1.1.2.2 2007/04/26 16:56:20 aarnone Exp $
+// $Id: libhtdig_htdig.cc,v 1.1.2.3 2007/05/16 20:23:05 aarnone Exp $
 //
 //-------------------------------------------------------------
 
@@ -75,7 +75,7 @@ DLLEXPORT int htdig_index_open(htdig_parameters_struct * params)
             return (HTDIG_ERROR_LOGFILE_OPEN);
         }
         htdigapi_debug->setFileLevel(params->debug);
-        htdigapi_debug->setStdoutLevel(0);
+        htdigapi_debug->setStdoutLevel(1);
     }
 
     if (htdigapi_indexOpen)

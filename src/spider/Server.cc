@@ -9,7 +9,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Server.cc,v 1.1.2.2 2007/05/01 22:50:44 aarnone Exp $
+// $Id: Server.cc,v 1.1.2.3 2007/05/16 20:23:06 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -104,8 +104,9 @@ Server::Server(URL u, StringList *local_robots_files)
         String	url;
         url.trunc();
 
-        debug->outlog(1, "Trying to retrieve robots.txt file\n");
+        //debug->outlog(1, "Trying to retrieve robots.txt file\n");
         url << u.signature() << "robots.txt";
+        debug->outlog(0, "Fetching Robots File [%s]\n", url.get());
 
         static int	local_urls_only = config->Boolean("local_urls_only");
         time_t 		timeZero = 0; // Right now we want to get this every time
@@ -351,7 +352,7 @@ void Server::push(const String &path, int hopcount, facet_list facets, time_t t,
 
     if (IsDisallowed(path) != 0)
     {
-        debug->outlog(2, "\n   Rejected: forbidden by server robots.txt!");
+        debug->outlog(0, "\n   Rejected: forbidden by server robots.txt!");
         return;
     }
 

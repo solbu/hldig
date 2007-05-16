@@ -35,6 +35,7 @@ const char * get_stemmer_name(char * input);
 
 int CLuceneNumIndexDocs(void);
 
+const char * get_stemmer_name(char * input);
 
 #endif // _CLuceneAPI_h_
 

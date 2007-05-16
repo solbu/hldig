@@ -16,7 +16,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Document.cc,v 1.1.2.3 2007/05/01 22:49:17 aarnone Exp $
+// $Id: Document.cc,v 1.1.2.4 2007/05/16 20:23:06 aarnone Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -557,7 +557,7 @@ Transport::DocStatus Document::Retrieve(Server *server, HtDateTime date)
             status = transportConnect->Request();
 
             NumRetries++;
-            debug->outlog(0, ".");
+            debug->outlog(3, ".");
 
         } while (ShouldWeRetry(status) && NumRetries < num_retries);
 
@@ -778,10 +778,18 @@ bool Document::isSitemap()
     {
         return true;
     }
-    else
+
+    debug->outlog(3, "Sitemap filename check failed, checking contents\n");
+
+    char * top = strndup(contents.get(), 500);
+
+    if ((strstr(top, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>") != NULL) &&
+       ((strstr(top, "<urlset") != NULL) || (strstr(top, "<sitemapindex") != NULL)))
     {
-        return false;
+        return true;
     }
+
+    return false;
 }
 
 
