@@ -36,9 +36,9 @@ public:
                const char *docExcerpt);
     ~Collection();
 
-    void Collection::Open();
+    void Open();
 
-    void Collection::Close(); 
+    void Close(); 
 
     char *getWordFile() { return wordFile.get(); }
     DocumentRef         *getDocumentRef(int id);
