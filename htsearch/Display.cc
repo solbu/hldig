@@ -137,7 +137,7 @@ Display::display(int pageNumber)
       // Must temporarily stash the message in a String, since
       // displaySyntaxError will overwrite the static temp used in form.
 
-      String s(form("No such sort method: `%s'", (const char*)config->Find("sort")));
+      String s("invalid sort method");
 
       displaySyntaxError(s);
       return;
