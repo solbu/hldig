@@ -132,8 +132,7 @@ main(int ac, char **av)
 
     if (access((char*)configFile, R_OK) < 0)
     {
-	reportError(form("Unable to find configuration file '%s'",
-			 configFile.get()));
+       reportError("Unable to find configuration file"); 
     }
 	
     config->Read(configFile);
