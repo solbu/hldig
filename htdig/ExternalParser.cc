@@ -280,7 +280,11 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	// Call External Parser
 	execv(parsargs[0], parsargs);
 
-	exit(EXIT_FAILURE);
+	perror("execv");
+	write(STDERR_FILENO, "External parser error: Can't execute ", 37);
+	write(STDERR_FILENO, parsargs[0], strlen(parsargs[0]));
+	write(STDERR_FILENO, "\n", 1);
+	_exit(EXIT_FAILURE);
     }
 
     // Parent Process
