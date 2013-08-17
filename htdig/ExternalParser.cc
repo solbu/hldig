@@ -227,7 +227,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     int		get_file = (convertToType.length() != 0);
     String	newcontent;
 
-    StringList	cpargs(currentParser);
+    StringList	cpargs(currentParser, " \t");
     char   **parsargs = new char * [cpargs.Count() + 5];
     int    argi;
     for (argi = 0; argi < cpargs.Count(); argi++)
