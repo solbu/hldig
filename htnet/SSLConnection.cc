@@ -131,18 +131,21 @@ int SSLConnection::Read_Partial(char *buffer, int maxlength)
     {
       errno = 0;
 
-      if (timeout_value > 0) {
-          FD_SET_T fds;
-          FD_ZERO(&fds);
-          FD_SET(sock, &fds);
+      if (!SSL_pending(ssl)) {
+        if (timeout_value > 0) {
+            FD_SET_T fds;
+            FD_ZERO(&fds);
+            FD_SET(sock, &fds);
 
-          timeval tv;
-          tv.tv_sec = timeout_value;
-          tv.tv_usec = 0;
+            timeval tv;
+            tv.tv_sec = timeout_value;
+            tv.tv_usec = 0;
 
-          int selected = select(sock+1, &fds, 0, 0, &tv);
-          if (selected <= 0)
-              need_io_stop++;
+            int selected = select(sock+1, &fds, 0, 0, &tv);
+            if (selected <= 0)
+                need_io_stop++;
+        }
+
       }
 
       if (!need_io_stop)
