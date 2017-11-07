@@ -12,7 +12,15 @@ Any one interested in the project can join the
 
 Email: andy400-dev@yahoo.com
 
-I'm leaving the original README below unaltered.
+To test/build htdig:
+
+* ./configure
+* make
+
+Use `./configure --with-ssl` to build with ssl support (otherwise htdig
+can't crawl sites starting with `https`)
+
+## Below is the unaltered README from the original development team
 
 ```
 ht://Dig 3.2.0b6 README
