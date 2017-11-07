@@ -1,3 +1,20 @@
+[![Build Status](https://travis-ci.org/andy5995/htdig.svg?branch=master)](https://travis-ci.org/andy5995/htdig)
+
+## Note from Andy Alt
+
+2017-11-06
+
+I may work on the project from time to time. The original developers have
+abandoned it.
+
+Any one interested in the project can join the
+[chat room](https://join.slack.com/t/htdig/shared_invite/enQtMjY3NDU1MjMwODk3LTdmM2I2OWI5NWI4MzU4Y2JmMjk2MzAxNDYzM2IzZjJmMGE2MDZmMWMxNDY3MjAwOGFjMmE1YjM2MmM4MzVkNzk)
+
+Email: andy400-dev@yahoo.com
+
+I'm leaving the original README below unaltered.
+
+```
 ht://Dig 3.2.0b6 README
 Copyright (c) 1995-2004 The ht://Dig Group
 Contributions from many, see htdoc/THANKS.html
@@ -30,11 +47,11 @@ as well. (libstdc++ has superceded the older libg++ package.)
 
 To build, first read the htdoc/install.html document
 
-Questions and discussion should be directed to the ht://Dig mailing list 
+Questions and discussion should be directed to the ht://Dig mailing list
   at htdig-general@lists.sourceforge.net
 Find subscription instructions at http://www.htdig.org/mailing.html
 Suggestions and bug reports can be made on our bug tracking database
   (see http://www.htdig.org/bugs.html)
 
 For the most up-to-date documentation, use http://www.htdig.org/
-
+```
