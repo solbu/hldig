@@ -341,6 +341,8 @@ void Server::robotstxt(Document &doc)
     {
 	String	fullpatt = "^[^:]*://[^/]*(";
 	fullpatt << pattern << ')';
+	if (pattern.length() == 0)
+		fullpatt = "";
 	_disallow.set(fullpatt, config->Boolean("case_sensitive"));
     }
 }

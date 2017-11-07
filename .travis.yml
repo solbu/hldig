@@ -1,0 +1,15 @@
+script: ./configure && make
+
+# blocklist
+#branches:
+#  except:
+#  - legacy
+#  - experimental
+
+# safelist
+branches:
+  only:
+  - master
+
+notifications:
+    slack: htdig:KJALZaL1b3jsXdVMir6cyTYI

@@ -54,6 +54,7 @@ using namespace std;
 
 #include <math.h>
 #include <float.h>
+#include <values.h>
 
 #if !defined(DBL_MAX)
 # if defined (MAXDOUBLE)

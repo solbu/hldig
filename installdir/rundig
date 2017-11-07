@@ -7,17 +7,18 @@
 #
 # This is a sample script to create a search database for ht://Dig.
 #
-DBDIR=@DATABASE_DIR@
-COMMONDIR=@COMMON_DIR@
-BINDIR=@BIN_DIR@
-conffile=@DEFAULT_CONFIG_FILE@
+DBDIR=/var/lib/htdig
+COMMONDIR=/etc/htdig
+BINDIR=/usr/bin
+conffile=/etc/htdig/htdig.conf
 
 # To help debug problems, try running rundig -vvv
 # This will add lots of debugging output to all of the programs
-stats= opts= alt=
+stats= opts= alt= nohtnotify=
 while [ "$#" -gt 0 ]
 do
     case "$1" in
+    --no-htnotify) nohtnotify="true" ;;
     -a)  alt="$1" ;;
     -s)  stats="$1" ;;
     -c)  shift
@@ -65,7 +66,11 @@ case "$alt" in
     test -f db.words.db.work_weakcmpr &&
 	mv -f db.words.db.work_weakcmpr db.words.db_weakcmpr) ;;
 esac
-$BINDIR/htnotify $opts
+if [ "$nohtnotify" = "true" ]; then
+	echo "Skipping htnotify."
+else
+	$BINDIR/htnotify $opts
+fi
 # If you want to use the soundex and (or) metaphone fuzzy matchings,
 # Uncomment the following line
 # $BINDIR/htfuzzy $opts soundex metaphone

@@ -596,7 +596,7 @@ http://www.htdig.org/", " \
 	<a href=\"htfuzzy.html\">htfuzzy</a> for more information on the \
 	format of this file. \
 " }, \
-{ "endings_root2word_db", "${common_dir}/root2word.db",  \
+{ "endings_root2word_db", "${database_dir}/root2word.db",  \
 	"string", "htfuzzy htsearch", "", "all", "File Layout", "endings_root2word_db: /var/htdig/r2w.db", " \
 	This attributes specifies the database filename to be \
 	used in the 'endings' fuzzy search algorithm. The \
@@ -610,7 +610,7 @@ http://www.htdig.org/", " \
 	This is because this database can be shared with \
 	different search databases. \
 " }, \
-{ "endings_word2root_db", "${common_dir}/word2root.db",  \
+{ "endings_word2root_db", "${database_dir}/word2root.db",  \
 	"string", "htfuzzy htsearch", "", "all", "File Layout", "endings_word2root_db: /var/htdig/w2r.bm", " \
 	This attributes specifies the database filename to be \
 	used in the 'endings' fuzzy search algorithm. The \
@@ -2426,7 +2426,7 @@ http://www.htdig.org/", " \
 	that this does not limit the number of documents that \
 	are matched in any way. \
 " }, \
-{ "synonym_db", "${common_dir}/synonyms.db",  \
+{ "synonym_db", "${database_dir}/synonyms.db",  \
 	"string", "htsearch htfuzzy", "", "3.0", "File Layout", "synonym_db: ${database_base}.syn.db", " \
 	Points to the database that <a href=\"htfuzzy.html\"> \
 	htfuzzy</a> creates when the <strong>synonyms</strong> \

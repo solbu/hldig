@@ -82,7 +82,7 @@ WordDBPage::TestCompress(int debuglevel)
   	if(debuglevel>2)printf("TOTAL SIZE: %6d %8f\n",size,size/8.0);
 	// argh! compare failed somthing went wrong
 	// display the compress/decompress sequence and fail
-	if(cmp || size>8*1024*1000000000)
+	if(cmp || size>8*1024)
 	{
 	    if(size>8*1024)
 	    {

@@ -5,6 +5,13 @@
  *	Sleepycat Software.  All rights reserved.
  */
 
+#define _XOPEN_SOURCE 500
+#include <sys/types.h>
+#include <unistd.h>
+#ifndef u_long
+typedef __u_long u_long;
+#endif
+
 #include "db_config.h"
 
 #ifndef lint
