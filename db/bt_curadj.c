@@ -30,12 +30,12 @@ int
 CDB___bam_cprint(dbp)
 	DB *dbp;
 {
-	BTREE_CURSOR *cp;
 	DBC *dbc;
 
 	MUTEX_THREAD_LOCK(dbp->mutexp);
 	for (dbc = TAILQ_FIRST(&dbp->active_queue);
 	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+		BTREE_CURSOR *cp;
 		cp = (BTREE_CURSOR *)dbc->internal;
 		fprintf(stderr,
 	    "%#0x->%#0x: page: %lu index: %lu dpage %lu dindex: %lu recno: %lu",
@@ -65,7 +65,6 @@ CDB___bam_ca_delete(dbp, pgno, indx, delete)
 	u_int32_t indx;
 	int delete;
 {
-	BTREE_CURSOR *cp;
 	DBC *dbc;
 	int count;		/* !!!: Has to contain max number of cursors. */
 
@@ -87,6 +86,7 @@ CDB___bam_ca_delete(dbp, pgno, indx, delete)
 	MUTEX_THREAD_LOCK(dbp->mutexp);
 	for (count = 0, dbc = TAILQ_FIRST(&dbp->active_queue);
 	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+		BTREE_CURSOR *cp;
 		cp = (BTREE_CURSOR *)dbc->internal;
 
 		if ((cp->pgno == pgno && cp->indx == indx) ||
@@ -116,7 +116,6 @@ CDB___bam_ca_di(dbp, pgno, indx, adjust)
 	u_int32_t indx;
 	int adjust;
 {
-	BTREE_CURSOR *cp;
 	DBC *dbc;
 
 	/* Recno is responsible for its own adjustments. */
@@ -129,6 +128,7 @@ CDB___bam_ca_di(dbp, pgno, indx, adjust)
 	MUTEX_THREAD_LOCK(dbp->mutexp);
 	for (dbc = TAILQ_FIRST(&dbp->active_queue);
 	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+		BTREE_CURSOR *cp;
 		cp = (BTREE_CURSOR *)dbc->internal;
 		if (cp->pgno == pgno && cp->indx >= indx) {
 			/* Cursor indices should never be negative. */
@@ -158,7 +158,6 @@ CDB___bam_ca_dup(dbp, fpgno, first, fi, tpgno, ti)
 	db_pgno_t fpgno, tpgno;
 	u_int32_t first, fi, ti;
 {
-	BTREE_CURSOR *cp;
 	DBC *dbc;
 
 	/* Recno is responsible for its own adjustments. */
@@ -171,6 +170,7 @@ CDB___bam_ca_dup(dbp, fpgno, first, fi, tpgno, ti)
 	MUTEX_THREAD_LOCK(dbp->mutexp);
 	for (dbc = TAILQ_FIRST(&dbp->active_queue);
 	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+		BTREE_CURSOR *cp;
 		cp = (BTREE_CURSOR *)dbc->internal;
 		/*
 		 * Ignore matching entries that have already been moved,
@@ -198,7 +198,6 @@ CDB___bam_ca_rsplit(dbp, fpgno, tpgno)
 	DB *dbp;
 	db_pgno_t fpgno, tpgno;
 {
-	BTREE_CURSOR *cp;
 	DBC *dbc;
 
 	/* Recno is responsible for its own adjustments. */
@@ -211,6 +210,7 @@ CDB___bam_ca_rsplit(dbp, fpgno, tpgno)
 	MUTEX_THREAD_LOCK(dbp->mutexp);
 	for (dbc = TAILQ_FIRST(&dbp->active_queue);
 	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+		BTREE_CURSOR *cp;
 		cp = (BTREE_CURSOR *)dbc->internal;
 		if (cp->pgno == fpgno)
 			cp->pgno = tpgno;
@@ -232,7 +232,6 @@ CDB___bam_ca_split(dbp, ppgno, lpgno, rpgno, split_indx, cleft)
 	u_int32_t split_indx;
 	int cleft;
 {
-	BTREE_CURSOR *cp;
 	DBC *dbc;
 
 	/* Recno is responsible for its own adjustments. */
@@ -252,6 +251,7 @@ CDB___bam_ca_split(dbp, ppgno, lpgno, rpgno, split_indx, cleft)
 	MUTEX_THREAD_LOCK(dbp->mutexp);
 	for (dbc = TAILQ_FIRST(&dbp->active_queue);
 	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+		BTREE_CURSOR *cp;
 		cp = (BTREE_CURSOR *)dbc->internal;
 		if (cp->pgno == ppgno) {
 			if (cp->indx < split_indx) {
@@ -288,12 +288,12 @@ CDB___bam_ca_repl(dbp, dpgno, dindx, newpgno, newindx)
 	db_pgno_t dpgno, newpgno;
 	u_int32_t dindx, newindx;
 {
-	BTREE_CURSOR *cp;
 	DBC *dbc;
 
 	MUTEX_THREAD_LOCK(dbp->mutexp);
 	for (dbc = TAILQ_FIRST(&dbp->active_queue);
 	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+		BTREE_CURSOR *cp;
 		cp = (BTREE_CURSOR *)dbc->internal;
 		if (cp->dpgno == dpgno && cp->dindx == dindx) {
 			cp->dpgno = newpgno;
