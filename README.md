@@ -12,13 +12,11 @@ Any one interested in the project can join the
 
 Email: andy400-dev@yahoo.com
 
-To test/build htdig:
+See the
+[notes on building and testing](https://github.com/andy5995/htdig/blob/master/TESTING.md)
 
-* ./configure
-* make
-
-Use `./configure --with-ssl` to build with ssl support (otherwise htdig
-can't crawl sites starting with `https`)
+How to make a make a pull request and sync your repo with the main fork:
+[CONTRIBUTING.md](https://github.com/andy5995/htdig/blob/master/CONTRIBUTING.md)
 
 ## Below is the unaltered README from the original development team
 
