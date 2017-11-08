@@ -1,4 +1,4 @@
-script: ./configure --with-ssl --with-zlib --with-apache --enable-bigfile --enable-tests && make
+script: ./configure --with-ssl --with-zlib --enable-bigfile --with-apache && make
 
 # blocklist
 #branches:
