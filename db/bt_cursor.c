@@ -848,7 +848,7 @@ CDB___bam_c_put(dbc_orig, key, data, flags)
 {
 	BTREE_CURSOR *cp, *orig;
 	DB *dbp;
-	DBC *dbc = malloc(sizeof *dbc);
+	DBC *dbc;
 	DBT dbt;
 	db_indx_t indx;
 	db_pgno_t pgno;
@@ -1092,7 +1092,7 @@ err:		/* Discard any page(s) we acquired. */
 	if (F_ISSET(dbc_orig, DBC_WRITECURSOR))
 		(void)CDB___lock_downgrade(dbp->dbenv,
 		    &dbc_orig->mylock, DB_LOCK_IWRITE, 0);
-	free (dbc);
+
 	return (ret);
 }
 

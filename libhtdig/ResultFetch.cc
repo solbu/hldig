@@ -142,7 +142,7 @@ ResultFetch::fetch()
         // Must temporarily stash the message in a String, since
         // displaySyntaxError will overwrite the static temp used in form.
 
-        String s("invalid sort method");
+        String s("Invalid search method.");
 
         displaySyntaxError(s);
         //return;

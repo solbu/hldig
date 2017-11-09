@@ -132,7 +132,7 @@ main(int ac, char **av)
 
     if (access((char*)configFile, R_OK) < 0)
     {
-       reportError("Unable to find configuration file"); 
+    	reportError("Unable to find configuration file");
     }
 	
     config->Read(configFile);

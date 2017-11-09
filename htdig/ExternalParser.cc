@@ -227,7 +227,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
     int		get_file = (convertToType.length() != 0);
     String	newcontent;
 
-    StringList	cpargs(currentParser, " \t");
+    StringList	cpargs(currentParser);
     char   **parsargs = new char * [cpargs.Count() + 5];
     int    argi;
     for (argi = 0; argi < cpargs.Count(); argi++)
@@ -280,11 +280,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 	// Call External Parser
 	execv(parsargs[0], parsargs);
 
-	perror("execv");
-	write(STDERR_FILENO, "External parser error: Can't execute ", 37);
-	write(STDERR_FILENO, parsargs[0], strlen(parsargs[0]));
-	write(STDERR_FILENO, "\n", 1);
-	_exit(EXIT_FAILURE);
+	exit(EXIT_FAILURE);
     }
 
     // Parent Process
@@ -428,7 +424,7 @@ ExternalParser::parse(Retriever &retriever, URL &base)
 		  {
 			metadatetags = new StringMatch();
 			metadatetags->IgnoreCase();
-			metadatetags->Pattern("date|dc.date|dc.date.created|dc.date.modified");
+			metadatetags->Pattern("date|dc.date|dc.date.created|dc.data.modified");
 		  }
     
 		  // <URL:http://www.w3.org/MarkUp/html-spec/html-spec_5.html#SEC5.2.5> 

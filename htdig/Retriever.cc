@@ -12,7 +12,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: Retriever.cc,v 1.95 2004/06/14 12:16:17 lha Exp $
+// $Id: Retriever.cc,v 1.94 2004/05/28 13:15:15 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -485,11 +485,8 @@ void Retriever::Start()
 #endif
 
 
-	    		// Loop until interrupted, too many requests, or done.
-			// ('noSignal' must be before 'pop', or the popped
-			// URL will not be included in  url_log  file, below.)
-			while (noSignal && ((max_connection_requests == -1) ||
-				   (count < max_connection_requests)) && (ref = server->pop()))
+			while (((max_connection_requests == -1) ||
+				   (count < max_connection_requests)) && (ref = server->pop()) && noSignal)
 			{
 				count++;
 

@@ -700,6 +700,7 @@ CDB___bam_ritem(dbc, h, indx, data)
 	DBT orig, repl;
 	db_indx_t cnt, lo, ln, min, off, prefix, suffix;
 	int32_t nbytes;
+	int ret;
 	u_int8_t *p, *t;
 
 	dbp = dbc->dbp;
@@ -736,7 +737,6 @@ CDB___bam_ritem(dbc, h, indx, data)
 		orig.size = bk->len - (prefix + suffix);
 		repl.data = (u_int8_t *)data->data + prefix;
 		repl.size = data->size - (prefix + suffix);
-		int ret = 0;
 		if ((ret = CDB___bam_repl_log(dbp->dbenv, dbc->txn,
 		    &LSN(h), 0, dbp->log_fileid, PGNO(h), &LSN(h),
 		    (u_int32_t)indx, (u_int32_t)B_DISSET(bk->type),

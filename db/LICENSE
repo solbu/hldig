@@ -1,5 +1,5 @@
 The following is the license that applies to this copy of the Berkeley DB
-software, version 3.0.55.  For a license to use the Berkeley DB software
+software, version 3.3.11.  For a license to use the Berkeley DB software
 under conditions other than those described here, or to purchase support
 for this software, please contact Sleepycat Software at one of the
 following addresses:
@@ -22,12 +22,12 @@ following addresses:
   * 2. Redistributions in binary form must reproduce the above copyright
   *    notice, this list of conditions and the following disclaimer in the
   *    documentation and/or other materials provided with the distribution.
-  * 3. This license grant extends only to use of Berkeley DB version 3.0.55,
+  * 3. This license grant extends only to use of Berkeley DB version 3.3.11,
   *    modified or unmodified, in conjunction with the HtDig document
   *    indexing package, and only when the HtDig software is distributed
   *    under the GNU Lesser General Public License (LGPL) as published at
   *                  http://www.fsf.org/licenses/lgpl.html.
-  *    Any use or redistribution of Berkeley DB version 3.0.55, modified or
+  *    Any use or redistribution of Berkeley DB version 3.3.11, modified or
   *    unmodified, with HtDig requires compliance with the terms of the LGPL
   *    with respect to the HtDig software, and with the terms of this license
   *    grant with respect to the Berkeley DB software and any modifications.
@@ -47,7 +47,7 @@ following addresses:
   *    nominal fee, and must be freely redistributable under reasonable
   *    conditions.
   * 8. Nothing of this license grant, and nothing of the bundling of Berkeley
-  *    DB version 3.0.55 with HtDig, shall permit redistribution of Berkeley
+  *    DB version 3.3.11 with HtDig, shall permit redistribution of Berkeley
   *    DB under the terms of the LGPL.
   *
   * THIS SOFTWARE IS PROVIDED BY SLEEPYCAT SOFTWARE ``AS IS'' AND ANY EXPRESS
@@ -90,7 +90,7 @@ following addresses:
   * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
   * SUCH DAMAGE.
   */
-
+/*
   * Copyright (c) 1995, 1996
   *    The President and Fellows of Harvard University.  All rights reserved.
   *
