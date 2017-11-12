@@ -1,4 +1,16 @@
+Makefile
+*.log
 autom4te.cache
 *~
 testing
 temp
+*.o
+*.lo
+*.la
+.purify
+.pure
+.deps
+.libs
+stamp-h1
+debian
+*.1
