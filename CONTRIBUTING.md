@@ -1,7 +1,7 @@
 # CONTRIBUTING
 
 ## Pull Requests
-1. Fork the repo (if you haven't already done so)
+1. [Fork the repo](https://github.com/andy5995/htdig#fork-destination-box) (if you haven't already done so)
 2. Clone it to your computer
 3. When you're ready to work on an issue, be sure you're on the **master** branch. From there,
 [create a separate branch](https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches)
