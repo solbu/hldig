@@ -848,12 +848,15 @@ CDB___bam_c_put(dbc_orig, key, data, flags)
 {
 	BTREE_CURSOR *cp, *orig;
 	DB *dbp;
-	DBC *dbc;
+	/* FIXME: Should this be initialized with malloc() or is NULL sufficient?
+	 * If malloc() is used, how many instances of free() would be needed?
+	 * DBC *dbc = malloc (sizeof (DBC)); */
+	DBC *dbc = NULL;
 	DBT dbt;
 	db_indx_t indx;
 	db_pgno_t pgno;
 	u_int32_t iiop;
-	int exact, needkey, ret, ret_ignore, stack;
+	int exact, needkey = 0, ret, ret_ignore, stack = 0;
 	void *arg;
 
 	dbp = dbc_orig->dbp;
