@@ -14,3 +14,11 @@ temp
 stamp-h1
 debian
 *.1
+config.status
+htdoc/attrs.html
+htsearch/qtest
+httools/htmerge
+include/config.h
+installdir/htdigconfig.8
+libtool
+test/test_functions
