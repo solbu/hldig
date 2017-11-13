@@ -1,13 +1,14 @@
+#!/usr/bin/perl
 #
 # cf_generate.pl
 #
 # cf_generate: Build the files cf_byprog.html, cf_byname.html and
-#           attrs.html from the informations found 
-#           in ../htcommon/defaults.cc. 
+#           attrs.html from the informations found
+#           in ../htcommon/defaults.cc.
 #           attrs.html : attrs_head.html + generation + attrs_tail.html
 #           cf_byprog.html : cf_byprog_head.html + generation + cf_byprog_tail.html
 #           cf_byname.html : cf_byname_head.html + generation + cf_byname_tail.html
-#              
+#
 # Part of the ht://Dig package   <http://www.htdig.org/>
 # Copyright (c) 1999-2004 The ht://Dig Group
 # For copyright details, see the file COPYING in your distribution
@@ -223,7 +224,7 @@ $example			</table>
 	</dl>
 	<hr>
 EOF
-    
+
 }
 
 open(FILE, "date |") or die "cannot open pipe to date command for reading : $!";

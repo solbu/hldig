@@ -1969,8 +1969,8 @@
 				<td nowrap>
 				     http://www.htdig.org/ml/ \<br>
 .html \<br>
-http://dev.htdig.org/ \<br>
-http://www.htdig.org/
+https://github.com/andy5995/htdig \<br>
+https://andy5995.github.io/htdig/
 				</td>
 			  </tr>
 			</table>
@@ -3548,7 +3548,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${<a href="#common_dir">common_dir</a>}/root2word.db
+			${<a href="#database_dir">database_dir</a>}/root2word.db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -3621,7 +3621,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${<a href="#common_dir">common_dir</a>}/word2root.db
+			${<a href="#database_dir">database_dir</a>}/word2root.db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -12022,7 +12022,7 @@ http://www.htdig.org/
 			<em>default:</em>
 		  </dt>
 		  <dd>
-			${<a href="#common_dir">common_dir</a>}/synonyms.db
+			${<a href="#database_dir">database_dir</a>}/synonyms.db
 		  </dd>
 		  <dt>
 			<em>block:</em>
@@ -14601,6 +14601,6 @@ form during indexing and translated for results.
 	  </dd>
 	</dl>
 	<hr>
-		Last modified: Sat Jun 12 23:26:34 EST 2004
+		Last modified: Mon Nov 13 16:02:43 CST 2017
   </body>
 </html>

@@ -367,8 +367,8 @@ ConfigDefaults	defaults[] =
 { "common_url_parts", "http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .shtml /index.html /index.htm .com/ .com mailto:",  \
 	"string list", "all", "", "3.1.0", "URLs", "common_url_parts: http://www.htdig.org/ml/ \\<br> \
 .html \\<br> \
-http://dev.htdig.org/ \\<br> \
-http://www.htdig.org/", " \
+https://github.com/andy5995/htdig \\<br> \
+https://andy5995.github.io/htdig/", " \
 	Sub-strings often found in URLs stored in the \
 	database.  These are replaced in the database by an \
 	internal space-saving encoding.  If a string \
@@ -2806,7 +2806,7 @@ form during indexing and translated for results. \
 { "wordlist_monitor_output","", \
 	"string", "all", "", "3.2.0b1", "Extra Output", "wordlist_monitor_output: myfile", " \
 	Print monitoring output on file instead of the default stderr. \
-" }, 
+" },
 { "wordlist_page_size", "0",  \
 	"integer", "all", "", "3.2.0b1", "Indexing:How", "wordlist_page_size: 8192", " \
 	Size (in bytes) of pages used by Berkeley DB (DB used by the indexer). \
