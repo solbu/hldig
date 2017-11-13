@@ -2,7 +2,13 @@
 
 ## Build
 * ./configure
-* make
+* make [-j?]
+
+You can often speed up build time by using `make -j<jobs>`.
+
+Example: `make -j12`
+
+(See https://www.gnu.org/software/make/manual/html_node/Options-Summary.html#Options-Summary for details)
 
 ## Testing
 * ./configure --prefix=$PWD/testing --with-ssl
