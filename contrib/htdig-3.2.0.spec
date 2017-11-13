@@ -63,8 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install-strip
 mkdir -p $RPM_BUILD_ROOT/etc/cron.daily
 ln -s ../..%{bindir}/rundig $RPM_BUILD_ROOT/etc/cron.daily/htdig-dbgen
-ln -s ../../../..%{docdir}/htdig-%{PACKAGE_VERSION} \
-	$RPM_BUILD_ROOT%{contentdir}/html/htdig/htdoc
+ln -s ../../../..%{docdir}/htdig-%{PACKAGE_VERSION}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -119,10 +118,9 @@ fi
 %{contentdir}/cgi-bin/qtest
 %{contentdir}/html/htdig/*.gif
 %{contentdir}/html/htdig/*.png
-%{contentdir}/html/htdig/htdoc
 %{mandir}/man*
 
-%doc README htdoc/*
+%doc README
 
 %changelog
 * Thu Jun 10 2004 Gilles Detillieux <grdetil@scrc.umanitoba.ca>

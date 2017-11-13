@@ -202,7 +202,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 
 @TESTS_TRUE@TESTDIR = test
 
-SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include htdoc $(TESTDIR)
+SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include $(TESTDIR)
 
 EXTRA_DIST = .version Makefile.config ChangeLog.0 contrib
 subdir = .
@@ -224,7 +224,7 @@ DIST_COMMON = README $(srcdir)/Makefile.in $(srcdir)/configure \
 	acinclude.m4 aclocal.m4 config.guess config.sub configure \
 	configure.in install-sh ltmain.sh missing mkinstalldirs
 DIST_SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig \
-	htsearch httools installdir include htdoc test
+	htsearch httools installdir include test
 all: all-recursive
 
 .SUFFIXES:
@@ -395,7 +395,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/htdoc $(distdir)/installdir $(distdir)/test
+	$(mkinstalldirs) $(distdir)/installdir $(distdir)/test
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -609,7 +609,7 @@ uninstall-info: uninstall-info-recursive
 
 
 dist-hook:
-	find $(distdir) -depth -name CVS -print | xargs rm -fr 
+	find $(distdir) -depth -name CVS -print | xargs rm -fr
 
 #
 # If --enable-tests is not specified, should remove
