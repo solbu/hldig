@@ -35,10 +35,17 @@ Use `./htdig --help` to view the options for htdig.
 Change to `testing/cgi-bin`
 Use `./htsearch` to search the database. You will get these two prompts:
 ```
-Enter value for words: 
+Enter value for words:
 Content-type: text/html
 
 Enter value for format:
 ```
 At the first prompt, enter a keyword.
 At the second prompt, just hit return.
+
+## More details
+
+The following document may have some extra information that you'll find useful,
+but it may need updating:
+
+https://andy5995.github.io/htdig/install.html
