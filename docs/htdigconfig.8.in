@@ -1,0 +1,18 @@
+.TH htdigconfig 8 "23 April 1999"
+.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
+.\" other parms are allowed: see man(7), man(1)
+.SH NAME
+htdigconfig \- script to create fuzzy databases for ht://Dig
+.SH SYNOPSIS
+.B htdigconfig
+.SH "DESCRIPTION"
+.I htdigconfig
+is a script to create fuzzy databases such as word2root, root2word and 
+synonyms databases for the ht://Dig search engine.
+.SH "SEE ALSO"
+Please refer to the HTML pages (in the htdig-doc package)
+.B (THIS MUST BE CUSTOMISED...)
+.B /usr/share/doc/htdig/html/index.html
+for a detailed description of ht://Dig and its commands.
+.SH AUTHOR
+This manual page was written by Gergely Madarasz, modified by Stijn de Bekker.

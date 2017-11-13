@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+  <head>
+	<title>
+	  ht://Dig: Configuration file format -- General
+	</title>
+  </head>
+  <body bgcolor="#eef7ff">
+	<h1>
+	  Configuration file format -- General
+	</h1>
+	<p>
+	  ht://Dig Copyright &copy; 1995-2017 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  Please see the file <a href="COPYING">COPYING</a> for
+	  license information.
+	</p>
+	<hr size="4" noshade>
+	<p>
+	  All programs in the ht://Dig system use a flexible configuration
+	  file. This configuration file is a plain ASCII text file. Each line in
+	  the file is either a comment or contains an attribute.
+	  Comment lines are blank lines or lines that start with a '#'.
+	  Attributes consist of a variable name and an associated
+	  value:
+	</p>
+	<dl compact>
+	  <dd>
+		<code>
+		&lt;name&gt;:&lt;whitespace&gt;&lt;value&gt;&lt;newline&gt;</code>
+	  </dd>
+	</dl>
+	<p>
+	  The &lt;name&gt; contains any alphanumeric character or
+	  underline (_) The &lt;value&gt; can include any character
+	  except newline. It also cannot start with spaces or tabs since
+	  those are considered part of the whitespace after the colon. It
+	  is important to keep in mind that any trailing spaces or tabs
+	  will be included.
+	</p>
+	<p>
+	  It is possible to split the &lt;value&gt; across several
+	  lines of the configuration file by ending each line with a
+	  backslash (\). The effect on the value is that a space is
+	  added where the line split occurs.
+	</p>
+	<p>
+	  Each program only extracts the attributes it needs and hence
+	  it is often convenient to use the same configuration file with
+	  all ht://Dig programs. If an attribute is specified more than
+	  once in the file, only the last one will be used.
+	</p>
+	<p>
+	  If a program needs a particular attribute and it is not in
+	  the configuration file, it will use the default value which
+	  is compiled into the program as defined in
+	  <code>htcommon/defaults.cc</code>.
+	</p>
+	<p>
+	  A configuration file can include another file, by using the special
+	  &lt;name&gt;, <code>include</code>. The &lt;value&gt; is taken as
+	  the file name of another configuration file to be read in at
+	  this point. If the given file name is not fully qualified, it is
+	  taken relative to the directory in which the current configuration
+	  file is found. Variable expansion is permitted in the file name.
+	  Multiple include statements, and nested includes are also permitted.
+	</p>
+	<dl>
+	  <dt>
+		<em>Example:</em>
+	  </dt>
+	  <dd>
+		<code>include: common.conf</code>
+	  </dd>
+	</dl>
+	<hr size="4" noshade>
+
+	Last modified: $Date: 2017/11/13 13:15:18 $
+
+  </body>
+</html>

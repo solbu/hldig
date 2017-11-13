@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+  <head>
+	<title>
+	  ht://Dig: Configuration file format -- Block restrictions
+	</title>
+  </head>
+  <body bgcolor="#eef7ff">
+	<h1>
+	  Configuration file format -- Restricting Attributes
+	</h1>
+	<p>
+	  ht://Dig Copyright &copy; 1995-2004 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  Please see the file <a href="COPYING">COPYING</a> for
+	  license information.
+	</p>
+	<hr size="4" noshade>
+	<p>
+	Many attributes may be restricted in scope, specifically those
+	used by the <a href="htdig.html">htdig</a> indexer. These
+	attributes can be specified on a per-server or per-URL basis
+	and thus can be applied to only one site or even one
+	particular portion of a site. For example:
+	</p>
+	<dl compact>
+	  <dd>
+		<code>
+		&lt;server: www.foo.com&gt;<br>
+		<a
+		href="attrs.html#server_wait_time">server_wait_time</a>: 5<br>
+		&lt;/server&gt;<br>
+		</code>
+	  </dd>
+	</dl>
+	<p>
+	Here the portions inside the &lt;server:&gt; &lt;/server&gt;
+	<strong>block</strong> are normal attributes as specified in
+	the <a href="cf_general.html">general configuration</a>
+	documentation. However, rather than applying to all servers,
+	these attributes will apply <em>only</em> to the www.foo.com server.
+	</p>
+	<p>
+	It is also possible to have &lt;url:&gt; &lt/url&gt;
+	blocks. With these, any URL matching the pattern specified in
+	the block will use the attributes within, overriding any other
+	configuration.
+	</p>
+	<p>
+	Not all attributes apply within blocks. Those that do are
+	listed with the appropriate context in the <a href="attrs.html">attribute
+	documentation</a>.
+	</p>
+	<hr size="4" noshade>
+
+	Last modified: $Date: 2004/05/28 13:15:18 $
+
+  </body>
+</html>

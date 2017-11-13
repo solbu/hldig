@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+  <head>
+	<title>
+	  ht://Dig: htdump
+	</title>
+  </head>
+  <body bgcolor="#eef7ff">
+	<h1>
+	  htdump
+	</h1>
+	<p>
+	  ht://Dig Copyright &copy; 1995-2004 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  Please see the file <a href="COPYING">COPYING</a> for
+	  license information.
+	</p>
+	<hr size="4" noshade>
+	<dl>
+	  <dd>
+		<h2>
+		  Synopsis
+		</h2>
+	  </dd>
+	  <dd>
+		htdump [<em>options</em>]
+	  </dd>
+	</dl>
+	<dl>
+	  <dd>
+		<h2>
+		  Description
+		</h2>
+	  </dd>
+	  <dd>
+		Htdump writes out an ASCII-text version of the document and word 
+		databases in the same form as the -t option of htdig.
+	  </dd>
+	</dl>
+	<dl>
+	  <dd>
+		<h2>
+		  Options
+		</h2>
+	  </dd>
+	  <dd>
+		<dl compact>
+		  <dt>
+			-a
+		  </dt>
+		  <dd>
+			Use alternate work files. Tells htdump to append <em>
+			.work</em> to database files, allowing it to
+			operate on a second set of databases.
+		  </dd>
+		  <dt>
+			-c <em>configfile</em>
+		  </dt>
+		  <dd>
+			Use the specified <em>configfile</em> file instead of the
+			default.
+		  </dd>
+		  <dt>
+			-d
+		  </dt>
+		  <dd>
+			Do <strong>not</strong> dump the document database.
+		  </dd>
+		  <dt>
+			-v
+		  </dt>
+		  <dd>
+			Verbose mode. This doesn't have much effect.
+		  </dd>
+		  <dt>
+			-w
+		  </dt>
+		  <dd>
+			Do <strong>not</strong> dump the word database.
+		  </dd>
+
+		</dl>
+	  </dd>
+	</dl>
+
+	<dl>
+	  <dd>
+		<h2>
+		  File Formats
+		</h2>
+	  </dd>
+	  <dl>
+	  <dt>
+	       <h3>Document Database</h3>
+          </dt>
+	  <dd>
+		<p>Each line in the file starts with the document id 
+		followed by a list of
+		<strong><em>fieldname</em>:<em>value</em></strong>
+		separated by tabs. The fields always appear in the
+		order listed below:
+		</p>
+		<table border=0>
+		<tr> <th>fieldname</th> <th align="left">value</th></tr>
+		<tr> <td>u</td><td>URL</td></tr>
+		<tr> <td>t</td><td>Title</td></tr>
+		<tr> <td>a</td><td>State (0 = normal, 1 = not found, 2
+		= not indexed, 3 = obsolete)</td></tr>
+		<tr> <td>m</td><td>Last modification time as reported
+		by the server</td></tr> 
+		<tr> <td>s</td><td>Size in bytes</td></tr>
+		<tr> <td>H</td><td>Excerpt</td></tr>
+		<tr> <td>h</td><td>Meta description</td></tr>
+		<tr> <td>l</td><td>Time of last retrieval</td></tr>
+		<tr> <td>L</td><td>Count of the links in the document
+		(outgoing links)</td></tr>
+		<tr> <td>b</td><td>Count of the links to the document
+		(incoming links or backlinks)</td></tr>
+		<tr> <td>c</td><td>HopCount of this document</td></tr>
+		<tr> <td>g</td><td>Signature of the document used for
+		duplicate-detection</td></tr>
+		<tr> <td>e</td><td>E-mail address to use for a
+		notification message from htnotify</td></tr>
+		<tr> <td>n</td><td>Date to send out a notification
+		e-mail message</td></tr>
+		<tr> <td>S</td><td>Subject for a notification e-mail
+		message</td></tr>
+		<tr> <td>d</td><td>The text of links pointing to this
+		document. (e.g. &lt;a
+		href=&quot;docURL&quot;&gt;description&lt;/a&gt;)</td></tr>
+		<tr> <td>A</td><td>Anchors in the document (i.e. &lt;A
+		NAME=...)</td></tr>
+		</table>
+	  </dd>
+	  <dt>
+	       <h3>Word Database</h3>
+	  </dt>
+	  <dd>
+	  <p>
+	  The first line of the ASCII word database is a comment,
+	  prefixed with '#' and specifies the columns of the file
+	  separated by tabs. 
+	  The fields are:</p>
+	  <blockquote>
+	  <em>word</em><br>
+	  <em>document id</em><br>
+	  <em>flags</em><br>
+	  <em>location</em><br>
+	  <em>anchor</em><br>
+	  </blockquote>
+	  </table>
+	  </p>
+	  </dd>
+	  </dl>
+	</dl>
+	<dl>
+	  <dd>
+		<h2>
+		  Files
+		</h2>
+	  </dd>
+	  <dd>
+		<dl>
+		  <dt>
+			<a href="attrs.html#config_dir">CONFIG_DIR</a>/htdig.conf
+		  </dt>
+		  <dd>
+			The default configuration file.
+		  </dd>
+		  <dt>
+		       <a href="attrs.html#database_dir">DATABASE_DIR</a>/db.docs
+		  </dt>
+		  <dd>
+		       The default ASCII document database file.
+		  </dd>
+		  <dt>
+		       <a href="attrs.html#database_dir">DATABASE_DIR</a>/db.worddump
+		  </dt>
+		  <dd>
+		       The default ASCII word database file.
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<dl>
+	  <dd>
+		<h2>
+		  See Also
+		</h2>
+	  </dd>
+	  <dd>
+		<a href="htdig.html">htdig</a>,
+		<a href="htload.html">htload</a> and
+		<a href="attrs.html">Configuration file format</a>
+	  </dd>
+	</dl>
+	<hr size="4" noshade>
+
+	Last modified: $Date: 2004/06/12 13:39:13 $
+
+  </body>
+</html>
