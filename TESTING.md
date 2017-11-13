@@ -23,14 +23,11 @@ Change to the `testing` directory and you should see the following directory str
 andy@oceanus:~/src/htdig/testing$ ls
 bin  cgi-bin  conf  htdocs  include  lib  man  share  var
 ```
-## htdig.conf
-It's important to edit `testing/conf/htdig.conf` before testing.
-
-change the `start_url:` value to the absolute path of `main.html` in your source/htdoc directory, and precede it with `file://`.
-
-Example: `file:///home/andy/src/htdig/htdoc/main.html`
 
 Change to testing/bin and run `./htdig -i` to initialize the database.
+
+Hint: It will search http://htdig.org so try using some keywords you find
+on that web site.
 
 Use `./htdig --help` to view the options for htdig.
 
