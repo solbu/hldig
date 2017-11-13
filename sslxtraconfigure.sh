@@ -1,6 +1,3 @@
 #!/bin/sh
 
-./configure --with-ssl --with-zlib  --enable-bigfile \
---prefix=$PWD/testing \
-&& make -j4
-
+./configure --prefix=$PWD/testing --with-ssl --with-zlib  --enable-bigfile
