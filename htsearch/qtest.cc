@@ -69,7 +69,6 @@ main(int ac, char **av)
 {
     int			c;
     extern char		*optarg;
-    int		        override_config=0;
     String		configFile = DEFAULT_CONFIG_FILE;
     String		logicalWords;
     bool		doall = true,
@@ -87,7 +86,6 @@ main(int ac, char **av)
  	{
  	    case 'c':
  		configFile = optarg;
-		override_config = 1;
  		break;
  	    case 'v':
  		debug++;
