@@ -55,16 +55,16 @@ static char sccsid[] = "@(#)strptime.c	1.0 (Powerdog) 94/03/27";
 #define asizeof(a)	((int)(sizeof (a) / sizeof ((a)[0])))
 
 struct mydtconv {
-    char	*abbrev_month_names[12];
-    char	*month_names[12];
-    char	*abbrev_weekday_names[7];
-    char	*weekday_names[7];
-    char	*time_format;
-    char	*sdate_format;
-    char	*dtime_format;
-    char	*am_string;
-    char	*pm_string;
-    char	*ldate_format;
+    const char	*abbrev_month_names[12];
+    const char	*month_names[12];
+    const char	*abbrev_weekday_names[7];
+    const char	*weekday_names[7];
+    const char	*time_format;
+    const char	*sdate_format;
+    const char	*dtime_format;
+    const char	*am_string;
+    const char	*pm_string;
+    const char	*ldate_format;
 };
 
 static struct mydtconv	En_US = {
