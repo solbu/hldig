@@ -11,11 +11,13 @@ http://www.htdig.org/
 Anyone interested in the project I am now maintaining may join the
 [chat room](https://join.slack.com/t/htdig/shared_invite/enQtMjY3NDU1MjMwODk3LTdmM2I2OWI5NWI4MzU4Y2JmMjk2MzAxNDYzM2IzZjJmMGE2MDZmMWMxNDY3MjAwOGFjMmE1YjM2MmM4MzVkNzk)
 
-project maintainer: Andy Alt
+Project maintainer: Andy Alt
 Email: andy400-dev@yahoo.com
+
+Contributors: https://github.com/andy5995/htdig/graphs/contributors
 
 See the
 [notes on building and testing](https://github.com/andy5995/htdig/blob/master/TESTING.md)
 
-How to make a make a pull request and sync your repo with the main fork:
+How to make a pull request and sync your repo with the main fork:
 [CONTRIBUTING.md](https://github.com/andy5995/htdig/blob/master/CONTRIBUTING.md)
