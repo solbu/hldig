@@ -1,19 +1,19 @@
-// 
+//
 // QueryLexer.cc
 //
 // QueryLexer: (abstract) a lexical analyzer used by a QueryParser.
 //             This class defines the common public interface of this
 //             family of lexers. It implements a tokenizer, and also
 //             the definition of the 'quote' and 'end' terminal symbols.
-// 
+//
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
-// 
+//
 // $Id: QueryLexer.cc,v 1.4 2004/05/28 13:15:24 lha Exp $
-// 
+//
 
 #include "QueryLexer.h"
 #include "defaults.h"
@@ -61,6 +61,7 @@ QueryLexer::Next()
 		while (text
                 && ((type.IsChar(text) && text != '/')
                   || prefix_match.indexOf(text, 0) != -1))
+    {
 			current << text;
 			text = query[++current_char];
 		}
