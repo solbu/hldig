@@ -1,4 +1,4 @@
-script: ./configure --with-ssl --with-zlib --enable-bigfile && make
+script: ./configure --prefix=$PWD/tempbuild --with-ssl --with-zlib --enable-bigfile && make && make install
 
 # blocklist
 #branches:
