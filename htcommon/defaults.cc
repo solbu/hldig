@@ -367,8 +367,8 @@ ConfigDefaults	defaults[] =
 { "common_url_parts", "http:// http://www. ftp:// ftp://ftp. /pub/ .html .htm .shtml /index.html /index.htm .com/ .com mailto:",  \
 	"string list", "all", "", "3.1.0", "URLs", "common_url_parts: http://www.htdig.org/ml/ \\<br> \
 .html \\<br> \
-https://github.com/andy5995/htdig \\<br> \
-https://andy5995.github.io/htdig/", " \
+http://dev.htdig.org/ \\<br> \
+http://www.htdig.org/", " \
 	Sub-strings often found in URLs stored in the \
 	database.  These are replaced in the database by an \
 	internal space-saving encoding.  If a string \
