@@ -59,8 +59,8 @@ QueryLexer::Next()
 	if (!current.length() && text)
 	{
 		while (text
-		&& (type.IsChar(text) && text != '/'
-			|| prefix_match.indexOf(text, 0) != -1))
+		&& (type.IsChar(text) && (text != '/'
+			|| prefix_match.indexOf(text, 0) != -1)))
 		{
 			current << text;
 			text = query[++current_char];
