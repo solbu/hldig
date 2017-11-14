@@ -92,7 +92,7 @@ EmailNotification::EmailNotification (char* pDate, char* pEmail,
 void htnotify(DocumentRef &);
 void usage();
 void readPreAndPostamble(void);
-void add_notification(char *date, char *email, char *url, char *subject);
+void add_notification(char *date, char *email, char *url, const char *subject);
 void send_notification(char *email, List * notifList);
 void send_email(List * notifList, String& command, String& to,
 		String& listText, int singleSubject);
@@ -369,7 +369,7 @@ void htnotify(DocumentRef &ref)
 //*****************************************************************************
 // void add_notification(char *date, char *email, char *url, char *subject)
 //
-void add_notification(char *date, char *email, char *url, char *subject)
+void add_notification(char *date, char *email, char *url, const char *subject)
 {
 
     List * list = (List *) allNotifications->Find (email);
@@ -380,7 +380,7 @@ void add_notification(char *date, char *email, char *url, char *subject)
     }
 
     // now add the notification to the selected list
-    EmailNotification* notif = new EmailNotification(date, email, url, subject);
+    EmailNotification* notif = new EmailNotification(date, email, url, (char*)subject);
     list->Add (notif);
 }
 
