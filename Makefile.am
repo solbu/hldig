@@ -12,10 +12,10 @@ endif
 
 SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include htdoc $(TESTDIR)
 
-EXTRA_DIST = .version Makefile.config ChangeLog.0 contrib
+EXTRA_DIST = .version Makefile.config contrib
 
 dist-hook:
-	find $(distdir) -depth -name CVS -print | xargs rm -fr 
+	find $(distdir) -depth -name CVS -print | xargs rm -fr
 
 #
 # If --enable-tests is not specified, should remove
