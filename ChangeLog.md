@@ -1,30 +1,33 @@
+# ChangeLog
+
 Looking for the ChangeLog by the original development team?
 http://www.htdig.org/
 
-Tue Nov 14 2017
+### Tue Nov 14 2017
 
-    * Removed former ChangeLog; it would be confusing for newcomers
+Removed former ChangeLog; it would be confusing for newcomers
 
-Mon Nov 13 2017
+### Mon Nov 13 2017
 
-    * Removed htdoc directory. New web site is needed.
-    * Removed former README; it would be confusing for newcomers (a link to
-    the web site of the original maintainers will remain at the top of this
-    document)
+Removed htdoc directory. New web site is needed.
 
-Sun Nov 12 2107
+Removed former README; it would be confusing for newcomers (a link to
+the web site of the original maintainers will remain at the top of this
+document)
 
-    * Merged a commit (patch apparently from Jim Cole) lost when I reverted to 3.2.0b6
-    [Fix bug in handling SSL connections.](https://github.com/andy5995/htdig/commit/2aa0e4ed52211003288491dedd3a1e72d1c4ddc1)
+### Sun Nov 12 2107
 
-Wed Nov 08 2017
+Merged a commit (patch apparently from Jim Cole) lost when I reverted to 3.2.0b6
+[Fix bug in handling SSL connections.](https://github.com/andy5995/htdig/commit/2aa0e4ed52211003288491dedd3a1e72d1c4ddc1)
 
-    * [reverted to 3.2.0b6](https://github.com/andy5995/htdig/commit/af7c7041cf95e60be248a65ca0ee162024e06345)
-    and applied [patches from the GNU Debian maintainers](https://packages.debian.org/stretch/htdig)
+### Wed Nov 08 2017
 
-Mon Nov 06 2017
+[reverted to 3.2.0b6](https://github.com/andy5995/htdig/commit/af7c7041cf95e60be248a65ca0ee162024e06345)
+and applied [patches from the GNU Debian maintainers](https://packages.debian.org/stretch/htdig)
 
-    * Mirrored the htdig repo from https://github.com/roklein/htdig
+### Mon Nov 06 2017
+
+Mirrored the htdig repo from https://github.com/roklein/htdig
 
 [andy5995 commented](https://github.com/roklein/htdig/issues/1)
 
