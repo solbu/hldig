@@ -2,15 +2,15 @@
 // Configuration.h
 //
 // NAME
-// 
+//
 // reads the configuration file and manages it in memory.
 //
 // SYNOPSIS
-// 
+//
 // #include <Configuration.h>
-// 
+//
 // Configuration config;
-// 
+//
 // ConfigDefault config_defaults = {
 //   { "verbose", "true" },
 //   { 0, 0 }
@@ -25,14 +25,14 @@
 // if(config["sync"]) ...
 // if(config.Value("rate") < 50) ...
 // if(config.Boolean("sync")) ...
-// 
+//
 // DESCRIPTION
 //
 // The primary purpose of the <b>Configuration</b> class is to parse
 // a configuration file and allow the application to modify the internal
-// data structure. All values are strings and are converted by the 
-// appropriate accessors. For instance the <b>Boolean</b> method will 
-// return numerical true (not zero) if the string either contains 
+// data structure. All values are strings and are converted by the
+// appropriate accessors. For instance the <b>Boolean</b> method will
+// return numerical true (not zero) if the string either contains
 // a number that is different from zero or the string <i>true</i>.
 //
 // The <i>ConfigDefaults</i> type is a structure of two char pointers:
@@ -49,9 +49,9 @@
 // </pre>
 // Returns the configuration (object of type <i>Configuration</i>)
 // built if a file was found or config_defaults
-// provided, 0 otherwise. 
+// provided, 0 otherwise.
 // The additional
-// fields of the <b>ConfigDefault</b> are purely informative. 
+// fields of the <b>ConfigDefault</b> are purely informative.
 //
 // FILE FORMAT
 //
@@ -88,14 +88,14 @@
 // <pre>
 // include: common.conf
 // </pre>
-// 
+//
 //
 // END
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License (LGPL) version 2 or later 
+// or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
 // $Id: Configuration.h,v 1.11 2004/05/28 13:15:20 lha Exp $
@@ -109,15 +109,20 @@
 
 struct ConfigDefaults
 {
-  char	*name;			// Name of the attribute
-  char	*value;			// Default value
-  char	*type;			// Type of the value (string, integer, boolean)
-  char	*programs;		// Whitespace separated list of programs/modules using this attribute
-  char	*block;			// Configuration block this can be used in (can be blank)
-  char	*version;		// Version that introduced the attribute
-  char	*category;		// Attribute category (to split documentation)
-  char	*example;		// Example usage of the attribute (HTML)
-  char	*description;		// Long description of the attribute (HTML)
+  const char	*name;			// Name of the attribute
+  /* FIXME: If I'm not mistaken, sometimes "value" is a constant and sometimes
+   * it is not. If it's declared with "const" the build will fail. As it is now,
+   * we get repeated warnings such as "deprecated conversion from
+   * string constant to 'char*' [-Wwrite-strings] but the build completes.
+   */
+  char *value;            // Default value
+  const char	*type;			// Type of the value (string, integer, boolean)
+  const char	*programs;		// Whitespace separated list of programs/modules using this attribute
+  const char	*block;			// Configuration block this can be used in (can be blank)
+  const char	*version;		// Version that introduced the attribute
+  const char	*category;		// Attribute category (to split documentation)
+  const char	*example;		// Example usage of the attribute (HTML)
+  const char	*description;		// Long description of the attribute (HTML)
 };
 
 
@@ -168,7 +173,7 @@ public:
     // the <i>name</i> and the <i>value.</i>
     //
     void		NameValueSeparators(const String& s);
-	
+
     //-
     // Read name/value configuration pairs from the file <b>filename</b>.
     //
@@ -194,21 +199,21 @@ public:
     //-
     // Return the value associated with the configuration attribute
     // <b>name</b>, converted to integer using the atoi(3) function.
-    // If the attribute is not found in the configuration and 
-    // a <b>default_value</b> is provided, return it. 
+    // If the attribute is not found in the configuration and
+    // a <b>default_value</b> is provided, return it.
     //
     int		Value(const String& name, int default_value = 0) const;
     //-
     // Return the value associated with the configuration attribute
     // <b>name</b>, converted to double using the atof(3) function.
-    // If the attribute is not found in the configuration and 
-    // a <b>default_value</b> is provided, return it. 
+    // If the attribute is not found in the configuration and
+    // a <b>default_value</b> is provided, return it.
     //
     double	Double(const String& name, double default_value = 0) const;
     //-
-    // Return 1 if the value associated to <b>name</b> is 
+    // Return 1 if the value associated to <b>name</b> is
     // either <b>1, yes</b> or <b>true</b>.
-    // Return 0 if the value associated to <b>name</b> is 
+    // Return 0 if the value associated to <b>name</b> is
     // either <b>0, no</b> or <b>false</b>.
     //
     int		Boolean(const String& name, int default_value = 0) const;
@@ -216,7 +221,7 @@ public:
 
     //-
     // Load configuration attributes from the <i>name</i> and <i>value</i>
-    // members of the <b>array</b> argument. 
+    // members of the <b>array</b> argument.
     //
     void		Defaults(const ConfigDefaults *array);
 
