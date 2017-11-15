@@ -45,7 +45,7 @@ int			verbose = 0;
 Dictionary *purgeDocs(Dictionary *);
 void purgeWords(Dictionary *);
 void usage();
-void reportError(char *msg);
+void reportError(const char *msg);
 
 //*****************************************************************************
 // int main(int ac, char **av)
@@ -190,10 +190,7 @@ Dictionary *purgeDocs(Dictionary *purgeURLs)
     IDs = db.DocIDs();
 
     if (IDs->Count() == 0)
-      {
-	const char *error_message = "Database is empty!";
-	reportError((char*)error_message);
-      }
+      reportError("Database is empty!");
     
     IDs->Start_Get();
     IntObject		*id;
@@ -395,7 +392,7 @@ void usage()
 //*****************************************************************************
 // Report an error and die
 //
-void reportError(char *msg)
+void reportError(const char *msg)
 {
     cout << "htpurge: " << msg << "\n\n";
     exit(1);
