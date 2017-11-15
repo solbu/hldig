@@ -56,7 +56,7 @@ using namespace std;
 class EmailNotification : public Object
 {
 public:
-    EmailNotification (char* date, char* email, char* url, char* subject);
+    EmailNotification (char* date, char* email, char* url, const char* subject);
 
     //
     //accessors
@@ -74,7 +74,7 @@ private:
 };
 
 EmailNotification::EmailNotification (char* pDate, char* pEmail,
-                                      char* pUrl,  char* pSubject)
+                                      char* pUrl,  const char* pSubject)
 {
     date    = pDate;
     email   = pEmail;
@@ -228,7 +228,7 @@ int main(int ac, char **av)
 }
 
 
-//}}}  
+//}}}
 //{{{  readPreAndPostamble
 //*****************************************************************************
 // void readPreAndPostamble(void)
@@ -298,7 +298,7 @@ void readPreAndPostamble(void)
     }
 }
 
-//}}}  
+//}}}
 //{{{  htnotify
 //*****************************************************************************
 // void htnotify(DocumentRef &ref)
@@ -363,12 +363,6 @@ void htnotify(DocumentRef &ref)
     }
 }
 
-
-//}}}  
-//{{{  add_notification
-//*****************************************************************************
-// void add_notification(char *date, char *email, char *url, char *subject)
-//
 void add_notification(char *date, char *email, char *url, const char *subject)
 {
 
@@ -380,11 +374,11 @@ void add_notification(char *date, char *email, char *url, const char *subject)
     }
 
     // now add the notification to the selected list
-    EmailNotification* notif = new EmailNotification(date, email, url, (char*)subject);
+    EmailNotification* notif = new EmailNotification(date, email, url, subject);
     list->Add (notif);
 }
 
-//}}}  
+//}}}
 //{{{  send_notification
 //*****************************************************************************
 // void send_notification(char * email, List * notifList)
@@ -412,10 +406,10 @@ void send_notification(char* email, List * notifList)
 //    static char ok_chars[] = "abcdefghijklmnopqrstuvwxyz
 //    ABCDEFGHIJKLMNOPQRSTUVWXYZ
 //    1234567890_-.@/=+:%!, ";
-//    char *cursor;          // cursor into email address 
+//    char *cursor;          // cursor into email address
 //    for (cursor = to.get(); *(cursor += strspn(cursor, ok_chars));)
 //      *cursor = '_'; // Set it to something harmless
-    
+
     EmailNotification* notif = (EmailNotification*) notifList->Get_First();
     String firstSubject = notif->getSubject();
     int singleSubject = 1;
@@ -463,7 +457,7 @@ void send_notification(char* email, List * notifList)
 }
 
 
-//}}}  
+//}}}
 //{{{  send_email
 //*****************************************************************************
 // void send_email(List * notifList, String& command, String& to)
@@ -544,7 +538,7 @@ void usage()
 }
 
 
-//}}}  
+//}}}
 //{{{  parse_date
 //*****************************************************************************
 // Parse the notification date string from the user's document
@@ -610,4 +604,4 @@ int parse_date(char *date, int &year, int &month, int &day)
 }
 
 
-//}}}  
+//}}}
