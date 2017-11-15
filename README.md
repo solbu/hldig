@@ -28,4 +28,4 @@ See the
 [notes on building and testing](TESTING.md)
 
 How to make a pull request and sync your repo with the main fork:
-[CONTRIBUTING.md](CONTRIBUTING.md)
+[CONTRIBUTING](CONTRIBUTING.md)
