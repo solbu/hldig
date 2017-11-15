@@ -10,9 +10,6 @@ please visit
 
 [http://www.htdig.org/](http://www.htdig.org/)
 
-Anyone interested in the project I am now maintaining may join the
-[chat room](https://join.slack.com/t/htdig/shared_invite/enQtMjY3NDU1MjMwODk3LTdmM2I2OWI5NWI4MzU4Y2JmMjk2MzAxNDYzM2IzZjJmMGE2MDZmMWMxNDY3MjAwOGFjMmE1YjM2MmM4MzVkNzk)
-
 ## Try it out
 At the following link you can try a search. The form calls `htsearch` which searches
 a database created by `htdig` crawling [http://www.read.gov/aesop/](http://www.read.gov/aesop/)
@@ -28,3 +25,6 @@ See the
 [notes on building and testing](TESTING.md)
 
 [How to make a pull request and sync your repo with the main fork](CONTRIBUTING.md)
+
+Anyone interested in the project I am now maintaining may join the
+[chat room](https://join.slack.com/t/htdig/shared_invite/enQtMjY3NDU1MjMwODk3LTdmM2I2OWI5NWI4MzU4Y2JmMjk2MzAxNDYzM2IzZjJmMGE2MDZmMWMxNDY3MjAwOGFjMmE1YjM2MmM4MzVkNzk)
