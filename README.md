@@ -13,10 +13,11 @@ please visit
 Anyone interested in the project I am now maintaining may join the
 [chat room](https://join.slack.com/t/htdig/shared_invite/enQtMjY3NDU1MjMwODk3LTdmM2I2OWI5NWI4MzU4Y2JmMjk2MzAxNDYzM2IzZjJmMGE2MDZmMWMxNDY3MjAwOGFjMmE1YjM2MmM4MzVkNzk)
 
+## Try it out
 At the following link you can try a search. The form calls `htsearch` which searches
 a database created by `htdig` crawling [http://www.read.gov/aesop/](http://www.read.gov/aesop/)
-(try using keywords such as "frogs", "fox", or "Hercules").
-[htdig Testing Ground](http://htdig.dreamhosters.com/)
+(try using keywords such as "frogs", "fox", or "Hercules").<br />
+[htdig Testing Ground](http://htdig.dreamhosters.com/) (try `htsearch`)
 
 Project maintainer: Andy Alt
 Email: andy400-dev [at] yahoo.com
