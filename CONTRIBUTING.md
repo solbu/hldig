@@ -1,15 +1,18 @@
 # CONTRIBUTING
 
 ## Pull Requests
-1. [Fork the repo](https://github.com/andy5995/htdig#fork-destination-box) (if you haven't already done so)
-2. Clone it to your computer
-3. When you're ready to work on an issue, be sure you're on the **master** branch. From there,
+1. Join the [chat room](https://join.slack.com/t/htdig/shared_invite/enQtMjY3NDU1MjMwODk3LTdmM2I2OWI5NWI4MzU4Y2JmMjk2MzAxNDYzM2IzZjJmMGE2MDZmMWMxNDY3MjAwOGFjMmE1YjM2MmM4MzVkNzk)
+so if any problems arise, you can get support.
+2. [Fork the repo](https://github.com/andy5995/htdig#fork-destination-box) (if you haven't already done so)
+3. Clone it to your computer
+4. When you're ready to work on an issue, be sure you're on the **master** branch. From there,
 [create a separate branch](https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches)
 (e.g. issue_32)
 4. Make your changes. If you're unsure of some details while you're making edits, you can
 discuss them on the ticket.
 5. Commit your changes
-6. Push the working branch (e.g. issue_32) to your remote fork and make your pull request
+6. Push the working branch (e.g. issue_32) to your remote fork and make your
+[pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/)
     * Do not merge it with the master branch on your fork. That would result in multiple, or
     unrelated patches being included in a single PR.
 7. If any further changes need to be made, comments will be made on the pull request.
