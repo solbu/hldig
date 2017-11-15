@@ -27,5 +27,4 @@ Email: andy400-dev [at] yahoo.com
 See the
 [notes on building and testing](TESTING.md)
 
-How to make a pull request and sync your repo with the main fork:
-[CONTRIBUTING](CONTRIBUTING.md)
+[How to make a pull request and sync your repo with the main fork](CONTRIBUTING.md)
