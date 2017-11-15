@@ -190,8 +190,11 @@ Dictionary *purgeDocs(Dictionary *purgeURLs)
     IDs = db.DocIDs();
 
     if (IDs->Count() == 0)
-      reportError("Database is empty!");
-
+      {
+	const char *error_message = "Database is empty!";
+	reportError((char*)error_message);
+      }
+    
     IDs->Start_Get();
     IntObject		*id;
     String		idStr;
