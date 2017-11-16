@@ -24,10 +24,10 @@ public:
 	cgi(char *s);
 	~cgi();
 
-	const char			*operator [] (const char *);
-	const char			*get(const char *);
-	int							exists(char *);
-	char						*path();
+	const char      *operator [] (const char *);
+	const char      *get(const char *);
+	int             exists(char *);
+	char            *path();
 
 private:
 	Dictionary		*pairs;
