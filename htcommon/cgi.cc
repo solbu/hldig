@@ -64,7 +64,7 @@ cgi::cgi(char *s)
 // void cgi::init(char *s)
 //
 void
-cgi::init(char *s)
+cgi::init(const char *s)
 {
 	pairs = new Dictionary;
 
@@ -153,7 +153,7 @@ cgi::~cgi()
 //*****************************************************************************
 // char *cgi::operator [] (char *name)
 //
-char *cgi::operator [] (char *name)
+const char *cgi::operator [] (const char *name)
 {
 	return get(name);
 }
@@ -162,7 +162,7 @@ char *cgi::operator [] (char *name)
 //*****************************************************************************
 // char *cgi::get(char *name)
 //
-char *cgi::get(char *name)
+const char *cgi::get(const char *name)
 {
 	String	*str = (String *) (*pairs)[name];
 	if (str)
