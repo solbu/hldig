@@ -78,11 +78,11 @@ int main(int ac, char **av)
 {
     int			c;
     extern char		*optarg;
-    String		credentials;
-    int			initial = 0;
-    int			alt_work_area = 0;
-    int			create_text_database = 0;
-    char		*max_hops = 0;
+    String		    credentials;
+    int			      initial = 0;
+    int			      alt_work_area = 0;
+    int			      create_text_database = 0;
+    const char		*max_hops = 0;
 
     // Cookie jar dynamic creation.
     HtCookieJar*        _cookie_jar = new HtCookieMemJar(); // new cookie jar
