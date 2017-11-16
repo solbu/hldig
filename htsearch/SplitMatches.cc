@@ -77,7 +77,7 @@ MatchArea::~MatchArea()
 
 SplitMatches::SplitMatches(Configuration &config)
 {
-    char *config_item = "search_results_order";
+    const char *config_item = "search_results_order";
 
     StringList sl(config[config_item], "\t \r\n");
 
