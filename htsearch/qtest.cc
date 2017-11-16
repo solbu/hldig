@@ -121,7 +121,7 @@ main(int ac, char **av)
     char	none[] = "";
     cgi		input(optind < ac ? av[optind] : none);
 
-    String	 originalWords = input["words"];
+    String	 originalWords = input[(char*)"words"];
     originalWords.chop(" \t\r\n");
 
 	 HtConfiguration* config= HtConfiguration::config();
