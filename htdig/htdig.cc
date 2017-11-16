@@ -128,7 +128,7 @@ int main(int ac, char **av)
 		break;
 	    case 'm':
 	        minimalFile = optarg;
-		max_hops = "0";
+		max_hops = (char*)"0";
 	        break;
 	    case '?':
 		usage();
@@ -158,11 +158,12 @@ int main(int ac, char **av)
     // For efficiency, check all fields here.  If different config
     // files are used for searching, obsolete options may remain
     char *deprecatedOptions [] = {
-	"heading_factor_1", "heading_factor_2", "heading_factor_3",
-	"heading_factor_4", "heading_factor_5", "heading_factor_6",
-	"modification_time_is_now", "pdf_parser", "translate_amp",
-	"translate_lt_gt", "translate_quot", "uncoded_db_compatible",
-	""	// empty terminator
+	(char*)"heading_factor_1", (char*)"heading_factor_2", 
+	(char*)"heading_factor_3", (char*)"heading_factor_4", 
+	(char*)"heading_factor_5", (char*)"heading_factor_6",
+	(char*)"modification_time_is_now", (char*)"pdf_parser", 
+	(char*)"translate_amp", (char*)"translate_lt_gt", (char*)"translate_quot", 
+	(char*)"uncoded_db_compatible", (char*)""	// empty terminator
     };
     char **option;
     for (option = deprecatedOptions; **option; option++)
