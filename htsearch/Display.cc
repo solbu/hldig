@@ -486,7 +486,7 @@ Display::setVariables(int pageNumber, List *matches)
     vars.Add("ENDDAY", new String(config->Find("endday")));
 	
     String	*str;
-    char	*format = input->get("format");
+    const char	*format = input->get("format");
     String	*in;
 
     vars.Add("SELECTED_FORMAT", new String(format));
