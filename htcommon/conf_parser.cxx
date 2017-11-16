@@ -1067,7 +1067,7 @@ yyreduce:
 #line 69 "conf_parser.yxx"
     {   
   // name: value
-               ((HtConfiguration *)aConf)->AddParsed(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
+               ((HtConfiguration *)YYPARSE_PARAM)->AddParsed(yyvsp[0].ConfLine->name,yyvsp[0].ConfLine->value);
 	       #ifdef DEBUG
 	       if (sn_debug>=2) {
 		 cout<<"Added to conf: "<<yyvsp[0].ConfLine->name<<":"<<yyvsp[0].ConfLine->value<<endl;
@@ -1150,7 +1150,7 @@ yyreduce:
 			// exit(1);
 		      }
 		      // Oll right. Append set of parameters to object($2)
-		      ((HtConfiguration *)aConf)->Add(yyvsp[-10].str,yyvsp[-8].str,yyvsp[-5].ConfLines);
+		      ((HtConfiguration *)YYPARSE_PARAM)->Add(yyvsp[-10].str,yyvsp[-8].str,yyvsp[-5].ConfLines);
 		      #ifdef DEBUG
 		      if (sn_debug >= 2) {
 			cout<<"Added to conf: "<<yyvsp[-10].str<<":"<<yyvsp[-8].str<<":"<<yyvsp[-5].ConfLines<<endl;
