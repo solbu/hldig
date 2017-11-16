@@ -77,7 +77,7 @@ void reportError(char *msg);
 int main(int ac, char **av)
 {
     int           c;
-    extern char	  *optarg;
+    extern char   *optarg;
     String        credentials;
     int           initial = 0;
     int           alt_work_area = 0;
