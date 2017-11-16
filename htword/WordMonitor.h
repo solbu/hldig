@@ -9,7 +9,7 @@
 // Only called thru WordContext::Initialize()
 //
 // DESCRIPTION
-// 
+//
 // The test directory contains a <i>benchmark-report</i> script used to generate
 // and archive graphs from the output of <i>WordMonitor</i>.
 //
@@ -104,7 +104,7 @@ class WordMonitor {
     ~WordMonitor();
 
     //
-    // Unique instance handlers 
+    // Unique instance handlers
     //
     static void Initialize(const Configuration& config);
     static WordMonitor* Instance() { return instance; }
@@ -127,7 +127,7 @@ class WordMonitor {
     int period;
     FILE* output;
     int output_style;
-    static char* values_names[WORD_MONITOR_VALUES_SIZE];
+    static const char* values_names[WORD_MONITOR_VALUES_SIZE];
 
     //
     // Unique instance pointer

@@ -29,7 +29,7 @@
 
 WordMonitor* WordMonitor::instance = 0;
 
-char* WordMonitor::values_names[WORD_MONITOR_VALUES_SIZE] = {
+const char* WordMonitor::values_names[WORD_MONITOR_VALUES_SIZE] = {
   "",
   "C.Write",
   "C.Read",
@@ -100,7 +100,7 @@ WordMonitor::~WordMonitor()
     fclose(output);
 }
 
-void 
+void
 WordMonitor::Initialize(const Configuration &config_arg)
 {
   if(instance != 0)
@@ -148,7 +148,7 @@ static void handler_alarm(int signal)
   monitor->TimerClick(signal);
 }
 
-void 
+void
 WordMonitor::TimerStart()
 {
   if(period < 5) {
@@ -166,7 +166,7 @@ WordMonitor::TimerStart()
     fprintf(stderr, "WordMonitor::TimerStart: installing SIGALRM ");
     perror("");
   }
-  
+
   if(old_action.sa_handler != SIG_DFL) {
     fprintf(stderr, "WordMonitor::TimerStart: found an installed action while installing SIGALRM, restoring old action\n");
     if(sigaction(SIGALRM, &old_action, NULL) != 0) {
@@ -249,7 +249,7 @@ extern "C" {
       monitor->TimerClick(SIGALRM);
 #endif
   }
-  void word_monitor_add(int index, unsigned int value) 
+  void word_monitor_add(int index, unsigned int value)
   {
     WordMonitor* monitor = WordMonitor::Instance();
     if(monitor)
