@@ -24,7 +24,7 @@ public:
 	cgi(char *s);
 	~cgi();
 
-	char			*operator [] (char *);
+	char			*operator [] (const char *);
 	char			*get(char *);
 	int			exists(char *);
 	char			*path();
