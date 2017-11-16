@@ -53,7 +53,7 @@ using namespace std;
 #include <getopt.h>
 #endif
 
-void reportError(char *msg);
+void reportError(const char *msg);
 void usage();
 
 int			debug = 0;
@@ -242,7 +242,7 @@ void usage()
 //*****************************************************************************
 // Report an error and die
 //
-void reportError(char *msg)
+void reportError(const char *msg)
 {
     cout << "qtest: " << msg << "\n\n";
     exit(1);
