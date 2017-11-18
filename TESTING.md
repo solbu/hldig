@@ -29,7 +29,7 @@ Example: `make -j12`
 On some systems, a build will fail if using the `j` option. If that happens,
 try building using only `make` with no options.
 
-* make install
+    make install
 
 Files will be installed to $source_dir/testing; as a result, you won't have
 any problems with write permissions to the database folder, and htdig will
@@ -49,13 +49,14 @@ Download the latest source package of [lighttpd](http://www.lighttpd.net/)
 and extract it to a directory outside of your `htdig` source directory.
 
 You may have to install some dependencies for lighttpd to build.
-Notes about that are on the [lighttpd](wiki).
+Notes about that are on the [lighttpd wiki](http://redmine.lighttpd.net/projects/lighttpd/wiki/InstallFromSource).
 
-./configure --prefix=$HOME/usr
-make
-make install
+    ./configure --prefix=$HOME/usr
+    make
+    make install
 
 Make an `etc` directory
+
     mkdir ~/usr/etc
 
 Copy `lighttpd.conf.sample` to ~/usr/etc.
@@ -65,15 +66,18 @@ Rename it to `lighttpd.conf` and edit the paths for these two variables:
     server.breakagelog
 
 Make a directory for the log file
+
     mkdir -p $HOME/usr/var/log
 
 cd to $srcdir/samplesite and make a symbolic link to your testing/cgi-bin directory
+
     ln -s ../testing/cgi-bin/
 
 Copy `htsearch.sh` from your $srcdir/scripts directory to the cgi-bin directory.
 
 Change back to the top level of your htdig source directory.
 Start the lighttpd server
+
     scripts/run-lighttpd
 
 In your browser, navigate to `http://localhost:3002` and you should see
