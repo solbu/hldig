@@ -1,5 +1,21 @@
 # TESTING
 
+## System Requirements
+
+### Linux
+Install the following packages:
+
+    build-essential
+    libstdc++
+    libssl-dev
+    zlib1g-dev
+
+### Mac
+(Edit me)
+
+### Windows
+(Edit me)
+
 ## Build
 * ./configure
 * make [-j?]
@@ -10,8 +26,12 @@ Example: `make -j12`
 
 (See https://www.gnu.org/software/make/manual/html_node/Options-Summary.html#Options-Summary for details)
 
+On some systems, a build will fail if using the `j` option. If that happens,
+try building using only `make` with no options.
+
 ## Testing
 * ./configure --prefix=$PWD/testing --with-ssl
+* make [-j?]
 * make install
 
 Files will be installed to $source_dir/testing; as a result, you won't have
@@ -30,7 +50,8 @@ andy@oceanus:~/src/htdig/testing$ ls
 bin  cgi-bin  conf  htdocs  include  lib  man  share  var
 ```
 
-Change to testing/bin and run `./htdig -i` to initialize the database.
+Change to testing/bin and run `./htdig -is` to initialize the database. The
+`-i` initializes and adding the `s' shows a summary.
 
 Hint: It will search http://www.htdig.org so try using some keywords you find
 on that web site.
