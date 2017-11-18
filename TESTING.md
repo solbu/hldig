@@ -55,8 +55,9 @@ Notes about that are on the [lighttpd wiki](http://redmine.lighttpd.net/projects
     make
     make install
 
-Make an `etc` directory
+Make an `etc` and a `log` directory
 
+    mkdir -p $HOME/usr/var/log
     mkdir ~/usr/etc
 
 Copy `lighttpd.conf.sample` to ~/usr/etc.
@@ -64,10 +65,6 @@ Rename it to `lighttpd.conf` and edit the paths for these two variables:
 
     server.document-root
     server.breakagelog
-
-Make a directory for the log file
-
-    mkdir -p $HOME/usr/var/log
 
 cd to $srcdir/samplesite and make a symbolic link to your testing/cgi-bin directory
 
