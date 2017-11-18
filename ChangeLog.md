@@ -3,6 +3,11 @@
 Looking for the ChangeLog by the original development team?
 http://www.htdig.org/
 
+### Sat Nob 18 2017
+
+Documented how to use [lighttpd](http://www.lighttpd.net/)
+for [testing](https://github.com/andy5995/htdig/blob/master/TESTING.md)
+
 ### Tue Nov 14 2017
 
 Removed former ChangeLog; it would be confusing for newcomers
