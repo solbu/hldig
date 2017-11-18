@@ -26,13 +26,13 @@
 class DictionaryEntry
 {
 public:
-    unsigned int	hash;
-    char		*key;
-    Object		*value;
-    DictionaryEntry	*next;
+    unsigned int  hash;
+    char    *key;
+    Object    *value;
+    DictionaryEntry  *next;
 
     ~DictionaryEntry();
-    void		release();
+    void    release();
 };
 
 DictionaryEntry::~DictionaryEntry()
@@ -44,7 +44,7 @@ DictionaryEntry::~DictionaryEntry()
 void
 DictionaryEntry::release()
 {
-    value = NULL;		// Prevent the value from being deleted
+    value = NULL;    // Prevent the value from being deleted
 }
 
 
@@ -95,16 +95,16 @@ Dictionary::Destroy()
 
     for (int i = 0; i < tableLength; i++)
     {
-	if (table[i] != NULL)
-	{ 
-	    t = table[i];
-	    do {                  // clear out hash chain
-	      n = t->next;
-	      delete t;
-	      t = n;
-	    } while (n);
-	    table[i] = NULL;
-	}
+  if (table[i] != NULL)
+  { 
+      t = table[i];
+      do {                  // clear out hash chain
+        n = t->next;
+        delete t;
+        t = n;
+      } while (n);
+      table[i] = NULL;
+  }
     }
     count = 0;
 }
@@ -118,17 +118,17 @@ Dictionary::Release()
 
     for (int i = 0; i < tableLength; i++)
     {
-	if (table[i] != NULL)
-	{
-	    t = table[i];
-	    do {                  // clear out hash chain
-	      n = t->next;
-	      t->release();
-	      delete t;
-	      t = n;
-	    } while (n);
-	    table[i] = NULL;
-	}
+  if (table[i] != NULL)
+  {
+      t = table[i];
+      do {                  // clear out hash chain
+        n = t->next;
+        t->release();
+        delete t;
+        t = n;
+      } while (n);
+      table[i] = NULL;
+  }
     }
     count = 0;
 }
@@ -140,14 +140,14 @@ void
 Dictionary::init(int initialCapacity, float loadFactor)
 {
     if (initialCapacity <= 0)
-	initialCapacity = 101;
+  initialCapacity = 101;
     if (loadFactor <= 0.0)
-	loadFactor = 0.75f;
+  loadFactor = 0.75f;
     Dictionary::loadFactor = loadFactor;
     table = new DictionaryEntry*[initialCapacity];
     for (int i = 0; i < initialCapacity; i++)
     {
-	table[i] = NULL;
+  table[i] = NULL;
     }
     threshold = (int)(initialCapacity * loadFactor);
     tableLength = initialCapacity;
@@ -173,12 +173,12 @@ Dictionary::hashCode(const char *key) const
 
     if (length >= 16)
       {
-	tmp_key += strlen(tmp_key) - 15;
-	length = strlen(tmp_key);
+  tmp_key += strlen(tmp_key) - 15;
+  length = strlen(tmp_key);
       }
     for (int i = length; i > 0; i--)
       {
-	h = (h*37) + *tmp_key++;
+  h = (h*37) + *tmp_key++;
       }
 
     free(base);
@@ -192,25 +192,25 @@ Dictionary::hashCode(const char *key) const
 void
 Dictionary::Add(const String& name, Object *obj)
 {
-    unsigned int	hash = hashCode(name);
-    int			index = hash % tableLength;
-    DictionaryEntry	*e;
+    unsigned int  hash = hashCode(name);
+    int      index = hash % tableLength;
+    DictionaryEntry  *e;
     
     for (e = table[index]; e != NULL; e = e->next)
     {
-	if (e->hash == hash && strcmp(e->key, name) == 0)
-	{
-	    delete e->value;
-	    e->value = obj;
-	    return;
-	}
+  if (e->hash == hash && strcmp(e->key, name) == 0)
+  {
+      delete e->value;
+      e->value = obj;
+      return;
+  }
     }
 
     if (count >= threshold)
     {
-	rehash();
-	Add(name, obj);
-	return;
+  rehash();
+  Add(name, obj);
+  return;
     }
 
     e = new DictionaryEntry();
@@ -232,26 +232,26 @@ Dictionary::Remove(const String& name)
     if (!count)
       return 0;
 
-    unsigned int	hash = hashCode(name);
-    int			index = hash % tableLength;
-    DictionaryEntry	*e, *prev;
+    unsigned int  hash = hashCode(name);
+    int      index = hash % tableLength;
+    DictionaryEntry  *e, *prev;
 
     for (e = table[index], prev = NULL; e != NULL; prev = e, e = e->next)
     {
-	if (hash == e->hash && strcmp(e->key, name) == 0)
-	{
-	    if (prev != NULL)
-	    {
-		prev->next = e->next;
-	    }
-	    else
-	    {
-		table[index] = e->next;
-	    }
-	    count--;
+  if (hash == e->hash && strcmp(e->key, name) == 0)
+  {
+      if (prev != NULL)
+      {
+    prev->next = e->next;
+      }
+      else
+      {
+    table[index] = e->next;
+      }
+      count--;
             delete e;
-	    return 1;
-	}
+      return 1;
+  }
     }
     return 0;
 }
@@ -262,18 +262,18 @@ Dictionary::Remove(const String& name)
 Object *Dictionary::Find(const String& name) const
 {
     if (!count)
-	return NULL;
+  return NULL;
 
-    unsigned int	hash = hashCode(name);
-    int			index = hash % tableLength;
-    DictionaryEntry	*e;
+    unsigned int  hash = hashCode(name);
+    int      index = hash % tableLength;
+    DictionaryEntry  *e;
 
     for (e = table[index]; e != NULL; e = e->next)
     {
-	if (e->hash == hash && strcmp(e->key, name) == 0)
-	{
-	    return e->value;
-	}
+  if (e->hash == hash && strcmp(e->key, name) == 0)
+  {
+      return e->value;
+  }
     }
     return NULL;
 }
@@ -294,16 +294,16 @@ int Dictionary::Exists(const String& name) const
     if (!count)
       return 0;
 
-    unsigned int	hash = hashCode(name);
-    int			index = hash % tableLength;
-    DictionaryEntry	*e;
+    unsigned int  hash = hashCode(name);
+    int      index = hash % tableLength;
+    DictionaryEntry  *e;
 
     for (e = table[index]; e != NULL; e = e->next)
     {
-	if (e->hash == hash && strcmp(e->key, name) == 0)
-	{
-	    return 1;
-	}
+  if (e->hash == hash && strcmp(e->key, name) == 0)
+  {
+      return 1;
+  }
     }
     return 0;
 }
@@ -314,20 +314,20 @@ int Dictionary::Exists(const String& name) const
 void
 Dictionary::rehash()
 {
-    DictionaryEntry	**oldTable = table;
-    int			oldCapacity = tableLength;
+    DictionaryEntry  **oldTable = table;
+    int      oldCapacity = tableLength;
 
-    int			newCapacity;
-    DictionaryEntry	*e;
-    int			i, index;
+    int      newCapacity;
+    DictionaryEntry  *e;
+    int      i, index;
     
     newCapacity = count > oldCapacity ? count * 2 + 1 : oldCapacity * 2 + 1;
 
-    DictionaryEntry	**newTable = new DictionaryEntry*[newCapacity];
+    DictionaryEntry  **newTable = new DictionaryEntry*[newCapacity];
 
     for (i = 0; i < newCapacity; i++)
     {
-	newTable[i] = NULL;
+  newTable[i] = NULL;
     }
 
     threshold = (int) (newCapacity * loadFactor);
@@ -336,14 +336,14 @@ Dictionary::rehash()
     
     for (i = oldCapacity; i-- > 0;)
     {
-	for (DictionaryEntry *old = oldTable[i]; old != NULL;)
-	{
-	    e = old;
-	    old = old->next;
-	    index = e->hash % newCapacity;
-	    e->next = newTable[index];
-	    newTable[index] = e;
-	}
+  for (DictionaryEntry *old = oldTable[i]; old != NULL;)
+  {
+      e = old;
+      old = old->next;
+      index = e->hash % newCapacity;
+      e->next = newTable[index];
+      newTable[index] = e;
+  }
     }
     delete [] oldTable;
 }
@@ -365,22 +365,22 @@ char *
 Dictionary::Get_Next(DictionaryCursor& cursor) const
 {
     while (cursor.currentDictionaryEntry == NULL ||
-	   cursor.currentDictionaryEntry->next == NULL)
+     cursor.currentDictionaryEntry->next == NULL)
     {
-	cursor.currentTableIndex++;
+  cursor.currentTableIndex++;
 
-	if (cursor.currentTableIndex >= tableLength)
-	{
-	    cursor.currentTableIndex--;
-	    return NULL;
-	}
+  if (cursor.currentTableIndex >= tableLength)
+  {
+      cursor.currentTableIndex--;
+      return NULL;
+  }
 
-	cursor.currentDictionaryEntry = table[cursor.currentTableIndex];
+  cursor.currentDictionaryEntry = table[cursor.currentTableIndex];
 
-	if (cursor.currentDictionaryEntry != NULL)
-	{
-	    return cursor.currentDictionaryEntry->key;
-	}
+  if (cursor.currentDictionaryEntry != NULL)
+  {
+      return cursor.currentDictionaryEntry->key;
+  }
     }
 
     cursor.currentDictionaryEntry = cursor.currentDictionaryEntry->next;
@@ -393,22 +393,22 @@ Object *
 Dictionary::Get_NextElement(DictionaryCursor& cursor) const
 {
     while (cursor.currentDictionaryEntry == NULL ||
-	   cursor.currentDictionaryEntry->next == NULL)
+     cursor.currentDictionaryEntry->next == NULL)
     {
-	cursor.currentTableIndex++;
+  cursor.currentTableIndex++;
 
-	if (cursor.currentTableIndex >= tableLength)
-	{
-	    cursor.currentTableIndex--;
-	    return NULL;
-	}
+  if (cursor.currentTableIndex >= tableLength)
+  {
+      cursor.currentTableIndex--;
+      return NULL;
+  }
 
-	cursor.currentDictionaryEntry = table[cursor.currentTableIndex];
+  cursor.currentDictionaryEntry = table[cursor.currentTableIndex];
 
-	if (cursor.currentDictionaryEntry != NULL)
-	{
-	    return cursor.currentDictionaryEntry->value;
-	}
+  if (cursor.currentDictionaryEntry != NULL)
+  {
+      return cursor.currentDictionaryEntry->value;
+  }
     }
 
     cursor.currentDictionaryEntry = cursor.currentDictionaryEntry->next;

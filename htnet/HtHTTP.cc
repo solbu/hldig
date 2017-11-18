@@ -4,8 +4,8 @@
 // HtHTTP: Interface classes for HTTP messaging
 //
 // Including:
-// 	 -  Generic class
-// 	 -  Response message class
+//    -  Generic class
+//    -  Response message class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
@@ -46,12 +46,12 @@ typedef SIG_PF SIGNAL_HANDLER;
 #endif
 
    // User Agent
-   	 String HtHTTP::_user_agent = 0;
+      String HtHTTP::_user_agent = 0;
 
    // Stats information
-   	 int HtHTTP::_tot_seconds = 0;
-   	 int HtHTTP::_tot_requests = 0;
-   	 int HtHTTP::_tot_bytes = 0;
+      int HtHTTP::_tot_seconds = 0;
+      int HtHTTP::_tot_requests = 0;
+      int HtHTTP::_tot_bytes = 0;
 
    // flag that manage the option of 'HEAD' before 'GET'
          bool HtHTTP::_head_before_get = true;
@@ -61,7 +61,7 @@ typedef SIG_PF SIGNAL_HANDLER;
          int (* HtHTTP::CanBeParsed) (char *) = 0;
       
    // Cookies jar
-      	 HtCookieJar *HtHTTP::_cookie_jar = 0;  // Set to 0 by default
+         HtCookieJar *HtHTTP::_cookie_jar = 0;  // Set to 0 by default
 
 ///////
    //    HtHTTP_Response class
@@ -215,8 +215,8 @@ Transport::DocStatus HtHTTP::HTTPRequest()
    _bytes_read=0;
 
    if( debug > 4)
-   	 cout << "Try to get through to host "
-	      << _url.host() << " (port " << _url.port() << ")" << endl;
+      cout << "Try to get through to host "
+        << _url.host() << " (port " << _url.port() << ")" << endl;
 
    ConnectionStatus result;
 
@@ -240,12 +240,12 @@ Transport::DocStatus HtHTTP::HTTPRequest()
       switch (result)
       {
          // Open failed
-		
+    
          case Connection_open_failed:
             if (debug>1)
                cout << "Unable to open the connection with host: "
                   << _url.host() << " (port " << _url.port() << ")" << endl;
-	    CloseConnection();
+      CloseConnection();
             return FinishRequest(Document_no_connection);
             break;
 
@@ -254,25 +254,25 @@ Transport::DocStatus HtHTTP::HTTPRequest()
             if (debug>1)
                cout << "Unable to find the host: "
                   << _url.host() << " (port " << _url.port() << ")" << endl;
-	    CloseConnection();
+      CloseConnection();
             return FinishRequest(Document_no_host);
             break;
-	
+  
          // Port not reached
          case Connection_no_port:
             if (debug>1)
                cout << "Unable to connect with the port " << _url.port()
                   << " of the host: " << _url.host() << endl;
-	    CloseConnection();
+      CloseConnection();
             return FinishRequest(Document_no_port);
             break;
-	
+  
          // Connection failed
          case Connection_failed:
             if (debug>1)
                cout << "Unable to establish the connection with host: "
                   << _url.host() << " (port " << _url.port() << ")" << endl;
-	    CloseConnection();
+      CloseConnection();
             return FinishRequest(Document_no_connection);
             break;
 
@@ -282,28 +282,28 @@ Transport::DocStatus HtHTTP::HTTPRequest()
                cout << "connection failed with unexpected result: result = "
                   << (int)result << ", "
                   << _url.host() << " (port " << _url.port() << ")" << endl;
-	    CloseConnection();
+      CloseConnection();
             return FinishRequest(Document_other_error);
             break;
          }
-	
-   	 return FinishRequest(Document_other_error);
+  
+      return FinishRequest(Document_other_error);
 
    }
 
    // Visual comments about the result of the connection
    if (debug > 5)
-   	 switch(result)
+      switch(result)
       {
-	    case Connection_already_up:
-   	       cout << "Taking advantage of persistent connections" << endl;
-   	       break;
-	    case Connection_ok:
-   	       cout << "New connection open successfully" << endl;
-	       break;
-	    default:
-	       cout << "Unexptected value: " << (int)result << endl;
-	       break;
+      case Connection_already_up:
+            cout << "Taking advantage of persistent connections" << endl;
+            break;
+      case Connection_ok:
+            cout << "New connection open successfully" << endl;
+         break;
+      default:
+         cout << "Unexptected value: " << (int)result << endl;
+         break;
    }
 
    String command;
@@ -311,7 +311,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
    switch(_Method)
    {
       case Method_GET:
-   	    command = "GET ";
+         command = "GET ";
             break;
       case Method_HEAD:
             command = "HEAD ";
@@ -332,26 +332,26 @@ Transport::DocStatus HtHTTP::HTTPRequest()
    // Parse the header
    if (ParseHeader() == -1) // Connection down
    {
-	    // The connection probably fell down !?!
-   	 	 if ( debug > 4 )
-	       cout << setw(5) << Transport::GetTotOpen() << " - "
+      // The connection probably fell down !?!
+         if ( debug > 4 )
+         cout << setw(5) << Transport::GetTotOpen() << " - "
                   << "Connection fell down ... let's close it" << endl;
 
-	    CloseConnection();	// Let's close the connection which is down now
-	
-	    // Return that the connection has fallen down during the request
-	    return FinishRequest(Document_connection_down);
+      CloseConnection();  // Let's close the connection which is down now
+  
+      // Return that the connection has fallen down during the request
+      return FinishRequest(Document_connection_down);
    }
 
 
    if (_response._status_code == -1)
    {
-   	 // Unable to retrieve the status line
+      // Unable to retrieve the status line
 
-   	 if ( debug > 4 )
-	    cout << "Unable to retrieve or parse the status line" << endl;
-	
-   	 return FinishRequest(Document_no_header);
+      if ( debug > 4 )
+      cout << "Unable to retrieve or parse the status line" << endl;
+  
+      return FinishRequest(Document_no_header);
    }
 
 
@@ -360,7 +360,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
 
       cout << "Retrieving document " << _url.path() << " on host: "
          << _url.host() << ":" << _url.port() << endl;
-		
+    
       cout << "Http version      : " << _response._version << endl;
       cout << "Server            : " << _response._version << endl;
       cout << "Status Code       : " << _response._status_code << endl;
@@ -389,9 +389,9 @@ Transport::DocStatus HtHTTP::HTTPRequest()
    CheckPersistentConnection(_response);
 
    if (debug > 4)
-   	 cout << "Persistent connection: "
-	    << (_persistent_connection_possible ? "would be accepted" : "not accepted")
-	    << endl;
+      cout << "Persistent connection: "
+      << (_persistent_connection_possible ? "would be accepted" : "not accepted")
+      << endl;
 
    DocumentStatus = GetDocumentStatus(_response);
 
@@ -408,7 +408,7 @@ Transport::DocStatus HtHTTP::HTTPRequest()
       SetBodyReadingController(&HtHTTP::ReadChunkedBody);
    }
 
-   // If "ShouldTheBodyBeRead" is set to true and	
+   // If "ShouldTheBodyBeRead" is set to true and  
    // If the document is parsable, we can read the body
    // otherwise it is not worthwhile
 
@@ -424,9 +424,9 @@ Transport::DocStatus HtHTTP::HTTPRequest()
          if ( debug > 4 )
             cout  << setw(5) << Transport::GetTotOpen() << " - "
                << "Connection fell down ... let's close it" << endl;
-	
-         CloseConnection();	// Let's close the connection which is down now
-	
+  
+         CloseConnection();  // Let's close the connection which is down now
+  
          // Return that the connection has fallen down during the request
          return FinishRequest(Document_connection_down);
       }
@@ -521,15 +521,15 @@ HtHTTP::ConnectionStatus HtHTTP::EstablishConnection()
    result=OpenConnection();
 
    if (!result)
-   	 return Connection_open_failed; // Connection failed
+      return Connection_open_failed; // Connection failed
    else  if(debug > 4)
          {
             cout << setw(5) << Transport::GetTotOpen() << " - ";
 
-   	    if (result == -1)
-	       cout << "Connection already open. No need to re-open." << endl;
-	    else
-	       cout << "Open of the connection ok" << endl;
+         if (result == -1)
+         cout << "Connection already open. No need to re-open." << endl;
+      else
+         cout << "Open of the connection ok" << endl;
          }
 
 
@@ -538,22 +538,22 @@ HtHTTP::ConnectionStatus HtHTTP::EstablishConnection()
 
       // Assign the remote host to the connection
       if ( !AssignConnectionServer() )
-      	 return Connection_no_server;   	
-	 else if (debug > 4)
-	       cout << "\tAssigned the remote host " << _url.host() << endl;
+         return Connection_no_server;     
+   else if (debug > 4)
+         cout << "\tAssigned the remote host " << _url.host() << endl;
 
       // Assign the port of the remote host
       if ( !AssignConnectionPort() )
-      	 return Connection_no_port;   	
-	 else if (debug > 4)
-	       cout << "\tAssigned the port " << _url.port() << endl;
+         return Connection_no_port;     
+   else if (debug > 4)
+         cout << "\tAssigned the port " << _url.port() << endl;
    }
 
    // Connect
    if (! (result = Connect()))
-   	 return Connection_failed;
+      return Connection_failed;
    else if (result == -1) return Connection_already_up; // Persistent
-	    else return Connection_ok; // New connection
+      else return Connection_ok; // New connection
 
 }
 
@@ -567,7 +567,7 @@ void HtHTTP::SetRequestCommand(String &cmd)
    // Initialize it
 
    if (_useproxy) {
-	cmd << _url.get() << " HTTP/1.1\r\n";
+  cmd << _url.get() << " HTTP/1.1\r\n";
    } else
    cmd << _url.path() << " HTTP/1.1\r\n";
 
@@ -578,7 +578,7 @@ void HtHTTP::SetRequestCommand(String &cmd)
       cmd << ":" << _url.port();
    cmd << "\r\n";
 
-	
+  
    // Insert the User Agent
 
    if (_user_agent.length())
@@ -617,7 +617,7 @@ void HtHTTP::SetRequestCommand(String &cmd)
    }
 
 ///////
-   // 	 Cookies! Let's go eat them! ;-)
+   //    Cookies! Let's go eat them! ;-)
 ///////
 
    // The method returns all the valid cookies and writes them
@@ -640,13 +640,13 @@ void HtHTTP::SetRequestCommand(String &cmd)
 //
 int HtHTTP::ParseHeader()
 {
-    String	line = 0;
-    int		inHeader = 1;
+    String  line = 0;
+    int    inHeader = 1;
 
     if (_response._modification_time)
     {
-	delete _response._modification_time;
-	_response._modification_time=0;
+  delete _response._modification_time;
+  _response._modification_time=0;
     }
     while (inHeader)
     {
@@ -655,7 +655,7 @@ int HtHTTP::ParseHeader()
          
       if(! _connection->Read_Line(line, "\n"))
          return -1;  // Connection down
-	 
+   
       _bytes_read+=line.length();
       line.chop('\r');
       
@@ -664,19 +664,19 @@ int HtHTTP::ParseHeader()
       else
       {
          // Found a not-empty line
-	
+  
          if (debug > 2)
             cout << "Header line: " << line << endl;
-	
+  
          // Status - Line check
-         char	*token = line.get();
+         char  *token = line.get();
 
          while (*token && !isspace(*token) && *token != ':')
             ++token;
 
          while (*token && (isspace(*token) || *token == ':'))
             ++token;
-	
+  
          if(!strncmp((char*)line, "HTTP/", 5))
          {
             // Here is the status-line
@@ -686,7 +686,7 @@ int HtHTTP::ParseHeader()
 
             // Store the status code
             _response._status_code = atoi(strtok(0, " "));
-			
+      
             // Store the reason phrase
             _response._reason_phrase = strtok(0, "\n");
 
@@ -694,7 +694,7 @@ int HtHTTP::ParseHeader()
          else if( ! mystrncasecmp((char*)line, "server:", 7))
          {
             // Server info
-		
+    
             // Set the server info
             token = strtok(token, "\n\t");
 
@@ -705,7 +705,7 @@ int HtHTTP::ParseHeader()
          else if( ! mystrncasecmp((char*)line, "last-modified:", 14))
          {
             // Modification date sent by the server
-		
+    
             // Set the response modification time
             token = strtok(token, "\n\t");
 
@@ -716,7 +716,7 @@ int HtHTTP::ParseHeader()
          else if( ! mystrncasecmp((char*)line, "date:", 5))
          {
             // Access date time sent by the server
-		
+    
             // Set the response access time
             token = strtok(token, "\n\t");
 
@@ -727,7 +727,7 @@ int HtHTTP::ParseHeader()
          else if( ! mystrncasecmp((char*)line, "content-type:", 13))
          {
             // Content - type
-		
+    
             token = strtok(token, "\n\t");
 
             if (token && *token)
@@ -737,7 +737,7 @@ int HtHTTP::ParseHeader()
          else if( ! mystrncasecmp((char*)line, "content-length:", 15))
          {
             // Content - length
-		
+    
             token = strtok(token, "\n\t");
 
             if (token && *token)
@@ -747,7 +747,7 @@ int HtHTTP::ParseHeader()
          else if( ! mystrncasecmp((char*)line, "transfer-encoding:", 18))
          {
             // Transfer-encoding
-		
+    
             token = strtok(token, "\n\t");
 
             if (token && *token)
@@ -757,7 +757,7 @@ int HtHTTP::ParseHeader()
          else if( ! mystrncasecmp((char*)line, "location:", 9))
          {
             // Found a location directive - redirect in act
-		
+    
             token = strtok(token, "\n\t");
 
             if (token && *token)
@@ -767,7 +767,7 @@ int HtHTTP::ParseHeader()
          else if( ! mystrncasecmp((char*)line, "connection:", 11))
          {
             // Ooops ... found a Connection clause
-		
+    
             token = strtok(token, "\n\t");
 
             if (token && *token)
@@ -777,7 +777,7 @@ int HtHTTP::ParseHeader()
          else if( ! mystrncasecmp((char*)line, "content-language:", 17))
          {
             // Found a content-language directive
-		
+    
             token = strtok(token, "\n\t");
 
             if (token && *token)
@@ -786,25 +786,25 @@ int HtHTTP::ParseHeader()
          }
          else if( ! mystrncasecmp((char*)line, "set-cookie:", 11))
          {
- 	    // Found a cookie
-		
+       // Found a cookie
+    
             // Are cookies enabled?
-			if (_send_cookies && _cookie_jar)
+      if (_send_cookies && _cookie_jar)
             {
                token = strtok(token, "\n\t");
 
                if (token && *token)
-	       {
-      	          // Insert the cookie into the jar
-      	          _cookie_jar->AddCookie(token, _url);
-	       }
+         {
+                  // Insert the cookie into the jar
+                  _cookie_jar->AddCookie(token, _url);
+         }
             }
 
          }
          else
          {
             // Discarded
-			
+      
             if (debug > 3)
                cout << "Discarded header line: " << line << endl;
          }
@@ -817,7 +817,7 @@ int HtHTTP::ParseHeader()
          cout << "No modification time returned: assuming now" << endl;
          
          //Set the modification time
-	_response._modification_time = new HtDateTime;
+  _response._modification_time = new HtDateTime;
         _response._modification_time->ToGMTime(); // Set to GM time
 
     }
@@ -849,7 +849,7 @@ bool HtHTTP::isParsable(const char *content_type)
       return true;
 
    return false;
-   	
+     
 }
 
 
@@ -872,7 +872,7 @@ void HtHTTP::CheckPersistentConnection(HtHTTP_Response &response)
    }
    else
       _persistent_connection_possible=false;
-   	
+     
 }
 
 
@@ -911,25 +911,25 @@ HtHTTP::DocStatus HtHTTP::GetDocumentStatus(HtHTTP_Response &r)
 
    if(statuscode==200)
    { 
-	    returnStatus = Document_ok;   // OK
+      returnStatus = Document_ok;   // OK
 
-   	    // Is it parsable?
-	
-   	    if (! isParsable ((const char*)r.GetContentType()) )
-   	 	    returnStatus=Document_not_parsable;
+         // Is it parsable?
+  
+         if (! isParsable ((const char*)r.GetContentType()) )
+            returnStatus=Document_not_parsable;
    }
    else if(statuscode > 200 && statuscode < 300)
-	    returnStatus = Document_ok;      	   	 // Successful 2xx
+      returnStatus = Document_ok;              // Successful 2xx
    else if(statuscode==304)
-	    returnStatus = Document_not_changed;   	 // Not modified
+      returnStatus = Document_not_changed;      // Not modified
    else if(statuscode > 300 && statuscode < 400)
-	    returnStatus = Document_redirect;      	 // Redirection 3xx
+      returnStatus = Document_redirect;         // Redirection 3xx
    else if(statuscode==401)
-	    returnStatus = Document_not_authorized;   // Unauthorized
+      returnStatus = Document_not_authorized;   // Unauthorized
 
    // Exit the function
    return returnStatus;
-	    
+      
 }
 
 void HtHTTP::SetCredentials (const String& s)
@@ -946,11 +946,11 @@ void HtHTTP::SetProxyCredentials (const String& s)
 int HtHTTP::ReadBody()
 {
 
-    _response._contents = 0;	// Initialize the string
+    _response._contents = 0;  // Initialize the string
     
-    char	docBuffer[8192];
-    int		bytesRead = 0;
-    int		bytesToGo = _response._content_length;
+    char  docBuffer[8192];
+    int    bytesRead = 0;
+    int    bytesToGo = _response._content_length;
 
     if (bytesToGo < 0 || bytesToGo > _max_document_size)
         bytesToGo = _max_document_size;
@@ -962,11 +962,11 @@ int HtHTTP::ReadBody()
         if (bytesRead <= 0)
             break;
 
-	_response._contents.append(docBuffer, bytesRead);
+  _response._contents.append(docBuffer, bytesRead);
 
-	bytesToGo -= bytesRead;
-	
-	_bytes_read+=bytesRead;
+  bytesToGo -= bytesRead;
+  
+  _bytes_read+=bytesRead;
 
     }
 
@@ -989,9 +989,9 @@ int HtHTTP::ReadChunkedBody()
    unsigned int   chunk_size;
    String         ChunkHeader = 0;
    char           buffer[BSIZE+1];
-   int		  chunk, rsize;
+   int      chunk, rsize;
 
-   _response._contents.trunc();	// Initialize the string
+   _response._contents.trunc();  // Initialize the string
 
    // Read chunk-size and CRLF
    if (!_connection->Read_Line(ChunkHeader, "\r\n"))
@@ -1007,27 +1007,27 @@ int HtHTTP::ReadChunkedBody()
       chunk = chunk_size;
 
       do {
-	if (chunk > BSIZE) {
-	  rsize = BSIZE;
-	  if (debug>4)
-	    cout << "Read chunk partial: left=" <<  chunk << endl;
-	} else {
-	  rsize = chunk;
-	}
-	chunk -= rsize;
+  if (chunk > BSIZE) {
+    rsize = BSIZE;
+    if (debug>4)
+      cout << "Read chunk partial: left=" <<  chunk << endl;
+  } else {
+    rsize = chunk;
+  }
+  chunk -= rsize;
 
-	// Read Chunk data
-	if (_connection->Read(buffer, rsize) == -1)
-	  return -1;
+  // Read Chunk data
+  if (_connection->Read(buffer, rsize) == -1)
+    return -1;
 
-	length+=rsize;
+  length+=rsize;
 
-	// Append the chunk-data to the contents of the response
+  // Append the chunk-data to the contents of the response
         // ... but not more than _max_document_size...
         if (rsize > _max_document_size-_response._contents.length())
             rsize = _max_document_size-_response._contents.length();
-	buffer[rsize] = 0;
-	_response._contents.append(buffer, rsize);
+  buffer[rsize] = 0;
+  _response._contents.append(buffer, rsize);
                   
       } while (chunk);
 

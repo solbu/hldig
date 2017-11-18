@@ -25,24 +25,24 @@ class ResultList : public Dictionary
 public:
     ResultList();
     ~ResultList();
-	ResultList(const ResultList &);
+  ResultList(const ResultList &);
 
-    void		add(DocMatch *);
-    void		remove(int id);
-    DocMatch		*find(int id) const;
-    DocMatch		*find(char *id) const;
-    int			exists(int id) const;
+    void    add(DocMatch *);
+    void    remove(int id);
+    DocMatch    *find(int id) const;
+    DocMatch    *find(char *id) const;
+    int      exists(int id) const;
 
-    HtVector		*elements();
+    HtVector    *elements();
 
-    void		SetWeight(double weight);
-    bool		IsIgnore() const { return isIgnore != 0; }
-    void		Ignore() { isIgnore = 1; }
+    void    SetWeight(double weight);
+    bool    IsIgnore() const { return isIgnore != 0; }
+    void    Ignore() { isIgnore = 1; }
 
-    void		Dump() const;
+    void    Dump() const;
 //private:
 
-    int			isIgnore;
+    int      isIgnore;
 };
 
 #endif

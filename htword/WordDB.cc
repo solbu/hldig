@@ -20,7 +20,7 @@
 #include "../db/db.h"
 
 const char* dberror(int errval) {
-#define DB_MAX_ERROR	(-DB_TXN_CKP + 1)
+#define DB_MAX_ERROR  (-DB_TXN_CKP + 1)
   static const char* dbstr[DB_MAX_ERROR] = {
     "",
     "DB_INCOMPLETE",

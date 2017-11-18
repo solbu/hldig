@@ -57,9 +57,9 @@ Fuzzy::~Fuzzy()
 {
     if (index)
     {
-	index->Close();
-	delete index;
-	index = 0;
+  index->Close();
+  delete index;
+  index = 0;
     }
     delete dict;
 }
@@ -72,43 +72,43 @@ void
 Fuzzy::getWords(char *word, List &words)
 {
     if (!index)
-	return;
+  return;
     if (!word || !*word)
       return;
 
     //
     // Convert the word to a fuzzy key
     //
-    String	fuzzyKey;
-    String	data;
-    String	stripped = word;
+    String  fuzzyKey;
+    String  data;
+    String  stripped = word;
     HtStripPunctuation(stripped);
     generateKey(stripped, fuzzyKey);
     if (debug > 2)
       cout << "\n\tkey: " << fuzzyKey << endl;
 
     words.Destroy();
-	
+  
     if (index->Get(fuzzyKey, data) == OK)
     {
-	//
-	// Found the entry
-	//
-	char	*token = strtok(data.get(), " ");
-	while (token)
-	{
-	    if (mystrcasecmp(token, word) != 0)
-	    {
-		words.Add(new String(token));
-	    }
-	    token = strtok(0, " ");
-	}
+  //
+  // Found the entry
+  //
+  char  *token = strtok(data.get(), " ");
+  while (token)
+  {
+      if (mystrcasecmp(token, word) != 0)
+      {
+    words.Add(new String(token));
+      }
+      token = strtok(0, " ");
+  }
     }
     else
     {
-	//
-	// The key wasn't found.
-	//
+  //
+  // The key wasn't found.
+  //
     }
 }
 
@@ -119,15 +119,15 @@ Fuzzy::getWords(char *word, List &words)
 int
 Fuzzy::openIndex()
 {
-    String	var = name;
+    String  var = name;
     var << "_db";
-    const String	filename = config[var];
+    const String  filename = config[var];
 
     index = Database::getDatabaseInstance(DB_HASH);
     if (index->OpenRead(filename) == NOTOK)
       {
-	delete index;
-	index = 0;
+  delete index;
+  index = 0;
         return NOTOK;
       }
 
@@ -141,39 +141,39 @@ Fuzzy::openIndex()
 int
 Fuzzy::writeDB()
 {
-    String	var = name;
+    String  var = name;
     var << "_db";
-    const String	filename = config[var];
+    const String  filename = config[var];
 
     index = Database::getDatabaseInstance(DB_HASH);
     if (index->OpenReadWrite(filename, 0664) == NOTOK)
-	return NOTOK;
+  return NOTOK;
 
-    String	*s;
-    char	*fuzzyKey;
+    String  *s;
+    char  *fuzzyKey;
 
-    int		count = 0;
-	
+    int    count = 0;
+  
     dict->Start_Get();
     while ((fuzzyKey = dict->Get_Next()))
     {
-	s = (String *) dict->Find(fuzzyKey);
-	index->Put(fuzzyKey, *s);
+  s = (String *) dict->Find(fuzzyKey);
+  index->Put(fuzzyKey, *s);
 
-	if (debug > 1)
-	{
-	    cout << "htfuzzy: '" << fuzzyKey << "' ==> '" << s->get() << "'\n";
-	}
-	count++;
-	if ((count % 100) == 0 && debug == 1)
-	{
-	    cout << "htfuzzy: keys: " << count << '\n';
-	    cout.flush();
-	}
+  if (debug > 1)
+  {
+      cout << "htfuzzy: '" << fuzzyKey << "' ==> '" << s->get() << "'\n";
+  }
+  count++;
+  if ((count % 100) == 0 && debug == 1)
+  {
+      cout << "htfuzzy: keys: " << count << '\n';
+      cout.flush();
+  }
     }
     if (debug == 1)
     {
-	cout << "htfuzzy:Total keys: " << count << "\n";
+  cout << "htfuzzy:Total keys: " << count << "\n";
     }
     return OK;
 }
@@ -186,27 +186,27 @@ Fuzzy *
 Fuzzy::getFuzzyByName(char *name, const HtConfiguration& config)
 {
     if (mystrcasecmp(name, "exact") == 0)
-	return new Exact(config);
+  return new Exact(config);
     else if (mystrcasecmp(name, "soundex") == 0)
-	return new Soundex(config);
+  return new Soundex(config);
     else if (mystrcasecmp(name, "metaphone") == 0)
-	return new Metaphone(config);
+  return new Metaphone(config);
     else if (mystrcasecmp(name, "accents") == 0)
-	return new Accents(config);
+  return new Accents(config);
     else if (mystrcasecmp(name, "endings") == 0)
-	return new Endings(config);
+  return new Endings(config);
     else if (mystrcasecmp(name, "synonyms") == 0)
-	return new Synonym(config);
+  return new Synonym(config);
     else if (mystrcasecmp(name, "substring") == 0)
-	return new Substring(config);
+  return new Substring(config);
     else if (mystrcasecmp(name, "prefix") == 0)
-	return new Prefix(config);
+  return new Prefix(config);
     else if (mystrcasecmp(name, "regex") == 0)
-	return new Regexp(config);
+  return new Regexp(config);
     else if (mystrcasecmp(name, "speling") == 0)
-	return new Speling(config);
+  return new Speling(config);
     else
-	return 0;
+  return 0;
 }
 
 //*****************************************************************************

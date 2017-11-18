@@ -95,7 +95,7 @@ DB_CMPR_INFO* WordDBCompress::CmprInfo()
   cmpr_info->user_data = (void *)this;
   cmpr_info->compress = WordDBCompress_compress_c;
   cmpr_info->uncompress = WordDBCompress_uncompress_c;
-  cmpr_info->coefficient = 3;	// reduce page size by factor of 1<<3 = 8
+  cmpr_info->coefficient = 3;  // reduce page size by factor of 1<<3 = 8
   cmpr_info->max_npages = 9;
 
   if(use_zlib == 1)

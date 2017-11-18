@@ -84,20 +84,20 @@ DB2_db::Open(const char *filename, int flags, int mode)
     if((errno = dbp->open(dbp, filename, NULL, db_type, flags, mode)) == 0)
     {
         //
-	// Acquire a cursor for the database.
-	//
+  // Acquire a cursor for the database.
+  //
         if ((seqrc = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0)
-	{
+  {
             seqerr = seqrc;
             Close();
-	    return NOTOK;
+      return NOTOK;
         }
-	isOpen = 1;
-	return OK;
+  isOpen = 1;
+  return OK;
     }
     else
     {
-	return NOTOK;
+  return NOTOK;
     }
 }
 
@@ -110,13 +110,13 @@ DB2_db::Close()
 {
     if(isOpen)
     {
-	//
-	// Close cursor, database and clean up environment
-	//
+  //
+  // Close cursor, database and clean up environment
+  //
         (void)(dbcp->c_close)(dbcp);
-	(void)(dbp->close)(dbp, 0);
-	(void)(dbenv->close(dbenv, 0));
-	dbenv = 0;
+  (void)(dbp->close)(dbp, 0);
+  (void)(dbenv->close(dbenv, 0));
+  dbenv = 0;
     }
     isOpen = 0;
     return OK;
@@ -154,10 +154,10 @@ DB2_db::Get_Next(String &item, String &key)
       seqerr = seqrc;
 
       if(!seqrc) {
-	data = 0;
-	data.append((char*)local_data.data, (int)local_data.size);
-	skey = 0;
-	skey.append((char*)local_key.data, (int)local_key.size);
+  data = 0;
+  data.append((char*)local_data.data, (int)local_data.size);
+  skey = 0;
+  skey.append((char*)local_key.data, (int)local_key.size);
       }
 
       return lkey.get();
@@ -185,23 +185,23 @@ DB2_db::Start_Seq(const String& key)
 
     if (isOpen && dbp)
     {
-	//
-	// Okay, get the first key. Use DB_SET_RANGE for finding partial
-	// keys also. If you set it to DB_SET, and the words book, books
-	// and bookstore do exists, it will find them if you specify
-	// book*. However if you specify boo* if will not find
-	// anything. Setting to DB_SET_RANGE will still find the `first'
-	// word after boo* (which is book).
-	//
+  //
+  // Okay, get the first key. Use DB_SET_RANGE for finding partial
+  // keys also. If you set it to DB_SET, and the words book, books
+  // and bookstore do exists, it will find them if you specify
+  // book*. However if you specify boo* if will not find
+  // anything. Setting to DB_SET_RANGE will still find the `first'
+  // word after boo* (which is book).
+  //
         seqrc = dbcp->c_get(dbcp, &local_key, &local_data, DB_SET_RANGE);
-	seqerr = seqrc;
+  seqerr = seqrc;
 
-	if(!seqrc) {
-	  data = 0;
-	  data.append((char*)local_data.data, (int)local_data.size);
-	  skey = 0;
-	  skey.append((char*)local_key.data, (int)local_key.size);
-	}
+  if(!seqrc) {
+    data = 0;
+    data.append((char*)local_data.data, (int)local_data.size);
+    skey = 0;
+    skey.append((char*)local_key.data, (int)local_key.size);
+  }
     }
 }
 
@@ -219,23 +219,23 @@ DB2_db::Start_Get()
 
     if (isOpen && dbp)
     {
-	//
-	// Okay, get the first key. Use DB_SET_RANGE for finding partial
-	// keys also. If you set it to DB_SET, and the words book, books
-	// and bookstore do exists, it will find them if you specify
-	// book*. However if you specify boo* if will not find
-	// anything. Setting to DB_SET_RANGE will still find the `first'
-	// word after boo* (which is book).
-	//
+  //
+  // Okay, get the first key. Use DB_SET_RANGE for finding partial
+  // keys also. If you set it to DB_SET, and the words book, books
+  // and bookstore do exists, it will find them if you specify
+  // book*. However if you specify boo* if will not find
+  // anything. Setting to DB_SET_RANGE will still find the `first'
+  // word after boo* (which is book).
+  //
         seqrc = dbcp->c_get(dbcp, &local_key, &local_data, DB_FIRST);
-	seqerr = seqrc;
+  seqerr = seqrc;
 
-	if(!seqrc) {
-	  data = 0;
-	  data.append((char*)local_data.data, (int)local_data.size);
-	  skey = 0;
-	  skey.append((char*)local_key.data, (int)local_key.size);
-	}
+  if(!seqrc) {
+    data = 0;
+    data.append((char*)local_data.data, (int)local_data.size);
+    skey = 0;
+    skey.append((char*)local_key.data, (int)local_key.size);
+  }
     }
 }
 
@@ -245,13 +245,13 @@ DB2_db::Start_Get()
 int
 DB2_db::Put(const String &key, const String &data)
 {
-    DBT	k, d;
+    DBT  k, d;
 
     memset(&k, 0, sizeof(DBT));
     memset(&d, 0, sizeof(DBT));
 
     if (!isOpen)
-	return NOTOK;
+  return NOTOK;
 
     k.data = (char*)key.get();
     k.size = key.length();
@@ -273,7 +273,7 @@ DB2_db::Put(const String &key, const String &data)
 int
 DB2_db::Get(const String &key, String &data)
 {
-    DBT	k, d;
+    DBT  k, d;
 
     memset(&k, 0, sizeof(DBT));
     memset(&d, 0, sizeof(DBT));
@@ -286,7 +286,7 @@ DB2_db::Get(const String &key, String &data)
 
     int rc = dbp->get(dbp, NULL, &k, &d, 0);
     if (rc)
-	return NOTOK;
+  return NOTOK;
 
     data = 0;
     data.append((char *)d.data, d.size);
@@ -303,7 +303,7 @@ DB2_db::Exists(const String &key)
     String data;
 
     if (!isOpen)
-	return 0;
+  return 0;
 
     return Get(key, data);
 }
@@ -315,12 +315,12 @@ DB2_db::Exists(const String &key)
 int
 DB2_db::Delete(const String &key)
 {
-    DBT	k;
+    DBT  k;
 
     memset(&k, 0, sizeof(DBT));
 
     if (!isOpen)
-	return 0;
+  return 0;
 
     k.data = (char*)key.get();
     k.size = key.length();

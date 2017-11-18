@@ -23,8 +23,8 @@ HtMaxMin::max_v(unsigned int *vals,int n)
     unsigned int maxv=vals[0];
     for(int i=1;i<n;i++)
     {
-	unsigned int v=vals[i];
-	if(v>maxv){maxv=v;}
+  unsigned int v=vals[i];
+  if(v>maxv){maxv=v;}
     }
     return(maxv);
 }
@@ -35,8 +35,8 @@ HtMaxMin::max_v(unsigned short *vals,int n)
     unsigned short maxv=vals[0];
     for(int i=1;i<n;i++)
     {
-	unsigned short v=vals[i];
-	if(v>maxv){maxv=v;}
+  unsigned short v=vals[i];
+  if(v>maxv){maxv=v;}
     }
     return(maxv);
 }
@@ -47,8 +47,8 @@ HtMaxMin::min_v(unsigned int *vals,int n)
     unsigned int minv=vals[0];
     for(int i=1;i<n;i++)
     {
-	unsigned int v=vals[i];
-	if(v<minv){minv=v;}
+  unsigned int v=vals[i];
+  if(v<minv){minv=v;}
     }
     return(minv);
 }
@@ -59,8 +59,8 @@ HtMaxMin::min_v(unsigned short *vals,int n)
     unsigned short minv=vals[0];
     for(int i=1;i<n;i++)
     {
-	unsigned short v=vals[i];
-	if(v<minv){minv=v;}
+  unsigned short v=vals[i];
+  if(v<minv){minv=v;}
     }
     return(minv);
 }

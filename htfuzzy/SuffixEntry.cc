@@ -47,29 +47,29 @@ SuffixEntry::~SuffixEntry()
 void
 SuffixEntry::parse(char *str)
 {
-    String	temp = 0;
+    String  temp = 0;
     
     while (*str == ' ' || *str == '\t')
-	str++;
+  str++;
 
     temp = "^.*";
     while (*str != '>')
     {
-	if (*str != ' ' && *str != '\t')
-	    temp << *str;
-	str++;
+  if (*str != ' ' && *str != '\t')
+      temp << *str;
+  str++;
     }
     temp << "$";
     while (*str == ' ' || *str == '\t' || *str == '>')
-	str++;
+  str++;
 
     Endings::mungeWord(temp, expression);
     
     temp = 0;
     while (*str != ' ' && *str != '\t' && *str != '\n' && *str != '\r' && *str)
     {
-	temp << *str;
-	str++;
+  temp << *str;
+  str++;
     }
     Endings::mungeWord(temp, rule);
 }

@@ -51,8 +51,8 @@ class TextCollector
         //
         // Construction/Destruction
         //
-        			TextCollector(TextCollectorLog flags = TextCollector_noLog);
-        virtual		~TextCollector();
+              TextCollector(TextCollectorLog flags = TextCollector_noLog);
+        virtual    ~TextCollector();
     
         int        IndexDoc(BasicDocument & adoc);
         int        FlushWordDB();
@@ -60,22 +60,22 @@ class TextCollector
         //
         // Report statistics about the parser
         //
-        void		ReportStatistics(const String& name);
-    	
+        void    ReportStatistics(const String& name);
+      
         //
         // These are the callbacks that we need to write code for
         //
-        void		got_word(const char *word, int location, int heading);
-        void		got_href(URL &url, const char *description, int hops = 1);
-        void		got_title(const char *title);
-        void		got_time(const char *time);
-        void		got_head(const char *head);
-        void		got_meta_dsc(const char *md);
-        void		got_anchor(const char *anchor);
-        void		got_image(const char *src);
-        void		got_meta_email(const char *);
-        void		got_meta_notification(const char *);
-        void		got_meta_subject(const char *);
+        void    got_word(const char *word, int location, int heading);
+        void    got_href(URL &url, const char *description, int hops = 1);
+        void    got_title(const char *title);
+        void    got_time(const char *time);
+        void    got_head(const char *head);
+        void    got_meta_dsc(const char *md);
+        void    got_anchor(const char *anchor);
+        void    got_image(const char *src);
+        void    got_meta_email(const char *);
+        void    got_meta_notification(const char *);
+        void    got_meta_subject(const char *);
         void                got_noindex();
     
     
@@ -83,39 +83,39 @@ class TextCollector
         //
         // A hash to keep track of what we've seen
         //
-        Dictionary		visited;
+        Dictionary    visited;
         
-        URL			*base;
-        String		current_title;
-        String		current_head;
-        String		current_meta_dsc;
-        time_t		current_time;
-        int			current_id;
-        DocumentRef		*current_ref;
-        int			current_anchor_number;
-        int			trackWords;
-        int			n_links;
-        HtWordReference	word_context;
-        HtWordList		words;
-    	
-        int			check_unique_md5;
-        int			check_unique_date;
+        URL      *base;
+        String    current_title;
+        String    current_head;
+        String    current_meta_dsc;
+        time_t    current_time;
+        int      current_id;
+        DocumentRef    *current_ref;
+        int      current_anchor_number;
+        int      trackWords;
+        int      n_links;
+        HtWordReference  word_context;
+        HtWordList    words;
+      
+        int      check_unique_md5;
+        int      check_unique_date;
     
     
         TextCollectorLog log;
         //
         // These are weights for the words.  The index is the heading level.
         //
-        long int		factor[11];
-        int			currenthopcount;
+        long int    factor[11];
+        int      currenthopcount;
     
         //
         // For efficiency reasons, we will only use one document object which
         // we reuse.
         //
-        BasicDocument		*doc;
+        BasicDocument    *doc;
     
-        Database 		*d_md5;
+        Database     *d_md5;
     
         // Some useful constants
         int              minimumWordLength;
@@ -123,7 +123,7 @@ class TextCollector
         //
         // Helper routines
         //
-        void		RetrievedDocument(DocumentRef *ref);
+        void    RetrievedDocument(DocumentRef *ref);
     
         int      temp_doc_count;
 };

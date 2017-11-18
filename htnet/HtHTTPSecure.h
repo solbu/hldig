@@ -2,7 +2,7 @@
 // HtHTTPSecure.h
 //
 // HtHTTPSecure: Class for HTTP/HTTPS messaging (derived from Transport)
-//		Uses an SSLConnection for secure connections.
+//    Uses an SSLConnection for secure connections.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group

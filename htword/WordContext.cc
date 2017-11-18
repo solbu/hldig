@@ -60,8 +60,8 @@ Configuration *WordContext::Initialize(const ConfigDefaults* config_defaults /* 
     struct stat statbuf;
     if(stat((char*)filename, &statbuf) < 0) {
       if(errno != ENOENT) {
-	fprintf(stderr, "WordContext::Initialize: MIFLUZ_CONFIG could not stat %s\n", (char*)filename);
-	perror("");
+  fprintf(stderr, "WordContext::Initialize: MIFLUZ_CONFIG could not stat %s\n", (char*)filename);
+  perror("");
       }
       filename.trunc();
     }
@@ -75,11 +75,11 @@ Configuration *WordContext::Initialize(const ConfigDefaults* config_defaults /* 
       filename << home << "/.mifluz";
       struct stat statbuf;
       if(stat((char*)filename, &statbuf) < 0) {
-	if(errno != ENOENT) {
-	  fprintf(stderr, "WordContext::Initialize: could not stat %s\n", (char*)filename);
-	  perror("");
-	}
-	filename.trunc();
+  if(errno != ENOENT) {
+    fprintf(stderr, "WordContext::Initialize: could not stat %s\n", (char*)filename);
+    perror("");
+  }
+  filename.trunc();
       }
     }
   }

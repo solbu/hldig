@@ -2,7 +2,7 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 
 #include "db_config.h"
@@ -10,7 +10,7 @@
 #ifdef HAVE_MUTEX_TAS
 
 #ifndef lint
-static const char sccsid[] = "@(#)mut_tas.c	11.4 (Sleepycat) 10/1/99";
+static const char sccsid[] = "@(#)mut_tas.c  11.4 (Sleepycat) 10/1/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -48,121 +48,121 @@ static const char sccsid[] = "@(#)mut_tas.c	11.4 (Sleepycat) 10/1/99";
 #endif
 
 #ifdef DIAGNOSTIC
-#undef	MSG1
-#define	MSG1		"mutex_lock: ERROR: lock currently in use: pid: %lu.\n"
-#undef	MSG2
-#define	MSG2		"mutex_unlock: ERROR: lock already unlocked\n"
-#ifndef	STDERR_FILENO
-#define	STDERR_FILENO	2
+#undef  MSG1
+#define  MSG1    "mutex_lock: ERROR: lock currently in use: pid: %lu.\n"
+#undef  MSG2
+#define  MSG2    "mutex_unlock: ERROR: lock already unlocked\n"
+#ifndef  STDERR_FILENO
+#define  STDERR_FILENO  2
 #endif
 #endif
 
 /*
  * CDB___db_tas_mutex_init --
- *	Initialize a MUTEX.
+ *  Initialize a MUTEX.
  *
  * PUBLIC: int CDB___db_tas_mutex_init __P((DB_ENV *, MUTEX *, u_int32_t));
  */
 int
 CDB___db_tas_mutex_init(dbenv, mutexp, flags)
-	DB_ENV *dbenv;
-	MUTEX *mutexp;
-	u_int32_t flags;
+  DB_ENV *dbenv;
+  MUTEX *mutexp;
+  u_int32_t flags;
 {
-	memset(mutexp, 0, sizeof(*mutexp));
+  memset(mutexp, 0, sizeof(*mutexp));
 
-	/*
-	 * If this is a thread lock or the process has told us that there are
-	 * no other processes in the environment, use thread-only locks, they
-	 * are faster in some cases.
-	 *
-	 * This is where we decide to ignore locks we don't need to set -- if
-	 * the application isn't threaded, there aren't any threads to block.
-	 */
-	if (LF_ISSET(MUTEX_THREAD) || F_ISSET(dbenv, DB_ENV_PRIVATE)) {
-		if (!F_ISSET(dbenv, DB_ENV_THREAD)) {
-			F_SET(mutexp, MUTEX_IGNORE);
-			return (0);
-		}
-		F_SET(mutexp, MUTEX_THREAD);
-	}
+  /*
+   * If this is a thread lock or the process has told us that there are
+   * no other processes in the environment, use thread-only locks, they
+   * are faster in some cases.
+   *
+   * This is where we decide to ignore locks we don't need to set -- if
+   * the application isn't threaded, there aren't any threads to block.
+   */
+  if (LF_ISSET(MUTEX_THREAD) || F_ISSET(dbenv, DB_ENV_PRIVATE)) {
+    if (!F_ISSET(dbenv, DB_ENV_THREAD)) {
+      F_SET(mutexp, MUTEX_IGNORE);
+      return (0);
+    }
+    F_SET(mutexp, MUTEX_THREAD);
+  }
 
-	/* Initialize the lock. */
-	if (MUTEX_INIT(&mutexp->tas))
-		return (CDB___os_get_errno());
+  /* Initialize the lock. */
+  if (MUTEX_INIT(&mutexp->tas))
+    return (CDB___os_get_errno());
 
-	mutexp->spins = CDB___os_spin();
+  mutexp->spins = CDB___os_spin();
 
-	return (0);
+  return (0);
 }
 
 /*
  * CDB___db_tas_mutex_lock
- *	Lock on a mutex, logically blocking if necessary.
+ *  Lock on a mutex, logically blocking if necessary.
  *
  * PUBLIC: int CDB___db_tas_mutex_lock __P((MUTEX *));
  */
 int
 CDB___db_tas_mutex_lock(mutexp)
-	MUTEX *mutexp;
+  MUTEX *mutexp;
 {
-	u_long ms;
-	int nspins;
+  u_long ms;
+  int nspins;
 
-	if (!DB_GLOBAL(db_mutexlocks) || F_ISSET(mutexp, MUTEX_IGNORE))
-		return (0);
+  if (!DB_GLOBAL(db_mutexlocks) || F_ISSET(mutexp, MUTEX_IGNORE))
+    return (0);
 
-	ms = 1;
+  ms = 1;
 
-loop:	/* Attempt to acquire the resource for N spins. */
-	for (nspins = mutexp->spins; nspins > 0; --nspins) {
-		if (!MUTEX_SET(&mutexp->tas))
-			continue;
+loop:  /* Attempt to acquire the resource for N spins. */
+  for (nspins = mutexp->spins; nspins > 0; --nspins) {
+    if (!MUTEX_SET(&mutexp->tas))
+      continue;
 #ifdef DIAGNOSTIC
-		if (mutexp->locked != 0) {
-			char msgbuf[128];
-			(void)snprintf(msgbuf,
-			    sizeof(msgbuf), MSG1, (u_long)mutexp->locked);
-			(void)write(STDERR_FILENO, msgbuf, strlen(msgbuf));
-		}
-		mutexp->locked = (u_int32_t)getpid();
+    if (mutexp->locked != 0) {
+      char msgbuf[128];
+      (void)snprintf(msgbuf,
+          sizeof(msgbuf), MSG1, (u_long)mutexp->locked);
+      (void)write(STDERR_FILENO, msgbuf, strlen(msgbuf));
+    }
+    mutexp->locked = (u_int32_t)getpid();
 #endif
-		if (ms == 1)
-			++mutexp->mutex_set_nowait;
-		else
-			++mutexp->mutex_set_wait;
-		return (0);
-	}
+    if (ms == 1)
+      ++mutexp->mutex_set_nowait;
+    else
+      ++mutexp->mutex_set_wait;
+    return (0);
+  }
 
-	/* Yield the processor; wait 1ms initially, up to 1 second. */
-	CDB___os_yield(ms * USEC_PER_MS);
-	if ((ms <<= 1) > MS_PER_SEC)
-		ms = MS_PER_SEC;
+  /* Yield the processor; wait 1ms initially, up to 1 second. */
+  CDB___os_yield(ms * USEC_PER_MS);
+  if ((ms <<= 1) > MS_PER_SEC)
+    ms = MS_PER_SEC;
 
-	goto loop;
+  goto loop;
 }
 
 /*
  * CDB___db_tas_mutex_unlock --
- *	Release a lock.
+ *  Release a lock.
  *
  * PUBLIC: int CDB___db_tas_mutex_unlock __P((MUTEX *));
  */
 int
 CDB___db_tas_mutex_unlock(mutexp)
-	MUTEX *mutexp;
+  MUTEX *mutexp;
 {
-	if (!DB_GLOBAL(db_mutexlocks) || F_ISSET(mutexp, MUTEX_IGNORE))
-		return (0);
+  if (!DB_GLOBAL(db_mutexlocks) || F_ISSET(mutexp, MUTEX_IGNORE))
+    return (0);
 
 #ifdef DIAGNOSTIC
-	if (!mutexp->locked)
-		(void)write(STDERR_FILENO, MSG2, sizeof(MSG2) - 1);
-	mutexp->locked = 0;
+  if (!mutexp->locked)
+    (void)write(STDERR_FILENO, MSG2, sizeof(MSG2) - 1);
+  mutexp->locked = 0;
 #endif
 
-	MUTEX_UNSET(&mutexp->tas);
+  MUTEX_UNSET(&mutexp->tas);
 
-	return (0);
+  return (0);
 }
 #endif /* HAVE_MUTEX_TAS */

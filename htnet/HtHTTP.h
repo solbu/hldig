@@ -73,7 +73,7 @@ class HtHTTP_Response : public Transport_Response
 ///////
    //    Construction / Destruction
 ///////
-	 
+   
       HtHTTP_Response();
       ~HtHTTP_Response();
 
@@ -82,38 +82,38 @@ class HtHTTP_Response : public Transport_Response
    //    Interface
 ///////
 
-   	 // Reset
-	 void Reset();
-	 
-	 // Get the HTTP version
-   	 const String &GetVersion() const { return _version; }
+      // Reset
+   void Reset();
+   
+   // Get the HTTP version
+      const String &GetVersion() const { return _version; }
 
-	 // Get the Transfer-encoding
-   	 const String &GetTransferEncoding() const
+   // Get the Transfer-encoding
+      const String &GetTransferEncoding() const
             { return _transfer_encoding; }
 
-	 // Get server info
-   	 const String &GetServer() const { return _server; }
+   // Get server info
+      const String &GetServer() const { return _server; }
 
-	 // Get Connection info
-   	 const String &GetConnectionInfo() const { return _hdrconnection; }
+   // Get Connection info
+      const String &GetConnectionInfo() const { return _hdrconnection; }
 
-	 // Get Content language
-   	 const String &GetContentLanguage() const { return _content_language; }
+   // Get Content language
+      const String &GetContentLanguage() const { return _content_language; }
 
 
    protected:
 
    // Status line information
    
-   	 String	   _version;	          // HTTP Version
+      String     _version;            // HTTP Version
 
    // Other header information
    
-	 String    _transfer_encoding;    // Transfer-encoding
-   	 String	   _server;	          // Server string returned
-   	 String	   _hdrconnection;	  // Connection header
-	 String    _content_language;     // Content-language
+   String    _transfer_encoding;    // Transfer-encoding
+      String     _server;            // Server string returned
+      String     _hdrconnection;    // Connection header
+   String    _content_language;     // Content-language
 
 };
 
@@ -123,7 +123,7 @@ class HtHTTP : public Transport
 {
 private:
    HtHTTP() {}    // Declared private - avoids default constructor to be created
-      	          // in some cases by the compiler.
+                  // in some cases by the compiler.
 public:
 
 ///////
@@ -137,8 +137,8 @@ public:
 
    enum Request_Method
    {
-   	 Method_GET,
-	 Method_HEAD
+      Method_GET,
+   Method_HEAD
    };
    
 
@@ -232,8 +232,8 @@ public:
 
    // Is Up (is both allowed and permitted by the server too)
    bool isPersistentConnectionUp()
-   	    { return isConnected() && isPersistentConnectionAllowed() &&
-   	       	   isPersistentConnectionPossible(); }
+         { return isConnected() && isPersistentConnectionAllowed() &&
+                 isPersistentConnectionPossible(); }
    
    // Allow Persistent Connection
    void AllowPersistentConnection() { _persistent_connection_allowed=true; }
@@ -249,7 +249,7 @@ public:
    
 
 ///////
-   // 	 Set the cookie manager class (that is to say the class)
+   //    Set the cookie manager class (that is to say the class)
 ///////
 
    // It's set only if not done before
@@ -257,7 +257,7 @@ public:
 
 
 ///////
-   // 	 Manage statistics
+   //    Manage statistics
 ///////
    
    static int GetTotSeconds () { return _tot_seconds; }   
@@ -267,13 +267,13 @@ public:
    static int GetTotBytes () { return _tot_bytes; }   
 
    static double GetAverageRequestTime ()
-   	 { return _tot_seconds?( ((double) _tot_seconds) / _tot_requests) : 0; }   
+      { return _tot_seconds?( ((double) _tot_seconds) / _tot_requests) : 0; }   
 
    static float GetAverageSpeed ()
-   	 { return _tot_bytes?( ((double) _tot_bytes) / _tot_seconds) : 0; }   
+      { return _tot_bytes?( ((double) _tot_bytes) / _tot_seconds) : 0; }   
 
    static void ResetStatistics ()
-   	 { _tot_seconds=0; _tot_requests=0; _tot_bytes=0;}   
+      { _tot_seconds=0; _tot_requests=0; _tot_bytes=0;}   
 
    // Show stats
    static ostream &ShowStatistics (ostream &out);
@@ -313,9 +313,9 @@ protected:
       //    Http single Request information (Member attributes)
    ///////
 
-   int      	_bytes_read;        // Bytes read
-   URL		_url;               // URL to retrieve
-   URL		_referer;	    // Referring URL
+   int        _bytes_read;        // Bytes read
+   URL    _url;               // URL to retrieve
+   URL    _referer;      // Referring URL
 
    String      _accept_language;    // accept-language directive
    
@@ -323,7 +323,7 @@ protected:
       //    Http multiple Request information
    ///////
 
-   static String   	_user_agent;  	   // User agent
+   static String     _user_agent;       // User agent
    
 
 
@@ -331,8 +331,8 @@ protected:
       //    Http Response information
    ///////
 
-   HtHTTP_Response	 _response; 	 // Object where response
-   	       	   	       	   	 // information will be stored into
+   HtHTTP_Response   _response;    // Object where response
+                                  // information will be stored into
 
 
    ///////
@@ -376,12 +376,12 @@ protected:
    
    enum ConnectionStatus
    {
-   	 Connection_ok,
-	 Connection_already_up,
-   	 Connection_open_failed,
-   	 Connection_no_server,
-   	 Connection_no_port,
-   	 Connection_failed
+      Connection_ok,
+   Connection_already_up,
+      Connection_open_failed,
+      Connection_no_server,
+      Connection_no_port,
+      Connection_failed
    };
 
 
@@ -437,9 +437,9 @@ protected:
    // Unique cookie Jar
    static HtCookieJar *_cookie_jar;  // Jar containing all of the cookies
       
-   static int  _tot_seconds;  	 // Requests last (in seconds)
-   static int  _tot_requests; 	 // Number of requests
-   static int  _tot_bytes;    	 // Number of bytes read
+   static int  _tot_seconds;     // Requests last (in seconds)
+   static int  _tot_requests;    // Number of requests
+   static int  _tot_bytes;       // Number of bytes read
 
    // This is a pointer to function that check if a ContentType
    // is parsable or less.

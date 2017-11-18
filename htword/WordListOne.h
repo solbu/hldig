@@ -80,9 +80,9 @@ class WordListOne : public WordList
     virtual int WalkDelete(const WordReference& wordRef);
     virtual inline int Delete(const WordReference& wordRef) {
       if(db->Del(wordRef) == 0)
-	return dict->Unref(wordRef.GetWord());
+  return dict->Unref(wordRef.GetWord());
       else
-	return NOTOK;
+  return NOTOK;
     }
     //-
     // Delete the inverted index entry currently pointed to by the
@@ -132,10 +132,10 @@ class WordListOne : public WordList
 
     virtual List *Collect(const WordReference& word);
 
-    WordDB	            	*db;
-    WordDict	            	*dict;
-    WordMeta	            	*meta;
-    WordDead	            	*dead;
+    WordDB                *db;
+    WordDict                *dict;
+    WordMeta                *meta;
+    WordDead                *dead;
 };
 
 #endif /* _WordListOne_h_ */

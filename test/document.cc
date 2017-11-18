@@ -53,9 +53,9 @@ static int verbose = 0;
 //
 int main(int ac, char **av)
 {
-  int			c;
-  extern char		*optarg;
-  params_t		params;
+  int      c;
+  extern char    *optarg;
+  params_t    params;
 
   params.config = strdup("???");
   params.urls = 0;
@@ -64,24 +64,24 @@ int main(int ac, char **av)
   while ((c = getopt(ac, av, "vudc:")) != -1)
     {
       switch (c)
-	{
-	case 'v':
-	  verbose++;
-	  break;
-	case 'u':
-	  params.urls = 1;
-	  break;
-	case 'd':
-	  params.docids = 1;
-	  break;
-	case 'c':
-	  free(params.config);
-	  params.config = strdup(optarg);
-	  break;
-	case '?':
-	  usage();
-	  break;
-	}
+  {
+  case 'v':
+    verbose++;
+    break;
+  case 'u':
+    params.urls = 1;
+    break;
+  case 'd':
+    params.docids = 1;
+    break;
+  case 'c':
+    free(params.config);
+    params.config = strdup(optarg);
+    break;
+  case '?':
+    usage();
+    break;
+  }
     }
 
   dodoc(&params);

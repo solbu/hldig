@@ -50,40 +50,40 @@ Query::~Query()
 ResultList *
 Query::GetResults()
 {
-	ResultList *result = 0;
+  ResultList *result = 0;
 
-	// try to find in cache before trying eval
-	String signature;
-	if(cache)
-	{
-		signature = GetSignature();
-		result = cache->Lookup(signature);
-	}
+  // try to find in cache before trying eval
+  String signature;
+  if(cache)
+  {
+    signature = GetSignature();
+    result = cache->Lookup(signature);
+  }
 
-	// no cache or not in cache, evaluate
-	if(!result)
-	{
-		if(debug) cerr << "EVAL: " << signature << endl;
-		result = Evaluate();
+  // no cache or not in cache, evaluate
+  if(!result)
+  {
+    if(debug) cerr << "EVAL: " << signature << endl;
+    result = Evaluate();
 
-		if(cache)
-		{
-			cache->Add(signature, result);
-		}
-	}
+    if(cache)
+    {
+      cache->Add(signature, result);
+    }
+  }
 
-	// adjust if something found/returned 
-	if(result)
-	{
-		if(result->Count())
-		{
-			AdjustWeight(*result);
-		}
-		else if(!result->IsIgnore())
-		{
-			result = 0;
-		}
-	}
-	return result;
+  // adjust if something found/returned 
+  if(result)
+  {
+    if(result->Count())
+    {
+      AdjustWeight(*result);
+    }
+    else if(!result->IsIgnore())
+    {
+      result = 0;
+    }
+  }
+  return result;
 }
 

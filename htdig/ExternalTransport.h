@@ -39,13 +39,13 @@ public:
     // Construction/Destruction
     //
                         ExternalTransport(const String &protocol);
-    virtual		~ExternalTransport();
+    virtual    ~ExternalTransport();
 
 
     //
     // Check if the given protocol has a handler
     //
-    static int		canHandle(const String &protocol);
+    static int    canHandle(const String &protocol);
     
     // Setting connections is obviously a bit different than the base class
     // from a URL pointer
@@ -59,28 +59,28 @@ public:
     DocStatus Request();
    
     // Get the response or the status
-    Transport_Response	*GetResponse()	 { return _Response; }
+    Transport_Response  *GetResponse()   { return _Response; }
     DocStatus GetDocumentStatus() { return GetDocumentStatus(_Response); }
     
 
 private:
     // The command to handle the current protocol
-    String			_Handler;
+    String      _Handler;
     // And the current protocol
-    String			_Protocol;
+    String      _Protocol;
     
     // The URL to Request()
-    URL				_URL;
+    URL        _URL;
     
     // The result of the Request()
-    ExternalTransport_Response	*_Response;
+    ExternalTransport_Response  *_Response;
 
     
     
     // Private helper to read in the result from the handler
-    int			readLine(FILE *, String &);
+    int      readLine(FILE *, String &);
     // Work out the DocStatus from the HTTP-style status codes
-    DocStatus		GetDocumentStatus(ExternalTransport_Response *r);
+    DocStatus    GetDocumentStatus(ExternalTransport_Response *r);
 };
 
 #endif

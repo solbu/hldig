@@ -71,10 +71,10 @@ class HtCookieMemJar : public HtCookieJar
       // for cookies. It manages all the process regarding
       // domains and subdomains.
       virtual int SetHTTPRequest_CookiesString(const URL &_url,
-      	 String &RequestString);
-	 
+         String &RequestString);
+   
       virtual int AddCookie(const String &CookieString,
-      	 const URL &url);
+         const URL &url);
 
       // Get the next cookie
       virtual const HtCookie* NextCookie();
@@ -100,7 +100,7 @@ class HtCookieMemJar : public HtCookieJar
       // Passed a domain, this method writes all the cookies
       // directly in the request string for HTTP.
       int WriteDomainCookiesString(const URL &_url,
-      	 const String &Domain, String &RequestString);
+         const String &Domain, String &RequestString);
 
       // Get a list of the cookies for a domain
       List *cookiesForDomain(const String &DomainName);

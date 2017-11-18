@@ -60,8 +60,8 @@
 //
 // Other defines used throughout the library
 //
-#define	OK		0
-#define	NOTOK		(-1)
+#define  OK    0
+#define  NOTOK    (-1)
 
 //
 // To get rid of inconsistencies between different machines we will ALWAYS

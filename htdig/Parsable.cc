@@ -26,7 +26,7 @@
 //
 Parsable::Parsable()
 {
-	HtConfiguration* config= HtConfiguration::config();
+  HtConfiguration* config= HtConfiguration::config();
     contents = 0;
     max_head_length = config->Value("max_head_length", 0);
     max_description_length = config->Value("max_description_length", 50);
@@ -34,7 +34,7 @@ Parsable::Parsable()
 
     max_keywords = config->Value("max_keywords", -1);
     if (max_keywords < 0)
-	max_keywords = (int) ((unsigned int) ~1 >> 1);
+  max_keywords = (int) ((unsigned int) ~1 >> 1);
     minimum_word_length = config->Value("minimum_word_length", 3);
 }
 
@@ -70,9 +70,9 @@ Parsable::addString(Retriever& retriever, char *s, int& wordindex, int slot)
     char *w = HtWordToken(s);
     while (w)
     {
-	if (strlen(w) >= minimum_word_length)
-	    retriever.got_word(w, wordindex++, slot); // slot for img_alt
-	w = HtWordToken(0);
+  if (strlen(w) >= minimum_word_length)
+      retriever.got_word(w, wordindex++, slot); // slot for img_alt
+  w = HtWordToken(0);
     }
     w = '\0';
 }
@@ -85,12 +85,12 @@ Parsable::addString(Retriever& retriever, char *s, int& wordindex, int slot)
 void
 Parsable::addKeywordString(Retriever& retriever, char *s, int& wordindex)
 {
-    char	*w = HtWordToken(s);
+    char  *w = HtWordToken(s);
     while (w)
     {
-	if (strlen(w) >= minimum_word_length && ++keywordsCount <= max_keywords)
-	    retriever.got_word(w, wordindex++, 9);
-	w = HtWordToken(0);
+  if (strlen(w) >= minimum_word_length && ++keywordsCount <= max_keywords)
+      retriever.got_word(w, wordindex++, 9);
+  w = HtWordToken(0);
     }
     w = '\0';
 }

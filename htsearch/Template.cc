@@ -44,7 +44,7 @@ Template::~Template()
 void
 Template::createFromFile(const char *filename)
 {
-    String	realFile;
+    String  realFile;
 
     realFile = filename;
     realFile << ".start";
@@ -64,15 +64,15 @@ Template::createFromFile(const char *filename)
 void
 Template::readFile(String &s, const char *filename) const
 {
-    FILE	*fl = fopen(filename, "r");
-    char	buffer[1000];
+    FILE  *fl = fopen(filename, "r");
+    char  buffer[1000];
 
     if (!fl)
-	return;
+  return;
     s = 0;
     while (fgets(buffer, sizeof(buffer), fl))
     {
-	s << buffer;
+  s << buffer;
     }
     fclose(fl);
 }

@@ -3,7 +3,7 @@
 //
 // WordDB: Interface to Berkeley DB
 //         uses String and WordReference instead of Dbt, add some convenience
-//	   methods and implements string translation of Berkeley DB error codes.
+//     methods and implements string translation of Berkeley DB error codes.
 //         It does not include the 'join' feature.
 //         Beside this, the interface it identical to the Db class.
 //         The next evolution for this set of class is to have a single object per
@@ -135,7 +135,7 @@ class WordDB {
     int error;
     if((error = db->get(db, txn, &rkey, &rdata, 0)) != 0) {
       if(error != DB_NOTFOUND)
-	fprintf(stderr, "WordDB::Get(%s,%s) using %d failed %s\n", (char*)key, (char*)data, flags, CDB_db_strerror(error));
+  fprintf(stderr, "WordDB::Get(%s,%s) using %d failed %s\n", (char*)key, (char*)data, flags, CDB_db_strerror(error));
     } else {
       //
       // Only set arguments if found something.
@@ -228,9 +228,9 @@ class WordDB {
   inline DB_CMPR_INFO* CmprInfo() { return dbenv->mp_cmpr_info; }
   inline void CmprInfo(DB_CMPR_INFO* info) { dbenv->mp_cmpr_info = info; }
 
-  int			is_open;
-  DB*			db;
-  DB_ENV*            	dbenv;
+  int      is_open;
+  DB*      db;
+  DB_ENV*              dbenv;
 };
 
 //
@@ -270,7 +270,7 @@ class WordDBCursor {
     int error;
     if((error = cursor->c_get(cursor, &rkey, &rdata, (u_int32_t)flags)) != 0) {
       if(error != DB_NOTFOUND)
-	fprintf(stderr, "WordDBCursor::Get(%d) failed %s\n", flags, CDB_db_strerror(error));
+  fprintf(stderr, "WordDBCursor::Get(%d) failed %s\n", flags, CDB_db_strerror(error));
     } else {
       key.set((const char*)rkey.data, (int)rkey.size);
       data.set((const char*)rdata.data, (int)rdata.size);

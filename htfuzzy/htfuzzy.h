@@ -45,7 +45,7 @@ using namespace std;
 
 #include <stdio.h>
 
-extern int		debug;
+extern int    debug;
 
 extern void reportError(char *msg);
 

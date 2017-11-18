@@ -36,11 +36,11 @@ class Query;
 class FuzzyExpander
 {
 public:
-	FuzzyExpander() {}
-	virtual ~FuzzyExpander() {}
+  FuzzyExpander() {}
+  virtual ~FuzzyExpander() {}
 
-	// generate a query for this word
-	virtual Query *MakeQuery(const String &word) = 0;
+  // generate a query for this word
+  virtual Query *MakeQuery(const String &word) = 0;
 };
 
 #endif

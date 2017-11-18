@@ -4,7 +4,7 @@
 // HtFTP: Interface classes for retriving documents from FTP servers
 //
 // Including:
-// 	 -  Generic class
+//    -  Generic class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
@@ -140,7 +140,7 @@ HtFTP::DocStatus HtFTP::Request()
    // Check that it exists, and is a regular file or directory
    // Should we allow FIFO's?
    if ( stat(_url.path(), &stat_buf) != 0 || 
-	!(S_ISREG(stat_buf.st_mode) || S_ISDIR(stat_buf.st_mode)) )
+  !(S_ISREG(stat_buf.st_mode) || S_ISDIR(stat_buf.st_mode)) )
      return Transport::Document_not_found;
 
    // Now handle directories with a pseudo-HTML document (and appropriate noindex)
@@ -154,30 +154,30 @@ HtFTP::DocStatus HtFTP::Request()
        String filename;
 
        if (( dirList = opendir(_url.path()) ))
-	 {
-	   while (( namelist = readdir(dirList) ))
-	    {
-	     filename = _url.path();
-	     filename << namelist->d_name;
-	     
-	     if ( namelist->d_name[0] != '.' 
-		  && stat(filename.get(), &stat_buf) == 0 )
-	       {
-		 if (S_ISDIR(stat_buf.st_mode))
-		   _response._contents << "<link href=\"file://" << _url.path()
-				       << "/" << namelist->d_name << "/\">\n";
-		 else
-		   _response._contents << "<link href=\"file://" << _url.path()
-				       << "/" << namelist->d_name << "\">\n";  
-	       }
-	    }
-	   closedir(dirList);
-	 }
+   {
+     while (( namelist = readdir(dirList) ))
+      {
+       filename = _url.path();
+       filename << namelist->d_name;
+       
+       if ( namelist->d_name[0] != '.' 
+      && stat(filename.get(), &stat_buf) == 0 )
+         {
+     if (S_ISDIR(stat_buf.st_mode))
+       _response._contents << "<link href=\"file://" << _url.path()
+               << "/" << namelist->d_name << "/\">\n";
+     else
+       _response._contents << "<link href=\"file://" << _url.path()
+               << "/" << namelist->d_name << "\">\n";  
+         }
+      }
+     closedir(dirList);
+   }
 
        _response._contents << "</head><body></body></html>\n";
 
        if (debug > 4)
-	 cout << " Directory listing: " << endl << _response._contents << endl;
+   cout << " Directory listing: " << endl << _response._contents << endl;
 
        _response._content_length = stat_buf.st_size;
        _response._document_length = _response._contents.length();
@@ -217,15 +217,15 @@ HtFTP::DocStatus HtFTP::Request()
    if (f == NULL)
      return Document_not_found;
 
-   char	docBuffer[8192];
-   int		bytesRead;
+   char  docBuffer[8192];
+   int    bytesRead;
    while ((bytesRead = fread(docBuffer, 1, sizeof(docBuffer), f)) > 0)
      {
-	if (_response._contents.length() + bytesRead > _max_document_size)
-	    bytesRead = _max_document_size - _response._contents.length();
-	_response._contents.append(docBuffer, bytesRead);
-	if (_response._contents.length() >= _max_document_size)
-	    break;
+  if (_response._contents.length() + bytesRead > _max_document_size)
+      bytesRead = _max_document_size - _response._contents.length();
+  _response._contents.append(docBuffer, bytesRead);
+  if (_response._contents.length() >= _max_document_size)
+      break;
      }
    fclose(f);
 

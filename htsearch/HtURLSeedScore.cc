@@ -2,8 +2,8 @@
 // HtURLSeedScore.cc
 //
 // URLSeedScore:
-//	Holds a list of configured adjustments to be applied on a given
-//	score and given URL.
+//  Holds a list of configured adjustments to be applied on a given
+//  score and given URL.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 2000-2004 The ht://Dig Group
@@ -78,67 +78,67 @@ ScoreAdjustItem::ScoreAdjustItem(String &url_regex, String &formula)
     match.setEscaped(l);
 
     // FIXME: Missing method to check if the regex was in error.
-    //	myErrMsg = form("%s is not a valid regex", url_regex.get());
+    //  myErrMsg = form("%s is not a valid regex", url_regex.get());
 
     char *s = formula.get();
 
     // Parse the ([*]N[ ]*)?[+]?M format.
     if (s[0] == '*')
     {
-	// Skip past the '*'.
-	s++;
+  // Skip past the '*'.
+  s++;
 
-	// There is a mul_factor.  Let's parse it.
-	chars_so_far = 0;
-	sscanf(s, "%lf%n", &mul_factor, &chars_so_far);
+  // There is a mul_factor.  Let's parse it.
+  chars_so_far = 0;
+  sscanf(s, "%lf%n", &mul_factor, &chars_so_far);
 
-	// If '%lf' failed to match, then it will show up as either no
-	// assignment to chars_so_far, or as writing 0 there.
-	if (chars_so_far == 0)
-	{
-	    myErrMsg = form("%s is not a valid adjustment formula", s);
-	    return;
-	}
+  // If '%lf' failed to match, then it will show up as either no
+  // assignment to chars_so_far, or as writing 0 there.
+  if (chars_so_far == 0)
+  {
+      myErrMsg = form("%s is not a valid adjustment formula", s);
+      return;
+  }
 
-	// Skip past the number.
-	s += chars_so_far;
+  // Skip past the number.
+  s += chars_so_far;
 
-	// Skip any whitespaces.
-	while (isspace(*s))
-	    s++;
+  // Skip any whitespaces.
+  while (isspace(*s))
+      s++;
 
-	// Eat any plus-sign; it's redundant if alone, and may come before a
-	// minus.
-	if (*s == '+')
-	    s++;
+  // Eat any plus-sign; it's redundant if alone, and may come before a
+  // minus.
+  if (*s == '+')
+      s++;
 
-	factor_found = true;
+  factor_found = true;
     }
 
     // If there's anything here, it must be the additive constant.
     if (*s)
     {
-	chars_so_far = 0;
-	sscanf(s, "%lf%n", &add_constant, &chars_so_far);
+  chars_so_far = 0;
+  sscanf(s, "%lf%n", &add_constant, &chars_so_far);
 
-	// If '%lf' failed to match, then it will show up as either no
-	// assignment to chars_so_far, or as writing 0 there.
-	//  We also need to check that it was the end of the input.
-	if (chars_so_far == 0 || s[chars_so_far] != 0)
-	{
-	    myErrMsg = form("%s is not a valid adjustment formula",
-			    formula.get());
-	    return;
-	}
+  // If '%lf' failed to match, then it will show up as either no
+  // assignment to chars_so_far, or as writing 0 there.
+  //  We also need to check that it was the end of the input.
+  if (chars_so_far == 0 || s[chars_so_far] != 0)
+  {
+      myErrMsg = form("%s is not a valid adjustment formula",
+          formula.get());
+      return;
+  }
 
-	constant_found = true;
+  constant_found = true;
     }
 
     // Either part must be there.
     if (!factor_found && !constant_found)
     {
-	myErrMsg = form("%s is not a valid formula", formula.get());
-	return;
+  myErrMsg = form("%s is not a valid formula", formula.get());
+  return;
     }
 
     my_add_constant = add_constant;
@@ -159,34 +159,34 @@ URLSeedScore::URLSeedScore(Configuration &config)
 
     if (sl.Count() % 2)
     {
-	myErrMsg = form("%s is not a list of pairs (odd number of items)",
-			config_item);
+  myErrMsg = form("%s is not a list of pairs (odd number of items)",
+      config_item);
 
-	// We *could* continue, but that just means the error will be harder
-	// to find, unless someone actually sees the error message.
-	return;
+  // We *could* continue, but that just means the error will be harder
+  // to find, unless someone actually sees the error message.
+  return;
     }
 
     // Parse each as in TemplateList::createFromString.
     for (int i = 0; i < sl.Count(); i += 2)
     {
-	String url_regex = sl[i];
-	String adjust_formula = sl[i+1];
+  String url_regex = sl[i];
+  String adjust_formula = sl[i+1];
 
-	ScoreAdjustItem *adjust_item
-	    = new ScoreAdjustItem(url_regex, adjust_formula);
+  ScoreAdjustItem *adjust_item
+      = new ScoreAdjustItem(url_regex, adjust_formula);
 
-	if (adjust_item->ErrMsg().length() != 0)
-	{
-	    // No point in continuing beyond the error; we might just
-	    // overwrite the first error.
-	    myErrMsg = form("While parsing %s: %s",
-			    config_item,
-			    adjust_item->ErrMsg().get());
-	    return;
-	}
+  if (adjust_item->ErrMsg().length() != 0)
+  {
+      // No point in continuing beyond the error; we might just
+      // overwrite the first error.
+      myErrMsg = form("While parsing %s: %s",
+          config_item,
+          adjust_item->ErrMsg().get());
+      return;
+  }
 
-	myAdjustmentList->Add(adjust_item);
+  myAdjustmentList->Add(adjust_item);
     }
 }
 
@@ -205,9 +205,9 @@ URLSeedScore::noninline_adjust_score(double orig_score, const String &url)
 
     while ((adjust_item = (ScoreAdjustItem *) adjlist->Get_Next()))
     {
-	// Use the first match only.
-	if (adjust_item->Match(url))
-	    return adjust_item->adjust_score(orig_score);
+  // Use the first match only.
+  if (adjust_item->Match(url))
+      return adjust_item->adjust_score(orig_score);
     }
 
     // We'll get here if no match was found.

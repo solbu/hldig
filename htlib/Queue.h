@@ -12,41 +12,41 @@
 //
 // $Id: Queue.h,v 1.6 2004/05/28 13:15:21 lha Exp $
 //
-#ifndef	_Queue_h_
-#define	_Queue_h_
+#ifndef  _Queue_h_
+#define  _Queue_h_
 
 #include "Object.h"
 
 class Queue : public Object
 {
 public:
-	//
-	// Constructors/Destructor
-	//
-					Queue();
-					~Queue();
+  //
+  // Constructors/Destructor
+  //
+          Queue();
+          ~Queue();
 
-	//
-	// Queue access
-	//
-	void			push(Object *obj);
-	Object			*peek();
-	Object			*pop();
-	int				Size()					{return size;}
+  //
+  // Queue access
+  //
+  void      push(Object *obj);
+  Object      *peek();
+  Object      *pop();
+  int        Size()          {return size;}
 
-	//
-	// Queue destruction
-	//
-	void			destroy();
+  //
+  // Queue destruction
+  //
+  void      destroy();
 
 protected:
-	//
-	// These variables are to keep track of the linked list
-	//
-	void			*head;
-	void			*tail;
+  //
+  // These variables are to keep track of the linked list
+  //
+  void      *head;
+  void      *tail;
 
-	int				size;
+  int        size;
 };
 
 #endif

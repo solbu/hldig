@@ -2,13 +2,13 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 
 #include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)lock_util.c	11.1 (Sleepycat) 7/25/99";
+static const char sccsid[] = "@(#)lock_util.c  11.1 (Sleepycat) 7/25/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,24 +25,24 @@ static const char sccsid[] = "@(#)lock_util.c	11.1 (Sleepycat) 7/25/99";
 
 /*
  * CDB___lock_cmp --
- *	This function is used to compare a DBT that is about to be entered
- *	into a hash table with an object already in the hash table.  Note
- *	that it just returns true on equal and 0 on not-equal.  Therefore
- *	this function cannot be used as a sort function; its purpose is to
- *	be used as a hash comparison function.
+ *  This function is used to compare a DBT that is about to be entered
+ *  into a hash table with an object already in the hash table.  Note
+ *  that it just returns true on equal and 0 on not-equal.  Therefore
+ *  this function cannot be used as a sort function; its purpose is to
+ *  be used as a hash comparison function.
  *
  * PUBLIC: int CDB___lock_cmp __P((const DBT *, DB_LOCKOBJ *));
  */
 int
 CDB___lock_cmp(dbt, lock_obj)
-	const DBT *dbt;
-	DB_LOCKOBJ *lock_obj;
+  const DBT *dbt;
+  DB_LOCKOBJ *lock_obj;
 {
-	void *obj_data;
+  void *obj_data;
 
-	obj_data = SH_DBT_PTR(&lock_obj->lockobj);
-	return (dbt->size == lock_obj->lockobj.size &&
-		memcmp(dbt->data, obj_data, dbt->size) == 0);
+  obj_data = SH_DBT_PTR(&lock_obj->lockobj);
+  return (dbt->size == lock_obj->lockobj.size &&
+    memcmp(dbt->data, obj_data, dbt->size) == 0);
 }
 
 /*
@@ -50,10 +50,10 @@ CDB___lock_cmp(dbt, lock_obj)
  */
 int
 CDB___lock_locker_cmp(locker, sh_locker)
-	u_int32_t locker;
-	DB_LOCKER *sh_locker;
+  u_int32_t locker;
+  DB_LOCKER *sh_locker;
 {
-	return (locker == sh_locker->id);
+  return (locker == sh_locker->id);
 }
 
 /*
@@ -76,16 +76,16 @@ CDB___lock_locker_cmp(locker, sh_locker)
  * a good hash, but we want a fast hash more than we want a good one, when
  * we're coming through this code path.
  */
-#define FAST_HASH(P) {			\
-	u_int32_t __h;			\
-	u_int8_t *__cp, *__hp;		\
-	__hp = (u_int8_t *)&__h;	\
-	__cp = (u_int8_t *)(P);		\
-	__hp[0] = __cp[0] ^ __cp[4];	\
-	__hp[1] = __cp[1] ^ __cp[5];	\
-	__hp[2] = __cp[2] ^ __cp[6];	\
-	__hp[3] = __cp[3] ^ __cp[7];	\
-	return (__h);			\
+#define FAST_HASH(P) {      \
+  u_int32_t __h;      \
+  u_int8_t *__cp, *__hp;    \
+  __hp = (u_int8_t *)&__h;  \
+  __cp = (u_int8_t *)(P);    \
+  __hp[0] = __cp[0] ^ __cp[4];  \
+  __hp[1] = __cp[1] ^ __cp[5];  \
+  __hp[2] = __cp[2] ^ __cp[6];  \
+  __hp[3] = __cp[3] ^ __cp[7];  \
+  return (__h);      \
 }
 
 /*
@@ -95,12 +95,12 @@ CDB___lock_locker_cmp(locker, sh_locker)
  */
 u_int32_t
 CDB___lock_ohash(dbt)
-	const DBT *dbt;
+  const DBT *dbt;
 {
-	if (dbt->size == sizeof(DB_LOCK_ILOCK))
-		FAST_HASH(dbt->data);
+  if (dbt->size == sizeof(DB_LOCK_ILOCK))
+    FAST_HASH(dbt->data);
 
-	return (CDB___ham_func5(dbt->data, dbt->size));
+  return (CDB___ham_func5(dbt->data, dbt->size));
 }
 
 /*
@@ -110,29 +110,29 @@ CDB___lock_ohash(dbt)
  */
 u_int32_t
 CDB___lock_lhash(lock_obj)
-	DB_LOCKOBJ *lock_obj;
+  DB_LOCKOBJ *lock_obj;
 {
-	void *obj_data;
+  void *obj_data;
 
-	obj_data = SH_DBT_PTR(&lock_obj->lockobj);
+  obj_data = SH_DBT_PTR(&lock_obj->lockobj);
 
-	if (lock_obj->lockobj.size == sizeof(DB_LOCK_ILOCK))
-		FAST_HASH(obj_data);
+  if (lock_obj->lockobj.size == sizeof(DB_LOCK_ILOCK))
+    FAST_HASH(obj_data);
 
-	return (CDB___ham_func5(obj_data, lock_obj->lockobj.size));
+  return (CDB___ham_func5(obj_data, lock_obj->lockobj.size));
 }
 
 /*
  * CDB___lock_locker_hash --
- *	Hash function for entering lockers into the locker hash table.
- * 	Since these are simply 32-bit unsigned integers, just return
- *	the locker value.
+ *  Hash function for entering lockers into the locker hash table.
+ *   Since these are simply 32-bit unsigned integers, just return
+ *  the locker value.
  *
  * PUBLIC: u_int32_t CDB___lock_locker_hash __P((u_int32_t));
  */
 u_int32_t
 CDB___lock_locker_hash(locker)
-	u_int32_t locker;
+  u_int32_t locker;
 {
-	return (locker);
+  return (locker);
 }

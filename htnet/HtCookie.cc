@@ -59,13 +59,13 @@ using namespace std;
    int HtCookie::debug = 0;
 
 // Precompiled constants regarding the cookies file format (field order)
-#define COOKIES_FILE_DOMAIN	0
-#define COOKIES_FILE_FLAG	1
-#define COOKIES_FILE_PATH	2
-#define COOKIES_FILE_SECURE	3
-#define COOKIES_FILE_EXPIRES	4
-#define COOKIES_FILE_NAME	5
-#define COOKIES_FILE_VALUE	6
+#define COOKIES_FILE_DOMAIN  0
+#define COOKIES_FILE_FLAG  1
+#define COOKIES_FILE_PATH  2
+#define COOKIES_FILE_SECURE  3
+#define COOKIES_FILE_EXPIRES  4
+#define COOKIES_FILE_NAME  5
+#define COOKIES_FILE_VALUE  6
 
 
 // Default constructor
@@ -144,19 +144,19 @@ HtCookie::HtCookie(const String &setCookieLine, const String& aURL)
     
       if (mystrcasecmp(token, "path") == 0)
       {
-      	 // Let's grab the path
-      	 ctoken = strtok(NULL, ";");
-      	 SetPath(ctoken);
+         // Let's grab the path
+         ctoken = strtok(NULL, ";");
+         SetPath(ctoken);
       }
       else if (mystrcasecmp(token, "expires") == 0)
-	  {
+    {
          // Let's grab the expiration date
-      	 HtDateTime dt;
-	
-      	 ctoken = strtok(NULL, ";");
+         HtDateTime dt;
+  
+         ctoken = strtok(NULL, ";");
 
-      	 if (ctoken && SetDate(ctoken, dt))
-      	    SetExpires(&dt);
+         if (ctoken && SetDate(ctoken, dt))
+            SetExpires(&dt);
          else
             SetExpires(0);
       } else if (mystrcasecmp(token, "secure") == 0)
@@ -178,7 +178,7 @@ HtCookie::HtCookie(const String &setCookieLine, const String& aURL)
       }
 
       if (token)
-	     delete[](token);
+       delete[](token);
 
    }
 
@@ -221,38 +221,38 @@ HtCookie::HtCookie(const String &CookieFileLine)
        {
        
           token = stripAllWhitespace(str);
-	  
-	  switch(num_field)
-	  {
-	     case COOKIES_FILE_DOMAIN:
-	        SetDomain(token);
-	        break;
-	     case COOKIES_FILE_FLAG:
-	        // Ignored
-	        break;
-	     case COOKIES_FILE_PATH:
-	        SetPath(token);
-	        break;
-	     case COOKIES_FILE_SECURE:
-	        if (mystrcasecmp(token, "false"))
-		   SetIsSecure(true);
-		else
-		   SetIsSecure(false);
-	        break;
-	     case COOKIES_FILE_EXPIRES:
-		if ((expires_value = atoi(token) > 0)) // Sets the expires value only if > 0
-		{
-		   time_t tmp = atoi(token);	// avoid ambiguous arg list
-		   expires = new HtDateTime(tmp);
-		}
-	        break;
-	     case COOKIES_FILE_NAME:
-	        SetName(token);
-	        break;
-	     case COOKIES_FILE_VALUE:
-	        SetValue(token);
-		break;
-	  }
+    
+    switch(num_field)
+    {
+       case COOKIES_FILE_DOMAIN:
+          SetDomain(token);
+          break;
+       case COOKIES_FILE_FLAG:
+          // Ignored
+          break;
+       case COOKIES_FILE_PATH:
+          SetPath(token);
+          break;
+       case COOKIES_FILE_SECURE:
+          if (mystrcasecmp(token, "false"))
+       SetIsSecure(true);
+    else
+       SetIsSecure(false);
+          break;
+       case COOKIES_FILE_EXPIRES:
+    if ((expires_value = atoi(token) > 0)) // Sets the expires value only if > 0
+    {
+       time_t tmp = atoi(token);  // avoid ambiguous arg list
+       expires = new HtDateTime(tmp);
+    }
+          break;
+       case COOKIES_FILE_NAME:
+          SetName(token);
+          break;
+       case COOKIES_FILE_VALUE:
+          SetValue(token);
+    break;
+    }
 
           ++num_field;
        } while((str = strtok(NULL, "\t")));
@@ -278,8 +278,8 @@ HtCookie::HtCookie(const HtCookie& rhs)
    max_age(rhs.max_age),
    rfc_version(rhs.rfc_version)
 {
-	if (rhs.expires)
-		expires = new HtDateTime(*rhs.expires);
+  if (rhs.expires)
+    expires = new HtDateTime(*rhs.expires);
 }
 
 // Destructor
@@ -428,7 +428,7 @@ int HtCookie::SetDate(const char *datestring, HtDateTime &dt)
       // Not recognized
       if (debug > 0)
       cout << "Cookie '" << name
-      	 << "' date format not recognized: " << datestring << endl;
+         << "' date format not recognized: " << datestring << endl;
     
       return false;
    }
@@ -439,24 +439,24 @@ int HtCookie::SetDate(const char *datestring, HtDateTime &dt)
    {
       // Asc Time format
       case DateFormat_AscTime:
-      	 dt.SetAscTime((char *)datestring);
+         dt.SetAscTime((char *)datestring);
          break;
 
       // RFC 1123
       case DateFormat_RFC1123:
-      	 dt.SetRFC1123((char *)datestring);
-      	 break;
+         dt.SetRFC1123((char *)datestring);
+         break;
 
       // RFC 850
       case DateFormat_RFC850:
-      	 dt.SetRFC850((char *)datestring);
-      	 break;
+         dt.SetRFC850((char *)datestring);
+         break;
 
       default:
          if (debug > 0)
             cout << "Cookie '" << name
-      	       << "' date format not handled: " << (int)df << endl;
-      	 break;
+               << "' date format not handled: " << (int)df << endl;
+         break;
    }
 
    return !(df==DateFormat_NotRecognized);
@@ -491,7 +491,7 @@ HtCookie::DateFormat HtCookie::RecognizeDateFormat(const char *datestring)
          // Two chances: RFC1123 or RFC850
     
          if(strchr(s, '-'))
-      	    return DateFormat_RFC850;  // RFC 850 recognized   
+            return DateFormat_RFC850;  // RFC 850 recognized   
          else return DateFormat_RFC1123; // RFC 1123 recognized
       }
       else
@@ -501,7 +501,7 @@ HtCookie::DateFormat HtCookie::RecognizeDateFormat(const char *datestring)
          // Let's try C Asctime:    Sun Nov  6 08:49:37 1994
          if (strlen(datestring) == 24)
          {
-      	    return DateFormat_AscTime;
+            return DateFormat_AscTime;
          }
       }
    }

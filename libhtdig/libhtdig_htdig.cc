@@ -730,13 +730,13 @@ int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
     //int ret = FALSE;
     String the_URL(htdig_parms->URL);
     HtConfiguration* config= HtConfiguration::config();
-    Dictionary	invalids;
-    Dictionary	valids;
-    URL 	aUrl(the_URL);
-    String	rewritten_url(the_URL);
-    StringList	tmpList;
-    HtRegex		limitTo;
-    HtRegex		excludeFrom;
+    Dictionary  invalids;
+    Dictionary  valids;
+    URL   aUrl(the_URL);
+    String  rewritten_url(the_URL);
+    StringList  tmpList;
+    HtRegex    limitTo;
+    HtRegex    excludeFrom;
 
     //initalize outgoing-parameter rewritten_URL
     htdig_parms->rewritten_URL[0] = 0;
@@ -854,9 +854,9 @@ int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
     //------ bad_extensions -----------------------------------------------
     //A list of bad extensions, separated by spaces or tabs
     
-    String	t = config->Find("bad_extensions");
+    String  t = config->Find("bad_extensions");
     String lowerp;
-    char	*p = strtok(t, " \t");
+    char  *p = strtok(t, " \t");
     while (p)
     {
         // Extensions are case insensitive
@@ -944,13 +944,13 @@ int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
     // See if the file extension is in the list of invalid ones
     
     ext = strrchr((char*)rewritten_url, '.');
-    String	lowerext;
-    if (ext && strchr(ext,'/'))		// Ignore a dot if it's not in the
-        ext = NULL;			// final component of the path.
+    String  lowerext;
+    if (ext && strchr(ext,'/'))    // Ignore a dot if it's not in the
+        ext = NULL;      // final component of the path.
     if(ext)
     {
         lowerext.set(ext);
-        int parm = lowerext.indexOf('?');	// chop off URL parameter
+        int parm = lowerext.indexOf('?');  // chop off URL parameter
         if (parm >= 0)
             lowerext.chop(lowerext.length() - parm);
         lowerext.lowercase();
@@ -1019,12 +1019,12 @@ int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
         temp = config->Find("restrict");
     
     if (temp.length())
-	{
-	    // Create a temporary list from either the configuration
-	    // file or the input parameter
-	    StringList l(temp, " \t\r\n\001|");
-	    limitTo.setEscaped(l);
-	}
+  {
+      // Create a temporary list from either the configuration
+      // file or the input parameter
+      StringList l(temp, " \t\r\n\001|");
+      limitTo.setEscaped(l);
+  }
     
     /*if(strlen(htdig_parms->search_exclude) > 0)
         temp = htdig_parms->search_exclude;
@@ -1032,12 +1032,12 @@ int htdig_index_test_url(htdig_parameters_struct *htdig_parms)
         temp = config->Find("exclude");
 
     if (temp.length())
-	{
-	    // Create a temporary list from either the configuration
-	    // file or the input parameter
-	    StringList l(temp, " \t\r\n\001|");
-	    excludeFrom.setEscaped(l);
-	}
+  {
+      // Create a temporary list from either the configuration
+      // file or the input parameter
+      StringList l(temp, " \t\r\n\001|");
+      excludeFrom.setEscaped(l);
+  }
 
     //Restrict Test
     if (limitTo.match(rewritten_url, 1, 0) == 0)

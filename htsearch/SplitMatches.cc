@@ -2,7 +2,7 @@
 // SplitMatches.cc
 //
 // SplitMatches:
-//	Holds a list of lists with the matches, as specified in
+//  Holds a list of lists with the matches, as specified in
 //      search_results_order.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
@@ -66,8 +66,8 @@ MatchArea::MatchArea(const String &url_regex)
     // pattern; it must always return false for the "Match" operator.
     if (strcmp("*", url_regex.get()) != 0)
       {
-	StringList l(url_regex.get(),'|');
-	match.setEscaped(l);
+  StringList l(url_regex.get(),'|');
+  match.setEscaped(l);
       }
 }
 
@@ -87,28 +87,28 @@ SplitMatches::SplitMatches(Configuration &config)
     // Parse each as in TemplateList::createFromString.
     for (int i = 0; i < sl.Count(); i++)
     {
-	String sub_area_pattern = sl[i];
-	MatchArea *match_item = new MatchArea(sub_area_pattern);
-	mySubAreas->Add(match_item);
+  String sub_area_pattern = sl[i];
+  MatchArea *match_item = new MatchArea(sub_area_pattern);
+  mySubAreas->Add(match_item);
 
-	// If this is the magic catch-rest sub-area-pattern, we want to
-	// use its list-pointer to store all URLs that do not match
-	// anything else.
-	//  We will iterate over a list where one of the patterns is
-	// known to not match, but that's a small penalty for keeping
-	// the code simple.
-	if (strcmp("*", sub_area_pattern.get()) == 0)
-	    myDefaultList = match_item->MatchList();
+  // If this is the magic catch-rest sub-area-pattern, we want to
+  // use its list-pointer to store all URLs that do not match
+  // anything else.
+  //  We will iterate over a list where one of the patterns is
+  // known to not match, but that's a small penalty for keeping
+  // the code simple.
+  if (strcmp("*", sub_area_pattern.get()) == 0)
+      myDefaultList = match_item->MatchList();
     }
 
     // If we did not have a catch-the-rest pattern, install one at the
     // end of the list.
     if (myDefaultList == 0)
     {
-	MatchArea *match_item = new MatchArea(String("*"));
-	mySubAreas->Add(match_item);
+  MatchArea *match_item = new MatchArea(String("*"));
+  mySubAreas->Add(match_item);
 
-	myDefaultList = match_item->MatchList();
+  myDefaultList = match_item->MatchList();
     }
 }
 
@@ -134,12 +134,12 @@ SplitMatches::Add(ResultMatch *match, char *url)
     // the hundreds.
     while ((area_item = (MatchArea *) area_list->Get_Next()))
     {
-	// Use the first match only.
-	if (area_item->Match(url))
-	{
-	    area_item->MatchList()->Add(match);
-	    return;
-	}
+  // Use the first match only.
+  if (area_item->Match(url))
+  {
+      area_item->MatchList()->Add(match);
+      return;
+  }
     }
 
     // We'll get here if no match was found, so we add to the
@@ -155,7 +155,7 @@ SplitMatches::Get_Next()
     List *next_area_list = 0;
 
     if (next_area != 0)
-	next_area_list = next_area->MatchList();
+  next_area_list = next_area->MatchList();
 
     return next_area_list;
 }
@@ -175,9 +175,9 @@ SplitMatches::JoinedLists()
 
     while ((area = (MatchArea *) sub_areas->Get_Next()))
     {
-	// "Destructively" move the contents of the list,
-	// leaving the original list empty.
-	all_areas->AppendList(*(area->MatchList()));
+  // "Destructively" move the contents of the list,
+  // leaving the original list empty.
+  all_areas->AppendList(*(area->MatchList()));
     }
 
     return all_areas;

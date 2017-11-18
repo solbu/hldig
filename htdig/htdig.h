@@ -39,14 +39,14 @@ using namespace std;
 
 #include <stdio.h>
 
-extern int		debug;
-extern DocumentDB	docs;
-extern HtRegexList	limits;
-extern HtRegexList	limitsn;
-extern HtRegexList	excludes;
-extern HtRegexList	badquerystr;
-extern FILE		*urls_seen;
-extern FILE		*images_seen;
+extern int    debug;
+extern DocumentDB  docs;
+extern HtRegexList  limits;
+extern HtRegexList  limitsn;
+extern HtRegexList  excludes;
+extern HtRegexList  badquerystr;
+extern FILE    *urls_seen;
+extern FILE    *images_seen;
 
 extern void reportError(char *msg);
 

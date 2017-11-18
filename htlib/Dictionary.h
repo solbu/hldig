@@ -15,8 +15,8 @@
 // $Id: Dictionary.h,v 1.10 2004/05/28 13:15:20 lha Exp $
 //
 
-#ifndef	_Dictionary_h_
-#define	_Dictionary_h_
+#ifndef  _Dictionary_h_
+#define  _Dictionary_h_
 
 #include "Object.h"
 #include "htString.h"
@@ -30,8 +30,8 @@ class DictionaryCursor {
     //
     // Support for the Start_Get and Get_Next routines
     //
-    int			currentTableIndex;
-    DictionaryEntry	*currentDictionaryEntry;
+    int      currentTableIndex;
+    DictionaryEntry  *currentDictionaryEntry;
 };
 
 class Dictionary : public Object
@@ -49,51 +49,51 @@ public:
     //
     // Adding and deleting items to and from the dictionary
     //
-    void		Add(const String& name, Object *obj);
-    int			Remove(const String& name);
+    void    Add(const String& name, Object *obj);
+    int      Remove(const String& name);
 
     //
     // Searching can be done with the Find() member of the array indexing
     // operator
     //
-    Object		*Find(const String& name) const;
-    Object		*operator[](const String& name) const;
-    int			Exists(const String& name) const;
+    Object    *Find(const String& name) const;
+    Object    *operator[](const String& name) const;
+    int      Exists(const String& name) const;
 
     //
     // We want to be able to go through all the entries in the
     // dictionary in sequence.  To do this, we have the same
     // traversal interface as the List class
     //
-    void		Start_Get() { Start_Get(cursor); }
-    void		Start_Get(DictionaryCursor& cursor) const;
+    void    Start_Get() { Start_Get(cursor); }
+    void    Start_Get(DictionaryCursor& cursor) const;
     //
     // Get the next key
     //
-    char		*Get_Next() { return Get_Next(cursor); }
-    char		*Get_Next(DictionaryCursor& cursor) const;
+    char    *Get_Next() { return Get_Next(cursor); }
+    char    *Get_Next(DictionaryCursor& cursor) const;
     //
     // Get the next entry
     //
     Object              *Get_NextElement() { return Get_NextElement(cursor); }
     Object              *Get_NextElement(DictionaryCursor& cursor) const;
-    void		Release();
-    void		Destroy();
-    int			Count()	const	{ return count; }
+    void    Release();
+    void    Destroy();
+    int      Count()  const  { return count; }
     
 private:
-    DictionaryEntry	**table;
-    int			tableLength;
-    int			initialCapacity;
-    int			count;
-    int			threshold;
-    float		loadFactor;
+    DictionaryEntry  **table;
+    int      tableLength;
+    int      initialCapacity;
+    int      count;
+    int      threshold;
+    float    loadFactor;
 
-    DictionaryCursor	cursor;
+    DictionaryCursor  cursor;
 
-    void		rehash();
-    void		init(int, float);
-    unsigned int	hashCode(const char *key) const;
+    void    rehash();
+    void    init(int, float);
+    unsigned int  hashCode(const char *key) const;
 };
 
 #endif

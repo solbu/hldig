@@ -22,28 +22,28 @@
 String
 OperatorQuery::GetLogicalWords() const
 {
-	ListCursor c;
-	String out;
-	out << "(";
-	if(operands.Count())
-	{
-		operands.Start_Get(c);
-		out << ((Query *) operands.Get_Next(c))->GetLogicalWords();
-		Query *next = (Query *) operands.Get_Next(c);
-		while(next)
-		{
-			out << " " << OperatorString() << " ";
-			if(next)
-			{
-				out << next->GetLogicalWords();
-			}
-			else
-			{
-				out << "*nothing*";
-			}
-			next = (Query *) operands.Get_Next(c);
-		}
-	}
-	out << ")";
-	return out;
+  ListCursor c;
+  String out;
+  out << "(";
+  if(operands.Count())
+  {
+    operands.Start_Get(c);
+    out << ((Query *) operands.Get_Next(c))->GetLogicalWords();
+    Query *next = (Query *) operands.Get_Next(c);
+    while(next)
+    {
+      out << " " << OperatorString() << " ";
+      if(next)
+      {
+        out << next->GetLogicalWords();
+      }
+      else
+      {
+        out << "*nothing*";
+      }
+      next = (Query *) operands.Get_Next(c);
+    }
+  }
+  out << ")";
+  return out;
 }

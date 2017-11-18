@@ -55,8 +55,8 @@ Soundex::generateKey(char *word, String &key)
     key = 0;
     if (!word)
       {
-	key = '0';
-	return;
+  key = '0';
+  return;
       }
 
     while (*word && !isalpha(*word))
@@ -64,7 +64,7 @@ Soundex::generateKey(char *word, String &key)
 
     if (*word)
     {
-	key << *word++;
+  key << *word++;
     }
     else
     {
@@ -75,67 +75,67 @@ Soundex::generateKey(char *word, String &key)
 
     while (key.length() < 6)
     {
-	switch (*word)
-	{
-	    case 'b':
-	    case 'p':
-	    case 'f':
-	    case 'v':
-		code = 1;
-		break;
+  switch (*word)
+  {
+      case 'b':
+      case 'p':
+      case 'f':
+      case 'v':
+    code = 1;
+    break;
 
-	    case 'c':
-	    case 's':
-	    case 'k':
-	    case 'g':
-	    case 'j':
-	    case 'q':
-	    case 'x':
-	    case 'z':
-		code = 2;
-		break;
+      case 'c':
+      case 's':
+      case 'k':
+      case 'g':
+      case 'j':
+      case 'q':
+      case 'x':
+      case 'z':
+    code = 2;
+    break;
 
-	    case 'd':
-	    case 't':
-		code = 3;
-		break;
+      case 'd':
+      case 't':
+    code = 3;
+    break;
 
-	    case 'l':
-		code = 4;
-		break;
+      case 'l':
+    code = 4;
+    break;
 
-	    case 'm':
-	    case 'n':
-		code = 5;
-		break;
+      case 'm':
+      case 'n':
+    code = 5;
+    break;
 
-	    case 'r':
-		code = 6;
-		break;
+      case 'r':
+    code = 6;
+    break;
 
-	    case 'a':
-	    case 'e':
-	    case 'i':
-	    case 'o':
-	    case 'u':
-	    case 'y':
-	    case 'w':
-	    case 'h':
-	        code = 0;
-		break;
+      case 'a':
+      case 'e':
+      case 'i':
+      case 'o':
+      case 'u':
+      case 'y':
+      case 'w':
+      case 'h':
+          code = 0;
+    break;
 
-	    default:
-	        break;
-	}
-	if (code && code != lastcode)
-	  {
-	    key << code;
-	    lastcode = code;
-	  }
-	if (*word)
-	    word++;
-	else
-	    break;
+      default:
+          break;
+  }
+  if (code && code != lastcode)
+    {
+      key << code;
+      lastcode = code;
+    }
+  if (*word)
+      word++;
+  else
+      break;
     }
 }
 
@@ -148,20 +148,20 @@ Soundex::addWord(char *word)
 {
     if (!dict)
     {
-	dict = new Dictionary;
+  dict = new Dictionary;
     }
 
-    String	key;
+    String  key;
     generateKey(word, key);
 
-    String	*s = (String *) dict->Find(key);
+    String  *s = (String *) dict->Find(key);
     if (s)
     {
-      //	if (mystrcasestr(s->get(), word) != 0)
+      //  if (mystrcasestr(s->get(), word) != 0)
       (*s) << ' ' << word;
     }
     else
     {
-	dict->Add(key, new String(word));
+  dict->Add(key, new String(word));
     }
 }

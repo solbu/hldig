@@ -17,8 +17,8 @@
 #include "HtConfiguration.h"
 
 
-extern ConfigDefaults	defaults[];
-//extern HtConfiguration	config;
+extern ConfigDefaults  defaults[];
+//extern HtConfiguration  config;
 
 
 #endif

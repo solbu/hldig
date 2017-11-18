@@ -8,7 +8,7 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -24,7 +24,7 @@
 
 /*
  * raise --
- *	Send a signal to the current process.
+ *  Send a signal to the current process.
  *
  * PUBLIC: #ifndef HAVE_RAISE
  * PUBLIC: int raise __P((int));
@@ -32,8 +32,8 @@
  */
 int
 raise(s)
-	int s;
+  int s;
 {
-	return (kill(getpid(), s));
+  return (kill(getpid(), s));
 }
 #endif /* HAVE_RAISE */

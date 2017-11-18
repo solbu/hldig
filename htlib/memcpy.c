@@ -8,11 +8,11 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 /*
  * Copyright (c) 1990, 1993
- *	The Regents of the University of California.  All rights reserved.
+ *  The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -53,12 +53,12 @@
  * sizeof(word) MUST BE A POWER OF TWO
  * SO THAT wmask BELOW IS ALL ONES
  */
-typedef	int word;		/* "word" used for optimal copy speed */
+typedef  int word;    /* "word" used for optimal copy speed */
 
-#undef	wsize
-#define	wsize	sizeof(word)
-#undef	wmask
-#define	wmask	(wsize - 1)
+#undef  wsize
+#define  wsize  sizeof(word)
+#undef  wmask
+#define  wmask  (wsize - 1)
 
 /*
  * Copy a block of memory, handling overlap.
@@ -72,73 +72,73 @@ typedef	int word;		/* "word" used for optimal copy speed */
  */
 void *
 memcpy(dst0, src0, length)
-	void *dst0;
-	const void *src0;
-	register size_t length;
+  void *dst0;
+  const void *src0;
+  register size_t length;
 {
-	register char *dst = dst0;
-	register const char *src = src0;
-	register size_t t;
+  register char *dst = dst0;
+  register const char *src = src0;
+  register size_t t;
 
-	if (length == 0 || dst == src)		/* nothing to do */
-		goto done;
+  if (length == 0 || dst == src)    /* nothing to do */
+    goto done;
 
-	/*
-	 * Macros: loop-t-times; and loop-t-times, t>0
-	 */
-#undef	TLOOP
-#define	TLOOP(s) if (t) TLOOP1(s)
-#undef	TLOOP1
-#define	TLOOP1(s) do { s; } while (--t)
+  /*
+   * Macros: loop-t-times; and loop-t-times, t>0
+   */
+#undef  TLOOP
+#define  TLOOP(s) if (t) TLOOP1(s)
+#undef  TLOOP1
+#define  TLOOP1(s) do { s; } while (--t)
 
-	if ((unsigned long)dst < (unsigned long)src) {
-		/*
-		 * Copy forward.
-		 */
-		t = (int)src;	/* only need low bits */
-		if ((t | (int)dst) & wmask) {
-			/*
-			 * Try to align operands.  This cannot be done
-			 * unless the low bits match.
-			 */
-			if ((t ^ (int)dst) & wmask || length < wsize)
-				t = length;
-			else
-				t = wsize - (t & wmask);
-			length -= t;
-			TLOOP1(*dst++ = *src++);
-		}
-		/*
-		 * Copy whole words, then mop up any trailing bytes.
-		 */
-		t = length / wsize;
-		TLOOP(*(word *)dst = *(word *)src; src += wsize; dst += wsize);
-		t = length & wmask;
-		TLOOP(*dst++ = *src++);
-	} else {
-		/*
-		 * Copy backwards.  Otherwise essentially the same.
-		 * Alignment works as before, except that it takes
-		 * (t&wmask) bytes to align, not wsize-(t&wmask).
-		 */
-		src += length;
-		dst += length;
-		t = (int)src;
-		if ((t | (int)dst) & wmask) {
-			if ((t ^ (int)dst) & wmask || length <= wsize)
-				t = length;
-			else
-				t &= wmask;
-			length -= t;
-			TLOOP1(*--dst = *--src);
-		}
-		t = length / wsize;
-		TLOOP(src -= wsize; dst -= wsize; *(word *)dst = *(word *)src);
-		t = length & wmask;
-		TLOOP(*--dst = *--src);
-	}
+  if ((unsigned long)dst < (unsigned long)src) {
+    /*
+     * Copy forward.
+     */
+    t = (int)src;  /* only need low bits */
+    if ((t | (int)dst) & wmask) {
+      /*
+       * Try to align operands.  This cannot be done
+       * unless the low bits match.
+       */
+      if ((t ^ (int)dst) & wmask || length < wsize)
+        t = length;
+      else
+        t = wsize - (t & wmask);
+      length -= t;
+      TLOOP1(*dst++ = *src++);
+    }
+    /*
+     * Copy whole words, then mop up any trailing bytes.
+     */
+    t = length / wsize;
+    TLOOP(*(word *)dst = *(word *)src; src += wsize; dst += wsize);
+    t = length & wmask;
+    TLOOP(*dst++ = *src++);
+  } else {
+    /*
+     * Copy backwards.  Otherwise essentially the same.
+     * Alignment works as before, except that it takes
+     * (t&wmask) bytes to align, not wsize-(t&wmask).
+     */
+    src += length;
+    dst += length;
+    t = (int)src;
+    if ((t | (int)dst) & wmask) {
+      if ((t ^ (int)dst) & wmask || length <= wsize)
+        t = length;
+      else
+        t &= wmask;
+      length -= t;
+      TLOOP1(*--dst = *--src);
+    }
+    t = length / wsize;
+    TLOOP(src -= wsize; dst -= wsize; *(word *)dst = *(word *)src);
+    t = length & wmask;
+    TLOOP(*--dst = *--src);
+  }
 done:
-	return (dst0);
+  return (dst0);
 }
 
 #endif /* HAVE_MEMCPY */

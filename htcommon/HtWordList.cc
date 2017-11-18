@@ -2,7 +2,7 @@
 // HtWordList.cc
 //
 // HtWordList: Specialized WordList class that can hold a list 
-//	       of words waiting to be inserted in the database.
+//         of words waiting to be inserted in the database.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
@@ -75,7 +75,7 @@ void HtWordList::Replace(const WordReference& arg)
 //   
 void HtWordList::Flush()
 {
-  HtWordReference	*wordRef;
+  HtWordReference  *wordRef;
 
     // Provided for backwards compatibility
   if (!isopen)
@@ -85,12 +85,12 @@ void HtWordList::Flush()
   while ((wordRef = (HtWordReference *) words->Get_Next()))
     {
       if (wordRef->Word().length() == 0) {
-	cerr << "HtWordList::Flush: unexpected empty word\n";
-	continue;
+  cerr << "HtWordList::Flush: unexpected empty word\n";
+  continue;
       }
 
       Override(*wordRef);
-    }	
+    }  
     
   // Cleanup
   words->Destroy();
@@ -140,7 +140,7 @@ static int dump_word(WordList *, WordDBCursor &, const WordReference *word, Obje
 //
 int HtWordList::Dump(const String& filename)
 {
-  FILE		*fl;
+  FILE    *fl;
 
   if (!isopen) {
     cerr << "WordList::Dump: database must be opened first\n";
@@ -170,8 +170,8 @@ int HtWordList::Dump(const String& filename)
 //
 int HtWordList::Load(const String& filename)
 {
-  FILE		*fl;
-  String	data;
+  FILE    *fl;
+  String  data;
   HtWordReference *next;
 
   if (!isopen) {
@@ -194,10 +194,10 @@ int HtWordList::Load(const String& filename)
     {
       next = new HtWordReference;
       if (next->Load(data) != OK)
-	{
-	  delete next;
-	  continue;
-	}
+  {
+    delete next;
+    continue;
+  }
   
       words->Add(next);
     }

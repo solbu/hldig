@@ -35,28 +35,28 @@ StringList::StringList()
 //
 int StringList::Create(const char *str, const char *sep)
 {
-    String	word;
+    String  word;
 
     while (str && *str)
     {
-	if (strchr(sep, *str))
-	{
-	  if (word.length())
-	  {
-	    List::Add(new String(word));
-	    word = 0;
-	  }
-	}
-	else
-	    word << *str;
-	str++;
+  if (strchr(sep, *str))
+  {
+    if (word.length())
+    {
+      List::Add(new String(word));
+      word = 0;
+    }
+  }
+  else
+      word << *str;
+  str++;
     }
 
     //
     // Add the last word to the list
     //
     if (word.length())
-	List::Add(new String(word));
+  List::Add(new String(word));
     return Count();
 }
 
@@ -66,28 +66,28 @@ int StringList::Create(const char *str, const char *sep)
 //
 int StringList::Create(const char *str, char sep)
 {
-    String	word;
+    String  word;
 
     while (str && *str)
     {
-	if (*str == sep)
-	{
-	  if (word.length())
-	  {
-	    List::Add(new String(word));
-	    word = 0;
-	  }
-	}
-	else
-	    word << *str;
-	str++;
+  if (*str == sep)
+  {
+    if (word.length())
+    {
+      List::Add(new String(word));
+      word = 0;
+    }
+  }
+  else
+      word << *str;
+  str++;
     }
 
     //
     // Add the last word to the list
     //
     if (word.length())
-	List::Add(new String(word));
+  List::Add(new String(word));
     return Count();
 }
 
@@ -97,11 +97,11 @@ int StringList::Create(const char *str, char sep)
 //
 char *StringList::operator [] (int n)
 {
-    String	*str = (String *) Nth(n);
+    String  *str = (String *) Nth(n);
     if (str)
-	return str->get();
+  return str->get();
     else
-	return 0;
+  return 0;
 }
 
 
@@ -135,11 +135,11 @@ void StringList::Insert(const char *str, int pos)
 //
 static int StringCompare(const void *a, const void *b)
 {
-    String	*sa, *sb;
+    String  *sa, *sb;
 
     sa = *((String **) a);
     sb = *((String **) b);
-	
+  
     return strcmp(sa->get(), sb->get());
 }
 
@@ -149,26 +149,26 @@ static int StringCompare(const void *a, const void *b)
 //
 void StringList::Sort(int)
 {
-    String	**array = new String*[Count()];
-    int		i;
-    int		n = Count();
+    String  **array = new String*[Count()];
+    int    i;
+    int    n = Count();
 
     ListCursor  cursor;
 
     Start_Get(cursor);
-    Object	*obj;
+    Object  *obj;
     for(i = 0; i < n && (obj = Get_Next(cursor)); i++) {
       array[i] = (String*)obj;
     }
 
     qsort((char *) array, (size_t) n, (size_t) sizeof(String *),
-	  StringCompare);
+    StringCompare);
 
     Release();
 
     for (i = 0; i < n; i++)
     {
-	List::Add(array[i]);
+  List::Add(array[i]);
     }
 
     delete array;
@@ -185,7 +185,7 @@ String StringList::Join(char sep) const
   for (i=0; i < number; i++)
   {
       if (str.length())
-	str.append(sep);
+  str.append(sep);
       str.append(*((const String *) Nth(i)));
   }
   return str;

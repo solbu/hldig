@@ -44,7 +44,7 @@ Object::~Object()
 //
 int Object::compare(Object *)
 {
-	return 0;
+  return 0;
 }
 
 
@@ -53,7 +53,7 @@ int Object::compare(Object *)
 //
 Object *Object::Copy()
 {
-	return new Object;
+  return new Object;
 }
 
 

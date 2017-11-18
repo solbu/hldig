@@ -60,18 +60,18 @@ show_bits(int v,int n/*=16*/)
     int i;
     if(n>0)
     {
-	for(i=0;i<n;i++)
-	{
-	    printf("%c",( v&(1<<(n-i-1)) ? '1':'0' ) );
-	}
+  for(i=0;i<n;i++)
+  {
+      printf("%c",( v&(1<<(n-i-1)) ? '1':'0' ) );
+  }
     }
     else
     {
-	n=-n;
-	for(i=0;i<n;i++)
-	{
-	    printf("%c",( v&(1<<(i)) ? '1':'0' ) );
-	}
+  n=-n;
+  for(i=0;i<n;i++)
+  {
+      printf("%c",( v&(1<<(i)) ? '1':'0' ) );
+  }
     }
 }
 
@@ -98,8 +98,8 @@ qsort_uint_cmp(const void *a,const void *b)
     else
     return 0;
 //      return 
-//  	(*((unsigned int *)a)) -
-//  	(*((unsigned int *)b))   ;
+//    (*((unsigned int *)a)) -
+//    (*((unsigned int *)b))   ;
 }
 // quick sort an array of unsigned int's
 void
@@ -171,11 +171,11 @@ class VlengthCoder
     BitStream &bs;
 
 //      inline unsigned int intervalsize(int i)
-//  	{
-//  	    unsigned int res=((intervals[i] > 0 ? pow2(intervals[i]-1) : 0));
-//  	    if(intervalsizes[i]!=res){errr("intervalsizes");}
-//  	    return res;
-//  	}
+//    {
+//        unsigned int res=((intervals[i] > 0 ? pow2(intervals[i]-1) : 0));
+//        if(intervalsizes[i]!=res){errr("intervalsizes");}
+//        return res;
+//    }
     inline unsigned int intervalsize0(int i){return((intervals[i] > 0 ? pow2(intervals[i]-1) : 0));}
 
 public:
@@ -185,85 +185,85 @@ public:
     // fast version, this one recursively splits initial interval
     inline int find_interval2(const unsigned int v,unsigned int &lboundary)
     {
-	int i0=0;
-	int i1=nintervals;
-	int i;
-	for(;;)
-	{
-	    if(i1==i0+1){break;}
-	    i=(i0+i1)>>1;
-	    lboundary=lboundaries[i];
-//  	    if(verbose)printf("considering i0:%3d i1:%3d : i:%3d  v:%12u lboundary:%12u (%12u - %12u)\n",i0,i1,i,v,lboundary,lboundaries[i0],lboundaries[i1]);
-	    if(v<lboundary){i1=i;continue;}
-	    else           {i0=i;continue;}
-	    
-	}
+  int i0=0;
+  int i1=nintervals;
+  int i;
+  for(;;)
+  {
+      if(i1==i0+1){break;}
+      i=(i0+i1)>>1;
+      lboundary=lboundaries[i];
+//        if(verbose)printf("considering i0:%3d i1:%3d : i:%3d  v:%12u lboundary:%12u (%12u - %12u)\n",i0,i1,i,v,lboundary,lboundaries[i0],lboundaries[i1]);
+      if(v<lboundary){i1=i;continue;}
+      else           {i0=i;continue;}
+      
+  }
 
-	lboundary=lboundaries[i0];
-//  	i=i0;
-//    	unsigned int sboundary=lboundary+intervalsizes[i];
-//    	if(!( (lboundary!=sboundary && v>=lboundary && v<sboundary) || 
-//    	    (lboundary==sboundary && v==lboundary)                   ))
-//    	{
-//    	    printf("interval fd:i0:%3d i1:%3d : i:%3d  v:%12u lboundary:%12u (%12u - %12u)\n",i0,i1,i,v,lboundary,lboundaries[i0],lboundaries[i1]);
-//    	    errr("bad interval");
-//    	}
-	return i0;
+  lboundary=lboundaries[i0];
+//    i=i0;
+//      unsigned int sboundary=lboundary+intervalsizes[i];
+//      if(!( (lboundary!=sboundary && v>=lboundary && v<sboundary) || 
+//          (lboundary==sboundary && v==lboundary)                   ))
+//      {
+//          printf("interval fd:i0:%3d i1:%3d : i:%3d  v:%12u lboundary:%12u (%12u - %12u)\n",i0,i1,i,v,lboundary,lboundaries[i0],lboundaries[i1]);
+//          errr("bad interval");
+//      }
+  return i0;
     }
 
     // find interval where value v resides
     // slow version, this tries every interval
     inline int find_interval(const unsigned int v,unsigned int &lboundary)
     {
-	// SPEED CRITICAL SECTION
-	register int i;
-	register unsigned int sboundary=0;
-	lboundary=0;
-	for(i=0;i<nintervals-1;i++)
-	{
-//  	    if(i>=nintervals){errr("code argh!");}
-	    sboundary=lboundary+intervalsizes[i];
-//    	    printf("nintervals:%3d i:%3d : %12u ...  %12u  : %12u\n",nintervals,i,lboundary,sboundary,v);
-	    if( (lboundary!=sboundary && v>=lboundary && v<sboundary) || 
-		(lboundary==sboundary && v==lboundary)                   ){break;}
-	    lboundary=sboundary;
-	}
+  // SPEED CRITICAL SECTION
+  register int i;
+  register unsigned int sboundary=0;
+  lboundary=0;
+  for(i=0;i<nintervals-1;i++)
+  {
+//        if(i>=nintervals){errr("code argh!");}
+      sboundary=lboundary+intervalsizes[i];
+//          printf("nintervals:%3d i:%3d : %12u ...  %12u  : %12u\n",nintervals,i,lboundary,sboundary,v);
+      if( (lboundary!=sboundary && v>=lboundary && v<sboundary) || 
+    (lboundary==sboundary && v==lboundary)                   ){break;}
+      lboundary=sboundary;
+  }
 
-	return i;
+  return i;
     }
 
     // compress and insert a value into the bitstream
     inline void code(unsigned int v)
     {
-	unsigned int lboundary=0;
-	// SPEED CRITICAL SECTION
-	int i;
-//  	i=find_interval(v,lboundary);
-  	i=find_interval2(v,lboundary);
-	// were in the i'th interval;
-  	bs.put_uint(i,nlev,"int");// store interval
-	const int bitsremaining=(intervals[i]>0 ? intervals[i]-1 : 0);
-//  	if(verbose>1)printf("v:%6d interval:%2d (%5d - %5d) bitsremaining:%2d ",v,i,lboundary,sboundary,bitsremaining);
-	v-=lboundary;
-//  	if(verbose>1)printf("remain:%6d  totalbits:%2d\n",v,bitsremaining+nlev);
-    	bs.put_uint(v,bitsremaining,"rem");
+  unsigned int lboundary=0;
+  // SPEED CRITICAL SECTION
+  int i;
+//    i=find_interval(v,lboundary);
+    i=find_interval2(v,lboundary);
+  // were in the i'th interval;
+    bs.put_uint(i,nlev,"int");// store interval
+  const int bitsremaining=(intervals[i]>0 ? intervals[i]-1 : 0);
+//    if(verbose>1)printf("v:%6d interval:%2d (%5d - %5d) bitsremaining:%2d ",v,i,lboundary,sboundary,bitsremaining);
+  v-=lboundary;
+//    if(verbose>1)printf("remain:%6d  totalbits:%2d\n",v,bitsremaining+nlev);
+      bs.put_uint(v,bitsremaining,"rem");
     }
     // get and uncompress  a value from  the bitstream
     inline unsigned int get()
     {
-	// SPEED CRITICAL SECTION
-	int i=bs.get_uint(nlev,"int");// get interval
-//  	if(verbose>1)printf("get:interval:%2d ",i);
-	const int bitsremaining=(intervals[i]>0 ? intervals[i]-1 : 0);
-//  	if(verbose>1)printf("bitsremain:%2d ",bitsremaining);
-	unsigned int v=bs.get_uint(bitsremaining,"rem");
-//  	if(verbose>1)printf("v0:%3d ",v);
-//  	unsigned int lboundary=0;
-	v+=lboundaries[i];
-//	for(int j=0;j<i;j++){lboundary+=intervalsizes[j];}
-//  	v+=lboundary;
-//  	if(verbose>1)printf("lboundary:%5d v:%5d \n",lboundaries[i],v);
-	return(v);
+  // SPEED CRITICAL SECTION
+  int i=bs.get_uint(nlev,"int");// get interval
+//    if(verbose>1)printf("get:interval:%2d ",i);
+  const int bitsremaining=(intervals[i]>0 ? intervals[i]-1 : 0);
+//    if(verbose>1)printf("bitsremain:%2d ",bitsremaining);
+  unsigned int v=bs.get_uint(bitsremaining,"rem");
+//    if(verbose>1)printf("v0:%3d ",v);
+//    unsigned int lboundary=0;
+  v+=lboundaries[i];
+//  for(int j=0;j<i;j++){lboundary+=intervalsizes[j];}
+//    v+=lboundary;
+//    if(verbose>1)printf("lboundary:%5d v:%5d \n",lboundaries[i],v);
+  return(v);
     }
 
 
@@ -278,9 +278,9 @@ public:
     
     ~VlengthCoder()
     {
-	delete [] lboundaries;
-	delete [] intervals;
-	delete [] intervalsizes;
+  delete [] lboundaries;
+  delete [] intervals;
+  delete [] intervalsizes;
     }
 
     // create VlengthCoder and its probability distrbution from an array of values
@@ -296,7 +296,7 @@ VlengthCoder::code_begin()
     bs.put_uint(nlev,5,"nlev");
     for(i=0;i<nintervals;i++)
     {
-	bs.put_uint(intervals[i],NBITS_NBITS_VAL,label_str("interval",i));
+  bs.put_uint(intervals[i],NBITS_NBITS_VAL,label_str("interval",i));
     }
 }
 void 
@@ -318,9 +318,9 @@ VlengthCoder::get_begin()
 
     for(i=0;i<nintervals;i++)
     {
-	intervals[i]=bs.get_uint(NBITS_NBITS_VAL,label_str("interval",i));
-	intervalsizes[i]=intervalsize0(i);
-	if(verbose>1)printf("get_begin intervals:%2d:%2d\n",i,intervals[i]);
+  intervals[i]=bs.get_uint(NBITS_NBITS_VAL,label_str("interval",i));
+  intervalsizes[i]=intervalsize0(i);
+  if(verbose>1)printf("get_begin intervals:%2d:%2d\n",i,intervals[i]);
     }
     make_lboundaries();
 }
@@ -330,8 +330,8 @@ VlengthCoder::make_lboundaries()
     unsigned int lboundary=0;
     for(int j=0;j<=nintervals;j++)
     {
-	lboundaries[j]=lboundary;
-	if(j<nintervals){lboundary+=intervalsizes[j];}
+  lboundaries[j]=lboundary;
+  if(j<nintervals){lboundary+=intervalsizes[j];}
     }
 }
 
@@ -377,17 +377,17 @@ VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/
 
     if(verbose>10)
     {
-	printf("vals;\n");
-	for(i=0;i<n;i++)
-	{
-	    printf("%12u  ",vals[i]);
-	}
-	printf("\nsorted:\n");
-	for(i=0;i<n;i++)
-	{
-	    printf("%12u  ",sorted[i]);
-	}
-	printf("\n");
+  printf("vals;\n");
+  for(i=0;i<n;i++)
+  {
+      printf("%12u  ",vals[i]);
+  }
+  printf("\nsorted:\n");
+  for(i=0;i<n;i++)
+  {
+      printf("%12u  ",sorted[i]);
+  }
+  printf("\n");
     }
 
     // find split boundaires
@@ -395,11 +395,11 @@ VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/
     unsigned int boundary;
     for(i=0;i<nintervals-1;i++)
     {
-	boundary=sorted[(n*(i+1))/nintervals];
-	intervals[i]=1+log2(boundary-lboundary);
-	intervalsizes[i]=intervalsize0(i);
-	if(0 || verbose>1)printf("intnum%02d  begin:%5u end:%5u len:%5u (code:%2d)  real upper boundary: real:%5u\n",i,lboundary,intervalsizes[i]+lboundary,intervalsizes[i],intervals[i],boundary);
-	lboundary+=intervalsizes[i];
+  boundary=sorted[(n*(i+1))/nintervals];
+  intervals[i]=1+log2(boundary-lboundary);
+  intervalsizes[i]=intervalsize0(i);
+  if(0 || verbose>1)printf("intnum%02d  begin:%5u end:%5u len:%5u (code:%2d)  real upper boundary: real:%5u\n",i,lboundary,intervalsizes[i]+lboundary,intervalsizes[i],intervals[i],boundary);
+  lboundary+=intervalsizes[i];
     }
     boundary=sorted[n-1];
     intervals[i]=1+log2(boundary-lboundary)+1;
@@ -412,7 +412,7 @@ VlengthCoder::VlengthCoder(unsigned int *vals,int n,BitStream &nbs,int nverbose/
     int SUM_interval_bit_sizes=0;
     for(i=0;i<nintervals;i++)
     {
-	SUM_interval_bit_sizes+=intervals[i];
+  SUM_interval_bit_sizes+=intervals[i];
     }
     if(verbose)printf("SUM_interval_bit_sizes:%d\n",SUM_interval_bit_sizes);
     delete [] sorted;
@@ -450,59 +450,59 @@ BitStream::put_uint(unsigned int v,int n,const char *tag/*="NOTAG"*/)
 //      printf("bpos0:%3d bitpos:%5d:%5d  n:%4d  val:%x\n",bpos0,bitpos,buff.size()*8,n,v);
     if(bpos0 + n <8)
     {
-//    	printf("simple case:");
-//  	::show_bits(v,n);
-//  	printf("\n");
-	// simplest case it all fits
-	buff.back()|=v<<bpos0;
-	bitpos+=n;
-	if(! (bitpos & 0x07) )
-	{buff.push_back(0);}// new byte
-	return;
+//      printf("simple case:");
+//    ::show_bits(v,n);
+//    printf("\n");
+  // simplest case it all fits
+  buff.back()|=v<<bpos0;
+  bitpos+=n;
+  if(! (bitpos & 0x07) )
+  {buff.push_back(0);}// new byte
+  return;
     }
     else
     {
-	const int ncentral=((bpos0 + n)>>3)-1;
-	// put first
-	buff.back()|=((v & 0xff)<<bpos0) & 0xff;
-	const int nbitsinfirstbyte=8-bpos0;
+  const int ncentral=((bpos0 + n)>>3)-1;
+  // put first
+  buff.back()|=((v & 0xff)<<bpos0) & 0xff;
+  const int nbitsinfirstbyte=8-bpos0;
 
-//  	printf("normal case :(%x:%x)",((v & 0xff)<<bpos0) & 0xff,buff.back());
-//  	::show_bits(((v & 0xff)<<bpos0) & 0xff,-8);
-//  	printf(" ");
+//    printf("normal case :(%x:%x)",((v & 0xff)<<bpos0) & 0xff,buff.back());
+//    ::show_bits(((v & 0xff)<<bpos0) & 0xff,-8);
+//    printf(" ");
 
 
-	v>>=nbitsinfirstbyte;
-//  	printf(" (v:%x)",v);
-	// put central
-	for(int i=ncentral;i;i--)
-	{
-	    buff.push_back(0);
-	    buff.back()= v & 0xff ;
-//  	    ::show_bits(v & 0xff,-8);
-//  	    printf(" ");
-	    v>>=8;	    
-	}
-	// put last
-	const int nbitsremaining=n-(  (ncentral<<3)+nbitsinfirstbyte );
-	if(nbitsremaining)
-	{
-	    buff.push_back(0);
-	    buff.back()=v &  (pow2(nbitsremaining+1)-1);
+  v>>=nbitsinfirstbyte;
+//    printf(" (v:%x)",v);
+  // put central
+  for(int i=ncentral;i;i--)
+  {
+      buff.push_back(0);
+      buff.back()= v & 0xff ;
+//        ::show_bits(v & 0xff,-8);
+//        printf(" ");
+      v>>=8;      
+  }
+  // put last
+  const int nbitsremaining=n-(  (ncentral<<3)+nbitsinfirstbyte );
+  if(nbitsremaining)
+  {
+      buff.push_back(0);
+      buff.back()=v &  (pow2(nbitsremaining+1)-1);
 
-//  	    printf(" (v:%x:%x)",v &  (pow2(nbitsremaining+1)-1),buff.back());
-//  	    ::show_bits(v &  (pow2(nbitsremaining+1)-1),-nbitsremaining);
-//  	    printf("\n");
-	}
-	if(!(nbitsremaining & 0x07)){buff.push_back(0);}
-	bitpos+=n;
-//  	printf("nbitsinfirstbyte:%d ncentral:%d  nbitsremaining:%d\n",nbitsinfirstbyte,ncentral,nbitsremaining);
+//        printf(" (v:%x:%x)",v &  (pow2(nbitsremaining+1)-1),buff.back());
+//        ::show_bits(v &  (pow2(nbitsremaining+1)-1),-nbitsremaining);
+//        printf("\n");
+  }
+  if(!(nbitsremaining & 0x07)){buff.push_back(0);}
+  bitpos+=n;
+//    printf("nbitsinfirstbyte:%d ncentral:%d  nbitsremaining:%d\n",nbitsinfirstbyte,ncentral,nbitsremaining);
 
     }
 //      printf("cuurent put order:");
 //      for(i=0;i<n;i++)
 //      {
-//  	printf("%c",((v0& pow2(i) ? '1':'0')));
+//    printf("%c",((v0& pow2(i) ? '1':'0')));
 //      }
 //      printf("\n");
 }
@@ -529,60 +529,60 @@ BitStream::get_uint(int n,const char *tag/*=NULL*/)
 
     if(bpos0 + n <8)
     {
-	// simplest case it all fits
-	res=(buff[bitpos>>3]>>bpos0) & (pow2(n)-1);
-	bitpos+=n;
-//      	printf("simple case:res:%x\n",res);
-	return res;
+  // simplest case it all fits
+  res=(buff[bitpos>>3]>>bpos0) & (pow2(n)-1);
+  bitpos+=n;
+//        printf("simple case:res:%x\n",res);
+  return res;
     }
     else
     {
-	int bytepos=bitpos>>3;
-	const int ncentral=((bpos0 + n)>>3)-1;
-	// put first
-	res=(buff[bytepos]>>bpos0) & 0xff;
-//        	printf("normal case:res0:%x\n",res);
+  int bytepos=bitpos>>3;
+  const int ncentral=((bpos0 + n)>>3)-1;
+  // put first
+  res=(buff[bytepos]>>bpos0) & 0xff;
+//          printf("normal case:res0:%x\n",res);
 
-	const int nbitsinfirstbyte=8-bpos0;
+  const int nbitsinfirstbyte=8-bpos0;
 
-	bytepos++;
-	// put central
-	if(ncentral)
-	{
-	    unsigned int v=0;
-	    for(int i=ncentral-1;i>=0;i--)
-	    {
-		v|=buff[bytepos+i]&0xff;
-		if(i)v<<=8;
-//    		printf("       resC%d:v:%x\n",i,v);
-	    }
-	    bytepos+=ncentral;
-	    res|=v<<nbitsinfirstbyte;
-//    	    printf("       :resC:%x\n",res);
-	}
-	// put last
-	const int nbitsremaining=n-(  (ncentral<<3)+nbitsinfirstbyte );
-	if(nbitsremaining)
-	{
-	    res|=((unsigned int)(buff[bytepos] &  (pow2(nbitsremaining)-1) )) << (nbitsinfirstbyte +((bytepos-(bitpos>>3)-1)<<3));
-//    	    printf("       :resR:%x  buff[%d]:%x  %d\n",res,bytepos,buff[bytepos],
-//    		   (nbitsinfirstbyte +((bytepos-(bitpos>>3)-1)<<3)));
-	}
+  bytepos++;
+  // put central
+  if(ncentral)
+  {
+      unsigned int v=0;
+      for(int i=ncentral-1;i>=0;i--)
+      {
+    v|=buff[bytepos+i]&0xff;
+    if(i)v<<=8;
+//        printf("       resC%d:v:%x\n",i,v);
+      }
+      bytepos+=ncentral;
+      res|=v<<nbitsinfirstbyte;
+//          printf("       :resC:%x\n",res);
+  }
+  // put last
+  const int nbitsremaining=n-(  (ncentral<<3)+nbitsinfirstbyte );
+  if(nbitsremaining)
+  {
+      res|=((unsigned int)(buff[bytepos] &  (pow2(nbitsremaining)-1) )) << (nbitsinfirstbyte +((bytepos-(bitpos>>3)-1)<<3));
+//          printf("       :resR:%x  buff[%d]:%x  %d\n",res,bytepos,buff[bytepos],
+//           (nbitsinfirstbyte +((bytepos-(bitpos>>3)-1)<<3)));
+  }
 
-	bitpos+=n;
-//      	printf("nbitsinfirstbyte:%d ncentral:%d  nbitsremaining:%d\n",nbitsinfirstbyte,ncentral,nbitsremaining);
-	return res;
+  bitpos+=n;
+//        printf("nbitsinfirstbyte:%d ncentral:%d  nbitsremaining:%d\n",nbitsinfirstbyte,ncentral,nbitsremaining);
+  return res;
     }
 }
 #ifdef NOTDEF
 unsigned int 
 BitStream::get(int n,const char *tag/*=NULL*/)
-{	
+{  
     if(check_tag(tag)==NOTOK){errr("BitStream::get(int) check_tag failed");}
     unsigned int res=0;
     for(int i=0;i<n;i++)
     {
-	if(get()){res|=pow2(i);}
+  if(get()){res|=pow2(i);}
     }
     return(res);
 }
@@ -624,24 +624,24 @@ BitStream::check_tag1(const char *tag,int pos/*=-1*/)
     if(pos==-1){pos=bitpos;}
     for(int i=0;i<tags.size();i++)
     {
-	if(!strcmp(tags[i],tag))
-	{
-	    found=tagpos[i];
-	    if(tagpos[i]==pos){ok=1;break;}
-	}
+  if(!strcmp(tags[i],tag))
+  {
+      found=tagpos[i];
+      if(tagpos[i]==pos){ok=1;break;}
+  }
     }
     if(!ok)
     {
-	show();
-	if(found>=0)
-	{
-	    printf("ERROR:BitStream:bitpos:%4d:check_tag: found tag %s at %d expected it at %d\n",bitpos,tag,found,pos);
-	}
-	else
-	{
-	    printf("ERROR:BitStream:bitpos:%4d:check_tag:  tag %s not found, expected it at %d\n",bitpos,tag,pos);
-	}
-	return(NOTOK);
+  show();
+  if(found>=0)
+  {
+      printf("ERROR:BitStream:bitpos:%4d:check_tag: found tag %s at %d expected it at %d\n",bitpos,tag,found,pos);
+  }
+  else
+  {
+      printf("ERROR:BitStream:bitpos:%4d:check_tag:  tag %s not found, expected it at %d\n",bitpos,tag,pos);
+  }
+  return(NOTOK);
     }
     return(OK);
 }
@@ -662,7 +662,7 @@ BitStream::find_tag(int pos,int posaftertag/*=1*/)
     if(i==tags.size()){return -1;}
     if(!posaftertag){return i;}
     for(;tagpos[i]>pos && i>=0;i--);
-    return(i);	
+    return(i);  
 }
 
 void 
@@ -670,7 +670,7 @@ BitStream::show_bits(int a,int n)
 {
     for(int b=a;b<a+n;b++)
     {
-	printf("%c",(buff[b/8] & (1<<(b%8)) ? '1' : '0'));
+  printf("%c",(buff[b/8] & (1<<(b%8)) ? '1' : '0'));
     }
 }
 void 
@@ -682,19 +682,19 @@ BitStream::show(int a/*=0*/,int n/*=-1*/)
 
     if(all)
     {
-	printf("BitStream::Show: ntags:%d size:%4d buffsize:%6d ::: ",tags.size(),size(),buffsize());
-//  	    for(i=0;i<tags.size();i++){printf("tag:%d:%s:pos:%d\n",i,tags[i],tagpos[i]);}
+  printf("BitStream::Show: ntags:%d size:%4d buffsize:%6d ::: ",tags.size(),size(),buffsize());
+//        for(i=0;i<tags.size();i++){printf("tag:%d:%s:pos:%d\n",i,tags[i],tagpos[i]);}
     }
 
     int t=find_tag(a,0);
     if(t<0){show_bits(a,n);return;}
     for(i=a;i<a+n;i++)
     {
-	for(;t<tags.size() && tagpos[t]<i+1;t++)
-	{
-	    printf("# %s:%03d:%03d #",tags[t],tagpos[t],n);
-	}
-	show_bits(i,1);
+  for(;t<tags.size() && tagpos[t]<i+1;t++)
+  {
+      printf("# %s:%03d:%03d #",tags[t],tagpos[t],n);
+  }
+  show_bits(i,1);
     }
     if(all){printf("\n");}
 
@@ -712,8 +712,8 @@ BitStream::set_data(const byte *nbuff,int nbits)
 {
     if(buff.size()!=1 || bitpos!=0)
     {
-	printf("BitStream:set_data: size:%d bitpos:%d\n",buff.size(),bitpos);
-	errr("BitStream::set_data: valid only if BitStream is empty");
+  printf("BitStream:set_data: size:%d bitpos:%d\n",buff.size(),bitpos);
+  errr("BitStream::set_data: valid only if BitStream is empty");
     }
     buff[0] = nbuff[0];
     for(int i=1;i<(nbits+7)/8;i++){buff.push_back(nbuff[i]);}
@@ -760,42 +760,42 @@ Compressor::put_vals(unsigned int *vals,int n,const char *tag)
     int i;
     if(verbose)
     {
-	printf("TTT:n:%3d nbits:%3d\n",n,nbits);
-	for(i=1;i<7;i++)
-	{
-	    debug_test_nlev=i;
-	    printf("trying nlev:%3d\n",debug_test_nlev);
-	    freeze();
-	    put_decr(vals,n);
-	    int fndsz=unfreeze();
-	    printf("TTT:nlev:%2d try size:%4d\n",i,fndsz);
-	}
-	debug_test_nlev=-1;
+  printf("TTT:n:%3d nbits:%3d\n",n,nbits);
+  for(i=1;i<7;i++)
+  {
+      debug_test_nlev=i;
+      printf("trying nlev:%3d\n",debug_test_nlev);
+      freeze();
+      put_decr(vals,n);
+      int fndsz=unfreeze();
+      printf("TTT:nlev:%2d try size:%4d\n",i,fndsz);
+  }
+  debug_test_nlev=-1;
     }
 
     if(n>15 && nbits>3)
     {
-	freeze();
-	put_decr(vals,n);
-	sdecr=unfreeze();
+  freeze();
+  put_decr(vals,n);
+  sdecr=unfreeze();
 
-	freeze();
-	put_fixedbitl(vals,n);
-	sfixed=unfreeze();
+  freeze();
+  put_fixedbitl(vals,n);
+  sfixed=unfreeze();
     }
 
     if(verbose)printf("put_vals:n:%3d sdecr:%6d sfixed:%6d rap:%f\n",n,sdecr,sfixed,sdecr/(float)sfixed);
     if(sdecr<sfixed)
     {
-	if(verbose)printf("put_vals: comptyp:0\n");
-	put_uint(0,2,"put_valsCompType");
-	put_decr(vals,n);
+  if(verbose)printf("put_vals: comptyp:0\n");
+  put_uint(0,2,"put_valsCompType");
+  put_decr(vals,n);
     }
     else
     {
-	if(verbose)printf("put_vals: comptyp:1\n");
-	put_uint(1,2,"put_valsCompType");
-	put_fixedbitl(vals,n);
+  if(verbose)printf("put_vals: comptyp:1\n");
+  put_uint(1,2,"put_valsCompType");
+  put_fixedbitl(vals,n);
     }
 
     if(verbose)printf("------------------------------put_vals over\n");
@@ -821,9 +821,9 @@ Compressor::get_vals(unsigned int **pres,const char *tag/*="BADTAG!"*/)
     switch(comptype)
     {
     case 0:    get_decr(res,n);
-	break;
+  break;
     case 1:    get_fixedbitl(res,n);
-	break;
+  break;
     default:   errr("Compressor::get_vals invalid comptype");break;
     }
 //      get_fixedbitl(res,n);
@@ -847,8 +847,8 @@ Compressor::put_fixedbitl(byte *vals,int n,const char *tag)
     byte maxv=vals[0];
     for(i=1;i<n;i++)
     {
-	byte v=vals[i];
-	if(v>maxv){maxv=v;}
+  byte v=vals[i];
+  if(v>maxv){maxv=v;}
     }
     int nbits=num_bits(maxv);
     if(n>=pow2(NBITS_NVALS)){errr("Compressor::put_fixedbitl(byte *) : overflow: nvals>2^16");}
@@ -856,9 +856,9 @@ Compressor::put_fixedbitl(byte *vals,int n,const char *tag)
     add_tag("data");
     for(i=0;i<n;i++)
     {
-	byte v=vals[i];
-	for(j=0;j<nbits;j++) {put(v&pow2(j));}
-    }	
+  byte v=vals[i];
+  for(j=0;j<nbits;j++) {put(v&pow2(j));}
+    }  
     return(bitpos-cpos);
 }
 void
@@ -871,8 +871,8 @@ Compressor::put_fixedbitl(unsigned int *vals,int n)
     if(verbose)printf("put_fixedbitl:nbits:%4d nvals:%6d\n",nbits,n);
     for(int i=0;i<n;i++)
     {
-	put_uint(vals[i],nbits,NULL);
-    }	
+  put_uint(vals[i],nbits,NULL);
+    }  
 }
 
 void
@@ -883,7 +883,7 @@ Compressor::get_fixedbitl(unsigned int *res,int n)
     int i;
     for(i=0;i<n;i++)
     {
-	res[i]=get_uint(nbits);
+  res[i]=get_uint(nbits);
     }
 }
 int 
@@ -899,7 +899,7 @@ Compressor::get_fixedbitl(byte **pres,const char *tag/*="BADTAG!"*/)
     CHECK_MEM(res);
     for(i=0;i<n;i++)
     {
-	res[i]=get_uint(nbits);
+  res[i]=get_uint(nbits);
     }
     *pres=res;
     return(n);
@@ -921,7 +921,7 @@ Compressor::get_decr(unsigned int *res,int n)
     int i;
     for(i=0;i<n;i++)
     {
-	res[i]=coder.get();
-	if(verbose>1){printf("get_decr:got:%8d\n",res[i]);}
+  res[i]=coder.get();
+  if(verbose>1){printf("get_decr:got:%8d\n",res[i]);}
     }
 }

@@ -7,8 +7,8 @@
 //
 
 
-#ifndef	_HtVector_int_h_
-#define	_HtVector_int_h_
+#ifndef  _HtVector_int_h_
+#define  _HtVector_int_h_
 
 #define GType int
 #define HtVectorGType HtVector_int

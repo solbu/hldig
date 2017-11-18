@@ -13,8 +13,8 @@
 //
 //
 
-#ifndef	_HtRegex_h_
-#define	_HtRegex_h_
+#ifndef  _HtRegex_h_
+#define  _HtRegex_h_
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -64,23 +64,23 @@ public:
     //
     // Methods for setting the pattern
     //
-    int		set(const String& str, int case_sensitive = 0) { return set(str.get(), case_sensitive); }
-    int		set(const char *str, int case_sensitive = 0);
-    int		setEscaped(StringList &list, int case_sensitive = 0);
+    int    set(const String& str, int case_sensitive = 0) { return set(str.get(), case_sensitive); }
+    int    set(const char *str, int case_sensitive = 0);
+    int    setEscaped(StringList &list, int case_sensitive = 0);
 
-	virtual const String &lastError();	// returns the last error message
+  virtual const String &lastError();  // returns the last error message
 
     //
     // Methods for checking a match
     //
-    int		match(const String& str, int nullmatch, int nullstr) { return match(str.get(), nullmatch, nullstr); }
-    int		match(const char *str, int nullmatch, int nullstr);
+    int    match(const String& str, int nullmatch, int nullstr) { return match(str.get(), nullmatch, nullstr); }
+    int    match(const char *str, int nullmatch, int nullstr);
 
 protected:
-    int			compiled;
-    regex_t		re;
+    int      compiled;
+    regex_t    re;
 
-    String		lastErrorMessage;
+    String    lastErrorMessage;
 };
 
 #endif

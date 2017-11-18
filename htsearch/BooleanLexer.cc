@@ -18,59 +18,59 @@
 bool
 BooleanLexer::IsOr() const
 {
-	return current == String("or");
+  return current == String("or");
 }
-	
+  
 bool
 BooleanLexer::IsAnd() const
 {
-	return current == String("and");
+  return current == String("and");
 }
 
 bool
 BooleanLexer::IsNot() const
 {
-	return current == String("not");
+  return current == String("not");
 }
 
 bool
 BooleanLexer::IsNear() const
 {
-	return current == String("near");
+  return current == String("near");
 }
 
 bool
 BooleanLexer::IsSlash() const
 {
-	return current == String("/");
+  return current == String("/");
 }
 
 bool
 BooleanLexer::IsLeftParen() const
 {
-	return current == String("(");
+  return current == String("(");
 }
 
-	
+  
 bool
 BooleanLexer::IsRightParen() const
 {
-	return current == String(")");
+  return current == String(")");
 }
 
 bool
 BooleanLexer::IsWord() const
 {
-	return !IsEnd()
-	&& !IsQuote()
-	&& !IsRightParen()
-	&& !IsLeftParen()
-	&& !IsSlash()
-	&& !IsAnd()
-	&& !IsOr()
-	&& !IsAnd()
-	&& !IsNot()
-	&& !IsNear();
+  return !IsEnd()
+  && !IsQuote()
+  && !IsRightParen()
+  && !IsLeftParen()
+  && !IsSlash()
+  && !IsAnd()
+  && !IsOr()
+  && !IsAnd()
+  && !IsNot()
+  && !IsNear();
 }
 
 

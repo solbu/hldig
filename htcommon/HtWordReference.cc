@@ -33,11 +33,11 @@ int HtWordReference::DumpHeader(FILE *fl)
 int HtWordReference::Dump(FILE *fl) const
 {
   fprintf(fl, "%s\t%d\t%d\t%d\t%d\n",
-	  (char*)Word(),
-	  DocID(),
-	  Flags(),
-	  Location(),
-	  Anchor());
+    (char*)Word(),
+    DocID(),
+    Flags(),
+    Location(),
+    Anchor());
   return OK;
 }
 

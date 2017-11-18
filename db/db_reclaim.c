@@ -2,13 +2,13 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 
 #include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_reclaim.c	11.2 (Sleepycat) 9/10/99";
+static const char sccsid[] = "@(#)db_reclaim.c  11.2 (Sleepycat) 9/10/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -32,49 +32,49 @@ static const char sccsid[] = "@(#)db_reclaim.c	11.2 (Sleepycat) 9/10/99";
  */
 int
 CDB___db_traverse_dup(dbp, pgno, callback, cookie)
-	DB *dbp;
-	db_pgno_t pgno;
-	int (*callback) __P((DB *, PAGE *, void *, int *));
-	void *cookie;
+  DB *dbp;
+  db_pgno_t pgno;
+  int (*callback) __P((DB *, PAGE *, void *, int *));
+  void *cookie;
 {
-	PAGE *p;
-	int did_put, i, opgno, ret;
+  PAGE *p;
+  int did_put, i, opgno, ret;
 
-	do {
-		did_put = 0;
-		if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &p)) != 0)
-			return (ret);
-		pgno = NEXT_PGNO(p);
+  do {
+    did_put = 0;
+    if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &p)) != 0)
+      return (ret);
+    pgno = NEXT_PGNO(p);
 
-		for (i = 0; i < NUM_ENT(p); i++) {
-			if (B_TYPE(GET_BKEYDATA(p, i)->type) == B_OVERFLOW) {
-				opgno = GET_BOVERFLOW(p, i)->pgno;
-				if ((ret = CDB___db_traverse_big(dbp,
-				    opgno, callback, cookie)) != 0)
-					goto err;
-			}
-		}
+    for (i = 0; i < NUM_ENT(p); i++) {
+      if (B_TYPE(GET_BKEYDATA(p, i)->type) == B_OVERFLOW) {
+        opgno = GET_BOVERFLOW(p, i)->pgno;
+        if ((ret = CDB___db_traverse_big(dbp,
+            opgno, callback, cookie)) != 0)
+          goto err;
+      }
+    }
 
-		if ((ret = callback(dbp, p, cookie, &did_put)) != 0)
-			goto err;
+    if ((ret = callback(dbp, p, cookie, &did_put)) != 0)
+      goto err;
 
-		if (!did_put)
-			if ((ret = CDB_memp_fput(dbp->mpf, p, 0)) != 0)
-				return (ret);
-	} while (pgno != PGNO_INVALID);
+    if (!did_put)
+      if ((ret = CDB_memp_fput(dbp->mpf, p, 0)) != 0)
+        return (ret);
+  } while (pgno != PGNO_INVALID);
 
-	if (0) {
-err:		if (did_put == 0)
-			(void)CDB_memp_fput(dbp->mpf, p, 0);
-	}
-	return (ret);
+  if (0) {
+err:    if (did_put == 0)
+      (void)CDB_memp_fput(dbp->mpf, p, 0);
+  }
+  return (ret);
 }
 
 /*
  * CDB___db_traverse_big
- *	Traverse a chain of overflow pages and call the callback routine
+ *  Traverse a chain of overflow pages and call the callback routine
  * on each one.  The calling convention for the callback is:
- * 	callback(dbp, page, cookie, did_put),
+ *   callback(dbp, page, cookie, did_put),
  * where did_put is a return value indicating if the page in question has
  * already been returned to the mpool.
  *
@@ -83,25 +83,25 @@ err:		if (did_put == 0)
  */
 int
 CDB___db_traverse_big(dbp, pgno, callback, cookie)
-	DB *dbp;
-	db_pgno_t pgno;
-	int (*callback) __P((DB *, PAGE *, void *, int *));
-	void *cookie;
+  DB *dbp;
+  db_pgno_t pgno;
+  int (*callback) __P((DB *, PAGE *, void *, int *));
+  void *cookie;
 {
-	PAGE *p;
-	int did_put, ret;
+  PAGE *p;
+  int did_put, ret;
 
-	do {
-		did_put = 0;
-		if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &p)) != 0)
-			return (ret);
-		pgno = NEXT_PGNO(p);
-		if ((ret = callback(dbp, p, cookie, &did_put)) == 0 &&
-		    !did_put)
-			ret = CDB_memp_fput(dbp->mpf, p, 0);
-	} while (ret == 0 && pgno != PGNO_INVALID);
+  do {
+    did_put = 0;
+    if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &p)) != 0)
+      return (ret);
+    pgno = NEXT_PGNO(p);
+    if ((ret = callback(dbp, p, cookie, &did_put)) == 0 &&
+        !did_put)
+      ret = CDB_memp_fput(dbp->mpf, p, 0);
+  } while (ret == 0 && pgno != PGNO_INVALID);
 
-	return (ret);
+  return (ret);
 }
 
 /*
@@ -117,18 +117,18 @@ CDB___db_traverse_big(dbp, pgno, callback, cookie)
  */
 int
 CDB___db_reclaim_callback(dbp, p, cookie, putp)
-	DB *dbp;
-	PAGE *p;
-	void *cookie;
-	int *putp;
+  DB *dbp;
+  PAGE *p;
+  void *cookie;
+  int *putp;
 {
-	int ret;
+  int ret;
 
-	COMPQUIET(dbp, NULL);
+  COMPQUIET(dbp, NULL);
 
-	if ((ret = CDB___db_free(cookie, p)) != 0)
-		return (ret);
-	*putp = 1;
+  if ((ret = CDB___db_free(cookie, p)) != 0)
+    return (ret);
+  *putp = 1;
 
-	return (0);
+  return (0);
 }

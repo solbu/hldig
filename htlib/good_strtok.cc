@@ -3,7 +3,7 @@
 //
 // good_strtok: The good_strtok() function is very similar to the 
 //              standard strtok() library function, except that good_strtok() 
-//		will only skip over 1 separator if it finds one.  This is
+//    will only skip over 1 separator if it finds one.  This is
 //              needed when parsing strings with empty fields.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
@@ -27,20 +27,20 @@
 //
 char *good_strtok(char *str, char term)
 {
-    static char		*string;
+    static char    *string;
 
     if (str)
     {
-	string = str;
+  string = str;
     }
 
     if (string == NULL || *string == '\0')
-	return NULL;
+  return NULL;
 
     char *p = string;
     while (*string && *string!=term)
-	string++;
+  string++;
     if (*string)
-	*string++ = '\0';
+  *string++ = '\0';
     return p;
 }

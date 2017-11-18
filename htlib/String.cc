@@ -39,7 +39,7 @@ using namespace std;
 #include <stdlib.h>
 
 
-const int MinimumAllocationSize = 4;	// Should be power of two.
+const int MinimumAllocationSize = 4;  // Should be power of two.
 
 #ifdef NOINLINE
 String::String()
@@ -61,11 +61,11 @@ String::String(const char *s)
     Allocated = Length = 0;
     Data = 0;
 
-    int	len;
+    int  len;
     if (s)
       {
-	len = strlen(s);
-	copy(s, len, len);
+  len = strlen(s);
+  copy(s, len, len);
       }
 }
 
@@ -74,7 +74,7 @@ String::String(const char *s, int len)
     Allocated = Length = 0;
     Data = 0;
     if (s && len > 0)
-	copy(s, len, len);
+  copy(s, len, len);
 }
 
 String::String(const String &s)
@@ -97,16 +97,16 @@ String::String(const String &s, int allocation_hint)
 
     if (s.length() != 0)
       {
-	if (allocation_hint < s.length())
-	  allocation_hint = s.length();
-	copy(s.Data, s.length(), allocation_hint);
+  if (allocation_hint < s.length())
+    allocation_hint = s.length();
+  copy(s.Data, s.length(), allocation_hint);
       }
 }
 
 String::~String()
 {
     if (Allocated)
-	delete [] Data;
+  delete [] Data;
 }
 
 void String::operator = (const String &s)
@@ -128,19 +128,19 @@ void String::operator = (const char *s)
     if (s)
     {
       int len = strlen(s);
-	allocate_fix_space(len);
-	Length = len;
-	copy_data_from(s, Length);	
+  allocate_fix_space(len);
+  Length = len;
+  copy_data_from(s, Length);  
     }
     else
-	Length = 0;
+  Length = 0;
 }
 
 void String::append(const String &s)
 {
     if (s.length() == 0)
-	return;
-    int	new_len = Length + s.length();
+  return;
+    int  new_len = Length + s.length();
 
     reallocate_space(new_len);
     copy_data_from(s.Data, s.length(), Length);
@@ -150,22 +150,22 @@ void String::append(const String &s)
 void String::append(const char *s)
 {
     if (!s)
-	return;
-	
+  return;
+  
     append(s,strlen(s));
 }
 
 void String::append(const char *s, int slen)
 {
     if (!s || !slen)
-	return;
+  return;
 
 //    if ( slen == 1 ) 
 //    {
 //        append(*s);
 //        return;
 //    }
-    int	new_len = Length + slen;
+    int  new_len = Length + slen;
 
     if (new_len + 1 > Allocated)
     reallocate_space(new_len);
@@ -177,38 +177,38 @@ void String::append(char ch)
 {
     int new_len = Length +1;
     if (new_len + 1 > Allocated)
-    	reallocate_space(new_len);
+      reallocate_space(new_len);
     Data[Length] = ch;
     Length = new_len;
 }
 
 int String::compare(const String& obj) const
 {
-    int	len;
-    int	result;
-    const char	*p1 = Data;
-    const char	*p2 = obj.Data;
+    int  len;
+    int  result;
+    const char  *p1 = Data;
+    const char  *p2 = obj.Data;
 
     len = Length;
     result = 0;
 
     if (Length > obj.Length)
     {
-	result = 1;
-	len = obj.Length;
+  result = 1;
+  len = obj.Length;
     }
     else if (Length < obj.Length)
-	result = -1;
+  result = -1;
 
     while (len)
     {
-	if (*p1 > *p2)
-	    return 1;
-	if (*p1 < *p2)
-	    return -1;
-	p1++;
-	p2++;
-	len--;
+  if (*p1 > *p2)
+      return 1;
+  if (*p1 < *p2)
+      return -1;
+  p1++;
+  p2++;
+  len--;
     }
     //
     // Strings are equal up to the shortest length.
@@ -219,58 +219,58 @@ int String::compare(const String& obj) const
 
 int String::nocase_compare(const String &s) const
 {
-    const char	*p1 = get();
-    const char	*p2 = s.get();
+    const char  *p1 = get();
+    const char  *p2 = s.get();
 
     return mystrcasecmp(p1, p2);
 }
 
 int String::Write(int fd) const
 {
-    int	left = Length;
-    char	*wptr = Data;
-	
+    int  left = Length;
+    char  *wptr = Data;
+  
     while (left)
     {
-	int result = write(fd, wptr, left);
-		
-	if (result < 0)
-	    return result;
-		
-	left -= result;
-	wptr += result;
+  int result = write(fd, wptr, left);
+    
+  if (result < 0)
+      return result;
+    
+  left -= result;
+  wptr += result;
     }
     return left;
 }
 
 const char *String::get() const
 {
-  static const char	*null = "";
+  static const char  *null = "";
   if (!Allocated)
     return null;
-  Data[Length] = '\0';	// We always leave room for this.
+  Data[Length] = '\0';  // We always leave room for this.
   return Data;
 }
 
 char *String::get()
 {
-  static char	*null = "";
+  static char  *null = "";
   if (!Allocated)
     return null;
-  Data[Length] = '\0';	// We always leave room for this.
+  Data[Length] = '\0';  // We always leave room for this.
   return Data;
 }
 
 char *String::new_char() const
 {
-    char	*r;
+    char  *r;
     if (!Allocated)
     {
-	r = new char[1];
-	*r = '\0';
-	return r;
+  r = new char[1];
+  *r = '\0';
+  return r;
     }
-    Data[Length] = '\0';	// We always leave room for this.
+    Data[Length] = '\0';  // We always leave room for this.
     r = new char[Length + 1];
     strcpy(r, Data);
     return r;
@@ -280,7 +280,7 @@ char *String::new_char() const
 int String::as_integer(int def) const
 {
     if (Length <= 0)
-	return def;
+  return def;
     Data[Length] = '\0';
     return atoi(Data);
 }
@@ -288,7 +288,7 @@ int String::as_integer(int def) const
 double String::as_double(double def) const
 {
     if (Length <= 0)
-	return def;
+  return def;
     Data[Length] = '\0';
     return atof(Data);
 }
@@ -296,10 +296,10 @@ double String::as_double(double def) const
 String String::sub(int start, int len) const
 {
     if (start > Length)
-	return 0;
+  return 0;
 
     if (len > Length - start)
-	len = Length - start;
+  len = Length - start;
 
     return String(Data + start, len);
 }
@@ -311,26 +311,26 @@ String String::sub(int start) const
 
 int String::indexOf(const char *str) const
 {
-    char	*c;    
+    char  *c;    
     //
     // Set the first char after string end to zero to prevent finding
     // substrings including symbols after actual end of string
     //
     if (!Allocated)
-	return -1;
+  return -1;
     Data[Length] = '\0';
     
     /* OLD CODE: for (i = 0; i < Length; i++) */
 #ifdef HAVE_STRSTR
     if ((c = strstr(Data, str)) != NULL)
-	return(c -Data);
+  return(c -Data);
 #else
-    int		len = strlen(str);
-    int		i;
+    int    len = strlen(str);
+    int    i;
     for (i = 0; i <= Length-len; i++)
     {
-	if (strncmp(&Data[i], str, len) == 0)
-	    return i;
+  if (strncmp(&Data[i], str, len) == 0)
+      return i;
     }
 #endif
     return -1;
@@ -338,11 +338,11 @@ int String::indexOf(const char *str) const
 
 int String::indexOf(char ch) const
 {
-    int		i;
+    int    i;
     for (i = 0; i < Length; i++)
     {
-	if (Data[i] == ch)
-	    return i;
+  if (Data[i] == ch)
+      return i;
     }
     return -1;
 }
@@ -353,8 +353,8 @@ int String::indexOf(char ch, int pos) const
       return -1;
     for (int i = pos; i < Length; i++)
     {
-	if (Data[i] == ch)
-	    return i;
+  if (Data[i] == ch)
+      return i;
     }
     return -1;
 }
@@ -362,12 +362,12 @@ int String::indexOf(char ch, int pos) const
 int String::lastIndexOf(char ch, int pos) const
 {
     if (pos >= Length)
-	return -1;
+  return -1;
     while (pos >= 0)
     {
-	if (Data[pos] == ch)
-	    return pos;
-	pos--;
+  if (Data[pos] == ch)
+      return pos;
+  pos--;
     }
     return -1;
 }
@@ -392,7 +392,7 @@ String &String::operator << (char ch)
 
 String &String::operator << (int i)
 {
-    char	str[20];
+    char  str[20];
     sprintf(str, "%d", i);
     append(str);
     return *this;
@@ -400,7 +400,7 @@ String &String::operator << (int i)
 
 String &String::operator << (unsigned int i)
 {
-    char	str[20];
+    char  str[20];
     sprintf(str, "%u", i);
     append(str);
     return *this;
@@ -408,7 +408,7 @@ String &String::operator << (unsigned int i)
 
 String &String::operator << (long l)
 {
-    char	str[20];
+    char  str[20];
     sprintf(str, "%ld", l);
     append(str);
     return *this;
@@ -420,15 +420,15 @@ String &String::operator << (const String &s)
     return *this;
 }
 
-char	String::operator >> (char c)
+char  String::operator >> (char c)
 {
     c = '\0';
-	
+  
     if (Allocated && Length)
     {
-	c = Data[Length - 1];
-	Data[Length - 1] = '\0';
-	Length--;
+  c = Data[Length - 1];
+  Data[Length - 1] = '\0';
+  Length--;
     }
 
     return c;
@@ -440,8 +440,8 @@ int String::lowercase()
   for (int i = 0; i < Length; i++)
     {
       if (isupper((unsigned char)Data[i])) {
-	Data[i] = tolower((unsigned char)Data[i]);
-	converted++;
+  Data[i] = tolower((unsigned char)Data[i]);
+  converted++;
       }
     }
   return converted;
@@ -454,8 +454,8 @@ int String::uppercase()
   for (int i = 0; i < Length; i++)
     {
       if (islower((unsigned char)Data[i])) {
-	Data[i] = toupper((unsigned char)Data[i]);
-	converted++;
+  Data[i] = toupper((unsigned char)Data[i]);
+  converted++;
       }
     }
   return converted;
@@ -465,27 +465,27 @@ int String::uppercase()
 void String::replace(char c1, char c2)
 {
     for (int i = 0; i < Length; i++)
-	if (Data[i] == c1)
-	    Data[i] = c2;
+  if (Data[i] == c1)
+      Data[i] = c2;
 }
 
 
 int String::remove(const char *chars)
 {
     if (Length <= 0)
-	return 0;
+  return 0;
 
-    char	*good, *bad;
-    int		skipped = 0;
+    char  *good, *bad;
+    int    skipped = 0;
 
     good = bad = Data;
     for (int i = 0; i < Length; i++)
     {
-	if (strchr(chars, *bad))
-	    skipped++;
-	else
-	    *good++ = *bad;
-	bad++;
+  if (strchr(chars, *bad))
+      skipped++;
+  else
+      *good++ = *bad;
+  bad++;
     }
     Length -= skipped;
 
@@ -496,23 +496,23 @@ String &String::chop(int n)
 {
     Length -= n;
     if (Length < 0)
-	Length = 0;
+  Length = 0;
     return *this;
 }
 
 
 String &String::chop(char ch)
 {
-	while (Length > 0 && Data[Length - 1] == ch)
-	    Length--;
+  while (Length > 0 && Data[Length - 1] == ch)
+      Length--;
     return *this;
 }
 
 
 String &String::chop(const char *str)
 {
-	while (Length > 0 && strchr(str, Data[Length - 1]))
-	    Length--;
+  while (Length > 0 && strchr(str, Data[Length - 1]))
+      Length--;
     return *this;
 }
 
@@ -539,8 +539,8 @@ void String::Deserialize(String &source, int &index)
 //
 String operator + (const String &a, const String &b)
 {
-    String	result(a, a.length() + b.length());
-	
+    String  result(a, a.length() + b.length());
+  
     result.append(b);
     return result;
 }
@@ -548,7 +548,7 @@ String operator + (const String &a, const String &b)
 int operator == (const String &a, const String &b)
 {
     if (a.Length != b.Length)
-	return 0;
+  return 0;
 
     return a.compare(b) == 0;
 }
@@ -597,7 +597,7 @@ void String::copy_data_from(const char *s, int len, int dest_offset)
 
 void String::allocate_space(int len)
 {
-    len++;				// In case we want to add a null.
+    len++;        // In case we want to add a null.
 
     if (len <= Allocated)
       return;
@@ -614,7 +614,7 @@ void String::allocate_space(int len)
 
 void String::allocate_fix_space(int len)
 {
-    len++;				// In case we want to add a null.
+    len++;        // In case we want to add a null.
 
     if (len <= Allocated)
       return;
@@ -630,20 +630,20 @@ void String::allocate_fix_space(int len)
 
 void String::reallocate_space(int len)
 {
-	char	*old_data = 0;
-	int	 old_data_len = 0;
+  char  *old_data = 0;
+  int   old_data_len = 0;
 
     if (Allocated)
-	{
-	    old_data = Data;
-	    old_data_len = Length;
-	    Allocated = 0;
-	}
+  {
+      old_data = Data;
+      old_data_len = Length;
+      Allocated = 0;
+  }
     allocate_space(len);
     if (old_data)
       {
-	copy_data_from(old_data, old_data_len);
-	delete [] old_data;
+  copy_data_from(old_data, old_data_len);
+  delete [] old_data;
       }
 }
 
@@ -660,7 +660,7 @@ void String::copy(const char *s, int len, int allocation_hint)
 void String::debug(ostream &o)
 {
     o << "Length: " << Length << " Allocated: " << Allocated <<
-	" Data: " << ((void*) Data) << " '" << *this << "'\n";
+  " Data: " << ((void*) Data) << " '" << *this << "'\n";
 }
 #endif /* NOSTREAM */
 
@@ -671,29 +671,29 @@ int String::readLine(FILE *in)
 
     while (fgets(Data + Length, Allocated - Length, in))
     {
-	Length += strlen(Data + Length);
-	if (Length == 0)
-	    continue;
-	if (Data[Length - 1] == '\n')
-	{
-	    //
-	    // A full line has been read.  Return it.
-	    //
-	    chop('\n');
-	    return 1;
-	}
-	if (Allocated > Length + 1)
-	{
-	    //
-	    // Not all available space filled. Probably EOF?
-	    //
-	    continue;
-	}
-	//
-	// Only a partial line was read. Increase available space in 
-	// string and read some more.
-	//
-	reallocate_space(Allocated << 1);
+  Length += strlen(Data + Length);
+  if (Length == 0)
+      continue;
+  if (Data[Length - 1] == '\n')
+  {
+      //
+      // A full line has been read.  Return it.
+      //
+      chop('\n');
+      return 1;
+  }
+  if (Allocated > Length + 1)
+  {
+      //
+      // Not all available space filled. Probably EOF?
+      //
+      continue;
+  }
+  //
+  // Only a partial line was read. Increase available space in 
+  // string and read some more.
+  //
+  reallocate_space(Allocated << 1);
     }
     chop('\n');
 
@@ -708,17 +708,17 @@ istream &operator >> (istream &in, String &line)
 
     for (;;)
     {
-	in.clear();
-	in.getline(line.Data + line.Length, line.Allocated - line.Length);
-	line.Length += strlen(line.Data + line.Length);
-	// if read whole line, or eof, or read fewer chars than the max...
-	if (!in.fail() || in.eof() || line.Length + 1 < line.Allocated)
-	    break;
-	//
-	// Only a partial line was read. Increase available space in 
-	// string and read some more.
-	//
-	line.reallocate_space(line.Allocated << 1);
+  in.clear();
+  in.getline(line.Data + line.Length, line.Allocated - line.Length);
+  line.Length += strlen(line.Data + line.Length);
+  // if read whole line, or eof, or read fewer chars than the max...
+  if (!in.fail() || in.eof() || line.Length + 1 < line.Allocated)
+      break;
+  //
+  // Only a partial line was read. Increase available space in 
+  // string and read some more.
+  //
+  line.reallocate_space(line.Allocated << 1);
     }
 
     return in;

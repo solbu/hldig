@@ -100,7 +100,7 @@ void Bzero(void *s, int n);
 word32 byteswap(word32 x);
 
 int BreakToThree(void *key, unsigned int keylen,
-				 void *keyword1, void *keyword2, void *keyword3);
+         void *keyword1, void *keyword2, void *keyword3);
 
 /*
    }}} 

@@ -83,11 +83,11 @@ int main(int argc, char *argv[])
       break;
     case 'v':
       {
-	int value = config.Value("wordlist_verbose", 0);
-	value++;
-	char value_string[64];
-	sprintf(value_string, "%d", value);
-	config.Add("wordlist_verbose", value_string);
+  int value = config.Value("wordlist_verbose", 0);
+  value++;
+  char value_string[64];
+  sprintf(value_string, "%d", value);
+  config.Add("wordlist_verbose", value_string);
       }
       break;
     default:

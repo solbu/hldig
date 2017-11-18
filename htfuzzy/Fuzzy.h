@@ -43,68 +43,68 @@ public:
     // Construction/Destruction
     //
     Fuzzy(const HtConfiguration& config);
-    virtual		~Fuzzy();
+    virtual    ~Fuzzy();
 
     //
     // Given a single work, generate a list of replacement words using
     // the current algorithm.
     //
-    virtual void	getWords(char *word, List &words);
+    virtual void  getWords(char *word, List &words);
 
     //
     // For the current algorithm, open the key database
     //
-    virtual int		openIndex();
+    virtual int    openIndex();
 
     //
     // For searching, we will need to keep track of the weight associated
     // with a particular fuzzy algorithm.
     //
-    void		setWeight(double w)		{weight = w;}
-    double		getWeight()			{return weight;}
+    void    setWeight(double w)    {weight = w;}
+    double    getWeight()      {return weight;}
 
     //*******************************************************************
     // The following are used in the creation of the fuzzy databases.
     //
     // For the current algorithm, write the database to disk.
     //
-    virtual int		writeDB();
+    virtual int    writeDB();
 
     //
     // For the current algorithm, create the database.
     // This is for those algoritms that don't need a list of words
     // to work.
     //
-    virtual int		createDB(const HtConfiguration &config);
-	
+    virtual int    createDB(const HtConfiguration &config);
+  
     //
     // Given a word from the htdig word database, create the appropriate
     // entries into memory which will later be written out with writeDB().
     //
-    virtual void	addWord(char *word);
+    virtual void  addWord(char *word);
 
     //
     // Each algorithm has a name...
     //
-    char		*getName()			{return name;}
+    char    *getName()      {return name;}
 
     //
     // Fuzzy algorithm factory.  This returns a new Fuzzy algorithm
     // object that belongs to the given name.
     //
-    static Fuzzy	*getFuzzyByName(char *name, const HtConfiguration& config);
-	
+    static Fuzzy  *getFuzzyByName(char *name, const HtConfiguration& config);
+  
 protected:
     //
     // Given a single word, generate a database key
     //
-    virtual void	generateKey(char *word, String &key);
+    virtual void  generateKey(char *word, String &key);
 
-    char			*name;
-    Database			*index;
-    Dictionary			*dict;
-    double			weight;
-    const HtConfiguration&	config;
+    char      *name;
+    Database      *index;
+    Dictionary      *dict;
+    double      weight;
+    const HtConfiguration&  config;
 };
 
 #endif

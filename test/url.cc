@@ -2,8 +2,8 @@
 // url.cc
 //
 // url: Implement tests for the URL parser
-//	Should ensure compliance to RFC2396
-//	<http://www.faqs.org/rfcs/rfc2396.html>
+//  Should ensure compliance to RFC2396
+//  <http://www.faqs.org/rfcs/rfc2396.html>
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
@@ -70,9 +70,9 @@ static int verbose = 0;
 //
 int main(int ac, char **av)
 {
-  int			c;
-  extern char		*optarg;
-  params_t		params;
+  int      c;
+  extern char    *optarg;
+  params_t    params;
 
   params.url_parents = strdup("url.parents");
   params.url_children = strdup("url.children");
@@ -81,25 +81,25 @@ int main(int ac, char **av)
   while ((c = getopt(ac, av, "vop:c:")) != -1)
     {
       switch (c)
-	{
-	case 'v':
-	  verbose++;
-	  break;
-	case 'p':
-	  free(params.url_parents);
-	  params.url_parents = strdup(optarg);
-	  break;
-	case 'c':
-	  free(params.url_children);
-	  params.url_children = strdup(optarg);
-	  break;
-	case 'o' :
-	  params.test_children = 0;
-	  break;
-	case '?':
-	  usage();
-	  break;
-	}
+  {
+  case 'v':
+    verbose++;
+    break;
+  case 'p':
+    free(params.url_parents);
+    params.url_parents = strdup(optarg);
+    break;
+  case 'c':
+    free(params.url_children);
+    params.url_children = strdup(optarg);
+    break;
+  case 'o' :
+    params.test_children = 0;
+    break;
+  case '?':
+    usage();
+    break;
+  }
     }
 
   dourl(&params);
@@ -113,7 +113,7 @@ int main(int ac, char **av)
 static void dourl(params_t* params)
 {
   if(verbose) cerr << "Test WordKey class with " <<
-		params->url_parents << " and " << params->url_children << "\n";
+    params->url_parents << " and " << params->url_children << "\n";
   HtConfiguration* const config= HtConfiguration::config();
   config->Defaults(defaults);
   dolist(params);
@@ -128,18 +128,18 @@ static void dolist(params_t* params)
   // To start, we read in the list of child URLs into a List object
   FILE          *urllist = fopen(params->url_children, "r");
   char          buffer[1000];
-  List		children;
+  List    children;
  
   if (params->test_children)
     {
       while (fgets(buffer, sizeof(buffer), urllist))
-	{
-	  buffer [sizeof(buffer) - 1] = '\0';	// make strlen() safe
-	  int len = strlen(buffer);
-	  if (len && buffer [len-1] == '\n')
-	      buffer [len-1] = '\0';		// remove trailing '\n'
-	  children.Add(new String(buffer));
-	}
+  {
+    buffer [sizeof(buffer) - 1] = '\0';  // make strlen() safe
+    int len = strlen(buffer);
+    if (len && buffer [len-1] == '\n')
+        buffer [len-1] = '\0';    // remove trailing '\n'
+    children.Add(new String(buffer));
+  }
       fclose(urllist);
     }
 
@@ -152,17 +152,17 @@ static void dolist(params_t* params)
       cout << "Parent: " << buffer << '(' << parent.signature().get() << ")\n";
       parent.dump();
       if (params->test_children)
-	{
-	  cout << "\nChildren: \n";
-	  children.Start_Get();
-	  while ((current = (String *)children.Get_Next()))
-	    {
-	      cout << "\nChild: " << current->get() << endl;
-	      child = URL(current->get(), parent);
-	      child.dump();
-	    }
-	  cout << endl;
-	}
+  {
+    cout << "\nChildren: \n";
+    children.Start_Get();
+    while ((current = (String *)children.Get_Next()))
+      {
+        cout << "\nChild: " << current->get() << endl;
+        child = URL(current->get(), parent);
+        child.dump();
+      }
+    cout << endl;
+  }
     }
 
   fclose(urllist);

@@ -47,8 +47,8 @@
 // Type number associated to each possible type for a key element
 // (type field of struct WordKeyInfo).
 //
-#define WORD_ISA_NUMBER		1
-#define WORD_ISA_STRING		2
+#define WORD_ISA_NUMBER    1
+#define WORD_ISA_STRING    2
 
 //
 // Maximum number of fields in a key description
@@ -66,8 +66,8 @@ typedef unsigned int WordKeyNum;
 //
 // Maximum number of bits in a field
 //
-#define WORD_KEY_MAXBITS	((int)(sizeof(WordKeyNum) * 8))
-#define WORD_KEY_MAXVALUE	((WordKeyNum)~(WordKeyNum)0)
+#define WORD_KEY_MAXBITS  ((int)(sizeof(WordKeyNum) * 8))
+#define WORD_KEY_MAXVALUE  ((WordKeyNum)~(WordKeyNum)0)
 
 //
 // Description of a single field
@@ -105,8 +105,8 @@ class WordKeyField
     //
     void Show();
 
-    String name;			// Symbolic name of the field
-    int type;				// WORD_ISA_{STRING|NUMBER} 
+    String name;      // Symbolic name of the field
+    int type;        // WORD_ISA_{STRING|NUMBER} 
     //
     // 01234567012345670123456701234567
     // +-------+-------+-------+-------+--
@@ -115,11 +115,11 @@ class WordKeyField
     //   |                        |
     // lowbits = 3           lastbits = 6
     //
-    int lowbits;			
-    int lastbits;			
-    int bytesize;			// Number of bytes involved
-    int bytes_offset;			// Offset of first byte from start
-    int bits;				// Size of field in bits
+    int lowbits;      
+    int lastbits;      
+    int bytesize;      // Number of bytes involved
+    int bytes_offset;      // Offset of first byte from start
+    int bits;        // Size of field in bits
     int bits_offset;                    // Offset of first bit from start
 };
 

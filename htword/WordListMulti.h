@@ -240,11 +240,11 @@ class WordListMulti : public WordList
     //
     virtual List *Collect(const WordReference& word);
 #ifndef SWIG
-    List*            	dbs;
-    int			serial;
-    int			file_max;
-    int			file_min;
-    unsigned int	put_max;
+    List*              dbs;
+    int      serial;
+    int      file_max;
+    int      file_min;
+    unsigned int  put_max;
 #endif /* SWIG */
 };
 

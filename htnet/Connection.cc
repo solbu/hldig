@@ -33,7 +33,7 @@
 #define EISCONN      WSAEISCONN
 #else
 #include <sys/socket.h>
-#include <arpa/inet.h>	// For inet_ntoa
+#include <arpa/inet.h>  // For inet_ntoa
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
@@ -71,9 +71,9 @@ extern "C" {
 #endif
 
 #undef MIN
-#define	MIN(a,b)		((a)<(b)?(a):(b))
+#define  MIN(a,b)    ((a)<(b)?(a):(b))
 
-List	all_connections;
+List  all_connections;
 
 //*************************************************************************
 // Connection::Connection(int socket)
@@ -96,7 +96,7 @@ Connection::Connection(int socket)
    {
       GETPEERNAME_LENGTH_T length = sizeof(server);
       if (getpeername(socket, (struct sockaddr *)&server, &length) < 0)
-      	 perror("getpeername");
+         perror("getpeername");
    }
    
    all_connections.Add(this);
@@ -159,25 +159,25 @@ int Connection::Open(int priv)
 {
     if (priv)
     {
-	int	aport = IPPORT_RESERVED - 1;
+  int  aport = IPPORT_RESERVED - 1;
 
 //  Native Windows (MSVC) has no rresvport
 #ifndef _MSC_VER /* _WIN32 */
-	sock = rresvport(&aport);
+  sock = rresvport(&aport);
 #else
-	return NOTOK;
+  return NOTOK;
 #endif
     }
     else
     {
-	    sock = socket(AF_INET, SOCK_STREAM, 0);
-	//cout << "socket()  sock=" << sock << endl;
+      sock = socket(AF_INET, SOCK_STREAM, 0);
+  //cout << "socket()  sock=" << sock << endl;
     }
 
     if (sock == NOTOK)
-	return NOTOK;
+  return NOTOK;
 
-    int	on = 1;
+    int  on = 1;
     setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof(on));
     server.sin_family = AF_INET;
 
@@ -242,9 +242,9 @@ int Connection::Close()
     connected = 0;
     if (sock >= 0)
     {
-	int ret = close(sock);
-	sock = -1;
-	return ret;
+  int ret = close(sock);
+  sock = -1;
+  return ret;
     }
     return NOTOK;
 }
@@ -265,12 +265,12 @@ int Connection::Assign_Port(int port)
 //
 int Connection::Assign_Port(const String &service)
 {
-    struct servent		*sp;
+    struct servent    *sp;
 
     sp = getservbyname(service, "tcp");
     if (sp == 0)
     {
-	return NOTOK;
+  return NOTOK;
     }
     server.sin_port = sp->s_port;
     return OK;
@@ -335,51 +335,51 @@ static void handler_timeout(int) {
 //
 int Connection::Connect()
 {
-    int	status;
+    int  status;
     int retries = retry_value;
 
     while (retries--)
       {
 #ifndef _MSC_VER /* _WIN32 */
-	//
-	// Set an alarm to make sure the connect() call times out
-	// appropriately This ensures the call won't hang on a
-	// dead server or bad DNS call.
-	// Save the previous alarm signal handling policy, if any.
-	//
-	struct sigaction action;
-	struct sigaction old_action;
-	memset((char*)&action, '\0', sizeof(struct sigaction));
-	memset((char*)&old_action, '\0', sizeof(struct sigaction));
-	action.sa_handler = handler_timeout;
-	sigaction(SIGALRM, &action, &old_action);
-	alarm(timeout_value);
+  //
+  // Set an alarm to make sure the connect() call times out
+  // appropriately This ensures the call won't hang on a
+  // dead server or bad DNS call.
+  // Save the previous alarm signal handling policy, if any.
+  //
+  struct sigaction action;
+  struct sigaction old_action;
+  memset((char*)&action, '\0', sizeof(struct sigaction));
+  memset((char*)&old_action, '\0', sizeof(struct sigaction));
+  action.sa_handler = handler_timeout;
+  sigaction(SIGALRM, &action, &old_action);
+  alarm(timeout_value);
 #endif
 
-	status = connect(sock, (struct sockaddr *)&server, sizeof(server));
+  status = connect(sock, (struct sockaddr *)&server, sizeof(server));
 
-	//
-	// Disable alarm and restore previous policy if any
-	//
+  //
+  // Disable alarm and restore previous policy if any
+  //
 #ifndef _MSC_VER /* _WIN32 */
-	alarm(0);
-       	sigaction(SIGALRM, &old_action, 0);
+  alarm(0);
+         sigaction(SIGALRM, &old_action, 0);
 #endif
 
-	if (status == 0 || errno == EALREADY || errno == EISCONN)
-	  {
-	    connected = 1;
-	    return OK;
-	  }
+  if (status == 0 || errno == EALREADY || errno == EISCONN)
+    {
+      connected = 1;
+      return OK;
+    }
 
-	//
-	// Only loop if timed out. Other errors are fatal.
-	//
-	if (status < 0 && errno != EINTR)
-	  break;
-	
-	// cout << " <"  << ::strerror(errno) << "> ";
-	close(sock);
+  //
+  // Only loop if timed out. Other errors are fatal.
+  //
+  if (status < 0 && errno != EINTR)
+    break;
+  
+  // cout << " <"  << ::strerror(errno) << "> ";
+  close(sock);
         Open();
 
         sleep(wait_time);
@@ -389,13 +389,13 @@ int Connection::Connect()
 #if 0
     if (status == ECONNREFUSED)
     {
-	//
-	// For the case where the connection attempt is refused, we need
-	// to close the socket and create a new one in order to do any
-	// more with it.
-	//
-	Close(sock);
-	Open();
+  //
+  // For the case where the connection attempt is refused, we need
+  // to close the socket and create a new one in order to do any
+  // more with it.
+  //
+  Close(sock);
+  Open();
     }
 #else
     close(sock);
@@ -414,7 +414,7 @@ int Connection::Bind()
 {
     if (bind(sock, (struct sockaddr *)&server, sizeof(server)) == NOTOK)
     {
-	return NOTOK;
+  return NOTOK;
     }
     return OK;
 }
@@ -429,7 +429,7 @@ int Connection::Get_Port()
     
     if (getsockname(sock, (struct sockaddr *)&server, &length) == NOTOK)
     {
-	return NOTOK;
+  return NOTOK;
     }
     return ntohs(server.sin_port);
 }
@@ -449,19 +449,19 @@ int Connection::Listen(int n)
 //
 Connection *Connection::Accept(int priv)
 {
-    int	newsock;
+    int  newsock;
 
     while (1)
     {
-	newsock = accept(sock, (struct sockaddr *)0, (GETPEERNAME_LENGTH_T *)0);
-	if (newsock == NOTOK && errno == EINTR)
-	    continue;
-	break;
+  newsock = accept(sock, (struct sockaddr *)0, (GETPEERNAME_LENGTH_T *)0);
+  if (newsock == NOTOK && errno == EINTR)
+      continue;
+  break;
     }
     if (newsock == NOTOK)
-	return (Connection *)0;
+  return (Connection *)0;
 
-    Connection	*newconnect = new Connection;
+    Connection  *newconnect = new Connection;
     newconnect->sock = newsock;
 
     GETPEERNAME_LENGTH_T length = sizeof(newconnect->server);
@@ -469,8 +469,8 @@ Connection *Connection::Accept(int priv)
 
     if (priv && newconnect->server.sin_port >= IPPORT_RESERVED)
     {
-	delete newconnect;
-	return (Connection *)0;
+  delete newconnect;
+  return (Connection *)0;
     }
 
     return newconnect;
@@ -495,12 +495,12 @@ int Connection::Read_Char()
 {
     if (pos >= pos_max)
     {
-	pos_max = Read_Partial(buffer, sizeof(buffer));
-	pos = 0;
-	if (pos_max <= 0)
-	{
-	    return -1;
-	}
+  pos_max = Read_Partial(buffer, sizeof(buffer));
+  pos = 0;
+  if (pos_max <= 0)
+  {
+      return -1;
+  }
     }
     return buffer[pos++] & 0xff;
 }
@@ -511,39 +511,39 @@ int Connection::Read_Char()
 //
 String *Connection::Read_Line(String &s, const char *terminator)
 {
-    int		termseq = 0;
+    int    termseq = 0;
     s = 0;
 
     for (;;)
     {
-	int	ch = Read_Char();
-	if (ch < 0)
-	{
-	    //
-	    // End of file reached.  If we still have stuff in the input buffer
-	    // we need to return it first.  When we get called again we will
-	    // return 0 to let the caller know about the EOF condition.
-	    //
-	    if (s.length())
-		break;
-	    else
-		return (String *) 0;
-	}
-	else if (terminator[termseq] && ch == terminator[termseq])
-	{
-	    //
-	    // Got one of the terminator characters.  We will not put
-	    // it in the string but keep track of the fact that we
-	    // have seen it.
-	    //
-	    termseq++;
-	    if (!terminator[termseq])
-		break;
-	}
-	else
-	{
-	    s << (char) ch;
-	}
+  int  ch = Read_Char();
+  if (ch < 0)
+  {
+      //
+      // End of file reached.  If we still have stuff in the input buffer
+      // we need to return it first.  When we get called again we will
+      // return 0 to let the caller know about the EOF condition.
+      //
+      if (s.length())
+    break;
+      else
+    return (String *) 0;
+  }
+  else if (terminator[termseq] && ch == terminator[termseq])
+  {
+      //
+      // Got one of the terminator characters.  We will not put
+      // it in the string but keep track of the fact that we
+      // have seen it.
+      //
+      termseq++;
+      if (!terminator[termseq])
+    break;
+  }
+  else
+  {
+      s << (char) ch;
+  }
     }
 
     return &s;
@@ -555,7 +555,7 @@ String *Connection::Read_Line(String &s, const char *terminator)
 //
 String *Connection::Read_Line(char *terminator)
 {
-    String	*s;
+    String  *s;
 
     s = new String;
     return Read_Line(*s, terminator);
@@ -567,40 +567,40 @@ String *Connection::Read_Line(char *terminator)
 //
 char *Connection::Read_Line(char *buffer, int maxlength, char *terminator)
 {
-    char	*start = buffer;
-    int		termseq = 0;
+    char  *start = buffer;
+    int    termseq = 0;
 
     while (maxlength > 0)
     {
-	int		ch = Read_Char();
-	if (ch < 0)
-	{
-	    //
-	    // End of file reached.  If we still have stuff in the input buffer
-	    // we need to return it first.  When we get called again, we will
-	    // return 0 to let the caller know about the EOF condition.
-	    //
-	    if (buffer > start)
-		break;
-	    else
-		return (char *) 0;
-	}
-	else if (terminator[termseq] && ch == terminator[termseq])
-	{
-	    //
-	    // Got one of the terminator characters.  We will not put
-	    // it in the string but keep track of the fact that we
-	    // have seen it.
-	    //
-	    termseq++;
-	    if (!terminator[termseq])
-		break;
-	}
-	else
-	{
-	    *buffer++ = ch;
-	    maxlength--;
-	}
+  int    ch = Read_Char();
+  if (ch < 0)
+  {
+      //
+      // End of file reached.  If we still have stuff in the input buffer
+      // we need to return it first.  When we get called again, we will
+      // return 0 to let the caller know about the EOF condition.
+      //
+      if (buffer > start)
+    break;
+      else
+    return (char *) 0;
+  }
+  else if (terminator[termseq] && ch == terminator[termseq])
+  {
+      //
+      // Got one of the terminator characters.  We will not put
+      // it in the string but keep track of the fact that we
+      // have seen it.
+      //
+      termseq++;
+      if (!terminator[termseq])
+    break;
+  }
+  else
+  {
+      *buffer++ = ch;
+      maxlength--;
+  }
     }
     *buffer = '\0';
 
@@ -613,13 +613,13 @@ char *Connection::Read_Line(char *buffer, int maxlength, char *terminator)
 //
 int Connection::Write_Line(char *str, char *eol)
 {
-    int		n, nn;
+    int    n, nn;
 
     if ((n = Write(str)) < 0)
-	return -1;
+  return -1;
 
     if ((nn = Write(eol)) < 0)
-	return -1;
+  return -1;
 
     return n + nn;
 }
@@ -630,21 +630,21 @@ int Connection::Write_Line(char *str, char *eol)
 //
 int Connection::Write(char *buffer, int length)
 {
-    int		nleft, nwritten;
+    int    nleft, nwritten;
 
     if (length == -1)
-	length = strlen(buffer);
+  length = strlen(buffer);
 
     nleft = length;
     while (nleft > 0)
     {
-	nwritten = Write_Partial(buffer, nleft);
-	if (nwritten < 0 && errno == EINTR)
-	    continue;
-	if (nwritten <= 0)
-	    return nwritten;
-	nleft -= nwritten;
-	buffer += nwritten;
+  nwritten = Write_Partial(buffer, nleft);
+  if (nwritten < 0 && errno == EINTR)
+      continue;
+  if (nwritten <= 0)
+      return nwritten;
+  nleft -= nwritten;
+  buffer += nwritten;
     }
     return length - nleft;
 }
@@ -655,7 +655,7 @@ int Connection::Write(char *buffer, int length)
 //
 int Connection::Read(char *buffer, int length)
 {
-    int		nleft, nread;
+    int    nleft, nread;
 
     nleft = length;
 
@@ -664,26 +664,26 @@ int Connection::Read(char *buffer, int length)
     //
     if (pos < pos_max)
     {
-	int n = MIN(length, pos_max - pos);
+  int n = MIN(length, pos_max - pos);
 
-	memcpy(buffer, &this->buffer[pos], n);
-	pos += n;
-	buffer += n;
-	nleft -= n;
+  memcpy(buffer, &this->buffer[pos], n);
+  pos += n;
+  buffer += n;
+  nleft -= n;
     }
 
     while (nleft > 0)
     {
-	nread = Read_Partial(buffer, nleft);
-	if (nread < 0 && errno == EINTR)
-	    continue;
-	if (nread < 0)
-	    return -1;
-	else if (nread == 0)
-	    break;
+  nread = Read_Partial(buffer, nleft);
+  if (nread < 0 && errno == EINTR)
+      continue;
+  if (nread < 0)
+      return -1;
+  else if (nread == 0)
+      break;
 
-	nleft -= nread;
-	buffer += nread;
+  nleft -= nread;
+  buffer += nread;
     }
     return length - nleft;
 }
@@ -701,8 +701,8 @@ void Connection::Flush()
 //   This  is  equivalent  to  the  workings  of the standard read()
 //   system call
 // PARAMETERS:
-//   char *buffer:	Buffer to read the data into
-//   int maxlength:	Maximum number of bytes to read into the buffer
+//   char *buffer:  Buffer to read the data into
+//   int maxlength:  Maximum number of bytes to read into the buffer
 // RETURN VALUE:
 //   The actual number of bytes read in.
 // ASSUMPTIONS:
@@ -712,7 +712,7 @@ void Connection::Flush()
 //
 int Connection::Read_Partial(char *buffer, int maxlength)
 {
-    int		count;
+    int    count;
 
     need_io_stop = 0;
     do
@@ -750,13 +750,13 @@ int Connection::Read_Partial(char *buffer, int maxlength)
 //
 int Connection::Write_Partial(char *buffer, int maxlength)
 {
-    int		count;
+    int    count;
 
     do
     {
 
- 	    count = send(sock, buffer, maxlength, 0);
-	
+       count = send(sock, buffer, maxlength, 0);
+  
     }
     while (count < 0 && errno == EINTR && !need_io_stop);
     need_io_stop = 0;
@@ -773,7 +773,7 @@ int Connection::Write_Partial(char *buffer, int maxlength)
 //
 char * Connection::Socket_as_String()
 {
-    char	*buffer = new char[20];
+    char  *buffer = new char[20];
 
     sprintf(buffer, "%d", sock);
     return buffer;
@@ -790,21 +790,21 @@ const char* Connection::Get_Peername()
 {
     if (peer.empty())
     {
-	struct sockaddr_in	p;
-	GETPEERNAME_LENGTH_T	length = sizeof(p);
-	struct hostent		*hp;
-	
-	if (getpeername(sock, (struct sockaddr *) &p, &length) < 0)
-	{
-	    return 0;
-	}
-	
-	length = sizeof(p.sin_addr);
-	hp = gethostbyaddr((const char *) &p.sin_addr, length, AF_INET);
-	if (hp)
-	    peer = (char *) hp->h_name;
-	else
-	    peer = (char *) inet_ntoa(p.sin_addr);
+  struct sockaddr_in  p;
+  GETPEERNAME_LENGTH_T  length = sizeof(p);
+  struct hostent    *hp;
+  
+  if (getpeername(sock, (struct sockaddr *) &p, &length) < 0)
+  {
+      return 0;
+  }
+  
+  length = sizeof(p.sin_addr);
+  hp = gethostbyaddr((const char *) &p.sin_addr, length, AF_INET);
+  if (hp)
+      peer = (char *) hp->h_name;
+  else
+      peer = (char *) inet_ntoa(p.sin_addr);
     }
     return (const char*) peer.get();
 }
@@ -815,12 +815,12 @@ const char* Connection::Get_Peername()
 //
 const char* Connection::Get_PeerIP() const
 {
-    struct sockaddr_in	p;
-    GETPEERNAME_LENGTH_T	length = sizeof(p);
+    struct sockaddr_in  p;
+    GETPEERNAME_LENGTH_T  length = sizeof(p);
     
     if (getpeername(sock, (struct sockaddr *) &p, &length) < 0)
     {
-	return 0;
+  return 0;
     }
     return (const char*) inet_ntoa(p.sin_addr);
 }
@@ -834,18 +834,18 @@ extern "C" int gethostname(char *name, int namelen);
 //
 unsigned int GetHostIP(char *ip, int length)
 {
-    char	hostname[100];
+    char  hostname[100];
     if (gethostname(hostname, sizeof(hostname)) == NOTOK)
-	return 0;
+  return 0;
 
-    struct hostent	*ent = gethostbyname(hostname);
+    struct hostent  *ent = gethostbyname(hostname);
     if (!ent)
-	return 0;
+  return 0;
 
-    struct in_addr	addr;
+    struct in_addr  addr;
     memcpy((char *) &addr.s_addr, ent->h_addr, sizeof(addr));
     if (ip)
-	strncpy(ip, inet_ntoa(addr), length);
+  strncpy(ip, inet_ntoa(addr), length);
     return addr.s_addr;
 }
 

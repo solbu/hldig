@@ -29,14 +29,14 @@ public:
     // Construction/Destruction
     //
     Exact(const HtConfiguration& config_arg);
-    virtual		~Exact();
+    virtual    ~Exact();
 
-    virtual void	getWords(char *word, List &words);
-    virtual int		openIndex();
+    virtual void  getWords(char *word, List &words);
+    virtual int    openIndex();
 
-    virtual void	generateKey(char *, String &);
-    virtual void	addWord(char *);
-	
+    virtual void  generateKey(char *, String &);
+    virtual void  addWord(char *);
+  
 private:
 };
 

@@ -2,11 +2,11 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 /*
  * Copyright (c) 1995, 1996
- *	The President and Fellows of Harvard University.  All rights reserved.
+ *  The President and Fellows of Harvard University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,14 +32,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db_dispatch.h	11.5 (Sleepycat) 9/9/99
+ *  @(#)db_dispatch.h  11.5 (Sleepycat) 9/9/99
  */
 
 #ifndef _DB_DISPATCH_H
 #define _DB_DISPATCH_H
 
-struct __db_txnhead;	typedef struct __db_txnhead DB_TXNHEAD;
-struct __db_txnlist;	typedef struct __db_txnlist DB_TXNLIST;
+struct __db_txnhead;  typedef struct __db_txnhead DB_TXNHEAD;
+struct __db_txnlist;  typedef struct __db_txnlist DB_TXNLIST;
 
 /*
  * Declarations and typedefs for the list of transaction IDs used during
@@ -47,44 +47,44 @@ struct __db_txnlist;	typedef struct __db_txnlist DB_TXNLIST;
  * we need during recovery.
  */
 struct __db_txnhead {
-	LIST_HEAD(__db_headlink, __db_txnlist) head;
-	u_int32_t maxid;
-	int32_t generation;
+  LIST_HEAD(__db_headlink, __db_txnlist) head;
+  u_int32_t maxid;
+  int32_t generation;
 };
 
-#define TXNLIST_INVALID_ID	0xffffffff
+#define TXNLIST_INVALID_ID  0xffffffff
 struct __db_txnlist {
-	enum { TXNLIST_DELETE, TXNLIST_TXNID } type;
-	LIST_ENTRY(__db_txnlist) links;
-	union {
-		struct {
-			u_int32_t txnid;
-			int32_t	generation;
-		} t;
-		struct {
-#define TXNLIST_FLAG_DELETED	0x1
-#define	TXNLIST_FLAG_CLOSED	0x2
-			u_int32_t flags;
-			u_int32_t fileid;
-			u_int32_t count;
-			char *fname;
-		} d;
-	} u;
+  enum { TXNLIST_DELETE, TXNLIST_TXNID } type;
+  LIST_ENTRY(__db_txnlist) links;
+  union {
+    struct {
+      u_int32_t txnid;
+      int32_t  generation;
+    } t;
+    struct {
+#define TXNLIST_FLAG_DELETED  0x1
+#define  TXNLIST_FLAG_CLOSED  0x2
+      u_int32_t flags;
+      u_int32_t fileid;
+      u_int32_t count;
+      char *fname;
+    } d;
+  } u;
 };
 
-#define	DB_log_BEGIN		  0
-#define	DB_txn_BEGIN		  5
-#define	DB_ham_BEGIN		 20
-#define	DB_db_BEGIN		 40
-#define	DB_bam_BEGIN		 50
-#define	DB_qam_BEGIN		 75
-#define	DB_ram_BEGIN		100
-#define	DB_crdel_BEGIN		140
-#define	DB_user_BEGIN		150
+#define  DB_log_BEGIN      0
+#define  DB_txn_BEGIN      5
+#define  DB_ham_BEGIN     20
+#define  DB_db_BEGIN     40
+#define  DB_bam_BEGIN     50
+#define  DB_qam_BEGIN     75
+#define  DB_ram_BEGIN    100
+#define  DB_crdel_BEGIN    140
+#define  DB_user_BEGIN    150
 
-#define	TXN_UNDO		 0
-#define	TXN_REDO		 1
-#define	TXN_BACKWARD_ROLL	-1
-#define	TXN_FORWARD_ROLL	-2
-#define TXN_OPENFILES		-3
+#define  TXN_UNDO     0
+#define  TXN_REDO     1
+#define  TXN_BACKWARD_ROLL  -1
+#define  TXN_FORWARD_ROLL  -2
+#define TXN_OPENFILES    -3
 #endif

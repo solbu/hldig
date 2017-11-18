@@ -2,11 +2,11 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 /*
  * Copyright (c) 1990, 1993, 1994
- *	The Regents of the University of California.  All rights reserved.
+ *  The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,70 +32,70 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db_swap.h	11.2 (Sleepycat) 9/9/99
+ *  @(#)db_swap.h  11.2 (Sleepycat) 9/9/99
  */
 
 #ifndef _DB_SWAP_H_
-#define	_DB_SWAP_H_
+#define  _DB_SWAP_H_
 
 /*
  * Little endian <==> big endian 32-bit swap macros.
- *	M_32_SWAP	swap a memory location
- *	P_32_COPY	copy potentially unaligned 4 byte quantities
- *	P_32_SWAP	swap a referenced memory location
+ *  M_32_SWAP  swap a memory location
+ *  P_32_COPY  copy potentially unaligned 4 byte quantities
+ *  P_32_SWAP  swap a referenced memory location
  */
-#define	M_32_SWAP(a) {							\
-	u_int32_t _tmp;							\
-	_tmp = a;							\
-	((u_int8_t *)&a)[0] = ((u_int8_t *)&_tmp)[3];			\
-	((u_int8_t *)&a)[1] = ((u_int8_t *)&_tmp)[2];			\
-	((u_int8_t *)&a)[2] = ((u_int8_t *)&_tmp)[1];			\
-	((u_int8_t *)&a)[3] = ((u_int8_t *)&_tmp)[0];			\
+#define  M_32_SWAP(a) {              \
+  u_int32_t _tmp;              \
+  _tmp = a;              \
+  ((u_int8_t *)&a)[0] = ((u_int8_t *)&_tmp)[3];      \
+  ((u_int8_t *)&a)[1] = ((u_int8_t *)&_tmp)[2];      \
+  ((u_int8_t *)&a)[2] = ((u_int8_t *)&_tmp)[1];      \
+  ((u_int8_t *)&a)[3] = ((u_int8_t *)&_tmp)[0];      \
 }
-#define	P_32_COPY(a, b) {						\
-	((u_int8_t *)b)[0] = ((u_int8_t *)a)[0];			\
-	((u_int8_t *)b)[1] = ((u_int8_t *)a)[1];			\
-	((u_int8_t *)b)[2] = ((u_int8_t *)a)[2];			\
-	((u_int8_t *)b)[3] = ((u_int8_t *)a)[3];			\
+#define  P_32_COPY(a, b) {            \
+  ((u_int8_t *)b)[0] = ((u_int8_t *)a)[0];      \
+  ((u_int8_t *)b)[1] = ((u_int8_t *)a)[1];      \
+  ((u_int8_t *)b)[2] = ((u_int8_t *)a)[2];      \
+  ((u_int8_t *)b)[3] = ((u_int8_t *)a)[3];      \
 }
-#define	P_32_SWAP(a) {							\
-	u_int32_t _tmp;							\
-	P_32_COPY(a, &_tmp);						\
-	((u_int8_t *)a)[0] = ((u_int8_t *)&_tmp)[3];			\
-	((u_int8_t *)a)[1] = ((u_int8_t *)&_tmp)[2];			\
-	((u_int8_t *)a)[2] = ((u_int8_t *)&_tmp)[1];			\
-	((u_int8_t *)a)[3] = ((u_int8_t *)&_tmp)[0];			\
+#define  P_32_SWAP(a) {              \
+  u_int32_t _tmp;              \
+  P_32_COPY(a, &_tmp);            \
+  ((u_int8_t *)a)[0] = ((u_int8_t *)&_tmp)[3];      \
+  ((u_int8_t *)a)[1] = ((u_int8_t *)&_tmp)[2];      \
+  ((u_int8_t *)a)[2] = ((u_int8_t *)&_tmp)[1];      \
+  ((u_int8_t *)a)[3] = ((u_int8_t *)&_tmp)[0];      \
 }
 
 /*
  * Little endian <==> big endian 16-bit swap macros.
- *	M_16_SWAP	swap a memory location
- *	P_16_COPY	copy potentially unaligned 2 byte quantities
- *	P_16_SWAP	swap a referenced memory location
+ *  M_16_SWAP  swap a memory location
+ *  P_16_COPY  copy potentially unaligned 2 byte quantities
+ *  P_16_SWAP  swap a referenced memory location
  */
-#define	M_16_SWAP(a) {							\
-	u_int16_t _tmp;							\
-	_tmp = (u_int16_t)a;						\
-	((u_int8_t *)&a)[0] = ((u_int8_t *)&_tmp)[1];			\
-	((u_int8_t *)&a)[1] = ((u_int8_t *)&_tmp)[0];			\
+#define  M_16_SWAP(a) {              \
+  u_int16_t _tmp;              \
+  _tmp = (u_int16_t)a;            \
+  ((u_int8_t *)&a)[0] = ((u_int8_t *)&_tmp)[1];      \
+  ((u_int8_t *)&a)[1] = ((u_int8_t *)&_tmp)[0];      \
 }
-#define	P_16_COPY(a, b) {						\
-	((u_int8_t *)b)[0] = ((u_int8_t *)a)[0];			\
-	((u_int8_t *)b)[1] = ((u_int8_t *)a)[1];			\
+#define  P_16_COPY(a, b) {            \
+  ((u_int8_t *)b)[0] = ((u_int8_t *)a)[0];      \
+  ((u_int8_t *)b)[1] = ((u_int8_t *)a)[1];      \
 }
-#define	P_16_SWAP(a) {							\
-	u_int16_t _tmp;							\
-	P_16_COPY(a, &_tmp);						\
-	((u_int8_t *)a)[0] = ((u_int8_t *)&_tmp)[1];			\
-	((u_int8_t *)a)[1] = ((u_int8_t *)&_tmp)[0];			\
+#define  P_16_SWAP(a) {              \
+  u_int16_t _tmp;              \
+  P_16_COPY(a, &_tmp);            \
+  ((u_int8_t *)a)[0] = ((u_int8_t *)&_tmp)[1];      \
+  ((u_int8_t *)a)[1] = ((u_int8_t *)&_tmp)[0];      \
 }
 
-#define	SWAP32(p) {							\
-	P_32_SWAP(p);							\
-	(p) += sizeof(u_int32_t);					\
+#define  SWAP32(p) {              \
+  P_32_SWAP(p);              \
+  (p) += sizeof(u_int32_t);          \
 }
-#define	SWAP16(p) {							\
-	P_16_SWAP(p);							\
-	(p) += sizeof(u_int16_t);					\
+#define  SWAP16(p) {              \
+  P_16_SWAP(p);              \
+  (p) += sizeof(u_int16_t);          \
 }
 #endif /* !_DB_SWAP_H_ */

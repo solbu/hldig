@@ -2,7 +2,7 @@
 // SSLConnection.cc
 //
 // SSLConnection: This class forms a easy to use interface to the 
-//		  socket interface using SSL connection encryption.
+//      socket interface using SSL connection encryption.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999-2004 The ht://Dig Group
@@ -14,7 +14,7 @@
 //
 
 #ifndef _SSLConnection_h_
-#define	_SSLConnection_h_
+#define  _SSLConnection_h_
 
 #include "Connection.h"
 

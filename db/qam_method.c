@@ -2,13 +2,13 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 
 #include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)qam_method.c	11.1 (Sleepycat) 8/19/99";
+static const char sccsid[] = "@(#)qam_method.c  11.1 (Sleepycat) 8/19/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,43 +21,43 @@ static const char sccsid[] = "@(#)qam_method.c	11.1 (Sleepycat) 8/19/99";
 
 /*
  * CDB___qam_db_create --
- *	Queue specific initialization of the DB structure.
+ *  Queue specific initialization of the DB structure.
  *
  * PUBLIC: int CDB___qam_db_create __P((DB *));
  */
 int
 CDB___qam_db_create(dbp)
-	DB *dbp;
+  DB *dbp;
 {
-	QUEUE *t;
-	int ret;
+  QUEUE *t;
+  int ret;
 
-	/* Allocate and initialize the private queue structure. */
-	if ((ret = CDB___os_calloc(1, sizeof(QUEUE), &t)) != 0)
-		return (ret);
-	dbp->q_internal = t;
+  /* Allocate and initialize the private queue structure. */
+  if ((ret = CDB___os_calloc(1, sizeof(QUEUE), &t)) != 0)
+    return (ret);
+  dbp->q_internal = t;
 
-	t->re_pad = ' ';
+  t->re_pad = ' ';
 
-	return (0);
+  return (0);
 }
 
 /*
  * CDB___qam_db_close --
- *	Queue specific discard of the DB structure.
+ *  Queue specific discard of the DB structure.
  *
  * PUBLIC: int CDB___qam_db_close __P((DB *));
  */
 int
 CDB___qam_db_close(dbp)
-	DB *dbp;
+  DB *dbp;
 {
-	QUEUE *t;
+  QUEUE *t;
 
-	t = dbp->q_internal;
+  t = dbp->q_internal;
 
-	CDB___os_free(t, sizeof(QUEUE));
-	dbp->q_internal = NULL;
+  CDB___os_free(t, sizeof(QUEUE));
+  dbp->q_internal = NULL;
 
-	return (0);
+  return (0);
 }

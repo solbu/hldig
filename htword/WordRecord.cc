@@ -78,42 +78,42 @@ WordRecord::SetList(StringList& fields)
   
   switch(type) 
     {
-	
+  
     case WORD_RECORD_DATA:
       {
-	String* field = (String*)fields.Get_First();
+  String* field = (String*)fields.Get_First();
 
-	if(field == 0) {
-	  fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
-	  return NOTOK;
-	}
-	info.data = (unsigned int)atoi(field->get());
-	fields.Remove(field);
-	i++;
+  if(field == 0) {
+    fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
+    return NOTOK;
+  }
+  info.data = (unsigned int)atoi(field->get());
+  fields.Remove(field);
+  i++;
       }
       break;
 
     case WORD_RECORD_STATS:
       {
-	String* field = (String*)fields.Get_First();
+  String* field = (String*)fields.Get_First();
 
-	if(field == 0) {
-	  fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
-	  return NOTOK;
-	}
-	info.stats.noccurrence = (unsigned int)atoi(field->get());
-	fields.Remove(field);
-	i++;
+  if(field == 0) {
+    fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
+    return NOTOK;
+  }
+  info.stats.noccurrence = (unsigned int)atoi(field->get());
+  fields.Remove(field);
+  i++;
 
-	field = (String*)fields.Get_First();
+  field = (String*)fields.Get_First();
 
-	if(field == 0) {
-	  fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
-	  return NOTOK;
-	}
-	info.stats.ndoc = (unsigned int)atoi(field->get());
-	fields.Remove(field);
-	i++;
+  if(field == 0) {
+    fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
+    return NOTOK;
+  }
+  info.stats.ndoc = (unsigned int)atoi(field->get());
+  fields.Remove(field);
+  i++;
       }
       break;
 

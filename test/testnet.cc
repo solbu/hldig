@@ -57,7 +57,7 @@ int Parser(char *ct);
 int main(int ac, char **av)
 {
 ///////
-   //	Local variables
+   //  Local variables
 ///////
 
    // Url to be retrieved
@@ -76,7 +76,7 @@ int main(int ac, char **av)
    int _errors = 0;
 
 ///////
-   //	Retrieving options from command line with getopt
+   //  Retrieving options from command line with getopt
 ///////
 
    while((c = getopt(ac, av, "vU:T:t:ngm:r:w:")) != -1)
@@ -275,36 +275,36 @@ int main(int ac, char **av)
 
 void usage()
 {
-	cout << "usage: testnet [-v] [-n] [-g] [-U URL] [-t times]" << endl;
-	cout << "Ht://Dig " << VERSION << endl << endl;
+  cout << "usage: testnet [-v] [-n] [-g] [-U URL] [-t times]" << endl;
+  cout << "Ht://Dig " << VERSION << endl << endl;
 
-	cout << "Options:" << endl;
+  cout << "Options:" << endl;
 
-	cout << "\t-v\tVerbose mode" << endl << endl;
+  cout << "\t-v\tVerbose mode" << endl << endl;
 
-	cout << "\t-U URL" << endl;
-	cout << "\t\tURL to be retrieved" << endl << endl;
+  cout << "\t-U URL" << endl;
+  cout << "\t\tURL to be retrieved" << endl << endl;
 
-	cout << "\t-T times" << endl;
-	cout << "\t\tTimes to retrieve it" << endl << endl;
+  cout << "\t-T times" << endl;
+  cout << "\t\tTimes to retrieve it" << endl << endl;
 
-	cout << "\t-t timeout" << endl;
-	cout << "\t\tTimeout value" << endl << endl;
+  cout << "\t-t timeout" << endl;
+  cout << "\t\tTimeout value" << endl << endl;
 
-	cout << "\t-r retries" << endl;
-	cout << "\t\tNumber of retries after a timeout" << endl << endl;
+  cout << "\t-r retries" << endl;
+  cout << "\t\tNumber of retries after a timeout" << endl << endl;
 
-	cout << "\t-w wait time" << endl;
-	cout << "\t\tWait time value after a timeout" << endl << endl;
+  cout << "\t-w wait time" << endl;
+  cout << "\t\tWait time value after a timeout" << endl << endl;
 
-	cout << "\t-m maxdocsize" << endl;
-	cout << "\t\tMax Document size to be retrieved" << endl << endl;
+  cout << "\t-m maxdocsize" << endl;
+  cout << "\t\tMax Document size to be retrieved" << endl << endl;
 
-	cout << "\t-n\tNormal connection (disable persistent)" << endl << endl;
+  cout << "\t-n\tNormal connection (disable persistent)" << endl << endl;
 
-	cout << "\t-g\tOnly GET requests instead of HEAD+GET" << endl << endl;
+  cout << "\t-g\tOnly GET requests instead of HEAD+GET" << endl << endl;
 
-	exit(1);
+  exit(1);
 }
 
 
@@ -325,10 +325,10 @@ Transport::DocStatus Retrieve()
     // as well as an ExternalTransport system
     // eventually maybe ftp:// and a few others
 
-    Transport::DocStatus	status;
-    Transport_Response		*response = 0;
-    HtDateTime 			*ptrdatetime = 0;
-    HtDateTime 			modtime;
+    Transport::DocStatus  status;
+    Transport_Response    *response = 0;
+    HtDateTime       *ptrdatetime = 0;
+    HtDateTime       modtime;
 
     String contents;
     String contentType;
@@ -339,7 +339,7 @@ Transport::DocStatus Retrieve()
     if (mystrncasecmp(url->service(), "http", 4) == 0)
     {
 
-	if (!HTTPConnect)
+  if (!HTTPConnect)
         {
 
             if (debug>1)
@@ -355,10 +355,10 @@ Transport::DocStatus Retrieve()
         {
             // Here we must set only thing for a HTTP request
             
-	    HTTPConnect->SetRequestURL(*url);
+      HTTPConnect->SetRequestURL(*url);
 
             // Let's disable the cookies for this test
-	    HTTPConnect->DisableCookies();
+      HTTPConnect->DisableCookies();
 
             // We may issue a config paramater to enable/disable them
             if (!persistent) HTTPConnect->DisablePersistentConnection();
@@ -371,7 +371,7 @@ Transport::DocStatus Retrieve()
             }
         }
         
-	transportConnect = HTTPConnect;
+  transportConnect = HTTPConnect;
 
         transportConnect->SetRequestMaxDocumentSize(max_doc);
         transportConnect->SetTimeOut(timeout);
@@ -381,11 +381,11 @@ Transport::DocStatus Retrieve()
     }
     else
     {
-	if (debug)
-	{
-	    cout << '"' << url->service() <<
-		"\" not a recognized transport service. Ignoring\n";
-	}
+  if (debug)
+  {
+      cout << '"' << url->service() <<
+    "\" not a recognized transport service. Ignoring\n";
+  }
     }
 
     // Is a transport object pointer available?
@@ -395,26 +395,26 @@ Transport::DocStatus Retrieve()
 
          transportConnect->SetConnection(url);
 
-	// Make the request
-	// Here is the main operation ... Let's make the request !!!
-	status = transportConnect->Request();
+  // Make the request
+  // Here is the main operation ... Let's make the request !!!
+  status = transportConnect->Request();
 
-	// Let's get out the info we need
-	response = transportConnect->GetResponse();
+  // Let's get out the info we need
+  response = transportConnect->GetResponse();
 
-	if (response)
-	{
-	   // We got the response
+  if (response)
+  {
+     // We got the response
 
-	   contents = response->GetContents();
-	   contentType = response->GetContentType();
-	   contentLength = response->GetContentLength();
-	   ptrdatetime = response->GetModificationTime();
+     contents = response->GetContents();
+     contentType = response->GetContentType();
+     contentLength = response->GetContentLength();
+     ptrdatetime = response->GetModificationTime();
 
            if (ptrdatetime)
            {
-		// We got the modification date/time
-		modtime = *ptrdatetime;
+    // We got the modification date/time
+    modtime = *ptrdatetime;
            }
            // How to manage it when there's no modification date/time?
 
@@ -425,9 +425,9 @@ Transport::DocStatus Retrieve()
               cout << "Content Lenght: " << contentLength << endl;
               cout << "Modification Time: " << modtime.GetISO8601() << endl;
            }
-	}
+  }
 
-	return status;
+  return status;
 
       }
     else

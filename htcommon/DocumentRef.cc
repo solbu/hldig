@@ -93,39 +93,39 @@ void DocumentRef::DocState(int s)
   switch(s)
     {
       case 0:
-	docState = Reference_normal;
-	break;
+  docState = Reference_normal;
+  break;
       case 1:
-	docState = Reference_not_found;
-	break;
+  docState = Reference_not_found;
+  break;
       case 2:
-	docState = Reference_noindex;
-	break;
+  docState = Reference_noindex;
+  break;
       case 3:
-	docState = Reference_obsolete;
-	break;
+  docState = Reference_obsolete;
+  break;
     }
 }
 
 
 enum
 {
-    DOC_ID,				// 0
-    DOC_TIME,				// 1
-    DOC_ACCESSED,			// 2
-    DOC_STATE,				// 3
-    DOC_SIZE,				// 4
-    DOC_LINKS,				// 5
-    DOC_IMAGESIZE,			// 6 -- No longer used
-    DOC_HOPCOUNT,			// 7
-    DOC_URL,				// 8
-    DOC_HEAD,				// 9
-    DOC_TITLE,				// 10
-    DOC_DESCRIPTIONS,	        	// 11
-    DOC_ANCHORS,			// 12
-    DOC_EMAIL,				// 13
-    DOC_NOTIFICATION,		        // 14
-    DOC_SUBJECT,			// 15
+    DOC_ID,        // 0
+    DOC_TIME,        // 1
+    DOC_ACCESSED,      // 2
+    DOC_STATE,        // 3
+    DOC_SIZE,        // 4
+    DOC_LINKS,        // 5
+    DOC_IMAGESIZE,      // 6 -- No longer used
+    DOC_HOPCOUNT,      // 7
+    DOC_URL,        // 8
+    DOC_HEAD,        // 9
+    DOC_TITLE,        // 10
+    DOC_DESCRIPTIONS,            // 11
+    DOC_ANCHORS,      // 12
+    DOC_EMAIL,        // 13
+    DOC_NOTIFICATION,            // 14
+    DOC_SUBJECT,      // 15
     DOC_STRING,                         // 16
     DOC_METADSC,                        // 17
     DOC_BACKLINKS,                      // 18
@@ -143,8 +143,8 @@ enum
 //
 void DocumentRef::Serialize(String &s)
 {
-    int		length;
-    String	*str;
+    int    length;
+    String  *str;
 
 //
 // The following macros make the serialization process a little easier
@@ -174,7 +174,7 @@ void DocumentRef::Serialize(String &s)
    }                                                                  \
  }
 
-#define	addstring(id, out, str)	\
+#define  addstring(id, out, str)  \
  if (str.length())                                                    \
  {                                                                    \
    length = str.length();                                             \
@@ -206,7 +206,7 @@ void DocumentRef::Serialize(String &s)
 // keep the length.  Only strings shorter than (unsigned char) ~1 
 // will be "optimized"; trying to optimize strings that fit in
 // (unsigned short) does not seem to give anything substantial.
-#define	addlist(id, out, list) \
+#define  addlist(id, out, list) \
  if (list.Count())                                                    \
  {                                                                    \
    length = list.Count();                                             \
@@ -225,7 +225,7 @@ void DocumentRef::Serialize(String &s)
        out.append((char *) &_tmp, sizeof(_tmp));                      \
      }                                                                \
      list.Start_Get();                                                \
-     while ((str = (String *) list.Get_Next()))		              \
+     while ((str = (String *) list.Get_Next()))                  \
      {                                                                \
        length = str->length();                                        \
        if (length < (unsigned char) ~1)                               \
@@ -293,14 +293,14 @@ void DocumentRef::Serialize(String &s)
 void DocumentRef::Deserialize(String &stream)
 {
     Clear();
-    char	*s = stream.get();
-    char	*end = s + stream.length();
-    int		length;
-    int		count;
-    int		i;
-    int		x;
-    int		throwaway; // As the name sounds--used for old fields
-    String	*str;
+    char  *s = stream.get();
+    char  *end = s + stream.length();
+    int    length;
+    int    count;
+    int    i;
+    int    x;
+    int    throwaway; // As the name sounds--used for old fields
+    String  *str;
 
 // There is a problem with getting a numeric value into a
 // numeric unknown type that may be an enum (the other way
@@ -326,7 +326,7 @@ void DocumentRef::Deserialize(String &stream)
    /* else fatal error here? */                                       \
  } while (0)
 
-#define	getnum(type, in, var) \
+#define  getnum(type, in, var) \
  if (type & CHARSIZE_MARKER_BIT)                                      \
  {                                                                    \
    NUM_ASSIGN(var, *(unsigned char *) in);                            \
@@ -345,13 +345,13 @@ void DocumentRef::Deserialize(String &stream)
    in += sizeof(var);                                                 \
  }
 
-#define	getstring(type, in, str) \
+#define  getstring(type, in, str) \
  getnum(type, in, length);                                            \
  str = 0;                                                             \
  str.append(in, length);                                              \
  in += length
 
-#define	getlist(type, in, list) \
+#define  getlist(type, in, list) \
  getnum(type, in, count);                                             \
  if (type & (CHARSIZE_MARKER_BIT | SHORTSIZE_MARKER_BIT))             \
  {                                                                    \
@@ -404,36 +404,36 @@ void DocumentRef::Deserialize(String &stream)
             getnum(x, s, docSize);
             break;
         case DOC_IMAGESIZE: // No longer used
-	    getnum(x, s, throwaway);
-	    break;
+      getnum(x, s, throwaway);
+      break;
         case DOC_LINKS:
             getnum(x, s, docLinks);
             break;
         case DOC_HOPCOUNT:
             getnum(x, s, docHopCount);
             break;
-	case DOC_BACKLINKS:
-	    getnum(x, s, docBackLinks);
-	    break;
-	case DOC_SIG:
-	    getnum(x, s, docSig);
-	    break;
+  case DOC_BACKLINKS:
+      getnum(x, s, docBackLinks);
+      break;
+  case DOC_SIG:
+      getnum(x, s, docSig);
+      break;
         case DOC_URL:
-	    {
-	      // Use a temporary since the addstring macro will evaluate
-	      // this multiple times.
-	      String tmps;
-	      getstring(x, s, tmps);
+      {
+        // Use a temporary since the addstring macro will evaluate
+        // this multiple times.
+        String tmps;
+        getstring(x, s, tmps);
 
-	      docURL = HtURLCodec::instance()->decode(tmps);
-	    }
-	    break;
+        docURL = HtURLCodec::instance()->decode(tmps);
+      }
+      break;
         case DOC_HEAD:
             getstring(x, s, docHead); docHeadIsSet = 1;
             break;
-	case DOC_METADSC:
-	    getstring(x, s, docMetaDsc);
-	    break;
+  case DOC_METADSC:
+      getstring(x, s, docMetaDsc);
+      break;
         case DOC_TITLE:
             getstring(x, s, docTitle);
             break;
@@ -452,9 +452,9 @@ void DocumentRef::Deserialize(String &stream)
         case DOC_SUBJECT:
             getstring(x, s, docSubject);
             break;
-	case DOC_STRING:
-	  // This is just a debugging string. Ignore it.
-	    break;
+  case DOC_STRING:
+    // This is just a debugging string. Ignore it.
+      break;
         default:
             cerr << "BAD TAG IN SERIALIZED DATA: " << x << endl;
             return;
@@ -477,7 +477,7 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
    if (!d || !*d)
      return;
 
-    String	desc = d;
+    String  desc = d;
     desc.chop(" \t");
 
     // Add the description text to the word database with proper factor
@@ -508,8 +508,8 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
 
       if (word.length() >= minimum_word_length) {
         // The wordlist takes care of lowercasing; just add it.
-	wordRef.Location((p - (char*)desc) - word.length());
-	wordRef.Word(word);
+  wordRef.Location((p - (char*)desc) - word.length());
+  wordRef.Word(word);
         words.Replace(wordRef);
       }
 
@@ -522,10 +522,10 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
     
     // Now are we at the max_description limit?
     if (descriptions.Count() >= max_descriptions)
-  	return;
-  	
+    return;
+    
     descriptions.Start_Get();
-    String	*description;
+    String  *description;
     while ((description = (String *) descriptions.Get_Next()))
     {
         if (mystrcasecmp(description->get(), (char*)desc) == 0)
@@ -541,7 +541,7 @@ void DocumentRef::AddDescription(const char *d, HtWordList &words)
 void DocumentRef::AddAnchor(const char *a)
 {
     if (a)
-    	docAnchors.Add(new String(a));
+      docAnchors.Add(new String(a));
 }
 
 

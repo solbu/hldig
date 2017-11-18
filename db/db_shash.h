@@ -2,13 +2,13 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  *
- *	@(#)db_shash.h	11.2 (Sleepycat) 9/23/99
+ *  @(#)db_shash.h  11.2 (Sleepycat) 9/23/99
  */
 
 /* Hash Headers */
-typedef	SH_TAILQ_HEAD(__hash_head) DB_HASHTAB;
+typedef  SH_TAILQ_HEAD(__hash_head) DB_HASHTAB;
 
 /*
  * HASHACCESS --
@@ -17,15 +17,15 @@ typedef	SH_TAILQ_HEAD(__hash_head) DB_HASHTAB;
  * returning the bucket index.
  *
  * synch:  beginning of the array of mutexes that protect the table.
- * elt:	   the item on which we're computing the hash function.
+ * elt:     the item on which we're computing the hash function.
  * nelems: the number of buckets in the hash table.
  * hash:   the hash function that operates on elements of the type of elt
- * ndx:	   the index into the hash/synch array that we're locking.
- * fh:	   the locking file handle.
+ * ndx:     the index into the hash/synch array that we're locking.
+ * fh:     the locking file handle.
  */
-#define	HASHACCESS(synch, elt, nelems, hash, ndx, fh) do {		\
-	ndx = hash(elt) % (nelems);					\
-	MUTEX_LOCK(&synch[ndx], fh);					\
+#define  HASHACCESS(synch, elt, nelems, hash, ndx, fh) do {    \
+  ndx = hash(elt) % (nelems);          \
+  MUTEX_LOCK(&synch[ndx], fh);          \
 } while(0)
 
 /*
@@ -34,11 +34,11 @@ typedef	SH_TAILQ_HEAD(__hash_head) DB_HASHTAB;
  * Release a hash bucket that we have locked.
  *
  * synch: beginning of the array of mutexes that protect the table.
- * ndx:	  the index into the hash/synch array that we're locking.
- * fh:	  the locking file handle.
+ * ndx:    the index into the hash/synch array that we're locking.
+ * fh:    the locking file handle.
  */
-#define	HASHRELEASE(synch, ndx, fh) do {				\
-	MUTEX_UNLOCK(&synch[ndx]);					\
+#define  HASHRELEASE(synch, ndx, fh) do {        \
+  MUTEX_UNLOCK(&synch[ndx]);          \
 } while(0)
 
 /*
@@ -49,7 +49,7 @@ typedef	SH_TAILQ_HEAD(__hash_head) DB_HASHTAB;
  * structure it is that appears in the hash table.  The comparison function
  *
  * begin: address of the beginning of the hash table.
- * ndx:	  index into table for this item.
+ * ndx:    index into table for this item.
  * type:  the structure type of the elements that are linked in each bucket.
  * field: the name of the field by which the "type" structures are linked.
  * elt:   the item for which we are searching in the hash table.
@@ -59,14 +59,14 @@ typedef	SH_TAILQ_HEAD(__hash_head) DB_HASHTAB;
  * If the element is not in the hash table, this macro exits with res set
  * to NULL.
  */
-#define	HASHLOOKUP(begin, ndx, type, field, elt, res, cmp) do {		\
-	DB_HASHTAB *__bucket;						\
-									\
-	__bucket = &begin[ndx];						\
-	for (res = SH_TAILQ_FIRST(__bucket, type);			\
-	    res != NULL; res = SH_TAILQ_NEXT(res, field, type))		\
-		if (cmp(elt, res))					\
-			break;						\
+#define  HASHLOOKUP(begin, ndx, type, field, elt, res, cmp) do {    \
+  DB_HASHTAB *__bucket;            \
+                  \
+  __bucket = &begin[ndx];            \
+  for (res = SH_TAILQ_FIRST(__bucket, type);      \
+      res != NULL; res = SH_TAILQ_NEXT(res, field, type))    \
+    if (cmp(elt, res))          \
+      break;            \
 } while(0)
 
 /*
@@ -83,16 +83,16 @@ typedef	SH_TAILQ_HEAD(__hash_head) DB_HASHTAB;
  * field: the name of the field by which the "type" structures are linked.
  * elt:   the item to be inserted.
  */
-#define	HASHINSERT(begin, ndx, type, field, elt) do {			\
-	DB_HASHTAB *__bucket;						\
-									\
-	__bucket = &begin[ndx];						\
-	SH_TAILQ_INSERT_HEAD(__bucket, elt, field, type);		\
+#define  HASHINSERT(begin, ndx, type, field, elt) do {      \
+  DB_HASHTAB *__bucket;            \
+                  \
+  __bucket = &begin[ndx];            \
+  SH_TAILQ_INSERT_HEAD(__bucket, elt, field, type);    \
 } while(0)
 
 /*
  * HASHREMOVE_EL --
- *	Given the object "obj" in the table, remove it.
+ *  Given the object "obj" in the table, remove it.
  *
  * begin: address of the beginning of the hash table.
  * ndx:   index into hash table of where this element belongs.
@@ -100,9 +100,9 @@ typedef	SH_TAILQ_HEAD(__hash_head) DB_HASHTAB;
  * field: the name of the field by which the "type" structures are linked.
  * obj:   the object in the table that we with to delete.
  */
-#define	HASHREMOVE_EL(begin, ndx, type, field, obj) {			\
-	DB_HASHTAB *__bucket;						\
-									\
-	__bucket = &begin[ndx];						\
-	SH_TAILQ_REMOVE(__bucket, obj, field, type);			\
+#define  HASHREMOVE_EL(begin, ndx, type, field, obj) {      \
+  DB_HASHTAB *__bucket;            \
+                  \
+  __bucket = &begin[ndx];            \
+  SH_TAILQ_REMOVE(__bucket, obj, field, type);      \
 }

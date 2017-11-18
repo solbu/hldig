@@ -119,7 +119,7 @@ Object *HtHeap::Remove()
 //
 Object *HtHeap::Copy() const
 {
-    HtHeap	*heap = new HtHeap(*data);
+    HtHeap  *heap = new HtHeap(*data);
 
     return heap;
 }
@@ -146,7 +146,7 @@ void HtHeap:: percolateUp(int leaf)
   int parent = parentOf(leaf);
   Object *value = data->Nth(leaf);
   while (leaf > 0 &&
-	 (value->compare(*(data->Nth(parent))) < 0))
+   (value->compare(*(data->Nth(parent))) < 0))
     {
       data->Assign(data->Nth(parent), leaf);
       leaf = parent;
@@ -168,31 +168,31 @@ void HtHeap::pushDownRoot(int root)
     {
       int childPos = leftChildOf(root);
       if (childPos < size)
-	{
-	  if ( rightChildOf(root) < size &&
-	       data->Nth(childPos + 1)->compare(*(data->Nth(childPos))) < 0 )
-	    {
-	      childPos++;
-	    }
-	  if ( data->Nth(childPos)->compare(*value) < 0 ) // -1, so smaller
-	    {
-	      // We have to swap this node with the root and then loop
-	      data->Assign(data->Nth(childPos), root);
-	      data->Assign(value, childPos);
-	      root = childPos;
-	    }
-	  else
-	    {
-	      // Found the right position, so we're done
-	      data->Assign(value, root);
-	      return;
-	    }
-	}
+  {
+    if ( rightChildOf(root) < size &&
+         data->Nth(childPos + 1)->compare(*(data->Nth(childPos))) < 0 )
+      {
+        childPos++;
+      }
+    if ( data->Nth(childPos)->compare(*value) < 0 ) // -1, so smaller
+      {
+        // We have to swap this node with the root and then loop
+        data->Assign(data->Nth(childPos), root);
+        data->Assign(value, childPos);
+        root = childPos;
+      }
+    else
+      {
+        // Found the right position, so we're done
+        data->Assign(value, root);
+        return;
+      }
+  }
       else // childPos >= heapSize
-	{
-	  // At a leaf, so we're done
-	  data->Assign(value, root);
-	  return;
-	}
+  {
+    // At a leaf, so we're done
+    data->Assign(value, root);
+    return;
+  }
     }
 }

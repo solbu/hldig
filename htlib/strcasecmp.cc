@@ -25,48 +25,48 @@
 int mystrcasecmp(const char *str1, const char *str2)
 {
     if (!str1 && !str2)
-	return 0;
+  return 0;
     if (!str1)
-	return 1;
+  return 1;
     if (!str2)
-	return -1;
+  return -1;
     while (*str1 &&
-	   *str2 &&
-	   tolower((unsigned char)*str1) == tolower((unsigned char)*str2))
+     *str2 &&
+     tolower((unsigned char)*str1) == tolower((unsigned char)*str2))
     {
-	str1++;
-	str2++;
+  str1++;
+  str2++;
     }
 
     return tolower((unsigned char)*str1) - tolower((unsigned char)*str2);
 }
 
 
-//#define tolower(ch)	(isupper(ch) ? (ch) + 'a' - 'A' : (ch))
+//#define tolower(ch)  (isupper(ch) ? (ch) + 'a' - 'A' : (ch))
 //*****************************************************************************
 //
 int mystrncasecmp(const char *str1, const char *str2, int n)
 {
     if (!str1 && !str2)
-	return 0;
+  return 0;
     if (!str1)
-	return 1;
+  return 1;
     if (!str2)
-	return -1;
+  return -1;
     if (n < 0)
-	return 0;
+  return 0;
     while (n &&
-	   *str1 &&
-	   *str2 &&
-	   tolower((unsigned char)*str1) == tolower((unsigned char)*str2))
+     *str1 &&
+     *str2 &&
+     tolower((unsigned char)*str1) == tolower((unsigned char)*str2))
     {
-	str1++;
-	str2++;
-	n--;
+  str1++;
+  str2++;
+  n--;
     }
 
     return n == 0 ? 0 :
-	tolower((unsigned char)*str1) - tolower((unsigned char)*str2);
+  tolower((unsigned char)*str1) - tolower((unsigned char)*str2);
 }
 
 
@@ -75,7 +75,7 @@ int mystrncasecmp(const char *str1, const char *str2, int n)
 //
 char *strdup(char *str)
 {
-    char	*p = new char[strlen(str) + 1];
+    char  *p = new char[strlen(str) + 1];
     strcpy(p, str);
     return p;
 }
@@ -87,13 +87,13 @@ char *strdup(char *str)
 const char *
 mystrcasestr(const char *s, const char *pattern)
 {
-    int		length = strlen(pattern);
+    int    length = strlen(pattern);
 
     while (*s)
     {
-	if (mystrncasecmp(s, pattern, length) == 0)
-	    return s;
-	s++;
+  if (mystrncasecmp(s, pattern, length) == 0)
+      return s;
+  s++;
     }
     return 0;
 }

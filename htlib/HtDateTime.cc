@@ -2,7 +2,7 @@
 // HtDateTime.cc
 //
 // HtDateTime: Parse, split, compare and format dates and times.
-//  	       Uses locale.
+//           Uses locale.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999-2004 The ht://Dig Group
@@ -34,7 +34,7 @@ using namespace std;
 
 #ifndef HAVE_STRPTIME
 // mystrptime() declared in lib.h, defined in htlib/strptime.cc
-#define strptime(s,f,t)	mystrptime(s,f,t)
+#define strptime(s,f,t)  mystrptime(s,f,t)
 #else /* HAVE_STRPTIME */
 #ifndef HAVE_STRPTIME_DECL
 extern "C" {
@@ -69,13 +69,13 @@ static char my_strtime[MAXSTRTIME];
 #define ASCTIME_FORMAT  "%a %b %e %H:%M:%S %Y"
 #define LOOSE_ASCTIME_FORMAT  "%b %e %H:%M:%S %Y"
 
-// 	  ISO8601 : 1994-11-06 08:49:37 GMT
+//     ISO8601 : 1994-11-06 08:49:37 GMT
 #define ISO8601_FORMAT "%Y-%m-%d %H:%M:%S %Z"
 
-// 	  ISO8601 (short version): 1994-11-06
+//     ISO8601 (short version): 1994-11-06
 #define ISO8601_SHORT_FORMAT "%Y-%m-%d"
 
-// 	  Timestamp : 19941106084937
+//     Timestamp : 19941106084937
 #define TIMESTAMP_FORMAT "%Y%m%d%H%M%S"
 
 
@@ -84,8 +84,8 @@ static char my_strtime[MAXSTRTIME];
    //   Initialization
 ///////
 
-const int HtDateTime::days[] = {	31, 28, 31, 30, 31, 30,
-				31, 31, 30, 31, 30, 31};
+const int HtDateTime::days[] = {  31, 28, 31, 30, 31, 30,
+        31, 31, 30, 31, 30, 31};
 
 
 ///////   //   Input Formats   //   ///////
@@ -99,16 +99,16 @@ const int HtDateTime::days[] = {	31, 28, 31, 30, 31, 30,
    //   We've had problems using strptime() and timegm() on a few platforms
    //   while parsing these formats, so this is an attempt to sidestep them.
    //
-   //	Returns 0 if parsing failed, or returns number of characters parsed
-   //	in date string otherwise, and sets Ht_t field to time_t value.
+   //  Returns 0 if parsing failed, or returns number of characters parsed
+   //  in date string otherwise, and sets Ht_t field to time_t value.
 ///////
-#define EPOCH	1970
+#define EPOCH  1970
 
 int HtDateTime::Parse(const char *date)
 {
     register const char *s;
     register const char *t;
-    int		day, month, year, hour, minute, second;
+    int    day, month, year, hour, minute, second;
 
     //
     // Three possible time designations:
@@ -124,183 +124,183 @@ int HtDateTime::Parse(const char *date)
 
     s = date;
     while (*s && *s != ',')
-	s++;
+  s++;
     if (*s)
-	s++;
+  s++;
     else
-	s = date;
+  s = date;
     while (isspace(*s))
-	s++;
+  s++;
 
     // check for ISO8601 format
     month = 0;
     t = s;
     while (isdigit(*t))
-	t++;
+  t++;
     if (t > s && *t == '-' && isdigit(t[1]))
-	day = -1;
+  day = -1;
     else {
-	// not ISO8601, so try RFC850 or RFC1123
-	// get day...
-	if (!isdigit(*s))
-	    return 0;
-	day = 0;
-	while (isdigit(*s))
-	    day = day * 10 + (*s++ - '0');
-	if (day > 31)
-	    return 0;
-	while (*s == '-' || isspace(*s))
-	    s++;
+  // not ISO8601, so try RFC850 or RFC1123
+  // get day...
+  if (!isdigit(*s))
+      return 0;
+  day = 0;
+  while (isdigit(*s))
+      day = day * 10 + (*s++ - '0');
+  if (day > 31)
+      return 0;
+  while (*s == '-' || isspace(*s))
+      s++;
 
-	// get month...
-	// (it's ugly, but it works)
-	switch (*s++) {
-	    case 'J': case 'j':
-		switch (*s++) {
-		case 'A': case 'a':
-		    month = 1;
-		    s++;
-		    break;
-		case 'U': case 'u':
-		    switch (*s++) {
-		    case 'N': case 'n':
-			month = 6;
-			break;
-		    case 'L': case 'l':
-			month = 7;
-			break;
-		    default:
-			return 0;
-		    }
-		    break;
-		default:
-		    return 0;
-		}
-		break;
-	    case 'F': case 'f':
-		month = 2;
-		s += 2;
-		break;
-	    case 'M': case 'm':
-		switch (*s++) {
-		case 'A': case 'a':
-		    switch (*s++) {
-		    case 'R': case 'r':
-			month = 3;
-			break;
-		    case 'Y': case 'y':
-			month = 5;
-			break;
-		    default:
-			return 0;
-		    }
-		    break;
-		default:
-		    return 0;
-		}
-		break;
-	    case 'A': case 'a':
-		switch (*s++) {
-		case 'P': case 'p':
-		    month = 4;
-		    s++;
-		    break;
-		case 'U': case 'u':
-		    month = 8;
-		    s++;
-		    break;
-		default:
-		    return 0;
-		}
-		break;
-	    case 'S': case 's':
-		month = 9;
-		s += 2;
-		break;
-	    case 'O': case 'o':
-		month = 10;
-		s += 2;
-		break;
-	    case 'N': case 'n':
-		month = 11;
-		s += 2;
-		break;
-	    case 'D': case 'd':
-		month = 12;
-		s += 2;
-		break;
-	    default:
-		return 0;
-	}
-	while (*s == '-' || isspace(*s))
-	    s++;
+  // get month...
+  // (it's ugly, but it works)
+  switch (*s++) {
+      case 'J': case 'j':
+    switch (*s++) {
+    case 'A': case 'a':
+        month = 1;
+        s++;
+        break;
+    case 'U': case 'u':
+        switch (*s++) {
+        case 'N': case 'n':
+      month = 6;
+      break;
+        case 'L': case 'l':
+      month = 7;
+      break;
+        default:
+      return 0;
+        }
+        break;
+    default:
+        return 0;
+    }
+    break;
+      case 'F': case 'f':
+    month = 2;
+    s += 2;
+    break;
+      case 'M': case 'm':
+    switch (*s++) {
+    case 'A': case 'a':
+        switch (*s++) {
+        case 'R': case 'r':
+      month = 3;
+      break;
+        case 'Y': case 'y':
+      month = 5;
+      break;
+        default:
+      return 0;
+        }
+        break;
+    default:
+        return 0;
+    }
+    break;
+      case 'A': case 'a':
+    switch (*s++) {
+    case 'P': case 'p':
+        month = 4;
+        s++;
+        break;
+    case 'U': case 'u':
+        month = 8;
+        s++;
+        break;
+    default:
+        return 0;
+    }
+    break;
+      case 'S': case 's':
+    month = 9;
+    s += 2;
+    break;
+      case 'O': case 'o':
+    month = 10;
+    s += 2;
+    break;
+      case 'N': case 'n':
+    month = 11;
+    s += 2;
+    break;
+      case 'D': case 'd':
+    month = 12;
+    s += 2;
+    break;
+      default:
+    return 0;
+  }
+  while (*s == '-' || isspace(*s))
+      s++;
     }
 
     // get year...
     if (!isdigit(*s))
-	return 0;
+  return 0;
     year = 0;
     while (isdigit(*s))
-	year = year * 10 + (*s++ - '0');
+  year = year * 10 + (*s++ - '0');
     if (year < 69)
-	year += 2000;
+  year += 2000;
     else if (year < 1900)
-	year += 1900;
-    else if (year >= 19100)	// seen some programs do it, why not check?
-	year -= (19100-2000);
+  year += 1900;
+    else if (year >= 19100)  // seen some programs do it, why not check?
+  year -= (19100-2000);
     while (*s == '-' || isspace(*s))
-	s++;
+  s++;
 
-    if (day < 0) {		// still don't have day, so it's ISO8601 format
-	// get month...
-	if (!isdigit(*s))
-	    return 0;
-	month = 0;
-	while (isdigit(*s))
-	    month = month * 10 + (*s++ - '0');
-	if (month < 1 || month > 12)
-	    return 0;
-	while (*s == '-' || isspace(*s))
-	    s++;
+    if (day < 0) {    // still don't have day, so it's ISO8601 format
+  // get month...
+  if (!isdigit(*s))
+      return 0;
+  month = 0;
+  while (isdigit(*s))
+      month = month * 10 + (*s++ - '0');
+  if (month < 1 || month > 12)
+      return 0;
+  while (*s == '-' || isspace(*s))
+      s++;
 
-	// get day...
-	if (!isdigit(*s))
-	    return 0;
-	day = 0;
-	while (isdigit(*s))
-	    day = day * 10 + (*s++ - '0');
-	if (day < 1 || day > 31)
-	    return 0;
-	while (*s == '-' || isspace(*s))
-	    s++;
+  // get day...
+  if (!isdigit(*s))
+      return 0;
+  day = 0;
+  while (isdigit(*s))
+      day = day * 10 + (*s++ - '0');
+  if (day < 1 || day > 31)
+      return 0;
+  while (*s == '-' || isspace(*s))
+      s++;
     }
 
     // optionally get hour...
     hour = 0;
     while (isdigit(*s))
-	hour = hour * 10 + (*s++ - '0');
+  hour = hour * 10 + (*s++ - '0');
     if (hour > 23)
-	return 0;
+  return 0;
     while (*s == ':' || isspace(*s))
-	s++;
+  s++;
 
     // optionally get minute...
     minute = 0;
     while (isdigit(*s))
-	minute = minute * 10 + (*s++ - '0');
+  minute = minute * 10 + (*s++ - '0');
     if (minute > 59)
-	return 0;
+  return 0;
     while (*s == ':' || isspace(*s))
-	s++;
+  s++;
 
     // optionally get second...
     second = 0;
     while (isdigit(*s))
-	second = second * 10 + (*s++ - '0');
+  second = second * 10 + (*s++ - '0');
     if (second > 59)
-	return 0;
+  return 0;
     while (*s == ':' || isspace(*s))
-	s++;
+  s++;
 
     // Assign the new value to time_t field
     //
@@ -310,12 +310,12 @@ int HtDateTime::Parse(const char *date)
     // It works, though!
     //
     Ht_t = (time_t) (((((367L*year - 7L*(year+(month+9)/12)/4
-				   - 3L*(((year)+((month)+9)/12-1)/100+1)/4
-				   + 275L*(month)/9 + day) -
-			(367L*EPOCH - 7L*(EPOCH+(1+9)/12)/4
-				   - 3L*((EPOCH+(1+9)/12-1)/100+1)/4
-				   + 275L*1/9 + 1))
-		       * 24 + hour) * 60 + minute) * 60 + second);
+           - 3L*(((year)+((month)+9)/12-1)/100+1)/4
+           + 275L*(month)/9 + day) -
+      (367L*EPOCH - 7L*(EPOCH+(1+9)/12)/4
+           - 3L*((EPOCH+(1+9)/12-1)/100+1)/4
+           + 275L*1/9 + 1))
+           * 24 + hour) * 60 + minute) * 60 + second);
 
     // cerr << "Date string '" << date << "' converted to time_t "
     //      << (int)Ht_t << ", used " << (s-date) << " characters\n";
@@ -338,16 +338,16 @@ char *HtDateTime::SetFTime(const char *buf, const char *format)
    ToGMTime();    // This must be set cos strptime always stores in GM 
 
    p = (char *) buf;
-   if (*format == '%')		// skip any unexpected white space
+   if (*format == '%')    // skip any unexpected white space
       while (isspace(*p))
-	 p++;
+   p++;
 
    // Special handling for LOOSE/SHORT formats...
    if ((strcmp((char *) format, LOOSE_RFC850_FORMAT) == 0 ||
-	strcmp((char *) format, LOOSE_RFC1123_FORMAT) == 0 ||
-	strcmp((char *) format, ISO8601_SHORT_FORMAT) == 0)  &&
+  strcmp((char *) format, LOOSE_RFC1123_FORMAT) == 0 ||
+  strcmp((char *) format, ISO8601_SHORT_FORMAT) == 0)  &&
        (r = Parse(p)) > 0)
-	    return p+r;
+      return p+r;
 
    p = (char *) strptime (p, (char *) format, & Ht_tm);
 
@@ -512,7 +512,7 @@ size_t HtDateTime::GetFTime(char *s, size_t max, const char *format) const
 ///////
    //   Personalized format such as C strftime function
   //     Overloaded version 2 - The best to be used outside
-   //       	   	       	  for temporary uses
+   //                         for temporary uses
 ///////
 
 char *HtDateTime::GetFTime(const char *format) const
@@ -696,11 +696,11 @@ void HtDateTime::RefreshStructTM() const
 
    if(local_time)
       // Setting localtime
-   	 memcpy(& Ht_tm, localtime(&Ht_t), sizeof(struct tm));
+      memcpy(& Ht_tm, localtime(&Ht_t), sizeof(struct tm));
    else
-   	 // Setting UTC or GM time
-   	 memcpy(& Ht_tm , gmtime(&Ht_t), sizeof(struct tm));
-	 
+      // Setting UTC or GM time
+      memcpy(& Ht_tm , gmtime(&Ht_t), sizeof(struct tm));
+   
 }
 
 
@@ -710,9 +710,9 @@ void HtDateTime::SetDateTime(struct tm *ptm)
 {
 
    if(local_time)
-   	 Ht_t = mktime(ptm);  	// Invoke mktime
+      Ht_t = mktime(ptm);    // Invoke mktime
    else
-   	 Ht_t = HtTimeGM(ptm);	// Invoke timegm alike function
+      Ht_t = HtTimeGM(ptm);  // Invoke timegm alike function
    
 }
 
@@ -730,7 +730,7 @@ void HtDateTime::SettoNow()
 // Return false if failed
 
 bool HtDateTime::SetGMDateTime ( int year, int mon, int mday,
-			int hour, int min, int sec)
+      int hour, int min, int sec)
 {
    struct tm tm_tmp;
 
@@ -739,7 +739,7 @@ bool HtDateTime::SetGMDateTime ( int year, int mon, int mday,
    if ( ! isAValidYear (year) ) return false;
 
    if( year < 100)
-	 year=Year_From2To4digits (year); // For further checks it's converted
+   year=Year_From2To4digits (year); // For further checks it's converted
 
    // Assigning the year
    
@@ -762,13 +762,13 @@ bool HtDateTime::SetGMDateTime ( int year, int mon, int mday,
 
 
    if(hour >= 0 && hour < 24) tm_tmp.tm_hour = hour;
-   	 else return false;	
-	
+      else return false;  
+  
    if(min >= 0 && min < 60) tm_tmp.tm_min = min;
-   	 else return false;	
-	
+      else return false;  
+  
    if(sec >= 0 && sec < 60) tm_tmp.tm_sec = sec;
-   	 else return false;	
+      else return false;  
 
    tm_tmp.tm_yday = 0; // day of the year (to be ignored)
    tm_tmp.tm_isdst = 0; // default for GM (to be ignored)
@@ -778,9 +778,9 @@ bool HtDateTime::SetGMDateTime ( int year, int mon, int mday,
 
    if (isLocalTime())
    {
-   	 ToGMTime(); 	       // Change to GM Time
-   	 SetDateTime(&tm_tmp); // commit it
-	 ToLocalTime();       // And then return to Local Time
+      ToGMTime();          // Change to GM Time
+      SetDateTime(&tm_tmp); // commit it
+   ToLocalTime();       // And then return to Local Time
    }
    else SetDateTime(&tm_tmp); // only commit it
 
@@ -796,9 +796,9 @@ bool HtDateTime::SetGMDateTime ( int year, int mon, int mday,
 
 struct tm &HtDateTime::GetStructTM() const 
 {
-	RefreshStructTM(); // refresh it
+  RefreshStructTM(); // refresh it
 
-	return Ht_tm;
+  return Ht_tm;
 }
 
 
@@ -823,9 +823,9 @@ bool HtDateTime::LeapYear (int y)
 {
 
    if(y % 400 == 0 || ( y % 100 != 0 && y % 4 == 0))
-   	 return true; 	// a leap year
+      return true;   // a leap year
    else
-   	 return false;	// and not
+      return false;  // and not
 }
 
 
@@ -865,20 +865,20 @@ bool HtDateTime::isAValidMonth (int m)
 bool HtDateTime::isAValidDay (int d, int m, int y)
 {
 
-   if ( ! isAValidYear (y) ) return false;	// Checks for the year
+   if ( ! isAValidYear (y) ) return false;  // Checks for the year
 
-   if ( ! isAValidMonth (m) ) return false;	// Checks for the month
+   if ( ! isAValidMonth (m) ) return false;  // Checks for the month
    
    if(m == 2)
    {
    
-   	 // Expands the 2 digits year number
-   	 if ( y < 100 ) y=Year_From2To4digits(y);
-	 
-	 if ( LeapYear (y) ) // Checks for the leap year
+      // Expands the 2 digits year number
+      if ( y < 100 ) y=Year_From2To4digits(y);
+   
+   if ( LeapYear (y) ) // Checks for the leap year
       {
-	    if (d >= 1 && d <= 29) return true;
-	    else return false;
+      if (d >= 1 && d <= 29) return true;
+      else return false;
       }
    }
 
@@ -916,13 +916,13 @@ int HtDateTime::DateTimeCompare (const HtDateTime & right) const
 
 int HtDateTime::GMDateTimeCompare (const HtDateTime & right) const
 {
-	// We must compare the whole time_t value
-	
-	if ( * this > right) return 1;	 // 1st greater than 2nd
-	if ( * this < right) return 1;	 // 1st lower than 2nd
-	
-	return 0;
-	
+  // We must compare the whole time_t value
+  
+  if ( * this > right) return 1;   // 1st greater than 2nd
+  if ( * this < right) return 1;   // 1st lower than 2nd
+  
+  return 0;
+  
 }
 
 
@@ -930,7 +930,7 @@ int HtDateTime::DateCompare (const HtDateTime & right) const
 {
 
    // We must transform them in 2 struct tm variables
-	
+  
    struct tm tm1, tm2;
    
    this->GetGMStructTM (tm1);
@@ -938,7 +938,7 @@ int HtDateTime::DateCompare (const HtDateTime & right) const
 
    // Let's compare them
    return DateCompare (&tm1, &tm2);
-	
+  
 }
 
 
@@ -947,7 +947,7 @@ int HtDateTime::GMDateCompare (const HtDateTime & right) const
 
    // We must transform them in 2 struct tm variables
    // both referred to GM time
-	
+  
    struct tm tm1, tm2;
    
    this->GetGMStructTM (tm1);
@@ -955,7 +955,7 @@ int HtDateTime::GMDateCompare (const HtDateTime & right) const
 
    // Let's compare them
    return DateCompare (&tm1, &tm2);
-	
+  
 }
 
 
@@ -963,14 +963,14 @@ int HtDateTime::TimeCompare (const HtDateTime & right) const
 {
 
    // We must transform them in 2 struct tm variables
-	
+  
    struct tm tm1, tm2;
-	
+  
    this->GetStructTM (tm1);
    right.GetStructTM (tm2);
 
    return TimeCompare (&tm1, &tm2);
-	
+  
 }
 
 
@@ -978,15 +978,15 @@ int HtDateTime::GMTimeCompare (const HtDateTime & right) const
 {
 
    // We must transform them in 2 struct tm variables
-	
+  
    struct tm tm1, tm2;
 
-   // We take the GM value of the time	
+   // We take the GM value of the time  
    this->GetGMStructTM (tm1);
    right.GetGMStructTM (tm2);
 
    return TimeCompare (&tm1, &tm2);
-	
+  
 }
 
 
@@ -1122,17 +1122,17 @@ void HtDateTime::ViewStructTM()
 void HtDateTime::ViewStructTM(struct tm *ptm)
 {
 
-	cout << "Struct TM fields" << endl;
-	cout << "================" << endl;
-	cout << "tm_sec   :\t" << ptm->tm_sec << endl;
-	cout << "tm_min   :\t" << ptm->tm_min  << endl;
-	cout << "tm_hour  :\t" << ptm->tm_hour << endl;
-	cout << "tm_mday  :\t" << ptm->tm_mday << endl;
-	cout << "tm_mon   :\t" << ptm->tm_mon  << endl;
-	cout << "tm_year  :\t" << ptm->tm_year << endl;
-	cout << "tm_wday  :\t" << ptm->tm_wday << endl;
-	cout << "tm_yday  :\t" << ptm->tm_yday << endl;
-	cout << "tm_isdst :\t" << ptm->tm_isdst<< endl;
+  cout << "Struct TM fields" << endl;
+  cout << "================" << endl;
+  cout << "tm_sec   :\t" << ptm->tm_sec << endl;
+  cout << "tm_min   :\t" << ptm->tm_min  << endl;
+  cout << "tm_hour  :\t" << ptm->tm_hour << endl;
+  cout << "tm_mday  :\t" << ptm->tm_mday << endl;
+  cout << "tm_mon   :\t" << ptm->tm_mon  << endl;
+  cout << "tm_year  :\t" << ptm->tm_year << endl;
+  cout << "tm_wday  :\t" << ptm->tm_wday << endl;
+  cout << "tm_yday  :\t" << ptm->tm_yday << endl;
+  cout << "tm_isdst :\t" << ptm->tm_isdst<< endl;
 
 }
 
@@ -1199,14 +1199,14 @@ int HtDateTime::Test(void)
    // Tests a personal format  
    
    cout << endl << "Beginning Test of a personal format such as "
-   	       	   << myformat << endl << endl;
+                 << myformat << endl << endl;
    
    if (Test((char **)test_dates, (const char *)myformat))
-   	 cout << "Test OK." << endl;
+      cout << "Test OK." << endl;
    else
    {
-   	 cout << "Test Failed." << endl;
-	 ok=0;
+      cout << "Test Failed." << endl;
+   ok=0;
    }
 
 
@@ -1215,11 +1215,11 @@ int HtDateTime::Test(void)
    cout << endl << "Beginning Test of ISO 8601 format" << endl << endl;
 
    if(Test((char **)test_dates_ISO8601, (const char *)ISO8601_FORMAT))
-   	 cout << "Test OK." << endl;
+      cout << "Test OK." << endl;
    else
    {
-   	 cout << "Test Failed." << endl;
-	 ok=0;
+      cout << "Test Failed." << endl;
+   ok=0;
    }
 
 
@@ -1228,11 +1228,11 @@ int HtDateTime::Test(void)
    cout << endl << "Beginning Test of RFC 1123 format" << endl << endl;
 
    if (Test((char **)test_dates_RFC1123, (const char *)RFC1123_FORMAT))
-   	 cout << "Test OK." << endl;
+      cout << "Test OK." << endl;
    else
    {
-   	 cout << "Test Failed." << endl;
-	 ok=0;
+      cout << "Test Failed." << endl;
+   ok=0;
    }
 
 
@@ -1241,11 +1241,11 @@ int HtDateTime::Test(void)
    cout << endl << "Beginning Test of RFC 850 format" << endl << endl;
 
    if (Test((char **)test_dates_RFC850, (const char *)RFC850_FORMAT))
-   	 cout << "Test OK." << endl;
+      cout << "Test OK." << endl;
    else
    {
-   	 cout << "Test Failed." << endl;
-	 ok=0;
+      cout << "Test Failed." << endl;
+   ok=0;
    }
 
 
@@ -1264,35 +1264,35 @@ int HtDateTime::Test(char **test_dates, const char *format)
   {
   
       cout << "\t " << i+1 << "\tDate string parsing of:" << endl;
-	 cout << "\t\t" << test_dates[i] << endl;
-	 cout << "\t\tusing format: " << format << endl << endl;
+   cout << "\t\t" << test_dates[i] << endl;
+   cout << "\t\tusing format: " << format << endl << endl;
 
-   	 orig.SetFTime(test_dates[i], format);
+      orig.SetFTime(test_dates[i], format);
    
-   	 orig.ComparisonTest(conv);
-	 
+      orig.ComparisonTest(conv);
+   
       conv=orig;
    
       if (orig != conv)
-   	 {
-   	    cout << "HtDateTime test failed!" << endl;
-	    cout << "\t Original : " << orig.GetRFC1123() << endl;
-	    cout << "\t Converted: " << orig.GetRFC1123() << endl;
+      {
+         cout << "HtDateTime test failed!" << endl;
+      cout << "\t Original : " << orig.GetRFC1123() << endl;
+      cout << "\t Converted: " << orig.GetRFC1123() << endl;
          ok = 0;
-   	 }
-   	 else
-   	 {
-	    orig.ToLocalTime();
-	    cout << endl << "\t   Localtime viewing" << endl;
-	    orig.ViewFormats();
-	    orig.ToGMTime();
-	    cout << endl << "\t   GMtime viewing" << endl;
-	    orig.ViewFormats();
-   	    //orig.ViewStructTM();
       }
-	 
-	 cout << endl;
-	 
+      else
+      {
+      orig.ToLocalTime();
+      cout << endl << "\t   Localtime viewing" << endl;
+      orig.ViewFormats();
+      orig.ToGMTime();
+      cout << endl << "\t   GMtime viewing" << endl;
+      orig.ViewFormats();
+         //orig.ViewStructTM();
+      }
+   
+   cout << endl;
+   
    }
    
    return ok;
@@ -1321,10 +1321,10 @@ void HtDateTime::ComparisonTest (const HtDateTime &right) const
    cout << "\t\t " << this->GetDateTimeDefault();
    
    if (result > 0 )
-   	 cout << " is greater than ";
+      cout << " is greater than ";
    else if (result < 0 )
-   	 cout << " is lower than ";
-	 else cout << " is equal to ";
+      cout << " is lower than ";
+   else cout << " is equal to ";
 
    cout << " " << right.GetDateTimeDefault() << endl;
 
@@ -1340,10 +1340,10 @@ void HtDateTime::ComparisonTest (const HtDateTime &right) const
    cout << "\t\t " << this->GetDateDefault();
    
    if (result > 0 )
-   	 cout << " is greater than ";
+      cout << " is greater than ";
    else if (result < 0 )
-   	 cout << " is lower than ";
-	 else cout << " is equal to ";
+      cout << " is lower than ";
+   else cout << " is equal to ";
 
    cout << " " << right.GetDateDefault() << endl;
 
@@ -1358,15 +1358,15 @@ void HtDateTime::ComparisonTest (const HtDateTime &right) const
    cout << "\t\t " << this->GetDateDefault();
    
    if (result > 0 )
-   	 cout << " is greater than ";
+      cout << " is greater than ";
    else if (result < 0 )
-   	 cout << " is lower than ";
-	 else cout << " is equal to ";
+      cout << " is lower than ";
+   else cout << " is equal to ";
 
    cout << " " << right.GetDateDefault() << endl;
 
 
-	 
+   
 ///////
    //   Time comparison
 ///////
@@ -1377,10 +1377,10 @@ void HtDateTime::ComparisonTest (const HtDateTime &right) const
    cout << "\t\t " << this->GetTimeDefault();
    
    if (result > 0 )
-   	 cout << " is greater than ";
+      cout << " is greater than ";
    else if (result < 0 )
-   	 cout << " is lower than ";
-	 else cout << " is equal to ";
+      cout << " is lower than ";
+   else cout << " is equal to ";
 
    cout << " " << right.GetTimeDefault() << endl;
 
@@ -1395,10 +1395,10 @@ void HtDateTime::ComparisonTest (const HtDateTime &right) const
    cout << "\t\t " << this->GetTimeDefault();
    
    if (result > 0 )
-   	 cout << " is greater than ";
+      cout << " is greater than ";
    else if (result < 0 )
-   	 cout << " is lower than ";
-	 else cout << " is equal to ";
+      cout << " is lower than ";
+   else cout << " is equal to ";
 
    cout << " " << right.GetTimeDefault() << endl;
    

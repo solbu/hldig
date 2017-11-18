@@ -52,7 +52,7 @@ DocMatch::Merge(const DocMatch &match)
 {
         if(match.anchor < anchor)
         {
-		anchor = match.anchor;
+    anchor = match.anchor;
         }
         AddLocations(match.GetLocations());
 }
@@ -64,62 +64,62 @@ DocMatch::Merge(const DocMatch &match)
 void
 DocMatch::AddLocations(const List *locs)
 {
-	List *merge = new List;
-	ListCursor c;
+  List *merge = new List;
+  ListCursor c;
 
-	locations->Start_Get();
-	locs->Start_Get(c);
-	Location *a = (Location *)locations->Get_Next();
-	Location *b = (Location *)locs->Get_Next(c);
-	while(a && b)
-	{
-		if(a->from < b->from)
-		{
-			merge->Add(a);
-			a = (Location *)locations->Get_Next();
-		}
-		else if(a->from > b->from)
-		{
-			merge->Add(new Location(*b));
-			b = (Location *)locs->Get_Next(c);
-		}
-		else // (a->from == b->from)
-		{
-			if(a->to < b->to)
-			{
-				merge->Add(new Location(*a));
-				merge->Add(new Location(*b));
-			}
-			else if(a->to > b->to)
-			{
-				merge->Add(new Location(*b));
-				merge->Add(new Location(*a));
-			}
-			else // (a->to == b->to)
-			{
-				merge->Add(new Location(
-						a->from,
-						a->to,
-						a->flags,
-						a->weight + b->weight));
-			}
-			a = (Location *)locations->Get_Next();
-			b = (Location *)locs->Get_Next(c);
-		}
-	}
-	while(a)
-	{
-		merge->Add(a);
-		a = (Location *)locations->Get_Next();
-	}
-	while(b)
-	{
-		merge->Add(new Location(*b));
-		b = (Location *)locs->Get_Next(c);
-	}
-	locations->Release();
-	delete locations;
-	locations = merge;
+  locations->Start_Get();
+  locs->Start_Get(c);
+  Location *a = (Location *)locations->Get_Next();
+  Location *b = (Location *)locs->Get_Next(c);
+  while(a && b)
+  {
+    if(a->from < b->from)
+    {
+      merge->Add(a);
+      a = (Location *)locations->Get_Next();
+    }
+    else if(a->from > b->from)
+    {
+      merge->Add(new Location(*b));
+      b = (Location *)locs->Get_Next(c);
+    }
+    else // (a->from == b->from)
+    {
+      if(a->to < b->to)
+      {
+        merge->Add(new Location(*a));
+        merge->Add(new Location(*b));
+      }
+      else if(a->to > b->to)
+      {
+        merge->Add(new Location(*b));
+        merge->Add(new Location(*a));
+      }
+      else // (a->to == b->to)
+      {
+        merge->Add(new Location(
+            a->from,
+            a->to,
+            a->flags,
+            a->weight + b->weight));
+      }
+      a = (Location *)locations->Get_Next();
+      b = (Location *)locs->Get_Next(c);
+    }
+  }
+  while(a)
+  {
+    merge->Add(a);
+    a = (Location *)locations->Get_Next();
+  }
+  while(b)
+  {
+    merge->Add(new Location(*b));
+    b = (Location *)locs->Get_Next(c);
+  }
+  locations->Release();
+  delete locations;
+  locations = merge;
 }
 
 //
@@ -128,8 +128,8 @@ DocMatch::AddLocations(const List *locs)
 void
 DocMatch::SetLocations(List *locs)
 {
-	delete locations;
-	locations = locs;
+  delete locations;
+  locations = locs;
 }
 
 //
@@ -137,12 +137,12 @@ DocMatch::SetLocations(List *locs)
 //
 DocMatch::DocMatch(const DocMatch &other)
 {
-	score = -1.0;
-	//score = other.score;
-	id = other.id;
-	anchor = other.anchor;
-	locations = new List;
-	AddLocations(other.GetLocations());
+  score = -1.0;
+  //score = other.score;
+  id = other.id;
+  anchor = other.anchor;
+  locations = new List;
+  AddLocations(other.GetLocations());
 }
 
 //
@@ -151,12 +151,12 @@ DocMatch::DocMatch(const DocMatch &other)
 void
 DocMatch::SetWeight(double weight)
 {
-	locations->Start_Get();
-	for(int i = 0; i < locations->Count(); i++)
-	{
-		Location *loc = (Location *)locations->Get_Next();
-		loc->weight = weight;
-	}
+  locations->Start_Get();
+  for(int i = 0; i < locations->Count(); i++)
+  {
+    Location *loc = (Location *)locations->Get_Next();
+    loc->weight = weight;
+  }
 }
 
 //
@@ -165,18 +165,18 @@ DocMatch::SetWeight(double weight)
 void
 DocMatch::Dump()
 {
-	cerr << "DocMatch id: " <<  id << " {" << endl;
-	locations->Start_Get();
-	for(int i = 0; i < locations->Count(); i++)
-	{
-		Location *loc = (Location *)locations->Get_Next();
-		cerr << "location [" << loc->from;
-		cerr << ", " << loc->to << "] ";
-		cerr << "weight " << loc->weight;
-		cerr << " flags " << loc->flags;
-		cerr << endl;
-	}
-	cerr << "score: " << GetScore() << endl << "}" << endl;
+  cerr << "DocMatch id: " <<  id << " {" << endl;
+  locations->Start_Get();
+  for(int i = 0; i < locations->Count(); i++)
+  {
+    Location *loc = (Location *)locations->Get_Next();
+    cerr << "location [" << loc->from;
+    cerr << ", " << loc->to << "] ";
+    cerr << "weight " << loc->weight;
+    cerr << " flags " << loc->flags;
+    cerr << endl;
+  }
+  cerr << "score: " << GetScore() << endl << "}" << endl;
 }
 
 double
@@ -202,21 +202,21 @@ DocMatch::GetScore()
       locations->Start_Get(c);
       Location *loc = (Location *)locations->Get_Next(c);
       while(loc)
-	{
-	  locresult = 0.0;
-	  if (loc->flags == FLAG_TEXT)		locresult += text_factor;
-	  if (loc->flags & FLAG_CAPITAL)		locresult += caps_factor;
-	  if (loc->flags & FLAG_TITLE)		locresult += title_factor;
-	  if (loc->flags & FLAG_HEADING)		locresult += heading_factor;
-	  if (loc->flags & FLAG_KEYWORDS)		locresult += keywords_factor;
-	  if (loc->flags & FLAG_DESCRIPTION)	locresult += meta_desc_factor;
-	  if (loc->flags & FLAG_AUTHOR)		locresult += author_factor;
-	  if (loc->flags & FLAG_LINK_TEXT)	locresult += description_factor;
-	  if (loc->flags & FLAG_URL)		locresult += url_text_factor;
-	  
-	  score += loc->weight * locresult;
-	  loc = (Location *)locations->Get_Next(c);
-	}
+  {
+    locresult = 0.0;
+    if (loc->flags == FLAG_TEXT)    locresult += text_factor;
+    if (loc->flags & FLAG_CAPITAL)    locresult += caps_factor;
+    if (loc->flags & FLAG_TITLE)    locresult += title_factor;
+    if (loc->flags & FLAG_HEADING)    locresult += heading_factor;
+    if (loc->flags & FLAG_KEYWORDS)    locresult += keywords_factor;
+    if (loc->flags & FLAG_DESCRIPTION)  locresult += meta_desc_factor;
+    if (loc->flags & FLAG_AUTHOR)    locresult += author_factor;
+    if (loc->flags & FLAG_LINK_TEXT)  locresult += description_factor;
+    if (loc->flags & FLAG_URL)    locresult += url_text_factor;
+    
+    score += loc->weight * locresult;
+    loc = (Location *)locations->Get_Next(c);
+  }
     }
   return score;
 }

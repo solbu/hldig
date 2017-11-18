@@ -12,8 +12,8 @@
 // $Id: HtRegexReplace.h,v 1.4 2004/05/28 13:15:21 lha Exp $
 //
 
-#ifndef	_HtRegexReplace_h_
-#define	_HtRegexReplace_h_
+#ifndef  _HtRegexReplace_h_
+#define  _HtRegexReplace_h_
 
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
@@ -34,25 +34,25 @@ public:
     //
     // Methods for setting the replacement pattern
     //
-	void	setReplace(const String& str) { setReplace(str.get()); }
-	void	setReplace(const char *str);
+  void  setReplace(const String& str) { setReplace(str.get()); }
+  void  setReplace(const char *str);
 
     //
     // Methods for replacing
     //
-    int		replace(String &str, int nullpattern = 0, int nullstr = 0);
+    int    replace(String &str, int nullpattern = 0, int nullstr = 0);
 
 protected:
-	char	*repBuf;      // Replace text.
-	size_t	segSize, segUsed;
-	int		*segMark;
-	size_t	repLen;
+  char  *repBuf;      // Replace text.
+  size_t  segSize, segUsed;
+  int    *segMark;
+  size_t  repLen;
 
-    regmatch_t		regs[10];
+    regmatch_t    regs[10];
 
-	// Various private methods
-	void putMark(int n);
-	void empty();
+  // Various private methods
+  void putMark(int n);
+  void empty();
 };
 
 #endif

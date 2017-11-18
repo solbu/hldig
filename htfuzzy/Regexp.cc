@@ -54,8 +54,8 @@ Regexp::~Regexp()
 void
 Regexp::getWords(char *pattern, List &words)
 {
-    HtRegex	regexMatch;
-    String	stripped (pattern);
+    HtRegex  regexMatch;
+    String  stripped (pattern);
 
     // First we have to strip the necessary punctuation
 // Why??  lha
@@ -66,7 +66,7 @@ Regexp::getWords(char *pattern, List &words)
 
     HtWordList    wordDB(config);
     List        *wordList;
-    String	*key;
+    String  *key;
     wordDB.Open(config["word_db"], O_RDONLY);
     wordList = wordDB.Words();
 
@@ -77,10 +77,10 @@ Regexp::getWords(char *pattern, List &words)
     while (wordCount < maximumWords && (key = (String *) wordList->Get_Next()))
       {
         if (regexMatch.match(*key, 0, 0) != 0)
-	  {
+    {
             words.Add(new String(*key));
             wordCount++;
-	  }
+    }
       }
     if (wordList) {
       wordList->Destroy();

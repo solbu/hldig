@@ -37,7 +37,7 @@ static ConfigDefaults config_defaults[] = {
   { 0 }
 };
 
-static Configuration*	config = 0;
+static Configuration*  config = 0;
 
 typedef struct
 {
@@ -65,8 +65,8 @@ static int verbose = 0;
 
 int main(int ac, char **av)
 {
-  int			c;
-  params_t		params;
+  int      c;
+  params_t    params;
 
   params.key = 0;
   params.list = 0;
@@ -77,29 +77,29 @@ int main(int ac, char **av)
   while ((c = getopt(ac, av, "ve:klbszw:")) != -1)
     {
       switch (c)
-	{
-	case 'v':
-	  verbose++;
-	  break;
-	case 'k':
-	  params.key = 1;
-	  break;
-	case 'l':
-	  params.list = 1;
-	  break;
-	case 's':
-	  params.skip = 1;
-	  break;
-	case 'e':
-	  params.env = atoi(optarg);
-	  break;
-	case 'z':
-	  params.compress = 1;
-	  break;
-	case '?':
-	  usage();
-	  break;
-	}
+  {
+  case 'v':
+    verbose++;
+    break;
+  case 'k':
+    params.key = 1;
+    break;
+  case 'l':
+    params.list = 1;
+    break;
+  case 's':
+    params.skip = 1;
+    break;
+  case 'e':
+    params.env = atoi(optarg);
+    break;
+  case 'z':
+    params.compress = 1;
+    break;
+  case '?':
+    usage();
+    break;
+  }
     }
 
   doword(&params);
@@ -110,9 +110,9 @@ int main(int ac, char **av)
 //
 // mifluz.conf structure
 //
-#define WORD_DOCID	1
-#define WORD_FLAGS	2
-#define WORD_LOCATION	3
+#define WORD_DOCID  1
+#define WORD_FLAGS  2
+#define WORD_LOCATION  3
 
 static void doword(params_t* params)
 {
@@ -124,7 +124,7 @@ static void doword(params_t* params)
   if(params->list || params->skip || params->env) {
     config = WordContext::Initialize(config_defaults);
     if(params->compress) {
-	config->Add("wordlist_compress", "true");
+  config->Add("wordlist_compress", "true");
     }
     if(verbose > 2) {
       String tmp;
@@ -159,15 +159,15 @@ static void doword(params_t* params)
 static void dolist(params_t*)
 {
   static char* word_list[] = {
-    "The",	// DocID = 1
-    "quick",	// DocID = 2
-    "brown",	// DocID = 3
-    "fox",	// DocID = 4
-    "jumps",	// DocID = 5
-    "over",	// DocID = 6
-    "the",	// DocID = 7
-    "lazy",	// DocID = 8
-    "dog",	// DocID = 9
+    "The",  // DocID = 1
+    "quick",  // DocID = 2
+    "brown",  // DocID = 3
+    "fox",  // DocID = 4
+    "jumps",  // DocID = 5
+    "over",  // DocID = 6
+    "the",  // DocID = 7
+    "lazy",  // DocID = 8
+    "dog",  // DocID = 9
     0
   };
 
@@ -238,8 +238,8 @@ static void dolist(params_t*)
       // find matches in wordlist
       List *result = words[wordRef];
       if(!result) {
-	fprintf(stderr, "dolist: words[wordRef] returned null pointer\n");
-	exit(1);
+  fprintf(stderr, "dolist: words[wordRef] returned null pointer\n");
+  exit(1);
       }
       result->Start_Get();
       int count = 0;
@@ -247,16 +247,16 @@ static void dolist(params_t*)
       // loop through found matches
       while((found = (WordReference*)result->Get_Next()))
       {
-	if(wordRef.Key().GetWord() != found->Key().GetWord())
-	{
-	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (char*)wordRef.Key().GetWord(), (char*)found->Key().GetWord());
-	  exit(1);
-	}
-	count++;
+  if(wordRef.Key().GetWord() != found->Key().GetWord())
+  {
+    fprintf(stderr, "dolist: simple: expected %s, got %s\n", (char*)wordRef.Key().GetWord(), (char*)found->Key().GetWord());
+    exit(1);
+  }
+  count++;
       }
       if(count != 1) {
-	fprintf(stderr, "dolist: simple: searching %s, got %d matches instead of 1\n", (char*)wordRef.Key().GetWord(), count);
-  	exit(1);
+  fprintf(stderr, "dolist: simple: searching %s, got %d matches instead of 1\n", (char*)wordRef.Key().GetWord(), count);
+    exit(1);
       }
       if(verbose) fprintf(stderr, "done\n");
 
@@ -318,12 +318,12 @@ static void dolist(params_t*)
     int count = 0;
     WordReference* found;
     while((found = (WordReference*)result->Get_Next())) {
-	if(wordRef.Key().GetWord() != found->Key().GetWord()) {
-	  fprintf(stderr, "dolist: simple: expected %s, got %s\n", (char*)wordRef.Key().GetWord(), (char*)found->Key().GetWord());
-	  exit(1);
-	}
-	if(verbose) fprintf(stderr, "%s\n", (char*)found->Get());
-	count++;
+  if(wordRef.Key().GetWord() != found->Key().GetWord()) {
+    fprintf(stderr, "dolist: simple: expected %s, got %s\n", (char*)wordRef.Key().GetWord(), (char*)found->Key().GetWord());
+    exit(1);
+  }
+  if(verbose) fprintf(stderr, "%s\n", (char*)found->Get());
+  count++;
     }
     if(count != 2) {
       fprintf(stderr, "dolist: searching occurrences of '%s', got %d matches instead of 2\n", (char*)wordRef.Key().GetWord(), count);
@@ -446,8 +446,8 @@ dokey(params_t* params)
     int failed = 0 ;
     for(j = WORD_FIRSTFIELD; j < word.NFields(); j++) {
       if(word.Get(j) != other_word.Get(j)) {
-	failed = 1;
-	break;
+  failed = 1;
+  break;
       }
     }
     if(word.GetWord() != other_word.GetWord() ||
@@ -469,8 +469,8 @@ dokey(params_t* params)
     //
     if(!word.PackEqual(other_word))
       {
-	fprintf(stderr, "dokey: %s not equal (object compare)\n", *key_desc);
-	exit(1);
+  fprintf(stderr, "dokey: %s not equal (object compare)\n", *key_desc);
+  exit(1);
       }
 
     //
@@ -501,12 +501,12 @@ dokey(params_t* params)
     {
       int ret;
       if((ret = WordKey::Compare(packed, other_packed)) != -1)
-	{
-	  fprintf(stderr, "%s\n", (char*)word.Get());
-	  fprintf(stderr, "%s\n", (char*)other_word.Get());
-	  fprintf(stderr, "dokey: %s different length, expected -1 got %d\n", *key_desc, ret);
-	  exit(1);
-	}
+  {
+    fprintf(stderr, "%s\n", (char*)word.Get());
+    fprintf(stderr, "%s\n", (char*)other_word.Get());
+    fprintf(stderr, "dokey: %s different length, expected -1 got %d\n", *key_desc, ret);
+    exit(1);
+  }
     }
     other_word.SetWord("Test string");
 
@@ -522,12 +522,12 @@ dokey(params_t* params)
     {
       int ret;
       if((ret = WordKey::Compare(packed, other_packed)) != 1)
-	{
-	  fprintf(stderr, "%s\n", (char*)word.Get());
-	  fprintf(stderr, "%s\n", (char*)other_word.Get());
-	  fprintf(stderr, "dokey: %s different letter (S instead of T), expected 1 got %d\n", *key_desc, ret);
-	  exit(1);
-	}
+  {
+    fprintf(stderr, "%s\n", (char*)word.Get());
+    fprintf(stderr, "%s\n", (char*)other_word.Get());
+    fprintf(stderr, "dokey: %s different letter (S instead of T), expected 1 got %d\n", *key_desc, ret);
+    exit(1);
+  }
     }
     other_word.SetWord("Test string");
 
@@ -540,12 +540,12 @@ dokey(params_t* params)
     {
       int ret;
       if((ret = WordKey::Compare(packed, other_packed)) != 1)
-	{
-	  fprintf(stderr, "%s\n", (char*)word.Get());
-	  fprintf(stderr, "%s\n", (char*)other_word.Get());
-	  fprintf(stderr, "dokey: %s different numeric field, expected 1 got %d\n", *key_desc, ret);
-	  exit(1);
-	}
+  {
+    fprintf(stderr, "%s\n", (char*)word.Get());
+    fprintf(stderr, "%s\n", (char*)other_word.Get());
+    fprintf(stderr, "dokey: %s different numeric field, expected 1 got %d\n", *key_desc, ret);
+    exit(1);
+  }
     }
   }
   //
@@ -561,16 +561,16 @@ dokey(params_t* params)
       int position = 0;
       int lower = 0;
       if(!word.Diff(other_word, position, lower)) {
-	fprintf(stderr, "%s\n", (char*)word.Get());
-	fprintf(stderr, "%s\n", (char*)other_word.Get());
-	fprintf(stderr, "dokey: diff failed\n");
-	exit(1);
+  fprintf(stderr, "%s\n", (char*)word.Get());
+  fprintf(stderr, "%s\n", (char*)other_word.Get());
+  fprintf(stderr, "dokey: diff failed\n");
+  exit(1);
       }
       if(position != 0 || lower != 1) {
-	fprintf(stderr, "%s\n", (char*)word.Get());
-	fprintf(stderr, "%s\n", (char*)other_word.Get());
-	fprintf(stderr, "dokey: diff expected position = 0 and lower = 1 but got position = %d and lower = %d\n", position, lower);
-	exit(1);
+  fprintf(stderr, "%s\n", (char*)word.Get());
+  fprintf(stderr, "%s\n", (char*)other_word.Get());
+  fprintf(stderr, "dokey: diff expected position = 0 and lower = 1 but got position = %d and lower = %d\n", position, lower);
+  exit(1);
       }
     }
     //
@@ -583,14 +583,14 @@ dokey(params_t* params)
       int position = 0;
       int lower = 0;
       if(!word.Diff(other_word, position, lower)) {
-	fprintf(stderr, "dokey: diff failed\n");
-	exit(1);
+  fprintf(stderr, "dokey: diff failed\n");
+  exit(1);
       }
       if(position != 1 || lower != 1) {
-	fprintf(stderr, "%s\n", (char*)word.Get());
-	fprintf(stderr, "%s\n", (char*)other_word.Get());
-	fprintf(stderr, "dokey: diff expected position = 1 and lower = 1 but got position = %d and lower = %d\n", position, lower);
-	exit(1);
+  fprintf(stderr, "%s\n", (char*)word.Get());
+  fprintf(stderr, "%s\n", (char*)other_word.Get());
+  fprintf(stderr, "dokey: diff expected position = 1 and lower = 1 but got position = %d and lower = %d\n", position, lower);
+  exit(1);
       }
     }
     //
@@ -600,8 +600,8 @@ dokey(params_t* params)
       int position = 0;
       int lower = 0;
       if(word.Diff(word, position, lower)) {
-	fprintf(stderr, "dokey: diff found when comparing %s with itself\n", (char*)word.Get());
-	exit(1);
+  fprintf(stderr, "dokey: diff found when comparing %s with itself\n", (char*)word.Get());
+  exit(1);
       }
     }
   }
@@ -691,9 +691,9 @@ static void doskip_try(WordList& words, WordCursor& search, char* found_string, 
 //
 static void doskip_overflow(params_t*)
 {
-#define WORD_FIELD1	1
-#define WORD_FIELD2	2
-#define WORD_FIELD3	3
+#define WORD_FIELD1  1
+#define WORD_FIELD2  2
+#define WORD_FIELD3  3
 
   static ConfigDefaults config_defaults[] = {
     { "wordlist_wordkey_description", "Word/FIELD1 32/FIELD2 8/FIELD3 16", 0 },
@@ -723,7 +723,7 @@ static void doskip_overflow(params_t*)
       //
       // Overflow on FIELD2 must trigger ++ on FIELD1
       //
-      String expected("zebra	<DEF>	4	0	3");
+      String expected("zebra  <DEF>  4  0  3");
       doskip_try(*words, *search, found, expected);
     }
 
@@ -738,7 +738,7 @@ static void doskip_overflow(params_t*)
       //
       // Overflow on FIELD2 must trigger append \001 on word Word
       //
-      String expected("zebra\001	<DEF>	0	0	3");
+      String expected("zebra\001  <DEF>  0  0  3");
       doskip_try(*words, *search, found, expected);
 
       //
@@ -747,8 +747,8 @@ static void doskip_overflow(params_t*)
       ((WordKey&)search->GetSearch()).SetDefinedWordSuffix();
       ((WordReference&)search->GetFound()).Key().Set(found);
       if(search->SkipUselessSequentialWalking() != WORD_WALK_ATEND) {
-	fprintf(stderr, "doskip_overflow: SkipUselessSequentialWalking expected NOTOK & WORD_WALK_ATEND searching %s\n", (char*)key.Get());
-	exit(1);
+  fprintf(stderr, "doskip_overflow: SkipUselessSequentialWalking expected NOTOK & WORD_WALK_ATEND searching %s\n", (char*)key.Get());
+  exit(1);
       }
     
     }
@@ -774,11 +774,11 @@ static void doskip_overflow(params_t*)
 //
 static void doskip_harness(params_t*)
 {
-#define WORD_FIELD1	1
-#define WORD_FIELD2	2
-#define WORD_FIELD3	3
-#define WORD_FIELD4	4
-#define WORD_FIELD5	5
+#define WORD_FIELD1  1
+#define WORD_FIELD2  2
+#define WORD_FIELD3  3
+#define WORD_FIELD4  4
+#define WORD_FIELD5  5
 
   static ConfigDefaults config_defaults[] = {
     { "wordlist_wordkey_description", "Word/FIELD1 8/FIELD2 8/FIELD3 8/FIELD4 8/FIELD5 8", 0 },
@@ -921,9 +921,9 @@ get_int_array(char *s,int **plist,int &n)
     int i=0;
     for(n=0;s[i];n++)
     {
-	for(;s[i] && !isalnum(s[i]);i++);
-	if(!s[i]){break;}
-	for(;s[i] && isalnum(s[i]);i++);
+  for(;s[i] && !isalnum(s[i]);i++);
+  if(!s[i]){break;}
+  for(;s[i] && isalnum(s[i]);i++);
     }
     if(!n){*plist=NULL;return(NOTOK);}
     int *list=new int[n];
@@ -932,10 +932,10 @@ get_int_array(char *s,int **plist,int &n)
     i=0;
     for(j=0;s[i];j++)
     {
-	for(;s[i] && !isalnum(s[i]);i++);
-	if(!s[i]){break;}
-	list[j]=atoi(s+i);
-	for(;s[i] && isalnum(s[i]);i++);
+  for(;s[i] && !isalnum(s[i]);i++);
+  if(!s[i]){break;}
+  list[j]=atoi(s+i);
+  for(;s[i] && isalnum(s[i]);i++);
     }
     return(OK);
 }
@@ -946,70 +946,70 @@ public:
     char *goodorder;
     void GetSearchKey(WordKey &searchKey)
     {
-	searchKey.Set((String)searchkey);
-	if(verbose) fprintf(stderr, "GetSearchKey: string: %s got: %s\n", (char*)searchkey, (char*)searchKey.Get());
+  searchKey.Set((String)searchkey);
+  if(verbose) fprintf(stderr, "GetSearchKey: string: %s got: %s\n", (char*)searchkey, (char*)searchKey.Get());
     }
     int Check(WordList &WList)
     {
-	WordKey empty;
-	WordReference srchwrd;
-	GetSearchKey(srchwrd.Key());
-	Object o;
-	if(verbose) fprintf(stderr, "checking SkipUselessSequentialWalking on: %s\n", (char*)srchwrd.Get());
-	if(verbose) fprintf(stderr, "walking all:\n");
-	List *all = WList.WordRefs();
-	if(verbose) fprintf(stderr, "walking search: searching for: %s\n", (char*)srchwrd.Get());
+  WordKey empty;
+  WordReference srchwrd;
+  GetSearchKey(srchwrd.Key());
+  Object o;
+  if(verbose) fprintf(stderr, "checking SkipUselessSequentialWalking on: %s\n", (char*)srchwrd.Get());
+  if(verbose) fprintf(stderr, "walking all:\n");
+  List *all = WList.WordRefs();
+  if(verbose) fprintf(stderr, "walking search: searching for: %s\n", (char*)srchwrd.Get());
 
-	WordCursor *search = WList.Cursor(srchwrd.Key(), HTDIG_WORDLIST_COLLECTOR);
-	search->SetTraces(new List);
-	search->Walk();
-	List *wresw = search->GetResults();
-	List *wres  = search->GetTraces();
-	wresw->Start_Get();
-	wres->Start_Get();
-	WordReference *found;
-	WordReference *correct;
-	int i;
-	int ngoodorder;
-	int *goodorder_a;
-	get_int_array(goodorder,&goodorder_a,ngoodorder);
-	for(i=0;(found = (WordReference*)wres->Get_Next());i++)
-	{
-  	    if(i>=ngoodorder) {
-	      fprintf(stderr, "SkipUselessSequentialWalking test failed! i>=ngoodorder\n");
-	      exit(1);
-	    }
-	    if(verbose) fprintf(stderr, "Check actual %d'th walked: %s\n", i, (char*)found->Get());
-	    correct = (WordReference*)all->Nth(goodorder_a[i]);
-	    if(verbose) fprintf(stderr, "Check correct %d : %s\n", goodorder_a[i], (char*)correct->Get());
-	    if(!correct->Key().Equal(found->Key())) {
-	      fprintf(stderr, "SkipUselessSequentialWalking test failed! at position: %d\n", i);
-	      exit(1);
-	    }
-	}
-	if(i<ngoodorder) {
-	  fprintf(stderr, "SkipUselessSequentialWalking test failed! n<ngoodorder\n");
-	  exit(1);
-	}
+  WordCursor *search = WList.Cursor(srchwrd.Key(), HTDIG_WORDLIST_COLLECTOR);
+  search->SetTraces(new List);
+  search->Walk();
+  List *wresw = search->GetResults();
+  List *wres  = search->GetTraces();
+  wresw->Start_Get();
+  wres->Start_Get();
+  WordReference *found;
+  WordReference *correct;
+  int i;
+  int ngoodorder;
+  int *goodorder_a;
+  get_int_array(goodorder,&goodorder_a,ngoodorder);
+  for(i=0;(found = (WordReference*)wres->Get_Next());i++)
+  {
+        if(i>=ngoodorder) {
+        fprintf(stderr, "SkipUselessSequentialWalking test failed! i>=ngoodorder\n");
+        exit(1);
+      }
+      if(verbose) fprintf(stderr, "Check actual %d'th walked: %s\n", i, (char*)found->Get());
+      correct = (WordReference*)all->Nth(goodorder_a[i]);
+      if(verbose) fprintf(stderr, "Check correct %d : %s\n", goodorder_a[i], (char*)correct->Get());
+      if(!correct->Key().Equal(found->Key())) {
+        fprintf(stderr, "SkipUselessSequentialWalking test failed! at position: %d\n", i);
+        exit(1);
+      }
+  }
+  if(i<ngoodorder) {
+    fprintf(stderr, "SkipUselessSequentialWalking test failed! n<ngoodorder\n");
+    exit(1);
+  }
 
-	delete [] goodorder_a;
-	delete wresw;
-	delete wres;
-	delete all;
-	delete search;
-	return OK;
+  delete [] goodorder_a;
+  delete wresw;
+  delete wres;
+  delete all;
+  delete search;
+  return OK;
     }
 };
 
 SkipTestEntry SkipTestEntries[]=
 {
      {
- 	"et  <DEF>      <UNDEF>       0       10      ",
- 	"3 4 5 9 10 12 13 14"
+   "et  <DEF>      <UNDEF>       0       10      ",
+   "3 4 5 9 10 12 13 14"
      },
      {
- 	"et  <UNDEF>    20            0       <UNDEF> ",
- 	"3 4 5 6 7 8 9 14 17",
+   "et  <UNDEF>    20            0       <UNDEF> ",
+   "3 4 5 6 7 8 9 14 17",
      },
 };
 

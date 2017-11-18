@@ -60,7 +60,7 @@ class WordReference : public Object
   //-
   // Constructor. Build an object with empty key and empty record.
   // 
-  WordReference()	{}
+  WordReference()  {}
 #ifndef SWIG
   //-
   // Constructor. Build an object from disk representation of <b>key</b>
@@ -78,34 +78,34 @@ class WordReference : public Object
     key.SetWord(word);
   }
 #endif /* SWIG */
-  ~WordReference()	{}
+  ~WordReference()  {}
 
   //-
   // Reset to empty key and record
   //
-  void			Clear() { key.Clear(); record.Clear(); }
+  void      Clear() { key.Clear(); record.Clear(); }
 
   //
   // Accessors
   //-
   // Return the key object.
   //
-  WordKey&		Key() { return key; }
+  WordKey&    Key() { return key; }
 #ifndef SWIG
   //-
   // Return the key object as const.
   //
-  const WordKey&	Key() const { return key; }
+  const WordKey&  Key() const { return key; }
 #endif /* SWIG */
   //-
   // Return the record object.
   //
-  WordRecord&		Record() { return record; }
+  WordRecord&    Record() { return record; }
 #ifndef SWIG
   //-
   // Return the record object as const.
   //
-  const WordRecord&	Record() const { return record; }
+  const WordRecord&  Record() const { return record; }
 #endif /* SWIG */
 
   //
@@ -117,26 +117,26 @@ class WordReference : public Object
    //-
    // Copy <b>arg</b> in the key part of the object.
    //
-  void			Key(const WordKey& arg) { key = arg; }
+  void      Key(const WordKey& arg) { key = arg; }
 #ifndef SWIG
   //-
   // Set key structure from disk storage format as found in 
   // <b>packed</b> string.
   // Return OK if successfull, NOTOK otherwise.
   //
-  int			KeyUnpack(const String& packed) { return key.Unpack(packed); }
+  int      KeyUnpack(const String& packed) { return key.Unpack(packed); }
   //
   //-
   // Convert key object into disk storage format as found in 
   // return the resulting string.
   //
-  String		KeyPack() const { String tmp; key.Pack(tmp); return tmp; }
+  String    KeyPack() const { String tmp; key.Pack(tmp); return tmp; }
   //-
   // Convert key object into disk storage format as found in 
   // and place the result in <b>packed</b> string.
   // Return OK if successfull, NOTOK otherwise.
   //
-  int			KeyPack(String& packed) const { return key.Pack(packed); }
+  int      KeyPack(String& packed) const { return key.Pack(packed); }
 #endif /* SWIG */
 
 #ifdef SWIG
@@ -145,30 +145,30 @@ class WordReference : public Object
    //-
    // Copy <b>arg</b> in the record part of the object.
    //
-  void			Record(const WordRecord& arg) { record = arg; }
+  void      Record(const WordRecord& arg) { record = arg; }
 #ifndef SWIG
   //-
   // Set record structure from disk storage format as found in 
   // <b>packed</b> string.
   // Return OK if successfull, NOTOK otherwise.
   //
-  int			RecordUnpack(const String& packed) { return record.Unpack(packed); }
+  int      RecordUnpack(const String& packed) { return record.Unpack(packed); }
   //-
   // Convert record object into disk storage format as found in 
   // return the resulting string.
   //
-  String		RecordPack() const { String tmp; record.Pack(tmp); return tmp; }
+  String    RecordPack() const { String tmp; record.Pack(tmp); return tmp; }
   //-
   // Convert record object into disk storage format as found in 
   // and place the result in <b>packed</b> string.
   // Return OK if successfull, NOTOK otherwise.
   //
-  int			RecordPack(String& packed) const { return record.Pack(packed); }
+  int      RecordPack(String& packed) const { return record.Pack(packed); }
 
   //-
   // Short hand for KeyPack(<b>ckey</b>) RecordPack(<b>crecord</b>).
   //
-  inline int		Pack(String& ckey, String& crecord) const {
+  inline int    Pack(String& ckey, String& crecord) const {
     if(key.Pack(ckey) == NOTOK) return NOTOK;
     if(record.Pack(crecord) == NOTOK) return NOTOK;
     return OK;
@@ -176,7 +176,7 @@ class WordReference : public Object
   //-
   // Short hand for KeyUnpack(<b>ckey</b>) RecordUnpack(<b>crecord</b>).
   //
-  int			Unpack(const String& ckey, const String& crecord) {
+  int      Unpack(const String& ckey, const String& crecord) {
     if(key.Unpack(ckey) == NOTOK) return NOTOK;
     if(record.Unpack(crecord) == NOTOK) return NOTOK;
     return OK;
@@ -192,13 +192,13 @@ class WordReference : public Object
   // See the corresponding manual page for details. Copy other.record
   // into the record part of the object.
   //
-  int			Merge(const WordReference& other);
+  int      Merge(const WordReference& other);
 #ifndef SWIG
   //-
   // Copy <b>master</b> before merging with <b>master.</b>Merge(<b>slave</b>)
   // and return the copy. Prevents alteration of <b>master</b>.
   //
-  static WordReference	Merge(const WordReference& master, const WordReference& slave) {
+  static WordReference  Merge(const WordReference& master, const WordReference& slave) {
     WordReference tmp(master);
     tmp.Merge(slave);
     return tmp;
@@ -206,7 +206,7 @@ class WordReference : public Object
 #endif /* SWIG */
 
 #ifndef SWIG
-  int			compare(Object *to) { String word(((WordReference *) to)->key.GetWord()); return key.GetWord().nocase_compare(word); }
+  int      compare(Object *to) { String word(((WordReference *) to)->key.GetWord()); return key.GetWord().nocase_compare(word); }
 #endif /* SWIG */
 
 #ifndef SWIG
@@ -254,8 +254,8 @@ class WordReference : public Object
  protected:
 
 #ifndef SWIG
-  WordKey		key;
-  WordRecord		record;
+  WordKey    key;
+  WordRecord    record;
 #endif /* SWIG */
 };
 

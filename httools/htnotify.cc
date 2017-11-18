@@ -95,19 +95,19 @@ void readPreAndPostamble(void);
 void add_notification(char *date, char *email, char *url, const char *subject);
 void send_notification(char *email, List * notifList);
 void send_email(List * notifList, String& command, String& to,
-		String& listText, int singleSubject);
+    String& listText, int singleSubject);
 int parse_date(char *date, int &year, int &month, int &day);
 
 
-int	verbose = 0;
-int	sendEmail = 1;
+int  verbose = 0;
+int  sendEmail = 1;
 
 //
 // This variable is used to hold today's date.  It is global for
 // efficiency reasons since computing it is a relatively expensive
 // operation
 //
-struct tm	*today;
+struct tm  *today;
 
 //
 // This structure holds the set of email notifications requiring
@@ -129,35 +129,35 @@ String postambleText;
 //
 int main(int ac, char **av)
 {
-    int			c;
-    extern char		*optarg;
-    String		base;
-    String		configFile = DEFAULT_CONFIG_FILE;
+    int      c;
+    extern char    *optarg;
+    String    base;
+    String    configFile = DEFAULT_CONFIG_FILE;
 
     while ((c = getopt(ac, av, "nvb:c:")) != -1)
     {
-	switch (c)
-	{
-	case 'b':
-	    base = optarg;
-	    break;
-	case 'c':
-	    configFile = optarg;
-	    break;
-	case 'v':
-	    verbose++;
-	    break;
-	case 'n':
-	    verbose++;
-	    sendEmail = 0;
-	    break;
-	case '?':
-	    usage();
-	    break;
-	}
+  switch (c)
+  {
+  case 'b':
+      base = optarg;
+      break;
+  case 'c':
+      configFile = optarg;
+      break;
+  case 'v':
+      verbose++;
+      break;
+  case 'n':
+      verbose++;
+      sendEmail = 0;
+      break;
+  case '?':
+      usage();
+      break;
+  }
     }
 
-	HtConfiguration* config= HtConfiguration::config();
+  HtConfiguration* config= HtConfiguration::config();
     config->Defaults(&defaults[0]);
     config->Read(configFile);
 
@@ -175,19 +175,19 @@ int main(int ac, char **av)
 
     if (base.length())
     {
-	config->Add("database_base", base);
+  config->Add("database_base", base);
     }
 
-    String	doc_db = config->Find("doc_db");
-    DocumentDB	docdb;
+    String  doc_db = config->Find("doc_db");
+    DocumentDB  docdb;
 
     docdb.Read(doc_db);
-    List	*docs = docdb.DocIDs();
+    List  *docs = docdb.DocIDs();
 
     //
     // Compute today's date
     //
-    time_t	now = time(0);
+    time_t  now = time(0);
     today = localtime(&now);
 
     readPreAndPostamble();
@@ -196,15 +196,15 @@ int main(int ac, char **av)
     // Traverse all the known documents to check for notification requirements
     //
     allNotifications = new Dictionary();
-    DocumentRef	*ref;
-    IntObject		*id;
+    DocumentRef  *ref;
+    IntObject    *id;
     docs->Start_Get();
     while ((id = (IntObject *) docs->Get_Next()))
     {
-	ref = docdb[id->Value()];
-	if (ref)
-	    htnotify(*ref);
-	delete ref;
+  ref = docdb[id->Value()];
+  if (ref)
+      htnotify(*ref);
+  delete ref;
     }
     delete docs;
 
@@ -235,7 +235,7 @@ int main(int ac, char **av)
 //
 void readPreAndPostamble(void)
 {
-	HtConfiguration* config= HtConfiguration::config();
+  HtConfiguration* config= HtConfiguration::config();
     const char* prefixfile = config->Find("htnotify_prefix_file");
     const char* suffixfile = config->Find("htnotify_suffix_file");
 
@@ -305,61 +305,61 @@ void readPreAndPostamble(void)
 //
 void htnotify(DocumentRef &ref)
 {
-    char	*date = ref.DocNotification();
-    char	*email = ref.DocEmail();
+    char  *date = ref.DocNotification();
+    char  *email = ref.DocEmail();
 
     if (date && *date && email && *email)
     {
-	if (verbose > 2)
-	{
-	    cout << "Saw a date:" << endl;
-	    cout << "Date:    " << date << endl;
-	    cout << "URL:     " << ref.DocURL() << endl;
-	    cout << "Subject: " << ref.DocSubject() << endl;
-	    cout << "Email:   " << email << endl;
-	    cout << endl;
-	}
+  if (verbose > 2)
+  {
+      cout << "Saw a date:" << endl;
+      cout << "Date:    " << date << endl;
+      cout << "URL:     " << ref.DocURL() << endl;
+      cout << "Subject: " << ref.DocSubject() << endl;
+      cout << "Email:   " << email << endl;
+      cout << endl;
+  }
 
-	int		month, day, year;
-	if (!parse_date(date, year, month, day))
-	{
-	    // Parsing Failed
-	    if (verbose > 2)
-	    {
-		cout << "Malformed date: " << date << endl;
-	    }
+  int    month, day, year;
+  if (!parse_date(date, year, month, day))
+  {
+      // Parsing Failed
+      if (verbose > 2)
+      {
+    cout << "Malformed date: " << date << endl;
+      }
 
-	    add_notification(date, email, ref.DocURL(), "Malformed Date");
-	    return;
-	}
+      add_notification(date, email, ref.DocURL(), "Malformed Date");
+      return;
+  }
 
-	year -= 1900;
-	month--;
+  year -= 1900;
+  month--;
 
-	//
-	// Compare this date with today's date
-	//
-	if (year < today->tm_year ||
-	    (year == today->tm_year && month < today->tm_mon) ||
-	    (year == today->tm_year && month == today->tm_mon &&
-	     day < today->tm_mday))
-	{
-	    //
-	    // It seems that this date is either today or before
-	    // today.  Send a notification
-	    //
-	    add_notification(date, email, ref.DocURL(), ref.DocSubject());
-	}
-	else
-	{
-	    // Page not yet expired
-	    if (verbose > 2)
-	    {
-		cout << "htnotify: URL " << ref.DocURL()
-		     << " (" << year+1900 << "-" << month+1
-		     << "-" << day << ")" << endl;
-	    }
-	}
+  //
+  // Compare this date with today's date
+  //
+  if (year < today->tm_year ||
+      (year == today->tm_year && month < today->tm_mon) ||
+      (year == today->tm_year && month == today->tm_mon &&
+       day < today->tm_mday))
+  {
+      //
+      // It seems that this date is either today or before
+      // today.  Send a notification
+      //
+      add_notification(date, email, ref.DocURL(), ref.DocSubject());
+  }
+  else
+  {
+      // Page not yet expired
+      if (verbose > 2)
+      {
+    cout << "htnotify: URL " << ref.DocURL()
+         << " (" << year+1900 << "-" << month+1
+         << "-" << day << ")" << endl;
+      }
+  }
     }
 }
 
@@ -385,21 +385,21 @@ void add_notification(char *date, char *email, char *url, const char *subject)
 //
 void send_notification(char* email, List * notifList)
 {
-    String	command = SENDMAIL;
+    String  command = SENDMAIL;
     command << " -t";
 
-    String	em = email;
-    String	to = "";
-    char	*token = strtok(em.get(), " ,\t\r\n");
+    String  em = email;
+    String  to = "";
+    char  *token = strtok(em.get(), " ,\t\r\n");
     while (token)
     {
-	if (*token)
-	{
-	    if (to.length())
-		to << ", ";
-	    to << token;
-	}
-	token = strtok(0, " ,\t\r\n");
+  if (*token)
+  {
+      if (to.length())
+    to << ", ";
+      to << token;
+  }
+  token = strtok(0, " ,\t\r\n");
     }
 
 // Before we use the email address string, we may want to sanitize it.
@@ -465,7 +465,7 @@ void send_notification(char* email, List * notifList)
 void send_email (List * notifList, String& command,
                  String& to, String& listText, int singleSubject)
 {
-	HtConfiguration* config= HtConfiguration::config();
+  HtConfiguration* config= HtConfiguration::config();
     String from = "\"";
     from << config->Find("htnotify_webmaster") << "\" <"
          << config->Find("htnotify_sender") << ">";
@@ -486,7 +486,7 @@ void send_email (List * notifList, String& command,
     if ( (fileptr = popen(command.get(), "w")) != NULL )
     {
         EmailNotification* notif = (EmailNotification*) notifList->Get_First();
-        String	out;
+        String  out;
         out << "From: " << from << '\n';
         out << "To: " << to << '\n';
         if (replyto.length() > 0)
@@ -545,29 +545,29 @@ void usage()
 //
 int parse_date(char *date, int &year, int &month, int &day)
 {
-	HtConfiguration* config= HtConfiguration::config();
-    int		mm = -1, dd = -1, yy = -1, t;
-    String	scandate = date;
+  HtConfiguration* config= HtConfiguration::config();
+    int    mm = -1, dd = -1, yy = -1, t;
+    String  scandate = date;
 
     for (char *s = scandate.get(); *s; s++)
-	if (ispunct(*s))
-	    *s = ' ';
+  if (ispunct(*s))
+      *s = ' ';
 
     if (config->Boolean("iso_8601"))
     {
-	// conf file specified ISO standard, so expect [yy]yy mm dd.
-	sscanf(scandate.get(), "%d%d%d", &yy, &mm, &dd);
+  // conf file specified ISO standard, so expect [yy]yy mm dd.
+  sscanf(scandate.get(), "%d%d%d", &yy, &mm, &dd);
     }
     else
     {
-	// Default to American standard when not specified in conf,
-	// so expect mm dd [yy]yy.
-	sscanf(scandate.get(), "%d%d%d", &mm, &dd, &yy);
-	if (mm > 31 && dd <= 12 && yy <= 31)
-	{
-	    // probably got yyyy-mm-dd instead of mm/dd/yy
-	    t = mm; mm = dd; dd = yy; yy = t;
-	}
+  // Default to American standard when not specified in conf,
+  // so expect mm dd [yy]yy.
+  sscanf(scandate.get(), "%d%d%d", &mm, &dd, &yy);
+  if (mm > 31 && dd <= 12 && yy <= 31)
+  {
+      // probably got yyyy-mm-dd instead of mm/dd/yy
+      t = mm; mm = dd; dd = yy; yy = t;
+  }
     }
 
     // OK, we took our best guess at the order the y, m & d should be.
@@ -576,25 +576,25 @@ int parse_date(char *date, int &year, int &month, int &day)
     // expected format.
     if (dd > 31 && yy <= 31)
     {
-	t = yy; yy = dd; dd = t;
+  t = yy; yy = dd; dd = t;
     }
     if (mm > 31 && yy <= 31)
     {
-	t = yy; yy = mm; mm = t;
+  t = yy; yy = mm; mm = t;
     }
     if (mm > 12 && dd <= 12)
     {
-	t = dd; dd = mm; mm = t;
+  t = dd; dd = mm; mm = t;
     }
     if (yy < 0 || mm < 1 || mm > 12 || dd < 1 || dd > 31)
-	return 0;		// Invalid date
+  return 0;    // Invalid date
 
-    if (yy < 70)		// before UNIX Epoch
-	yy += 2000;
-    else if (yy < 1900)		// before computer age
-	yy += 1900;
+    if (yy < 70)    // before UNIX Epoch
+  yy += 2000;
+    else if (yy < 1900)    // before computer age
+  yy += 1900;
     if (verbose > 2)
-	cout << "Date used (y-m-d): " << yy << '-' << mm << '-' << dd << endl;
+  cout << "Date used (y-m-d): " << yy << '-' << mm << '-' << dd << endl;
 
     year = yy;
     month = mm;

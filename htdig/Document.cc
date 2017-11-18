@@ -73,16 +73,16 @@ Document::Document(char *u, int max_size)
     FTPConnect = 0;
     NNTPConnect = 0;
     externalConnect = 0;
-	HtConfiguration* config= HtConfiguration::config();
+  HtConfiguration* config= HtConfiguration::config();
 
     // We probably need to move assignment of max_doc_size, according
     // to a server or url configuration value. The same is valid for
     // max_retries.
 
     if (max_size > 0)
-	max_doc_size = max_size;
+  max_doc_size = max_size;
     else
-	max_doc_size = config->Value("max_doc_size");
+  max_doc_size = config->Value("max_doc_size");
 
    if (config->Value("max_retries") > 0)
       num_retries = config->Value("max_retries");
@@ -105,7 +105,7 @@ Document::Document(char *u, int max_size)
     contentLength = -1;
     if (u)
     {
-	Url(u);
+  Url(u);
     }
 }
 
@@ -139,7 +139,7 @@ Document::~Document()
 #if MEM_DEBUG
     char *p = new char;
     cout << "==== Document deleted: " << this << " new at " <<
-	((void *) p) << endl;
+  ((void *) p) << endl;
     delete p;
 #endif
 }
@@ -187,7 +187,7 @@ Document::Url(const String &u)
 
     // Re-initialise the proxy
     if (proxy)
-    	delete proxy;
+      delete proxy;
     proxy = 0;
 
     // Get the proxy information for this URL
@@ -198,7 +198,7 @@ Document::Url(const String &u)
     {
         proxy = new URL(proxyURL);
         proxy->normalize();
-    	// set the proxy authorization information
+      // set the proxy authorization information
         setProxyUsernamePassword(config->Find(url,"http_proxy_authorization"));
     }
 
@@ -229,7 +229,7 @@ Document::Referer(const String &u)
 int
 Document::UseProxy()
 {
-	HtConfiguration* config= HtConfiguration::config();
+  HtConfiguration* config= HtConfiguration::config();
     static HtRegex *excludeProxy = 0;
 
     //
@@ -237,10 +237,10 @@ Document::UseProxy()
     //
     if (!excludeProxy)
     {
-    	excludeProxy = new HtRegex();
-	StringList l(config->Find("http_proxy_exclude"), " \t");
-	excludeProxy->setEscaped(l, config->Boolean("case_sensitive"));
-	l.Release();
+      excludeProxy = new HtRegex();
+  StringList l(config->Find("http_proxy_exclude"), " \t");
+  excludeProxy->setEscaped(l, config->Boolean("case_sensitive"));
+  l.Release();
     }
 
     if ((proxy) && (excludeProxy->match(url->get(), 0, 0) == 0))
@@ -261,10 +261,10 @@ Document::Retrieve(Server *server, HtDateTime date)
    // as well as an ExternalTransport system
    // eventually maybe ftp:// and a few others
 
-   Transport::DocStatus	status;
-   Transport_Response	*response = 0;
-   HtDateTime 		*ptrdatetime = 0;
-   int			useproxy = UseProxy();
+   Transport::DocStatus  status;
+   Transport_Response  *response = 0;
+   HtDateTime     *ptrdatetime = 0;
+   int      useproxy = UseProxy();
    int                  NumRetries;
   
    transportConnect = 0;
@@ -272,9 +272,9 @@ Document::Retrieve(Server *server, HtDateTime date)
    if (ExternalTransport::canHandle(url->service()))
      {
        if (externalConnect)
-	 {
-	   delete externalConnect;
-        }	
+   {
+     delete externalConnect;
+        }  
        externalConnect = new ExternalTransport(url->service());
        transportConnect = externalConnect;
      }
@@ -295,14 +295,14 @@ Document::Retrieve(Server *server, HtDateTime date)
       if (HTTPSConnect)
       {
          // Here we must set only thing for a HTTP request
-	  
+    
          HTTPSConnect->SetRequestURL(*url);
 
-	 // Set the user agent which can vary per server
-	 HTTPSConnect->SetRequestUserAgent(server->UserAgent());
+   // Set the user agent which can vary per server
+   HTTPSConnect->SetRequestUserAgent(server->UserAgent());
 
-	 // Set the accept language which can vary per server
-	 HTTPSConnect->SetAcceptLanguage(server->AcceptLanguage());
+   // Set the accept language which can vary per server
+   HTTPSConnect->SetAcceptLanguage(server->AcceptLanguage());
 
          // Set the referer
          if (referer)
@@ -313,7 +313,7 @@ Document::Retrieve(Server *server, HtDateTime date)
             HTTPSConnect->DisableCookies();
          else HTTPSConnect->AllowCookies();
 
-	  // We may issue a config paramater to enable/disable them
+    // We may issue a config paramater to enable/disable them
          if (server->IsPersistentConnectionAllowed())
          {
             // Persistent connections allowed
@@ -327,14 +327,14 @@ Document::Retrieve(Server *server, HtDateTime date)
             else
                HTTPSConnect->DisableHeadBeforeGet();
 
-	  // http->SetRequestMethod(HtHTTP::Method_GET);
+    // http->SetRequestMethod(HtHTTP::Method_GET);
          if (debug > 2)
          {
             cout << "Making HTTPS request on " << url->get();
-	      
+        
             if (useproxy)
                cout << " via proxy (" << proxy->host() << ":" << proxy->port() << ")";
-	      
+        
             cout << endl;
          }
       }
@@ -359,25 +359,25 @@ Document::Retrieve(Server *server, HtDateTime date)
       if (HTTPConnect)
       {
          // Here we must set only thing for a HTTP request
-	  
+    
          HTTPConnect->SetRequestURL(*url);
 
-	 // Set the user agent which can vary per server
-	 HTTPConnect->SetRequestUserAgent(server->UserAgent());
+   // Set the user agent which can vary per server
+   HTTPConnect->SetRequestUserAgent(server->UserAgent());
 
-	 // Set the accept language which can vary per server
-	 HTTPConnect->SetAcceptLanguage(server->AcceptLanguage());
+   // Set the accept language which can vary per server
+   HTTPConnect->SetAcceptLanguage(server->AcceptLanguage());
 
          // Set the referer
          if (referer)
             HTTPConnect->SetRefererURL(*referer);
-	  
+    
          // Let's disable the cookies if we decided that in the config file 
          if (server->DisableCookies())
             HTTPConnect->DisableCookies();
          else HTTPConnect->AllowCookies();
 
-	  // We may issue a config paramater to enable/disable them
+    // We may issue a config paramater to enable/disable them
          if (server->IsPersistentConnectionAllowed())
          {
             // Persistent connections allowed
@@ -391,14 +391,14 @@ Document::Retrieve(Server *server, HtDateTime date)
             else
                HTTPConnect->DisableHeadBeforeGet();
 
-	  // http->SetRequestMethod(HtHTTP::Method_GET);
+    // http->SetRequestMethod(HtHTTP::Method_GET);
          if (debug > 2)
          {
             cout << "Making HTTP request on " << url->get();
-	      
+        
             if (useproxy)
                cout << " via proxy (" << proxy->host() << ":" << proxy->port() << ")";
-	      
+        
             cout << endl;
          }
       }
@@ -422,13 +422,13 @@ Document::Retrieve(Server *server, HtDateTime date)
       if (FileConnect)
       {
          // Here we must set only thing for a file request
-	
+  
          FileConnect->SetRequestURL(*url);
-	
+  
          // Set the referer
          if (referer)
             FileConnect->SetRefererURL(*referer);
-	
+  
          if (debug > 2)
             cout << "Making 'file' request on " << url->get() << endl;
       }
@@ -453,18 +453,18 @@ Document::Retrieve(Server *server, HtDateTime date)
       if (FTPConnect)
       {
          // Here we must set only thing for a FTP request
-	
+  
          FTPConnect->SetRequestURL(*url);
          ////////////////////////////////////////////////////    
-	 ///
+   ///
          /// stuff may be missing here or in need of change             
          ///
-	 ///////////////////////////////////////////////////
+   ///////////////////////////////////////////////////
 
          // Set the referer
          if (referer)
             FTPConnect->SetRefererURL(*referer);
-	
+  
          if (debug > 2)
             cout << "Making 'ftp' request on " << url->get() << endl;
       }
@@ -488,9 +488,9 @@ Document::Retrieve(Server *server, HtDateTime date)
       if (NNTPConnect)
       {
          // Here we got an Usenet document request
-	
+  
          NNTPConnect->SetRequestURL(*url);
-	
+  
          if (debug > 2)
             cout << "Making 'NNTP' request on " << url->get() << endl;
       }
@@ -516,8 +516,8 @@ Document::Retrieve(Server *server, HtDateTime date)
       if (useproxy)
       {
          transportConnect->SetConnection(proxy);
-	 if (proxy_authorization.length())
-	     transportConnect->SetProxyCredentials(proxy_authorization);
+   if (proxy_authorization.length())
+       transportConnect->SetProxyCredentials(proxy_authorization);
       }
       else
          transportConnect->SetConnection(url);
@@ -564,7 +564,7 @@ Document::Retrieve(Server *server, HtDateTime date)
       if (response)
       {
          // We got the response
-	  
+    
          contents = response->GetContents();
          contentType = response->GetContentType();
          contentLength = response->GetContentLength();
@@ -584,7 +584,7 @@ Document::Retrieve(Server *server, HtDateTime date)
          }
 
          // How to manage it when there's no modification date/time?
-	  
+    
          if (debug > 5)
          {
             cout << "Contents:\n" << contents << endl;
@@ -620,9 +620,9 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
     // Loop through list of potential filenames until the list is exhausted
     // or a suitable file is found to exist as a regular file.
     while ((filename = (String *)filenames->Get_Next()) &&
-	   ((stat((char*)*filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
+     ((stat((char*)*filename, &stat_buf) == -1) || !S_ISREG(stat_buf.st_mode)))
         if (debug > 1)
-	    cout << "  tried local file " << *filename << endl;
+      cout << "  tried local file " << *filename << endl;
     
     if (!filename)
         return Transport::Document_not_local;
@@ -642,24 +642,24 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
     static Dictionary *bad_local_ext = 0;
     if (!bad_local_ext)
     {
-	// A list of bad extensions, separated by spaces or tabs
-	bad_local_ext = new Dictionary;
-	String	t = config->Find("bad_local_extensions");
-	String lowerp;
-	char	*p = strtok(t, " \t");
-	while (p)
-	{
-	  // Extensions are case insensitive
-	  lowerp = p;
-	  lowerp.lowercase();
-	  bad_local_ext->Add(lowerp, 0);
-	  p = strtok(0, " \t");
-	}
+  // A list of bad extensions, separated by spaces or tabs
+  bad_local_ext = new Dictionary;
+  String  t = config->Find("bad_local_extensions");
+  String lowerp;
+  char  *p = strtok(t, " \t");
+  while (p)
+  {
+    // Extensions are case insensitive
+    lowerp = p;
+    lowerp.lowercase();
+    bad_local_ext->Add(lowerp, 0);
+    p = strtok(0, " \t");
+  }
     }
     if (type == NULL || bad_local_ext->Exists(ext))
     {
       if (debug > 1 && type != NULL)
-	cout << "\nBad local extension: " << *filename << endl;
+  cout << "\nBad local extension: " << *filename << endl;
       return Transport::Document_not_local;
     }
     else 
@@ -675,25 +675,25 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
     //
     max_doc_size = config->Value(url,"max_doc_size");
     contents = 0;
-    char	docBuffer[8192];
-    int		bytesRead;
+    char  docBuffer[8192];
+    int    bytesRead;
 
     while ((bytesRead = fread(docBuffer, 1, sizeof(docBuffer), f)) > 0)
     {
-	if (debug > 2)
-	    cout << "Read " << bytesRead << " from document\n";
-	if (contents.length() + bytesRead > max_doc_size)
-	    bytesRead = max_doc_size - contents.length();
-	contents.append(docBuffer, bytesRead);
-	if (contents.length() >= max_doc_size)
-	    break;
+  if (debug > 2)
+      cout << "Read " << bytesRead << " from document\n";
+  if (contents.length() + bytesRead > max_doc_size)
+      bytesRead = max_doc_size - contents.length();
+  contents.append(docBuffer, bytesRead);
+  if (contents.length() >= max_doc_size)
+      break;
     }
     fclose(f);
     document_length = contents.length();
     contentLength = stat_buf.st_size;
 
     if (debug > 2)
-	cout << "Read a total of " << document_length << " bytes\n";
+  cout << "Read a total of " << document_length << " bytes\n";
 
     if (document_length < contentLength)
       document_length = contentLength;
@@ -711,56 +711,56 @@ Document::RetrieveLocal(HtDateTime date, StringList *filenames)
 Parsable *
 Document::getParsable()
 {
-    static HTML			*html = 0;
-    static Plaintext		*plaintext = 0;
-    static ExternalParser	*externalParser = 0;
+    static HTML      *html = 0;
+    static Plaintext    *plaintext = 0;
+    static ExternalParser  *externalParser = 0;
     
-    Parsable	*parsable = 0;
+    Parsable  *parsable = 0;
 
     if (ExternalParser::canParse(contentType))
     {
-	if (externalParser)
-	{
-	    delete externalParser;
-	}
-	externalParser = new ExternalParser(contentType);
-	parsable = externalParser;
+  if (externalParser)
+  {
+      delete externalParser;
+  }
+  externalParser = new ExternalParser(contentType);
+  parsable = externalParser;
     }
     else if (mystrncasecmp((char*)contentType, "text/html", 9) == 0)
     {
-	if (!html)
-	    html = new HTML();
-	parsable = html;
+  if (!html)
+      html = new HTML();
+  parsable = html;
     }
     else if (mystrncasecmp((char*)contentType, "text/plain", 10) == 0)
     {
-	if (!plaintext)
-	    plaintext = new Plaintext();
-	parsable = plaintext;
+  if (!plaintext)
+      plaintext = new Plaintext();
+  parsable = plaintext;
     }
     else if (mystrncasecmp((char *)contentType, "text/css", 8) == 0)
       {
-	return NULL;
+  return NULL;
       }
     else if (mystrncasecmp((char *)contentType, "text/", 5) == 0)
     {
-	if (!plaintext)
-	    plaintext = new Plaintext();
-	parsable = plaintext;
-	if (debug > 1)
-	{
-	    cout << '"' << contentType <<
-		"\" not a recognized type.  Assuming text/plain\n";
-	}
+  if (!plaintext)
+      plaintext = new Plaintext();
+  parsable = plaintext;
+  if (debug > 1)
+  {
+      cout << '"' << contentType <<
+    "\" not a recognized type.  Assuming text/plain\n";
+  }
     }
     else
       {
-	if (debug > 1)
-	{
-	    cout << '"' << contentType <<
-		"\" not a recognized type.  Ignoring\n";
-	}
-	return NULL;
+  if (debug > 1)
+  {
+      cout << '"' << contentType <<
+    "\" not a recognized type.  Ignoring\n";
+  }
+  return NULL;
       }
 
     parsable->setContents(contents.get(), contents.length());

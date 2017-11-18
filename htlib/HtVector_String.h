@@ -7,8 +7,8 @@
 //
 
 
-#ifndef	_HtVector_String_h_
-#define	_HtVector_String_h_
+#ifndef  _HtVector_String_h_
+#define  _HtVector_String_h_
 
 
 #include"htString.h"

@@ -42,11 +42,11 @@ get_version_label(int v)
     // check if version number is ok
     if(COMPRESS_VERSION <0 || COMPRESS_VERSION>((sizeof(version_label)/sizeof(*version_label))-1))
     {
-	errr("get_version_label: version_label[COMPRESS_VERSION] is not valid, please update version_label");
+  errr("get_version_label: version_label[COMPRESS_VERSION] is not valid, please update version_label");
     }
     if( v >= (int)((sizeof(version_label)/sizeof(*version_label))-1) )
     {
-	return("INVALID_VERSION");
+  return("INVALID_VERSION");
     }
     // return label
     return(version_label[v]);
@@ -69,45 +69,45 @@ WordDBPage::TestCompress(int debuglevel)
 
     if(res)
     {
-	int size=res->size();
-	// now uncompress into pageu
-	WordDBPage pageu(pgsz);
-	res->rewind();
-	pageu.Uncompress(res,compress_debug);
-	
-	// comapre this page and pageu
-	int cmp=Compare(pageu);
+  int size=res->size();
+  // now uncompress into pageu
+  WordDBPage pageu(pgsz);
+  res->rewind();
+  pageu.Uncompress(res,compress_debug);
+  
+  // comapre this page and pageu
+  int cmp=Compare(pageu);
 
-	// show some results
-  	if(debuglevel>2)printf("TOTAL SIZE: %6d %8f\n",size,size/8.0);
-	// argh! compare failed somthing went wrong
-	// display the compress/decompress sequence and fail
-	if(cmp || size>8*1024)
-	{
-	    if(size>8*1024)
-	    {
-		printf("---------------------------------------------------\n");
-		printf("-----------overflow:%5d------------------------------\n",size/8);
-		printf("---------------------------------------------------\n");
-		printf("---------------------------------------------------\n");
-	    }
-	    printf("###################  ORIGINAL #########################################\n");
-	    show();
-	    printf("###################  REDECOMPRESSED #########################################\n");
-	    pageu.show();
-	    
-	    // re-compress the page verbosely
-	    Compressor *res2=Compress(2);
-	    res2->rewind();
-	    // re-uncompress the page verbosely
-	    WordDBPage pageu2(pgsz);
-	    pageu2.Uncompress(res2,2);
-	    pageu2.show();
-	    if(cmp){errr("Compare failed");}
-	    delete res2;
-	}
-	pageu.delete_page();
-	delete res;
+  // show some results
+    if(debuglevel>2)printf("TOTAL SIZE: %6d %8f\n",size,size/8.0);
+  // argh! compare failed somthing went wrong
+  // display the compress/decompress sequence and fail
+  if(cmp || size>8*1024)
+  {
+      if(size>8*1024)
+      {
+    printf("---------------------------------------------------\n");
+    printf("-----------overflow:%5d------------------------------\n",size/8);
+    printf("---------------------------------------------------\n");
+    printf("---------------------------------------------------\n");
+      }
+      printf("###################  ORIGINAL #########################################\n");
+      show();
+      printf("###################  REDECOMPRESSED #########################################\n");
+      pageu.show();
+      
+      // re-compress the page verbosely
+      Compressor *res2=Compress(2);
+      res2->rewind();
+      // re-uncompress the page verbosely
+      WordDBPage pageu2(pgsz);
+      pageu2.Uncompress(res2,2);
+      pageu2.show();
+      if(cmp){errr("Compare failed");}
+      delete res2;
+  }
+  pageu.delete_page();
+  delete res;
 
     }else {errr("WordDBPage::TestCompress: Compress failed");}
 
@@ -136,13 +136,13 @@ WordDBPage::Uncompress(Compressor *pin,int  ndebug, DB_CMPR_INFO */*=NULL*/)
     int read_version = pin->get_uint(NBITS_COMPRESS_VERSION,"COMPRESS_VERSION");
     if(read_version != COMPRESS_VERSION)
     {
-	fprintf(stderr,"WordDBPage::Uncompress: ***        Compression version mismatch      ***\n");
-	fprintf(stderr,"found version      : %3d     but using version : %3d\n",read_version,COMPRESS_VERSION);
-	fprintf(stderr,"found version label: %s\n",get_version_label(read_version));
-	fprintf(stderr,"using version label: %s\n",get_version_label(COMPRESS_VERSION));
-	fprintf(stderr,"Are you sure you're not reading an old DB with a newer version of the indexer??\n");
-	errr("WordDBPage::Uncompress: ***        Compression version mismatch      ***");
-	exit(1);
+  fprintf(stderr,"WordDBPage::Uncompress: ***        Compression version mismatch      ***\n");
+  fprintf(stderr,"found version      : %3d     but using version : %3d\n",read_version,COMPRESS_VERSION);
+  fprintf(stderr,"found version label: %s\n",get_version_label(read_version));
+  fprintf(stderr,"using version label: %s\n",get_version_label(COMPRESS_VERSION));
+  fprintf(stderr,"Are you sure you're not reading an old DB with a newer version of the indexer??\n");
+  errr("WordDBPage::Uncompress: ***        Compression version mismatch      ***");
+  exit(1);
     }
 
 
@@ -152,13 +152,13 @@ WordDBPage::Uncompress(Compressor *pin,int  ndebug, DB_CMPR_INFO */*=NULL*/)
     switch(cmprtype)
     {
     case CMPRTYPE_NORMALCOMRPESS:// this was a normaly compressed page
-	Uncompress_main(pin);
-	break;
+  Uncompress_main(pin);
+  break;
     case CMPRTYPE_BADCOMPRESS:// this page did not compress correctly
-	pin->get_zone((byte *)pg,pgsz*8,"INITIALBUFFER");
-	break;
+  pin->get_zone((byte *)pg,pgsz*8,"INITIALBUFFER");
+  break;
     default:
-	errr("WordDBPage::Uncompress: CMPRTYPE incoherent");
+  errr("WordDBPage::Uncompress: CMPRTYPE incoherent");
     }
 
     if(verbose){printf("uuuuuuuuu WordDBPage::Uncompress: END\n");}
@@ -196,35 +196,35 @@ WordDBPage::Uncompress_main(Compressor *pin)
     int nkeysleft=nk;
     if(nkeysleft>0)
     {
-	WordDBKey key0=uncompress_key(in,0);
-	if(type==P_LBTREE){uncompress_data(in,0,key0.RecType());}
-	nkeysleft--;
+  WordDBKey key0=uncompress_key(in,0);
+  if(type==P_LBTREE){uncompress_data(in,0,key0.RecType());}
+  nkeysleft--;
     }
     if(nkeysleft>0 && type==P_IBTREE){uncompress_key(in,1);nkeysleft--;}
 
     if(nkeysleft>0)
     {
-	// ********* read numerical fields
-	Uncompress_vals_chaged_flags(in,&(rnums[0]),&(rnum_sizes[0]));
-	for(j=1;j<nnums;j++)
-	{
-	    if(verbose)printf("field %2d : start position:%4d  \n",j,in.size());
-	    if(j==3 && verbose){in.verbose=2;}
-	    rnum_sizes[j]=in.get_vals(&(rnums[j]),label_str("NumField",j));// ***
-	    if(j==3 && verbose){in.verbose=0;}
-	    if(verbose){printf("WordDBPage::Uncompress_main:got numfield:%2d:nvals:%4d\n",j,rnum_sizes[j]);}
-	}
+  // ********* read numerical fields
+  Uncompress_vals_chaged_flags(in,&(rnums[0]),&(rnum_sizes[0]));
+  for(j=1;j<nnums;j++)
+  {
+      if(verbose)printf("field %2d : start position:%4d  \n",j,in.size());
+      if(j==3 && verbose){in.verbose=2;}
+      rnum_sizes[j]=in.get_vals(&(rnums[j]),label_str("NumField",j));// ***
+      if(j==3 && verbose){in.verbose=0;}
+      if(verbose){printf("WordDBPage::Uncompress_main:got numfield:%2d:nvals:%4d\n",j,rnum_sizes[j]);}
+  }
 
-	//  ********* read word differences
-	nrworddiffs=in.get_fixedbitl(&rworddiffs,"WordDiffs");
-
-
-	//  ********* rebuild original page
-	Uncompress_rebuild(rnums,rnum_sizes,nnums,rworddiffs,nrworddiffs);
-	Uncompress_show_rebuild(rnums,rnum_sizes,nnums,rworddiffs,nrworddiffs);
+  //  ********* read word differences
+  nrworddiffs=in.get_fixedbitl(&rworddiffs,"WordDiffs");
 
 
-	for(i=0;i<nnums;i++){delete [] rnums[i];}
+  //  ********* rebuild original page
+  Uncompress_rebuild(rnums,rnum_sizes,nnums,rworddiffs,nrworddiffs);
+  Uncompress_show_rebuild(rnums,rnum_sizes,nnums,rworddiffs,nrworddiffs);
+
+
+  for(i=0;i<nnums;i++){delete [] rnums[i];}
     }
     delete [] rnums;
     delete [] rnum_sizes;
@@ -240,15 +240,15 @@ WordDBPage::Uncompress_vals_chaged_flags(Compressor &in,unsigned int **pcflags,i
     int nbits=num_bits(n);
     for(int i=0;i<n;i++)
     {
-	ex=in.get_uint(WordKey::NFields(),label_str("cflags",i));
-	cflags[i]=ex;
-	int rep=in.get("rep");
-	if(rep)
-	{
-	    rep=in.get_uint_vl(nbits,NULL);
-	    for(int k=1;k<=rep;k++){cflags[k+i]=ex;}
-	    i+=rep;
-	}
+  ex=in.get_uint(WordKey::NFields(),label_str("cflags",i));
+  cflags[i]=ex;
+  int rep=in.get("rep");
+  if(rep)
+  {
+      rep=in.get_uint_vl(nbits,NULL);
+      for(int k=1;k<=rep;k++){cflags[k+i]=ex;}
+      i+=rep;
+  }
     }
 
     *pn=n;
@@ -271,19 +271,19 @@ WordDBPage::Uncompress_header(Compressor &in)
 
     if(verbose)
     {
-	printf("************************************\n");
-	printf("********   WordDBPage::Uncompress: page header ***\n");
-	printf("************************************\n");
-	printf("page size:%d\n",(int)pgsz);
-	printf(" 00-07: Log sequence number.  file  : %d\n",           pg->lsn.file   );      
-	printf(" 00-07: Log sequence number.  offset: %d\n",           pg->lsn.offset );      
-	printf(" 08-11: Current page number.  : %d\n",		       pg->pgno       );     
-	printf(" 12-15: Previous page number. : %d\n",		       pg->prev_pgno  );
-	printf(" 16-19: Next page number.     : %d\n",		       pg->next_pgno  );
-	printf(" 20-21: Number of item pairs on the page. : %d\n",     pg->entries    );  
-	printf(" 22-23: High free byte page offset.       : %d\n",     pg->hf_offset  );
-	printf("    24: Btree tree level.                 : %d\n",     pg->level      );	
-	printf("    25: Page type.                        : %d\n",     pg->type       );		
+  printf("************************************\n");
+  printf("********   WordDBPage::Uncompress: page header ***\n");
+  printf("************************************\n");
+  printf("page size:%d\n",(int)pgsz);
+  printf(" 00-07: Log sequence number.  file  : %d\n",           pg->lsn.file   );      
+  printf(" 00-07: Log sequence number.  offset: %d\n",           pg->lsn.offset );      
+  printf(" 08-11: Current page number.  : %d\n",           pg->pgno       );     
+  printf(" 12-15: Previous page number. : %d\n",           pg->prev_pgno  );
+  printf(" 16-19: Next page number.     : %d\n",           pg->next_pgno  );
+  printf(" 20-21: Number of item pairs on the page. : %d\n",     pg->entries    );  
+  printf(" 22-23: High free byte page offset.       : %d\n",     pg->hf_offset  );
+  printf("    24: Btree tree level.                 : %d\n",     pg->level      );  
+  printf("    25: Page type.                        : %d\n",     pg->type       );    
     }
     return OK;
 }
@@ -307,98 +307,98 @@ WordDBPage::Uncompress_rebuild(unsigned int **rnums,int *rnum_sizes,int nnums0,b
     // reconstruct each key using previous key and  coded differences 
     for(ii=i0;ii<nk;ii++)
     {
-	WordDBRecord arec;
-	BINTERNAL bti;
+  WordDBRecord arec;
+  BINTERNAL bti;
 
-	if(type==P_LBTREE)
-	{
-	    // **** get the data fields
-	    arec.set_decompress(rnums,rnum_sizes,ii,CNDATADATA,CNDATASTATS0,CNDATASTATS1);
-	}
-	else
-	{
-	    if(type!=3){errr("WordDBPage::Uncompress_rebuild: unsupported type!=3");}
-	    // ****** btree internal page specific
-	    bti.pgno =rnums[CNBTIPGNO ][rnum_pos[CNBTIPGNO ]++];
-	    bti.nrecs=rnums[CNBTINRECS][rnum_pos[CNBTINRECS]++];
-	}
-	// all that follows codes differences between succesive entries
-	// that is: Numerical key fields, Words
-	if(ii>i0)
-	{
-	    unsigned int flags=rnums[CNFLAGS][rnum_pos[CNFLAGS]++];
-	    int foundfchange=0;
-	    // **** reconstruct the  word
-	    if(flags&pow2(nfields-1))// check flags to see if word has changed
-	    {
-		foundfchange=1;
-		if(rnum_pos[CNWORDDIFFLEN]>=rnum_sizes[CNWORDDIFFLEN]){errr("WordDBPage::Uncompress read wrong num worddiffs");}
-		// get position of first character that changes in this word
-		int diffpos=rnums[CNWORDDIFFPOS][rnum_pos[CNWORDDIFFPOS]++];
-		// get size of changed part of the word
-		int difflen=rnums[CNWORDDIFFLEN][rnum_pos[CNWORDDIFFLEN]++];
-		int wordlen=diffpos+difflen;
-		char *str=new char [wordlen+1];
-		CHECK_MEM(str);
-		// copy the unchanged part into str from previos key's word
-		if(diffpos)strncpy(str,(char *)pkey.GetWord(),diffpos);
-		// copy the changed part from coded word differences
-		strncpy(str+diffpos,(char *)rworddiffs+irwordiffs,difflen);
-		str[wordlen]=0;
-		if(verbose)printf("key %3d word:\"%s\"\n",ii,str);
-		akey.SetWord(str);
-		irwordiffs+=difflen;
-		delete [] str;
+  if(type==P_LBTREE)
+  {
+      // **** get the data fields
+      arec.set_decompress(rnums,rnum_sizes,ii,CNDATADATA,CNDATASTATS0,CNDATASTATS1);
+  }
+  else
+  {
+      if(type!=3){errr("WordDBPage::Uncompress_rebuild: unsupported type!=3");}
+      // ****** btree internal page specific
+      bti.pgno =rnums[CNBTIPGNO ][rnum_pos[CNBTIPGNO ]++];
+      bti.nrecs=rnums[CNBTINRECS][rnum_pos[CNBTINRECS]++];
+  }
+  // all that follows codes differences between succesive entries
+  // that is: Numerical key fields, Words
+  if(ii>i0)
+  {
+      unsigned int flags=rnums[CNFLAGS][rnum_pos[CNFLAGS]++];
+      int foundfchange=0;
+      // **** reconstruct the  word
+      if(flags&pow2(nfields-1))// check flags to see if word has changed
+      {
+    foundfchange=1;
+    if(rnum_pos[CNWORDDIFFLEN]>=rnum_sizes[CNWORDDIFFLEN]){errr("WordDBPage::Uncompress read wrong num worddiffs");}
+    // get position of first character that changes in this word
+    int diffpos=rnums[CNWORDDIFFPOS][rnum_pos[CNWORDDIFFPOS]++];
+    // get size of changed part of the word
+    int difflen=rnums[CNWORDDIFFLEN][rnum_pos[CNWORDDIFFLEN]++];
+    int wordlen=diffpos+difflen;
+    char *str=new char [wordlen+1];
+    CHECK_MEM(str);
+    // copy the unchanged part into str from previos key's word
+    if(diffpos)strncpy(str,(char *)pkey.GetWord(),diffpos);
+    // copy the changed part from coded word differences
+    strncpy(str+diffpos,(char *)rworddiffs+irwordiffs,difflen);
+    str[wordlen]=0;
+    if(verbose)printf("key %3d word:\"%s\"\n",ii,str);
+    akey.SetWord(str);
+    irwordiffs+=difflen;
+    delete [] str;
 
-	    }else{akey.SetWord(pkey.GetWord());}
-	    // **** reconstruct the numerical key fields
-	    for(j=1;j<nfields;j++)
-	    {
-		// check flags to see if this field has changed
-		int changed=flags&pow2(j-1);
-		if(changed)
-		{
-		    // this field's number 
-		    int k=CNFIELDS+j-1;
-		    // current position within coded differences of this field
-		    int indx=rnum_pos[k];
-		    if(indx>=rnum_sizes[k]){errr("WordDBPage::Uncompress read wrong num of changes in a field");}
-		    if(!foundfchange)
-		    {
-			// this is the first field that changes in this key
-			// so difference is coded compared to value in pevious key
-			akey.Set(j,rnums[k][indx]+pkey.Get(j));
-		    }
-		    else
-		    {
-			// this is NOT the first field that changes in this key
-			// so difference is coded from 0
-			akey.Set(j,rnums[k][indx]);
-		    }
+      }else{akey.SetWord(pkey.GetWord());}
+      // **** reconstruct the numerical key fields
+      for(j=1;j<nfields;j++)
+      {
+    // check flags to see if this field has changed
+    int changed=flags&pow2(j-1);
+    if(changed)
+    {
+        // this field's number 
+        int k=CNFIELDS+j-1;
+        // current position within coded differences of this field
+        int indx=rnum_pos[k];
+        if(indx>=rnum_sizes[k]){errr("WordDBPage::Uncompress read wrong num of changes in a field");}
+        if(!foundfchange)
+        {
+      // this is the first field that changes in this key
+      // so difference is coded compared to value in pevious key
+      akey.Set(j,rnums[k][indx]+pkey.Get(j));
+        }
+        else
+        {
+      // this is NOT the first field that changes in this key
+      // so difference is coded from 0
+      akey.Set(j,rnums[k][indx]);
+        }
                     // we read 1 element from coded differences in this field
-		    rnum_pos[k]++;
-		    foundfchange=1;
-		}
-		else
-		{
-		    // no changes found, just copy from previous key
-		    if(!foundfchange){akey.Set(j,pkey.Get(j));}
-		    else{akey.Set(j,0);}
-		}
-	    }
-	}
-	// now insert key/data into page
-	if(type==P_LBTREE)
-	{
-	    if(ii>i0)insert_key(akey);
-	    if(ii>i0)insert_data(arec);
-	}
-	else
-	{
-	    if(type!=3){errr("WordDBPage::Uncompress_rebuild: unsupported type!=3");}
-	    if(ii>i0)insert_btikey(akey,bti);
-	}
-	pkey=akey;
+        rnum_pos[k]++;
+        foundfchange=1;
+    }
+    else
+    {
+        // no changes found, just copy from previous key
+        if(!foundfchange){akey.Set(j,pkey.Get(j));}
+        else{akey.Set(j,0);}
+    }
+      }
+  }
+  // now insert key/data into page
+  if(type==P_LBTREE)
+  {
+      if(ii>i0)insert_key(akey);
+      if(ii>i0)insert_data(arec);
+  }
+  else
+  {
+      if(type!=3){errr("WordDBPage::Uncompress_rebuild: unsupported type!=3");}
+      if(ii>i0)insert_btikey(akey,bti);
+  }
+  pkey=akey;
     }
     delete [] rnum_pos;
 }
@@ -410,25 +410,25 @@ WordDBPage::Uncompress_show_rebuild(unsigned int **rnums,int *rnum_sizes,int nnu
     int i,j;
     if(verbose)
     {
-	printf("WordDBPage::Uncompress_show_rebuild: rebuilt numerical fields\n");
-	for(j=0;j<nnums0;j++)
-	{
-	    printf("resfield %2d %13s:",j,number_field_label(j));
-	    for(i=0;i<rnum_sizes[j];i++)
-	    {
-		printf("%4d ",rnums[j][i]);
-	    }
-	    printf("\n");
-	    printf("diffield %2d:",j);
-	    for(i=0;i<rnum_sizes[j];i++)
-	    {
-		;//		printf("%2d:%d ",i,nums[j*nk+i] == rnums[j][i]);		    
-	    }
-	    printf("\n");
-	}
-	printf("reswordiffs:");
-	for(i=0;i<nrworddiffs;i++){printf("%c",(isalnum(rworddiffs[i]) ? rworddiffs[i] : '#'));}
-	printf("\n");
+  printf("WordDBPage::Uncompress_show_rebuild: rebuilt numerical fields\n");
+  for(j=0;j<nnums0;j++)
+  {
+      printf("resfield %2d %13s:",j,number_field_label(j));
+      for(i=0;i<rnum_sizes[j];i++)
+      {
+    printf("%4d ",rnums[j][i]);
+      }
+      printf("\n");
+      printf("diffield %2d:",j);
+      for(i=0;i<rnum_sizes[j];i++)
+      {
+    ;//    printf("%2d:%d ",i,nums[j*nk+i] == rnums[j][i]);        
+      }
+      printf("\n");
+  }
+  printf("reswordiffs:");
+  for(i=0;i<nrworddiffs;i++){printf("%c",(isalnum(rworddiffs[i]) ? rworddiffs[i] : '#'));}
+  printf("\n");
     }
 }
 
@@ -439,8 +439,8 @@ WordDBPage::Compress(int ndebug, DB_CMPR_INFO *cmprInfo/*=NULL*/)
     if(debug>1){verbose=1;}
 
     Compressor *res=(Compressor *)new Compressor((cmprInfo ? 
-						  pgsz/(1<<(cmprInfo->coefficient)) :
-						  pgsz/4));
+              pgsz/(1<<(cmprInfo->coefficient)) :
+              pgsz/4));
     CHECK_MEM(res);
     if(debug>0){res->set_use_tags();}
 
@@ -452,25 +452,25 @@ WordDBPage::Compress(int ndebug, DB_CMPR_INFO *cmprInfo/*=NULL*/)
 
     if(cmpr_ok!=OK || res->buffsize()>pgsz)
     {
-    	if(verbose){printf("WordDBCompress::Compress full compress failed ... not compressing at all\n");}
-  	show();
+      if(verbose){printf("WordDBCompress::Compress full compress failed ... not compressing at all\n");}
+    show();
 
-	if(res){delete res;}
-	res=new Compressor;
-	CHECK_MEM(res);
+  if(res){delete res;}
+  res=new Compressor;
+  CHECK_MEM(res);
 
-	if(debug>0){res->set_use_tags();}
+  if(debug>0){res->set_use_tags();}
 
-	res->put_uint(COMPRESS_VERSION,NBITS_COMPRESS_VERSION,"COMPRESS_VERSION");
-	res->put_uint(CMPRTYPE_BADCOMPRESS,NBITS_CMPRTYPE,"CMPRTYPE");
+  res->put_uint(COMPRESS_VERSION,NBITS_COMPRESS_VERSION,"COMPRESS_VERSION");
+  res->put_uint(CMPRTYPE_BADCOMPRESS,NBITS_CMPRTYPE,"CMPRTYPE");
 
-	res->put_zone((byte *)pg,pgsz*8,"INITIALBUFFER");
+  res->put_zone((byte *)pg,pgsz*8,"INITIALBUFFER");
     }
 
     if(verbose)
     {
-	printf("WordDBPage::Compress: Final bitstream result\n");
-	res->show();
+  printf("WordDBPage::Compress: Final bitstream result\n");
+  res->show();
     }
     return res;
 };
@@ -507,8 +507,8 @@ WordDBPage::Compress_main(Compressor &out)
     // *************** extract values and wordiffs **************
     if(nk>0)
     {
-	Compress_extract_vals_wordiffs(nums,nums_pos,nnums,worddiffs);
-	if(verbose)Compress_show_extracted(nums,nums_pos,nnums,worddiffs);
+  Compress_extract_vals_wordiffs(nums,nums_pos,nnums,worddiffs);
+  if(verbose)Compress_show_extracted(nums,nums_pos,nnums,worddiffs);
     }
 
     // *************** init compression **************
@@ -522,22 +522,22 @@ WordDBPage::Compress_main(Compressor &out)
     int nkeysleft=nk;
     if(nkeysleft>0)
     {
-	compress_key(out,0);
-	if(type==P_LBTREE){compress_data(out,0);}
-	nkeysleft--;
+  compress_key(out,0);
+  if(type==P_LBTREE){compress_data(out,0);}
+  nkeysleft--;
     }
     if(nkeysleft>0 && type==P_IBTREE){compress_key(out,1);nkeysleft--;}
 
     if(nkeysleft>0)
     {
 //bmt_END;bmt_START;
-	// compress values
-	Compress_vals(out,nums,nums_pos,nnums);
+  // compress values
+  Compress_vals(out,nums,nums_pos,nnums);
 //bmt_END;bmt_START;
 
-	// compress worddiffs
-	int size=out.put_fixedbitl(worddiffs.begin(),worddiffs.size(),"WordDiffs");
-	if(verbose)printf("compressed wordiffs : %3d values: %4d bits %4f bytes\n",worddiffs.size(),size,size/8.0);
+  // compress worddiffs
+  int size=out.put_fixedbitl(worddiffs.begin(),worddiffs.size(),"WordDiffs");
+  if(verbose)printf("compressed wordiffs : %3d values: %4d bits %4f bytes\n",worddiffs.size(),size,size/8.0);
 //bmt_END;
     }
 
@@ -559,71 +559,71 @@ WordDBPage::Compress_extract_vals_wordiffs(int *nums,int *nums_pos,int ,HtVector
     if(type==P_IBTREE){i0=1;}// internal pages have particular first key
     for(ii=i0;ii<nk;ii++)
     {
-	WordDBKey akey=get_WordDBKey(ii);
+  WordDBKey akey=get_WordDBKey(ii);
 
-	if(type==P_LBTREE)
-	{
+  if(type==P_LBTREE)
+  {
             // ****** WordRecord (data/stats)
-	    // get word record
-	    WordDBRecord arec(data(ii),akey.RecType());
-	    // add record 
-	    if(arec.type==WORD_RECORD_STATS)
-	    {
-		nums[CNDATASTATS0*nk+nums_pos[CNDATASTATS0]++]=arec.info.stats.noccurrence;
-		nums[CNDATASTATS1*nk+nums_pos[CNDATASTATS1]++]=arec.info.stats.ndoc;
-	    }
-	    else 
-	    if(arec.type==WORD_RECORD_DATA)
-	    {
-		nums[CNDATADATA  *nk+nums_pos[CNDATADATA  ]++]=arec.info.data;
-	    }
-	}
-	else
-	{
-	    if(type!=3){errr("WordDBPage::Compress_extract_vals_wordiffs: unsupported type!=3");}
+      // get word record
+      WordDBRecord arec(data(ii),akey.RecType());
+      // add record 
+      if(arec.type==WORD_RECORD_STATS)
+      {
+    nums[CNDATASTATS0*nk+nums_pos[CNDATASTATS0]++]=arec.info.stats.noccurrence;
+    nums[CNDATASTATS1*nk+nums_pos[CNDATASTATS1]++]=arec.info.stats.ndoc;
+      }
+      else 
+      if(arec.type==WORD_RECORD_DATA)
+      {
+    nums[CNDATADATA  *nk+nums_pos[CNDATADATA  ]++]=arec.info.data;
+      }
+  }
+  else
+  {
+      if(type!=3){errr("WordDBPage::Compress_extract_vals_wordiffs: unsupported type!=3");}
             // ****** btree internal page specific
-	    nums[CNBTIPGNO *nk+nums_pos[CNBTIPGNO ]++]=btikey(ii)->pgno ;
-	    nums[CNBTINRECS*nk+nums_pos[CNBTINRECS]++]=btikey(ii)->nrecs;
-	}
+      nums[CNBTIPGNO *nk+nums_pos[CNBTIPGNO ]++]=btikey(ii)->pgno ;
+      nums[CNBTINRECS*nk+nums_pos[CNBTINRECS]++]=btikey(ii)->nrecs;
+  }
 
-	// all that follows codes differences between succesive entries
-	// that is: Numerical key fields, Words
-	if(ii>i0)
-	{
-	    //  clear changed falgs
-	    int iflag=CNFLAGS*nk+nums_pos[CNFLAGS]++;
-	    nums[iflag]=0;
+  // all that follows codes differences between succesive entries
+  // that is: Numerical key fields, Words
+  if(ii>i0)
+  {
+      //  clear changed falgs
+      int iflag=CNFLAGS*nk+nums_pos[CNFLAGS]++;
+      nums[iflag]=0;
 
-	    int foundfchange=0;
-	    const String &aword=akey.GetWord();
-	    const String &pword=pkey.GetWord();
-	    if(!(aword==pword)){foundfchange=1;}
+      int foundfchange=0;
+      const String &aword=akey.GetWord();
+      const String &pword=pkey.GetWord();
+      if(!(aword==pword)){foundfchange=1;}
 
-	    // check numerical fields for changes
-	    // ********   sets CNFIELDS and some of CNFLAGS ************
-	    for(j=1;j<akey.NFields();j++)
-	    {
-		int diff=akey.Get(j)-(foundfchange ? 0 : pkey.Get(j));
-		if(diff)
-		{
-		    foundfchange=1;
-		    nums[iflag]|=pow2(j-1);
-		    nums[      j*nk+nums_pos[j]++]=diff;
-		}
-	    }
+      // check numerical fields for changes
+      // ********   sets CNFIELDS and some of CNFLAGS ************
+      for(j=1;j<akey.NFields();j++)
+      {
+    int diff=akey.Get(j)-(foundfchange ? 0 : pkey.Get(j));
+    if(diff)
+    {
+        foundfchange=1;
+        nums[iflag]|=pow2(j-1);
+        nums[      j*nk+nums_pos[j]++]=diff;
+    }
+      }
 
-	    // ************ check word for changes
-	    // ********   sets CNWORDDIFFPOS CNWORDDIFFLEN and some of CNFLAGS ************
-	    if(!(aword==pword))
-	    {
-		nums[iflag]|=pow2(akey.NFields()-1);
-		int fd=first_diff(aword,pword);
-		nums[CNWORDDIFFPOS*nk+nums_pos[CNWORDDIFFPOS]++]=fd;
-		nums[CNWORDDIFFLEN*nk+nums_pos[CNWORDDIFFLEN]++]=aword.length()-fd;
-		for(int s=fd;s<aword.length();s++){worddiffs.push_back(aword[s]);}
-	    }
-	}
-	pkey=akey;
+      // ************ check word for changes
+      // ********   sets CNWORDDIFFPOS CNWORDDIFFLEN and some of CNFLAGS ************
+      if(!(aword==pword))
+      {
+    nums[iflag]|=pow2(akey.NFields()-1);
+    int fd=first_diff(aword,pword);
+    nums[CNWORDDIFFPOS*nk+nums_pos[CNWORDDIFFPOS]++]=fd;
+    nums[CNWORDDIFFLEN*nk+nums_pos[CNWORDDIFFLEN]++]=aword.length()-fd;
+    for(int s=fd;s<aword.length();s++){worddiffs.push_back(aword[s]);}
+      }
+  }
+  pkey=akey;
     }
 //      nums_pos[CNFLAGS]=nk-1;
 
@@ -638,19 +638,19 @@ WordDBPage::Compress_vals_changed_flags(Compressor &out,unsigned int *cflags,int
     int nbits=num_bits(n);
     for(int i=0;i<n;i++)
     {
-	ex=cflags[i];
-	out.put_uint(ex,WordKey::NFields(),label_str("cflags",i));
-	int k;
-	for(k=1;k+i<n;k++){if(ex!=cflags[i+k]){break;}}
-	k--;
-	if(k>0)
-	{
-	    out.put(1,"rep");
-	    out.put_uint_vl(k,nbits,NULL);
-	    i+=k;
-	}
-	else
-	{out.put(0,"rep");}
+  ex=cflags[i];
+  out.put_uint(ex,WordKey::NFields(),label_str("cflags",i));
+  int k;
+  for(k=1;k+i<n;k++){if(ex!=cflags[i+k]){break;}}
+  k--;
+  if(k>0)
+  {
+      out.put(1,"rep");
+      out.put_uint_vl(k,nbits,NULL);
+      i+=k;
+  }
+  else
+  {out.put(0,"rep");}
     }
     size=out.size()-size;
     if(verbose)printf("compressed flags %2d : %3d values: %4d bits %8f bytes  : ended bit field pos:%6d\n",0,n,size,size/8.0,out.size());
@@ -667,12 +667,12 @@ WordDBPage::Compress_vals(Compressor &out,int *nums,int *nums_pos,int nnums0)
     // compress the difference numbers for the numerical fields
     for( int j=1;j<nnums0;j++)
     {
-	int nv=nums_pos[j];
-	unsigned int *v=(unsigned int *)(nums+j*nk);
-	if((1 || j==3) && verbose){out.verbose=2;}
-	int size=out.put_vals(v,nv,label_str("NumField",j));
-	if((1 || j==3) && verbose){out.verbose=0;}
-	if(verbose)printf("compressed field %2d : %3d values: %4d bits %8f bytes  : ended bit field pos:%6d\n",j,n,size,size/8.0,out.size());
+  int nv=nums_pos[j];
+  unsigned int *v=(unsigned int *)(nums+j*nk);
+  if((1 || j==3) && verbose){out.verbose=2;}
+  int size=out.put_vals(v,nv,label_str("NumField",j));
+  if((1 || j==3) && verbose){out.verbose=0;}
+  if(verbose)printf("compressed field %2d : %3d values: %4d bits %8f bytes  : ended bit field pos:%6d\n",j,n,size,size/8.0,out.size());
     }
 }
 
@@ -700,39 +700,39 @@ WordDBPage::Compress_show_extracted(int *nums,int *nums_pos,int nnums0,HtVector_
     for(j=0;j<nnums0;j++){cnindexe2[j]=0;}
     for(j=0;j<nnums0;j++)
     {
-	printf("%13s",number_field_label(j));
+  printf("%13s",number_field_label(j));
     }
     printf("\n");
     int w=0;
     int mx=(nk>worddiffs.size() ? nk : worddiffs.size());
     for(i=0;i<mx;i++)
     {
-	printf("%3d: ",i);
-	for(j=0;j<nnums0;j++)
-	{
-	    int k=cnindexe2[j]++;
-	    int nbits=(j ? 16:4);// just to show the flags field...
-	    if(k<nums_pos[j])
-	    {
-		int val=nums[j*nk+k];
-		if(nbits<8){show_bits(val,nbits);printf(" ");}
-		else
-		{
-		    printf("|%12u",val);
-		}
-	    }
-	    else
-	    {
-		if(nbits<8){printf("    ");}
-		else
-		{
-		    printf("|            ");
-		}
-	    }
-	}
-	if(w<worddiffs.size()){printf("   %02x %c ",worddiffs[w],(isalnum(worddiffs[w]) ? worddiffs[w] : '#'));}
-	w++;
-	printf("\n");
+  printf("%3d: ",i);
+  for(j=0;j<nnums0;j++)
+  {
+      int k=cnindexe2[j]++;
+      int nbits=(j ? 16:4);// just to show the flags field...
+      if(k<nums_pos[j])
+      {
+    int val=nums[j*nk+k];
+    if(nbits<8){show_bits(val,nbits);printf(" ");}
+    else
+    {
+        printf("|%12u",val);
+    }
+      }
+      else
+      {
+    if(nbits<8){printf("    ");}
+    else
+    {
+        printf("|            ");
+    }
+      }
+  }
+  if(w<worddiffs.size()){printf("   %02x %c ",worddiffs[w],(isalnum(worddiffs[w]) ? worddiffs[w] : '#'));}
+  w++;
+  printf("\n");
     }
     delete [] cnindexe2;
 }
@@ -757,131 +757,131 @@ WordDBPage::Compare(WordDBPage &other)
     // double check header
     if(memcmp((void *)pg,(void *)other.pg,sizeof(PAGE)-sizeof(db_indx_t)))
     {
-	res++;
-	printf("compare failed in some unknown place in header:\n");
-	for(i=0;i<(int)(sizeof(PAGE)-sizeof(db_indx_t));i++)
-	{
-	    printf("%3d: %3x %3x\n",i,((byte *)pg)[i],((byte *)other.pg)[i]);
-	}
+  res++;
+  printf("compare failed in some unknown place in header:\n");
+  for(i=0;i<(int)(sizeof(PAGE)-sizeof(db_indx_t));i++)
+  {
+      printf("%3d: %3x %3x\n",i,((byte *)pg)[i],((byte *)other.pg)[i]);
+  }
     }
 
     // pg->type != 5 && !=3 pages are not really compressed: just memcmp
     if(pg->type != 5 && pg->type != 3)
     {
-	if(memcmp((void *)pg,(void *)other.pg,pgsz))
-	{
-	    printf("compare:PAGETYPE:!=5 and memcmp failed\n");
-	    res++;
-	    printf("compare failed\n");
-	}
-	return(res);
+  if(memcmp((void *)pg,(void *)other.pg,pgsz))
+  {
+      printf("compare:PAGETYPE:!=5 and memcmp failed\n");
+      res++;
+      printf("compare failed\n");
+  }
+  return(res);
     }
 
     // compare each key/data pair
     for(i=0;i<(type==P_LBTREE ?  pg->entries/2 : pg->entries);i++)
     {
-	if(pg->type==P_LBTREE)
-	{
-	    // compare keys
-	    if(key(i)->len !=other.key(i)->len )
-	    {
-		printf("compare:key(%2d) len :  %2d != %2d\n",i,key(i)->len ,other.key(i)->len );
-		res++;
-	    }
-	    if(key(i)->type!=other.key(i)->type)
-	    {
-		printf("compare:key(%2d) type:  %2d != %2d\n",i,key(i)->type,other.key(i)->type);
-		res++;
-	    }
-	    if(memcmp(key(i)->data,other.key(i)->data,key(i)->len))
-	    {
-		printf("compare :key(%2d)\n",i);
-		for(k=0;k<key(i)->len;k++)
-		{
-		    int c=key(i)->data[k];
-		    if(isalnum(c)){printf(" %c ",c);}
-		    else{printf("%02x ",c);}
-		}
-		printf("\n");
-		for(k=0;k<key(i)->len;k++)
-		{
-		    int c=other.key(i)->data[k];
-		    if(isalnum(c)){printf(" %c ",c);}
-		    else{printf("%02x ",c);}
-		}
-		printf("\n");
-		res++;printf("compare:key failed\n");
-	    }
-	    // compare data
-	    if(data(i)->len !=other.data(i)->len )
-	    {
-		printf("compare:data(%2d) len :  %2d != %2d\n",i,data(i)->len ,other.data(i)->len );
-		res++;
-	    }
-	    if(data(i)->type!=other.data(i)->type)
-	    {
-		printf("compare:data(%2d) type:  %2d != %2d\n",i,data(i)->type,other.key(i)->type);
-		res++;
-	    }
-	    if(memcmp(data(i)->data,other.data(i)->data,data(i)->len))
-	    {
-		printf("compare :data(%2d)\n",i);
-		for(k=0;k<data(i)->len;k++)
-		{
-		    printf("%02x ",data(i)->data[k]);
-		}
-		printf("\n");
-		for(k=0;k<data(i)->len;k++)
-		{
-		    printf("%02x ",other.data(i)->data[k]);
-		}
-		printf("\n");
-		res++;printf("compare:data failed\n");
-	    }
-	}
-	else
-	{
-	    if(type!=3){errr("WordDBPage::Compare: unsupported type!=3");}
-	    if(btikey(i)->len   != other.btikey(i)->len  ||
-	       btikey(i)->type  != other.btikey(i)->type ||
-	       btikey(i)->pgno  != other.btikey(i)->pgno ||
-	       btikey(i)->nrecs != other.btikey(i)->nrecs   )
-	    {
-		printf("compare:btikey(%2d) failed\n",i);
-		printf("this :len   :%4d type  :%4d pgno  :%4d nrecs :%4d \n",btikey(i)->len,btikey(i)->type,
-		       btikey(i)->pgno,btikey(i)->nrecs);
-		printf("other:len   :%4d type  :%4d pgno  :%4d nrecs :%4d \n",other.btikey(i)->len,other.btikey(i)->type,
-		       other.btikey(i)->pgno,other.btikey(i)->nrecs);
-		res++;
+  if(pg->type==P_LBTREE)
+  {
+      // compare keys
+      if(key(i)->len !=other.key(i)->len )
+      {
+    printf("compare:key(%2d) len :  %2d != %2d\n",i,key(i)->len ,other.key(i)->len );
+    res++;
+      }
+      if(key(i)->type!=other.key(i)->type)
+      {
+    printf("compare:key(%2d) type:  %2d != %2d\n",i,key(i)->type,other.key(i)->type);
+    res++;
+      }
+      if(memcmp(key(i)->data,other.key(i)->data,key(i)->len))
+      {
+    printf("compare :key(%2d)\n",i);
+    for(k=0;k<key(i)->len;k++)
+    {
+        int c=key(i)->data[k];
+        if(isalnum(c)){printf(" %c ",c);}
+        else{printf("%02x ",c);}
+    }
+    printf("\n");
+    for(k=0;k<key(i)->len;k++)
+    {
+        int c=other.key(i)->data[k];
+        if(isalnum(c)){printf(" %c ",c);}
+        else{printf("%02x ",c);}
+    }
+    printf("\n");
+    res++;printf("compare:key failed\n");
+      }
+      // compare data
+      if(data(i)->len !=other.data(i)->len )
+      {
+    printf("compare:data(%2d) len :  %2d != %2d\n",i,data(i)->len ,other.data(i)->len );
+    res++;
+      }
+      if(data(i)->type!=other.data(i)->type)
+      {
+    printf("compare:data(%2d) type:  %2d != %2d\n",i,data(i)->type,other.key(i)->type);
+    res++;
+      }
+      if(memcmp(data(i)->data,other.data(i)->data,data(i)->len))
+      {
+    printf("compare :data(%2d)\n",i);
+    for(k=0;k<data(i)->len;k++)
+    {
+        printf("%02x ",data(i)->data[k]);
+    }
+    printf("\n");
+    for(k=0;k<data(i)->len;k++)
+    {
+        printf("%02x ",other.data(i)->data[k]);
+    }
+    printf("\n");
+    res++;printf("compare:data failed\n");
+      }
+  }
+  else
+  {
+      if(type!=3){errr("WordDBPage::Compare: unsupported type!=3");}
+      if(btikey(i)->len   != other.btikey(i)->len  ||
+         btikey(i)->type  != other.btikey(i)->type ||
+         btikey(i)->pgno  != other.btikey(i)->pgno ||
+         btikey(i)->nrecs != other.btikey(i)->nrecs   )
+      {
+    printf("compare:btikey(%2d) failed\n",i);
+    printf("this :len   :%4d type  :%4d pgno  :%4d nrecs :%4d \n",btikey(i)->len,btikey(i)->type,
+           btikey(i)->pgno,btikey(i)->nrecs);
+    printf("other:len   :%4d type  :%4d pgno  :%4d nrecs :%4d \n",other.btikey(i)->len,other.btikey(i)->type,
+           other.btikey(i)->pgno,other.btikey(i)->nrecs);
+    res++;
 
-	    }
-	    if(memcmp(btikey(i)->data,other.btikey(i)->data,btikey(i)->len))
-	    {
-		printf("compare :btikey(%2d)\n",i);
-		for(k=0;k<btikey(i)->len;k++)
-		{
-		    printf("%02x ",btikey(i)->data[k]);
-		}
-		printf("\n");
-		for(k=0;k<btikey(i)->len;k++)
-		{
-		    printf("%02x ",other.btikey(i)->data[k]);
-		}
-		printf("\n");
-		res++;printf("compare:btikey failed\n");
+      }
+      if(memcmp(btikey(i)->data,other.btikey(i)->data,btikey(i)->len))
+      {
+    printf("compare :btikey(%2d)\n",i);
+    for(k=0;k<btikey(i)->len;k++)
+    {
+        printf("%02x ",btikey(i)->data[k]);
+    }
+    printf("\n");
+    for(k=0;k<btikey(i)->len;k++)
+    {
+        printf("%02x ",other.btikey(i)->data[k]);
+    }
+    printf("\n");
+    res++;printf("compare:btikey failed\n");
 
-	    }	    
-	}
+      }      
+  }
     }
     if(pg->entries>0)
     {
-	int smallestoffset=HtMaxMin::min_v(pg->inp,pg->entries);
-	int other_smallestoffset=HtMaxMin::min_v(other.pg->inp,other.pg->entries);
-	if(smallestoffset!=other_smallestoffset)
-	{
-	    printf("compare fail:smallestoffset:%d other_smallestoffset:%d\n",smallestoffset,other_smallestoffset);
-	    res++;
-	}
+  int smallestoffset=HtMaxMin::min_v(pg->inp,pg->entries);
+  int other_smallestoffset=HtMaxMin::min_v(other.pg->inp,other.pg->entries);
+  if(smallestoffset!=other_smallestoffset)
+  {
+      printf("compare fail:smallestoffset:%d other_smallestoffset:%d\n",smallestoffset,other_smallestoffset);
+      res++;
+  }
     }
 
     return(res);
@@ -905,13 +905,13 @@ WordDBPage::show()
   printf("page size:%d\n",(int)pgsz);
   printf(" 00-07: Log sequence number.  file  : %d\n",                            pg->lsn.file            );      
   printf(" 00-07: Log sequence number.  offset: %d\n",                            pg->lsn.offset            );      
-  printf(" 08-11: Current page number.  : %d\n",		               pg->pgno            );     
-  printf(" 12-15: Previous page number. : %d\n",		               pg->prev_pgno         );
-  printf(" 16-19: Next page number.     : %d\n",			       pg->next_pgno           );
-  printf(" 20-21: Number of item pairs on the page. : %d\n",	               pg->entries           );  
-  printf(" 22-23: High free byte page offset.       : %d\n",	               pg->hf_offset        );
-  printf("    24: Btree tree level.                 : %d\n",                pg->level             );	
-  printf("    25: Page type.                        : %d\n",                pg->type               );		
+  printf(" 08-11: Current page number.  : %d\n",                   pg->pgno            );     
+  printf(" 12-15: Previous page number. : %d\n",                   pg->prev_pgno         );
+  printf(" 16-19: Next page number.     : %d\n",             pg->next_pgno           );
+  printf(" 20-21: Number of item pairs on the page. : %d\n",                 pg->entries           );  
+  printf(" 22-23: High free byte page offset.       : %d\n",                 pg->hf_offset        );
+  printf("    24: Btree tree level.                 : %d\n",                pg->level             );  
+  printf("    25: Page type.                        : %d\n",                pg->type               );    
 
 
   printf("entry offsets:");
@@ -926,65 +926,65 @@ WordDBPage::show()
       int pagecl=0;
       for(i=0;i<pg->entries;i++)
       {
-	  if( (i%2) && dud.type==WORD_RECORD_NONE){continue;}
-	  printf("\n||%c:%3d:off:%03d:invoff:%4d:len:%2d:typ:%x:",i%2 ? 'D' : 'K',i,e_offset(i),pgsz-e_offset(i),entry(i)->len,entry(i)->type);
-	  if(i>0)
-	  {
-	      l=entry(i)->len+3;
-	      dd=(int)(e_offset(i-1))-l;
-	      dd-=dd%4;
-	      printf("% 5d:: ",(e_offset(i)-dd));
-	  }
-	  if(!(i%2))
-	  {
-	      WordDBKey tkey(entry(i));
-	      int fieldchanged[10];
-	      char *wordchange=NULL;
-	      printf("\"");
-	      printf("%s",(char *)tkey.GetWord());
-	      printf("\"");
-	      for(j=0;j<20-tkey.GetWord().length();j++){printf(" ");}
-	      printf("|");
-	      for(j=1;j<tkey.NFields();j++){printf("%4x ",tkey.Get(j));}
-	      printf("|");
-	  
-	      for(j=1;j<tkey.NFields();j++)
-	      {
-		  int diff=tkey.Get(j)-prev.Get(j);
-		  if(diff<0){diff=tkey.Get(j);}
-		  printf("%6d ",diff);
-		  fieldchanged[j]=diff;
-	      }
+    if( (i%2) && dud.type==WORD_RECORD_NONE){continue;}
+    printf("\n||%c:%3d:off:%03d:invoff:%4d:len:%2d:typ:%x:",i%2 ? 'D' : 'K',i,e_offset(i),pgsz-e_offset(i),entry(i)->len,entry(i)->type);
+    if(i>0)
+    {
+        l=entry(i)->len+3;
+        dd=(int)(e_offset(i-1))-l;
+        dd-=dd%4;
+        printf("% 5d:: ",(e_offset(i)-dd));
+    }
+    if(!(i%2))
+    {
+        WordDBKey tkey(entry(i));
+        int fieldchanged[10];
+        char *wordchange=NULL;
+        printf("\"");
+        printf("%s",(char *)tkey.GetWord());
+        printf("\"");
+        for(j=0;j<20-tkey.GetWord().length();j++){printf(" ");}
+        printf("|");
+        for(j=1;j<tkey.NFields();j++){printf("%4x ",tkey.Get(j));}
+        printf("|");
+    
+        for(j=1;j<tkey.NFields();j++)
+        {
+      int diff=tkey.Get(j)-prev.Get(j);
+      if(diff<0){diff=tkey.Get(j);}
+      printf("%6d ",diff);
+      fieldchanged[j]=diff;
+        }
 
-	      String &word=tkey.GetWord();
-	      String &pword=prev.GetWord();
-	      if(word==pword){printf("  00   ===");fieldchanged[0]=0;}
-	      else
-	      {
-		  int fd=first_diff(word,pword);
-		  fieldchanged[0]=fd+1;
-		  wordchange=((char *)word)+fd;
-		  printf("  %2d %s",fd,((char *)word)+fd);
-	      }
+        String &word=tkey.GetWord();
+        String &pword=prev.GetWord();
+        if(word==pword){printf("  00   ===");fieldchanged[0]=0;}
+        else
+        {
+      int fd=first_diff(word,pword);
+      fieldchanged[0]=fd+1;
+      wordchange=((char *)word)+fd;
+      printf("  %2d %s",fd,((char *)word)+fd);
+        }
 
-	      int keycl=tkey.NFields();
-	      for(j=1;j<tkey.NFields();j++)
-	      {
-		  if(fieldchanged[j]){keycl+=WordKeyInfo::Instance()->sort[j].bits;}
-	      }
-	      if(fieldchanged[0]){keycl+=3;keycl+=8*strlen(wordchange);}
-	      printf("  ::%2d  %f",keycl,keycl/8.0);
-	      pagecl+=keycl;
-	      prev=tkey;
-	  }
-	  else
-	  {
-	      if(entry(i)->len>100){printf("WordDBPage::show: aaargh strange failing\n");return;}
-	      for(j=0;j<entry(i)->len;j++)
-	      {
-		  printf("%02x ",entry(i)->data[j]);
-	      }
-	  }
+        int keycl=tkey.NFields();
+        for(j=1;j<tkey.NFields();j++)
+        {
+      if(fieldchanged[j]){keycl+=WordKeyInfo::Instance()->sort[j].bits;}
+        }
+        if(fieldchanged[0]){keycl+=3;keycl+=8*strlen(wordchange);}
+        printf("  ::%2d  %f",keycl,keycl/8.0);
+        pagecl+=keycl;
+        prev=tkey;
+    }
+    else
+    {
+        if(entry(i)->len>100){printf("WordDBPage::show: aaargh strange failing\n");return;}
+        for(j=0;j<entry(i)->len;j++)
+        {
+      printf("%02x ",entry(i)->data[j]);
+        }
+    }
       }
       printf("\n");
   }
@@ -995,27 +995,27 @@ WordDBPage::show()
       // dump hex
       for(i=0;;i++)
       {
-	  printf("%5d: ",nn);
-	  for(j=0;j<20;j++)
-	  {
-	      printf("%2x ",((byte *)pg)[nn++]);
-	      if(nn>=pgsz){break;}
-	  }
-	  printf("\n");
-	  if(nn>=pgsz){break;}
+    printf("%5d: ",nn);
+    for(j=0;j<20;j++)
+    {
+        printf("%2x ",((byte *)pg)[nn++]);
+        if(nn>=pgsz){break;}
+    }
+    printf("\n");
+    if(nn>=pgsz){break;}
       }
   }
   if(pg->type == 3)
   {
       for(i=0;i<pg->entries;i++)
       {
-	  BINTERNAL *bie=GET_BINTERNAL(pg,i);
-	  printf("%3d: off:%4d:len:%3d :type:%3d :pgno:%4d: nrecs:%4d:: ",i,pg->inp[i],bie->len,bie->type,bie->pgno,bie->nrecs);
-	  WordDBKey tkey(bie);
-	  for(j=0;j<bie->len-tkey.GetWord().length();j++){printf("%2x ",bie->data[j]);}
-	  printf(" : ");
-	  for(j=1;j<tkey.NFields();j++){printf("%5d ",tkey.Get(j));}
-	  printf("\"%s\"\n",(char *)tkey.GetWord());
+    BINTERNAL *bie=GET_BINTERNAL(pg,i);
+    printf("%3d: off:%4d:len:%3d :type:%3d :pgno:%4d: nrecs:%4d:: ",i,pg->inp[i],bie->len,bie->type,bie->pgno,bie->nrecs);
+    WordDBKey tkey(bie);
+    for(j=0;j<bie->len-tkey.GetWord().length();j++){printf("%2x ",bie->data[j]);}
+    printf(" : ");
+    for(j=1;j<tkey.NFields();j++){printf("%5d ",tkey.Get(j));}
+    printf("\"%s\"\n",(char *)tkey.GetWord());
       }
   }
 

@@ -43,7 +43,7 @@ class HtFTP_Response : public Transport_Response
 ///////
    //    Construction / Destruction
 ///////
-	 
+   
       HtFTP_Response();
       ~HtFTP_Response();
 };
@@ -105,15 +105,15 @@ protected:
       //    Http single Request information (Member attributes)
    ///////
 
-   URL		_url;               // URL to retrieve
-   URL		_referer;	    // Referring URL
+   URL    _url;               // URL to retrieve
+   URL    _referer;      // Referring URL
    
    ///////
       //    Http Response information
    ///////
 
-   HtFTP_Response	 _response; 	 // Object where response
-   	       	   	       	   	 // information will be stored into
+   HtFTP_Response   _response;    // Object where response
+                                  // information will be stored into
 };
 
 #endif

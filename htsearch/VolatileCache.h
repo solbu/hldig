@@ -26,19 +26,19 @@
 class VolatileCache : public QueryCache
 {
 public:
-	// cons & destr
-	VolatileCache() {}
-	~VolatileCache();
+  // cons & destr
+  VolatileCache() {}
+  ~VolatileCache();
 
-	// get cached result from in-memory cache
-	ResultList *Lookup(const String &signature);
+  // get cached result from in-memory cache
+  ResultList *Lookup(const String &signature);
 
-	// add result to in-memory cache
-	void Add(const String &signature, ResultList *entry);
+  // add result to in-memory cache
+  void Add(const String &signature, ResultList *entry);
 
 private:
-	Dictionary cache;
-	static ResultList * const empty;
+  Dictionary cache;
+  static ResultList * const empty;
 };
 
 #endif

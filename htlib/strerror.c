@@ -9,11 +9,11 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 /*
  * Copyright (c) 1988, 1993
- *	The Regents of the University of California.  All rights reserved.
+ *  The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -48,7 +48,7 @@
 
 /*
  * strerror --
- *	Return the string associated with an errno.
+ *  Return the string associated with an errno.
  *
  * PUBLIC: #ifndef HAVE_STRERROR
  * PUBLIC: char *strerror __P((int));
@@ -56,31 +56,31 @@
  */
 char *
 strerror(num)
-	int num;
+  int num;
 {
-	extern int sys_nerr;
-	extern char *sys_errlist[];
-#undef	UPREFIX
-#define	UPREFIX	"Unknown error: "
-	static char ebuf[40] = UPREFIX;		/* 64-bit number + slop */
-	int errnum;
-	char *p, *t, tmp[40];
+  extern int sys_nerr;
+  extern char *sys_errlist[];
+#undef  UPREFIX
+#define  UPREFIX  "Unknown error: "
+  static char ebuf[40] = UPREFIX;    /* 64-bit number + slop */
+  int errnum;
+  char *p, *t, tmp[40];
 
-	errnum = num;				/* convert to unsigned */
-	if (errnum < sys_nerr)
-		return(sys_errlist[errnum]);
+  errnum = num;        /* convert to unsigned */
+  if (errnum < sys_nerr)
+    return(sys_errlist[errnum]);
 
-	/* Do this by hand, so we don't include stdio(3). */
-	t = tmp;
-	do {
-		*t++ = "0123456789"[errnum % 10];
-	} while (errnum /= 10);
-	for (p = ebuf + sizeof(UPREFIX) - 1;;) {
-		*p++ = *--t;
-		if (t <= tmp)
-			break;
-	}
-	return(ebuf);
+  /* Do this by hand, so we don't include stdio(3). */
+  t = tmp;
+  do {
+    *t++ = "0123456789"[errnum % 10];
+  } while (errnum /= 10);
+  for (p = ebuf + sizeof(UPREFIX) - 1;;) {
+    *p++ = *--t;
+    if (t <= tmp)
+      break;
+  }
+  return(ebuf);
 }
 
 #endif /* HAVE_STRERROR */

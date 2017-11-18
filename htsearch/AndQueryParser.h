@@ -21,13 +21,13 @@
 class AndQueryParser : public SimpleQueryParser
 {
 public:
-	AndQueryParser() {}
+  AndQueryParser() {}
 
 private:
-	OperatorQuery *MakeQuery()
-	{
-		return new AndQuery;
-	}
+  OperatorQuery *MakeQuery()
+  {
+    return new AndQuery;
+  }
 };
 
 #endif

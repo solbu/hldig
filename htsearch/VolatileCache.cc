@@ -33,8 +33,8 @@ extern int debug;
 ResultList *
 VolatileCache::Lookup(const String &signature)
 {
-	ResultList *result = (ResultList *)cache[signature];
-	return result;
+  ResultList *result = (ResultList *)cache[signature];
+  return result;
 }
 
 //
@@ -43,16 +43,16 @@ VolatileCache::Lookup(const String &signature)
 void
 VolatileCache::Add(const String &signature, ResultList *entry)
 {
-	ResultList *previous = (ResultList *)cache[signature];
-	if(previous && previous != empty)
-	{
-		delete previous;
-	}
-	if(!entry)
-	{
-		entry = empty;
-	}
-	cache.Add(signature, entry);
+  ResultList *previous = (ResultList *)cache[signature];
+  if(previous && previous != empty)
+  {
+    delete previous;
+  }
+  if(!entry)
+  {
+    entry = empty;
+  }
+  cache.Add(signature, entry);
 }
 
 //
@@ -61,17 +61,17 @@ VolatileCache::Add(const String &signature, ResultList *entry)
 //
 VolatileCache::~VolatileCache()
 {
-	if(debug) cerr << "query CLEAR: entries=" << cache.Count() << endl;
-	cache.Start_Get();
-	ResultList *kill = (ResultList *)cache.Get_NextElement();
-	while(kill)
-	{
-		if(kill != empty)
-		{
-			delete kill;
-		}
-		kill = (ResultList *)cache.Get_NextElement();
-	}
-	cache.Release();
+  if(debug) cerr << "query CLEAR: entries=" << cache.Count() << endl;
+  cache.Start_Get();
+  ResultList *kill = (ResultList *)cache.Get_NextElement();
+  while(kill)
+  {
+    if(kill != empty)
+    {
+      delete kill;
+    }
+    kill = (ResultList *)cache.Get_NextElement();
+  }
+  cache.Release();
 }
 

@@ -37,17 +37,17 @@ QueryParser::expander = 0;
 Query *
 QueryParser::Parse(const String &query_string)
 {
-	error = "";
-	Token().Set(query_string);
+  error = "";
+  Token().Set(query_string);
 
-	Query *result = ParseExpression();
-	if(result && !Token().IsEnd())
-	{
-		Expected("end of query");
-	//	delete result;
-		result = 0;
-	}
-	return result;
+  Query *result = ParseExpression();
+  if(result && !Token().IsEnd())
+  {
+    Expected("end of query");
+  //  delete result;
+    result = 0;
+  }
+  return result;
 }
 
 // parse one word
@@ -56,17 +56,17 @@ QueryParser::Parse(const String &query_string)
 Query *
 QueryParser::ParseWord()
 {
-	Query *result = 0;
-	if(expander)
-	{
-		result = expander->MakeQuery(Token().Value());
-	}
-	else
-	{
-		result = new ExactWordQuery(Token().Value());
-	}
-	Token().Next();
-	return result;
+  Query *result = 0;
+  if(expander)
+  {
+    result = expander->MakeQuery(Token().Value());
+  }
+  else
+  {
+    result = new ExactWordQuery(Token().Value());
+  }
+  Token().Next();
+  return result;
 }
 
 //
@@ -76,9 +76,9 @@ QueryParser::ParseWord()
 Query *
 QueryParser::ParseExactWord()
 {
-	Query *result = new ExactWordQuery(Token().Value());
-	Token().Next();
-	return result;
+  Query *result = new ExactWordQuery(Token().Value());
+  Token().Next();
+  return result;
 }
 
 // 
@@ -87,48 +87,48 @@ QueryParser::ParseExactWord()
 Query *
 QueryParser::ParsePhrase()
 {
-	Query *result = 0;
-	Query *word = 0;
-	if(!Token().IsEnd() && !Token().IsQuote())
-	{
-		word = ParseExactWord();
-	}
-	if(word)
-	{
-		result = new PhraseQuery;
-		result->Add(word);
-		while(word && !Token().IsEnd() && !Token().IsQuote())
-		{
-			word = ParseExactWord();
-			if(word)
-			{
-				result->Add(word);
-			}
-		}
-	}
-	if(!word && result)
-	{
-		delete result;
-		result = 0;
-	}
-	if(!result)
-	{
-		Expected("at least one word after \"");
-	}
-	return result;
+  Query *result = 0;
+  Query *word = 0;
+  if(!Token().IsEnd() && !Token().IsQuote())
+  {
+    word = ParseExactWord();
+  }
+  if(word)
+  {
+    result = new PhraseQuery;
+    result->Add(word);
+    while(word && !Token().IsEnd() && !Token().IsQuote())
+    {
+      word = ParseExactWord();
+      if(word)
+      {
+        result->Add(word);
+      }
+    }
+  }
+  if(!word && result)
+  {
+    delete result;
+    result = 0;
+  }
+  if(!result)
+  {
+    Expected("at least one word after \"");
+  }
+  return result;
 }
 
 void
 QueryParser::Expected(const String &what)
 {
-	error << "Expected " << what;
-	if(Token().IsEnd())
-	{
-		error << " at the end";
-	}
-	else
-	{
-		error << " instead of '" << Token().Value() << "'";
-	}
+  error << "Expected " << what;
+  if(Token().IsEnd())
+  {
+    error << " at the end";
+  }
+  else
+  {
+    error << " instead of '" << Token().Value() << "'";
+  }
 }
 

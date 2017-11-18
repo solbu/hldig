@@ -117,9 +117,9 @@ WordKey* WordSearch::Terms2WordKey(const StringList& terms)
 //
 int main(int ac, char **av)
 {
-  int			c;
-  extern char		*optarg;
-  params_t		params;
+  int      c;
+  extern char    *optarg;
+  params_t    params;
 
   params.compress = 0;
   params.dbfile = strdup("test");
@@ -127,21 +127,21 @@ int main(int ac, char **av)
   while ((c = getopt(ac, av, "vB:f:z")) != -1)
     {
       switch (c)
-	{
-	case 'v':
-	  verbose++;
-	  break;
-	case 'B':
-	  free(params.dbfile);
-	  params.dbfile = strdup(optarg);
-	  break;
-	case 'z':
-	  params.compress = 1;
-	  break;
-	case '?':
-	  usage();
-	  break;
-	}
+  {
+  case 'v':
+    verbose++;
+    break;
+  case 'B':
+    free(params.dbfile);
+    params.dbfile = strdup(optarg);
+    break;
+  case 'z':
+    params.compress = 1;
+    break;
+  case '?':
+    usage();
+    break;
+  }
     }
 
   Configuration* config = WordContext::Initialize();

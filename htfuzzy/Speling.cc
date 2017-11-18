@@ -62,43 +62,43 @@ void
 Speling::getWords(char *w, List &words)
 {
     if ((int)strlen(w) < config.Value("minimum_speling_length",5))
-	return;
+  return;
 
-    HtWordList	wordDB(config);
+    HtWordList  wordDB(config);
     // last arg=1 -> open to compare only "word" part of of word keys
     if (wordDB.Open(config["word_db"], O_RDONLY, 1) == NOTOK)
       return;
 
-    String	initial = w;
-    String	stripped = initial;
+    String  initial = w;
+    String  stripped = initial;
     HtStripPunctuation(stripped);
-    String	tail;
-    int		max_length = stripped.length() - 1;
+    String  tail;
+    int    max_length = stripped.length() - 1;
 
     for (int pos = 0; pos < max_length; pos++)
     {
       // First transposes
       // (these are really common)
       initial = stripped;
-      char	temp = initial[pos];
+      char  temp = initial[pos];
       initial[pos] = initial[pos+1];
       initial[pos+1] = temp;
       if (!wordDB.Exists(initial))   // Seems weird, but this is correct
-	words.Add(new String(initial));
+  words.Add(new String(initial));
 
       // Now let's do deletions
       initial = stripped;
       tail = initial.sub(pos+1);
       if (pos > 0)
-	{
-	  initial = initial.sub(0, pos);
-	  initial += tail;
-	}
+  {
+    initial = initial.sub(0, pos);
+    initial += tail;
+  }
       else
-	initial = tail;
+  initial = tail;
 
       if (!wordDB.Exists(initial))   // Seems weird, but this is correct
-	words.Add(new String(initial));
+  words.Add(new String(initial));
     }
 
     // One last deletion -- check the last character!

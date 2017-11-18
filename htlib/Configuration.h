@@ -101,28 +101,28 @@
 // $Id: Configuration.h,v 1.11 2004/05/28 13:15:20 lha Exp $
 //
 
-#ifndef	_Configuration_h_
-#define	_Configuration_h_
+#ifndef  _Configuration_h_
+#define  _Configuration_h_
 
 #include "Dictionary.h"
 #include "htString.h"
 
 struct ConfigDefaults
 {
-  const char	*name;			// Name of the attribute
+  const char  *name;      // Name of the attribute
   /* FIXME: If I'm not mistaken, sometimes "value" is a constant and sometimes
    * it is not. If it's declared with "const" the build will fail. As it is now,
    * we get repeated warnings such as "deprecated conversion from
    * string constant to 'char*' [-Wwrite-strings] but the build completes.
    */
   char *value;            // Default value
-  const char	*type;			// Type of the value (string, integer, boolean)
-  const char	*programs;		// Whitespace separated list of programs/modules using this attribute
-  const char	*block;			// Configuration block this can be used in (can be blank)
-  const char	*version;		// Version that introduced the attribute
-  const char	*category;		// Attribute category (to split documentation)
-  const char	*example;		// Example usage of the attribute (HTML)
-  const char	*description;		// Long description of the attribute (HTML)
+  const char  *type;      // Type of the value (string, integer, boolean)
+  const char  *programs;    // Whitespace separated list of programs/modules using this attribute
+  const char  *block;      // Configuration block this can be used in (can be blank)
+  const char  *version;    // Version that introduced the attribute
+  const char  *category;    // Attribute category (to split documentation)
+  const char  *example;    // Example usage of the attribute (HTML)
+  const char  *description;    // Long description of the attribute (HTML)
 };
 
 
@@ -135,8 +135,8 @@ public:
     Configuration();
 #ifndef SWIG
     Configuration(const Configuration& config) :
-	dcGlobalVars(config.dcGlobalVars),
-	separators(config.separators)
+  dcGlobalVars(config.dcGlobalVars),
+  separators(config.separators)
       {
         allow_multiple = config.allow_multiple;
       }
@@ -154,25 +154,25 @@ public:
     // Add configuration item <b>str</b> to the configuration. The value
     // associated with it is undefined.
     //
-    void		Add(const String& str);
+    void    Add(const String& str);
 #endif /* SWIG */
     //-
     // Add configuration item <b>name</b> to the configuration and associate
     // it with <b>value</b>.
     //
-    void		Add(const String& name, const String& value);
-    void		AddParsed(const String& name, const String& value);
+    void    Add(const String& name, const String& value);
+    void    AddParsed(const String& name, const String& value);
     //-
     // Remove the <b>name</b> from the configuration.
     //
-    int			Remove(const String& name);
+    int      Remove(const String& name);
 
     //-
     // Let the Configuration know how to parse name value pairs.
     // Each character of string <b>s</b> is a valid separator between
     // the <i>name</i> and the <i>value.</i>
     //
-    void		NameValueSeparators(const String& s);
+    void    NameValueSeparators(const String& s);
 
     //-
     // Read name/value configuration pairs from the file <b>filename</b>.
@@ -183,7 +183,7 @@ public:
     // Return the value of configuration attribute <b>name</b> as a
     // <i>String</i>.
     //
-    const String	Find(const String& name) const;
+    const String  Find(const String& name) const;
 
     //-
     // Return 1 if the value of configuration attribute <b>name</b> has
@@ -194,7 +194,7 @@ public:
     //-
     // Alias to the <b>Find</b> method.
     //
-    const String	operator[](const String& name) const;
+    const String  operator[](const String& name) const;
 #endif /* SWIG */
     //-
     // Return the value associated with the configuration attribute
@@ -202,33 +202,33 @@ public:
     // If the attribute is not found in the configuration and
     // a <b>default_value</b> is provided, return it.
     //
-    int		Value(const String& name, int default_value = 0) const;
+    int    Value(const String& name, int default_value = 0) const;
     //-
     // Return the value associated with the configuration attribute
     // <b>name</b>, converted to double using the atof(3) function.
     // If the attribute is not found in the configuration and
     // a <b>default_value</b> is provided, return it.
     //
-    double	Double(const String& name, double default_value = 0) const;
+    double  Double(const String& name, double default_value = 0) const;
     //-
     // Return 1 if the value associated to <b>name</b> is
     // either <b>1, yes</b> or <b>true</b>.
     // Return 0 if the value associated to <b>name</b> is
     // either <b>0, no</b> or <b>false</b>.
     //
-    int		Boolean(const String& name, int default_value = 0) const;
+    int    Boolean(const String& name, int default_value = 0) const;
     Object     *Get_Object(char *name);
 
     //-
     // Load configuration attributes from the <i>name</i> and <i>value</i>
     // members of the <b>array</b> argument.
     //
-    void		Defaults(const ConfigDefaults *array);
+    void    Defaults(const ConfigDefaults *array);
 
 protected:
-    Dictionary		dcGlobalVars;
-    String		separators;
-    int			allow_multiple;
+    Dictionary    dcGlobalVars;
+    String    separators;
+    int      allow_multiple;
 };
 
 #endif

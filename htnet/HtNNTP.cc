@@ -7,8 +7,8 @@
 // started: 01.08.2000
 //
 // Including:
-// 	 -  Generic class
-// 	 -  Response message class
+//    -  Generic class
+//    -  Response message class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 2000-2004 The ht://Dig Group
@@ -49,9 +49,9 @@ typedef SIG_PF SIGNAL_HANDLER;
 #endif
 
    // Stats information
-   	 int HtNNTP::_tot_seconds = 0;
-   	 int HtNNTP::_tot_requests = 0;
-   	 int HtNNTP::_tot_bytes = 0;
+      int HtNNTP::_tot_seconds = 0;
+      int HtNNTP::_tot_requests = 0;
+      int HtNNTP::_tot_bytes = 0;
 
 ///////
    //    HtNNTP_Response class
@@ -148,13 +148,13 @@ void HtNNTP::SetRequestCommand(String &cmd)
 //
 int HtNNTP::ParseHeader()
 {
-    String	line = 0;
-    int		inHeader = 1;
+    String  line = 0;
+    int    inHeader = 1;
 
     if (_response._modification_time)
     {
-	delete _response._modification_time;
-	_response._modification_time=NULL;
+  delete _response._modification_time;
+  _response._modification_time=NULL;
     }
     while (inHeader)
     {
@@ -163,7 +163,7 @@ int HtNNTP::ParseHeader()
 
       if(! _connection->Read_Line(line, "\n"))
          return -1;  // Connection down
-	
+  
       _bytes_read+=line.length();
       line.chop('\r');
 
@@ -172,12 +172,12 @@ int HtNNTP::ParseHeader()
       else
       {
          // Found a not-empty line
-	
+  
          if (debug > 3)
             cout << "Header line: " << line << endl;
-	
+  
          // Status - Line check
-         char	*token = line.get();
+         char  *token = line.get();
 
          while (*token && !isspace(*token))
             token++;
@@ -215,31 +215,31 @@ HtNNTP::DocStatus HtNNTP::GetDocumentStatus(HtNNTP_Response &r)
 
    if(statuscode==200)
    {
-	    returnStatus = Document_ok;   // OK
+      returnStatus = Document_ok;   // OK
    }
 
    // Exit the function
    return returnStatus;
-	
+  
 }
 
 
 int HtNNTP::ReadBody()
 {
 
-    _response._contents = 0;	// Initialize the string
+    _response._contents = 0;  // Initialize the string
 
-    char	docBuffer[8192];
-    int		bytesRead = 0;
-    int		bytesToGo = _response._content_length;
+    char  docBuffer[8192];
+    int    bytesRead = 0;
+    int    bytesToGo = _response._content_length;
 
     if (bytesToGo < 0 || bytesToGo > _max_document_size)
         bytesToGo = _max_document_size;
 
     if( _connection == NULL )
       {
-	cout << "HtNNTP::ReadBody: _connection is NULL\n";
-	exit(0);
+  cout << "HtNNTP::ReadBody: _connection is NULL\n";
+  exit(0);
       }
 
 
@@ -250,11 +250,11 @@ int HtNNTP::ReadBody()
         if (bytesRead <= 0)
             break;
 
-	_response._contents.append(docBuffer, bytesRead);
+  _response._contents.append(docBuffer, bytesRead);
 
-	bytesToGo -= bytesRead;
-	
-	_bytes_read+=bytesRead;
+  bytesToGo -= bytesRead;
+  
+  _bytes_read+=bytesRead;
 
     }
 

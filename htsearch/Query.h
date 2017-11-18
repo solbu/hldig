@@ -42,36 +42,36 @@ class QueryCache;
 class Query : public Object
 {
 public:
-	// destr
-	virtual ~Query();
+  // destr
+  virtual ~Query();
 
-	// does nothing here -- hack for comfortable parser coding
-	virtual void Add(Query *) {}
+  // does nothing here -- hack for comfortable parser coding
+  virtual void Add(Query *) {}
 
-	// get a boolean-style query string
-	virtual String GetLogicalWords() const = 0;
+  // get a boolean-style query string
+  virtual String GetLogicalWords() const = 0;
 
-	// evaluate if necessary and return results
-	ResultList *GetResults();
+  // evaluate if necessary and return results
+  ResultList *GetResults();
 
-	// set a cache policy 
-	static void SetCache(QueryCache *c) { cache = c; }
+  // set a cache policy 
+  static void SetCache(QueryCache *c) { cache = c; }
 
 protected:
-	// get an unique cache index
-	virtual String GetSignature() const = 0;
+  // get an unique cache index
+  virtual String GetSignature() const = 0;
 
-	Query() {}
+  Query() {}
 
-	// generate results
-	virtual ResultList *Evaluate() = 0;
+  // generate results
+  virtual ResultList *Evaluate() = 0;
 
-	// by default, nothing -- for use of leaf queries
-	virtual void AdjustWeight(ResultList &) {}
+  // by default, nothing -- for use of leaf queries
+  virtual void AdjustWeight(ResultList &) {}
 
 private:
-	// the current cache object, if some
-	static QueryCache *cache;
+  // the current cache object, if some
+  static QueryCache *cache;
 };
 
 #endif

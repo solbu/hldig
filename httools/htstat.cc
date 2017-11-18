@@ -35,7 +35,7 @@
 #include <getopt_local.h>
 #endif
 
-int		verbose = 0;
+int    verbose = 0;
 
 void usage();
 void reportError(char *msg);
@@ -45,32 +45,32 @@ void reportError(char *msg);
 //
 int main(int ac, char **av)
 {
-    int			alt_work_area = 0;
-    int			url_list = 0;
-    String		configfile = DEFAULT_CONFIG_FILE;
-    int			c;
-    extern char		*optarg;
+    int      alt_work_area = 0;
+    int      url_list = 0;
+    String    configfile = DEFAULT_CONFIG_FILE;
+    int      c;
+    extern char    *optarg;
 
     while ((c = getopt(ac, av, "vc:au")) != -1)
     {
-	switch (c)
-	{
-	    case 'c':
-		configfile = optarg;
-		break;
-	    case 'v':
-		verbose++;
-		break;
-	    case 'a':
-		alt_work_area++;
-		break;
-	    case 'u':
-	        url_list++;
-		break;
-	    case '?':
-		usage();
-		break;
-	}
+  switch (c)
+  {
+      case 'c':
+    configfile = optarg;
+    break;
+      case 'v':
+    verbose++;
+    break;
+      case 'a':
+    alt_work_area++;
+    break;
+      case 'u':
+          url_list++;
+    break;
+      case '?':
+    usage();
+    break;
+  }
     }
 
    HtConfiguration* config= HtConfiguration::config();
@@ -78,10 +78,10 @@ int main(int ac, char **av)
 
     if (access((char*)configfile, R_OK) < 0)
     {
-	reportError(form("Unable to find configuration file '%s'",
-			 configfile.get()));
+  reportError(form("Unable to find configuration file '%s'",
+       configfile.get()));
     }
-	
+  
    config->Read(configfile);
 
     //
@@ -97,58 +97,58 @@ int main(int ac, char **av)
     // We may need these through the methods we call
     if (alt_work_area != 0)
     {
-	String	configValue;
+  String  configValue;
 
-	configValue = config->Find("word_db");
-	if (configValue.length() != 0)
-	{
-	    configValue << ".work";
-	   config->Add("word_db", configValue);
-	}
+  configValue = config->Find("word_db");
+  if (configValue.length() != 0)
+  {
+      configValue << ".work";
+     config->Add("word_db", configValue);
+  }
 
-	configValue = config->Find("doc_db");
-	if (configValue.length() != 0)
-	{
-	    configValue << ".work";
-	   config->Add("doc_db", configValue);
-	}
+  configValue = config->Find("doc_db");
+  if (configValue.length() != 0)
+  {
+      configValue << ".work";
+     config->Add("doc_db", configValue);
+  }
 
-	configValue = config->Find("doc_index");
-	if (configValue.length() != 0)
-	{
-	    configValue << ".work";
-	   config->Add("doc_index", configValue);
-	}
+  configValue = config->Find("doc_index");
+  if (configValue.length() != 0)
+  {
+      configValue << ".work";
+     config->Add("doc_index", configValue);
+  }
 
-	configValue = config->Find("doc_excerpt");
-	if (configValue.length() != 0)
-	{
-	    configValue << ".work";
-	   config->Add("doc_excerpt", configValue);
-	}
+  configValue = config->Find("doc_excerpt");
+  if (configValue.length() != 0)
+  {
+      configValue << ".work";
+     config->Add("doc_excerpt", configValue);
+  }
     }
 
     DocumentDB docs;
     if (docs.Read(config->Find("doc_db"), config->Find("doc_index"), 
-		  config->Find("doc_excerpt")) == OK)
+      config->Find("doc_excerpt")) == OK)
       {
-	List *urls = docs.URLs();
-	cout << "htstat: Total documents: " << urls->Count() << endl;
-	if (url_list)
-	  {
-	    // Spit out the list of URLs too
-	    String	*url;
+  List *urls = docs.URLs();
+  cout << "htstat: Total documents: " << urls->Count() << endl;
+  if (url_list)
+    {
+      // Spit out the list of URLs too
+      String  *url;
 
-	    cout << "htstat: URLs in database: " << endl;
-	    urls->Start_Get();
-	    while ((url = (String *) urls->Get_Next()))
-	      {
-		cout << "\t" << url->get() << endl;
-	      }
-	  }
+      cout << "htstat: URLs in database: " << endl;
+      urls->Start_Get();
+      while ((url = (String *) urls->Get_Next()))
+        {
+    cout << "\t" << url->get() << endl;
+        }
+    }
 
-	delete urls;
-	docs.Close();
+  delete urls;
+  docs.Close();
       }
 
     // Initialize htword
@@ -157,9 +157,9 @@ int main(int ac, char **av)
     HtWordList words(*config);
     if(words.Open(config->Find("word_db"), O_RDONLY) == OK)
       {
-	cout << "htstat: Total words: " << words.WordRefs()->Count() << endl;
-	cout << "htstat: Total unique words: " << words.Words()->Count() << endl;
-	words.Close();
+  cout << "htstat: Total words: " << words.WordRefs()->Count() << endl;
+  cout << "htstat: Total unique words: " << words.Words()->Count() << endl;
+  words.Close();
       }
 
     return 0;

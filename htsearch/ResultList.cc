@@ -44,7 +44,7 @@ ResultList::~ResultList()
 void
 ResultList::add(DocMatch *dm)
 {
-    String	t;
+    String  t;
     t << dm->GetId();
     Add(t, dm);
 }
@@ -55,7 +55,7 @@ ResultList::add(DocMatch *dm)
 DocMatch *
 ResultList::find(int id) const
 {
-    String	t;
+    String  t;
     t << id;
     return (DocMatch *) Find(t);
 }
@@ -75,7 +75,7 @@ ResultList::find(char *id) const
 void
 ResultList::remove(int id)
 {
-    String	t;
+    String  t;
     t << id;
     Remove(t);
 }
@@ -86,7 +86,7 @@ ResultList::remove(int id)
 int
 ResultList::exists(int id) const
 {
-    String	t;
+    String  t;
     t << id;
     return Exists(t);
 }
@@ -97,13 +97,13 @@ ResultList::exists(int id) const
 HtVector *
 ResultList::elements()
 {
-    HtVector	*list = new HtVector(Count() + 1);
-    char	*id;
+    HtVector  *list = new HtVector(Count() + 1);
+    char  *id;
 
     Start_Get();
     while ((id = Get_Next()))
     {
-	list->Add(Find(id));
+  list->Add(Find(id));
     }
     return list;
 }
@@ -111,41 +111,41 @@ ResultList::elements()
 void
 ResultList::SetWeight(double weight)
 {
-	HtVector *els = elements();
-	for(int i = 0; i < els->Count(); i++)
-	{
-		DocMatch *match = (DocMatch *)(*els)[i];
-		match->SetWeight(weight);
-	}
-	els->Release();
+  HtVector *els = elements();
+  for(int i = 0; i < els->Count(); i++)
+  {
+    DocMatch *match = (DocMatch *)(*els)[i];
+    match->SetWeight(weight);
+  }
+  els->Release();
 }
 
 
 ResultList::ResultList(const ResultList &other)
 {
-	DictionaryCursor c;
-	isIgnore = other.isIgnore;
-	other.Start_Get(c);
-	DocMatch *match = (DocMatch *)other.Get_NextElement(c);
-	while(match)
-	{
-		add(new DocMatch(*match));
-		match = (DocMatch *)other.Get_NextElement(c);
-	}
+  DictionaryCursor c;
+  isIgnore = other.isIgnore;
+  other.Start_Get(c);
+  DocMatch *match = (DocMatch *)other.Get_NextElement(c);
+  while(match)
+  {
+    add(new DocMatch(*match));
+    match = (DocMatch *)other.Get_NextElement(c);
+  }
 }
 
 void
 ResultList::Dump() const
 {
-	cerr << "ResultList {" << endl;
-	cerr << "Ignore: " << isIgnore << " Count: " << Count() << endl;
-	DictionaryCursor c;
-	Start_Get(c);
-	DocMatch *match = (DocMatch *)Get_NextElement(c);
-	while(match)
-	{
-		match->Dump();
-		match = (DocMatch *)Get_NextElement(c);
-	}
-	cerr << "}" << endl;
+  cerr << "ResultList {" << endl;
+  cerr << "Ignore: " << isIgnore << " Count: " << Count() << endl;
+  DictionaryCursor c;
+  Start_Get(c);
+  DocMatch *match = (DocMatch *)Get_NextElement(c);
+  while(match)
+  {
+    match->Dump();
+    match = (DocMatch *)Get_NextElement(c);
+  }
+  cerr << "}" << endl;
 }

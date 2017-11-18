@@ -4,7 +4,7 @@
 // HtFile: Interface classes for retriving local documents
 //
 // Including:
-// 	 -  Generic class
+//    -  Generic class
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
@@ -112,10 +112,10 @@ const String *HtFile::Ext2Mime (const char *ext)
        HtConfiguration* config= HtConfiguration::config();
        mime_map = new Dictionary();
        if (!mime_map)
-	 return NULL;
+   return NULL;
 
        if (debug > 2)
- 	    cout << "MIME types: " << config->Find("mime_types").get() << endl;
+       cout << "MIME types: " << config->Find("mime_types").get() << endl;
        ifstream in(config->Find("mime_types").get());
        if (in)
          {
@@ -132,26 +132,26 @@ const String *HtFile::Ext2Mime (const char *ext)
                String mime_type = split_line[0];
                // Fill map with values.
                for (int i = 1; i < split_line.Count(); i++)
-	       {
-	         if (debug > 3)
-		   cout << "MIME: " << split_line[i]
-		        << "\t-> " << mime_type << endl;
+         {
+           if (debug > 3)
+       cout << "MIME: " << split_line[i]
+            << "\t-> " << mime_type << endl;
                  mime_map->Add(split_line[i], new String(mime_type));
-	       }
+         }
              }
          }
        else
-	 {
-	   if (debug > 2)
-		cout << "MIME types file not found.  Using default types.\n";
-	   mime_map->Add(String("html"), new String("text/html"));
-	   mime_map->Add(String("htm"),  new String("text/html"));
-	   mime_map->Add(String("txt"),  new String("text/plain"));
-	   mime_map->Add(String("asc"),  new String("text/plain"));
-	   mime_map->Add(String("pdf"),  new String("application/pdf"));
-	   mime_map->Add(String("ps"),   new String("application/postscript"));
-	   mime_map->Add(String("eps"),  new String("application/postscript"));
-	 }
+   {
+     if (debug > 2)
+    cout << "MIME types file not found.  Using default types.\n";
+     mime_map->Add(String("html"), new String("text/html"));
+     mime_map->Add(String("htm"),  new String("text/html"));
+     mime_map->Add(String("txt"),  new String("text/plain"));
+     mime_map->Add(String("asc"),  new String("text/plain"));
+     mime_map->Add(String("pdf"),  new String("application/pdf"));
+     mime_map->Add(String("ps"),   new String("application/postscript"));
+     mime_map->Add(String("eps"),  new String("application/postscript"));
+   }
      }
 
    // return MIME type, or NULL if not found
@@ -170,13 +170,13 @@ String HtFile::File2Mime (const char *fname)
     String cmd = config->Find ("content_classifier");
     if (cmd.get() && *cmd)
     {
-	cmd << " \"" << fname << '\"';	// allow file names to have spaces
-	FILE *fileptr;
-	if ( (fileptr = popen (cmd.get(), "r")) != NULL )
-	{
-	    fgets (content_type, sizeof (content_type), fileptr);
-	    pclose (fileptr);
-	}
+  cmd << " \"" << fname << '\"';  // allow file names to have spaces
+  FILE *fileptr;
+  if ( (fileptr = popen (cmd.get(), "r")) != NULL )
+  {
+      fgets (content_type, sizeof (content_type), fileptr);
+      pclose (fileptr);
+  }
     }
 
     // Remove trailing newline, charset or language information
@@ -184,7 +184,7 @@ String HtFile::File2Mime (const char *fname)
     content_type [delim] = '\0';
 
     if (debug > 1)
-	cout << "Mime type: " << fname << ' ' << content_type << endl;
+  cout << "Mime type: " << fname << ' ' << content_type << endl;
     return (String (content_type));
 }
 
@@ -200,13 +200,13 @@ HtFile::DocStatus HtFile::Request()
    struct stat stat_buf;
 
    String path (_url.path());
-   decodeURL (path);		// Convert '%20' to ' ' etc
+   decodeURL (path);    // Convert '%20' to ' ' etc
 
    // Check that it exists, and is a regular file or directory
    // Don't allow symbolic links to directories; they mess up '../'.
    // Should we allow FIFO's?
    if ( stat(path.get(), &stat_buf) != 0 || 
-	!(S_ISREG(stat_buf.st_mode) || S_ISDIR(stat_buf.st_mode)) )
+  !(S_ISREG(stat_buf.st_mode) || S_ISDIR(stat_buf.st_mode)) )
    {
      return Transport::Document_not_found;
    }
@@ -223,57 +223,57 @@ HtFile::DocStatus HtFile::Request()
        String encodedName;
 
        if (( dirList = opendir(path.get()) ))
-	 {
-	   while (( namelist = readdir(dirList) ))
-	    {
-	     filename = path;
-	     filename << namelist->d_name;
-	     
-	     if ( namelist->d_name[0] != '.' 
-		  && lstat(filename.get(), &stat_buf) == 0 )
-	       {
-		 // Recursively resolve symbolic links.
-		 // Could leave "absolute" links, or even all not
-		 // containing '../'.  That would allow "aliasing" of
-		 // directories without causing loops.
+   {
+     while (( namelist = readdir(dirList) ))
+      {
+       filename = path;
+       filename << namelist->d_name;
+       
+       if ( namelist->d_name[0] != '.' 
+      && lstat(filename.get(), &stat_buf) == 0 )
+         {
+     // Recursively resolve symbolic links.
+     // Could leave "absolute" links, or even all not
+     // containing '../'.  That would allow "aliasing" of
+     // directories without causing loops.
 
-		 int i;		// avoid infinite loops
-		 for (i=0; (stat_buf.st_mode & S_IFMT) == S_IFLNK && i<10; i++)
-		 {
-		     char link [100];
-		     int count = readlink(filename.get(), link, sizeof(link)-1);
+     int i;    // avoid infinite loops
+     for (i=0; (stat_buf.st_mode & S_IFMT) == S_IFLNK && i<10; i++)
+     {
+         char link [100];
+         int count = readlink(filename.get(), link, sizeof(link)-1);
 
-		     if (count < 0)
-			 break;
-		     link [count] = '\0';
-		     encodedName = link;
-		     encodeURL (encodedName);
-		     URL newURL (encodedName, _url);	// resolve relative paths
-		     filename = newURL.path();
-		     decodeURL (filename);
-		     if (debug > 2)
-			 cout << "Link to " << link << " gives "
-			      << filename.get() << endl;
-		     lstat(filename.get(), &stat_buf);
-		 }
-		 // filename now only sym-link if nested too deeply or I/O err.
+         if (count < 0)
+       break;
+         link [count] = '\0';
+         encodedName = link;
+         encodeURL (encodedName);
+         URL newURL (encodedName, _url);  // resolve relative paths
+         filename = newURL.path();
+         decodeURL (filename);
+         if (debug > 2)
+       cout << "Link to " << link << " gives "
+            << filename.get() << endl;
+         lstat(filename.get(), &stat_buf);
+     }
+     // filename now only sym-link if nested too deeply or I/O err.
 
-		 encodeURL (filename, UNRESERVED "/");	// convert ' ' to '%20' etc., but leave "/" intact
-		 if (S_ISDIR(stat_buf.st_mode))
-		   _response._contents << "<link href=\"file://"
-				       << filename.get() << "/\">\n";
-		 else if (S_ISREG(stat_buf.st_mode))
-		   _response._contents << "<link href=\"file://"
-				       << filename.get() << "\">\n";  
-	       }
-	    }
-	   closedir(dirList);
-	 }
+     encodeURL (filename, UNRESERVED "/");  // convert ' ' to '%20' etc., but leave "/" intact
+     if (S_ISDIR(stat_buf.st_mode))
+       _response._contents << "<link href=\"file://"
+               << filename.get() << "/\">\n";
+     else if (S_ISREG(stat_buf.st_mode))
+       _response._contents << "<link href=\"file://"
+               << filename.get() << "\">\n";  
+         }
+      }
+     closedir(dirList);
+   }
 
        _response._contents << "</head><body></body></html>\n";
 
        if (debug > 4)
-	 cout << " Directory listing: " << endl << _response._contents << endl;
+   cout << " Directory listing: " << endl << _response._contents << endl;
 
        _response._content_length = stat_buf.st_size;
        _response._document_length = _response._contents.length();
@@ -310,15 +310,15 @@ HtFile::DocStatus HtFile::Request()
    if (f == NULL)
      return Document_not_found;
 
-   char	docBuffer[8192];
-   int		bytesRead;
+   char  docBuffer[8192];
+   int    bytesRead;
    while ((bytesRead = fread(docBuffer, 1, sizeof(docBuffer), f)) > 0)
      {
-	if (_response._contents.length() + bytesRead > _max_document_size)
-	    bytesRead = _max_document_size - _response._contents.length();
-	_response._contents.append(docBuffer, bytesRead);
-	if (_response._contents.length() >= _max_document_size)
-	    break;
+  if (_response._contents.length() + bytesRead > _max_document_size)
+      bytesRead = _max_document_size - _response._contents.length();
+  _response._contents.append(docBuffer, bytesRead);
+  if (_response._contents.length() >= _max_document_size)
+      break;
      }
    fclose(f);
 

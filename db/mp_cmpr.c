@@ -2,7 +2,7 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1999, 2000
- *	Loic Dachary.  All rights reserved.
+ *  Loic Dachary.  All rights reserved.
  *
  * Overview of the code (by Lachlan Andrew, lha@users.sourceforge.net):
  *
@@ -63,7 +63,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)mp_cmpr.c	1.1 (Senga) 01/08/99";
+static const char sccsid[] = "@(#)mp_cmpr.c  1.1 (Senga) 01/08/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -105,7 +105,7 @@ static int CDB___memp_cmpr_page __P((DB_MPOOLFILE *, CMPR *, DB_IO *, ssize_t *)
  * Maximum chain length
  * Cast to signed, as  -1  used as a flag, which compares bigger on some systems
  */
-#define CMPR_MAX	(int)(dbenv->mp_cmpr_info->max_npages)
+#define CMPR_MAX  (int)(dbenv->mp_cmpr_info->max_npages)
 
 #define CMPR_MULTIPLY(n) ((n) << (dbenv->mp_cmpr_info->coefficient))
 #define CMPR_DIVIDE(n)   ((n) >> (dbenv->mp_cmpr_info->coefficient))
@@ -114,9 +114,9 @@ static int CDB___memp_cmpr_page __P((DB_MPOOLFILE *, CMPR *, DB_IO *, ssize_t *)
 static DB_CMPR_INFO default_cmpr_info = {
     CDB___memp_cmpr_deflate,    
     CDB___memp_cmpr_inflate,    
-    3,		/* reduce page size by factor of 1<<3 = 8 */
-    9,		/* allow 9 reduced pages, in case "compression" expands data */
-    6,		/* zlib compression level */
+    3,    /* reduce page size by factor of 1<<3 = 8 */
+    9,    /* allow 9 reduced pages, in case "compression" expands data */
+    6,    /* zlib compression level */
     NULL
 };
 #else /* HAVE_LIBZ */
@@ -137,17 +137,17 @@ static DB_CMPR_INFO default_cmpr_info = {
 
 /*
  * CDB___memp_cmpr --
- *	Transparent compression read/write
+ *  Transparent compression read/write
  *
  * PUBLIC: int CDB___memp_cmpr __P((DB_MPOOLFILE *, BH *, DB_IO *, int, ssize_t *));
  */
 int
 CDB___memp_cmpr(dbmfp, bhp, db_io, flag, niop)
-	DB_MPOOLFILE *dbmfp;
-	BH *bhp;
-	DB_IO *db_io;
-	int flag;
-	ssize_t *niop;
+  DB_MPOOLFILE *dbmfp;
+  BH *bhp;
+  DB_IO *db_io;
+  int flag;
+  ssize_t *niop;
 {
   size_t orig_pagesize = db_io->pagesize;
   db_pgno_t orig_pgno = db_io->pgno;
@@ -198,16 +198,16 @@ CDB___memp_cmpr(dbmfp, bhp, db_io, flag, niop)
 
 /*
  * CDB___memp_cmpr_read --
- *	Transparent compression read
+ *  Transparent compression read
  *
  * PUBLIC: int CDB___memp_cmpr_read __P((DB_MPOOLFILE *, BH *, DB_IO *, ssize_t *));
  */
 int
 CDB___memp_cmpr_read(dbmfp, bhp, db_io, niop)
-	DB_MPOOLFILE *dbmfp;
-	BH *bhp;
-	DB_IO *db_io;
-	ssize_t *niop;
+  DB_MPOOLFILE *dbmfp;
+  BH *bhp;
+  DB_IO *db_io;
+  ssize_t *niop;
 {
   CMPR cmpr;
   int ret;
@@ -284,15 +284,15 @@ CDB___memp_cmpr_read(dbmfp, bhp, db_io, niop)
 
       chain_length++;
       if(chain_length >= CMPR_MAX) {
-	CDB___db_err(dbmfp->dbmp->dbenv, "CDB___memp_cmpr_read: compression chain too long at pgno = %ld", db_io->pgno);
-	ret = CDB___db_panic(dbmfp->dbmp->dbenv, EINVAL);
-	goto err;
+  CDB___db_err(dbmfp->dbmp->dbenv, "CDB___memp_cmpr_read: compression chain too long at pgno = %ld", db_io->pgno);
+  ret = CDB___db_panic(dbmfp->dbmp->dbenv, EINVAL);
+  goto err;
       }
 
       if(cmpr.next == 0) {
-	CDB___db_err(dbmfp->dbmp->dbenv, "CDB___memp_cmpr_read: cmpr.next is null at pgno = %ld", chain, db_io->pgno);
-	ret = CDB___db_panic(dbmfp->dbmp->dbenv, EINVAL);
-	goto err;
+  CDB___db_err(dbmfp->dbmp->dbenv, "CDB___memp_cmpr_read: cmpr.next is null at pgno = %ld", chain, db_io->pgno);
+  ret = CDB___db_panic(dbmfp->dbmp->dbenv, EINVAL);
+  goto err;
       }
       /*
        * Keep the chain in buffer header.
@@ -306,9 +306,9 @@ CDB___memp_cmpr_read(dbmfp, bhp, db_io, niop)
        * Read data from extra page.
        */
       if((ret = CDB___os_io(db_io, DB_IO_READ, niop)) != 0 ||
-	 *niop != db_io->pagesize) {
-	ret = EIO;
-	goto err;
+   *niop != db_io->pagesize) {
+  ret = EIO;
+  goto err;
       }
       /*
        * Read the cmpr header from this extra page
@@ -367,16 +367,16 @@ CDB___memp_cmpr_read(dbmfp, bhp, db_io, niop)
 
 /*
  * CDB___memp_cmpr_write --
- *	Transparent compression write
+ *  Transparent compression write
  *
  * PUBLIC: int CDB___memp_cmpr_write __P((DB_MPOOLFILE *, BH *, DB_IO *, ssize_t *));
  */
 int
 CDB___memp_cmpr_write(dbmfp, bhp, db_io, niop)
-	DB_MPOOLFILE *dbmfp;
-	BH *bhp;
-	DB_IO *db_io;
-	ssize_t *niop;
+  DB_MPOOLFILE *dbmfp;
+  BH *bhp;
+  DB_IO *db_io;
+  ssize_t *niop;
 {
   CMPR cmpr;
   int chain_length = 0;
@@ -435,20 +435,20 @@ CDB___memp_cmpr_write(dbmfp, bhp, db_io, niop)
      */
     if(length > copy_length) {
       if (dbmfp->dbmp->recursion_level >= 2 ) {
-	  fprintf(stderr,"CDB___memp_cmpr_write: Wanted %d > %d bytes\n", length, copy_length);
-	  fprintf(stderr,"Reducing  wordlist_cache_dirty_level  may help.\n");
-	  ret = EBUSY;
-	  goto err;
+    fprintf(stderr,"CDB___memp_cmpr_write: Wanted %d > %d bytes\n", length, copy_length);
+    fprintf(stderr,"Reducing  wordlist_cache_dirty_level  may help.\n");
+    ret = EBUSY;
+    goto err;
       }
       chain_length++;
       if(chain_length >= CMPR_MAX) {
-	  CDB___db_err(dbmfp->dbmp->dbenv, "CDB___memp_cmpr_write: chain_length overflow");
-	  ret = CDB___db_panic(dbmfp->dbmp->dbenv, EINVAL);
-	  goto err;
+    CDB___db_err(dbmfp->dbmp->dbenv, "CDB___memp_cmpr_write: chain_length overflow");
+    ret = CDB___db_panic(dbmfp->dbmp->dbenv, EINVAL);
+    goto err;
       }
       F_SET(&cmpr, DB_CMPR_CHAIN);
       if((ret = CDB___memp_cmpr_alloc(dbmfp, &cmpr.next, bhp, &first_nonreused_chain_pos)) != 0)
-	goto err;
+  goto err;
       CDB___memp_cmpr_alloc_chain(dbmfp->dbmp, bhp, BH_CMPR_OS);
       bhp->chain[chain_length - 1] = cmpr.next;
     }
@@ -490,15 +490,15 @@ CDB___memp_cmpr_write(dbmfp, bhp, db_io, niop)
     memcpy(db_io->buf, &cmpr, sizeof(CMPR));
     for(i = first_nonreused_chain_pos; i < (CMPR_MAX - 1) && bhp->chain[i]; i++) {
       if((ret = CDB___memp_cmpr_free(dbmfp, bhp->chain[i])) != 0)
-	goto err;
+  goto err;
       /*
        * Mark the page as free for recovery.
        */
       db_io->pgno = bhp->chain[i];
       if((ret = CDB___os_io(db_io, DB_IO_WRITE, niop)) != 0 ||
-	 *niop != db_io->pagesize) {
-	ret = EIO;
-	goto err;
+   *niop != db_io->pagesize) {
+  ret = EIO;
+  goto err;
       }
       bhp->chain[i] = 0;
     }
@@ -526,7 +526,7 @@ CDB___memp_cmpr_write(dbmfp, bhp, db_io, niop)
 
 /*
  * CDB___memp_cmpr_page --
- *	Build a fake page. This function is a CDB___memp_cmpr_read helper.
+ *  Build a fake page. This function is a CDB___memp_cmpr_read helper.
  *
  */
 static int
@@ -564,7 +564,7 @@ CDB___memp_cmpr_page(dbmfp, cmpr, db_io, niop)
 
 /*
  * CDB___memp_cmpr_inflate --
- *	Decompress buffer
+ *  Decompress buffer
  *
  * PUBLIC: int CDB___memp_cmpr_inflate __P((const u_int8_t *, int, u_int8_t *, int, void *));
  */
@@ -609,7 +609,7 @@ CDB___memp_cmpr_inflate(inbuff, inbuff_length, outbuff, outbuff_length, user_dat
 
 /*
  * CDB___memp_cmpr_deflate --
- *	Compress buffer
+ *  Compress buffer
  *
  * PUBLIC: int CDB___memp_cmpr_deflate __P((const u_int8_t *, int, u_int8_t **, int*, void *));
  */
@@ -709,7 +709,7 @@ CDB___memp_cmpr_deflate(inbuff, inbuff_length, outbuffp, outbuff_lengthp, user_d
 
 /*
  * CDB___memp_cmpr_info_valid --
- *	Compute compressed page size
+ *  Compute compressed page size
  */
 static int
 CDB___memp_cmpr_info_valid(dbenv,cmpr_info)
@@ -718,33 +718,33 @@ CDB___memp_cmpr_info_valid(dbenv,cmpr_info)
 {
     int ret = 0;
     if(!cmpr_info              ) {
-	CDB___db_err(dbenv, "CDB___memp_cmpr_info_valid: cmpr_info == NULL");
-	ret = CDB___db_panic(dbenv, EINVAL);
-	goto err;
+  CDB___db_err(dbenv, "CDB___memp_cmpr_info_valid: cmpr_info == NULL");
+  ret = CDB___db_panic(dbenv, EINVAL);
+  goto err;
     }
 
     if(!cmpr_info->compress   ) {
-	CDB___db_err(dbenv, "CDB___memp_cmpr_info_valid: compress == NULL!");
-	ret = CDB___db_panic(dbenv, EINVAL);
-	goto err;
+  CDB___db_err(dbenv, "CDB___memp_cmpr_info_valid: compress == NULL!");
+  ret = CDB___db_panic(dbenv, EINVAL);
+  goto err;
     }
 
     if(!cmpr_info->uncompress   ) {
-	CDB___db_err(dbenv, "CDB___memp_cmpr_info_valid: uncompress == NULL!");
-	ret = CDB___db_panic(dbenv, EINVAL);
-	goto err;
+  CDB___db_err(dbenv, "CDB___memp_cmpr_info_valid: uncompress == NULL!");
+  ret = CDB___db_panic(dbenv, EINVAL);
+  goto err;
     }
 
     if(cmpr_info->coefficient == 0 ||  cmpr_info->coefficient > 5  ) {
-	CDB___db_err(dbenv, "CDB___memp_cmpr_info_valid:  coefficient should be > 0 and < 5 coefficient=%d ", cmpr_info->coefficient);
-	ret = CDB___db_panic(dbenv, EINVAL);
-	goto err;
+  CDB___db_err(dbenv, "CDB___memp_cmpr_info_valid:  coefficient should be > 0 and < 5 coefficient=%d ", cmpr_info->coefficient);
+  ret = CDB___db_panic(dbenv, EINVAL);
+  goto err;
     }
 
     if(cmpr_info->max_npages == 0 ||  cmpr_info->max_npages > 128  ) {
-	CDB___db_err(dbenv, "CDB___memp_cmpr_info_valid:  max_npages should be > 0 and < 128 max_npages=%d ", cmpr_info->max_npages);
-	ret = CDB___db_panic(dbenv, EINVAL);
-	goto err;
+  CDB___db_err(dbenv, "CDB___memp_cmpr_info_valid:  max_npages should be > 0 and < 128 max_npages=%d ", cmpr_info->max_npages);
+  ret = CDB___db_panic(dbenv, EINVAL);
+  goto err;
     }
 err:
     return ret;
@@ -752,7 +752,7 @@ err:
 
 /*
  * __memp_cmpr_pagesize --
- *	Compute compressed page size
+ *  Compute compressed page size
  *
  * PUBLIC: u_int8_t CDB___memp_cmpr_coefficient __P((DB_ENV *dbenv));
  */
@@ -763,10 +763,10 @@ CDB___memp_cmpr_coefficient(dbenv)
     u_int8_t ret = 0;
 
     if(!dbenv || !dbenv->mp_cmpr_info) {
-	ret = default_cmpr_info.coefficient;
+  ret = default_cmpr_info.coefficient;
     } else {
-	CDB___memp_cmpr_info_valid(dbenv, dbenv->mp_cmpr_info);
-	ret = dbenv->mp_cmpr_info->coefficient;
+  CDB___memp_cmpr_info_valid(dbenv, dbenv->mp_cmpr_info);
+  ret = dbenv->mp_cmpr_info->coefficient;
     }
 
     return (ret);
@@ -777,7 +777,7 @@ CDB___memp_cmpr_coefficient(dbenv)
 
 /*
  * CDB___memp_cmpr_open --
- *	Open the db that contains the free compression pages.
+ *  Open the db that contains the free compression pages.
  *
  * PUBLIC: int CDB___memp_cmpr_open __P((const char *, DB_ENV *, CMPR_CONTEXT *));
  */
@@ -842,7 +842,7 @@ CDB___memp_cmpr_open(dbenv, path, flags, mode, cmpr_context)
 
 /*
  * CDB___memp_cmpr_close --
- *	Close the db that contains the free compression pages.
+ *  Close the db that contains the free compression pages.
  *
  * PUBLIC: int CDB___memp_cmpr_close __P((CMPR_CONTEXT *));
  */
@@ -867,7 +867,7 @@ CDB___memp_cmpr_close(cmpr_context)
 
 /*
  * CDB___memp_cmpr_alloc --
- *	Get a new free page to store weak compression data.
+ *  Get a new free page to store weak compression data.
  *
  * PUBLIC: int CDB___memp_cmpr_alloc __P((DB_MPOOLFILE *, db_pgno_t *, BH *, int *));
  */
@@ -941,34 +941,34 @@ CDB___memp_cmpr_alloc(dbmfp, pgnop, bhp, first_nonreused_chain_posp)
       fprintf(stderr,"CDB___memp_cmpr_alloc:: weakcmpr free page pool empty, allocating\n");
 #endif
       if(ret == DB_NOTFOUND) {
-	DB_MPOOL *dbmp = dbmfp->dbmp;
-	ret = 0;
-	R_LOCK(dbenv, &dbmp->reginfo);
-	++dbmfp->mfp->last_pgno;
+  DB_MPOOL *dbmp = dbmfp->dbmp;
+  ret = 0;
+  R_LOCK(dbenv, &dbmp->reginfo);
+  ++dbmfp->mfp->last_pgno;
 #ifdef DEBUG
-	word_monitor_set(WORD_MONITOR_PGNO, dbmfp->mfp->last_pgno);
+  word_monitor_set(WORD_MONITOR_PGNO, dbmfp->mfp->last_pgno);
 #endif /* DEBUG */
-	*pgnop = dbmfp->mfp->last_pgno;
-	R_UNLOCK(dbenv, &dbmp->reginfo);
-	ret = 0;
+  *pgnop = dbmfp->mfp->last_pgno;
+  R_UNLOCK(dbenv, &dbmp->reginfo);
+  ret = 0;
       } else {
-	CDB___db_err(dbenv, "CDB___memp_cmpr_alloc: unexpected error from weakcmpr base");
-	ret = CDB___db_panic(dbenv, ret);
+  CDB___db_err(dbenv, "CDB___memp_cmpr_alloc: unexpected error from weakcmpr base");
+  ret = CDB___db_panic(dbenv, ret);
       }
     } else {
       if(key.size != sizeof(db_pgno_t)) {
-	CDB___db_err(dbenv, "CDB___memp_cmpr_alloc: unexpected key size from weakcmpr base (%d instead of %d)", key.size, sizeof(db_pgno_t));
-	ret = CDB___db_panic(dbenv, ret);
+  CDB___db_err(dbenv, "CDB___memp_cmpr_alloc: unexpected key size from weakcmpr base (%d instead of %d)", key.size, sizeof(db_pgno_t));
+  ret = CDB___db_panic(dbenv, ret);
       } else {
-	memcpy((char*)pgnop, (char*)key.data, key.size);
-	if((ret = db->del(db, NULL, &key, 0)) != 0) {
-	  CDB___db_err(dbenv, "CDB___memp_cmpr_alloc: del error, got pgno %d", *pgnop);
-	  ret = CDB___db_panic(dbenv, ret);
-	}
-	if(*pgnop == 0) {
-	  CDB___db_err(dbenv, "CDB___memp_cmpr_alloc: unexpected pgno == 0");
-	  ret = CDB___db_panic(dbenv, ret);
-	}
+  memcpy((char*)pgnop, (char*)key.data, key.size);
+  if((ret = db->del(db, NULL, &key, 0)) != 0) {
+    CDB___db_err(dbenv, "CDB___memp_cmpr_alloc: del error, got pgno %d", *pgnop);
+    ret = CDB___db_panic(dbenv, ret);
+  }
+  if(*pgnop == 0) {
+    CDB___db_err(dbenv, "CDB___memp_cmpr_alloc: unexpected pgno == 0");
+    ret = CDB___db_panic(dbenv, ret);
+  }
       }
 #ifdef DEBUG_CMPR
       fprintf(stderr,"CDB___memp_cmpr_alloc:: reuse free page %d from weakcmpr\n", *pgnop);
@@ -982,7 +982,7 @@ CDB___memp_cmpr_alloc(dbmfp, pgnop, bhp, first_nonreused_chain_posp)
 
 /*
  * CDB___memp_cmpr_free --
- *	Release a page used to store weak compression data.
+ *  Release a page used to store weak compression data.
  *
  * PUBLIC: int CDB___memp_cmpr_free __P((DB_MPOOLFILE *, db_pgno_t));
  */
@@ -1028,16 +1028,16 @@ CDB___memp_cmpr_free(dbmfp, pgno)
 
 /*
  * CDB___memp_cmpr_alloc_chain --
- *	Allocate chain entry in BH
+ *  Allocate chain entry in BH
  *
  * PUBLIC: int CDB___memp_cmpr_alloc_chain __P((DB_MPOOL *, BH *));
  */
 
 int
 CDB___memp_cmpr_alloc_chain(dbmp, bhp, alloc_type)
-	DB_MPOOL *dbmp;
-	BH *bhp;
-	int alloc_type;
+  DB_MPOOL *dbmp;
+  BH *bhp;
+  int alloc_type;
 {
   DB_ENV *dbenv = dbmp->dbenv;
   int ret = 0;
@@ -1047,10 +1047,10 @@ CDB___memp_cmpr_alloc_chain(dbmp, bhp, alloc_type)
     switch(alloc_type) {
     case BH_CMPR_POOL:
       {
-	MPOOL *mp = dbmp->reginfo.primary;
-	int n_cache = NCACHE(mp, bhp->pgno);
-	alloc_ret = CDB___memp_alloc(dbmp, &dbmp->c_reginfo[n_cache], NULL, alloc_length, NULL, (void *)(&bhp->chain));
-	F_SET(bhp, BH_CMPR_POOL);
+  MPOOL *mp = dbmp->reginfo.primary;
+  int n_cache = NCACHE(mp, bhp->pgno);
+  alloc_ret = CDB___memp_alloc(dbmp, &dbmp->c_reginfo[n_cache], NULL, alloc_length, NULL, (void *)(&bhp->chain));
+  F_SET(bhp, BH_CMPR_POOL);
       }
       break;
     case BH_CMPR_OS:
@@ -1085,15 +1085,15 @@ CDB___memp_cmpr_alloc_chain(dbmp, bhp, alloc_type)
 
 /*
  * CDB___memp_cmpr_free_chain --
- *	Free chain entry in BH
+ *  Free chain entry in BH
  *
  * PUBLIC: int CDB___memp_cmpr_free_chain __P((DB_MPOOL *, BH *));
  */
 
 int
 CDB___memp_cmpr_free_chain(dbmp, bhp)
-	DB_MPOOL *dbmp;
-	BH *bhp;
+  DB_MPOOL *dbmp;
+  BH *bhp;
 {
   DB_ENV *dbenv = dbmp->dbenv;
 
@@ -1103,27 +1103,27 @@ CDB___memp_cmpr_free_chain(dbmp, bhp)
       int alloc_type = bhp->flags & (BH_CMPR_POOL|BH_CMPR_OS);
       switch(alloc_type) {
       case BH_CMPR_POOL:
-	{
-	  MPOOL *mp = dbmp->reginfo.primary;
-	  int n_cache = NCACHE(mp, bhp->pgno);
-	  CDB___db_shalloc_free(dbmp->c_reginfo[n_cache].addr, bhp->chain);
-	}
-	break;
+  {
+    MPOOL *mp = dbmp->reginfo.primary;
+    int n_cache = NCACHE(mp, bhp->pgno);
+    CDB___db_shalloc_free(dbmp->c_reginfo[n_cache].addr, bhp->chain);
+  }
+  break;
       case BH_CMPR_OS:
-	CDB___os_free(bhp->chain, alloc_length);
-	break;
+  CDB___os_free(bhp->chain, alloc_length);
+  break;
       default:
-	CDB___db_err(dbenv, "CDB___memp_cmpr_free_chain: unknown alloc type :%d", alloc_type);
-	return CDB___db_panic(dbenv, EINVAL);
-	break;
+  CDB___db_err(dbenv, "CDB___memp_cmpr_free_chain: unknown alloc type :%d", alloc_type);
+  return CDB___db_panic(dbenv, EINVAL);
+  break;
       }
 #if defined(DEBUG_CMPR) || defined(DEBUG_CMPR_ALLOC)
       fprintf(stderr, "CDB___memp_cmpr_free_chain:: free chain in %s :%8x\n", (alloc_type == BH_CMPR_OS ? "malloc" : "shalloc"), bhp->chain);
 #endif
       bhp->chain = NULL;
     } else {
-	CDB___db_err(dbenv, "CDB___memp_cmpr_free_chain: BH_CMPR set but null bhp->chain");
-	return CDB___db_panic(dbenv, EINVAL);
+  CDB___db_err(dbenv, "CDB___memp_cmpr_free_chain: BH_CMPR set but null bhp->chain");
+  return CDB___db_panic(dbenv, EINVAL);
     }
   } else if(bhp->chain) {
     CDB___db_err(dbenv, "CDB___memp_cmpr_free_chain: BH_CMPR not set but bhp->chain not null");

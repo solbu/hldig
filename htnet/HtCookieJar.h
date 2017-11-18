@@ -75,14 +75,14 @@ class HtCookieJar : public Object
       // This method allow the insertion of a cookie
       // into the jar.   
       virtual int AddCookie(const String &CookieString,
-      	 const URL &url) = 0;
+         const URL &url) = 0;
 
       // Set the request string to be sent to an HTTP server
       // for cookies. It manages all the process regarding
       // domains and subdomains.
       virtual int SetHTTPRequest_CookiesString(const URL &_url,
-      	 String &RequestString) = 0;
-	 
+         String &RequestString) = 0;
+   
       // Get the next cookie
       virtual const HtCookie* NextCookie() = 0;
 
@@ -96,8 +96,8 @@ class HtCookieJar : public Object
       // Set its debug level and HtCookie class'
       static void SetDebugLevel (int d)
       {
-      	 debug=d;  // internal one
-      	 HtCookie::SetDebugLevel(d);  // HtCookie's debug level
+         debug=d;  // internal one
+         HtCookie::SetDebugLevel(d);  // HtCookie's debug level
       }   
 
       // Show summary (abstract)
@@ -111,7 +111,7 @@ class HtCookieJar : public Object
 
       // Writes the HTTP request line given a cookie
       virtual int WriteCookieHTTPRequest(const HtCookie &Cookie,
-      	 String &RequestString, const int &NumCookies);
+         String &RequestString, const int &NumCookies);
       
       // Print debug info
       virtual void printDebug() = 0;

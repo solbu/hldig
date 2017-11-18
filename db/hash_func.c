@@ -2,15 +2,15 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 /*
  * Copyright (c) 1990, 1993
- *	Margo Seltzer.  All rights reserved.
+ *  Margo Seltzer.  All rights reserved.
  */
 /*
  * Copyright (c) 1990, 1993
- *	The Regents of the University of California.  All rights reserved.
+ *  The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Margo Seltzer.
@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)hash_func.c	11.2 (Sleepycat) 9/9/99";
+static const char sccsid[] = "@(#)hash_func.c  11.2 (Sleepycat) 9/9/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -56,35 +56,35 @@ static const char sccsid[] = "@(#)hash_func.c	11.2 (Sleepycat) 9/9/99";
 
 /*
  * CDB___ham_func2 --
- *	Phong Vo's linear congruential hash.
+ *  Phong Vo's linear congruential hash.
  *
  * PUBLIC: u_int32_t CDB___ham_func2 __P((const void *, u_int32_t));
  */
-#define	DCHARHASH(h, c)	((h) = 0x63c63cd9*(h) + 0x9c39c33d + (c))
+#define  DCHARHASH(h, c)  ((h) = 0x63c63cd9*(h) + 0x9c39c33d + (c))
 
 u_int32_t
 CDB___ham_func2(key, len)
-	const void *key;
-	u_int32_t len;
+  const void *key;
+  u_int32_t len;
 {
-	const u_int8_t *e, *k;
-	u_int32_t h;
-	u_int8_t c;
+  const u_int8_t *e, *k;
+  u_int32_t h;
+  u_int8_t c;
 
-	k = key;
-	e = k + len;
-	for (h = 0; k != e;) {
-		c = *k++;
-		if (!c && k > e)
-			break;
-		DCHARHASH(h, c);
-	}
-	return (h);
+  k = key;
+  e = k + len;
+  for (h = 0; k != e;) {
+    c = *k++;
+    if (!c && k > e)
+      break;
+    DCHARHASH(h, c);
+  }
+  return (h);
 }
 
 /*
  * CDB___ham_func3 --
- *	Ozan Yigit's original sdbm hash.
+ *  Ozan Yigit's original sdbm hash.
  *
  * Ugly, but fast.  Break the string up into 8 byte units.  On the first time
  * through the loop get the "leftover bytes" (strlen % 8).  On every other
@@ -95,90 +95,90 @@ CDB___ham_func2(key, len)
  */
 u_int32_t
 CDB___ham_func3(key, len)
-	const void *key;
-	u_int32_t len;
+  const void *key;
+  u_int32_t len;
 {
-	const u_int8_t *k;
-	u_int32_t n, loop;
+  const u_int8_t *k;
+  u_int32_t n, loop;
 
-	if (len == 0)
-		return (0);
+  if (len == 0)
+    return (0);
 
-#define	HASHC	n = *k++ + 65599 * n
-	n = 0;
-	k = key;
+#define  HASHC  n = *k++ + 65599 * n
+  n = 0;
+  k = key;
 
-	loop = (len + 8 - 1) >> 3;
-	switch (len & (8 - 1)) {
-	case 0:
-		do {
-			HASHC;
-	case 7:
-			HASHC;
-	case 6:
-			HASHC;
-	case 5:
-			HASHC;
-	case 4:
-			HASHC;
-	case 3:
-			HASHC;
-	case 2:
-			HASHC;
-	case 1:
-			HASHC;
-		} while (--loop);
-	}
-	return (n);
+  loop = (len + 8 - 1) >> 3;
+  switch (len & (8 - 1)) {
+  case 0:
+    do {
+      HASHC;
+  case 7:
+      HASHC;
+  case 6:
+      HASHC;
+  case 5:
+      HASHC;
+  case 4:
+      HASHC;
+  case 3:
+      HASHC;
+  case 2:
+      HASHC;
+  case 1:
+      HASHC;
+    } while (--loop);
+  }
+  return (n);
 }
 
 /*
  * CDB___ham_func4 --
- *	Chris Torek's hash function.  Although this function performs only
- *	slightly worse than CDB___ham_func5 on strings, it performs horribly on
- *	numbers.
+ *  Chris Torek's hash function.  Although this function performs only
+ *  slightly worse than CDB___ham_func5 on strings, it performs horribly on
+ *  numbers.
  *
  * PUBLIC: u_int32_t CDB___ham_func4 __P((const void *, u_int32_t));
  */
 u_int32_t
 CDB___ham_func4(key, len)
-	const void *key;
-	u_int32_t len;
+  const void *key;
+  u_int32_t len;
 {
-	const u_int8_t *k;
-	u_int32_t h, loop;
+  const u_int8_t *k;
+  u_int32_t h, loop;
 
-	if (len == 0)
-		return (0);
+  if (len == 0)
+    return (0);
 
-#define	HASH4a	h = (h << 5) - h + *k++;
-#define	HASH4b	h = (h << 5) + h + *k++;
-#define	HASH4	HASH4b
-	h = 0;
-	k = key;
+#define  HASH4a  h = (h << 5) - h + *k++;
+#define  HASH4b  h = (h << 5) + h + *k++;
+#define  HASH4  HASH4b
+  h = 0;
+  k = key;
 
-	loop = (len + 8 - 1) >> 3;
-	switch (len & (8 - 1)) {
-	case 0:
-		do {
-			HASH4;
-	case 7:
-			HASH4;
-	case 6:
-			HASH4;
-	case 5:
-			HASH4;
-	case 4:
-			HASH4;
-	case 3:
-			HASH4;
-	case 2:
-			HASH4;
-	case 1:
-			HASH4;
-		} while (--loop);
-	}
-	return (h);
+  loop = (len + 8 - 1) >> 3;
+  switch (len & (8 - 1)) {
+  case 0:
+    do {
+      HASH4;
+  case 7:
+      HASH4;
+  case 6:
+      HASH4;
+  case 5:
+      HASH4;
+  case 4:
+      HASH4;
+  case 3:
+      HASH4;
+  case 2:
+      HASH4;
+  case 1:
+      HASH4;
+    } while (--loop);
+  }
+  return (h);
 }
 
 /*
@@ -199,14 +199,14 @@ CDB___ham_func4(key, len)
  */
 u_int32_t
 CDB___ham_func5(key, len)
-	const void *key;
-	u_int32_t len;
+  const void *key;
+  u_int32_t len;
 {
-	const u_int8_t *k, *e;
+  const u_int8_t *k, *e;
         u_int32_t h;
 
-	k = key;
-	e = k + len;
+  k = key;
+  e = k + len;
         for (h = 0; k < e; ++k) {
                 h *= 16777619;
                 h ^= *k;

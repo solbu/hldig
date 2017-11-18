@@ -44,16 +44,16 @@ Endings::~Endings()
 {
     if (root2word)
     {
-	root2word->Close();
-	delete root2word;
-	root2word = 0;
+  root2word->Close();
+  delete root2word;
+  root2word = 0;
     }
-	
+  
     if (word2root)
     {
-	word2root->Close();
-	delete word2root;
-	word2root = 0;
+  word2root->Close();
+  delete word2root;
+  word2root = 0;
     }
 }
 
@@ -66,14 +66,14 @@ void
 Endings::getWords(char *w, List &words)
 {
     if (!word2root || !root2word)
-	return;
+  return;
 
-    String	data;
+    String  data;
 
-    String	word = w;
+    String  word = w;
     word.lowercase();
     HtStripPunctuation(word);
-    String	saveword = word.get();
+    String  saveword = word.get();
 
     //
     // Look for word's root(s).  Some words may have more than one root,
@@ -81,44 +81,44 @@ Endings::getWords(char *w, List &words)
     // to be root in itself.
     //
     if (word2root->Get(word, data) == OK)
-	word << ' ' << data;
+  word << ' ' << data;
  
-    StringList	roots(word, " ");
-    Object	*root;
+    StringList  roots(word, " ");
+    Object  *root;
     roots.Start_Get();
     while ((root = roots.Get_Next()) != 0)
     {
-	//
-	// Found a root.  Look for new words that have this root.
-	//
-	word = ((String *)root)->get();
-	if (root2word->Get(word, data) == OK)
-	    word << ' ' << data;
+  //
+  // Found a root.  Look for new words that have this root.
+  //
+  word = ((String *)root)->get();
+  if (root2word->Get(word, data) == OK)
+      word << ' ' << data;
 
-	//
-	// Iterate through the root's permutations
-	//
-	char	*token = strtok(word.get(), " ");
-	while (token)
-	{
-	    if (mystrcasecmp(token, saveword.get()) != 0)
-	    {
-		//
-		// This permutation isn't the original word, so we add it
-		// to the list if it's not already there.
-		//
-		Object	*obj;
-		words.Start_Get();
-		while((obj = words.Get_Next()) != 0)
-		{
-		    if (mystrcasecmp(token, ((String *)obj)->get()) == 0)
-			break;
-		}
-		if (obj == 0)
-		    words.Add(new String(token));
-	    }
-	    token = strtok(0, " ");
-	}
+  //
+  // Iterate through the root's permutations
+  //
+  char  *token = strtok(word.get(), " ");
+  while (token)
+  {
+      if (mystrcasecmp(token, saveword.get()) != 0)
+      {
+    //
+    // This permutation isn't the original word, so we add it
+    // to the list if it's not already there.
+    //
+    Object  *obj;
+    words.Start_Get();
+    while((obj = words.Get_Next()) != 0)
+    {
+        if (mystrcasecmp(token, ((String *)obj)->get()) == 0)
+      break;
+    }
+    if (obj == 0)
+        words.Add(new String(token));
+      }
+      token = strtok(0, " ");
+  }
     }
 }
 
@@ -148,15 +148,15 @@ Endings::addWord(char *)
 int
 Endings::openIndex()
 {
-    String	filename = config["endings_word2root_db"];
+    String  filename = config["endings_word2root_db"];
     word2root = Database::getDatabaseInstance(DB_BTREE);
     if (word2root->OpenRead((char*)filename) == NOTOK)
-	return NOTOK;
+  return NOTOK;
 
     filename = config["endings_root2word_db"];
     root2word = Database::getDatabaseInstance(DB_BTREE);
     if (root2word->OpenRead((char*)filename) == NOTOK)
-	return NOTOK;
+  return NOTOK;
 
     return OK;
 }
