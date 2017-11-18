@@ -55,9 +55,9 @@ public:
     void show(){printf("ZOZO SHOW:%d %d %d\n",a,b,c);}
     ZOZO()
     {
-	a=1;
-	b=2;
-	c=3;
+  a=1;
+  b=2;
+  c=3;
     }
 };
 
@@ -85,7 +85,7 @@ test_HtVectorGeneric()
     int i;
     for(i=0;i<vz.size();i++)
     {
-	vz[i].show();
+  vz[i].show();
     }
 }
 

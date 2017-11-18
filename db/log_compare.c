@@ -2,12 +2,12 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 #include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)CDB_log_compare.c	11.1 (Sleepycat) 7/24/99";
+static const char sccsid[] = "@(#)CDB_log_compare.c  11.1 (Sleepycat) 7/24/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -18,17 +18,17 @@ static const char sccsid[] = "@(#)CDB_log_compare.c	11.1 (Sleepycat) 7/24/99";
 
 /*
  * CDB_log_compare --
- *	Compare two LSN's; return 1, 0, -1 if first is >, == or < second.
+ *  Compare two LSN's; return 1, 0, -1 if first is >, == or < second.
  */
 int
 CDB_log_compare(lsn0, lsn1)
-	const DB_LSN *lsn0, *lsn1;
+  const DB_LSN *lsn0, *lsn1;
 {
-	if (lsn0->file != lsn1->file)
-		return (lsn0->file < lsn1->file ? -1 : 1);
+  if (lsn0->file != lsn1->file)
+    return (lsn0->file < lsn1->file ? -1 : 1);
 
-	if (lsn0->offset != lsn1->offset)
-		return (lsn0->offset < lsn1->offset ? -1 : 1);
+  if (lsn0->offset != lsn1->offset)
+    return (lsn0->offset < lsn1->offset ? -1 : 1);
 
-	return (0);
+  return (0);
 }

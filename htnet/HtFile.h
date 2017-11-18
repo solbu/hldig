@@ -43,7 +43,7 @@ class HtFile_Response : public Transport_Response
 ///////
    //    Construction / Destruction
 ///////
-	 
+   
       HtFile_Response();
       ~HtFile_Response();
 };
@@ -115,15 +115,15 @@ protected:
       //    Http single Request information (Member attributes)
    ///////
 
-   URL		_url;               // URL to retrieve
-   URL		_referer;	    // Referring URL
+   URL    _url;               // URL to retrieve
+   URL    _referer;      // Referring URL
    
    ///////
       //    Http Response information
    ///////
 
-   HtFile_Response	 _response; 	 // Object where response
-   	       	   	       	   	 // information will be stored into
+   HtFile_Response   _response;    // Object where response
+                                  // information will be stored into
 };
 
 #endif

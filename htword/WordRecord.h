@@ -65,8 +65,8 @@
 //
 class WordRecordStat {
  public:
-  unsigned int		noccurrence;
-  unsigned int		ndoc;
+  unsigned int    noccurrence;
+  unsigned int    ndoc;
 };
 
 //
@@ -79,27 +79,27 @@ class WordRecordStorage {
   //
   // Arbitrary data
   //
-  unsigned int		data;
+  unsigned int    data;
   //
   // Statistical data used by WordStat
   //
-  WordRecordStat	stats;
+  WordRecordStat  stats;
 };
 
 //
 // Describe the data associated with a key (WordKey)
 //
 // If type is:
-//    WORD_RECORD_DATA	info.data is valid
-//    WORD_RECORD_STATS	info.stats is valid
-//    WORD_RECORD_NONE	nothing valid
+//    WORD_RECORD_DATA  info.data is valid
+//    WORD_RECORD_STATS  info.stats is valid
+//    WORD_RECORD_NONE  nothing valid
 //
 class WordRecord
 {
  public:
   WordRecord() { Clear(); }
 
-  void	Clear() { memset((char*)&info, '\0', sizeof(info)); type = DefaultType(); }
+  void  Clear() { memset((char*)&info, '\0', sizeof(info)); type = DefaultType(); }
 
 #ifndef SWIG
   //
@@ -141,8 +141,8 @@ class WordRecord
     case WORD_RECORD_DATA:
       decompressed = htUnpack(WORD_RECORD_DATA_FORMAT, packed);
       if(decompressed.length() != sizeof(info.data)) {
-	fprintf(stderr, "WordRecord::Unpack: decoding mismatch\n");
-	return NOTOK;
+  fprintf(stderr, "WordRecord::Unpack: decoding mismatch\n");
+  return NOTOK;
       }
       memcpy((char*)&info.data, (char*)decompressed, sizeof(info.data));
       break;
@@ -150,8 +150,8 @@ class WordRecord
     case WORD_RECORD_STATS:
       decompressed = htUnpack(WORD_RECORD_STATS_FORMAT, packed);
       if(decompressed.length() != sizeof(info.stats)) {
-	fprintf(stderr, "WordRecord::Unpack: decoding mismatch\n");
-	return NOTOK;
+  fprintf(stderr, "WordRecord::Unpack: decoding mismatch\n");
+  return NOTOK;
       }
       memcpy((char*)&info.stats, (char*)decompressed, sizeof(info.stats));
       break;
@@ -190,8 +190,8 @@ class WordRecord
 #endif /* SWIG */
   void Print() const;
   
-  unsigned char			type;
-  WordRecordStorage		info;
+  unsigned char      type;
+  WordRecordStorage    info;
 };
 
 #endif /* _WordRecord_h_ */

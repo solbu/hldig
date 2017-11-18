@@ -23,7 +23,7 @@ class WordStat : public WordReference
   //
   // Construction/Destruction
   //
-  WordStat()	{ record.type = WORD_RECORD_STATS; }
+  WordStat()  { record.type = WORD_RECORD_STATS; }
   WordStat(const String& key_arg, const String& record_arg) : WordReference(key_arg, record_arg) {
     record.type = WORD_RECORD_STATS;
   }
@@ -33,7 +33,7 @@ class WordStat : public WordReference
     record.type = WORD_RECORD_STATS;
   }
   
-  ~WordStat()	{}
+  ~WordStat()  {}
 
   //
   // Accessors
@@ -52,7 +52,7 @@ class WordStat : public WordReference
 
  protected:
 
-  static WordReference*		word_stat_last;
+  static WordReference*    word_stat_last;
 };
 
 #endif

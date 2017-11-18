@@ -74,10 +74,10 @@ static int verbose = 0;
 
 // ************************* Document definition implementation ***********
 
-#define TAG		1
-#define SERVER		2
-#define URL		3
-#define LOCATION	4
+#define TAG    1
+#define SERVER    2
+#define URL    3
+#define LOCATION  4
 
 // *********************** WordKeySemantic implementation ********************
 //
@@ -286,13 +286,13 @@ int WordKeySemantic::LocationCompare(const WordKey& expected, const WordKey& act
       //
       proximity *= 2;
       if(ret < 0 && ret >= proximity)
-	ret = 0;
+  ret = 0;
     } else {
       //
       // N means ok if in range [0 +N]
       //
       if(ret < 0 && ret >= -proximity)
-	ret = 0;
+  ret = 0;
     }
   }
   return ret;
@@ -362,13 +362,13 @@ static inline void show_bits(unsigned int result)
 //
 // WordExclude methods return values
 //
-#define WORD_EXCLUDE_OK		1
-#define WORD_EXCLUDE_END	2
+#define WORD_EXCLUDE_OK    1
+#define WORD_EXCLUDE_END  2
 
 //
 // Maximum number of bits
 //
-#define WORD_EXCLUDE_MAX	(sizeof(unsigned int) * 8)
+#define WORD_EXCLUDE_MAX  (sizeof(unsigned int) * 8)
 
 //
 // Convert a position <p> in a <l> bits mask into a bit offset (from 0)
@@ -534,9 +534,9 @@ inline unsigned int WordExclude::Permute(unsigned int mask, unsigned int bits)
       mask &= ~(1 << j);
     } else {
       if(bits_cleared) {
-	bits_cleared--;
-	mask |= (1 << j);
-	break;
+  bits_cleared--;
+  mask |= (1 << j);
+  break;
       }
     }
   }
@@ -563,7 +563,7 @@ int WordExclude::Next()
     else {
       unsigned int i;
       for(i = 0; i < bits; i++)
-	mask |= (1 << i);
+  mask |= (1 << i);
       ret = WORD_EXCLUDE_OK;
     }
   }
@@ -626,7 +626,7 @@ int WordExclude::Set(const String& buffer)
 //
 // END
 //
-#define WORD_EXCLUDE_IGNORED	(-1)
+#define WORD_EXCLUDE_IGNORED  (-1)
 
 class WordExcludeMask : public WordExclude {
 public:
@@ -644,10 +644,10 @@ public:
     unsigned int i;
     for(i = 0, ignore_bits = 0; i < length; i++) {
       if(ignore & (1 << i)) {
-	bit2bit[i] = WORD_EXCLUDE_IGNORED;
-	if(ignore_mask & (1 << i)) ignore_bits++;
+  bit2bit[i] = WORD_EXCLUDE_IGNORED;
+  if(ignore_mask & (1 << i)) ignore_bits++;
       } else {
-	bit2bit[i] = maxi++;
+  bit2bit[i] = maxi++;
       }
     }
 
@@ -688,8 +688,8 @@ public:
     unsigned int i;
     for(i = 0; i < ignore_maxi; i++) {
       if(bit2bit[i] != WORD_EXCLUDE_IGNORED) {
-	if(WordExclude::Mask() & (1 << bit2bit[i]))
-	  ret |= (1 << i);
+  if(WordExclude::Mask() & (1 << bit2bit[i]))
+    ret |= (1 << i);
       }
     }
     return ret;
@@ -733,15 +733,15 @@ int WordExcludeMask::Set(const String& buffer)
   for(i = 0; i < ignore_maxi; i++) {
     if(buffer[i] == '1' || buffer[i] == '0') {
       if(buffer[i] == '1') {
-	mask |= (1 << maxi);
-	bits++;
+  mask |= (1 << maxi);
+  bits++;
       }
       bit2bit[i] = maxi;
       maxi++;
     } else if(buffer[i] == '3' || buffer[i] == '2') {
       if(buffer[i] == '3') {
-	ignore_mask |= (1 << i);
-	ignore_bits++;
+  ignore_mask |= (1 << i);
+  ignore_bits++;
       }
       bit2bit[i] = WORD_EXCLUDE_IGNORED;
     }
@@ -779,15 +779,15 @@ int WordExcludeMask::Set(const String& buffer)
 //
 // WordPermute methods return values
 //
-#define WORD_PERMUTE_OK		WORD_EXCLUDE_OK
-#define WORD_PERMUTE_END	WORD_EXCLUDE_END
+#define WORD_PERMUTE_OK    WORD_EXCLUDE_OK
+#define WORD_PERMUTE_END  WORD_EXCLUDE_END
 
 //
 // Use or don't use proximity flag
 //
-#define WORD_PERMUTE_PROXIMITY_NO	0
-#define WORD_PERMUTE_PROXIMITY_TOGGLE	1
-#define WORD_PERMUTE_PROXIMITY_ONLY	2
+#define WORD_PERMUTE_PROXIMITY_NO  0
+#define WORD_PERMUTE_PROXIMITY_TOGGLE  1
+#define WORD_PERMUTE_PROXIMITY_ONLY  2
 
 //
 // Deals with word exclusion and proximity permutations for
@@ -885,18 +885,18 @@ public:
       // If only one word is involved never use proximity.
       //
       if(proximity) {
-	proximity = 0;
+  proximity = 0;
       } else {
-	proximity = 1;
-	if((ret = WordExcludeMask::Next()) == WORD_PERMUTE_OK) {
-	  //
-	  // Do not toggle proximity for only one non excluded word
-	  //
-	  if(NotExcludedCount() <= 1)
-	    proximity = 0;
-	  check_useless = 1;
-	} else if(ret == WORD_PERMUTE_END)
-	  proximity = 0;
+  proximity = 1;
+  if((ret = WordExcludeMask::Next()) == WORD_PERMUTE_OK) {
+    //
+    // Do not toggle proximity for only one non excluded word
+    //
+    if(NotExcludedCount() <= 1)
+      proximity = 0;
+    check_useless = 1;
+  } else if(ret == WORD_PERMUTE_END)
+    proximity = 0;
       }
     } else {
       ret = WordExcludeMask::Next();
@@ -911,11 +911,11 @@ public:
       // all permutations.
       //
       if(NotExcludedCount() <= 0) {
-	ret = WordExcludeMask::Next();
-	if(ret != WORD_PERMUTE_END) {
-	  fprintf(stderr, "WordPermute::Next: expected WORD_PERMUTE_END\n");
-	  ret = NOTOK;
-	}
+  ret = WordExcludeMask::Next();
+  if(ret != WORD_PERMUTE_END) {
+    fprintf(stderr, "WordPermute::Next: expected WORD_PERMUTE_END\n");
+    ret = NOTOK;
+  }
       }
     }
 
@@ -947,7 +947,7 @@ public:
     int ret = OK;
     if(use_proximity == WORD_PERMUTE_PROXIMITY_TOGGLE) {
       if((ret = WordExcludeMask::Set(buffer.sub(0, buffer.length() - 1))) == OK)
-	proximity = buffer.last() == 'T';
+  proximity = buffer.last() == 'T';
     } else {
       ret = WordExcludeMask::Set(buffer);
     }
@@ -986,27 +986,27 @@ protected:
 // END
 // 
 
-#define WORD_WALK_REDO		0x1000
-#define WORD_WALK_RESTART	0x2000
-#define WORD_WALK_NEXT		0x4000
+#define WORD_WALK_REDO    0x1000
+#define WORD_WALK_RESTART  0x2000
+#define WORD_WALK_NEXT    0x4000
 
 //
 // Return values of CursorsObeyProximity method
 //
-#define WORD_SEARCH_NOPROXIMITY	1
+#define WORD_SEARCH_NOPROXIMITY  1
 
 //
 // operand values
 //
-#define WORD_TREE_OR		1
-#define WORD_TREE_AND		2
-#define WORD_TREE_NEAR		3
-#define WORD_TREE_OPTIONAL	4
-#define WORD_TREE_LITERAL	5
-#define WORD_TREE_MANDATORY	6
-#define WORD_TREE_NOT		7
+#define WORD_TREE_OR    1
+#define WORD_TREE_AND    2
+#define WORD_TREE_NEAR    3
+#define WORD_TREE_OPTIONAL  4
+#define WORD_TREE_LITERAL  5
+#define WORD_TREE_MANDATORY  6
+#define WORD_TREE_NOT    7
 
-#define WORD_TREE_OP_SIZE	20
+#define WORD_TREE_OP_SIZE  20
 
 //
 // Default proximity is to search for adjacent words in order
@@ -1061,8 +1061,8 @@ public:
     WordKey key;
     if(!scope.empty()) {
       if(key.Set(scope) != OK) {
-	fprintf(stderr, "WordTree::Prepare: setting scope %s failed\n", (char*)scope);
-	return NOTOK;
+  fprintf(stderr, "WordTree::Prepare: setting scope %s failed\n", (char*)scope);
+  return NOTOK;
       }
     }
     key.SetWord(search);
@@ -1197,7 +1197,7 @@ int WordTreeLiteral::WalkNext()
     ret = WordCursor::WalkNext();
     if(verbose > 3) fprintf(stderr, "WordTreeLiteral::WalkNext: reached %s\n", (char*)GetDocument().Get());
   } while(ret == OK &&
-	  key_semantic.DocumentCompare(current_document, GetDocument()) == 0);
+    key_semantic.DocumentCompare(current_document, GetDocument()) == 0);
 
   if(ret == OK)
     current_document = GetDocument();
@@ -1337,7 +1337,7 @@ public:
     unsigned int i;
     for(i = 0; i < cursors_length; i++)
       if(cursors[i]->ContextSaveList(list) == NOTOK)
-	return NOTOK;
+  return NOTOK;
     return OK;
   }
 
@@ -1357,7 +1357,7 @@ public:
     unsigned int i;
     for(i = 0; i < cursors_length; i++)
       if(cursors[i]->ContextRestoreList(list) == NOTOK)
-	return NOTOK;
+  return NOTOK;
     return OK;
   }
 
@@ -1391,7 +1391,7 @@ public:
     for(i = 0; i < cursors_length; i++) {
       unsigned int frequency;
       if(cursors[i]->Noccurrence(frequency) != OK)
-	return NOTOK;
+  return NOTOK;
       noccurrence += frequency;
     }
     return OK;
@@ -1421,7 +1421,7 @@ public:
     unsigned int i;
     for(i = 0; i < cursors_length; i++) {
       if((ret = cursors[i]->Prepare(words, nuniq, nproximity, document, document_length, location)) != OK)
-	return ret;
+  return ret;
     }
     return Get(GetSearch().GetWord());
   }
@@ -1502,8 +1502,8 @@ int WordTreeOperand::OptimizeOr(int proximity)
       old->cursors[0] = 0;
       old->cursors_length--;
       if(old->cursors_length > 0) {
-	fprintf(stderr, "WordTreeOptional::OptimizeOr: too many cursors\n");
-	return NOTOK;
+  fprintf(stderr, "WordTreeOptional::OptimizeOr: too many cursors\n");
+  return NOTOK;
       }
       delete old;
     }
@@ -1822,59 +1822,59 @@ int WordTreeOptional::WalkNext()
 
       int ret;
       if(excluded) {
-	ret = SearchCursorNot(cursor, constraint);
-	if(verbose > 2) fprintf(stderr, "WordTreeOptional::WalkNext: Not -> %s\n", ret2str(ret));
+  ret = SearchCursorNot(cursor, constraint);
+  if(verbose > 2) fprintf(stderr, "WordTreeOptional::WalkNext: Not -> %s\n", ret2str(ret));
       } else {
-	if(near) {
-	  ret = SearchCursorNear(cursor, first, constraint, proximity);
-	  if(verbose > 2) fprintf(stderr, "WordTreeOptional::WalkNext: Near -> %s\n", ret2str(ret));
-	} else {
-	  ret = SearchCursorAnd(cursor, constraint, permutation);
-	  if(verbose > 2) fprintf(stderr, "WordTreeOptional::WalkNext: And -> %s\n", ret2str(ret));
-	}
+  if(near) {
+    ret = SearchCursorNear(cursor, first, constraint, proximity);
+    if(verbose > 2) fprintf(stderr, "WordTreeOptional::WalkNext: Near -> %s\n", ret2str(ret));
+  } else {
+    ret = SearchCursorAnd(cursor, constraint, permutation);
+    if(verbose > 2) fprintf(stderr, "WordTreeOptional::WalkNext: And -> %s\n", ret2str(ret));
+  }
       }
 
       switch(ret) {
       case WORD_WALK_ATEND:
-	if(UsePermutation()) {
-	  //
-	  // The search is over with this permutation, try another one.
-	  //
-	  switch(permutation.Next()) {
-	    //
-	    // No permutations left, the end
-	    //
-	  case WORD_PERMUTE_END:
-	    return (status = WORD_WALK_ATEND);
-	    break;
+  if(UsePermutation()) {
+    //
+    // The search is over with this permutation, try another one.
+    //
+    switch(permutation.Next()) {
+      //
+      // No permutations left, the end
+      //
+    case WORD_PERMUTE_END:
+      return (status = WORD_WALK_ATEND);
+      break;
 
-	    //
-	    // Sart over with this permutation
-	    //
-	  case WORD_PERMUTE_OK:
-	    if(WalkRewind() != OK)
-	      return NOTOK;
-	    break;
-	  }
-	  first = 0;
-	  i = 0;
-	} else {
-	  return (status = WORD_WALK_ATEND);
-	}
-	break;
+      //
+      // Sart over with this permutation
+      //
+    case WORD_PERMUTE_OK:
+      if(WalkRewind() != OK)
+        return NOTOK;
+      break;
+    }
+    first = 0;
+    i = 0;
+  } else {
+    return (status = WORD_WALK_ATEND);
+  }
+  break;
       case WORD_WALK_REDO:
-	break;
+  break;
       case WORD_WALK_RESTART:
-	first = 0;
-	i = 0;
-	break;
+  first = 0;
+  i = 0;
+  break;
       case WORD_WALK_NEXT:
-	i++;
-	break;
+  i++;
+  break;
       case NOTOK:
       default:
-	return ret;
-	break;
+  return ret;
+  break;
       }
     }
 
@@ -1888,8 +1888,8 @@ int WordTreeOptional::WalkNext()
     for(unsigned int i = 0; i < cursors_length; i++) {
       WordTree& cursor = *(cursors[i]);
       if(!permutation.Excluded(i)) {
-	found.Key().CopyFrom(cursor.GetFound().Key());
-	break;
+  found.Key().CopyFrom(cursor.GetFound().Key());
+  break;
       }
     }
 
@@ -1905,23 +1905,23 @@ int WordTreeOptional::WalkNext()
       // Otherwise it may be excluded, see below.
       //
       if(!near && permutation.NotExcludedCount() > 1) {
-	//
-	// If not using proximity, a match that fits the proximity 
-	// requirements must be skipped because it was matched by 
-	// the previous permutation (see WordPermute).
-	//
-	switch(CursorsObeyProximity(constraint)) {
-	case OK:
-	  match_ok = 0;
-	  break;
-	case WORD_SEARCH_NOPROXIMITY:
-	  match_ok = 1;
-	  break;
-	default:
-	case NOTOK:
-	  return NOTOK;
-	  break;
-	}
+  //
+  // If not using proximity, a match that fits the proximity 
+  // requirements must be skipped because it was matched by 
+  // the previous permutation (see WordPermute).
+  //
+  switch(CursorsObeyProximity(constraint)) {
+  case OK:
+    match_ok = 0;
+    break;
+  case WORD_SEARCH_NOPROXIMITY:
+    match_ok = 1;
+    break;
+  default:
+  case NOTOK:
+    return NOTOK;
+    break;
+  }
       }
     }
   } while(!match_ok && ret == OK);
@@ -2009,7 +2009,7 @@ int WordTreeOptional::SearchCursorNear(WordTree& cursor, WordTree*& master, Word
       // keys.
       //
       if(is_master)
-	key_semantic.Location2Document(constraint);
+  key_semantic.Location2Document(constraint);
       //
       // Reconsider the situation for this cursor
       //
@@ -2213,7 +2213,7 @@ int WordTreeOptional::CursorsObeyProximity(WordKey& document)
       // is the base to calculate other words mandatory loacations.
       //
       if(i == master_index)
-	key_semantic.LocationSet(cursor.GetFound().Key(), location);
+  key_semantic.LocationSet(cursor.GetFound().Key(), location);
       //
       // Fix location constraint to accomodate proximity tolerance.
       //
@@ -2231,11 +2231,11 @@ int WordTreeOptional::CursorsObeyProximity(WordKey& document)
       if(verbose > 1) fprintf(stderr, "WordTreeOptional::CursorsObeyProximity: leap to %s\n", (char*)location.Get());
       int ret;
       if((ret = cursor.WalkNext()) != OK) {
-	if(ret == WORD_WALK_ATEND) {
-	  return WORD_SEARCH_NOPROXIMITY;
-	} else {
-	  return NOTOK;
-	}
+  if(ret == WORD_WALK_ATEND) {
+    return WORD_SEARCH_NOPROXIMITY;
+  } else {
+    return NOTOK;
+  }
       }
       //
       // Remove the location constraint for the master word
@@ -2243,7 +2243,7 @@ int WordTreeOptional::CursorsObeyProximity(WordKey& document)
       // keys.
       //
       if(i == master_index)
-	key_semantic.Location2Document(location);
+  key_semantic.Location2Document(location);
       //
       // Reconsider the situation for this cursor
       //
@@ -2258,8 +2258,8 @@ int WordTreeOptional::CursorsObeyProximity(WordKey& document)
       // Move to next master key, if possible.
       //
       if(i != master_index) {
-	key_semantic.LocationSet(masterKey, location);
-	key_semantic.LocationNext(location);
+  key_semantic.LocationSet(masterKey, location);
+  key_semantic.LocationNext(location);
       }
       //
       // Since the current location changed, start over.
@@ -2492,10 +2492,10 @@ int WordTreeOr::WalkNext()
       // Advance cursors so that next call fetches another constraint
       //
       if(cursor_get_flags == DB_NEXT)
-	  key_semantic.DocumentNext(constraint, uniq);
+    key_semantic.DocumentNext(constraint, uniq);
     
       if((ret = Seek(constraint)) != OK)
-	  return ret;
+    return ret;
 
       match_ok = 1;
       //
@@ -2504,78 +2504,78 @@ int WordTreeOr::WalkNext()
       // is located at the lowest location beyond the constraint.
       //
       for(i = 0; i < cursors_length; i++) {
-	  if(permutation.Excluded(i))
-	      continue;
-	  WordTree& cursor = *(cursors[i]);
+    if(permutation.Excluded(i))
+        continue;
+    WordTree& cursor = *(cursors[i]);
 
-	  switch((ret = cursor.WalkNext())) {
-	  case WORD_WALK_ATEND:
-	      //
-	      // Constraint is above all matches for this cursor
-	      //
-	      break;
-	  case OK:
-	      //
-	      // If candidate is not set or current cursor is below
-	      // the current candidate, the curent cursor document becomes
-	      // the candidate.
-	      //
-	      if(candidate.Empty() ||
-		 key_semantic.DocumentCompare(candidate, cursor.GetFound().Key()) > 0) {
-		  key_semantic.DocumentSet(cursor.GetDocument(), candidate);
-	      }
-	      break;
-	  default:
-	      return ret;
-	      break;
-	  }
+    switch((ret = cursor.WalkNext())) {
+    case WORD_WALK_ATEND:
+        //
+        // Constraint is above all matches for this cursor
+        //
+        break;
+    case OK:
+        //
+        // If candidate is not set or current cursor is below
+        // the current candidate, the curent cursor document becomes
+        // the candidate.
+        //
+        if(candidate.Empty() ||
+     key_semantic.DocumentCompare(candidate, cursor.GetFound().Key()) > 0) {
+      key_semantic.DocumentSet(cursor.GetDocument(), candidate);
+        }
+        break;
+    default:
+        return ret;
+        break;
+    }
       }
 
       //
       // No candidate ? It's the end of the match list.
       //
       if(candidate.Empty())
-	  return WORD_WALK_ATEND;
+    return WORD_WALK_ATEND;
 
       found.Key().CopyFrom(candidate);
 
       SetInfo();
 
       if(permutation.ExcludedCount() > 0) {
-	if((ret = Seek(candidate)) != OK)
-	  return ret;
+  if((ret = Seek(candidate)) != OK)
+    return ret;
 
-	//
-	// Restart loop if candidate matches an excluded cursor.
-	//
-	for(i = 0; i < cursors_length && match_ok; i++) {
-	  if(!permutation.Excluded(i))
-	    continue;
-	  WordTree& cursor = *(cursors[i]);
+  //
+  // Restart loop if candidate matches an excluded cursor.
+  //
+  for(i = 0; i < cursors_length && match_ok; i++) {
+    if(!permutation.Excluded(i))
+      continue;
+    WordTree& cursor = *(cursors[i]);
 
-	  switch((ret = cursor.WalkNext())) {
-	  case WORD_WALK_ATEND:
-	    //
-	    // This excluded cursor can't match the candidate, fine.
-	    //
-	    break;
-	  case OK:
-	    //
-	    // This excluded cursor matches candidate therefore it's
-	    // not a valid candidate. Restart search with this candidate
-	    // as the constraint.
-	    //
-	    if(key_semantic.DocumentCompare(candidate, cursor.GetFound().Key()) == 0) {
-	      constraint = candidate;
-	      match_ok = 0;
-	    }
-	    break;
-	  default:
-	    return ret;
-	    break;
-	  }
-	  
-	}
+    switch((ret = cursor.WalkNext())) {
+    case WORD_WALK_ATEND:
+      //
+      // This excluded cursor can't match the candidate, fine.
+      //
+      break;
+    case OK:
+      //
+      // This excluded cursor matches candidate therefore it's
+      // not a valid candidate. Restart search with this candidate
+      // as the constraint.
+      //
+      if(key_semantic.DocumentCompare(candidate, cursor.GetFound().Key()) == 0) {
+        constraint = candidate;
+        match_ok = 0;
+      }
+      break;
+    default:
+      return ret;
+      break;
+    }
+    
+  }
       }
 
       cursor_get_flags = DB_NEXT;
@@ -2821,7 +2821,7 @@ int WordSearch::SearchLoop(WordTree *expr)
   {
     for(i = 0; i < limit_bottom; i++) {
       if((ret = expr->WalkNext()) != OK)
-	return ret;
+  return ret;
     }
   }
   //
@@ -2833,7 +2833,7 @@ int WordSearch::SearchLoop(WordTree *expr)
     } else {
       matches[matches_length].match = expr->GetDocument();
       if(expr->IsA() != WORD_TREE_LITERAL)
-	matches[matches_length].info = ((WordTreeOperand*)expr)->GetInfo();
+  matches[matches_length].info = ((WordTreeOperand*)expr)->GetInfo();
       if(verbose) fprintf(stderr, "WordSearch::Search: match %s\n", (char*)matches[matches_length].match.Get());
     }
   }
@@ -2915,9 +2915,9 @@ int WordSearch::SearchLoop(WordTree *expr)
 //
 // Possible values of the info argument of ParseOperands
 //
-#define WORD_TREE_MANY	0x01
-#define WORD_TREE_ONE	0x02
-#define WORD_TREE_TWO	0x04
+#define WORD_TREE_MANY  0x01
+#define WORD_TREE_ONE  0x02
+#define WORD_TREE_TWO  0x04
 
 class WordParser {
 public:
@@ -2959,13 +2959,13 @@ WordTree *WordParser::ParseExpr(StringList& terms)
     // At end of expression, return null
     //
   } else if(!mystrcasecmp(term, "optional") ||
-	    !mystrcasecmp(term, "or") ||
-	    !mystrcasecmp(term, "and") ||
-	    !mystrcasecmp(term, "near")) {
+      !mystrcasecmp(term, "or") ||
+      !mystrcasecmp(term, "and") ||
+      !mystrcasecmp(term, "near")) {
     expr = ParseConj(terms);
   } else if(!mystrcasecmp(term, "not") ||
-	    !mystrcasecmp(term, "mandatory") ||
-	    !mystrcasecmp(term, "forbiden")) {
+      !mystrcasecmp(term, "mandatory") ||
+      !mystrcasecmp(term, "forbiden")) {
     expr = ParseUnary(terms);
   } else {
     expr = ParseLiteral(terms);
@@ -2980,7 +2980,7 @@ WordTree *WordParser::ParseUnary(StringList& terms)
   if(!mystrcasecmp(Term(terms), "mandatory"))
     op = WORD_TREE_MANDATORY;
   else if(!mystrcasecmp(Term(terms), "forbiden") ||
-	  !mystrcasecmp(Term(terms), "not"))
+    !mystrcasecmp(Term(terms), "not"))
     op = WORD_TREE_NOT;
 
   Shift(terms);
@@ -3162,9 +3162,9 @@ static void exclude_test();
 
 int main(int ac, char **av)
 {
-  int			c;
-  extern char		*optarg;
-  params_t		params;
+  int      c;
+  extern char    *optarg;
+  params_t    params;
 
   params.dbfile = strdup("test");
   params.find = 0;
@@ -3179,42 +3179,42 @@ int main(int ac, char **av)
   while ((c = getopt(ac, av, "vB:f:b:c:C:SP:ne")) != -1)
     {
       switch (c)
-	{
-	case 'v':
-	  verbose++;
-	  break;
-	case 'B':
-	  free(params.dbfile);
-	  params.dbfile = strdup(optarg);
-	  break;
-	case 'f':
-	  params.find = strdup(optarg);
-	  break;
-	case 'b':
-	  params.bottom = (unsigned int)atoi(optarg);
-	  break;
-	case 'c':
-	  params.count = (unsigned int)atoi(optarg);
-	  break;
-	case 'C':
-	  params.context = strdup(optarg);
-	  break;
-	case 'P':
-	  params.proximity = atoi(optarg);
-	  break;
-	case 'S':
-	  params.uniq_server = SERVER;
-	  break;
-	case 'n':
-	  params.nop = 1;
-	  break;
-	case 'e':
-	  params.exclude = 1;
-	  break;
-	case '?':
-	  usage();
-	  break;
-	}
+  {
+  case 'v':
+    verbose++;
+    break;
+  case 'B':
+    free(params.dbfile);
+    params.dbfile = strdup(optarg);
+    break;
+  case 'f':
+    params.find = strdup(optarg);
+    break;
+  case 'b':
+    params.bottom = (unsigned int)atoi(optarg);
+    break;
+  case 'c':
+    params.count = (unsigned int)atoi(optarg);
+    break;
+  case 'C':
+    params.context = strdup(optarg);
+    break;
+  case 'P':
+    params.proximity = atoi(optarg);
+    break;
+  case 'S':
+    params.uniq_server = SERVER;
+    break;
+  case 'n':
+    params.nop = 1;
+    break;
+  case 'e':
+    params.exclude = 1;
+    break;
+  case '?':
+    usage();
+    break;
+  }
     }
 
   if(params.exclude) {
@@ -3264,7 +3264,7 @@ int main(int ac, char **av)
   // Define the semantic of the key
   //
   {
-#define DOCUMENT_LENGTH	3
+#define DOCUMENT_LENGTH  3
     static int document[DOCUMENT_LENGTH] = {
       TAG,
       SERVER,
@@ -3366,8 +3366,8 @@ static void exclude_test()
     int count = 0;
     while(exclude.Next() == WORD_EXCLUDE_OK) {
       if(expected[count] != exclude.Mask()) {
-	fprintf(stderr, "exclude_test: WordExclude iteration %d expected 0x%08x but got 0x%08x\n", count, expected[count], exclude.Mask());
-	exit(1);
+  fprintf(stderr, "exclude_test: WordExclude iteration %d expected 0x%08x but got 0x%08x\n", count, expected[count], exclude.Mask());
+  exit(1);
       }
       count++;
     }
@@ -3388,8 +3388,8 @@ static void exclude_test()
     int count = 0;
     while(exclude.Next() == WORD_EXCLUDE_OK) {
       if(expected[count] != exclude.Mask()) {
-	fprintf(stderr, "exclude_test: WordExcludeMask 1 iteration %d expected 0x%08x but got 0x%08x\n", count, expected[count], exclude.Mask());
-	exit(1);
+  fprintf(stderr, "exclude_test: WordExcludeMask 1 iteration %d expected 0x%08x but got 0x%08x\n", count, expected[count], exclude.Mask());
+  exit(1);
       }
       count++;
     }
@@ -3450,31 +3450,31 @@ static void exclude_test()
       show_bits(ignore_mask);
     }
     if(exclude.NotExcludedCount() != 8) {
-	fprintf(stderr, "exclude_test: WordExcludeMask 2 expected NoExcludedCount = 8 but got %d\n", exclude.NotExcludedCount());
-	exit(1);
+  fprintf(stderr, "exclude_test: WordExcludeMask 2 expected NoExcludedCount = 8 but got %d\n", exclude.NotExcludedCount());
+  exit(1);
     }
     int count = 0;
     while(exclude.Next() == WORD_EXCLUDE_OK) {
       if(expected[count] != exclude.Mask()) {
-	fprintf(stderr, "exclude_test: WordExcludeMask 2 iteration %d expected 0x%08x but got 0x%08x\n", count, expected[count], exclude.Mask());
-	exit(1);
+  fprintf(stderr, "exclude_test: WordExcludeMask 2 iteration %d expected 0x%08x but got 0x%08x\n", count, expected[count], exclude.Mask());
+  exit(1);
       }
       //
       // Test Excluded() method on ignored bit
       // Is bit 5 set ? (9 - 4) = 5 (counting from 1)
       //
       if(exclude.Excluded(4)) {
-	fprintf(stderr, "exclude_test: WordExcludeMask 2 iteration %d bit 5 was set 0x%08x\n", count, exclude.Mask());
-	exit(1);
+  fprintf(stderr, "exclude_test: WordExcludeMask 2 iteration %d bit 5 was set 0x%08x\n", count, exclude.Mask());
+  exit(1);
       }
       //
       // Test Excluded() method on variable bit
       // Is bit 2 set ? (9 - 2) = 7 (counting from 1)
       //
       if((exclude.Excluded(7) && !excluded[count]) ||
-	 (!exclude.Excluded(7) && excluded[count])) {
-	fprintf(stderr, "exclude_test: WordExcludeMask 2 iteration %d expected bit 2 %s but was %s in 0x%08x\n", count, (excluded[count] ? "set" : "not set"), (excluded[count] ? "not set" : "set"), expected[count]);
-	exit(1);
+   (!exclude.Excluded(7) && excluded[count])) {
+  fprintf(stderr, "exclude_test: WordExcludeMask 2 iteration %d expected bit 2 %s but was %s in 0x%08x\n", count, (excluded[count] ? "set" : "not set"), (excluded[count] ? "not set" : "set"), expected[count]);
+  exit(1);
       }
       count++;
     }

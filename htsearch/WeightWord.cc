@@ -86,7 +86,7 @@ WeightWord::WeightWord(char *word, double weight, unsigned int f)
     flags = f;
     // if no fields specified, allow a match with any field
     if (!(flags & FLAGS_MATCH_ONE))
-	flags ^= FLAGS_MATCH_ONE;
+  flags ^= FLAGS_MATCH_ONE;
 
     // ideally, these flags should all just be stored in a uint...
     isExact = ((flags & FLAG_EXACT) != 0);
@@ -116,28 +116,28 @@ void WeightWord::set(char *word)
     isHidden = 0;
     while (strchr(word, ':'))
     {
-	//
-	// This word contains modifiers.
-	//
-	if (mystrncasecmp(word, "exact:", 6) == 0)
-	{
-	    word += 6;
-	    isExact = 1;
-	}
-	else if (mystrncasecmp(word, "hidden:", 7) == 0)
-	{
-	    word += 7;
-	    isHidden = 1;
-	}
-	else
-	{
-	    //
-	    // There is a ':' but not a valid attribute.  It must be part
-	    // of the word we are searching for.
-	    //
-	    break;
-	}
-		
+  //
+  // This word contains modifiers.
+  //
+  if (mystrncasecmp(word, "exact:", 6) == 0)
+  {
+      word += 6;
+      isExact = 1;
+  }
+  else if (mystrncasecmp(word, "hidden:", 7) == 0)
+  {
+      word += 7;
+      isHidden = 1;
+  }
+  else
+  {
+      //
+      // There is a ':' but not a valid attribute.  It must be part
+      // of the word we are searching for.
+      //
+      break;
+  }
+    
     }
 #endif
     this->word = word;

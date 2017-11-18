@@ -24,8 +24,8 @@
 #include "StringList.h"
 #include "WordMonitor.h"
 
-#define WORD_MONITOR_RRD	1
-#define WORD_MONITOR_READABLE	2
+#define WORD_MONITOR_RRD  1
+#define WORD_MONITOR_READABLE  2
 
 WordMonitor* WordMonitor::instance = 0;
 
@@ -71,22 +71,22 @@ WordMonitor::WordMonitor(const Configuration &config)
     if(fields.Count() > 0) {
       char* filename = fields[0];
       if(filename[0] == '\0')
-	output = stderr;
+  output = stderr;
       else {
-	output = fopen(filename, "a");
-	if(!output) {
-	  fprintf(stderr, "WordMonitor::WordMonitor: cannot open %s for writing ", filename);
-	  perror("");
-	  output = stderr;
-	  return;
-	}
+  output = fopen(filename, "a");
+  if(!output) {
+    fprintf(stderr, "WordMonitor::WordMonitor: cannot open %s for writing ", filename);
+    perror("");
+    output = stderr;
+    return;
+  }
       }
       if(fields.Count() > 1) {
-	char* style = fields[1];
-	if(!mystrcasecmp(style, "rrd"))
-	  output_style = WORD_MONITOR_RRD;
-	else
-	  output_style = WORD_MONITOR_READABLE;
+  char* style = fields[1];
+  if(!mystrcasecmp(style, "rrd"))
+    output_style = WORD_MONITOR_RRD;
+  else
+    output_style = WORD_MONITOR_READABLE;
       }
     }
     TimerStart();
@@ -122,15 +122,15 @@ WordMonitor::Report() const
     if(!values_names[i]) break;
     if(values_names[i][0]) {
       if(output_style == WORD_MONITOR_READABLE) {
-	output << values_names[i] << ": " << values[i];
-	if((now - elapsed) > 0) {
-	  output << ", per sec : " << (int)(values[i] / (now - started));
-	  output << ", delta : " << (values[i] - old_values[i]);
-	  output << ", per sec : " << (int)((values[i] - old_values[i]) / (now - elapsed));
-	}
-	output << "|";
+  output << values_names[i] << ": " << values[i];
+  if((now - elapsed) > 0) {
+    output << ", per sec : " << (int)(values[i] / (now - started));
+    output << ", delta : " << (values[i] - old_values[i]);
+    output << ", per sec : " << (int)((values[i] - old_values[i]) / (now - elapsed));
+  }
+  output << "|";
       } else if(output_style == WORD_MONITOR_RRD) {
-	output << values[i] << ":";
+  output << values[i] << ":";
       }
     }
   }
@@ -186,7 +186,7 @@ WordMonitor::TimerStart()
     for(i = 0; i < WORD_MONITOR_VALUES_SIZE; i++) {
       if(!values_names[i]) break;
       if(values_names[i][0])
-	fprintf(output, "%s:", values_names[i]);
+  fprintf(output, "%s:", values_names[i]);
     }
     fprintf(output, "\n");
   }

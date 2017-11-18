@@ -53,8 +53,8 @@ void Configuration::NameValueSeparators(const String& s)
 void Configuration::Add(const String& str_arg)
 {
     const char* str = str_arg;
-    String	name, value;
-	
+    String  name, value;
+  
     while (str && *str)
     {
         while (isspace(*str))
@@ -71,7 +71,7 @@ void Configuration::Add(const String& str_arg)
             name << *str++;
 
         name.lowercase();
-		
+    
         //
         // We have the name.  Let's see if we will get a value
         //
@@ -99,7 +99,7 @@ void Configuration::Add(const String& str_arg)
         //
         // We now need to deal with the value
         //
-        str++;			// Skip the separator
+        str++;      // Skip the separator
         while (isspace(*str))
             str++;
         if (!*str)
@@ -163,15 +163,15 @@ void Configuration::Add(const String& str_arg)
 //
 void Configuration::Add(const String& name, const String& value)
 {
-    String	escaped;
-    const char	*s = value.get();
+    String  escaped;
+    const char  *s = value.get();
     while (*s)
     {
         if (strchr("$`\\", *s))
             escaped << '\\';
         escaped << *s++;
     }
-    ParsedString	*ps = new ParsedString(escaped);
+    ParsedString  *ps = new ParsedString(escaped);
     dcGlobalVars.Add(name, ps);
 }
 
@@ -182,7 +182,7 @@ void Configuration::Add(const String& name, const String& value)
 //
 void Configuration::AddParsed(const String& name, const String& value)
 {
-    ParsedString	*ps = new ParsedString(value);
+    ParsedString  *ps = new ParsedString(value);
     if (mystrcasecmp(name, "locale") == 0)
     {
         String str(setlocale(LC_ALL, ps->get(dcGlobalVars)));
@@ -215,7 +215,7 @@ int Configuration::Remove(const String& name)
 //
 const String Configuration::Find(const String& name) const
 {
-    ParsedString	*ps = (ParsedString *) dcGlobalVars[name];
+    ParsedString  *ps = (ParsedString *) dcGlobalVars[name];
     if (ps)
     {
         return ps->get(dcGlobalVars);
@@ -264,7 +264,7 @@ double Configuration::Double(const String& name, double default_value) const
 //
 int Configuration::Boolean(const String& name, int default_value) const
 {
-    int		value = default_value;
+    int    value = default_value;
     const String s = Find(name);
     if (s[0])
     {
@@ -307,11 +307,11 @@ int Configuration::Read(const String& filename)
      // Make the line buffer large so that we can read long lists of start
      // URLs.
      //
-     char	buffer[CONFIG_BUFFER_SIZE + 1];
-     char	*current;
-     String	line;
-     String	name;
-     char	*value;
+     char  buffer[CONFIG_BUFFER_SIZE + 1];
+     char  *current;
+     String  line;
+     String  name;
+     char  *value;
      int         len;
      while (fgets(buffer, CONFIG_BUFFER_SIZE, in))
      {
@@ -320,54 +320,54 @@ int Configuration::Read(const String& filename)
          if (line.last() == '\\')
          {
              line.chop(1);
-             continue;			// Append the next line to this one
+             continue;      // Append the next line to this one
          }
  
          current = line.get();
          if (*current == '#' || *current == '\0')
          {
              line = 0;
-             continue;			// Comments and blank lines are skipped
+             continue;      // Comments and blank lines are skipped
          }
  
          name = strtok(current, ": =\t");
          value = strtok(0, "\r\n");
          if (!value)
-             value = "";			// Blank value
+             value = "";      // Blank value
  
          //
          // Skip any whitespace before the actual text
          //
          while (*value == ' ' || *value == '\t')
              value++;
- 	len = strlen(value) - 1;
- 	//
- 	// Skip any whitespace after the actual text
- 	//
-	while (len >= 0 && (value[len] == ' ' || value[len] == '\t'))
- 	  {
- 	    value[len] = '\0';
- 	    len--;
- 	  }
+   len = strlen(value) - 1;
+   //
+   // Skip any whitespace after the actual text
+   //
+  while (len >= 0 && (value[len] == ' ' || value[len] == '\t'))
+     {
+       value[len] = '\0';
+       len--;
+     }
  
- 	if (mystrcasecmp((char*)name, "include") == 0)
- 	{
- 	    ParsedString	ps(value);
- 	    String		str(ps.get(dcGlobalVars));
- 	    if (str[0] != '/')		// Given file name not fully qualified
- 	    {
- 		str = filename;		// so strip dir. name from current one
- 		len = str.lastIndexOf('/') + 1;
- 		if (len > 0)
- 		    str.chop(str.length() - len);
- 		else
- 		    str = "";		// No slash in current filename
- 		str << ps.get(dcGlobalVars);
- 	    }
- 	    Read(str);
- 	    line = 0;
- 	    continue;
- 	}
+   if (mystrcasecmp((char*)name, "include") == 0)
+   {
+       ParsedString  ps(value);
+       String    str(ps.get(dcGlobalVars));
+       if (str[0] != '/')    // Given file name not fully qualified
+       {
+     str = filename;    // so strip dir. name from current one
+     len = str.lastIndexOf('/') + 1;
+     if (len > 0)
+         str.chop(str.length() - len);
+     else
+         str = "";    // No slash in current filename
+     str << ps.get(dcGlobalVars);
+       }
+       Read(str);
+       line = 0;
+       continue;
+   }
  
          AddParsed(name, value);
          line = 0;

@@ -26,7 +26,7 @@ extern "C" {
 #include "WordMeta.h"
 #include "WordListOne.h"
 
-#define WORD_META_SERIAL_SIZE	(WORD_META_SERIAL_FILE + 1)
+#define WORD_META_SERIAL_SIZE  (WORD_META_SERIAL_FILE + 1)
 
 class WordLock {
 public:

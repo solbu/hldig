@@ -2,8 +2,8 @@
 // HtPack.h
 //
 // HtPack: Compress and uncompress data in e.g. simple structures.
-//	   The structure must have the layout defined in the ABI;
-//	   the layout the compiler generates.
+//     The structure must have the layout defined in the ABI;
+//     the layout the compiler generates.
 //
 //         Much like the pack()/unpack() function pair in perl, but
 //         compressing, not "packing into a binary structure".

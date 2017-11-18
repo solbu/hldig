@@ -52,7 +52,7 @@ public:
     // be in the form <string1>|<string2>|...  If in the form of a
     // List, it should be a list of String objects.
     //
-    void		Pattern(char *pattern, char sep = '|');
+    void    Pattern(char *pattern, char sep = '|');
 
     //
     // Search for any of the strings in the pattern in the given
@@ -62,22 +62,22 @@ public:
     // length of that pattern string.  If none of the pattern strings
     // could be found, the return value will be -1
     //
-    int			FindFirst(const char *string, int &which, int &length);
-    int			FindFirst(const char *string);
-	
-    int			FindFirstWord(const char *string, int &which, int &length);
-    int			FindFirstWord(const char *string);
-	
+    int      FindFirst(const char *string, int &which, int &length);
+    int      FindFirst(const char *string);
+  
+    int      FindFirstWord(const char *string, int &which, int &length);
+    int      FindFirstWord(const char *string);
+  
     //
     // If you are interested in matching instead of searching, use
     // the following.  Same parameters except that the return value will
     // be 1 if there was a match, 0 if there was not.
     //
-    int			Compare(const char *string, int &which, int &length);
-    int			Compare(const char *string);
+    int      Compare(const char *string, int &which, int &length);
+    int      Compare(const char *string);
 
-    int			CompareWord(const char *string, int &which, int &length);
-    int			CompareWord(const char *string);
+    int      CompareWord(const char *string, int &which, int &length);
+    int      CompareWord(const char *string);
     
     //
     // Provide a character translation table which will be applied to
@@ -86,29 +86,29 @@ public:
     // manage this table's allocation.  The table should remain valid
     // until this object has been destroyed.
     //
-    void		TranslationTable(char *table);
-	
+    void    TranslationTable(char *table);
+  
     //
     // Build a local translation table which maps all uppercase
     // characters to lowercase
     //
-    void		IgnoreCase();
+    void    IgnoreCase();
 
     //
     // Build a local translation table which ignores all given punctuation
     // characters
     //
-    void		IgnorePunct(char *punct = (char*)NULL);
+    void    IgnorePunct(char *punct = (char*)NULL);
 
     //
     // Determine if there is a pattern associated with this Match object.
     //
-    int			hasPattern()		{return table[0] != 0;}
-	
+    int      hasPattern()    {return table[0] != 0;}
+  
 protected:
-    int			*table[256];
-    unsigned char	*trans;
-    int			local_alloc;
+    int      *table[256];
+    unsigned char  *trans;
+    int      local_alloc;
 };
 
 #endif

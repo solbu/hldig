@@ -13,40 +13,40 @@
 // $Id: Stack.h,v 1.6 2004/05/28 13:15:21 lha Exp $
 //
 
-#ifndef	_Stack_h_
-#define	_Stack_h_
+#ifndef  _Stack_h_
+#define  _Stack_h_
 
 #include "Object.h"
 
 class Stack : public Object
 {
 public:
-	//
-	// Constructors/Destructor
-	//
-					Stack();
-					~Stack();
+  //
+  // Constructors/Destructor
+  //
+          Stack();
+          ~Stack();
 
-	//
-	// Stack access
-	//
-	void			push(Object *obj);
-	Object			*peek();
-	Object			*pop();
-	int				Size()					{return size;}
+  //
+  // Stack access
+  //
+  void      push(Object *obj);
+  Object      *peek();
+  Object      *pop();
+  int        Size()          {return size;}
 
-	//
-	// Stack destruction
-	//
-	void			destroy();
+  //
+  // Stack destruction
+  //
+  void      destroy();
 
 protected:
-	//
-	// These variables are to keep track of the linked list
-	//
-	void			*sp;
+  //
+  // These variables are to keep track of the linked list
+  //
+  void      *sp;
 
-	int				size;
+  int        size;
 };
 
 #endif

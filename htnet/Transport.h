@@ -59,7 +59,7 @@ class Transport_Response : public Object
 
    // Get the contents
    virtual const String &GetContents() const { return _contents; }
-	 
+   
    // Get the modification time object pointer
    virtual HtDateTime *GetModificationTime() const { return _modification_time; }
 
@@ -89,19 +89,19 @@ class Transport_Response : public Object
 
    // Body of the response message
 
-	 String	   _contents;	   	    // Contents of the document
+   String     _contents;           // Contents of the document
 
-	 HtDateTime  *_modification_time; // Modification time returned by the server
-	 HtDateTime  *_access_time;       // Access time returned by the server
+   HtDateTime  *_modification_time; // Modification time returned by the server
+   HtDateTime  *_access_time;       // Access time returned by the server
 
-	 String	     _content_type; 	  // Content-type returned by the server
-	 int   	     _content_length;     // Content-length returned by the server
-	 int   	     _document_length;    // Length really stored
+   String       _content_type;     // Content-type returned by the server
+   int          _content_length;     // Content-length returned by the server
+   int          _document_length;    // Length really stored
 
-	 int   	   _status_code;  	  // return Status code
-	 String	   _reason_phrase;	  // status code reason phrase
+   int        _status_code;      // return Status code
+   String     _reason_phrase;    // status code reason phrase
 
-	 String    _location;	          // Location (in case of redirect) 
+   String    _location;            // Location (in case of redirect) 
    
 };
 
@@ -293,7 +293,7 @@ protected:
 
    // Reset Stats
    static void ResetStatistics ()
-   	 { _tot_open=0; _tot_close=0; _tot_changes=0;}   
+      { _tot_open=0; _tot_close=0; _tot_changes=0;}   
 
    // Show stats
    static ostream &ShowStatistics (ostream &out);
@@ -302,10 +302,10 @@ protected:
 
    enum DateFormat
    {
-   	 DateFormat_RFC1123,
-	 DateFormat_RFC850,
-	 DateFormat_AscTime,
-	 DateFormat_NotRecognized
+      DateFormat_RFC1123,
+   DateFormat_RFC850,
+   DateFormat_AscTime,
+   DateFormat_NotRecognized
    };
 
    //    Create a new HtDateTime object
@@ -316,24 +316,24 @@ protected:
 
  protected:
 
-   Connection	*_connection;	       // Connection object
+   Connection  *_connection;         // Connection object
 
    String       _host;                 // TCP Connection host
    String       _ip_address;           // TCP Connection host (IP Address)
    int          _port;                 // TCP Connection port
    
-   int		_timeout;              // Connection timeout
-   int		_retries;              // Connection retry limit
+   int    _timeout;              // Connection timeout
+   int    _retries;              // Connection retry limit
    unsigned int _wait_time;            // Connection wait time (if failed)
 
-   HtDateTime	*_modification_time;   // Stored modification time if avail.
-   int		_max_document_size;    // Max document size to retrieve
+   HtDateTime  *_modification_time;   // Stored modification time if avail.
+   int    _max_document_size;    // Max document size to retrieve
 
-   String	_credentials;	       // Credentials for this connection
+   String  _credentials;         // Credentials for this connection
 
-   int		_useproxy;	    // if true, GET should include full url,
-				    // not path only
-   String	_proxy_credentials; // Credentials for this proxy connection
+   int    _useproxy;      // if true, GET should include full url,
+            // not path only
+   String  _proxy_credentials; // Credentials for this proxy connection
 
    HtDateTime  _start_time;         // Start time of the request
    HtDateTime  _end_time;           // end time of the request
@@ -357,9 +357,9 @@ protected:
    static int debug;
 
    // Statistics about requests
-   static int  _tot_open;  	 // Number of connections opened
-   static int  _tot_close;  	 // Number of connections closed
-   static int  _tot_changes;  	 // Number of server changes
+   static int  _tot_open;     // Number of connections opened
+   static int  _tot_close;     // Number of connections closed
+   static int  _tot_changes;     // Number of server changes
 
    // Use the HTTP Basic Digest Access Authentication method to write a String
    // to be used for credentials (both HTTP and HTTP PROXY authentication)

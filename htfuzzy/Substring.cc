@@ -56,31 +56,31 @@ void
 Substring::getWords(char *w, List &words)
 {
     // First strip the punctuation
-    String	stripped = w;
+    String  stripped = w;
     HtStripPunctuation(stripped);
 
     // Now set up the StringMatch object
-    StringMatch	match;
+    StringMatch  match;
     match.Pattern(stripped);
 
     // And get the list of all possible words
-    HtWordList	wordDB(config);
-    List	*wordList;
-    String	*key;
+    HtWordList  wordDB(config);
+    List  *wordList;
+    String  *key;
     wordDB.Open(config["word_db"], O_RDONLY);
     wordList = wordDB.Words();
 
-    int		wordCount = 0;
-    int		maximumWords = config.Value("substring_max_words", 25);
+    int    wordCount = 0;
+    int    maximumWords = config.Value("substring_max_words", 25);
 
     wordList->Start_Get();
     while (wordCount < maximumWords && (key = (String *) wordList->Get_Next()))
     {
-	if (match.FindFirst((char*)*key) >= 0)
-	{
-	    words.Add(new String(*key));
-	    wordCount++;
-	}
+  if (match.FindFirst((char*)*key) >= 0)
+  {
+      words.Add(new String(*key));
+      wordCount++;
+  }
     }
     if (wordList) {
       wordList->Destroy();

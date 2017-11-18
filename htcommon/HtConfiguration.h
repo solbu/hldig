@@ -15,8 +15,8 @@
 //
 
 
-#ifndef	_HtConfiguration_h_
-#define	_HtConfiguration_h_
+#ifndef  _HtConfiguration_h_
+#define  _HtConfiguration_h_
 
 #include"Configuration.h"
 #include "ParsedString.h"
@@ -25,35 +25,35 @@
 class HtConfiguration : public Configuration
 {
  public:
-    const String	Find(const String& name) const {return(Configuration::Find(name));}
-    int			Value(const String& name, int default_value = 0) const
+    const String  Find(const String& name) const {return(Configuration::Find(name));}
+    int      Value(const String& name, int default_value = 0) const
       {return(Configuration::Value  (name,default_value));}
-    double	Double(const String& name, double default_value = 0) const 
+    double  Double(const String& name, double default_value = 0) const 
       {return(Configuration::Double (name,default_value));}
-    int		Boolean(const String& name, int default_value = 0) const   
+    int    Boolean(const String& name, int default_value = 0) const   
       {return(Configuration::Boolean(name,default_value));}
-    void		Add(const String& str){Configuration::Add(str);}
-    void		Add(const String& name, const String& value)
+    void    Add(const String& str){Configuration::Add(str);}
+    void    Add(const String& name, const String& value)
       {Configuration::Add(name,value);}
-    void		AddParsed(const String& name, const String& value)
+    void    AddParsed(const String& name, const String& value)
       {Configuration::AddParsed(name,value);}
 
-    void		Add(const char *name, const char *value,
+    void    Add(const char *name, const char *value,
                            Configuration *aList);
-    const String	Find(URL *aUrl, const char *value) const;
-    const String	Find(const char *blockName, const char *name, const char *value) const;
-    int		Value(const char *blockName, const char *name, const char *value,
+    const String  Find(URL *aUrl, const char *value) const;
+    const String  Find(const char *blockName, const char *name, const char *value) const;
+    int    Value(const char *blockName, const char *name, const char *value,
                   int default_value = 0);
-    double	Double(const char *blockName, const char *name, const char *value,
+    double  Double(const char *blockName, const char *name, const char *value,
                   double default_value = 0);
-    int		Boolean(const char *blockName, const char *name, const char *value,
+    int    Boolean(const char *blockName, const char *name, const char *value,
                   int default_value = 0);
-    int		Value(URL *aUrl,const char *value,int default_value = 0);
-    double	Double(URL *aUrl,const char *value,double default_value = 0);
-    int		Boolean(URL *aUrl,const char *value,int default_value = 0);
+    int    Value(URL *aUrl,const char *value,int default_value = 0);
+    double  Double(URL *aUrl,const char *value,double default_value = 0);
+    int    Boolean(URL *aUrl,const char *value,int default_value = 0);
     inline
-    String	ParseString(const char*) const;   // parse ${var} string
-    String	getFileName() const { return FileName; }
+    String  ParseString(const char*) const;   // parse ${var} string
+    String  getFileName() const { return FileName; }
 
     //
     // We need some way of reading in the database from a configuration file
@@ -63,24 +63,24 @@ class HtConfiguration : public Configuration
  protected:
     Dictionary          dcBlocks;
     Dictionary          dcUrls;
-    String		FileName;	// config's file name
+    String    FileName;  // config's file name
 
  public:
     HtConfiguration():Configuration()
-	{;}
+  {;}
 
     HtConfiguration(const HtConfiguration& config) :
-	Configuration(config),
-	dcBlocks(config.dcBlocks),
-	dcUrls(config.dcUrls)
-	{
-	    ;
-	}
+  Configuration(config),
+  dcBlocks(config.dcBlocks),
+  dcUrls(config.dcUrls)
+  {
+      ;
+  }
 
-	static HtConfiguration* const config();
+  static HtConfiguration* const config();
 
   private:
-  	static HtConfiguration* _config;
+    static HtConfiguration* _config;
 };
 
 //********************************************************************

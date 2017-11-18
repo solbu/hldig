@@ -31,8 +31,8 @@ public:
     // function-call overhead when this feature is unused.
     double adjust_score(double score, const String& url)
     {
-	return myAdjustmentList->Count() == 0
-	    ? score : noninline_adjust_score(score, url);
+  return myAdjustmentList->Count() == 0
+      ? score : noninline_adjust_score(score, url);
     }
 
     // If an error was discovered during the parsing of

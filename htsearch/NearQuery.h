@@ -24,27 +24,27 @@
 class NearQuery : public OperatorQuery
 {
 public:
-	// binary fashion
-	NearQuery(Query *left, Query *right, unsigned int dist) :
-		distance(dist)
-		{ Add(left); Add(right); }
+  // binary fashion
+  NearQuery(Query *left, Query *right, unsigned int dist) :
+    distance(dist)
+    { Add(left); Add(right); }
 
-	// n-ary fashion -- will ignore operands for n>2
-	NearQuery(unsigned int dist = 10) :
-		distance(dist) {}
+  // n-ary fashion -- will ignore operands for n>2
+  NearQuery(unsigned int dist = 10) :
+    distance(dist) {}
 
 private:
-	// get results from operands and filter
-	ResultList *Evaluate();
+  // get results from operands and filter
+  ResultList *Evaluate();
 
-	// create a result with neighboring matches
-	ResultList *Near(const ResultList &, const ResultList &);
+  // create a result with neighboring matches
+  ResultList *Near(const ResultList &, const ResultList &);
 
-	// merge neighboring location lists
-	List *MergeLocations(const List &, const List &);
+  // merge neighboring location lists
+  List *MergeLocations(const List &, const List &);
 
-	String OperatorString() const;
-	unsigned int distance;
+  String OperatorString() const;
+  unsigned int distance;
 };
 
 #endif

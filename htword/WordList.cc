@@ -7,7 +7,7 @@
 //           NOTE: Some code previously attempted to directly read from 
 //           the word db. This will no longer work, so it's preferred to 
 //           use the access methods here.
-//	     Configuration parameter used:
+//       Configuration parameter used:
 //           wordlist_extend
 //           wordlist_verbose 1 walk logic
 //           wordlist_verbose 2 walk logic details
@@ -138,8 +138,8 @@ int WordList::Put(const WordReference& arg, int flags)
     return NOTOK;
   }
 
-  WordReference	wordRef(arg);
-  String 	word = wordRef.Key().GetWord();
+  WordReference  wordRef(arg);
+  String   word = wordRef.Key().GetWord();
   if(wtype.Normalize(word) & WORD_NORMALIZE_NOTOK)
     return NOTOK;
   wordRef.Key().SetWord(word);
@@ -162,7 +162,7 @@ int WordList::Put(const WordReference& arg, int flags)
     int error;
     if((error = db.Put(wordRef, DB_NOOVERWRITE)) != 0) {
       if(error == DB_KEYEXIST && flags == 0)
-	ret = db.Put(wordRef, 0) == 0 ? OK : NOTOK;
+  ret = db.Put(wordRef, 0) == 0 ? OK : NOTOK;
     } else {
       ret = Ref(wordRef);
     }
@@ -255,11 +255,11 @@ int WordList::WalkDelete(const WordReference& wordRef)
 //
 List *WordList::Words()
 {
-  List		*list = 0;
-  String		key;
-  String		record;
-  WordReference	lastWord;
-  WordDBCursor		cursor;
+  List    *list = 0;
+  String    key;
+  String    record;
+  WordReference  lastWord;
+  WordDBCursor    cursor;
 
   if(cursor.Open(db.db) != 0) return 0;
 
@@ -272,12 +272,12 @@ List *WordList::Words()
     return 0;
   list = new List;
   do {
-    WordReference	wordRef(key, record);
+    WordReference  wordRef(key, record);
     if(lastWord.Key().GetWord().empty() ||
        wordRef.Key().GetWord() != lastWord.Key().GetWord()) 
       {
-	list->Add(new String(wordRef.Key().GetWord()));
-	lastWord = wordRef;
+  list->Add(new String(wordRef.Key().GetWord()));
+  lastWord = wordRef;
       }
   } while (cursor.Get(key, record, DB_NEXT) == 0);
     
@@ -389,7 +389,7 @@ int
 WordList::Read(FILE* f)
 {
   WordReference word;
-#define WORD_BUFFER_SIZE	1024
+#define WORD_BUFFER_SIZE  1024
   char buffer[WORD_BUFFER_SIZE + 1];
   String line;
   int line_number = 0;
@@ -417,16 +417,16 @@ WordList::Read(FILE* f)
       
     if(!line.empty()) {
       if(word.Set(line) != OK) {
-	fprintf(stderr, "WordList::Read: line %d : %s\n", line_number, (char*)line);
-	fprintf(stderr, " cannot build WordReference (ignored)\n");
+  fprintf(stderr, "WordList::Read: line %d : %s\n", line_number, (char*)line);
+  fprintf(stderr, " cannot build WordReference (ignored)\n");
       } else {
-	if(Insert(word) != OK) {
-	  fprintf(stderr, "WordList::Read: line %d : %s\n", line_number, (char*)line);
-	  fprintf(stderr, " insert failed (ignored)\n");
-	} else {
-	  inserted++;
-	}
-	if(verbose) fprintf(stderr, "WordList::Read: inserting %s\n", (char*)word.Get());
+  if(Insert(word) != OK) {
+    fprintf(stderr, "WordList::Read: line %d : %s\n", line_number, (char*)line);
+    fprintf(stderr, " insert failed (ignored)\n");
+  } else {
+    inserted++;
+  }
+  if(verbose) fprintf(stderr, "WordList::Read: inserting %s\n", (char*)word.Get());
       }
 
       line.trunc();

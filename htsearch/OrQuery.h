@@ -27,13 +27,13 @@ class OrQuery : public OperatorQuery
 public:
 
 private:
-	// evaluate operands and join results
-	ResultList *Evaluate();
+  // evaluate operands and join results
+  ResultList *Evaluate();
 
-	// create a union of the operand results
-	ResultList *Union(const ResultList &longer, const List &shorter);
+  // create a union of the operand results
+  ResultList *Union(const ResultList &longer, const List &shorter);
 
-	String OperatorString() const { return String("or"); }
+  String OperatorString() const { return String("or"); }
 };
 
 #endif

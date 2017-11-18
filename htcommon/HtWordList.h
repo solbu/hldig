@@ -2,7 +2,7 @@
 // HtWordList.h
 //
 // HtWordList: Specialized WordList class that can hold a list 
-//	       of words waiting to be inserted in the database.
+//         of words waiting to be inserted in the database.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
@@ -29,10 +29,10 @@ public:
     // Construction/Destruction
     //
     HtWordList(const Configuration  & config_arg) : WordList(config_arg) 
-	{
-	    cerr << "HtWordList::HtWordList(Configuration) is not valid" << endl; 
-	    abort();
-	}
+  {
+      cerr << "HtWordList::HtWordList(Configuration) is not valid" << endl; 
+      abort();
+  }
     HtWordList(const HtConfiguration& config_arg);
     virtual ~HtWordList();
     
@@ -40,28 +40,28 @@ public:
     // Update/add a word, perform sanity checking and
     // fill information.
     //
-    void		Replace(const WordReference& wordRef);
+    void    Replace(const WordReference& wordRef);
 
     //
     // Skip this document -- ignore all words stored in the object
     //  from this document
     //
-    void		Skip();
+    void    Skip();
 
     //
     // Flush the words stored in the object to the database
     //
-    void		Flush();
+    void    Flush();
 
     // Write an ascii version of the word database in <filename>
-    int			Dump(const String& filename);
+    int      Dump(const String& filename);
 
     // Read in an ascii version of the word database in <filename>
-    int			Load(const String& filename);
+    int      Load(const String& filename);
 
 private:
 
-    List			*words;
+    List      *words;
 };
 
 #endif

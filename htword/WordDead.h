@@ -63,8 +63,8 @@ class WordDead
   int Next(WordDeadCursor* cursor, WordKey& key);
 
  private:
-  WordList*			words;
-  WordDB*	            	db;
-  WordKey*			mask;
+  WordList*      words;
+  WordDB*                db;
+  WordKey*      mask;
 };
 #endif /* _WordDead_h_ */

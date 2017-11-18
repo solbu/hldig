@@ -21,8 +21,8 @@
 
 struct stacknode
 {
-	stacknode	*next;
-	Object		*obj;
+  stacknode  *next;
+  Object    *obj;
 };
 
 //***************************************************************************
@@ -30,8 +30,8 @@ struct stacknode
 //
 Stack::Stack()
 {
-	sp = 0;
-	size = 0;
+  sp = 0;
+  size = 0;
 }
 
 
@@ -40,11 +40,11 @@ Stack::Stack()
 //
 Stack::~Stack()
 {
-	while (sp)
-	{
-		Object	*obj = pop();
-		delete obj;
-	}
+  while (sp)
+  {
+    Object  *obj = pop();
+    delete obj;
+  }
 }
 
 
@@ -53,11 +53,11 @@ Stack::~Stack()
 //
 void Stack::destroy()
 {
-	while (sp)
-	{
-		Object	*obj = pop();
-		delete obj;
-	}
+  while (sp)
+  {
+    Object  *obj = pop();
+    delete obj;
+  }
 }
 
 
@@ -68,12 +68,12 @@ void Stack::destroy()
 //
 void Stack::push(Object *obj)
 {
-	stacknode	*node = new stacknode;
+  stacknode  *node = new stacknode;
 
-	node->obj = obj;
-	node->next = (stacknode *) sp;
-	sp = node;
-	size++;
+  node->obj = obj;
+  node->next = (stacknode *) sp;
+  sp = node;
+  size++;
 }
 
 
@@ -84,16 +84,16 @@ void Stack::push(Object *obj)
 //
 Object *Stack::pop()
 {
-	if (size == 0)
-		return 0;
+  if (size == 0)
+    return 0;
 
-	stacknode	*node = (stacknode *) sp;
-	Object		*obj = node->obj;
-	sp = (void *) node->next;
-	delete node;
-	size--;
+  stacknode  *node = (stacknode *) sp;
+  Object    *obj = node->obj;
+  sp = (void *) node->next;
+  delete node;
+  size--;
 
-	return obj;
+  return obj;
 }
 
 
@@ -104,8 +104,8 @@ Object *Stack::pop()
 //
 Object *Stack::peek()
 {
-	if (size == 0)
-		return 0;
+  if (size == 0)
+    return 0;
 
-	return ((stacknode *)sp)->obj;
+  return ((stacknode *)sp)->obj;
 }

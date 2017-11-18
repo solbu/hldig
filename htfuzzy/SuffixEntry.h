@@ -24,17 +24,17 @@
 class SuffixEntry : public Object
 {
 public:
-	//
-	// Construction/Destruction
-	//
-				SuffixEntry(char *);
-				~SuffixEntry();
+  //
+  // Construction/Destruction
+  //
+        SuffixEntry(char *);
+        ~SuffixEntry();
 
-	String			expression;
-	String			rule;
+  String      expression;
+  String      rule;
 
-	void			parse(char *str);
-	
+  void      parse(char *str);
+  
 private:
 };
 

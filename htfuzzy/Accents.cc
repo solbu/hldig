@@ -133,7 +133,7 @@ Accents::addWord(char *word)
 
     // Do not add fuzzy key as a word, will be added at search time.
     if (mystrcasecmp(word, key.get()) == 0) 
-	return;
+  return;
 
     String      *s = (String *) dict->Find(key);
     if (s)
@@ -156,13 +156,13 @@ Accents::getWords(char *word, List &words)
 {
 
     if (!word || !*word)
-	return;
+  return;
 
     Fuzzy::getWords(word, words);
 
     // fuzzy key itself is always searched.
-    String	fuzzyKey;
+    String  fuzzyKey;
     generateKey(word, fuzzyKey);
     if (mystrcasecmp(fuzzyKey.get(), word) != 0)
-	words.Add(new String(fuzzyKey));
+  words.Add(new String(fuzzyKey));
 }

@@ -54,7 +54,7 @@ class HtCookie : public Object
       HtCookie(); // default constructor
       HtCookie(const String &setCookieLine, const String& aURL);
       HtCookie(const String &aName, const String &aValue, const String& aURL);
-      HtCookie(const String &line);	// From a line of cookie file
+      HtCookie(const String &line);  // From a line of cookie file
       HtCookie(const HtCookie& rhs); // default constructor
       
       ~HtCookie();   // Destructor
@@ -71,7 +71,7 @@ class HtCookie : public Object
       void SetIsSecure(const bool flag) { isSecure = flag; }
       void SetIsDomainValid(const bool flag) { isDomainValid = flag; }
       void SetSrcURL(const String &aURL) { srcURL = aURL; }
-	  void SetMaxAge(const int ma) { max_age = ma; }
+    void SetMaxAge(const int ma) { max_age = ma; }
       void SetVersion(const int vs) { rfc_version = vs; }
 
       const String &GetName() const { return name; }
@@ -84,7 +84,7 @@ class HtCookie : public Object
       const String &GetSrcURL()const { return srcURL; }
       const int GetMaxAge()const { return max_age; }
       const HtDateTime &GetIssueTime() const { return issue_time; }
-	  const int GetVersion() const { return rfc_version; }
+    const int GetVersion() const { return rfc_version; }
 
       // Print debug info
 #ifndef _MSC_VER /* _WIN32 */
@@ -107,10 +107,10 @@ class HtCookie : public Object
 
       enum DateFormat
       {
-      	 DateFormat_RFC1123,
-      	 DateFormat_RFC850,
-      	 DateFormat_AscTime,
-      	 DateFormat_NotRecognized
+         DateFormat_RFC1123,
+         DateFormat_RFC850,
+         DateFormat_AscTime,
+         DateFormat_NotRecognized
       };
 
    ///////
@@ -129,9 +129,9 @@ class HtCookie : public Object
       bool isSecure;
       bool isDomainValid;
       String srcURL;
-      HtDateTime issue_time;	// When the cookie has been created
-	  int max_age;				// rfc2109: lifetime of the cookie, in seconds
-	  int rfc_version;
+      HtDateTime issue_time;  // When the cookie has been created
+    int max_age;        // rfc2109: lifetime of the cookie, in seconds
+    int rfc_version;
 
    ///////
       //    Debug level

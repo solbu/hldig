@@ -20,18 +20,18 @@
 class IntObject : public Object
 {
 public:
-	//
-	// Construction/Destruction
-	//
-	IntObject();
-	IntObject(int v) { value = v; }
-	~IntObject();
+  //
+  // Construction/Destruction
+  //
+  IntObject();
+  IntObject(int v) { value = v; }
+  ~IntObject();
 
-	int			Value()			{return value;}
-	void			Value(int v)		{value = v;}
+  int      Value()      {return value;}
+  void      Value(int v)    {value = v;}
 
 private:
-	int			value;
+  int      value;
 };
 
 #endif

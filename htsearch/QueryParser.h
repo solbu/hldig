@@ -30,46 +30,46 @@ class FuzzyExpander;
 class QueryParser
 {
 public:
-	virtual ~QueryParser() {}
+  virtual ~QueryParser() {}
 
-	// do it
-	Query *Parse(const String &query_string);
+  // do it
+  Query *Parse(const String &query_string);
 
-	// contains a diagnostic if Parse() failed
-	const String &Error() const
-		{ return error; }
+  // contains a diagnostic if Parse() failed
+  const String &Error() const
+    { return error; }
 
-	// set a fuzzy word expansion policy 
-	static void SetFuzzyExpander(FuzzyExpander *x)
-		{ expander = x; }
+  // set a fuzzy word expansion policy 
+  static void SetFuzzyExpander(FuzzyExpander *x)
+    { expander = x; }
 
 protected:
-	QueryParser() {}
+  QueryParser() {}
 
-	// apply a syntax -- tbd by derived classes
-	virtual Query *ParseExpression() = 0;
+  // apply a syntax -- tbd by derived classes
+  virtual Query *ParseExpression() = 0;
 
-	// access to the lexer -- provided by children
-	virtual QueryLexer &Token() = 0;
+  // access to the lexer -- provided by children
+  virtual QueryLexer &Token() = 0;
 
-	// parse one (fuzzy) word
-	Query *ParseWord();
+  // parse one (fuzzy) word
+  Query *ParseWord();
 
-	// parse an exact word
-	Query *ParseExactWord();
+  // parse an exact word
+  Query *ParseExactWord();
 
-	// parse a phrase
-	Query *ParsePhrase();
+  // parse a phrase
+  Query *ParsePhrase();
 
-	// set the error string on syntax error
-	void Expected(const String &what);
+  // set the error string on syntax error
+  void Expected(const String &what);
 
-	// the current fuzzy expansion policy if some
-	static FuzzyExpander *expander;
+  // the current fuzzy expansion policy if some
+  static FuzzyExpander *expander;
 
 private:
-	// syntax error if some
-	String error;
+  // syntax error if some
+  String error;
 };
 
 #endif

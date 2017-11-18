@@ -19,7 +19,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif /* HAVE_UNISTD_H */
-//#include <fcntl.h>	// included later, as non __STDC__ may #define open
+//#include <fcntl.h>  // included later, as non __STDC__ may #define open
 #include <errno.h>
 
 // If we have this, we probably want it.
@@ -32,7 +32,7 @@
 #include <stdlib.h>
 
 /* AIX requires this to be the first thing in the file.  */
-//#ifndef __GNUC__	// Why not if g++?  Needed by g++ on Solaris 2.8
+//#ifndef __GNUC__  // Why not if g++?  Needed by g++ on Solaris 2.8
 # if HAVE_ALLOCA_H
 #  include <alloca.h>
 # else
@@ -82,23 +82,23 @@ public:
     int random;
     void show()
     {
-	printf("wordsfile:: %s\n", wordsfile);
-	printf("dbfile:: %s\n", dbfile);
-	printf("find:: %s\n", find);
-	printf("nwords:: %d\n", nwords);
-	printf("loop:: %d\n", loop);
-	printf("page_size:: %d\n", page_size);
-	printf("cache_size:: %d\n", cache_size);
-	printf("multiply_keys:: %d\n", multiply_keys);
-	printf("wordlist:: %d\n", wordlist);
-	printf("compress:: %d\n", compress);
-	printf("pool:: %d\n", pool);
-	printf("compress_test:: %d\n", compress_test);
-	printf("npage:: %d\n", npage);
-	printf("uncompress:: %d\n", uncompress);
-	printf("remove:: %d\n", remove);
-	printf("count:: %d\n", count);
-	printf("monitor:: %d\n", monitor);
+  printf("wordsfile:: %s\n", wordsfile);
+  printf("dbfile:: %s\n", dbfile);
+  printf("find:: %s\n", find);
+  printf("nwords:: %d\n", nwords);
+  printf("loop:: %d\n", loop);
+  printf("page_size:: %d\n", page_size);
+  printf("cache_size:: %d\n", cache_size);
+  printf("multiply_keys:: %d\n", multiply_keys);
+  printf("wordlist:: %d\n", wordlist);
+  printf("compress:: %d\n", compress);
+  printf("pool:: %d\n", pool);
+  printf("compress_test:: %d\n", compress_test);
+  printf("npage:: %d\n", npage);
+  printf("uncompress:: %d\n", uncompress);
+  printf("remove:: %d\n", remove);
+  printf("count:: %d\n", count);
+  printf("monitor:: %d\n", monitor);
    }
 };
 
@@ -179,8 +179,8 @@ void Dbase::fill() {
       line.chop("\r\n");
 
       for(int j = 0; j < params->multiply_keys; j++) {
-	fill_one(line, count);
-	count++;
+  fill_one(line, count);
+  count++;
       }
       words_count++;
       if(params->nwords > 0 && params->nwords <= words_count) break;
@@ -285,8 +285,8 @@ void Dsimple::dbinit_env()
     int pad_length = WordKeyInfo::Instance()->num_length - sizeof(unsigned short) - sizeof(int);
     if(pad_length > 0) {
       if(pad_length > (int)(strlen(pad) - 1)) {
-	fprintf(stderr, "Not enough padding\n");
-	exit(1);
+  fprintf(stderr, "Not enough padding\n");
+  exit(1);
       }
     } else {
       fprintf(stderr, "WordKey is always bigger than simulated key\n");
@@ -455,7 +455,7 @@ void Dsimple::remove()
  */
 void Dsimple::dbput(const String& key, const String& data)
 {
-    DBT	k, d;
+    DBT  k, d;
 
     memset(&k, 0, sizeof(DBT));
     memset(&d, 0, sizeof(DBT));
@@ -494,7 +494,7 @@ protected:
   WordList* words;
 };
 
-static Configuration*	config = 0;
+static Configuration*  config = 0;
 
 /*
  * Init and Open the database
@@ -512,17 +512,17 @@ void Dwordlist::dbinit()
       str << params->cache_size;
       config->Add("wordlist_cache_size", str);
       if(verbose)
-	fprintf(stderr, "setting cache size to: %s\n", (char*)str);
+  fprintf(stderr, "setting cache size to: %s\n", (char*)str);
     }
     if(params->page_size) {
       String str;
       str << params->page_size;
       config->Add("wordlist_page_size", str);
       if(verbose)
-	fprintf(stderr, "setting page size to: %s\n", (char*)str);
+  fprintf(stderr, "setting page size to: %s\n", (char*)str);
     }
     if(params->compress)
-	config->Add("wordlist_compress", "true");
+  config->Add("wordlist_compress", "true");
     if(params->monitor)
       config->Add("wordlist_monitor", "true");
 
@@ -579,8 +579,8 @@ void Dwordlist::find()
     WordKey key;
     key.SetWord(params->find);
     WordCursor *cursor = words->Cursor(key,
-				       wordlist_walk_callback_file_out,
-				       &data);
+               wordlist_walk_callback_file_out,
+               &data);
     cursor->Walk();
     delete cursor;
   } else {
@@ -604,9 +604,9 @@ static void docompress(params_t* params);
 //
 int main(int ac, char **av)
 {
-  int			c;
-  extern char		*optarg;
-  params_t		params;
+  int      c;
+  extern char    *optarg;
+  params_t    params;
 
   params.wordsfile = strdup("words.uniq");
   params.dbfile = strdup("test");
@@ -630,78 +630,78 @@ int main(int ac, char **av)
   while ((c = getopt(ac, av, "vB:T:C:S:MZf:l:w:k:n:zWp:ur:c:mR")) != -1)
     {
       switch (c)
-	{
-	case 'v':
-	  verbose++;
-	  break;
-	case 'B':
-	  free(params.dbfile);
-	  params.dbfile = strdup(optarg);
-	  break;
-	case 'T':
-	  if(!strcmp(optarg, "hash")) {
-	    params.type = DB_HASH;
-	  } else {
-	    params.type = DB_BTREE;
-	  }
-	  break;
-	case 'C':
-	  params.cache_size = atoi(optarg);
-	  break;
-	case 'S':
-	  params.page_size = atoi(optarg);
-	  break;
-	case 'M':
-	  params.pool = 1;
-	  break;
-	case 'W':
-	  params.wordlist = 1;
-	  break;
-	case 'z':
-	  params.compress = 1;
-	  break;
-	case 'f':
-	  params.find = strdup(optarg);
-	  break;
-	case 'l':
-	  params.loop = atoi(optarg);
-	  break;
-	case 'w':
-	  free(params.wordsfile);
-	  params.wordsfile = strdup(optarg);
-	  break;
-	case 'k':
-	  params.multiply_keys = atoi(optarg);
-	  break;
-	case 'n':
-	  params.nwords = atoi(optarg);
-	  break;
-	  break;
-	case 'Z':
-	  params.compress_test = 1;
-	  break;
-	case 'p':
-	  params.npage = atoi(optarg);
-	  break;
-	case 'u':
-	  params.uncompress = 1;
-	  break;
-	case 'r':
-	  params.remove = atoi(optarg);
-	  break;
-	case 'c':
-	  params.count = atoi(optarg);
-	  break;
-	case 'm':
-	  params.monitor = 1;
-	  break;
-	case 'R':
-	  params.random = 1;
-	  break;
-	case '?':
-	  usage();
-	  break;
-	}
+  {
+  case 'v':
+    verbose++;
+    break;
+  case 'B':
+    free(params.dbfile);
+    params.dbfile = strdup(optarg);
+    break;
+  case 'T':
+    if(!strcmp(optarg, "hash")) {
+      params.type = DB_HASH;
+    } else {
+      params.type = DB_BTREE;
+    }
+    break;
+  case 'C':
+    params.cache_size = atoi(optarg);
+    break;
+  case 'S':
+    params.page_size = atoi(optarg);
+    break;
+  case 'M':
+    params.pool = 1;
+    break;
+  case 'W':
+    params.wordlist = 1;
+    break;
+  case 'z':
+    params.compress = 1;
+    break;
+  case 'f':
+    params.find = strdup(optarg);
+    break;
+  case 'l':
+    params.loop = atoi(optarg);
+    break;
+  case 'w':
+    free(params.wordsfile);
+    params.wordsfile = strdup(optarg);
+    break;
+  case 'k':
+    params.multiply_keys = atoi(optarg);
+    break;
+  case 'n':
+    params.nwords = atoi(optarg);
+    break;
+    break;
+  case 'Z':
+    params.compress_test = 1;
+    break;
+  case 'p':
+    params.npage = atoi(optarg);
+    break;
+  case 'u':
+    params.uncompress = 1;
+    break;
+  case 'r':
+    params.remove = atoi(optarg);
+    break;
+  case 'c':
+    params.count = atoi(optarg);
+    break;
+  case 'm':
+    params.monitor = 1;
+    break;
+  case 'R':
+    params.random = 1;
+    break;
+  case '?':
+    usage();
+    break;
+  }
     }
 
   if(params.compress_test) {
@@ -807,7 +807,7 @@ int compressone(params_t* params, unsigned char* buffin, int buffin_length) {
   return buffout_length > (params->page_size / 2) ? 1 : 0;
 }
 
-#include <fcntl.h>	// if included at top, db->open may have caused problems
+#include <fcntl.h>  // if included at top, db->open may have caused problems
 
 static void docompress(params_t* params)
 {

@@ -2,13 +2,13 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 
 #include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)hash_reclaim.c	11.1 (Sleepycat) 7/24/99";
+static const char sccsid[] = "@(#)hash_reclaim.c  11.1 (Sleepycat) 7/24/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,7 +26,7 @@ static const char sccsid[] = "@(#)hash_reclaim.c	11.1 (Sleepycat) 7/24/99";
 
 /*
  * CDB___ham_reclaim --
- *	Reclaim the pages from a subdatabase and return them to the
+ *  Reclaim the pages from a subdatabase and return them to the
  * parent free list.  For now, we link each freed page on the list
  * separately.  If people really store hash databases in subdatabases
  * and do a lot of creates and deletes, this is going to be a problem,
@@ -38,32 +38,32 @@ static const char sccsid[] = "@(#)hash_reclaim.c	11.1 (Sleepycat) 7/24/99";
  */
 int
 CDB___ham_reclaim(dbp, txn)
-	DB *dbp;
-	DB_TXN *txn;
+  DB *dbp;
+  DB_TXN *txn;
 {
-	DBC *dbc;
-	HASH_CURSOR *hcp;
-	int ret;
+  DBC *dbc;
+  HASH_CURSOR *hcp;
+  int ret;
 
-	/* Open up a cursor that we'll use for traversing. */
-	if ((ret = dbp->cursor(dbp, txn, &dbc, 0)) != 0)
-		return (ret);
-	hcp = (HASH_CURSOR *)dbc->internal;
+  /* Open up a cursor that we'll use for traversing. */
+  if ((ret = dbp->cursor(dbp, txn, &dbc, 0)) != 0)
+    return (ret);
+  hcp = (HASH_CURSOR *)dbc->internal;
 
-	if ((ret = CDB___ham_get_meta(dbc)) != 0)
-		goto err;
+  if ((ret = CDB___ham_get_meta(dbc)) != 0)
+    goto err;
 
-	if ((ret = CDB___ham_traverse(dbp,
-	    dbc, DB_LOCK_WRITE, CDB___db_reclaim_callback, dbc)) != 0)
-		goto err;
-	if ((ret = dbc->c_close(dbc)) != 0)
-		goto err;
-	if ((ret = CDB___ham_release_meta(dbc)) != 0)
-		goto err;
-	return (0);
+  if ((ret = CDB___ham_traverse(dbp,
+      dbc, DB_LOCK_WRITE, CDB___db_reclaim_callback, dbc)) != 0)
+    goto err;
+  if ((ret = dbc->c_close(dbc)) != 0)
+    goto err;
+  if ((ret = CDB___ham_release_meta(dbc)) != 0)
+    goto err;
+  return (0);
 
-err:	if (hcp->hdr != NULL)
-		(void)CDB___ham_release_meta(dbc);
-	(void)dbc->c_close(dbc);
-	return (ret);
+err:  if (hcp->hdr != NULL)
+    (void)CDB___ham_release_meta(dbc);
+  (void)dbc->c_close(dbc);
+  return (ret);
 }

@@ -24,61 +24,61 @@ extern int debug;
 
 QueryLexer::QueryLexer()
 {
-	HtConfiguration* config= HtConfiguration::config();
-	prefix_match = config->Find("prefix_match_character");
+  HtConfiguration* config= HtConfiguration::config();
+  prefix_match = config->Find("prefix_match_character");
 }
 
 void
 QueryLexer::Set(const String &query_string)
 {
-	query = query_string;
-	current_char = 0;
-	Next();
+  query = query_string;
+  current_char = 0;
+  Next();
 }
 
 void
 QueryLexer::Next()
 {
-	HtConfiguration* config= HtConfiguration::config();
-	unsigned char	text = query[current_char];
-	WordType	type(*config);
-	current = "";
+  HtConfiguration* config= HtConfiguration::config();
+  unsigned char  text = query[current_char];
+  WordType  type(*config);
+  current = "";
 
-	while (text
-	&& !current.length()
-	&& !type.IsStrictChar(text))
-	{
-		if (text == '(' || text == ')' || text == '\"' || text == '/')
-		{
-	    		current << text;
-			if (debug) cerr << "lexer symbol: " << current << endl;
-		}
-		text = query[++current_char];
-	}
+  while (text
+  && !current.length()
+  && !type.IsStrictChar(text))
+  {
+    if (text == '(' || text == ')' || text == '\"' || text == '/')
+    {
+          current << text;
+      if (debug) cerr << "lexer symbol: " << current << endl;
+    }
+    text = query[++current_char];
+  }
 
-	if (!current.length() && text)
-	{
-		while (text
+  if (!current.length() && text)
+  {
+    while (text
                 && ((type.IsChar(text) && text != '/')
                   || prefix_match.indexOf(text, 0) != -1))
     {
-			current << text;
-			text = query[++current_char];
-		}
-	}
-	current.lowercase();
-	if (debug) cerr << "lexer current word: " << current << endl;
+      current << text;
+      text = query[++current_char];
+    }
+  }
+  current.lowercase();
+  if (debug) cerr << "lexer current word: " << current << endl;
 }
 
 bool
 QueryLexer::IsEnd() const
 {
-	return current == String("");
+  return current == String("");
 }
 
 bool
 QueryLexer::IsQuote() const
 {
-	return current == String("\"");
+  return current == String("\"");
 }
 

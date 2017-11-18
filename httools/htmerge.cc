@@ -66,8 +66,8 @@ Dictionary    discard_list;
 // This config is used for merging multiple databses
 HtConfiguration    merge_config;
 
-int		verbose = 0;
-int		stats = 0;
+int    verbose = 0;
+int    stats = 0;
 
 // Component procedures
 void mergeDB();
@@ -79,49 +79,49 @@ void reportError(char *msg);
 //
 int main(int ac, char **av)
 {
-    int			alt_work_area = 0;
-    String		configfile = DEFAULT_CONFIG_FILE;
+    int      alt_work_area = 0;
+    String    configfile = DEFAULT_CONFIG_FILE;
     String              merge_configfile = 0;
-    int			c;
-    extern char		*optarg;
+    int      c;
+    extern char    *optarg;
 
     while ((c = getopt(ac, av, "svm:c:dwa")) != -1)
     {
-	switch (c)
-	{
-	    case 'd':
-		break;
-	    case 'w':
-		break;
-	    case 'c':
-		configfile = optarg;
-		break;
-	    case 'm':
-	      	merge_configfile = optarg;
-	      	break;
-	    case 'v':
-		verbose++;
-		break;
-	    case 's':
-		break;
-	    case 'a':
-		alt_work_area++;
-		break;
-	    case '?':
-		usage();
-		break;
-	}
+  switch (c)
+  {
+      case 'd':
+    break;
+      case 'w':
+    break;
+      case 'c':
+    configfile = optarg;
+    break;
+      case 'm':
+          merge_configfile = optarg;
+          break;
+      case 'v':
+    verbose++;
+    break;
+      case 's':
+    break;
+      case 'a':
+    alt_work_area++;
+    break;
+      case '?':
+    usage();
+    break;
+  }
     }
 
-	HtConfiguration* config= HtConfiguration::config();
+  HtConfiguration* config= HtConfiguration::config();
     config->Defaults(&defaults[0]);
 
     if (access((char*)configfile, R_OK) < 0)
     {
-	reportError(form("Unable to find configuration file '%s'",
-			 configfile.get()));
+  reportError(form("Unable to find configuration file '%s'",
+       configfile.get()));
     }
-	
+  
     config->Read(configfile);
 
     //
@@ -135,57 +135,57 @@ int main(int ac, char **av)
 
     if (merge_configfile.length())
     {
-    	merge_config.Defaults(&defaults[0]);
-	if (access((char*)merge_configfile, R_OK) < 0)
-    	{
-	reportError(form("Unable to find configuration file '%s'",
-			 merge_configfile.get()));
-    	}
-	merge_config.Read(merge_configfile);
+      merge_config.Defaults(&defaults[0]);
+  if (access((char*)merge_configfile, R_OK) < 0)
+      {
+  reportError(form("Unable to find configuration file '%s'",
+       merge_configfile.get()));
+      }
+  merge_config.Read(merge_configfile);
     }
 
     if (alt_work_area != 0)
     {
-	String	configValue;
+  String  configValue;
 
-	configValue = config->Find("word_db");
-	if (configValue.length() != 0)
-	{
-	    configValue << ".work";
-	    config->Add("word_db", configValue);
-	}
+  configValue = config->Find("word_db");
+  if (configValue.length() != 0)
+  {
+      configValue << ".work";
+      config->Add("word_db", configValue);
+  }
 
-	configValue = config->Find("doc_db");
-	if (configValue.length() != 0)
-	{
-	    configValue << ".work";
-	    config->Add("doc_db", configValue);
-	}
+  configValue = config->Find("doc_db");
+  if (configValue.length() != 0)
+  {
+      configValue << ".work";
+      config->Add("doc_db", configValue);
+  }
 
-	configValue = config->Find("doc_index");
-	if (configValue.length() != 0)
-	{
-	    configValue << ".work";
-	    config->Add("doc_index", configValue);
-	}
+  configValue = config->Find("doc_index");
+  if (configValue.length() != 0)
+  {
+      configValue << ".work";
+      config->Add("doc_index", configValue);
+  }
 
-	configValue = config->Find("doc_excerpt");
-	if (configValue.length() != 0)
-	{
-	    configValue << ".work";
-	    config->Add("doc_excerpt", configValue);
-	}
+  configValue = config->Find("doc_excerpt");
+  if (configValue.length() != 0)
+  {
+      configValue << ".work";
+      config->Add("doc_excerpt", configValue);
+  }
     }
 
     WordContext::Initialize(*config);
 
     if (merge_configfile.length())
     {
-	// Merge the databases specified in merge_configfile into the current
-	// databases. Do this first then update the other databases as usual
-	// Note: We don't have to specify anything, it's all in the config vars
+  // Merge the databases specified in merge_configfile into the current
+  // databases. Do this first then update the other databases as usual
+  // Note: We don't have to specify anything, it's all in the config vars
 
-	mergeDB();
+  mergeDB();
     }
 
     return 0;
@@ -197,45 +197,45 @@ int main(int ac, char **av)
 void
 mergeDB()
 {
-	HtConfiguration* config= HtConfiguration::config();
-    DocumentDB	merge_db, db;
-    List	*urls;
+  HtConfiguration* config= HtConfiguration::config();
+    DocumentDB  merge_db, db;
+    List  *urls;
     Dictionary  merge_dup_ids, db_dup_ids; // Lists of DocIds to ignore
     int         docIDOffset;
 
     const String doc_index = config->Find("doc_index");
     if (access(doc_index, R_OK) < 0)
     {
-	reportError(form("Unable to open document index '%s'", (const char*)doc_index));
+  reportError(form("Unable to open document index '%s'", (const char*)doc_index));
     }
     const String doc_excerpt = config->Find("doc_excerpt");
     if (access(doc_excerpt, R_OK) < 0)
     {
-	reportError(form("Unable to open document excerpts '%s'", (const char*)doc_excerpt));
+  reportError(form("Unable to open document excerpts '%s'", (const char*)doc_excerpt));
     }
     const String doc_db = config->Find("doc_db");    
     if (db.Open(doc_db, doc_index, doc_excerpt) < 0)
     {
-	reportError(form("Unable to open/create document database '%s'",
-			 (const char*)doc_db));
+  reportError(form("Unable to open/create document database '%s'",
+       (const char*)doc_db));
     }
 
 
     const String merge_doc_index = merge_config["doc_index"];    
     if (access(merge_doc_index, R_OK) < 0)
     {
-	reportError(form("Unable to open document index '%s'", (const char*)merge_doc_index));
+  reportError(form("Unable to open document index '%s'", (const char*)merge_doc_index));
     }
     const String merge_doc_excerpt = merge_config["doc_excerpt"];    
     if (access(merge_doc_excerpt, R_OK) < 0)
     {
-	reportError(form("Unable to open document excerpts '%s'", (const char*)merge_doc_excerpt));
+  reportError(form("Unable to open document excerpts '%s'", (const char*)merge_doc_excerpt));
     }
     const String merge_doc_db = merge_config["doc_db"];
     if (merge_db.Open(merge_doc_db, merge_doc_index, merge_doc_excerpt) < 0)
     {
-	reportError(form("Unable to open document database '%s'",
-			 (const char*)merge_doc_db));
+  reportError(form("Unable to open document database '%s'",
+       (const char*)merge_doc_db));
     }
 
     // Start the merging by going through all the URLs that are in
@@ -247,64 +247,64 @@ mergeDB()
     docIDOffset = db.NextDocID();
 
     urls->Start_Get();
-    String		*url;
-    String		id;
+    String    *url;
+    String    id;
     while ((url = (String *) urls->Get_Next()))
     {
-	DocumentRef	*ref = merge_db[url->get()];
-	DocumentRef     *old_ref = db[url->get()];
-	if (!ref)
-	    continue;
+  DocumentRef  *ref = merge_db[url->get()];
+  DocumentRef     *old_ref = db[url->get()];
+  if (!ref)
+      continue;
 
-	if (old_ref)
-	  {
-	    // Oh well, we knew this would happen. Let's get the duplicate
-	    // And we'll only use the most recent date.
+  if (old_ref)
+    {
+      // Oh well, we knew this would happen. Let's get the duplicate
+      // And we'll only use the most recent date.
 
-	    if ( old_ref->DocTime() >= ref->DocTime() )
-	      {
-		// Cool, the ref we're merging is too old, just ignore it
-		char        str[20];
-		sprintf(str, "%d", ref->DocID());
-		merge_dup_ids.Add(str, 0);
-		
-		if (verbose > 1)
-		  {
-		    cout << "htmerge: Duplicate, URL: " << url << " ignoring merging copy   \n";
-		    cout.flush();
-		  }
-	      }
-	    else
-	      {
-		// The ref we're merging is newer, delete the old one and add
-		char        str[20];
-		sprintf(str, "%d", old_ref->DocID());
-		db_dup_ids.Add(str, 0);
-		db.Delete(old_ref->DocID());
-		ref->DocID(ref->DocID() + docIDOffset);
-		db.Add(*ref);
+      if ( old_ref->DocTime() >= ref->DocTime() )
+        {
+    // Cool, the ref we're merging is too old, just ignore it
+    char        str[20];
+    sprintf(str, "%d", ref->DocID());
+    merge_dup_ids.Add(str, 0);
+    
+    if (verbose > 1)
+      {
+        cout << "htmerge: Duplicate, URL: " << url << " ignoring merging copy   \n";
+        cout.flush();
+      }
+        }
+      else
+        {
+    // The ref we're merging is newer, delete the old one and add
+    char        str[20];
+    sprintf(str, "%d", old_ref->DocID());
+    db_dup_ids.Add(str, 0);
+    db.Delete(old_ref->DocID());
+    ref->DocID(ref->DocID() + docIDOffset);
+    db.Add(*ref);
                 if (verbose > 1)
                   {
                     cout << "htmerge: Duplicate, URL: ";
-		    cout << url->get() << " ignoring destination copy   \n";
+        cout << url->get() << " ignoring destination copy   \n";
                     cout.flush();
                   }
-	      }
-	  }
-	else
-	  {
-	    // It's a new URL, just add it, making sure to load the excerpt
-	    merge_db.ReadExcerpt(*ref);
-	    ref->DocID(ref->DocID() + docIDOffset);
-	    db.Add(*ref);
-	    if (verbose > 1)
-	      {
-		cout << "htmerge: Merged URL: " << url->get() << "    \n";
-		cout.flush();
-	      }
-	  }
+        }
+    }
+  else
+    {
+      // It's a new URL, just add it, making sure to load the excerpt
+      merge_db.ReadExcerpt(*ref);
+      ref->DocID(ref->DocID() + docIDOffset);
+      db.Add(*ref);
+      if (verbose > 1)
+        {
+    cout << "htmerge: Merged URL: " << url->get() << "    \n";
+    cout.flush();
+        }
+    }
         delete ref;
-	delete old_ref;
+  delete old_ref;
     }    
     delete urls;
     
@@ -315,20 +315,20 @@ mergeDB()
     db.Close();
 
     // OK, after merging the doc DBs, we do the same for the words
-    HtWordList	mergeWordDB(*config), wordDB(*config);
-    List	*words;
-    String	docIDKey;
+    HtWordList  mergeWordDB(*config), wordDB(*config);
+    List  *words;
+    String  docIDKey;
 
     if (wordDB.Open(config->Find("word_db"), O_RDWR) < 0)
     {
-	reportError(form("Unable to open/create document database '%s'",
-			 (const char*)config->Find("word_db")));
+  reportError(form("Unable to open/create document database '%s'",
+       (const char*)config->Find("word_db")));
     }
 
     if (mergeWordDB.Open(merge_config["word_db"], O_RDONLY) < 0)
     {
-	reportError(form("Unable to open document database '%s'",
-			 (const char *)merge_config["word_db"]));
+  reportError(form("Unable to open document database '%s'",
+       (const char *)merge_config["word_db"]));
     }
 
     // Start the merging by going through all the URLs that are in

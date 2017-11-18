@@ -22,16 +22,16 @@
 class Soundex : public Fuzzy
 {
 public:
-	//
-	// Construction/Destruction
-	//
+  //
+  // Construction/Destruction
+  //
         Soundex(const HtConfiguration& config_arg);
-	virtual			~Soundex();
+  virtual      ~Soundex();
 
-	virtual void	generateKey(char *word, String &key);
+  virtual void  generateKey(char *word, String &key);
 
-	virtual void	addWord(char *word);
-	
+  virtual void  addWord(char *word);
+  
 private:
 };
 

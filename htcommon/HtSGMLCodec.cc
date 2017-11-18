@@ -67,7 +67,7 @@ HtSGMLCodec::HtSGMLCodec()
       temp << "&#" << i << ";";
       myNumFromList->Add(temp);
       if (!translate_latin1 )
-	break;
+  break;
     }
 
   // Now let's take care of the low-bit characters with encodings.

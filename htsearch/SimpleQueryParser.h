@@ -27,26 +27,26 @@ class OperatorQuery;
 class SimpleQueryParser : public QueryParser
 {
 public:
-	virtual ~SimpleQueryParser() {}
+  virtual ~SimpleQueryParser() {}
 
 protected:
-	SimpleQueryParser() {}
+  SimpleQueryParser() {}
 
-	// get a combination query
-	virtual OperatorQuery *MakeQuery() = 0;
+  // get a combination query
+  virtual OperatorQuery *MakeQuery() = 0;
 
 private:
-	// apply expr == term { term }
-	Query *ParseExpression();
+  // apply expr == term { term }
+  Query *ParseExpression();
 
-	// apply term == word | phrase
-	Query *ParseTerm();
+  // apply term == word | phrase
+  Query *ParseTerm();
 
-	// let the parent access the lexer
-	QueryLexer &Token() { return token; }
+  // let the parent access the lexer
+  QueryLexer &Token() { return token; }
 
-	// the used lexer
-	SimpleLexer token;
+  // the used lexer
+  SimpleLexer token;
 };
 
 #endif

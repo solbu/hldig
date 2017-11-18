@@ -29,13 +29,13 @@ HtRegex::HtRegex(const char *str, int case_sensitive) : compiled(0)
 
 HtRegex::~HtRegex()
 {
-	if (compiled != 0) regfree(&re);
-	compiled = 0;
+  if (compiled != 0) regfree(&re);
+  compiled = 0;
 }
 
 const String &HtRegex::lastError()
 {
-	return lastErrorMessage;
+  return lastErrorMessage;
 }
 
 int
@@ -70,20 +70,20 @@ HtRegex::setEscaped(StringList &list, int case_sensitive)
     list.Start_Get();
     while ((str = (String *) list.Get_Next()))
       {
-	if (str->indexOf('[') == 0 && str->lastIndexOf(']') == str->length()-1)
-	  {
-	    transformedLimits << str->sub(1,str->length()-2).get();
-	  }
-	else 	// Backquote any regex special characters
-	  {
-	    for (int pos = 0; pos < str->length(); pos++)
-	      { 
-		if (strchr("^.[$()|*+?{\\", str->Nth(pos)))
-		  transformedLimits << '\\';
-		transformedLimits << str->Nth(pos);
-	      }
-	  }
-	transformedLimits << "|";
+  if (str->indexOf('[') == 0 && str->lastIndexOf(']') == str->length()-1)
+    {
+      transformedLimits << str->sub(1,str->length()-2).get();
+    }
+  else   // Backquote any regex special characters
+    {
+      for (int pos = 0; pos < str->length(); pos++)
+        { 
+    if (strchr("^.[$()|*+?{\\", str->Nth(pos)))
+      transformedLimits << '\\';
+    transformedLimits << str->Nth(pos);
+        }
+    }
+  transformedLimits << "|";
       }
     transformedLimits.chop(1);
 
@@ -93,13 +93,13 @@ HtRegex::setEscaped(StringList &list, int case_sensitive)
 int
 HtRegex::match(const char * str, int nullpattern, int nullstr)
 {
-	int	rval;
-	
-	if (compiled == 0) return(nullpattern);
-	if (str == NULL) return(nullstr);
-	if (strlen(str) <= 0) return(nullstr);
-	rval = regexec(&re, str, (size_t) 0, NULL, 0);
-	if (rval == 0) return(1);
-	else return(0);
+  int  rval;
+  
+  if (compiled == 0) return(nullpattern);
+  if (str == NULL) return(nullstr);
+  if (strlen(str) <= 0) return(nullstr);
+  rval = regexec(&re, str, (size_t) 0, NULL, 0);
+  if (rval == 0) return(1);
+  else return(0);
 }
 

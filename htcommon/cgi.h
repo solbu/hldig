@@ -20,19 +20,19 @@ class Dictionary;
 class cgi
 {
 public:
-	cgi();
-	cgi(char *s);
-	~cgi();
+  cgi();
+  cgi(char *s);
+  ~cgi();
 
-	const char      *operator [] (const char *);
-	const char      *get(const char *);
-	int             exists(char *);
-	char            *path();
+  const char      *operator [] (const char *);
+  const char      *get(const char *);
+  int             exists(char *);
+  char            *path();
 
 private:
-	Dictionary		*pairs;
-	int			query;
-	void			init(const char *s);
+  Dictionary    *pairs;
+  int      query;
+  void      init(const char *s);
 };
 
 #endif

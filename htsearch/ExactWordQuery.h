@@ -27,45 +27,45 @@ class WordSearcher;
 class ExactWordQuery : public Query
 {
 public:
-	// construct for word w
-	ExactWordQuery(const String &w) :
-		word(w), weight(1.0) {}
+  // construct for word w
+  ExactWordQuery(const String &w) :
+    word(w), weight(1.0) {}
 
-	// destruct
-	~ExactWordQuery() {}
+  // destruct
+  ~ExactWordQuery() {}
 
-	// set the common db wrapper
-	static void SetSearcher(WordSearcher *c) { searcher = c; }
+  // set the common db wrapper
+  static void SetSearcher(WordSearcher *c) { searcher = c; }
 
-	// weight accessor
-	void SetWeight(double x) { weight = x; }
-	double GetWeight() const { return weight; }
+  // weight accessor
+  void SetWeight(double x) { weight = x; }
+  double GetWeight() const { return weight; }
 
 private:
-	// forbidden
-	ExactWordQuery() {}
+  // forbidden
+  ExactWordQuery() {}
 
-	// go search the db
-	ResultList *Evaluate();
+  // go search the db
+  ResultList *Evaluate();
 
-	// set my weight to the list
-	void AdjustWeight(ResultList &);
+  // set my weight to the list
+  void AdjustWeight(ResultList &);
 
-	// unparse
-	String GetLogicalWords() const { return word; }
+  // unparse
+  String GetLogicalWords() const { return word; }
 
-	// unique cache index
-	String GetSignature() const
-		{ return String("Exact:")+GetLogicalWords(); }
+  // unique cache index
+  String GetSignature() const
+    { return String("Exact:")+GetLogicalWords(); }
 
-	// i represent this
-	String word;
+  // i represent this
+  String word;
 
-	// my weight
-	double weight;
+  // my weight
+  double weight;
 
-	// db wrapper common to all word queries
-	static WordSearcher *searcher;
+  // db wrapper common to all word queries
+  static WordSearcher *searcher;
 };
 
 #endif

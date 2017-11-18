@@ -2,7 +2,7 @@
 // SSLConnection.cc
 //
 // SSLConnection: This class forms a easy to use interface to the 
-//		  socket interface using SSL connection encryption.
+//      socket interface using SSL connection encryption.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999-2004 The ht://Dig Group
@@ -61,10 +61,10 @@ void SSLConnection::InitSSL()
       ctx = SSL_CTX_new (SSLv23_client_method());        
 
       if( ctx == NULL )
-	{
-	  cout << "ctx NULL" << endl;
-	  exit(1);
-	}
+  {
+    cout << "ctx NULL" << endl;
+    exit(1);
+  }
     }
 }
 
@@ -124,7 +124,7 @@ int SSLConnection::Close()
 
 int SSLConnection::Read_Partial(char *buffer, int maxlength)
 {
-    int		count;
+    int    count;
 
     need_io_stop = 0;
     do
@@ -165,11 +165,11 @@ int SSLConnection::Read_Partial(char *buffer, int maxlength)
 //
 int SSLConnection::Write_Partial(char *buffer, int maxlength)
 {
-    int		count;
+    int    count;
 
     do
     {
-	count = SSL_write(ssl, buffer, maxlength);
+  count = SSL_write(ssl, buffer, maxlength);
     }
     while (count < 0 && errno == EINTR && !need_io_stop);
     need_io_stop = 0;

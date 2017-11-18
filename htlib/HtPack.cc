@@ -2,8 +2,8 @@
 // HtPack.cc
 //
 // HtPack: Compress and uncompress data in e.g. simple structures.
-//	   The structure must have the layout defined in the ABI;
-//	   the layout the compiler generates.
+//     The structure must have the layout defined in the ABI;
+//     the layout the compiler generates.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999-2004 The ht://Dig Group
@@ -46,7 +46,7 @@ htPack(const char format[], const char *data)
   const char *s = format;
 
   // We insert the encodings by number, rather than shifting and
-  // inserting at the "bottom".	 This should make it faster for
+  // inserting at the "bottom".   This should make it faster for
   // decoding, which presumably is more important than the speed
   // of encoding.
   int code_no = 0;
@@ -86,166 +86,166 @@ htPack(const char format[], const char *data)
       // Format character handling.
       switch (fchar)
       {
-	case 'c':
-	{
-	  // We compress an unsigned int with the most common
-	  // value 1 as this:
-	  // 00 - value is 1.
-	  // 01 - value fits in unsigned char - appended.
-	  // 10 - value fits in unsigned short - appended.
-	  // 11 - just plain unsigned int - appended (you lose).
-	  unsigned int value;
+  case 'c':
+  {
+    // We compress an unsigned int with the most common
+    // value 1 as this:
+    // 00 - value is 1.
+    // 01 - value fits in unsigned char - appended.
+    // 10 - value fits in unsigned short - appended.
+    // 11 - just plain unsigned int - appended (you lose).
+    unsigned int value;
 
-	  // Initialize, but allow disalignment.
-	  memcpy(&value, data, sizeof value);
-	  data += sizeof(unsigned int);
+    // Initialize, but allow disalignment.
+    memcpy(&value, data, sizeof value);
+    data += sizeof(unsigned int);
 
-	  int mycode;
-	  if (value == 1)
-	  {
-	    mycode = 0;
-	  }
-	  else
-	  {
-	    unsigned char charvalue = (unsigned char) value;
-	    unsigned short shortvalue = (unsigned short) value;
-	    if (value == charvalue)
-	    {
-	      mycode = 1;
-	      compressed << charvalue;
-	    }
-	    else if (value == shortvalue)
-	    {
-	      mycode = 2;
-	      compressed.append((char *) &shortvalue, sizeof shortvalue);
-	    }
-	    else
-	    {
-	      mycode = 3;
-	      compressed.append((char *) &value, sizeof value);
-	    }
-	  }
+    int mycode;
+    if (value == 1)
+    {
+      mycode = 0;
+    }
+    else
+    {
+      unsigned char charvalue = (unsigned char) value;
+      unsigned short shortvalue = (unsigned short) value;
+      if (value == charvalue)
+      {
+        mycode = 1;
+        compressed << charvalue;
+      }
+      else if (value == shortvalue)
+      {
+        mycode = 2;
+        compressed.append((char *) &shortvalue, sizeof shortvalue);
+      }
+      else
+      {
+        mycode = 3;
+        compressed.append((char *) &value, sizeof value);
+      }
+    }
 
-	  description |= mycode << (2*code_no++);
-	}
-	break;
+    description |= mycode << (2*code_no++);
+  }
+  break;
 
-	case 'i':
-	{
-	  // We compress a (signed) int as follows:
-	  // 00 - value is 0.
-	  // 01 - value fits in char - appended.
-	  // 10 - value fits in short - appended.
-	  // 11 - just plain int - appended (you lose).
-	  int value;
+  case 'i':
+  {
+    // We compress a (signed) int as follows:
+    // 00 - value is 0.
+    // 01 - value fits in char - appended.
+    // 10 - value fits in short - appended.
+    // 11 - just plain int - appended (you lose).
+    int value;
 
-	  // Initialize, but allow disalignment.
-	  memcpy(&value, data, sizeof value);
-	  data += sizeof(int);
+    // Initialize, but allow disalignment.
+    memcpy(&value, data, sizeof value);
+    data += sizeof(int);
 
-	  int mycode;
-	  if (value == 0)
-	  {
-	    mycode = 0;
-	  }
-	  else
-	  {
-	    char charvalue = char(value);
-	    short shortvalue = short(value);
-	    if (value == charvalue)
-	    {
-	      mycode = 1;
-	      compressed << charvalue;
-	    }
-	    else if (value == shortvalue)
-	    {
-	      mycode = 2;
-	      compressed.append((char *) &shortvalue, sizeof shortvalue);
-	    }
-	    else
-	    {
-	      mycode = 3;
-	      compressed.append((char *) &value, sizeof value);
-	    }
-	  }
+    int mycode;
+    if (value == 0)
+    {
+      mycode = 0;
+    }
+    else
+    {
+      char charvalue = char(value);
+      short shortvalue = short(value);
+      if (value == charvalue)
+      {
+        mycode = 1;
+        compressed << charvalue;
+      }
+      else if (value == shortvalue)
+      {
+        mycode = 2;
+        compressed.append((char *) &shortvalue, sizeof shortvalue);
+      }
+      else
+      {
+        mycode = 3;
+        compressed.append((char *) &value, sizeof value);
+      }
+    }
 
-	  description |= mycode << (2*code_no++);
-	}
-	break;
+    description |= mycode << (2*code_no++);
+  }
+  break;
 
-	case 'u':
-	{
-	  // We compress an unsigned int like an int:
-	  // 00 - value is 0.
-	  // 01 - value fits in unsigned char - appended.
-	  // 10 - value fits in unsigned short - appended.
-	  // 11 - just plain unsigned int - appended (you lose).
-	  unsigned int value;
+  case 'u':
+  {
+    // We compress an unsigned int like an int:
+    // 00 - value is 0.
+    // 01 - value fits in unsigned char - appended.
+    // 10 - value fits in unsigned short - appended.
+    // 11 - just plain unsigned int - appended (you lose).
+    unsigned int value;
 
-	  // Initialize, but allow disalignment.
-	  memcpy(&value, data, sizeof value);
-	  data += sizeof(unsigned int);
+    // Initialize, but allow disalignment.
+    memcpy(&value, data, sizeof value);
+    data += sizeof(unsigned int);
 
-	  int mycode;
-	  if (value == 0)
-	  {
-	    mycode = 0;
-	  }
-	  else
-	  {
-	    unsigned char charvalue = (unsigned char) value;
-	    unsigned short shortvalue = (unsigned short) value;
-	    if (value == charvalue)
-	    {
-	      mycode = 1;
-	      compressed << charvalue;
-	    }
-	    else if (value == shortvalue)
-	    {
-	      mycode = 2;
-	      compressed.append((char *) &shortvalue, sizeof shortvalue);
-	    }
-	    else
-	    {
-	      mycode = 3;
-	      compressed.append((char *) &value, sizeof value);
-	    }
-	  }
+    int mycode;
+    if (value == 0)
+    {
+      mycode = 0;
+    }
+    else
+    {
+      unsigned char charvalue = (unsigned char) value;
+      unsigned short shortvalue = (unsigned short) value;
+      if (value == charvalue)
+      {
+        mycode = 1;
+        compressed << charvalue;
+      }
+      else if (value == shortvalue)
+      {
+        mycode = 2;
+        compressed.append((char *) &shortvalue, sizeof shortvalue);
+      }
+      else
+      {
+        mycode = 3;
+        compressed.append((char *) &value, sizeof value);
+      }
+    }
 
-	  description |= mycode << (2*code_no++);
-	}
-	break;
+    description |= mycode << (2*code_no++);
+  }
+  break;
 
-	default:
+  default:
 #ifndef NOSTREAM
 #ifdef DEBUG
-	  if (1)
-	    cerr << "Invalid char \'" << char(fchar)
-		 << "\' in pack format \"" << format << "\""
-		 << endl;
-	  return "";
+    if (1)
+      cerr << "Invalid char \'" << char(fchar)
+     << "\' in pack format \"" << format << "\""
+     << endl;
+    return "";
 #endif
 #endif
-	  ; // Must always have a statement after a label.
+    ; // Must always have a statement after a label.
       }
 
       // Assuming 8-bit chars here.  Flush encodings after 4 (2 bits
       // each) or when the code-string is consumed.
       if (code_no == 4 || (n == 0 && *s == 0))
       {
-	char *codepos = compressed.get() + code_index;
+  char *codepos = compressed.get() + code_index;
 
-	*codepos = description;
-	description = 0;
-	code_no = 0;
+  *codepos = description;
+  description = 0;
+  code_no = 0;
 
-	if (n || *s)
-	{
-	  // If more data to be encoded, then we need a new place to
-	  // store the encodings.
-	  code_index = compressed.length();
-	  compressed << '\0';
-	}
+  if (n || *s)
+  {
+    // If more data to be encoded, then we need a new place to
+    // store the encodings.
+    code_index = compressed.length();
+    compressed << '\0';
+  }
       }
     }
   }
@@ -289,155 +289,155 @@ htUnpack(const char format[], const char *data)
     {
       // Time to renew description?
       if (description == 1)
-	description = 256 | *data++;
+  description = 256 | *data++;
 
       // Format character handling.
       switch (fchar)
       {
-	case 'c':
-	{
-	  // An unsigned int with the most common value 1 is
+  case 'c':
+  {
+    // An unsigned int with the most common value 1 is
           // compressed as follows:
-	  // 00 - value is 1.
-	  // 01 - value fits in unsigned char - appended.
-	  // 10 - value fits in unsigned short - appended.
-	  // 11 - just plain unsigned int - appended (you lose).
-	  unsigned int value;
+    // 00 - value is 1.
+    // 01 - value fits in unsigned char - appended.
+    // 10 - value fits in unsigned short - appended.
+    // 11 - just plain unsigned int - appended (you lose).
+    unsigned int value;
 
-	  switch (description & 3)
-	  {
-	    case 0:
-	    value = 1;
-	    break;
+    switch (description & 3)
+    {
+      case 0:
+      value = 1;
+      break;
 
-	    case 1:
-	    {
-	      unsigned char charvalue;
-	      memcpy(&charvalue, data, sizeof charvalue);
-	      value = charvalue;
-	      data++;
-	    }
-	    break;
+      case 1:
+      {
+        unsigned char charvalue;
+        memcpy(&charvalue, data, sizeof charvalue);
+        value = charvalue;
+        data++;
+      }
+      break;
 
-	    case 2:
-	    {
-	      unsigned short int shortvalue;
-	      memcpy(&shortvalue, data, sizeof shortvalue);
-	      value = shortvalue;
-	      data += sizeof shortvalue;
-	    }
-	    break;
+      case 2:
+      {
+        unsigned short int shortvalue;
+        memcpy(&shortvalue, data, sizeof shortvalue);
+        value = shortvalue;
+        data += sizeof shortvalue;
+      }
+      break;
 
-	    case 3:
-	    {
-	      memcpy(&value, data, sizeof value);
-	      data += sizeof value;
-	    }
-	    break;
-	  }
-	  decompressed.append((char *) &value, sizeof value);
-	}
-	break;
+      case 3:
+      {
+        memcpy(&value, data, sizeof value);
+        data += sizeof value;
+      }
+      break;
+    }
+    decompressed.append((char *) &value, sizeof value);
+  }
+  break;
 
-	case 'i':
-	{
-	  // A (signed) int is compressed as follows:
-	  // 00 - value is 0.
-	  // 01 - value fits in char - appended.
-	  // 10 - value fits in short - appended.
-	  // 11 - just plain int - appended (you lose).
-	  int value;
+  case 'i':
+  {
+    // A (signed) int is compressed as follows:
+    // 00 - value is 0.
+    // 01 - value fits in char - appended.
+    // 10 - value fits in short - appended.
+    // 11 - just plain int - appended (you lose).
+    int value;
 
-	  switch (description & 3)
-	  {
-	    case 0:
-	    value = 0;
-	    break;
+    switch (description & 3)
+    {
+      case 0:
+      value = 0;
+      break;
 
-	    case 1:
-	    {
-	      char charvalue;
-	      memcpy(&charvalue, data, sizeof charvalue);
-	      value = charvalue;
-	      data++;
-	    }
-	    break;
+      case 1:
+      {
+        char charvalue;
+        memcpy(&charvalue, data, sizeof charvalue);
+        value = charvalue;
+        data++;
+      }
+      break;
 
-	    case 2:
-	    {
-	      short int shortvalue;
-	      memcpy(&shortvalue, data, sizeof shortvalue);
-	      value = shortvalue;
-	      data += sizeof shortvalue;
-	    }
-	    break;
+      case 2:
+      {
+        short int shortvalue;
+        memcpy(&shortvalue, data, sizeof shortvalue);
+        value = shortvalue;
+        data += sizeof shortvalue;
+      }
+      break;
 
-	    case 3:
-	    {
-	      memcpy(&value, data, sizeof value);
-	      data += sizeof value;
-	    }
-	    break;
-	  }
-	  decompressed.append((char *) &value, sizeof value);
-	}
-	break;
+      case 3:
+      {
+        memcpy(&value, data, sizeof value);
+        data += sizeof value;
+      }
+      break;
+    }
+    decompressed.append((char *) &value, sizeof value);
+  }
+  break;
 
-	case 'u':
-	{
-	  // An unsigned int is compressed as follows:
-	  // 00 - value is 0.
-	  // 01 - value fits in unsigned char - appended.
-	  // 10 - value fits in unsigned short - appended.
-	  // 11 - just plain unsigned int - appended (you lose).
-	  unsigned int value;
+  case 'u':
+  {
+    // An unsigned int is compressed as follows:
+    // 00 - value is 0.
+    // 01 - value fits in unsigned char - appended.
+    // 10 - value fits in unsigned short - appended.
+    // 11 - just plain unsigned int - appended (you lose).
+    unsigned int value;
 
-	  switch (description & 3)
-	  {
-	    case 0:
-	    value = 0;
-	    break;
+    switch (description & 3)
+    {
+      case 0:
+      value = 0;
+      break;
 
-	    case 1:
-	    {
-	      unsigned char charvalue;
-	      memcpy(&charvalue, data, sizeof charvalue);
-	      value = charvalue;
-	      data++;
-	    }
-	    break;
+      case 1:
+      {
+        unsigned char charvalue;
+        memcpy(&charvalue, data, sizeof charvalue);
+        value = charvalue;
+        data++;
+      }
+      break;
 
-	    case 2:
-	    {
-	      unsigned short int shortvalue;
-	      memcpy(&shortvalue, data, sizeof shortvalue);
-	      value = shortvalue;
-	      data += sizeof shortvalue;
-	    }
-	    break;
+      case 2:
+      {
+        unsigned short int shortvalue;
+        memcpy(&shortvalue, data, sizeof shortvalue);
+        value = shortvalue;
+        data += sizeof shortvalue;
+      }
+      break;
 
-	    case 3:
-	    {
-	      memcpy(&value, data, sizeof value);
-	      data += sizeof value;
-	    }
-	    break;
-	  }
-	  decompressed.append((char *) &value, sizeof value);
-	}
-	break;
+      case 3:
+      {
+        memcpy(&value, data, sizeof value);
+        data += sizeof value;
+      }
+      break;
+    }
+    decompressed.append((char *) &value, sizeof value);
+  }
+  break;
 
-	default:
+  default:
 #ifndef NOSTREAM
 #ifdef DEBUG
-	  if (1)
-	    cerr << "Invalid char \'" << char(fchar)
-		 << "\' in unpack format \"" << format << "\""
-		 << endl;
-	  return "";
+    if (1)
+      cerr << "Invalid char \'" << char(fchar)
+     << "\' in unpack format \"" << format << "\""
+     << endl;
+    return "";
 #endif
 #endif
-	  ; // Must always have a statement after a label.
+    ; // Must always have a statement after a label.
       }
 
       description >>= 2;

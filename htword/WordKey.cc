@@ -57,11 +57,11 @@ int WordKey::Equal(const WordKey& other) const
     switch(info.sort[j].type) {
     case WORD_ISA_STRING:
       if(!IsDefinedWordSuffix()) {
-	if(kword != other.kword.sub(0, kword.length()))
-	  return 0;
+  if(kword != other.kword.sub(0, kword.length()))
+    return 0;
       } else {
-	if(kword != other.kword)
-	  return 0;
+  if(kword != other.kword)
+    return 0;
       }
       break;
     default:
@@ -103,35 +103,35 @@ WordKey::Compare(const char *a, int a_length, const char *b, int b_length)
       const unsigned char* p2 = (unsigned char *)b;
 
       for (;len--; ++p1, ++p2) {
-	  if (*p1 != *p2)
-	      return (int)*p1 - (int)*p2;
+    if (*p1 != *p2)
+        return (int)*p1 - (int)*p2;
       }
       if(p1_length != p2_length)
-	  return p1_length - p2_length;
+    return p1_length - p2_length;
   }
   //
   //  following fields: numerical
-  //  				But what *are* they?? -- lha
+  //          But what *are* they?? -- lha
   //
   for(int j = 1; j < info.nfields; j++) 
   {
-	WordKeyNum p1;
-	int a_index = info.sort[j].bytes_offset + p1_length;
-	WordKey::UnpackNumber((unsigned char *)&a[a_index],
-			      info.sort[j].bytesize,
-			      p1,
-			      info.sort[j].lowbits,
-			      info.sort[j].bits);
-	
-	WordKeyNum p2;
-	int b_index = info.sort[j].bytes_offset + p2_length;
-	WordKey::UnpackNumber((unsigned char *)&b[b_index],
-			      info.sort[j].bytesize,
-			      p2,
-			      info.sort[j].lowbits,
-			      info.sort[j].bits);
-	if(p1 != p2)
-	    return p1 - p2;
+  WordKeyNum p1;
+  int a_index = info.sort[j].bytes_offset + p1_length;
+  WordKey::UnpackNumber((unsigned char *)&a[a_index],
+            info.sort[j].bytesize,
+            p1,
+            info.sort[j].lowbits,
+            info.sort[j].bits);
+  
+  WordKeyNum p2;
+  int b_index = info.sort[j].bytes_offset + p2_length;
+  WordKey::UnpackNumber((unsigned char *)&b[b_index],
+            info.sort[j].bytesize,
+            p2,
+            info.sort[j].lowbits,
+            info.sort[j].bits);
+  if(p1 != p2)
+      return p1 - p2;
   }
 
   //
@@ -165,11 +165,11 @@ WordKey::Compare_WordOnly(const char *a, int a_length, const char *b, int b_leng
       const unsigned char* p2 = (unsigned char *)b;
 
       for (;len--; ++p1, ++p2) {
-	  if (*p1 != *p2)
-	      return (int)*p1 - (int)*p2;
+    if (*p1 != *p2)
+        return (int)*p1 - (int)*p2;
       }
       if(p1_length != p2_length)
-	  return p1_length - p2_length;
+    return p1_length - p2_length;
   }
   return 0;
 }
@@ -251,9 +251,9 @@ int WordKey::Diff(const WordKey& other, int& position, int& lower)
     int i;
     for(i = 1; i < nfields; i++) {
       if(IsDefined(i) && other.IsDefined(i) &&
-	 Get(i) != other.Get(i)) {
-	lower = Get(i) < other.Get(i);
-	break;
+   Get(i) != other.Get(i)) {
+  lower = Get(i) < other.Get(i);
+  break;
       }
     }
     if(i < nfields)
@@ -319,9 +319,9 @@ int WordKey::SetToFollowing(int position /* = WORD_FOLLOWING_MAX */)
   while(i > 0) {
     if(IsDefined(i)) {
       if(Overflow(i, 1))
-	Set(i, 0);
+  Set(i, 0);
       else
-	break;
+  break;
     }
     i--;
   }
@@ -416,7 +416,7 @@ WordKey::PrefixOnly()
     //
     if(IsDefined(j)) 
     {
-	if(found_unset) {Set(j,0);Undefined(j);}
+  if(found_unset) {Set(j,0);Undefined(j);}
     } 
     else {found_unset=1;}
   }
@@ -444,10 +444,10 @@ WordKey::Unpack(const char* string,int length)
       WordKeyNum value = 0; 
       int index = string_length + info.sort[j].bytes_offset;
       WordKey::UnpackNumber((unsigned char *)&string[index], 
-			    info.sort[j].bytesize, 
-			    value, 
-			    info.sort[j].lowbits, 
-			    info.sort[j].bits); 
+          info.sort[j].bytesize, 
+          value, 
+          info.sort[j].lowbits, 
+          info.sort[j].bits); 
       Set(j,value);
   }
 
@@ -477,10 +477,10 @@ WordKey::Pack(String& packed) const
   for(int i = WORD_FIRSTFIELD; i < info.nfields; i++) {
     int index = kword.length() + info.sort[i].bytes_offset;
     WordKey::PackNumber(Get(i), 
-			&string[index], 
-			info.sort[i].bytesize, 
-			info.sort[i].lowbits, 
-			info.sort[i].lastbits); 
+      &string[index], 
+      info.sort[i].bytesize, 
+      info.sort[i].lowbits, 
+      info.sort[i].lastbits); 
   }
   
   packed.set(string, length);
@@ -503,12 +503,12 @@ int WordKey::Merge(const WordKey& other)
     if(!IsDefined(j) && other.IsDefined(j)) {
       switch(info.sort[j].type) {
       case WORD_ISA_STRING: 
-	  SetWord(other.GetWord());
-	  if(!other.IsDefinedWordSuffix()) UndefinedWordSuffix();
-	  break;
+    SetWord(other.GetWord());
+    if(!other.IsDefinedWordSuffix()) UndefinedWordSuffix();
+    break;
       default:
-	  Set(j,other.Get(j)); 
-	break;
+    Set(j,other.Get(j)); 
+  break;
       }
     }
   }
@@ -535,14 +535,14 @@ WordKey::Get(String& buffer) const
     } else {
       switch(info.sort[j].type) {
       case WORD_ISA_STRING:
-	buffer << GetWord();
-	break;
+  buffer << GetWord();
+  break;
       case WORD_ISA_NUMBER:
-	buffer << Get(j);
-	break;
+  buffer << Get(j);
+  break;
       default:
-	fprintf(stderr, "WordKey::Get: invalid type %d for field %d\n", info.sort[j].type, j);
-	return NOTOK;
+  fprintf(stderr, "WordKey::Get: invalid type %d for field %d\n", info.sort[j].type, j);
+  return NOTOK;
       }
     }
     //
@@ -550,9 +550,9 @@ WordKey::Get(String& buffer) const
     //
     if(j == 0) {
       if(IsDefined(j) && !IsDefinedWordSuffix()) {
-	buffer << "\t<UNDEF>";
+  buffer << "\t<UNDEF>";
       } else {
-	buffer << "\t<DEF>";
+  buffer << "\t<DEF>";
       }
     }
     buffer << "\t";

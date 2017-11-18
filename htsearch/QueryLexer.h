@@ -28,44 +28,44 @@
 class QueryLexer
 {
 public:
-	virtual ~QueryLexer() {}
+  virtual ~QueryLexer() {}
 
-	// set the query string and advance to the first token
-	void Set(const String &query_string);
+  // set the query string and advance to the first token
+  void Set(const String &query_string);
 
-	// advance to the next token
-	virtual void Next();
+  // advance to the next token
+  virtual void Next();
 
-	// is the current token a word?
-	virtual bool IsWord() const = 0;
+  // is the current token a word?
+  virtual bool IsWord() const = 0;
 
-	// is the current token a quote sign?
-	bool IsQuote() const;
+  // is the current token a quote sign?
+  bool IsQuote() const;
 
-	// is the current token end-of-query?
-	bool IsEnd() const;
+  // is the current token end-of-query?
+  bool IsEnd() const;
 
-	// get the current token value
-	const String &Value() const { return current; }
+  // get the current token value
+  const String &Value() const { return current; }
 
-	// get the full query string
-	const String &FullString() const { return query; }
+  // get the full query string
+  const String &FullString() const { return query; }
 
 
 protected:
-	QueryLexer();
+  QueryLexer();
 
-	// the full query string
-	String query;
+  // the full query string
+  String query;
 
-	// the current token value
-	String current;
+  // the current token value
+  String current;
 
-	// the current position in the query string
-	int current_char;
+  // the current position in the query string
+  int current_char;
 
-	// suffix string used by the 'prefix' fuzzy
-	String prefix_match;
+  // suffix string used by the 'prefix' fuzzy
+  String prefix_match;
 };
 
 #endif

@@ -60,34 +60,34 @@ HtCookieMemJar::HtCookieMemJar(const HtCookieMemJar& rhs)
 : _key(0), _list(0), _idx(0)
 {
 
-	if (rhs.cookieDict)
-	{
-		// Let's perform a deep copy of the 'jar'
-		cookieDict = new Dictionary();
-		rhs.cookieDict->Start_Get();
+  if (rhs.cookieDict)
+  {
+    // Let's perform a deep copy of the 'jar'
+    cookieDict = new Dictionary();
+    rhs.cookieDict->Start_Get();
 
-		// Let's walk the domains
-		while (char* d = rhs.cookieDict->Get_Next())
-		{
-			List* l = new List();
-			cookieDict->Add(d, l); // add that domain
+    // Let's walk the domains
+    while (char* d = rhs.cookieDict->Get_Next())
+    {
+      List* l = new List();
+      cookieDict->Add(d, l); // add that domain
 
-			// Let's walk the cookies for that domain
-			if (List* rhsl = (List*) rhs.cookieDict->Find(d))
-			{
-				
-				rhsl->Start_Get();
-			
-				while (HtCookie* cookie = ((HtCookie *)rhsl->Get_Next()))
-				{
-					HtCookie* new_cookie = new HtCookie(*cookie);
-					l->Add((Object *)new_cookie); // add this cookie
-				}
-			}
-		}
-	}
-	else
-	   cookieDict = new Dictionary();
+      // Let's walk the cookies for that domain
+      if (List* rhsl = (List*) rhs.cookieDict->Find(d))
+      {
+        
+        rhsl->Start_Get();
+      
+        while (HtCookie* cookie = ((HtCookie *)rhsl->Get_Next()))
+        {
+          HtCookie* new_cookie = new HtCookie(*cookie);
+          l->Add((Object *)new_cookie); // add this cookie
+        }
+      }
+    }
+  }
+  else
+     cookieDict = new Dictionary();
 
    cookieDict->Start_Get(); // reset the iterator
 }
@@ -215,12 +215,12 @@ int HtCookieMemJar::AddCookieForHost(HtCookie *cookie, String HostName)
                             << Domain << endl;
                 }
                 else if (HostName.length() == 0)
-		{
+    {
                     if (debug > 2)
                         cout << "Imported cookie - valid domain: "
                             << Domain << endl;
-		}
-		else
+    }
+    else
                 {
                     cookie->SetIsDomainValid(false);
                     if (debug > 2)
@@ -263,7 +263,7 @@ int HtCookieMemJar::AddCookieForHost(HtCookie *cookie, String HostName)
    while (!inList && (theCookie = (HtCookie *)list->Get_Next()))
    {
       if ( (theCookie->GetName().compare(cookie->GetName()) == 0 )
-      	 && ( theCookie->GetPath().compare(cookie->GetPath()) == 0 ))
+         && ( theCookie->GetPath().compare(cookie->GetPath()) == 0 ))
       {
          // The cookie has been found
          inList = true;
@@ -308,9 +308,9 @@ int HtCookieMemJar::SetHTTPRequest_CookiesString(const URL &_url,
 
     // Let's split the URL domain and get all of the subdomains.
     // For instance:
-    // 	 - bar.com
-    // 	 - foo.bar.com
-    // 	 - www.foo.bar.com                                                                                               
+    //    - bar.com
+    //    - foo.bar.com
+    //    - www.foo.bar.com                                                                                               
 
     String Domain(_url.host());
     Domain.lowercase();
@@ -396,15 +396,15 @@ int HtCookieMemJar::WriteDomainCookiesString(const URL &_url,
       int NumCookies = 0;
 
       if (debug > 5)
-      	 cout << "Found a cookie list for: '" << Domain << "'" << endl;
+         cout << "Found a cookie list for: '" << Domain << "'" << endl;
 
       // Let's crawl the list for getting the 'path' matching ones
       cookieList->Start_Get();
 
       while ((cookie = (HtCookie *)cookieList->Get_Next()))
       {
-      	 const String cookiePath = cookie->GetPath();
-      	 const String urlPath = _url.path();
+         const String cookiePath = cookie->GetPath();
+         const String urlPath = _url.path();
 
          //
          // Let's see if the cookie has expired
@@ -412,34 +412,34 @@ int HtCookieMemJar::WriteDomainCookiesString(const URL &_url,
          // If it's not empty and the datetime
          // is before now.
          //
-		 // Another way of determining whether a
-		 // cookie is expired is checking the
-		 // max_age property that is to say:
-		 // (now - issuetime <= maxage).
-		 //
+     // Another way of determining whether a
+     // cookie is expired is checking the
+     // max_age property that is to say:
+     // (now - issuetime <= maxage).
+     //
          const bool expired =
-		    (cookie->GetExpires() && (*(cookie->GetExpires()) < now))	// Expires
-			|| (HtDateTime::GetDiff(now, cookie->GetIssueTime())
-			   <= cookie->GetMaxAge()); // Max-age
+        (cookie->GetExpires() && (*(cookie->GetExpires()) < now))  // Expires
+      || (HtDateTime::GetDiff(now, cookie->GetIssueTime())
+         <= cookie->GetMaxAge()); // Max-age
 
          if (debug > 5)
-      	    cout << "Trying to match paths and expiration time: "
-	       << urlPath << " in " << cookiePath;
+            cout << "Trying to match paths and expiration time: "
+         << urlPath << " in " << cookiePath;
 
-      	 // Is the path matching
-      	 if (!expired && !strncmp(cookiePath, urlPath, cookiePath.length()))
-	 {
+         // Is the path matching
+         if (!expired && !strncmp(cookiePath, urlPath, cookiePath.length()))
+   {
 
             if (debug > 5)
-	       cout << " (passed)" << endl;
+         cout << " (passed)" << endl;
 
-      	    ++NumCookies;
-	    
-      	    // Write the string by passing the cookie to the superclass' method
-	    WriteCookieHTTPRequest(*cookie, RequestString, NumCookies);
+            ++NumCookies;
+      
+            // Write the string by passing the cookie to the superclass' method
+      WriteCookieHTTPRequest(*cookie, RequestString, NumCookies);
 
-      	 }
-	 else if (debug > 5) cout << " (discarded)" << endl;
+         }
+   else if (debug > 5) cout << " (discarded)" << endl;
 
      }
      
@@ -473,7 +473,7 @@ void HtCookieMemJar::printDebug()
       list->Start_Get();
       
       while ((cookie = (HtCookie *)list->Get_Next()))
-      	 cookie->printDebug();
+         cookie->printDebug();
    }
 }
 
@@ -487,7 +487,7 @@ ostream &HtCookieMemJar::ShowSummary(ostream &out)
 
    char * key;
    int num_cookies = 0; // Global number of cookies
-   int num_server = 0;	// Number of servers with cookies
+   int num_server = 0;  // Number of servers with cookies
   
    cookieDict->Start_Get();
    
@@ -500,7 +500,7 @@ ostream &HtCookieMemJar::ShowSummary(ostream &out)
       HtCookie * cookie;
       int num_cookies_server = 0;
 
-      ++num_server;	// Number of servers with cookies
+      ++num_server;  // Number of servers with cookies
 
       out << " Host: '" << key << "'" << endl;
       list = (List *)cookieDict->Find(key);
@@ -508,8 +508,8 @@ ostream &HtCookieMemJar::ShowSummary(ostream &out)
       
       while ((cookie = (HtCookie *)list->Get_Next()))
       {
-      	 ++num_cookies_server;
-      	 cookie->printDebug();
+         ++num_cookies_server;
+         cookie->printDebug();
       }
       
       out << "   Number of cookies: " << num_cookies_server << endl << endl;
@@ -537,7 +537,7 @@ const HtCookie* HtCookieMemJar::NextCookie()
          _list->Start_Get();   // the first time we position at the beginning
 
    ++_idx;
-   	 
+      
    if (!_key)
       return 0;   // ends
 
@@ -556,11 +556,11 @@ const HtCookie* HtCookieMemJar::NextCookie()
    {
       // Non ci sono cookie per l'host. Si passa a quello seguente
       if ((_key = cookieDict->Get_Next()) &&
-      	 (_list = (List *)cookieDict->Find(_key)))
+         (_list = (List *)cookieDict->Find(_key)))
       {
          _list->Start_Get();
-	 if ((cookie = (const HtCookie*)_list->Get_Next()))
-	    return cookie;
+   if ((cookie = (const HtCookie*)_list->Get_Next()))
+      return cookie;
       }
    }
    

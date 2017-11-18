@@ -32,7 +32,7 @@
 Metaphone::Metaphone(const HtConfiguration& config_arg) :
   Fuzzy(config_arg)
 {
-	name = "metaphone";
+  name = "metaphone";
 }
 
 
@@ -74,7 +74,7 @@ static char     vsvfn[26] = {
 #define frontv(x)  ((x) != '\0' && vscode(x) & 8)   /* EIY */
 #define noghf(x)   ((x) != '\0' && vscode(x) & 16)  /* BDH */
 
-#define	MAXPHONEMELEN	6
+#define  MAXPHONEMELEN  6
 
 void
 Metaphone::generateKey(char *word, String &key)
@@ -82,23 +82,23 @@ Metaphone::generateKey(char *word, String &key)
     if (!word || !*word)
       return;
 
-    char			*n;
-    String			ntrans;
-	
+    char      *n;
+    String      ntrans;
+  
     /*
      * Copy Word to internal buffer, dropping non-alphabetic characters
      * and converting to upper case
      */
 
     ntrans << "0000";
-	
+  
     for (; *word; word++)
     {
         if (isalpha(*word))
             ntrans << *word;
     }
     ntrans.uppercase();
-	
+  
     /* ntrans[0] will always be == 0 */
     n = ntrans.get();
     *n++ = 0;
@@ -146,10 +146,10 @@ Metaphone::generateKey(char *word, String &key)
     {
         /* Drop duplicates except for CC */
         if (*(n - 1) == *n && *n != 'C')
-	  continue;
-	/* Check for F J L M N R or first letter vowel */
-	if (same(*n) || *(n - 1) == '\0' && vowel(*n))
-	  key << *n;
+    continue;
+  /* Check for F J L M N R or first letter vowel */
+  if (same(*n) || *(n - 1) == '\0' && vowel(*n))
+    key << *n;
         else
         {
             switch (*n)
@@ -197,19 +197,19 @@ Metaphone::generateKey(char *word, String &key)
                  * not GG else K
                  *
                   */
-	      if ((*(n + 1) != 'G' || vowel(*(n + 2))) &&
-		  (*(n + 1) != 'N' || (*(n + 1) &&
-				       (*(n + 2) != 'E' ||
-					*(n + 3) != 'D'))) &&
-		  (*(n - 1) != 'D' || !frontv(*(n + 1))))
-		if (frontv(*(n + 1)) && *(n + 2) != 'G')
-		  key << 'J';
-	        else
-		  key << 'K';
-	      else if (*(n + 1) == 'H' && !noghf(*(n - 3)) &&
-		       *(n - 4) != 'H')
-		       key << 'F';
-	      break;
+        if ((*(n + 1) != 'G' || vowel(*(n + 2))) &&
+      (*(n + 1) != 'N' || (*(n + 1) &&
+               (*(n + 2) != 'E' ||
+          *(n + 3) != 'D'))) &&
+      (*(n - 1) != 'D' || !frontv(*(n + 1))))
+    if (frontv(*(n + 1)) && *(n + 2) != 'G')
+      key << 'J';
+          else
+      key << 'K';
+        else if (*(n + 1) == 'H' && !noghf(*(n - 3)) &&
+           *(n - 4) != 'H')
+           key << 'F';
+        break;
             case 'H':
                 /*
                  * H if before a vowel and not after
@@ -312,12 +312,12 @@ Metaphone::addWord(char *word)
         dict = new Dictionary;
     }
 
-    String	key;
+    String  key;
     generateKey(word, key);
 
     if (key.length() == 0)
         return;
-    String	*s = (String *) dict->Find(key);
+    String  *s = (String *) dict->Find(key);
     if (s)
     {
       //        if (mystrcasestr(s->get(), word) != 0)

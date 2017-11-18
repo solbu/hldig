@@ -41,7 +41,7 @@ WordRecordInfo::WordRecordInfo(const Configuration& config)
   else 
   if(!recorddesc.nocase_compare("none") || recorddesc.empty()) 
   {
-      default_type = WORD_RECORD_NONE;	
+      default_type = WORD_RECORD_NONE;  
   } 
   else 
   {

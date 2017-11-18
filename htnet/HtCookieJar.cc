@@ -39,9 +39,9 @@
    int HtCookieJar::debug = 0;
 
 ///////
-   // 	 Writes the HTTP request line given a cookie
+   //    Writes the HTTP request line given a cookie
    //    in a flexible way (chooses between the RFC2109
-   // 	 and the specification given by Netscape)
+   //    and the specification given by Netscape)
 ///////
    //
    // RFC2109: The syntax for the header is:
@@ -66,7 +66,7 @@ int HtCookieJar::WriteCookieHTTPRequest(const HtCookie &Cookie,
       case 1:
           // Writes the string to be sent to the web server
          if (NumCookies == 1)
-         	 RequestString << "Cookie: $Version=\"1\"; ";
+            RequestString << "Cookie: $Version=\"1\"; ";
          else
             RequestString << "; " ;
 
@@ -74,15 +74,15 @@ int HtCookieJar::WriteCookieHTTPRequest(const HtCookie &Cookie,
          if (debug > 6)
          {
             cout << "Cookie (RFC2109) info: NAME=" << Cookie.GetName()
-	       << " VALUE="<< Cookie.GetValue()
-      	       << " PATH=" << Cookie.GetPath();
+         << " VALUE="<< Cookie.GetValue()
+               << " PATH=" << Cookie.GetPath();
 
             if (Cookie.GetExpires())
-         	 cout << " EXPIRES=" << Cookie.GetExpires()->GetRFC850();
+            cout << " EXPIRES=" << Cookie.GetExpires()->GetRFC850();
 
             cout << endl;
          }
-	 
+   
          // Prepare cookie line for HTTP protocol
          RequestString << Cookie.GetName() << "=" << Cookie.GetValue();
 
@@ -91,33 +91,33 @@ int HtCookieJar::WriteCookieHTTPRequest(const HtCookie &Cookie,
 
          if (Cookie.GetDomain().length() > 0)
             RequestString << " ;$Domain=" << Cookie.GetDomain();
-	 break;
+   break;
 
       // Netscape specification
       case 0:
-      	 // Writes the string to be sent to the web server
-      	 if (NumCookies == 1)
-      	    RequestString << "Cookie: ";
-      	 else
-      	    RequestString << "; " ;
+         // Writes the string to be sent to the web server
+         if (NumCookies == 1)
+            RequestString << "Cookie: ";
+         else
+            RequestString << "; " ;
 
-      	 // Print complete debug info
-      	 if (debug > 6)
-      	 {
-      	    cout << "Cookie (Netscape spec) info: NAME=" << Cookie.GetName()
-      	       << " VALUE=" << Cookie.GetValue()
-      	       << " PATH=" << Cookie.GetPath();
+         // Print complete debug info
+         if (debug > 6)
+         {
+            cout << "Cookie (Netscape spec) info: NAME=" << Cookie.GetName()
+               << " VALUE=" << Cookie.GetValue()
+               << " PATH=" << Cookie.GetPath();
 
-      	    if (Cookie.GetExpires())
-      	       cout << " EXPIRES=" << Cookie.GetExpires()->GetRFC850();
+            if (Cookie.GetExpires())
+               cout << " EXPIRES=" << Cookie.GetExpires()->GetRFC850();
 
-      	    cout << endl;
-      	 }
+            cout << endl;
+         }
 
-      	 // Prepare cookie line for HTTP protocol
-      	 RequestString << Cookie.GetName() << "=" << Cookie.GetValue();
-      	 
-	 break;
+         // Prepare cookie line for HTTP protocol
+         RequestString << Cookie.GetName() << "=" << Cookie.GetValue();
+         
+   break;
    }
 
    return true;

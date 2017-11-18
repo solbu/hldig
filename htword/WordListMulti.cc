@@ -150,11 +150,11 @@ unsigned int WordListMulti::Size() const
     ListCursor cursor;
     for(dbs->Start_Get(cursor); (db = (WordDBMulti*)dbs->Get_Next(cursor));) {
       if(!db->words->isopen) {
-	if(db->words->Open(db->filename, O_RDONLY) != OK) return 0;
-	size += db->words->Size();
-	if(db->words->Close() != OK) return 0;
+  if(db->words->Open(db->filename, O_RDONLY) != OK) return 0;
+  size += db->words->Size();
+  if(db->words->Close() != OK) return 0;
       } else {
-	size += db->words->Size();
+  size += db->words->Size();
       }
     }
   }
@@ -263,11 +263,11 @@ int WordListMulti::Merge()
       // If keya lower than keyb
       //
       if(WordKey::Compare(context, keya, keyb) < 0) {
-	if(tmp.db->Put(0, keya, dataa, 0) != 0) return NOTOK;
-	reta = cursora->Get(keya, dataa, DB_NEXT);
+  if(tmp.db->Put(0, keya, dataa, 0) != 0) return NOTOK;
+  reta = cursora->Get(keya, dataa, DB_NEXT);
       } else {
-	if(tmp.db->Put(0, keyb, datab, 0) != 0) return NOTOK;
-	retb = cursorb->Get(keyb, datab, DB_NEXT);
+  if(tmp.db->Put(0, keyb, datab, 0) != 0) return NOTOK;
+  retb = cursorb->Get(keyb, datab, DB_NEXT);
       }
     }
 
@@ -288,11 +288,11 @@ int WordListMulti::Merge()
       WordDBCursor* cursor = reta == 0 ? cursora : cursorb;
       int ret = 0;
       while(ret == 0) {
-	if(tmp.db->Put(0, key, data, 0) != 0) return NOTOK;
-	ret = cursor->Get(key, data, DB_NEXT);
+  if(tmp.db->Put(0, key, data, 0) != 0) return NOTOK;
+  ret = cursor->Get(key, data, DB_NEXT);
       }
       if(ret != DB_NOTFOUND)
-	return NOTOK;
+  return NOTOK;
     }
       
     delete cursora;
@@ -312,9 +312,9 @@ int WordListMulti::Merge()
     }
     if(use_compress) {
       if(unlink((char*)(a->filename + String("_weakcmpr"))) != 0) {
-	const String message = String("WordListMulti::Merge: unlink ") + a->filename + String("_weakcmpr");
-	perror((const char*)message);
-	return NOTOK;
+  const String message = String("WordListMulti::Merge: unlink ") + a->filename + String("_weakcmpr");
+  perror((const char*)message);
+  return NOTOK;
       }
     }
 
@@ -328,9 +328,9 @@ int WordListMulti::Merge()
     }
     if(use_compress) {
       if(unlink((char*)(b->filename + String("_weakcmpr"))) != 0) {
-	const String message = String("WordListMulti::Merge: unlink ") + b->filename + String("_weakcmpr");
-	perror((const char*)message);
-	return NOTOK;
+  const String message = String("WordListMulti::Merge: unlink ") + b->filename + String("_weakcmpr");
+  perror((const char*)message);
+  return NOTOK;
       }
     }
 
@@ -344,9 +344,9 @@ int WordListMulti::Merge()
     }
     if(use_compress) {
       if(rename((char*)(tmpname + String("_weakcmpr")), (char*)(b->filename + String("_weakcmpr"))) != 0) {
-	const String message = String("WordListMulti::Merge: rename ") + tmpname + String("_weakcmpr ") + b->filename + String("_weakcmpr");
-	perror((const char*)message);
-	return NOTOK;
+  const String message = String("WordListMulti::Merge: rename ") + tmpname + String("_weakcmpr ") + b->filename + String("_weakcmpr");
+  perror((const char*)message);
+  return NOTOK;
       }
     }
 
@@ -391,16 +391,16 @@ int WordListMulti::Merge()
       // Rename db index into newname
       //
       if(rename((char*)db->filename, (char*)newname) != 0) {
-	const String message = String("WordListMulti::Merge: rename ") + db->filename + String(" ") + newname;
-	perror((const char*)message);
-	return NOTOK;
+  const String message = String("WordListMulti::Merge: rename ") + db->filename + String(" ") + newname;
+  perror((const char*)message);
+  return NOTOK;
       }
       if(use_compress) {
-	if(rename((char*)(db->filename + String("_weakcmpr")), (char*)(newname + String("_weakcmpr"))) != 0) {
-	  const String message = String("WordListMulti::Merge: rename ") + db->filename + String("_weakcmpr ") + newname + String("_weakcmpr");
-	  perror((const char*)message);
-	  return NOTOK;
-	}
+  if(rename((char*)(db->filename + String("_weakcmpr")), (char*)(newname + String("_weakcmpr"))) != 0) {
+    const String message = String("WordListMulti::Merge: rename ") + db->filename + String("_weakcmpr ") + newname + String("_weakcmpr");
+    perror((const char*)message);
+    return NOTOK;
+  }
       }
 
       db->filename = newname;
@@ -509,11 +509,11 @@ List *WordListMulti::Words()
 {
   return 0;
 #if 0
-  List		*list = 0;
-  String		key;
-  String		record;
-  WordReference	lastWord(context);
-  WordDBCursor*		cursor = db.Cursor();
+  List    *list = 0;
+  String    key;
+  String    record;
+  WordReference  lastWord(context);
+  WordDBCursor*    cursor = db.Cursor();
 
   if(!cursor) return 0;
 
@@ -526,12 +526,12 @@ List *WordListMulti::Words()
     return 0;
   list = new List;
   do {
-    WordReference	wordRef(context, key, record);
+    WordReference  wordRef(context, key, record);
     if(lastWord.Key().GetWord().empty() ||
        wordRef.Key().GetWord() != lastWord.Key().GetWord()) 
       {
-	list->Add(new String(wordRef.Key().GetWord()));
-	lastWord = wordRef;
+  list->Add(new String(wordRef.Key().GetWord()));
+  lastWord = wordRef;
       }
   } while (cursor->Get(key, record, DB_NEXT) == 0);
     

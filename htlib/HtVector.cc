@@ -83,8 +83,8 @@ void HtVector::Destroy()
   for (current_index = 0; current_index < element_count; current_index++)
     if (data[current_index])
       {
-	delete data[current_index];
-	data[current_index] = NULL;
+  delete data[current_index];
+  data[current_index] = NULL;
       }
   if (data)
     delete [] data;
@@ -188,11 +188,11 @@ Object *HtVector::Get_First()
 {
     if (!IsEmpty())
       {
-	current_index = 0;
-	return data[0];
+  current_index = 0;
+  return data[0];
       }
     else
-	return 0;
+  return 0;
 }
 
 
@@ -202,16 +202,16 @@ Object *HtVector::Get_First()
 //
 int HtVector::Index(Object *obj)
 {
-    int			index = 0;
+    int      index = 0;
 
     while (index < element_count && data[index] != obj)
     {
-	index++;
+  index++;
     }
     if (index >= element_count)
-	return -1;
+  return -1;
     else
-	return index;
+  return index;
 }
 
 
@@ -257,7 +257,7 @@ Object *HtVector::Previous(Object *next)
 //
 Object *HtVector::Copy() const
 {
-    HtVector	*vector = new HtVector(allocated);
+    HtVector  *vector = new HtVector(allocated);
 
     for(int i = 0; i < Count(); i++)
       vector->Add(data[i]->Copy());
@@ -289,22 +289,22 @@ void HtVector::Allocate(int capacity)
 {
   if (capacity > allocated) // Darn, we actually have to do work :-)
     {
-      Object	**old_data = data;
+      Object  **old_data = data;
 
       // Ensure we have more than the capacity and we aren't
       // always rebuilding the vector (which leads to quadratic behavior)
       while (allocated < capacity)
-	allocated *= 2;
+  allocated *= 2;
 
       data = new Object *[allocated];
 
       for (int i = 0; i < element_count; i++)
-	{
-	  data[i] = old_data[i];
-	  old_data[i] = NULL;
-	}
+  {
+    data[i] = old_data[i];
+    old_data[i] = NULL;
+  }
 
       if (old_data)
-	delete [] old_data;
+  delete [] old_data;
     }
 }

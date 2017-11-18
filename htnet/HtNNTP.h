@@ -52,7 +52,7 @@ class HtNNTP_Response : public Transport_Response
 ///////
    //    Construction / Destruction
 ///////
-	
+  
       HtNNTP_Response();
       ~HtNNTP_Response();
 
@@ -61,9 +61,9 @@ class HtNNTP_Response : public Transport_Response
    //    Interface
 ///////
 
-   	 // Reset
-	 void Reset();
-	
+      // Reset
+   void Reset();
+  
    protected:
 
    // Other header information
@@ -127,19 +127,19 @@ public:
    static int GetTotBytes () { return _tot_bytes; }
 
    static double GetAverageRequestTime ()
-   	 { return _tot_seconds?( ((double) _tot_seconds) / _tot_requests) : 0; }
+      { return _tot_seconds?( ((double) _tot_seconds) / _tot_requests) : 0; }
 
    static float GetAverageSpeed ()
-   	 { return _tot_bytes?( ((double) _tot_bytes) / _tot_seconds) : 0; }
+      { return _tot_bytes?( ((double) _tot_bytes) / _tot_seconds) : 0; }
 
    static void ResetStatistics ()
-   	 { _tot_seconds=0; _tot_requests=0; _tot_bytes=0;}
+      { _tot_seconds=0; _tot_requests=0; _tot_bytes=0;}
 
    // Show stats
    static ostream &ShowStatistics (ostream &out);
 
    // Proxy settings
-	void SetProxy(int aUse) { _useproxy=aUse; }
+  void SetProxy(int aUse) { _useproxy=aUse; }
 
 protected:
 
@@ -152,16 +152,16 @@ protected:
    ///////
 
    int      _bytes_read;        // Bytes read
-   URL		_url;               // URL to retrieve
-   int		_useproxy;          // Shall we use a proxy?
+   URL    _url;               // URL to retrieve
+   int    _useproxy;          // Shall we use a proxy?
 
 
    ///////
       //    NNTP Response information
    ///////
 
-   HtNNTP_Response	 _response; 	 // Object where response
-   	       	   	       	   	 // information will be stored into
+   HtNNTP_Response   _response;    // Object where response
+                                  // information will be stored into
 
    ///////
       //    Set the string of the command containing the request
@@ -185,9 +185,9 @@ protected:
    //    Static attributes and methods
 ///////
    
-   static int  _tot_seconds;  	 // Requests last (in seconds)
-   static int  _tot_requests; 	 // Number of requests
-   static int  _tot_bytes;    	 // Number of bytes read
+   static int  _tot_seconds;     // Requests last (in seconds)
+   static int  _tot_requests;    // Number of requests
+   static int  _tot_bytes;       // Number of bytes read
 
 };
 

@@ -17,86 +17,86 @@
 String
 NearQuery::OperatorString() const
 {
-	String s;
-	s << "near/" << distance;
-	return s;
+  String s;
+  s << "near/" << distance;
+  return s;
 }
 
 //
-//	l	r	nextTo
-//	-----------------------
-//	0	0	0
-//	0	b	0
-//	0	x	0
-//	a	0	0
-//	a	b	near(a, b)
-//	a	x	a
-//	x	0	0
-//	x	b	b
-//	x	x	x
+//  l  r  nextTo
+//  -----------------------
+//  0  0  0
+//  0  b  0
+//  0  x  0
+//  a  0  0
+//  a  b  near(a, b)
+//  a  x  a
+//  x  0  0
+//  x  b  b
+//  x  x  x
 //
 ResultList *
 NearQuery::Evaluate()
 {
-	ResultList *result = 0;
-	Query *left = (Query *)operands[0];
-	Query *right = (Query *)operands[1];
+  ResultList *result = 0;
+  Query *left = (Query *)operands[0];
+  Query *right = (Query *)operands[1];
 
-	if(left && right)
-	{
-		ResultList *l = left->GetResults();
-		if(l)
-		{
-			ResultList *r = right->GetResults();
-			if(r)
-			{
-				if(l->IsIgnore())
-				{
-					result = new ResultList(*r);
-				}
-				else if(r->IsIgnore())
-				{
-					result = new ResultList(*l);
-				}
-				else
-				{
-					result = Near(*l, *r);
-				}
-			}
-		}
-	}
-	return result;
+  if(left && right)
+  {
+    ResultList *l = left->GetResults();
+    if(l)
+    {
+      ResultList *r = right->GetResults();
+      if(r)
+      {
+        if(l->IsIgnore())
+        {
+          result = new ResultList(*r);
+        }
+        else if(r->IsIgnore())
+        {
+          result = new ResultList(*l);
+        }
+        else
+        {
+          result = Near(*l, *r);
+        }
+      }
+    }
+  }
+  return result;
 }
 
 ResultList *
 NearQuery::Near(const ResultList &l, const ResultList &r)
 {
-	ResultList *result = 0;
-	DictionaryCursor c;
-	l.Start_Get(c);
-	DocMatch *match = (DocMatch *)l.Get_NextElement(c);
-	while(match)
-	{
-		DocMatch *confirm = r.find(match->GetId());
-		if(confirm)
-		{
-			List *locations = MergeLocations(
-						*match->GetLocations(),
-						*confirm->GetLocations());
-			if(locations)
-			{
-				if(!result)
-				{
-					result = new ResultList;
-				}
-				DocMatch *copy = new DocMatch(*match);
-				copy->SetLocations(locations);
-				result->add(copy);
-			}
-		}
-		match = (DocMatch *)l.Get_NextElement(c);
-	}
-	return result;
+  ResultList *result = 0;
+  DictionaryCursor c;
+  l.Start_Get(c);
+  DocMatch *match = (DocMatch *)l.Get_NextElement(c);
+  while(match)
+  {
+    DocMatch *confirm = r.find(match->GetId());
+    if(confirm)
+    {
+      List *locations = MergeLocations(
+            *match->GetLocations(),
+            *confirm->GetLocations());
+      if(locations)
+      {
+        if(!result)
+        {
+          result = new ResultList;
+        }
+        DocMatch *copy = new DocMatch(*match);
+        copy->SetLocations(locations);
+        result->add(copy);
+      }
+    }
+    match = (DocMatch *)l.Get_NextElement(c);
+  }
+  return result;
 }
 
 //
@@ -106,38 +106,38 @@ NearQuery::Near(const ResultList &l, const ResultList &r)
 List *
 NearQuery::MergeLocations(const List &p, const List &q)
 {
-	List *result = 0;
-	ListCursor pc;
-	p.Start_Get(pc);
-	const Location *left = (const Location *)p.Get_Next(pc);
-	while(left)
-	{
-		ListCursor qc;
-		q.Start_Get(qc);
-		const Location *right = (const Location *)q.Get_Next(qc);
-		while(right)
-		{
-			int dist = right->from - left->to;
-			if(dist < 1)
-			{
-				dist = left->from - right->to;
-				if(dist < 1)
-				{
-					dist = 0;
-				}
-			}
-			if(unsigned(dist) <= distance)
-			{
-				if(!result)
-				{
-					result = new List;
-				}
-				result->Add(new Location(*left));
-				result->Add(new Location(*right));
-			}
-			right = (const Location *)q.Get_Next(qc);
-		}
-		left = (const Location *)p.Get_Next(pc);
-	}
-	return result;
+  List *result = 0;
+  ListCursor pc;
+  p.Start_Get(pc);
+  const Location *left = (const Location *)p.Get_Next(pc);
+  while(left)
+  {
+    ListCursor qc;
+    q.Start_Get(qc);
+    const Location *right = (const Location *)q.Get_Next(qc);
+    while(right)
+    {
+      int dist = right->from - left->to;
+      if(dist < 1)
+      {
+        dist = left->from - right->to;
+        if(dist < 1)
+        {
+          dist = 0;
+        }
+      }
+      if(unsigned(dist) <= distance)
+      {
+        if(!result)
+        {
+          result = new List;
+        }
+        result->Add(new Location(*left));
+        result->Add(new Location(*right));
+      }
+      right = (const Location *)q.Get_Next(qc);
+    }
+    left = (const Location *)p.Get_Next(pc);
+  }
+  return result;
 }

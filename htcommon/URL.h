@@ -49,30 +49,30 @@ public:
     void user(const String &u)      {_user = u;}
 
     const String &get() const {return _url;}
-    void		dump();
-    void		normalize();
-    void		rewrite();
+    void    dump();
+    void    normalize();
+    void    rewrite();
     const String &signature();
 
     const URL &operator = (const URL &rhs);
 
 private:
-    String		_url;
-    String		_path;
-    String		_service;
-    String		_host;
-    int			_port;
-    int			_normal;
-    int			_hopcount;
-    String		_signature;
-    String		_user;
+    String    _url;
+    String    _path;
+    String    _service;
+    String    _host;
+    int      _port;
+    int      _normal;
+    int      _hopcount;
+    String    _signature;
+    String    _user;
 
-    void		removeIndex(String &, String &);
+    void    removeIndex(String &, String &);
     void                normalizePath();
-    void		ServerAlias();
-    void		constructURL();
+    void    ServerAlias();
+    void    constructURL();
     // Number of slashes following service specifier.  eg service("http")=2
-    static int		slashes(const String &);
+    static int    slashes(const String &);
 };
 
 
@@ -86,11 +86,11 @@ private:
 // encode URL parameter values individually before piecing together the whole
 // query string using reserved characters.
 
-#define UNRESERVED	"-_.!~*"
+#define UNRESERVED  "-_.!~*"
 
 //String &encodeURL(String &, char *valid = "?_@.=&/:");
 //String &encodeURL(String &, char *reserved = ";/?:@&=+$,");
-//	       	              char *unreserved = "-_.!~*'()");
+//                         char *unreserved = "-_.!~*'()");
 String &encodeURL(String &, char *valid = (char *)UNRESERVED);
 
 String &decodeURL(String &);

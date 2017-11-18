@@ -42,15 +42,15 @@ using namespace std;
 ///////
 
    // Debug level
-   	 int Transport::debug = 0;
+      int Transport::debug = 0;
 
    // Default parser content-type string
-      	 String Transport::_default_parser_content_type = 0;
-	 
+         String Transport::_default_parser_content_type = 0;
+   
    // Statistics
-   	 int Transport::_tot_open = 0;
-   	 int Transport::_tot_close = 0;
-   	 int Transport::_tot_changes = 0;
+      int Transport::_tot_open = 0;
+      int Transport::_tot_close = 0;
+      int Transport::_tot_changes = 0;
 
 
 ///////
@@ -99,13 +99,13 @@ Transport_Response::~Transport_Response()
    
    if(_modification_time)
    {
-   	 delete _modification_time;
+      delete _modification_time;
       _modification_time=0;
    }
 
    if(_access_time)
    {
-   	 delete _access_time;
+      delete _access_time;
       _access_time=0;
    }
 
@@ -120,13 +120,13 @@ void Transport_Response::Reset()
    // Check if an HtDateTime object exists, and delete it
    if(_modification_time)
    {
-   	 delete _modification_time;
+      delete _modification_time;
       _modification_time=0;
    }
 
    if(_access_time)
    {
-   	 delete _access_time;
+      delete _access_time;
       _access_time=0;
    }
 
@@ -210,9 +210,9 @@ ostream &Transport::ShowStatistics (ostream &out)
 
    // Open the connection
    // Returns
-   // 	 -      0 if failed
-   // 	 -     -1 if already open
-   // 	 -      1 if ok
+   //    -      0 if failed
+   //    -     -1 if already open
+   //    -      1 if ok
 
 int Transport::OpenConnection()
 {
@@ -275,9 +275,9 @@ int Transport::AssignConnectionPort()
 
    // Connect
    // Returns
-   // 	 -      0 if failed
-   // 	 -     -1 if already connected
-   // 	 -      1 if ok
+   //    -      0 if failed
+   //    -     -1 if already connected
+   //    -      1 if ok
 
 int Transport::Connect()
 {
@@ -294,7 +294,7 @@ int Transport::Connect()
 
    if ( _connection->Connect() == NOTOK) return 0;  // Connection failed
    
-   return 1;	// Connected
+   return 1;  // Connected
 }
 
 
@@ -313,8 +313,8 @@ void Transport::FlushConnection()
 
    // Close the connection
    // Returns
-   // 	 -      0 if not open
-   // 	 -      1 if closed ok
+   //    -      0 if not open
+   //    -      1 if closed ok
 
 
 int Transport::CloseConnection()
@@ -329,7 +329,7 @@ int Transport::CloseConnection()
    }
 
    if(_connection->IsOpen())
-   	 _connection->Close(); 	// Close the connection
+      _connection->Close();   // Close the connection
    else return 0;
 
    _tot_close ++;
@@ -349,11 +349,11 @@ void Transport::SetConnection (const String &host, int port)
       bool ischanged = false;
 
       // Checking the connection server   
-      if(_host != host)   	 // server is gonna change
+      if(_host != host)      // server is gonna change
         ischanged=true;
 
       // Checking the connection port
-      if( _port != port )  	 // the port is gonna change
+      if( _port != port )     // the port is gonna change
         ischanged=true;
 
       if (ischanged)
@@ -388,11 +388,11 @@ HtDateTime *Transport::NewDate(const char *datestring)
 
    if(df == DateFormat_NotRecognized)
    {
-   	 // Not recognized
-	 if(debug > 0)
-   	 	 cout << "Date Format not recognized: " << datestring << endl;
-	 
-	 return 0;
+      // Not recognized
+   if(debug > 0)
+         cout << "Date Format not recognized: " << datestring << endl;
+   
+   return 0;
    }
 
    HtDateTime *dt = new HtDateTime;
@@ -401,21 +401,21 @@ HtDateTime *Transport::NewDate(const char *datestring)
    
    switch(df)
    {
-	       // Asc Time format
-   	 case DateFormat_AscTime:
-   	       	dt->SetAscTime((char *)datestring);
-   	 	       break;
-	       // RFC 1123
-   	 case DateFormat_RFC1123:
-   	       	dt->SetRFC1123((char *)datestring);
-   	 	       break;
-		  // RFC 850
-   	 case DateFormat_RFC850:
-   	       	dt->SetRFC850((char *)datestring);
-   	 	       break;
+         // Asc Time format
+      case DateFormat_AscTime:
+              dt->SetAscTime((char *)datestring);
+               break;
+         // RFC 1123
+      case DateFormat_RFC1123:
+              dt->SetRFC1123((char *)datestring);
+               break;
+      // RFC 850
+      case DateFormat_RFC850:
+              dt->SetRFC850((char *)datestring);
+               break;
          default:
-	        cout << "Date Format not handled: " << (int)df << endl;
-	        break;
+          cout << "Date Format not handled: " << (int)df << endl;
+          break;
    }
 
    return dt;
@@ -430,20 +430,20 @@ Transport::DateFormat Transport::RecognizeDateFormat (const char *datestring)
    
    if((s=strchr(datestring, ',')))
    {
-   	 // A comma is present.
-	 // Two chances: RFC1123 or RFC850
+      // A comma is present.
+   // Two chances: RFC1123 or RFC850
 
-   	 if(strchr(s, '-'))
-	    return DateFormat_RFC850;  // RFC 850 recognized   
-	 else
-	    return DateFormat_RFC1123; // RFC 1123 recognized
+      if(strchr(s, '-'))
+      return DateFormat_RFC850;  // RFC 850 recognized   
+   else
+      return DateFormat_RFC1123; // RFC 1123 recognized
    }
    else
    {
       // No comma present
-	 
-	 // Let's try C Asctime:    Sun Nov  6 08:49:37 1994
-	 if(strlen(datestring) == 24) return DateFormat_AscTime;
+   
+   // Let's try C Asctime:    Sun Nov  6 08:49:37 1994
+   if(strlen(datestring) == 24) return DateFormat_AscTime;
    }
    
    return DateFormat_NotRecognized;
@@ -459,53 +459,53 @@ Transport::DateFormat Transport::RecognizeDateFormat (const char *datestring)
 
 void Transport::SetHTTPBasicAccessAuthorizationString(String &dest, const String& s)
 {
-    static char	tbl[64] =
+    static char  tbl[64] =
     {
-	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-	'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-	'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-	'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-	'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-	'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-	'w', 'x', 'y', 'z', '0', '1', '2', '3',
-	'4', '5', '6', '7', '8', '9', '+', '/'
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+  'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+  'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+  'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+  'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+  'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+  'w', 'x', 'y', 'z', '0', '1', '2', '3',
+  '4', '5', '6', '7', '8', '9', '+', '/'
     };
     dest.trunc();
-    const char	*p;
-    int		n = s.length();
-    int		ch;
+    const char  *p;
+    int    n = s.length();
+    int    ch;
 
     for (p = s.get(); n > 2; n -= 3, p += 3)
     {
-	ch = *p >> 2;
-	dest << tbl[ch & 077];
-	ch = ((*p << 4) & 060) | ((p[1] >> 4) & 017);
-	dest << tbl[ch & 077];
-	ch = ((p[1] << 2) & 074) | ((p[2] >> 6) & 03);
-	dest << tbl[ch & 077];
-	ch = p[2] & 077;
-	dest << tbl[ch & 077];
+  ch = *p >> 2;
+  dest << tbl[ch & 077];
+  ch = ((*p << 4) & 060) | ((p[1] >> 4) & 017);
+  dest << tbl[ch & 077];
+  ch = ((p[1] << 2) & 074) | ((p[2] >> 6) & 03);
+  dest << tbl[ch & 077];
+  ch = p[2] & 077;
+  dest << tbl[ch & 077];
     }
 
     if (n != 0)
     {
-	char c1 = *p;
-	char c2 = n == 1 ? 0 : p[1];
+  char c1 = *p;
+  char c2 = n == 1 ? 0 : p[1];
 
-	ch = c1 >> 2;
-	dest << tbl[ch & 077];
+  ch = c1 >> 2;
+  dest << tbl[ch & 077];
 
-	ch = ((c1 << 4) & 060) | ((c2 >> 4) & 017);
-	dest << tbl[ch & 077];
+  ch = ((c1 << 4) & 060) | ((c2 >> 4) & 017);
+  dest << tbl[ch & 077];
 
-	if (n == 1)
-	    dest << '=';
-	else
+  if (n == 1)
+      dest << '=';
+  else
         {
-	    ch = (c2 << 2) & 074;
-	    dest << tbl[ch & 077];
+      ch = (c2 << 2) & 074;
+      dest << tbl[ch & 077];
         }
-	dest << '=';
+  dest << '=';
     }
 }
 

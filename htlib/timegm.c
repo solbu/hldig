@@ -54,8 +54,8 @@ static struct tm *my_mktime_gmtime_r (const time_t *t, struct tm *tp)
 }
 
 time_t __mktime_internal(struct tm *,
-			 struct tm *(*) (const time_t *, struct tm *),
-			 time_t *);
+       struct tm *(*) (const time_t *, struct tm *),
+       time_t *);
 
 time_t Httimegm(tmp)
 struct tm *tmp;
@@ -70,8 +70,8 @@ struct tm *tmp;
 void parse_time(char *s, struct tm *tm)
 {
   sscanf(s, "%d.%d.%d %d:%d:%d", 
-	 &tm->tm_year, &tm->tm_mon, &tm->tm_mday,
-	 &tm->tm_hour, &tm->tm_min, &tm->tm_sec);
+   &tm->tm_year, &tm->tm_mon, &tm->tm_mday,
+   &tm->tm_hour, &tm->tm_min, &tm->tm_sec);
   tm->tm_year -= 1900;
   tm->tm_mon--;
 }
@@ -79,18 +79,18 @@ void parse_time(char *s, struct tm *tm)
 void print_time(struct tm *tm)
 {
   fprintf(stderr, "%04d.%02d.%02d %02d:%02d:%02d",
-	  tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
-	  tm->tm_hour, tm->tm_min, tm->tm_sec);
+    tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
+    tm->tm_hour, tm->tm_min, tm->tm_sec);
 }
 
 int time_equal(struct tm *tm1, struct tm *tm2)
 {
   return ((tm1->tm_year == tm2->tm_year) &&
-	  (tm1->tm_mon == tm2->tm_mon) &&
-	  (tm1->tm_mday == tm2->tm_mday) &&
-	  (tm1->tm_hour == tm2->tm_hour) && 
-	  (tm1->tm_min == tm2->tm_min) &&
-	  (tm1->tm_sec == tm2->tm_sec));
+    (tm1->tm_mon == tm2->tm_mon) &&
+    (tm1->tm_mday == tm2->tm_mday) &&
+    (tm1->tm_hour == tm2->tm_hour) && 
+    (tm1->tm_min == tm2->tm_min) &&
+    (tm1->tm_sec == tm2->tm_sec));
 }
 
 int main(void)

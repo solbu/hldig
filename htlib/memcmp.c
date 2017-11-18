@@ -9,11 +9,11 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 /*
  * Copyright (c) 1990, 1993
- *	The Regents of the University of California.  All rights reserved.
+ *  The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -56,17 +56,17 @@
  */
 int
 memcmp(s1, s2, n)
-	char *s1, *s2;
-	size_t n;
+  char *s1, *s2;
+  size_t n;
 {
-	if (n != 0) {
-		unsigned char *p1 = (unsigned char *)s1,
-			      *p2 = (unsigned char *)s2;
-		do {
-			if (*p1++ != *p2++)
-				return (*--p1 - *--p2);
-		} while (--n != 0);
-	}
-	return (0);
+  if (n != 0) {
+    unsigned char *p1 = (unsigned char *)s1,
+            *p2 = (unsigned char *)s2;
+    do {
+      if (*p1++ != *p2++)
+        return (*--p1 - *--p2);
+    } while (--n != 0);
+  }
+  return (0);
 }
 #endif /* HAVE_MEMCMP */

@@ -41,10 +41,10 @@
 //
 // Possible values of the type data field
 //
-#define WORD_RECORD_INVALID	0
-#define WORD_RECORD_DATA	1
-#define WORD_RECORD_STATS	2
-#define WORD_RECORD_NONE	3
+#define WORD_RECORD_INVALID  0
+#define WORD_RECORD_DATA  1
+#define WORD_RECORD_STATS  2
+#define WORD_RECORD_NONE  3
 
 #ifndef SWIG
 //

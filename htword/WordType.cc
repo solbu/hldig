@@ -4,7 +4,7 @@
 // WordType:  Wrap some attributes to make is...() type
 //            functions and other common functions without having to manage
 //            the attributes or the exact attribute combination semantics.
-//	      Configuration parameter used:
+//        Configuration parameter used:
 //            valid_punctuation,extra_word_characters,minimum_word_length,
 //            maximum_word_length,allow_numbers,bad_word_list
 //
@@ -55,42 +55,42 @@ WordType::WordType(const Configuration &config)
   {
     chrtypes[i] = 0;
     if (isalpha(i))
-	chrtypes[i] |= WORD_TYPE_ALPHA;
+  chrtypes[i] |= WORD_TYPE_ALPHA;
     if (isdigit(i))
-	chrtypes[i] |= WORD_TYPE_DIGIT;
+  chrtypes[i] |= WORD_TYPE_DIGIT;
     if (iscntrl(i))
-	chrtypes[i] |= WORD_TYPE_CONTROL;
+  chrtypes[i] |= WORD_TYPE_CONTROL;
     if (strchr(extra_word_chars, i))
-	chrtypes[i] |= WORD_TYPE_EXTRA;
+  chrtypes[i] |= WORD_TYPE_EXTRA;
     if (strchr(valid_punct, i))
-	chrtypes[i] |= WORD_TYPE_VALIDPUNCT;
+  chrtypes[i] |= WORD_TYPE_VALIDPUNCT;
   }
 
   {
     const String filename = config["bad_word_list"];
-    FILE	*fl = fopen(filename, "r");
-    char	buffer[1000];
-    char	*word;
+    FILE  *fl = fopen(filename, "r");
+    char  buffer[1000];
+    char  *word;
     String      new_word;
 
     // Read in the badwords file (it's just a text file)
     while (fl && fgets(buffer, sizeof(buffer), fl))
       {
-	word = strtok(buffer, "\r\n \t");
-	if (word && *word)
-	  {
-	    int flags;
-	    new_word = word;
-	    if((flags = Normalize(new_word)) & WORD_NORMALIZE_NOTOK) {
-	      fprintf(stderr, "WordType::WordType: reading bad words from %s found %s, ignored because %s\n", (const char*)filename, word, (char*)NormalizeStatus(flags & WORD_NORMALIZE_NOTOK));
-	    } else {
-	      badwords.Add(new_word, 0);
-	    }
-	  }
+  word = strtok(buffer, "\r\n \t");
+  if (word && *word)
+    {
+      int flags;
+      new_word = word;
+      if((flags = Normalize(new_word)) & WORD_NORMALIZE_NOTOK) {
+        fprintf(stderr, "WordType::WordType: reading bad words from %s found %s, ignored because %s\n", (const char*)filename, word, (char*)NormalizeStatus(flags & WORD_NORMALIZE_NOTOK));
+      } else {
+        badwords.Add(new_word, 0);
+      }
+    }
     }
 
     if (fl)
-	fclose(fl);
+  fclose(fl);
   }
 }
 
@@ -201,19 +201,19 @@ WordType::NormalizeStatus(int flags)
 String
 WordType::WordToken(const String tokens, int &current) const
 {
-    unsigned char	text = tokens[current];
-    String		ret;
+    unsigned char  text = tokens[current];
+    String    ret;
 
     while (text && !IsStrictChar(text))
       text = tokens[++current];
 
     if (text)
     {
-	while (text && IsChar(text))
-	  {
-	    ret << text;
-	    text = tokens[++current];
-	  }
+  while (text && IsChar(text))
+    {
+      ret << text;
+      text = tokens[++current];
+    }
     }
     return ret;
 }

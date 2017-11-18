@@ -2,11 +2,11 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 /*
  * Copyright (c) 1995, 1996
- *	The Regents of the University of California.  All rights reserved.
+ *  The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Margo Seltzer.
@@ -39,7 +39,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)db_log2.c	11.2 (Sleepycat) 9/9/99";
+static const char sccsid[] = "@(#)db_log2.c  11.2 (Sleepycat) 9/9/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -54,12 +54,12 @@ static const char sccsid[] = "@(#)db_log2.c	11.2 (Sleepycat) 9/9/99";
  */
 u_int32_t
 CDB___db_log2(num)
-	u_int32_t num;
+  u_int32_t num;
 {
-	u_int32_t i, limit;
+  u_int32_t i, limit;
 
-	limit = 1;
-	for (i = 0; limit < num; limit = limit << 1)
-		++i;
-	return (i);
+  limit = 1;
+  for (i = 0; limit < num; limit = limit << 1)
+    ++i;
+  return (i);
 }

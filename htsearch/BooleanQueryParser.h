@@ -21,23 +21,23 @@
 class BooleanQueryParser : public QueryParser
 {
 public:
-	BooleanQueryParser() {}
-	~BooleanQueryParser() {}
+  BooleanQueryParser() {}
+  ~BooleanQueryParser() {}
 
 private:
-	// recursive parse levels
-	// returning constructed query trees
-	Query *ParseExpression();
-	Query *ParseAnd();
-	Query *ParseNot();
-	Query *ParseNear();
-	Query *ParseFactor();
+  // recursive parse levels
+  // returning constructed query trees
+  Query *ParseExpression();
+  Query *ParseAnd();
+  Query *ParseNot();
+  Query *ParseNear();
+  Query *ParseFactor();
 
-	// lexer access needed by parent class
-	QueryLexer &Token() { return token; }
+  // lexer access needed by parent class
+  QueryLexer &Token() { return token; }
 
-	// the lexical analyzer
-	BooleanLexer token;
+  // the lexical analyzer
+  BooleanLexer token;
 };
 
 #endif

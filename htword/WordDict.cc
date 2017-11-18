@@ -18,8 +18,8 @@
 #include "WordDict.h"
 #include "WordListOne.h"
 
-#define WORD_DICT_CURSOR_FIRST	1
-#define WORD_DICT_CURSOR_NEXT	2
+#define WORD_DICT_CURSOR_FIRST  1
+#define WORD_DICT_CURSOR_NEXT  2
 
 class WordDictCursor {
 public:

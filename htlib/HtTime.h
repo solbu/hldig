@@ -36,13 +36,13 @@ class HtTime
     static inline double DTime()
     {
 #ifdef _MSC_VER /* _WIN32 */
-	struct timeb tb;
-	ftime(&tb);
-	return((double)((tb.millitm/1000)+tb.time+tb.timezone));
+  struct timeb tb;
+  ftime(&tb);
+  return((double)((tb.millitm/1000)+tb.time+tb.timezone));
 #else
-	struct timeval tv;
-	gettimeofday(&tv,NULL);
-	return(tv.tv_usec/1000000.0+tv.tv_sec);
+  struct timeval tv;
+  gettimeofday(&tv,NULL);
+  return(tv.tv_usec/1000000.0+tv.tv_sec);
 #endif
 
     }
@@ -50,42 +50,42 @@ class HtTime
     static inline double DTime(double T0)
     {
 #ifdef _MSC_VER /* _WIN32 */
-	struct timeb tb;
-	ftime(&tb);
-	return((double)(((tb.millitm/1000)+tb.time+tb.timezone))-T0);
+  struct timeb tb;
+  ftime(&tb);
+  return((double)(((tb.millitm/1000)+tb.time+tb.timezone))-T0);
 #else
-	struct timeval tv;
-	gettimeofday(&tv,NULL);
-	return((tv.tv_usec/1000000.0+tv.tv_sec)-T0);
+  struct timeval tv;
+  gettimeofday(&tv,NULL);
+  return((tv.tv_usec/1000000.0+tv.tv_sec)-T0);
 #endif
     }
 
     // Do something every x seconds
     class Periodic
     {
-	double t0;
-	double last;
-	double period;
+  double t0;
+  double last;
+  double period;
     public:
-	double total(){return(HtTime::DTime(t0));}
-	void change_period(double nperiod){period=nperiod;}
-	int operator()(double *prperiod=NULL)
-	{
-	    double t=HtTime::DTime(t0);
-	    if(prperiod){*prperiod=t-last;}
-	    if((t-last)>period)
-	    {
-		last=t;
-		return(1);
-	    }
-	    return(0);
-	}
-	Periodic(double nperiod=.1)
-	{
-	    period=nperiod;
-	    t0=HtTime::DTime();
-	    last=0;
-	}
+  double total(){return(HtTime::DTime(t0));}
+  void change_period(double nperiod){period=nperiod;}
+  int operator()(double *prperiod=NULL)
+  {
+      double t=HtTime::DTime(t0);
+      if(prperiod){*prperiod=t-last;}
+      if((t-last)>period)
+      {
+    last=t;
+    return(1);
+      }
+      return(0);
+  }
+  Periodic(double nperiod=.1)
+  {
+      period=nperiod;
+      t0=HtTime::DTime();
+      last=0;
+  }
     };
 
 
@@ -94,30 +94,30 @@ class HtTime
     // print progression message every x seconds
     class Progression
     {
-	double t0;
-	double last;
-	double period;
-	char *label;
+  double t0;
+  double last;
+  double period;
+  char *label;
     public:
-	double total(){return(HtTime::DTime()-t0);}
-	int operator()(double x)
-	{
-	    double t=HtTime::DTime()-t0;
-	    if((t-last)>period)
-	    {
-		last=t;
-		printf("%s (%f): %f\n",label,t,x);
-		return(1);
-	    }
-	    return(0);
-	}
-	Progression(double nperiod=.1,char *nlabel=(char *)"progression")
-	{
-	    label=nlabel;
-	    period=nperiod;
-	    t0=HtTime::DTime();
-	    last=0;
-	}
+  double total(){return(HtTime::DTime()-t0);}
+  int operator()(double x)
+  {
+      double t=HtTime::DTime()-t0;
+      if((t-last)>period)
+      {
+    last=t;
+    printf("%s (%f): %f\n",label,t,x);
+    return(1);
+      }
+      return(0);
+  }
+  Progression(double nperiod=.1,char *nlabel=(char *)"progression")
+  {
+      label=nlabel;
+      period=nperiod;
+      t0=HtTime::DTime();
+      last=0;
+  }
     };
 #endif
 };

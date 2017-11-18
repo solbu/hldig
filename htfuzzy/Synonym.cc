@@ -66,7 +66,7 @@ int
 Synonym::createDB(const HtConfiguration &config)
 {
     String      tmpdir = getenv("TMPDIR");
-    String 	dbFile;
+    String   dbFile;
 
 #if defined(LIBHTDIG) || defined(LIBHTDIGPHP) || defined(_MSC_VER) //WIN32
     int ret = -1;
@@ -81,64 +81,64 @@ Synonym::createDB(const HtConfiguration &config)
 
     dbFile << "/synonyms.db";
 
-    char	input[1000];
-    FILE	*fl;
-	
+    char  input[1000];
+    FILE  *fl;
+  
     const String sourceFile = config["synonym_dictionary"];
 
     fl = fopen(sourceFile, "r");
     if (fl == NULL)
     {
-	cout << "htfuzzy/synonyms: unable to open " << sourceFile << endl;
-	cout << "htfuzzy/synonyms: Use the 'synonym_dictionary' attribute\n";
-	cout << "htfuzzy/synonyms: to specify the file that contains the synonyms\n";
-	return NOTOK;
+  cout << "htfuzzy/synonyms: unable to open " << sourceFile << endl;
+  cout << "htfuzzy/synonyms: Use the 'synonym_dictionary' attribute\n";
+  cout << "htfuzzy/synonyms: to specify the file that contains the synonyms\n";
+  return NOTOK;
     }
 
-    Database	*db = Database::getDatabaseInstance(DB_HASH);
+    Database  *db = Database::getDatabaseInstance(DB_HASH);
 
     if (db->OpenReadWrite(dbFile.get(), 0664) == NOTOK)
     {
-	delete db;
-	db = 0;
-	return NOTOK;
+  delete db;
+  db = 0;
+  return NOTOK;
     }
 
-    String	data;
-    String	word;
-    int		count = 0;
+    String  data;
+    String  word;
+    int    count = 0;
     while (fgets(input, sizeof(input), fl))
     {
-	StringList	sl(input, " \t\r\n");
-	if (sl.Count() < 2)
-	{		// Avoid segfault caused by calling Database::Put()
-	    if (debug)	// with negative length for data field
-	    {
-		cout<<"htfuzzy/synonyms: Rejected line with less than 2 words: "
-		     << input << endl;
-		cout.flush();
-	    }
-	    continue;
-	}
-	for (int i = 0; i < sl.Count(); i++)
-	{
-	    data = 0;
-	    for (int j = 0; j < sl.Count(); j++)
-	    {
-		if (i != j)
-		    data << sl[j] << ' ';
-	    }
-	    word = sl[i];
-	    word.lowercase();
-	    data.lowercase();
-	    db->Put(word, String(data.get(), data.length() - 1));
-	    if (debug && (count % 10) == 0)
-	    {
+  StringList  sl(input, " \t\r\n");
+  if (sl.Count() < 2)
+  {    // Avoid segfault caused by calling Database::Put()
+      if (debug)  // with negative length for data field
+      {
+    cout<<"htfuzzy/synonyms: Rejected line with less than 2 words: "
+         << input << endl;
+    cout.flush();
+      }
+      continue;
+  }
+  for (int i = 0; i < sl.Count(); i++)
+  {
+      data = 0;
+      for (int j = 0; j < sl.Count(); j++)
+      {
+    if (i != j)
+        data << sl[j] << ' ';
+      }
+      word = sl[i];
+      word.lowercase();
+      data.lowercase();
+      db->Put(word, String(data.get(), data.length() - 1));
+      if (debug && (count % 10) == 0)
+      {
                 cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
-		cout.flush();
-	    }
-	    count++;
-	}
+    cout.flush();
+      }
+      count++;
+  }
     }
     fclose(fl);
     db->Close();
@@ -170,11 +170,11 @@ Synonym::createDB(const HtConfiguration &config)
 #else //This code uses a system call - Phase this out
 
     struct stat stat_buf;
-    String mv("mv");	// assume it's in the PATH if predefined setting fails
+    String mv("mv");  // assume it's in the PATH if predefined setting fails
     if ((stat(MV, &stat_buf) != -1) && S_ISREG(stat_buf.st_mode))
-	mv = MV;
+  mv = MV;
     system(form("%s %s %s",
-		mv.get(), dbFile.get(), config["synonym_db"].get()));
+    mv.get(), dbFile.get(), config["synonym_db"].get()));
 
 #endif
 
@@ -186,8 +186,8 @@ Synonym::createDB(const HtConfiguration &config)
 int
 Synonym::openIndex()
 {
-    const String	dbFile = config["synonym_db"];
-	
+    const String  dbFile = config["synonym_db"];
+  
     if (db)
     {
         db->Close();
@@ -197,9 +197,9 @@ Synonym::openIndex()
     db = Database::getDatabaseInstance(DB_HASH);
     if (db->OpenRead(dbFile) == NOTOK)
     {
-	delete db;
-	db = 0;
-	return NOTOK;
+  delete db;
+  db = 0;
+  return NOTOK;
     }
     return OK;
 }
@@ -209,17 +209,17 @@ Synonym::openIndex()
 void
 Synonym::getWords(char *originalWord, List &words)
 {
-    String	data;
-    String	stripped = originalWord;
+    String  data;
+    String  stripped = originalWord;
     HtStripPunctuation(stripped);
 
     if (db && db->Get(stripped, data) == OK)
     {
-	char	*token = strtok(data.get(), " ");
-	while (token)
-	{
-	    words.Add(new String(token));
-	    token = strtok(0, " ");
-	}
+  char  *token = strtok(data.get(), " ");
+  while (token)
+  {
+      words.Add(new String(token));
+      token = strtok(0, " ");
+  }
     }
 }

@@ -45,7 +45,7 @@ Exact::~Exact()
 void
 Exact::getWords(char *w, List &words)
 {
-    String	stripped = w;
+    String  stripped = w;
     HtStripPunctuation(stripped);
 
     words.Add(new String(stripped));

@@ -18,8 +18,8 @@
 // $Id: HtHeap.h,v 1.7 2004/05/28 13:15:20 lha Exp $
 //
 //
-#ifndef	_HtHeap_h_
-#define	_HtHeap_h_
+#ifndef  _HtHeap_h_
+#define  _HtHeap_h_
 #include "Object.h"
 #include "HtVector.h"
 
@@ -36,50 +36,50 @@ public:
     //
     // Add() will add an Object to the heap in the appropriate location
     //
-    void		Add(Object *);
+    void    Add(Object *);
 
     //
     // Destroy() will delete all the objects in the heap.  This is
     // equivalent to calling the destructor
     //
-    void		Destroy();
+    void    Destroy();
 
     //
     // Peek() will return a reference to the top object in the heap.
     //
-    Object		*Peek()			{return data->Nth(0);}
+    Object    *Peek()      {return data->Nth(0);}
 
     //
     // Remove() will return a reference as Peek() but will also
     // remove the reference from the heap and re-heapify
     //
-    Object 		*Remove();
+    Object     *Remove();
 
     //
     // Access to the number of elements
     //
-    int			Count() 		{return data->Count();}
-    int			IsEmpty()		{return data->IsEmpty();}
+    int      Count()     {return data->Count();}
+    int      IsEmpty()    {return data->IsEmpty();}
 
     //
     // Deep copy member function
     //
-    Object		*Copy() const;
+    Object    *Copy() const;
 
     //
     // Assignment
     //
-    HtHeap		&operator= (HtHeap *heap)  {return *this = *heap;}
-    HtHeap		&operator= (HtHeap &heap);
+    HtHeap    &operator= (HtHeap *heap)  {return *this = *heap;}
+    HtHeap    &operator= (HtHeap &heap);
 
 protected:
     // The vector class should keep track of everything for us
-    HtVector		*data;
+    HtVector    *data;
 
     // Functions for establishing the relations between elements
-    int	parentOf (int i)
+    int  parentOf (int i)
       { return (i - 1)/2; }
-    int	leftChildOf (int i)
+    int  leftChildOf (int i)
       { return 2*i + 1; }
     int rightChildOf (int i)
       { return 2* (i+1); }

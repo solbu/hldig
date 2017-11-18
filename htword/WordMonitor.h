@@ -53,32 +53,32 @@
 # endif
 #endif
 
-#define WORD_MONITOR_WRITE			1
-#define WORD_MONITOR_READ			2
-#define WORD_MONITOR_COMPRESS_01		3
-#define WORD_MONITOR_COMPRESS_02		4
-#define WORD_MONITOR_COMPRESS_03		5
-#define WORD_MONITOR_COMPRESS_04		6
-#define WORD_MONITOR_COMPRESS_05		7
-#define WORD_MONITOR_COMPRESS_06	        8
-#define WORD_MONITOR_COMPRESS_07	        9
-#define WORD_MONITOR_COMPRESS_08	       10
-#define WORD_MONITOR_COMPRESS_09	       11
-#define WORD_MONITOR_COMPRESS_10	       12
-#define WORD_MONITOR_COMPRESS_MORE	       13
-#define WORD_MONITOR_PAGE_IBTREE	       14
-#define WORD_MONITOR_PAGE_LBTREE	       15
-#define WORD_MONITOR_PAGE_UNKNOWN	       16
-#define WORD_MONITOR_PUT		       17
-#define WORD_MONITOR_GET		       18
-#define WORD_MONITOR_GET_NEXT		       19
-#define WORD_MONITOR_GET_SET_RANGE	       20
-#define WORD_MONITOR_GET_OTHER		       21
-#define WORD_MONITOR_LEVEL		       22
-#define WORD_MONITOR_PGNO		       23
-#define WORD_MONITOR_CMP		       24
+#define WORD_MONITOR_WRITE      1
+#define WORD_MONITOR_READ      2
+#define WORD_MONITOR_COMPRESS_01    3
+#define WORD_MONITOR_COMPRESS_02    4
+#define WORD_MONITOR_COMPRESS_03    5
+#define WORD_MONITOR_COMPRESS_04    6
+#define WORD_MONITOR_COMPRESS_05    7
+#define WORD_MONITOR_COMPRESS_06          8
+#define WORD_MONITOR_COMPRESS_07          9
+#define WORD_MONITOR_COMPRESS_08         10
+#define WORD_MONITOR_COMPRESS_09         11
+#define WORD_MONITOR_COMPRESS_10         12
+#define WORD_MONITOR_COMPRESS_MORE         13
+#define WORD_MONITOR_PAGE_IBTREE         14
+#define WORD_MONITOR_PAGE_LBTREE         15
+#define WORD_MONITOR_PAGE_UNKNOWN         16
+#define WORD_MONITOR_PUT           17
+#define WORD_MONITOR_GET           18
+#define WORD_MONITOR_GET_NEXT           19
+#define WORD_MONITOR_GET_SET_RANGE         20
+#define WORD_MONITOR_GET_OTHER           21
+#define WORD_MONITOR_LEVEL           22
+#define WORD_MONITOR_PGNO           23
+#define WORD_MONITOR_CMP           24
 
-#define WORD_MONITOR_VALUES_SIZE	       50
+#define WORD_MONITOR_VALUES_SIZE         50
 
 #ifdef __cplusplus
 extern "C" {

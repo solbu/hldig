@@ -14,8 +14,8 @@
 // $Id: HtVectorGeneric.h,v 1.5 2004/05/28 13:15:21 lha Exp $
 //
 //
-//  #ifndef	_HtVectorGeneric_h_
-//#define	_HtVectorGeneric_h_
+//  #ifndef  _HtVectorGeneric_h_
+//#define  _HtVectorGeneric_h_
 
 
 // HOWTO use:
@@ -84,63 +84,63 @@ public:
     // object is appended; no new objects are created between the end
     // of the vector and the given position.
     //
-    void	Insert(const GType &, int position);
+    void  Insert(const GType &, int position);
 
     // *** this is obsolete in HtVectorGeneric ** use: vector[position]=value;
-//      void	Assign(GType , int position);
+//      void  Assign(GType , int position);
 
 
     //
     // Remove the object at the given position
     // (in some sense, the inverse of Insert)
     //
-    void		RemoveFrom(int position);
+    void    RemoveFrom(int position);
 
     // Release is obsolete since no deletions of pointers contained in 
     //  the vector is done
-    //      void	Release();
+    //      void  Release();
 
     //
     // Destroy() will delete all the objects in the vector.
     // Warning: no deletions of pointers contained in 
     // the vector are done (that's up to you)
     // 
-    void	       Destroy();
+    void         Destroy();
 
     //
     // Vector traversal (a bit redundant since you can use [])
     //
-    void	       Start_Get()		{current_index = -1;}
+    void         Start_Get()    {current_index = -1;}
     GType &            Get_Next();
     GType &            Get_First();
-    GType &            Last()			{return Nth(element_count-1);}
+    GType &            Last()      {return Nth(element_count-1);}
 
     //
     // Direct access to vector items. To assign new objects, use
     // Insert() or Add() or Assign()
     //
-    inline GType &            Nth(int n)			
+    inline GType &            Nth(int n)      
     {
 #ifdef HtVectorGeneric_CheckBounds
-	CheckBounds(n);
+  CheckBounds(n);
 #endif
-	return data[n];
+  return data[n];
     }
-    inline const GType &      Nth(int n) const			
+    inline const GType &      Nth(int n) const      
     {
 #ifdef HtVectorGeneric_CheckBounds
-	CheckBounds(n);
+  CheckBounds(n);
 #endif
-	return data[n];
+  return data[n];
     }
-    inline GType &            operator[] (int n)		{return Nth(n);}
-    inline const GType &      operator[] (int n) const		{return Nth(n);}
+    inline GType &            operator[] (int n)    {return Nth(n);}
+    inline const GType &      operator[] (int n) const    {return Nth(n);}
 
     //
     // Access to the number of elements
     //
-    inline int			Count() const		{return element_count;}
-    inline int			IsEmpty()		{return element_count==0;}
+    inline int      Count() const    {return element_count;}
+    inline int      IsEmpty()    {return element_count==0;}
 
    
     //
@@ -152,7 +152,7 @@ public:
     // Get the index number of an object.  If the object is not found,
     // returns -1
     //
-    int			Index(const GType &);
+    int      Index(const GType &);
     GType &             Next(const GType &current);
     GType &             Previous(const GType &current);
 
@@ -161,19 +161,19 @@ public:
     // The object will NOT be deleted.  If the object is not found,
     // NOTOK will be returned, else OK.
     //
-    void		         Remove(const GType &);
+    void             Remove(const GType &);
 #endif
 
     //
     // Deep copy member function
     //
-    Object				*Copy() const;
+    Object        *Copy() const;
 
     //
     // Vector Assignment
     //
-    HtVectorGType		&operator= (HtVectorGType *vector) {return *this = *vector;}
-    HtVectorGType		&operator= (const HtVectorGType &vector);
+    HtVectorGType    &operator= (HtVectorGType *vector) {return *this = *vector;}
+    HtVectorGType    &operator= (const HtVectorGType &vector);
 
 
 protected:    
@@ -184,21 +184,21 @@ protected:
     //
     // For traversal it is nice to know where we are...
     //
-    int			current_index;
+    int      current_index;
 
     //
     // It's nice to keep track of how many things we contain...
     // as well as how many slots we've declared
     //
-    int			element_count;
-    int			allocated;
+    int      element_count;
+    int      allocated;
  protected:
     //
     // Protected function to ensure capacity
     //
     inline void          Allocate(int capacity)
     {
-	if (capacity > allocated){ActuallyAllocate(capacity);}
+  if (capacity > allocated){ActuallyAllocate(capacity);}
     }
     void                 ActuallyAllocate(int);
 
@@ -208,9 +208,9 @@ protected:
     //
     inline void          Add(const GType &object)
     {
-	Allocate(element_count+1);
-	data[element_count] = object;
-	element_count += 1;
+  Allocate(element_count+1);
+  data[element_count] = object;
+  element_count += 1;
     }
 
 
@@ -219,15 +219,15 @@ protected:
     //
  public:
     inline int                 size()  const             {return Count();}
-    inline void	               push_back(const GType &v) {Add( v);}
+    inline void                 push_back(const GType &v) {Add( v);}
 
     inline GType *             begin()                   {return(data);}
     inline const GType *       begin() const             {return(data);}
     inline GType *             end()                     {return(data+element_count);}
     inline const GType *       end()   const             {return(data+element_count);}
 
-    inline GType &             back()			 {return Nth(element_count-1);}
-    inline const GType &       back()	const		 {return Nth(element_count-1);}
+    inline GType &             back()       {return Nth(element_count-1);}
+    inline const GType &       back()  const     {return Nth(element_count-1);}
     inline void                pop_back()                {RemoveFrom(size()-1);}
     inline void                clear()                   {;}
     

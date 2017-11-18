@@ -22,29 +22,29 @@
 class BooleanLexer : public QueryLexer
 {
 public:
-	// is the current token a word?
-	bool IsWord() const;
+  // is the current token a word?
+  bool IsWord() const;
 
-	// is the current token the 'and' keyword?
-	bool IsAnd() const;
+  // is the current token the 'and' keyword?
+  bool IsAnd() const;
 
-	// is the current token the 'or' keyword?
-	bool IsOr() const;
+  // is the current token the 'or' keyword?
+  bool IsOr() const;
 
-	// is the current token the 'near' keyword?
-	bool IsNear() const;
+  // is the current token the 'near' keyword?
+  bool IsNear() const;
 
-	// is the current token the 'not' keyword?
-	bool IsNot() const;
+  // is the current token the 'not' keyword?
+  bool IsNot() const;
 
-	// is the current token the '(' sign?
-	bool IsLeftParen() const;
+  // is the current token the '(' sign?
+  bool IsLeftParen() const;
 
-	// is the current token the ')' sign?
-	bool IsRightParen() const;
+  // is the current token the ')' sign?
+  bool IsRightParen() const;
 
-	// is the current token the '/' sign?
-	bool IsSlash() const;
+  // is the current token the '/' sign?
+  bool IsSlash() const;
 };
 
 #endif

@@ -8,7 +8,7 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 2000
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -28,12 +28,12 @@ static void onint(int);
 
 /*
  * onint --
- *	Interrupt signal handler.
+ *  Interrupt signal handler.
  */
 static void onint(int signo)
 {
     if ((interrupt = signo) == 0)
-	interrupt = SIGINT;
+  interrupt = SIGINT;
 }
 
 void __db_util_siginit()
@@ -62,8 +62,8 @@ void __db_util_sigresend()
 {
     /* Resend any caught signal. */
     if (__db_util_interrupted != 0) {
-	(void) signal(interrupt, SIG_DFL);
-	(void) raise(interrupt);
-	/* NOTREACHED */
+  (void) signal(interrupt, SIG_DFL);
+  (void) raise(interrupt);
+  /* NOTREACHED */
     }
 }

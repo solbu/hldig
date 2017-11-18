@@ -183,8 +183,8 @@ int WordListOne::Override(const WordReference& arg)
   }
 
   WordType& wtype = context->GetType();
-  WordReference	wordRef(arg);
-  String 	word = wordRef.GetWord();
+  WordReference  wordRef(arg);
+  String   word = wordRef.GetWord();
   if(wtype.Normalize(word) & WORD_NORMALIZE_NOTOK)
     return NOTOK;
   wordRef.SetWord(word);
@@ -262,7 +262,7 @@ int
 WordListOne::Read(FILE* f)
 {
   WordReference wordRef(context);
-#define WORD_BUFFER_SIZE	1024
+#define WORD_BUFFER_SIZE  1024
   char buffer[WORD_BUFFER_SIZE + 1];
   String line;
   int line_number = 0;
@@ -306,18 +306,18 @@ WordListOne::Read(FILE* f)
       (*word) << wordid;
 
       if(wordRef.SetList(fields) != OK) {
-	fprintf(stderr, "WordList::Read: line %d : %s\n", line_number, (char*)line);
-	fprintf(stderr, " cannot build WordReference (ignored)\n");
+  fprintf(stderr, "WordList::Read: line %d : %s\n", line_number, (char*)line);
+  fprintf(stderr, " cannot build WordReference (ignored)\n");
       } else {
-	if(wordRef.Pack(key, record) != OK) {
-	  fprintf(stderr, "WordList::Read: line %d : %s\n", line_number, (char*)line);
-	  fprintf(stderr, " pack failed (ignored)\n");
-	} else {
-	  caches->Add(key.get(), key.length(), record.get(), record.length());
-	  inserted++;
-	}
-	if(verbose && (inserted % 10000 == 0)) fprintf(stderr, "WordList::Read: inserted %d entries\n", inserted);
-	if(verbose > 1) fprintf(stderr, "WordList::Read: inserting %s\n", (char*)wordRef.Get());
+  if(wordRef.Pack(key, record) != OK) {
+    fprintf(stderr, "WordList::Read: line %d : %s\n", line_number, (char*)line);
+    fprintf(stderr, " pack failed (ignored)\n");
+  } else {
+    caches->Add(key.get(), key.length(), record.get(), record.length());
+    inserted++;
+  }
+  if(verbose && (inserted % 10000 == 0)) fprintf(stderr, "WordList::Read: inserted %d entries\n", inserted);
+  if(verbose > 1) fprintf(stderr, "WordList::Read: inserting %s\n", (char*)wordRef.Get());
       }
 
       line.trunc();

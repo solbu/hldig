@@ -22,8 +22,8 @@ class listnode
 {
 public:
 
-  listnode		*next;
-  Object		*object;
+  listnode    *next;
+  Object    *object;
 };
 
 
@@ -54,12 +54,12 @@ List::~List()
 //
 void List::Release()
 {
-    listnode		*node;
+    listnode    *node;
     while (head)
     {
-	node = head;
-	head = head->next;
-	delete node;
+  node = head;
+  head = head->next;
+  delete node;
     }
     head = tail = 0;
     number = 0;
@@ -73,13 +73,13 @@ void List::Release()
 //
 void List::Destroy()
 {
-    listnode		*node;
+    listnode    *node;
     while (head)
     {
-	node = head;
-	head = head->next;
-	delete node->object;
-	delete node;
+  node = head;
+  head = head->next;
+  delete node->object;
+  delete node;
     }
     head = tail = 0;
     number = 0;
@@ -93,17 +93,17 @@ void List::Destroy()
 //
 void List::Add(Object *object)
 {
-    listnode		*node = new listnode;
+    listnode    *node = new listnode;
     node->next = 0;
     node->object = object;
     if (tail)
     {
-	tail->next = node;
-	tail = node;
+  tail->next = node;
+  tail = node;
     }
     else
     {
-	head = tail = node;
+  head = tail = node;
     }
 
     number++;
@@ -116,39 +116,39 @@ void List::Add(Object *object)
 //
 void List::Insert(Object *object, int position)
 {
-    listnode		*node = new listnode;
+    listnode    *node = new listnode;
     node->next = 0;
     node->object = object;
 
-    listnode		*ln = head;
-    listnode		*prev = 0;
+    listnode    *ln = head;
+    listnode    *prev = 0;
 
     for (int i = 0; i < position && ln; i++, ln = ln->next)
-	prev = ln;
+  prev = ln;
     if (!ln)
     {
-	if (tail)
-	    tail->next = node;
-	tail = node;
+  if (tail)
+      tail->next = node;
+  tail = node;
 
-	//
-	// The list is empty.  This is a simple case, then.
-	//
-	if (!head)
-	    head = node;
+  //
+  // The list is empty.  This is a simple case, then.
+  //
+  if (!head)
+      head = node;
     }
     else
     {
-	if (ln == head)
-	{
-	    node->next = head;
-	    head = node;
-	}
-	else
-	{
-	    node->next = ln;
-	    prev->next = node;
-	}
+  if (ln == head)
+  {
+      node->next = head;
+      head = node;
+  }
+  else
+  {
+      node->next = ln;
+      prev->next = node;
+  }
     }
 
     cursor.current_index = -1;
@@ -167,17 +167,17 @@ void List::Assign(Object *object, int position)
     //
     while (number < position + 1)
     {
-	Add(0);
+  Add(0);
     }
 
     //
     // Now find the listnode to put the new object in
     //
-    listnode	*temp = head;
+    listnode  *temp = head;
 
     for (int i = 0; temp && i < position; i++)
     {
-	temp = temp->next;
+  temp = temp->next;
     }
 
     cursor.current_index = -1;
@@ -192,49 +192,49 @@ void List::Assign(Object *object, int position)
 //
 int List::Remove(Object *object)
 {
-    listnode		*node = head;
-    listnode		*prev = 0;
+    listnode    *node = head;
+    listnode    *prev = 0;
     while (node)
     {
-	if (node->object == object)
-	{
-	    //
-	    // Found it!
-	    //
-	    //
-	    // If we are in the middle of a Get_Next() sequence, we need to
-	    // fix up any problems with the current node.
-	    //
-	    if (cursor.current == node)
-	    {
-		cursor.current = node->next;
-	    }
+  if (node->object == object)
+  {
+      //
+      // Found it!
+      //
+      //
+      // If we are in the middle of a Get_Next() sequence, we need to
+      // fix up any problems with the current node.
+      //
+      if (cursor.current == node)
+      {
+    cursor.current = node->next;
+      }
 
-	    if (head == tail)
-	    {
-		head = tail = 0;
-	    }
-	    else if (head == node)
-	    {
-		head = head->next;
-	    }
-	    else if (tail == node)
-	    {
-		tail = prev;
-		tail->next = 0;
-	    }
-	    else
-	    {
-		prev->next = node->next;
-	    }
+      if (head == tail)
+      {
+    head = tail = 0;
+      }
+      else if (head == node)
+      {
+    head = head->next;
+      }
+      else if (tail == node)
+      {
+    tail = prev;
+    tail->next = 0;
+      }
+      else
+      {
+    prev->next = node->next;
+      }
 
-	    delete node;
-	    number--;
-	    cursor.current_index = -1;
-	    return 1;
-	}
-	prev = node;
-	node = node->next;
+      delete node;
+      number--;
+      cursor.current_index = -1;
+      return 1;
+  }
+  prev = node;
+  node = node->next;
     }
     return 0;
 }
@@ -254,17 +254,17 @@ int List::Remove(int position, int action /* = LIST_REMOVE_DESTROY */)
 //
 Object *List::Get_Next(ListCursor& cursor) const
 {
-    listnode	*temp = cursor.current;
+    listnode  *temp = cursor.current;
 
     if (cursor.current)
     {
         cursor.prev = cursor.current;
-	cursor.current = cursor.current->next;
-	if (cursor.current_index >= 0)
-	    cursor.current_index++;
+  cursor.current = cursor.current->next;
+  if (cursor.current_index >= 0)
+      cursor.current_index++;
     }
     else
-	return 0;
+  return 0;
     return temp->object;
 }
 
@@ -276,9 +276,9 @@ Object *List::Get_Next(ListCursor& cursor) const
 Object *List::Get_First()
 {
     if (head)
-	return head->object;
+  return head->object;
     else
-	return 0;
+  return 0;
 }
 
 
@@ -288,18 +288,18 @@ Object *List::Get_First()
 //
 int List::Index(Object *obj)
 {
-    listnode	*temp = head;
-    int			index = 0;
+    listnode  *temp = head;
+    int      index = 0;
 
     while (temp && temp->object != obj)
     {
-	temp = temp->next;
-	index++;
+  temp = temp->next;
+  index++;
     }
     if (index >= number)
-	return -1;
+  return -1;
     else
-	return index;
+  return index;
 }
 
 
@@ -310,20 +310,20 @@ int List::Index(Object *obj)
 //
 Object *List::Next(Object *prev)
 {
-    listnode	*node = head;
+    listnode  *node = head;
     while (node)
     {
-	if (node->object == prev)
-	{
-	    node = node->next;
-	    if (!node)
-		return head->object;
-	    else
-		return node->object;
-	}
-	node = node->next;
+  if (node->object == prev)
+  {
+      node = node->next;
+      if (!node)
+    return head->object;
+      else
+    return node->object;
+  }
+  node = node->next;
     }
-	
+  
     return 0;
 }
 
@@ -335,21 +335,21 @@ Object *List::Next(Object *prev)
 //
 Object *List::Previous(Object *next)
 {
-    listnode	*node = head;
-    listnode 	*prev = 0;
+    listnode  *node = head;
+    listnode   *prev = 0;
     while (node)
     {
-	if (node->object == next)
-	{
-	    if (!prev)
-	        return 0;
-	    else
-		return prev->object;
-	}
-	prev = node;
-	node = node->next;
+  if (node->object == next)
+  {
+      if (!prev)
+          return 0;
+      else
+    return prev->object;
+  }
+  prev = node;
+  node = node->next;
     }
-	
+  
     return 0;
 }
 
@@ -362,7 +362,7 @@ const Object *List::Nth(ListCursor& cursor, int n) const
   if (n < 0 || n >= number)
     return 0;
 
-  listnode	*temp = head;
+  listnode  *temp = head;
 
   if (cursor.current_index == n)
     return cursor.current->object;
@@ -372,10 +372,10 @@ const Object *List::Nth(ListCursor& cursor, int n) const
       cursor.prev = cursor.current;
       cursor.current = cursor.current->next;
       if (!cursor.current)
-	{
-	  cursor.current_index = -1;
-	  return 0;
-	}
+  {
+    cursor.current_index = -1;
+    return 0;
+  }
       cursor.current_index = n;
       return cursor.current->object;
     }
@@ -404,7 +404,7 @@ Object *List::Last()
 {
     if (tail)
     {
-	return tail->object;
+  return tail->object;
     }
 
     return 0;
@@ -429,7 +429,7 @@ Object *List::Pop(int action /* = LIST_REMOVE_DESTROY */)
     } else {
 
       for (int i = 0; ln != tail; i++, ln = ln->next)
-	prev = ln;
+  prev = ln;
       tail = prev;
       tail->next = 0;
     }
@@ -445,14 +445,14 @@ Object *List::Pop(int action /* = LIST_REMOVE_DESTROY */)
 //
 Object *List::Copy() const
 {
-    List	*list = new List;
+    List  *list = new List;
     ListCursor  cursor;
 
     Start_Get(cursor);
-    Object	*obj;
+    Object  *obj;
     while ((obj = Get_Next(cursor)))
     {
-	list->Add(obj->Copy());
+  list->Add(obj->Copy());
     }
     return list;
 }
@@ -466,10 +466,10 @@ List &List::operator=(List &list)
 {
     Destroy();
     list.Start_Get();
-    Object	*obj;
+    Object  *obj;
     while ((obj = list.Get_Next()))
     {
-	Add(obj->Copy());
+  Add(obj->Copy());
     }
     return *this;
 }
@@ -484,23 +484,23 @@ void List::AppendList(List &list)
 {
     // Never mind an empty list or ourselves.
     if (list.number == 0 || &list == this)
-	return;
+  return;
 
     // Correct our pointers in head and tail.
     if (tail)
     {
-	// Link in other list.
-	tail->next = list.head;
+  // Link in other list.
+  tail->next = list.head;
 
-	// Update members for added contents.
-	number += list.number;
-	tail = list.tail;
+  // Update members for added contents.
+  number += list.number;
+  tail = list.tail;
     }
     else
     {
-	head = list.head;
-	tail = list.tail;
-	number = list.number;
+  head = list.head;
+  tail = list.tail;
+  number = list.number;
     }
 
     // Clear others members to be an empty list.

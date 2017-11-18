@@ -109,13 +109,13 @@ public:
     // prior to the insertion.
     // Returns OK on success, NOTOK on error.
     //
-    int			Insert(const WordReference& wordRef) { return Put(wordRef, DB_NOOVERWRITE); }
+    int      Insert(const WordReference& wordRef) { return Put(wordRef, DB_NOOVERWRITE); }
     //-
     // Insert <b>wordRef</b> in index. If the <i>Key()</i> part of
     // the <b>wordRef</b> exists in the index, override it.
     // Returns OK on success, NOTOK on error.
     //
-    int			Override(const WordReference& wordRef) { return Put(wordRef, 0); }
+    int      Override(const WordReference& wordRef) { return Put(wordRef, 0); }
 #ifndef SWIG
     int                 Put(const WordReference& wordRef, int flags);
 #endif /* SWIG */
@@ -148,9 +148,9 @@ public:
     //
     int                 Delete(const WordReference& wordRef) {
       if(db.Del(wordRef) == 0)
-	return Unref(wordRef);
+  return Unref(wordRef);
       else
-	return NOTOK;
+  return NOTOK;
     }
 #ifdef SWIG
 %name(DeleteCursor)
@@ -178,7 +178,7 @@ public:
     //-
     // Close inverted index.
     // 
-    int			Close();
+    int      Close();
 
     //
     // These returns a list of all the WordReference * matching 
@@ -190,7 +190,7 @@ public:
     // the responsibility of the caller to free the list. See List.h
     // header for usage.
     //
-    List		*Find(const WordReference& wordRef) { return (*this)[wordRef]; }
+    List    *Find(const WordReference& wordRef) { return (*this)[wordRef]; }
     //-
     // Returns the list of word occurrences exactly matching the
     // <b>word.</b> The <i>List</i> returned
@@ -198,16 +198,16 @@ public:
     // the responsibility of the caller to free the list. See List.h
     // header for usage.
     //
-    List		*FindWord(const String& word) { return (*this)[word]; }
+    List    *FindWord(const String& word) { return (*this)[word]; }
 #ifndef SWIG
     //-
     // Alias to the <b>Find</b> method.
     //
-    List		*operator [] (const WordReference& wordRef);
+    List    *operator [] (const WordReference& wordRef);
     //-
     // Alias to the <b>FindWord</b> method.
     //
-    List		*operator [] (const String& word)  { return (*this)[WordReference(word)]; }
+    List    *operator [] (const String& word)  { return (*this)[WordReference(word)]; }
 #endif /* SWIG */
     //-
     // Returns the list of word occurrences matching the <i>Key()</i>
@@ -217,7 +217,7 @@ public:
     // <i>WordReference</i> objects. It is the responsibility of the
     // caller to free the list.
     //
-    List		*Prefix (const WordReference& prefix);
+    List    *Prefix (const WordReference& prefix);
 #ifndef SWIG
     //-
     // Returns the list of word occurrences matching the
@@ -227,7 +227,7 @@ public:
     // objects. It is the responsibility of the caller to free the
     // list.
     //
-    List		*Prefix (const String& prefix) { return this->Prefix(WordReference(prefix)); }
+    List    *Prefix (const String& prefix) { return this->Prefix(WordReference(prefix)); }
 #endif /* SWIG */
 
     //
@@ -248,7 +248,7 @@ public:
     // <i>WordReference</i> objects. It is the responsibility of
     // the caller to free the list. See List.h header for usage.
     //
-    List		*WordRefs();
+    List    *WordRefs();
 
 #ifndef SWIG
     //-
@@ -340,7 +340,7 @@ public:
     // Retrieve WordReferences from the database. 
     // Backend of WordRefs, operator[], Prefix...
     //
-    List		*Collect(const WordReference& word);
+    List    *Collect(const WordReference& word);
 #ifndef SWIG
     //
     // Compressor object accessors
@@ -348,22 +348,22 @@ public:
     WordDBCompress *GetCompressor() { return compressor; }
     void SetCompressor(WordDBCompress* compressor_arg) { compressor = compressor_arg; }
 
-    const WordType		wtype;
-    const Configuration&	config;
+    const WordType    wtype;
+    const Configuration&  config;
 
-    int				isopen;
-    int				isread;
+    int        isopen;
+    int        isread;
 
     //
     // If true enable extended functionalities of WordList such
     // as per-word statistics. Read from wordlist_extended configuration
     // parameter.
     //
-    int				extended;
+    int        extended;
 
 
-    WordDB	            	db;
-    WordDBCompress	       *compressor;
+    WordDB                db;
+    WordDBCompress         *compressor;
     int                         verbose;
 #endif /* SWIG */
 };

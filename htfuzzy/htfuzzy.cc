@@ -45,7 +45,7 @@
 #include <getopt_local.h>
 #endif
 
-int		debug = 0;
+int    debug = 0;
 
 void usage();
 
@@ -56,168 +56,168 @@ void usage();
 int
 main(int ac, char **av)
 {
-    int			c, i;
-    extern char	*optarg;
-    extern int	optind;
-    String		configFile = DEFAULT_CONFIG_FILE;
+    int      c, i;
+    extern char  *optarg;
+    extern int  optind;
+    String    configFile = DEFAULT_CONFIG_FILE;
 
     //
     // Parse command line arguments
     //
     while ((c = getopt(ac, av, "c:v")) != -1)
     {
-	switch (c)
-	{
-	    case 'c':
-		configFile = optarg;
-		break;
-				
-	    case 'v':
-		debug++;
-		break;
-				
-	    default:
-		usage();
-	}
+  switch (c)
+  {
+      case 'c':
+    configFile = optarg;
+    break;
+        
+      case 'v':
+    debug++;
+    break;
+        
+      default:
+    usage();
+  }
     }
 
-	HtConfiguration* config= HtConfiguration::config();
+  HtConfiguration* config= HtConfiguration::config();
     //
     // Determine what algorithms to use
     //
-    List	wordAlgorithms;
-    List	noWordAlgorithms;
+    List  wordAlgorithms;
+    List  noWordAlgorithms;
     for (i = optind; i < ac; i++)
     {
-	if (mystrcasecmp(av[i], "soundex") == 0)
-	{
-	    wordAlgorithms.Add(new Soundex(*config));
-	}
-	else if (mystrcasecmp(av[i], "metaphone") == 0)
-	{
-	    wordAlgorithms.Add(new Metaphone(*config));
-	}
-	else if (mystrcasecmp(av[i], "accents") == 0)
-	{
-	    wordAlgorithms.Add(new Accents(*config));
-	}
-	else if (mystrcasecmp(av[i], "endings") == 0)
-	{
-	    noWordAlgorithms.Add(new Endings(*config));
-	}
-	else if (mystrcasecmp(av[i], "synonyms") == 0)
-	{
-	    noWordAlgorithms.Add(new Synonym(*config));
-	}
-	else
-	{
-	    reportError(form("'%s' is not a supported algorithm",
-			     av[i]));
-	}
+  if (mystrcasecmp(av[i], "soundex") == 0)
+  {
+      wordAlgorithms.Add(new Soundex(*config));
+  }
+  else if (mystrcasecmp(av[i], "metaphone") == 0)
+  {
+      wordAlgorithms.Add(new Metaphone(*config));
+  }
+  else if (mystrcasecmp(av[i], "accents") == 0)
+  {
+      wordAlgorithms.Add(new Accents(*config));
+  }
+  else if (mystrcasecmp(av[i], "endings") == 0)
+  {
+      noWordAlgorithms.Add(new Endings(*config));
+  }
+  else if (mystrcasecmp(av[i], "synonyms") == 0)
+  {
+      noWordAlgorithms.Add(new Synonym(*config));
+  }
+  else
+  {
+      reportError(form("'%s' is not a supported algorithm",
+           av[i]));
+  }
     }
     if (wordAlgorithms.Count() == 0 && noWordAlgorithms.Count() == 0)
     {
-	cout << "htfuzzy: No algorithms specified\n";
-	usage();
+  cout << "htfuzzy: No algorithms specified\n";
+  usage();
     }
-	
+  
     //
     // Find and parse the configuration file.
     //
     config->Defaults(&defaults[0]);
     if (access((char*)configFile, R_OK) < 0)
     {
-	reportError(form("Unable to find configuration file '%s'",
-			 configFile.get()));
+  reportError(form("Unable to find configuration file '%s'",
+       configFile.get()));
     }
     config->Read(configFile);
 
     // Initialize htword library (key description + wordtype...)
     WordContext::Initialize(*config);
 
-    Fuzzy	*fuzzy;
+    Fuzzy  *fuzzy;
     if (wordAlgorithms.Count() > 0)
     {
         //
         // Open the word database so that we can grab the words from it.
         //
-        HtWordList	worddb(*config);
-	if (worddb.Open(config->Find("word_db"), O_RDONLY) == OK)
-	  {
-	    //
-	    // Go through all the words in the database
-	    //
-	    List		*words = worddb.Words();
-	    String		*key;
-	    Fuzzy		*fuzzy = 0;
-	    String		word, fuzzyKey;
-	    int			count = 0;
-	    
-	    words->Start_Get();
-	    while ((key = (String *) words->Get_Next()))
-	      {
-		word = *key;
-		wordAlgorithms.Start_Get();
-		while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next()))
-		  {
-		    fuzzy->addWord(word);
-		  }
-		count++;
-		if ((count % 100) == 0 && debug)
-		  {
-		    cout << "htfuzzy: words: " << count << '\n';
-		    cout.flush();
-		  }
-	      }	
-	    if (debug)
-	      {
-		cout << "htfuzzy: total words: " << count << "\n";
-		cout << "htfuzzy: Writing index files...\n";
-	      }
-	    
-	    //
-	    // All the information is now in memory.
-	    // Write all of it out to the individual databases
-	    //
-	    wordAlgorithms.Start_Get();
-	    while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next()))
-	      {
-		fuzzy->writeDB();
-	      }
-	    worddb.Close();
-	    words->Destroy();
-	    delete words;
-	    if (fuzzy)
-	      delete fuzzy;
-	  }
-	else
-	  {
-	    reportError(form("Unable to open word database %s", config->Find("word_db").get()));
-	  }
+        HtWordList  worddb(*config);
+  if (worddb.Open(config->Find("word_db"), O_RDONLY) == OK)
+    {
+      //
+      // Go through all the words in the database
+      //
+      List    *words = worddb.Words();
+      String    *key;
+      Fuzzy    *fuzzy = 0;
+      String    word, fuzzyKey;
+      int      count = 0;
+      
+      words->Start_Get();
+      while ((key = (String *) words->Get_Next()))
+        {
+    word = *key;
+    wordAlgorithms.Start_Get();
+    while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next()))
+      {
+        fuzzy->addWord(word);
+      }
+    count++;
+    if ((count % 100) == 0 && debug)
+      {
+        cout << "htfuzzy: words: " << count << '\n';
+        cout.flush();
+      }
+        }  
+      if (debug)
+        {
+    cout << "htfuzzy: total words: " << count << "\n";
+    cout << "htfuzzy: Writing index files...\n";
+        }
+      
+      //
+      // All the information is now in memory.
+      // Write all of it out to the individual databases
+      //
+      wordAlgorithms.Start_Get();
+      while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next()))
+        {
+    fuzzy->writeDB();
+        }
+      worddb.Close();
+      words->Destroy();
+      delete words;
+      if (fuzzy)
+        delete fuzzy;
+    }
+  else
+    {
+      reportError(form("Unable to open word database %s", config->Find("word_db").get()));
+    }
     }
     if (noWordAlgorithms.Count() > 0)
     {
-	noWordAlgorithms.Start_Get();
-	while ((fuzzy = (Fuzzy *) noWordAlgorithms.Get_Next()))
-	{
-	    if (debug)
-	    {
-		cout << "htfuzzy: Selected algorithm: " << fuzzy->getName()
-		     << endl;
-	    }
-	    if (fuzzy->createDB(*config) == NOTOK)
-	      {
-		cout << "htfuzzy: Could not create database for algorithm: "
-		     << fuzzy->getName() << endl;
-	      }
-	}
+  noWordAlgorithms.Start_Get();
+  while ((fuzzy = (Fuzzy *) noWordAlgorithms.Get_Next()))
+  {
+      if (debug)
+      {
+    cout << "htfuzzy: Selected algorithm: " << fuzzy->getName()
+         << endl;
+      }
+      if (fuzzy->createDB(*config) == NOTOK)
+        {
+    cout << "htfuzzy: Could not create database for algorithm: "
+         << fuzzy->getName() << endl;
+        }
+  }
     }
-	
+  
     if (debug)
     {
-	cout << "htfuzzy: Done.\n";
+  cout << "htfuzzy: Done.\n";
     }
-	
+  
     return 0;
 }
 
@@ -237,7 +237,7 @@ usage()
     cout << "\tendings\n";
     cout << "\tsynonyms\n";
     cout << "\n";
-	
+  
     cout << "Options:\n";
 
     cout << "\t-c configfile\n";

@@ -280,10 +280,10 @@ WordCursorOne::WalkNextStep()
     int error;
     if((error = cursor->Get(key, data, cursor_get_flags)) != 0) {
       if(error == DB_NOTFOUND) {
-	if(words->verbose) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, no more matches\n", (char*)searchKey.Get());
-	return (status = WORD_WALK_ATEND);
+  if(words->verbose) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, no more matches\n", (char*)searchKey.Get());
+  return (status = WORD_WALK_ATEND);
       } else {
-	return WORD_WALK_GET_FAILED;
+  return WORD_WALK_GET_FAILED;
       }
     }
   }
@@ -317,7 +317,7 @@ WordCursorOne::WalkNextStep()
     // (ie. stop loop if we're past last possible match...)
     //
     if(!prefixKey.Empty() &&
-       !prefixKey.Equal(found.Key()))	{
+       !prefixKey.Equal(found.Key()))  {
       if(words->verbose) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, no more matches because found a key that is greater than searchKey\n", (char*)searchKey.Get());
       return (status = WORD_WALK_ATEND);
     }
@@ -326,21 +326,21 @@ WordCursorOne::WalkNextStep()
     // Skip entries that do not exactly match the specified key.
     // 
     if(!searchKeyIsSameAsPrefix && 
-       !searchKey.Equal(found.Key()))	{
+       !searchKey.Equal(found.Key()))  {
       int ret;
       switch((ret = SkipUselessSequentialWalking())) {
       case OK:
-	if(words->verbose > 1) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, false match jump to %s\n", (char*)searchKey.Get(), (char*)found.Get());
-	return WORD_WALK_NOMATCH_FAILED;
-	break;
+  if(words->verbose > 1) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, false match jump to %s\n", (char*)searchKey.Get(), (char*)found.Get());
+  return WORD_WALK_NOMATCH_FAILED;
+  break;
       case WORD_WALK_ATEND:
-	if(words->verbose) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, no more matches according to SkipUselessSequentialWalking\n", (char*)searchKey.Get());
-	return (status = WORD_WALK_ATEND);
-	break;
+  if(words->verbose) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, no more matches according to SkipUselessSequentialWalking\n", (char*)searchKey.Get());
+  return (status = WORD_WALK_ATEND);
+  break;
       default:
-	fprintf(stderr, "WordCursorOne::WalkNextStep: SkipUselessSequentialWalking failed %d\n", ret);
-	return NOTOK;
-	break;
+  fprintf(stderr, "WordCursorOne::WalkNextStep: SkipUselessSequentialWalking failed %d\n", ret);
+  return NOTOK;
+  break;
       }
     }
   }

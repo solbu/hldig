@@ -13,8 +13,8 @@
 // $Id: Object.h,v 1.9 2004/05/28 13:15:21 lha Exp $
 //
 
-#ifndef	_Object_h_
-#define	_Object_h_
+#ifndef  _Object_h_
+#define  _Object_h_
 
 #include "lib.h"
 #include <stdio.h>
@@ -24,23 +24,23 @@ class String;
 class Object
 {
 public:
-	//
-	// Constructor/Destructor
-	//
-			Object()	{}
-	virtual		~Object()	{}
+  //
+  // Constructor/Destructor
+  //
+      Object()  {}
+  virtual    ~Object()  {}
 
-	//
-	// To ensure a consistent comparison interface and to allow comparison
-	// of all kinds of different objects, we will define a comparison functions.
-	//
-	virtual int	compare(const Object &)	const { return 0;}
+  //
+  // To ensure a consistent comparison interface and to allow comparison
+  // of all kinds of different objects, we will define a comparison functions.
+  //
+  virtual int  compare(const Object &)  const { return 0;}
 
-	//
-	// To allow a deep copy of data structures we will define a standard interface...
-	// This member will return a copy of itself, freshly allocated and deep copied.
-	//
-	virtual Object	*Copy() const { fprintf(stderr, "Object::Copy: derived class does not implement Copy\n"); return new Object(); }
+  //
+  // To allow a deep copy of data structures we will define a standard interface...
+  // This member will return a copy of itself, freshly allocated and deep copied.
+  //
+  virtual Object  *Copy() const { fprintf(stderr, "Object::Copy: derived class does not implement Copy\n"); return new Object(); }
 };
 
 

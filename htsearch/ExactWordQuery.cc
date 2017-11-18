@@ -29,7 +29,7 @@ ExactWordQuery::searcher = 0;
 void
 ExactWordQuery::AdjustWeight(ResultList &results)
 {
-	results.SetWeight(weight);
+  results.SetWeight(weight);
 }
 
 //
@@ -39,15 +39,15 @@ ExactWordQuery::AdjustWeight(ResultList &results)
 ResultList *
 ExactWordQuery::Evaluate()
 {
-	ResultList *result = 0;
-	if(searcher)
-	{
-		result = searcher->Search(word);
-	}
-	if(result && !result->Count() && !result->IsIgnore())
-	{
-		delete result;
-		result = 0;
-	}
-	return result;
+  ResultList *result = 0;
+  if(searcher)
+  {
+    result = searcher->Search(word);
+  }
+  if(result && !result->Count() && !result->IsIgnore())
+  {
+    delete result;
+    result = 0;
+  }
+  return result;
 }

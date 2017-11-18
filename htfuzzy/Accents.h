@@ -22,17 +22,17 @@
 class Accents : public Fuzzy
 {
 public:
-	//
-	// Construction/Destruction
-	//
-	Accents(const HtConfiguration& config_arg);
-	virtual		~Accents();
+  //
+  // Construction/Destruction
+  //
+  Accents(const HtConfiguration& config_arg);
+  virtual    ~Accents();
 
-	virtual void	generateKey(char *word, String &key);
+  virtual void  generateKey(char *word, String &key);
 
-	virtual void	addWord(char *word);
+  virtual void  addWord(char *word);
 
-	virtual void	getWords(char *word, List &words);
+  virtual void  getWords(char *word, List &words);
 
 private:
 };

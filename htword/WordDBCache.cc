@@ -111,11 +111,11 @@ int WordDBCaches::Merge()
       WordDBCacheFile& file = heap[i];
       file.filename = filename;
       if(stat((char*)file.filename, &stat_buf) == 0) {
-	file.size = stat_buf.st_size;
+  file.size = stat_buf.st_size;
       } else {
-	const String message = String("WordDBCaches::Merge: cannot stat ") + file.filename;
-	perror((const char*)message);
-	return NOTOK;
+  const String message = String("WordDBCaches::Merge: cannot stat ") + file.filename;
+  perror((const char*)message);
+  return NOTOK;
       }
       cursor->Del();
     }
@@ -221,13 +221,13 @@ int WordDBCaches::Merge(const String& filea, const String& fileb, const String& 
 
     while(entriesa_length > 0 && entriesb_length > 0) {
       if(WordKey::Compare(words->GetContext(), (const unsigned char*)entrya.key, entrya.key_size, (const unsigned char*)entryb.key, entryb.key_size) < 0) {
-	if(WriteEntry(ftmp, entrya, buffertmp, buffertmp_size) != OK) return NOTOK;
-	if(--entriesa_length > 0)
-	  if(ReadEntry(fa, entrya, buffera, buffera_size) != OK) return NOTOK;
+  if(WriteEntry(ftmp, entrya, buffertmp, buffertmp_size) != OK) return NOTOK;
+  if(--entriesa_length > 0)
+    if(ReadEntry(fa, entrya, buffera, buffera_size) != OK) return NOTOK;
       } else {
-	if(WriteEntry(ftmp, entryb, buffertmp, buffertmp_size) != OK) return NOTOK;
-	if(--entriesb_length > 0)
-	  if(ReadEntry(fb, entryb, bufferb, bufferb_size) != OK) return NOTOK;
+  if(WriteEntry(ftmp, entryb, buffertmp, buffertmp_size) != OK) return NOTOK;
+  if(--entriesb_length > 0)
+    if(ReadEntry(fb, entryb, bufferb, bufferb_size) != OK) return NOTOK;
       }
     }
   }
@@ -239,7 +239,7 @@ int WordDBCaches::Merge(const String& filea, const String& fileb, const String& 
     while(entries_length > 0) {
       if(WriteEntry(ftmp, entry, buffertmp, buffertmp_size) != OK) return NOTOK;
       if(--entries_length > 0)
-	if(ReadEntry(fp, entry, buffera, buffera_size) != OK) return NOTOK;
+  if(ReadEntry(fp, entry, buffera, buffera_size) != OK) return NOTOK;
     }
   }
 

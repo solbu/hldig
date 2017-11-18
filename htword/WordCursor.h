@@ -99,8 +99,8 @@ class WordDBCursor;
 // Possible values of the action argument of WordList::Walk
 // check walk function in WordList.cc for info on these:
 //
-#define HTDIG_WORDLIST_COLLECTOR	0x0001
-#define HTDIG_WORDLIST_WALKER		0x0002
+#define HTDIG_WORDLIST_COLLECTOR  0x0001
+#define HTDIG_WORDLIST_WALKER    0x0002
 
 #ifndef SWIG
 //
@@ -115,34 +115,34 @@ typedef int (*wordlist_walk_callback_t)(WordList *, WordDBCursor& , const WordRe
 //
 // WalkNext reached the end of the matches
 //
-#define WORD_WALK_ATEND			0x0001
+#define WORD_WALK_ATEND      0x0001
 //
 // Failed to acquire Berkeley DB cursor
 //
-#define WORD_WALK_CURSOR_FAILED		0x0002
+#define WORD_WALK_CURSOR_FAILED    0x0002
 //
 // Berkeley DB Get operation failed
 //
-#define WORD_WALK_GET_FAILED		0x0004
+#define WORD_WALK_GET_FAILED    0x0004
 //
 // Callback function returned NOTOK
 //
-#define WORD_WALK_CALLBACK_FAILED	0x0008
+#define WORD_WALK_CALLBACK_FAILED  0x0008
 //
 // WalkNextStep hit an entry that does not match the
 // searched key.
 //
-#define WORD_WALK_NOMATCH_FAILED	0x0010
+#define WORD_WALK_NOMATCH_FAILED  0x0010
 //
 // WordCursor contains undefined data
 //
-#define WORD_WALK_FAILED		0xffffffff
+#define WORD_WALK_FAILED    0xffffffff
 
 //
 // Possible return values of the IsA() method
 //
-#define WORD_CURSOR			1
-#define WORD_CURSORS			2
+#define WORD_CURSOR      1
+#define WORD_CURSORS      2
 
 //
 // Wordlist::Walk uses WordCursor for :

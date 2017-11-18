@@ -26,13 +26,13 @@ public:
     // Construction/Destruction
     //
                         Plaintext();
-    virtual		~Plaintext();
+    virtual    ~Plaintext();
 
     //
     // Main parser interface.
     //
-    virtual void	parse(Retriever &retriever, URL &);
-	
+    virtual void  parse(Retriever &retriever, URL &);
+  
 private:
 };
 

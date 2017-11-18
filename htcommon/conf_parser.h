@@ -56,9 +56,9 @@
 #if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
 
 typedef union YYSTYPE {
-	char *str;
-	ConfigDefaults	*ConfLine;
-	HtConfiguration	*ConfLines;
+  char *str;
+  ConfigDefaults  *ConfLine;
+  HtConfiguration  *ConfLines;
 } YYSTYPE;
 /* Line 1240 of yacc.c.  */
 

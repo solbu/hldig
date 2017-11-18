@@ -107,31 +107,31 @@ public:
     // puts a bit into the bitstream
     inline void put(unsigned int v)
     {
-	// SPEED CRITICAL SECTION
-	if(freezeon){bitpos++;return;}
-	if(v){buff.back()|=pow2(bitpos & 0x07);}
-	bitpos++;
-	if(!(bitpos & 0x07))// new byte
-	{
-	    buff.push_back(0);
-	}
-    }	
+  // SPEED CRITICAL SECTION
+  if(freezeon){bitpos++;return;}
+  if(v){buff.back()|=pow2(bitpos & 0x07);}
+  bitpos++;
+  if(!(bitpos & 0x07))// new byte
+  {
+      buff.push_back(0);
+  }
+    }  
     inline void put(unsigned int v,const char *tag)
     {
-	if(!freezeon){add_tag(tag);}
-	put(v);
+  if(!freezeon){add_tag(tag);}
+  put(v);
     }
 
     // gets a bit from the bitstream
     inline byte get(const char *tag=(char*)NULL)
     {
-	// SPEED CRITICAL SECTION
-	if(check_tag(tag)==NOTOK){errr("BitStream::get() check_tag failed");}
-	if(bitpos>=(buff.size()<<3)){errr("BitStream::get reading past end of BitStream!");}
-	byte res=buff[bitpos>>3] & pow2(bitpos & 0x07);
-//  	printf("get:res:%d bitpos:%5d/%d buff[%3d]=%x\n",res,bitpos,bitpos%8,bitpos/8,buff[bitpos/8]);
-	bitpos++;
-	return(res);
+  // SPEED CRITICAL SECTION
+  if(check_tag(tag)==NOTOK){errr("BitStream::get() check_tag failed");}
+  if(bitpos>=(buff.size()<<3)){errr("BitStream::get reading past end of BitStream!");}
+  byte res=buff[bitpos>>3] & pow2(bitpos & 0x07);
+//    printf("get:res:%d bitpos:%5d/%d buff[%3d]=%x\n",res,bitpos,bitpos%8,bitpos/8,buff[bitpos/8]);
+  bitpos++;
+  return(res);
     }
 
     // get/put an integer using n bits
@@ -145,14 +145,14 @@ public:
     // 
     inline void add_tag(const char *tag)
     {
-	if(!use_tags || !tag || freezeon){return;}
-	add_tag1(tag);
+  if(!use_tags || !tag || freezeon){return;}
+  add_tag1(tag);
     }
     void add_tag1(const char *tag);
     inline int  check_tag(const char *tag,int pos=-1)
     {
-	if(!use_tags || !tag){return OK;}	
-	return(check_tag1(tag,pos));
+  if(!use_tags || !tag){return OK;}  
+  return(check_tag1(tag,pos));
     }
     int  check_tag1(const char *tag,int pos);
     void set_use_tags(){use_tags=1;}
@@ -177,25 +177,25 @@ public:
 
     ~BitStream()
     {
-	int i;
-	for(i=0;i<tags.size();i++){free(tags[i]);}
+  int i;
+  for(i=0;i<tags.size();i++){free(tags[i]);}
     }
     BitStream(int size0)
     {
-	buff.reserve((size0+7)/8);
-	init();
+  buff.reserve((size0+7)/8);
+  init();
     }
     BitStream()
     {
-	init();
+  init();
     }
  private:
     void init()
     {
-	bitpos=0;
-	buff.push_back(0);
-	freezeon=0;
-	use_tags=0;
+  bitpos=0;
+  buff.push_back(0);
+  freezeon=0;
+  use_tags=0;
     }
 };
 
@@ -224,15 +224,15 @@ public:
 
     // get/put an integer checking for an expected value
     void         put_uint_ex(unsigned int v,unsigned int ex,int maxn,const char *tag=(char*)"NOTAG")
-	{
-	    if(v==ex){put(1,tag);}
-	    else{put(0,tag);put_uint(v,maxn,(char*)NULL);}
-	}
+  {
+      if(v==ex){put(1,tag);}
+      else{put(0,tag);put_uint(v,maxn,(char*)NULL);}
+  }
     unsigned int get_uint_ex(               unsigned int ex,int maxn,const char *tag=(char*)NULL)
-	{
-	    if(get(tag)){return ex;}
-	    else{return get_uint(maxn,(char*)NULL);}
-	}
+  {
+      if(get(tag)){return ex;}
+      else{return get_uint(maxn,(char*)NULL);}
+  }
 
 
     // compress/decompress an array of unsigned ints (choosing best method)
@@ -252,13 +252,13 @@ public:
     void put_decr(unsigned int *vals,int n);
 
     Compressor():BitStream()
-	{
-	    verbose=0;
-	}
+  {
+      verbose=0;
+  }
     Compressor(int size0):BitStream(size0)
-	{
-	    verbose=0;
-	}
+  {
+      verbose=0;
+  }
 
 };
 

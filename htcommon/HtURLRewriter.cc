@@ -22,23 +22,23 @@
 // Only used in privacy.
 HtURLRewriter::HtURLRewriter()
 {
-	HtConfiguration* config= HtConfiguration::config();
-	StringList list(config->Find("url_rewrite_rules"), " \t");
+  HtConfiguration* config= HtConfiguration::config();
+  StringList list(config->Find("url_rewrite_rules"), " \t");
 
-	myRegexReplace = new HtRegexReplaceList(list);
+  myRegexReplace = new HtRegexReplaceList(list);
 }
 
 
 HtURLRewriter::~HtURLRewriter()
 {
-	delete myRegexReplace;
+  delete myRegexReplace;
 }
 
 // Supposedly used as HtURLRewriter::instance()->ErrMsg()
 // to check if RegexReplaceList liked what was fed.
 const String& HtURLRewriter::ErrMsg()
 {
-	return myRegexReplace->lastError();
+  return myRegexReplace->lastError();
 }
 
 
@@ -46,14 +46,14 @@ const String& HtURLRewriter::ErrMsg()
 HtURLRewriter *
 HtURLRewriter::instance()
 {
-	static HtURLRewriter *_instance = 0;
+  static HtURLRewriter *_instance = 0;
 
-	if (_instance == 0)
-	{
-		_instance = new HtURLRewriter();
-	}
+  if (_instance == 0)
+  {
+    _instance = new HtURLRewriter();
+  }
 
-	return _instance;
+  return _instance;
 }
 
 // End of HtURLRewriter.cc

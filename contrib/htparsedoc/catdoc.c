@@ -129,9 +129,9 @@ void help(void)
          "Copyright (c) by Victor B. Wagner, 1996\n"
          "Usage catdoc [-ast] files ...\n"
          "\t-a - converts non-standard printable chars into readable form (default)\n"
-	 "\t-t - converts them into TeX control sequences\n"
-	 "\t-s - exits with code 1 if MSWordDoc signature not found before\n"
-	 "\t\tfirst printable paragraph\n\n"
+   "\t-t - converts them into TeX control sequences\n"
+   "\t-s - exits with code 1 if MSWordDoc signature not found before\n"
+   "\t\tfirst printable paragraph\n\n"
          "All options affects only files, specified AFTER them\n");
          exit(2);
 }  

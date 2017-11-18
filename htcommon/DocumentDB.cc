@@ -106,17 +106,17 @@ int DocumentDB::Open(const String& filename, const String& indexfilename, const 
   }
 
   dbf = Database::getDatabaseInstance(DB_HASH);
-	
+  
   if (dbf->OpenReadWrite(filename, 0666) == OK)
     {
-      String		data;
+      String    data;
       int             specialRecordNumber = NEXT_DOC_ID_RECORD;
       String          key((char *) &specialRecordNumber,
-			  sizeof specialRecordNumber);
+        sizeof specialRecordNumber);
       if (dbf->Get(key, data) == OK)
-	{
-	  memcpy(&nextDocID, data.get(), sizeof nextDocID);
-	}
+  {
+    memcpy(&nextDocID, data.get(), sizeof nextDocID);
+  }
 
       isopen = 1;
       return OK;
@@ -145,30 +145,30 @@ int DocumentDB::Read(const String& filename, const String& indexfilename , const
 
     if (!indexfilename.empty())
     {
-	i_dbf = Database::getDatabaseInstance(DB_HASH);
+  i_dbf = Database::getDatabaseInstance(DB_HASH);
 
-	if (i_dbf->OpenRead(indexfilename) != OK)
-	    return NOTOK;
+  if (i_dbf->OpenRead(indexfilename) != OK)
+      return NOTOK;
     }
 
     if (!headfilename.empty())
       {
-	h_dbf = Database::getDatabaseInstance(DB_HASH);
-	
-	if (h_dbf->OpenRead(headfilename) != OK)
-	  return NOTOK;
+  h_dbf = Database::getDatabaseInstance(DB_HASH);
+  
+  if (h_dbf->OpenRead(headfilename) != OK)
+    return NOTOK;
       }
 
     dbf = Database::getDatabaseInstance(DB_HASH);
-	
+  
     if (dbf->OpenRead(filename) == OK)
     {
-	isopen = 1;
-	isread = 1;
-	return OK;
+  isopen = 1;
+  isread = 1;
+  return OK;
     }
     else
-	return NOTOK;
+  return NOTOK;
 }
 
 
@@ -183,25 +183,25 @@ int DocumentDB::Close()
 
     if (!isread)
     {
-	int specialRecordNumber = NEXT_DOC_ID_RECORD;
-	String key((char *) &specialRecordNumber,
-		   sizeof specialRecordNumber);
-	String data((char *) &nextDocID, sizeof nextDocID);
+  int specialRecordNumber = NEXT_DOC_ID_RECORD;
+  String key((char *) &specialRecordNumber,
+       sizeof specialRecordNumber);
+  String data((char *) &nextDocID, sizeof nextDocID);
 
-	dbf->Put(key, data);
+  dbf->Put(key, data);
     }
 
     if (i_dbf)
     {
-	i_dbf->Close();
-	delete i_dbf;
-	i_dbf = 0;
+  i_dbf->Close();
+  delete i_dbf;
+  i_dbf = 0;
     }
     if (h_dbf)
       {
-	h_dbf->Close();
-	delete h_dbf;
-	h_dbf = 0;
+  h_dbf->Close();
+  delete h_dbf;
+  h_dbf = 0;
       }
 
     dbf->Close();
@@ -229,11 +229,11 @@ int DocumentDB::Add(DocumentRef &doc)
 
     if (h_dbf)
       {
-	if (doc.DocHeadIsSet())
-	  {
-	    temp = HtZlibCodec::instance()->encode(doc.DocHead());
-	    h_dbf->Put(key, temp);
-	  }
+  if (doc.DocHeadIsSet())
+    {
+      temp = HtZlibCodec::instance()->encode(doc.DocHead());
+      h_dbf->Put(key, temp);
+    }
       }
     else
       // If there was no excerpt index when we write, something is wrong.
@@ -241,9 +241,9 @@ int DocumentDB::Add(DocumentRef &doc)
 
     if (i_dbf)
     {
-	temp = doc.DocURL();
-	i_dbf->Put(HtURLCodec::instance()->encode(temp), key);
-	return OK;
+  temp = doc.DocURL();
+  i_dbf->Put(HtURLCodec::instance()->encode(temp), key);
+  return OK;
     }
     else
       // If there was no index when we write, something is wrong.
@@ -257,9 +257,9 @@ int DocumentDB::Add(DocumentRef &doc)
 //
 int DocumentDB::ReadExcerpt(DocumentRef &ref)
 {
-    String	data;
-    int		docID = ref.DocID();
-    String	key((char *) &docID, sizeof docID);
+    String  data;
+    int    docID = ref.DocID();
+    String  key((char *) &docID, sizeof docID);
 
     if (!h_dbf)
       return NOTOK;
@@ -276,13 +276,13 @@ int DocumentDB::ReadExcerpt(DocumentRef &ref)
 //
 DocumentRef *DocumentDB::operator [] (int docID)
 {
-    String			data;
-    String			key((char *) &docID, sizeof docID);
+    String      data;
+    String      key((char *) &docID, sizeof docID);
 
     if (dbf->Get(key, data) == NOTOK)
       return 0;
 
-    DocumentRef		*ref = new DocumentRef;
+    DocumentRef    *ref = new DocumentRef;
     ref->Deserialize(data);
     return ref;
 }
@@ -293,8 +293,8 @@ DocumentRef *DocumentDB::operator [] (int docID)
 //
 DocumentRef *DocumentDB::operator [] (const String& u)
 {
-    String			data;
-    String			docIDstr;
+    String      data;
+    String      docIDstr;
 
     // If there is no index db, then just give up 
     // (do *not* construct a list and traverse it).
@@ -302,16 +302,16 @@ DocumentRef *DocumentDB::operator [] (const String& u)
       return 0;
     else
     {
-	String url(u);
+  String url(u);
   
-	if (i_dbf->Get(HtURLCodec::instance()->encode(url), docIDstr) == NOTOK)
-	  return 0;
+  if (i_dbf->Get(HtURLCodec::instance()->encode(url), docIDstr) == NOTOK)
+    return 0;
     }
 
     if (dbf->Get(docIDstr, data) == NOTOK)
       return 0;
 
-    DocumentRef		*ref = new DocumentRef;
+    DocumentRef    *ref = new DocumentRef;
     ref->Deserialize(data);
     return ref;
 }
@@ -336,22 +336,22 @@ int DocumentDB::Delete(int docID)
     if (i_dbf == 0 || dbf->Get(key, data) == NOTOK)
       return NOTOK;
   
-    DocumentRef		*ref = new DocumentRef;
+    DocumentRef    *ref = new DocumentRef;
     ref->Deserialize(data);
     String url = ref->DocURL();
     delete ref;
   
     // We have to be really careful about deleting by URL, we might
     // have a newer "edition" with the same URL and different DocID
-    String		docIDstr;
-    String		encodedURL = HtURLCodec::instance()->encode(url);
+    String    docIDstr;
+    String    encodedURL = HtURLCodec::instance()->encode(url);
     if (i_dbf->Get(encodedURL, docIDstr) == NOTOK)
       return NOTOK;
 
     // Only delete if we have a match between what we want to delete
     // and what's in the database
     if (key == docIDstr && i_dbf->Delete(encodedURL) == NOTOK)
-	return NOTOK;
+  return NOTOK;
   
     if (h_dbf == 0 || h_dbf->Delete(key) == NOTOK)
       return NOTOK;
@@ -369,82 +369,82 @@ int DocumentDB::Delete(int docID)
 //
 int DocumentDB::DumpDB(const String& filename, int verbose)
 {
-    DocumentRef	        *ref;
-    List		*descriptions, *anchors;
-    char		*strkey;
-    String		data;
-    FILE		*fl;
-    String		docKey(sizeof(int));
+    DocumentRef          *ref;
+    List    *descriptions, *anchors;
+    char    *strkey;
+    String    data;
+    FILE    *fl;
+    String    docKey(sizeof(int));
 
     if((fl = fopen(filename, "w")) == 0) {
       perror(form("DocumentDB::DumpDB: opening %s for writing",
-		  (const char*)filename));
+      (const char*)filename));
       return NOTOK;
     }
 
     dbf->Start_Get();
     while ((strkey = dbf->Get_Next()))
     {
-	int docID;
-	memcpy(&docID, strkey, sizeof docID);
+  int docID;
+  memcpy(&docID, strkey, sizeof docID);
 
-	docKey = 0;
-	docKey.append((char *) &docID, sizeof docID);
+  docKey = 0;
+  docKey.append((char *) &docID, sizeof docID);
 
-	dbf->Get(docKey, data);
+  dbf->Get(docKey, data);
 
-	if (docID != NEXT_DOC_ID_RECORD)
-	{
-	    ref = new DocumentRef;
-	    ref->Deserialize(data);
-	    if (h_dbf)
-	      {
-		h_dbf->Get(docKey,data);
-		ref->DocHead((char*)HtZlibCodec::instance()->decode(data));
-	      }
-	    fprintf(fl, "%d", ref->DocID());
-	    fprintf(fl, "\tu:%s", ref->DocURL());
-	    fprintf(fl, "\tt:%s", ref->DocTitle());
-	    fprintf(fl, "\ta:%d", ref->DocState());
-	    fprintf(fl, "\tm:%d", (int) ref->DocTime());
-	    fprintf(fl, "\ts:%d", ref->DocSize());
-	    fprintf(fl, "\tH:%s", ref->DocHead());
-	    fprintf(fl, "\th:%s", ref->DocMetaDsc());
-	    fprintf(fl, "\tl:%d", (int) ref->DocAccessed());
-	    fprintf(fl, "\tL:%d", ref->DocLinks());
-	    fprintf(fl, "\tb:%d", ref->DocBackLinks());
-	    fprintf(fl, "\tc:%d", ref->DocHopCount());
-	    fprintf(fl, "\tg:%d", ref->DocSig());
-	    fprintf(fl, "\te:%s", ref->DocEmail());
-	    fprintf(fl, "\tn:%s", ref->DocNotification());
-	    fprintf(fl, "\tS:%s", ref->DocSubject());
-	    fprintf(fl, "\td:");
-	    descriptions = ref->Descriptions();
-	    String	*description;
-	    descriptions->Start_Get();
-	    int		first = 1;
-	    while ((description = (String *) descriptions->Get_Next()))
-	    {
-		if (!first)
-		    fprintf(fl, "\001");
-		first = 0;
-		fprintf(fl, "%s", description->get());
-	    }
-	    fprintf(fl, "\tA:");
-	    anchors = ref->DocAnchors();
-	    String	*anchor;
-	    anchors->Start_Get();
-	    first = 1;
-	    while ((anchor = (String *) anchors->Get_Next()))
-	    {
-		if (!first)
-		    fprintf(fl, "\001");
-		first = 0;
-		fprintf(fl, "%s", anchor->get());
-	    }
-	    fprintf(fl, "\n");
-    	    delete ref;
-	}
+  if (docID != NEXT_DOC_ID_RECORD)
+  {
+      ref = new DocumentRef;
+      ref->Deserialize(data);
+      if (h_dbf)
+        {
+    h_dbf->Get(docKey,data);
+    ref->DocHead((char*)HtZlibCodec::instance()->decode(data));
+        }
+      fprintf(fl, "%d", ref->DocID());
+      fprintf(fl, "\tu:%s", ref->DocURL());
+      fprintf(fl, "\tt:%s", ref->DocTitle());
+      fprintf(fl, "\ta:%d", ref->DocState());
+      fprintf(fl, "\tm:%d", (int) ref->DocTime());
+      fprintf(fl, "\ts:%d", ref->DocSize());
+      fprintf(fl, "\tH:%s", ref->DocHead());
+      fprintf(fl, "\th:%s", ref->DocMetaDsc());
+      fprintf(fl, "\tl:%d", (int) ref->DocAccessed());
+      fprintf(fl, "\tL:%d", ref->DocLinks());
+      fprintf(fl, "\tb:%d", ref->DocBackLinks());
+      fprintf(fl, "\tc:%d", ref->DocHopCount());
+      fprintf(fl, "\tg:%d", ref->DocSig());
+      fprintf(fl, "\te:%s", ref->DocEmail());
+      fprintf(fl, "\tn:%s", ref->DocNotification());
+      fprintf(fl, "\tS:%s", ref->DocSubject());
+      fprintf(fl, "\td:");
+      descriptions = ref->Descriptions();
+      String  *description;
+      descriptions->Start_Get();
+      int    first = 1;
+      while ((description = (String *) descriptions->Get_Next()))
+      {
+    if (!first)
+        fprintf(fl, "\001");
+    first = 0;
+    fprintf(fl, "%s", description->get());
+      }
+      fprintf(fl, "\tA:");
+      anchors = ref->DocAnchors();
+      String  *anchor;
+      anchors->Start_Get();
+      first = 1;
+      while ((anchor = (String *) anchors->Get_Next()))
+      {
+    if (!first)
+        fprintf(fl, "\001");
+    first = 0;
+    fprintf(fl, "%s", anchor->get());
+      }
+      fprintf(fl, "\n");
+          delete ref;
+  }
     }
 
     fclose(fl);
@@ -460,114 +460,114 @@ int DocumentDB::DumpDB(const String& filename, int verbose)
 //
 int DocumentDB::LoadDB(const String& filename, int verbose)
 {
-    FILE	*input;
-    String	docKey(sizeof(int));
+    FILE  *input;
+    String  docKey(sizeof(int));
     DocumentRef ref;
-    StringList	descriptions, anchors;
-    char	*token, field;
-    String	data;
+    StringList  descriptions, anchors;
+    char  *token, field;
+    String  data;
 
     if((input = fopen(filename, "r")) == 0) {
       perror(form("DocumentDB::LoadDB: opening %s for reading", 
-		  (const char*)filename));
+      (const char*)filename));
       return NOTOK;
     }
 
     while (data.readLine(input))
     {
-	token = strtok(data, "\t");
-	if (token == NULL)
-	  continue;
+  token = strtok(data, "\t");
+  if (token == NULL)
+    continue;
 
-	ref.DocID(atoi(token));
-	
-	if (verbose)
-	  cout << "\t loading document ID: " << ref.DocID() << endl;
+  ref.DocID(atoi(token));
+  
+  if (verbose)
+    cout << "\t loading document ID: " << ref.DocID() << endl;
 
-	while ( (token = strtok(0, "\t")) )
-	  {
-	    field = *token;
-	    token += 2;
+  while ( (token = strtok(0, "\t")) )
+    {
+      field = *token;
+      token += 2;
 
-	    if (verbose > 2)
-		cout << "\t field: " << field;
+      if (verbose > 2)
+    cout << "\t field: " << field;
 
-	    switch(field)
-	      {
-	        case 'u': // URL
-		  ref.DocURL(token);
-		  break;
-	        case 't': // Title
-		  ref.DocTitle(token);
-		  break;
-	        case 'a': // State
-		  ref.DocState(atoi(token));
-		  break;
-	        case 'm': // Modified
-		  ref.DocTime(atoi(token));
-		  break;
-	        case 's': // Size
-		  ref.DocSize(atoi(token));
-		  break;
-	        case 'H': // Head
-		  ref.DocHead(token);
-		  break;
-	        case 'h': // Meta Description
-		  ref.DocMetaDsc(token);
-		  break;
-	        case 'l': // Accessed
-		  ref.DocAccessed(atoi(token));
-		  break;
-	        case 'L': // Links
-		  ref.DocLinks(atoi(token));
-		  break;
-	        case 'b': // BackLinks
-		  ref.DocBackLinks(atoi(token));
-		  break;
-	        case 'c': // HopCount
-		  ref.DocHopCount(atoi(token));
-		  break;
-	        case 'g': // Signature
-		  ref.DocSig(atoi(token));
-		  break;
-	        case 'e': // E-mail
-		  ref.DocEmail(token);
-		  break;
-	        case 'n': // Notification
-		  ref.DocNotification(token);
-		  break;
-	        case 'S': // Subject
-		  ref.DocSubject(token);
-		  break;
-	        case 'd': // Descriptions
-		  descriptions.Create(token, '\001');
-		  ref.Descriptions(descriptions);
-		  break;
-	        case 'A': // Anchors
-		  anchors.Create(token, '\001');
-		  ref.DocAnchors(anchors);
-		  break;
-	        default:
-		  break;
-	      }
+      switch(field)
+        {
+          case 'u': // URL
+      ref.DocURL(token);
+      break;
+          case 't': // Title
+      ref.DocTitle(token);
+      break;
+          case 'a': // State
+      ref.DocState(atoi(token));
+      break;
+          case 'm': // Modified
+      ref.DocTime(atoi(token));
+      break;
+          case 's': // Size
+      ref.DocSize(atoi(token));
+      break;
+          case 'H': // Head
+      ref.DocHead(token);
+      break;
+          case 'h': // Meta Description
+      ref.DocMetaDsc(token);
+      break;
+          case 'l': // Accessed
+      ref.DocAccessed(atoi(token));
+      break;
+          case 'L': // Links
+      ref.DocLinks(atoi(token));
+      break;
+          case 'b': // BackLinks
+      ref.DocBackLinks(atoi(token));
+      break;
+          case 'c': // HopCount
+      ref.DocHopCount(atoi(token));
+      break;
+          case 'g': // Signature
+      ref.DocSig(atoi(token));
+      break;
+          case 'e': // E-mail
+      ref.DocEmail(token);
+      break;
+          case 'n': // Notification
+      ref.DocNotification(token);
+      break;
+          case 'S': // Subject
+      ref.DocSubject(token);
+      break;
+          case 'd': // Descriptions
+      descriptions.Create(token, '\001');
+      ref.Descriptions(descriptions);
+      break;
+          case 'A': // Anchors
+      anchors.Create(token, '\001');
+      ref.DocAnchors(anchors);
+      break;
+          default:
+      break;
+        }
 
-	  }
-	
+    }
+  
 
-	// We must be careful if the document already exists
-	// So we'll delete the old document and add the new one
-	if (Exists(ref.DocID()))
-	  {
-	    Delete(ref.DocID());
-	  }
-	Add(ref);
+  // We must be careful if the document already exists
+  // So we'll delete the old document and add the new one
+  if (Exists(ref.DocID()))
+    {
+      Delete(ref.DocID());
+    }
+  Add(ref);
 
-	// If we add a record with an ID past nextDocID, update it
-	if (ref.DocID() > nextDocID)
-	  nextDocID = ref.DocID() + 1;
+  // If we add a record with an ID past nextDocID, update it
+  if (ref.DocID() > nextDocID)
+    nextDocID = ref.DocID() + 1;
 
-	descriptions.Destroy();
-	anchors.Destroy();
+  descriptions.Destroy();
+  anchors.Destroy();
     }
 
     fclose(input);
@@ -581,17 +581,17 @@ int DocumentDB::LoadDB(const String& filename, int verbose)
 //
 List *DocumentDB::URLs()
 {
-    List	*list = new List;
-    char	*coded_key;
+    List  *list = new List;
+    char  *coded_key;
 
     if (i_dbf == 0)
-	return 0;
+  return 0;
 
     i_dbf->Start_Get();
     while ((coded_key = i_dbf->Get_Next()))
     {
-	String *key = new String(HtURLCodec::instance()->decode(coded_key));
-	list->Add(key);
+  String *key = new String(HtURLCodec::instance()->decode(coded_key));
+  list->Add(key);
     }
     return list;
 }
@@ -603,17 +603,17 @@ List *DocumentDB::URLs()
 //
 List *DocumentDB::DocIDs()
 {
-    List	*list = new List;
-    char	*key;
+    List  *list = new List;
+    char  *key;
 
     dbf->Start_Get();
     while ((key = dbf->Get_Next()))
     {
-	int	    docID;
-	memcpy (&docID, key, sizeof docID);
+  int      docID;
+  memcpy (&docID, key, sizeof docID);
 
-	if (docID != NEXT_DOC_ID_RECORD)
-	    list->Add(new IntObject(docID));
+  if (docID != NEXT_DOC_ID_RECORD)
+      list->Add(new IntObject(docID));
     }
     return list;
 }
@@ -624,30 +624,30 @@ List *DocumentDB::DocIDs()
 //
 int readLine(FILE *in, String &line)
 {
-    char	buffer[2048];
-    int		length;
+    char  buffer[2048];
+    int    length;
     
     line = 0;
     while (fgets(buffer, sizeof(buffer), in))
     {
-	length = strlen(buffer);
-	if (buffer[length - 1] == '\n')
-	{
-	    //
-	    // A full line has been read.  Return it.
-	    //
-	    line << buffer;
-	    line.chop('\n');
-	    return 1;
-	}
-	else
-	{
-	    //
-	    // Only a partial line was read.  Append it to the line
-	    // and read some more.
-	    //
-	    line << buffer;
-	}
+  length = strlen(buffer);
+  if (buffer[length - 1] == '\n')
+  {
+      //
+      // A full line has been read.  Return it.
+      //
+      line << buffer;
+      line.chop('\n');
+      return 1;
+  }
+  else
+  {
+      //
+      // Only a partial line was read.  Append it to the line
+      // and read some more.
+      //
+      line << buffer;
+  }
     }
     return line.length() > 0;
 }

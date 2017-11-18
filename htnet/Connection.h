@@ -16,7 +16,7 @@
 //
 
 #ifndef _Connection_h_
-#define	_Connection_h_
+#define  _Connection_h_
 
 #include "Object.h"
 #include "htString.h"
@@ -119,7 +119,7 @@ protected:
    int            timeout_value;
    int            retry_value;
    unsigned int   wait_time;  // time to wait after an
-      	             	      // unsuccessful connection
+                             // unsuccessful connection
 };
 
 

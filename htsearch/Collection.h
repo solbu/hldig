@@ -42,8 +42,8 @@ public:
 
     char *getWordFile() { return wordFile.get(); }
     DocumentRef         *getDocumentRef(int id);
-    ResultList		*getResultList() { return matches; }
-    void		setResultList(ResultList *list) { matches = list; }
+    ResultList    *getResultList() { return matches; }
+    void    setResultList(ResultList *list) { matches = list; }
 
     List                *getSearchWords() { return searchWords; }
     void                setSearchWords(List *list) { searchWords = list; }
@@ -52,15 +52,15 @@ public:
     void                setSearchWordsPattern(StringMatch *smatch)
                             { searchWordsPattern = smatch; }
                   
-    int			ReadExcerpt(DocumentRef &ref);
+    int      ReadExcerpt(DocumentRef &ref);
 
 protected:
     String              collectionName;
     String              wordFile;
     String              indexFile;
     String              docFile;
-    String		docExcerpt;
-    ResultList		*matches;
+    String    docExcerpt;
+    ResultList    *matches;
     List                *searchWords;
     StringMatch         *searchWordsPattern;
 

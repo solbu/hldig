@@ -47,7 +47,7 @@ class WordLock;
 //
 // Minimum size of the pulsing cache
 //
-#define WORD_DB_CACHE_MINIMUM	(500 * 1024)
+#define WORD_DB_CACHE_MINIMUM  (500 * 1024)
 
 //
 // We could use DBT instead but it's more than two times bigger and
@@ -93,9 +93,9 @@ public:
   inline int ResizePool(int wanted) {
     if(pool_size * 2 > pool_max) {
       if(pool_max > pool_size && pool_max > wanted)
-	pool_size = pool_max;
+  pool_size = pool_max;
       else
-	return ENOMEM;
+  return ENOMEM;
     } else {
       pool_size *= 2;
     }
@@ -107,10 +107,10 @@ public:
     int ret;
     if(entries_length >= entries_size)
       if((ret = ResizeEntries()) != 0)
-	return ret;
+  return ret;
     if(pool_length + size >= pool_size) {
       if((ret = ResizePool(pool_length + size)) != 0)
-	return ret;
+  return ret;
     }
     return 0;
   }
@@ -253,15 +253,15 @@ class WordDBCaches {
   int ReadEntry(FILE* fp, WordDBCacheEntry& entry, unsigned char*& buffer, unsigned int& buffer_size);
 
  private:
-  WordList*		words;
+  WordList*    words;
 
-  WordDB*            	files;
-  int			file_max;
-  int			size_max;
-  int			size;
+  WordDB*              files;
+  int      file_max;
+  int      size_max;
+  int      size;
   
-  WordLock*		lock;
-  WordDBCache		cache;
+  WordLock*    lock;
+  WordDBCache    cache;
 };
 
 #endif /* _WordDBCache_h */

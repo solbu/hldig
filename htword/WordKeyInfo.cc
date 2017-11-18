@@ -75,10 +75,10 @@ WordKeyField::Show()
   } else {
     nprint(' ',bits_offset);
     printf("\"%s\" type:%2d lowbits:%2d lastbits:%2d\n",
-	   (char *)name,
-	   type,
-	   lowbits,
-	   lastbits);
+     (char *)name,
+     type,
+     lowbits,
+     lastbits);
     nprint(' ',bits_offset);
     printf("|---bytesize:%2d bytes_offset:%2d bits:%2d bits_offset:%2d\n", bytesize, bytes_offset, bits, bits_offset);
   }
@@ -162,8 +162,8 @@ WordKeyInfo::Set(const String &desc)
       // String field
       //
       if(i != 0) {
-	fprintf(stderr, "WordKeyInfo::Set: Word field must show in first position %s\n", (const char*)desc);
-	return EINVAL;
+  fprintf(stderr, "WordKeyInfo::Set: Word field must show in first position %s\n", (const char*)desc);
+  return EINVAL;
       }
       key_field.SetString();
     } else {
@@ -171,10 +171,10 @@ WordKeyInfo::Set(const String &desc)
       // Numerical field
       //
       StringList pair(field, "\t ");
-	
+  
       if(pair.Count() != 2) {
-	fprintf(stderr, "WordKeyInfo::AddField: there must be exactly two strings separated by a white space (space or tab) in a field description (%s in key description %s)\n", field, (const char*)desc);
-	return EINVAL;
+  fprintf(stderr, "WordKeyInfo::AddField: there must be exactly two strings separated by a white space (space or tab) in a field description (%s in key description %s)\n", field, (const char*)desc);
+  return EINVAL;
       }
 
       int bits = atoi(pair[1]);
@@ -199,7 +199,7 @@ WordKeyInfo::Show()
     fprintf(stderr, "nfields:%3d num_length:%3d\n", nfields, num_length);
     int i;
     for(i = 0; i < nfields; i++)
-	sort[i].Show();
+  sort[i].Show();
 
     char str[WORDKEYFIELD_BITS_MAX*WORD_KEY_MAX_NFIELDS];
     memset(str, '_', WORDKEYFIELD_BITS_MAX*WORD_KEY_MAX_NFIELDS);
@@ -207,16 +207,16 @@ WordKeyInfo::Show()
     int last = 0;
     int j;
     for(j = 0; j < nfields; j++) {
-	for(i = 0; i < sort[j].bits; i++) {
-	    char c = (j % 10) + '0';
-	    int pos = sort[j].bits_offset + i;
-	    if(str[pos] != '_') {
-	      fprintf(stderr, "WordKeyInfo::Show: overlaping bits (field %d), bit %d\n", j, i);
-	      c='X';
-	    }
-	    str[pos] = c;
-	    if(last < pos) last = pos;
-	}
+  for(i = 0; i < sort[j].bits; i++) {
+      char c = (j % 10) + '0';
+      int pos = sort[j].bits_offset + i;
+      if(str[pos] != '_') {
+        fprintf(stderr, "WordKeyInfo::Show: overlaping bits (field %d), bit %d\n", j, i);
+        c='X';
+      }
+      str[pos] = c;
+      if(last < pos) last = pos;
+  }
     }
     str[last + 1] = '\0';
     fprintf(stderr, "%s (bits)\n",str);

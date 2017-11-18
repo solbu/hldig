@@ -49,9 +49,9 @@ int  logOpen(char *filename)
         errorlog_fp = fopen(filename, "a+");
 
     if (errorlog_fp == NULL)
-    	return (TRUE);
+      return (TRUE);
     else
-	    return (FALSE);
+      return (FALSE);
 }
 
 
@@ -60,7 +60,7 @@ void logEntry (char *msg)
     time_t now = time(NULL);
     
     if(errorlog_fp != NULL)
-    	fprintf(errorlog_fp, "[%s] %s\n", ctime(&now), msg);
+      fprintf(errorlog_fp, "[%s] %s\n", ctime(&now), msg);
 
 }
 
@@ -73,7 +73,7 @@ void reportError (char *msg)
     time_t now = time(NULL);
     
     if(errorlog_fp != NULL)
-    	fprintf(errorlog_fp, "%s  [ERROR] %s\n", ctime(&now), msg);
+      fprintf(errorlog_fp, "%s  [ERROR] %s\n", ctime(&now), msg);
 
     fprintf(stderr, "%s  [ERROR] %s\n", ctime(&now), msg);
     

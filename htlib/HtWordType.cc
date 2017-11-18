@@ -20,8 +20,8 @@
 #include "WordType.h"
 
 int HtIsWordChar(char c)          { return WordType::Instance()->IsChar(c); }
-int HtIsStrictWordChar(char c)	  { return WordType::Instance()->IsStrictChar(c); }
-int HtWordNormalize(String &w)	  { return WordType::Instance()->Normalize(w); }
+int HtIsStrictWordChar(char c)    { return WordType::Instance()->IsStrictChar(c); }
+int HtWordNormalize(String &w)    { return WordType::Instance()->Normalize(w); }
 int HtStripPunctuation(String &w) { return WordType::Instance()->StripPunctuation(w); }
 
 
@@ -30,21 +30,21 @@ int HtStripPunctuation(String &w) { return WordType::Instance()->StripPunctuatio
 char *
 HtWordToken(char *str)
 {
-    unsigned char		*text = (unsigned char *)str;
-    char			*ret = 0;
-    static unsigned char	*prev = 0;
+    unsigned char    *text = (unsigned char *)str;
+    char      *ret = 0;
+    static unsigned char  *prev = 0;
 
     if (!text)
-	text = prev;
+  text = prev;
     while (text && *text && !HtIsStrictWordChar(*text))
-	text++;
+  text++;
     if (text && *text)
     {
-	ret = (char *)text;
-	while (*text && HtIsWordChar(*text))
-	    text++;
-	if (*text)
-	    *text++ = '\0';
+  ret = (char *)text;
+  while (*text && HtIsWordChar(*text))
+      text++;
+  if (*text)
+      *text++ = '\0';
     }
     prev = text;
     return ret;

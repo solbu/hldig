@@ -31,19 +31,19 @@ class Fuzzy;
 class OrFuzzyExpander : public FuzzyExpander
 {
 public:
-	OrFuzzyExpander() {}
-	virtual ~OrFuzzyExpander() { filters.Release(); }
+  OrFuzzyExpander() {}
+  virtual ~OrFuzzyExpander() { filters.Release(); }
 
-	// use this filter
-	void Add(Fuzzy *filter) { filters.Add(filter); }
+  // use this filter
+  void Add(Fuzzy *filter) { filters.Add(filter); }
 
 
 private:
-	// generate a OrQuery with all fuzzies found
-	Query *MakeQuery(const String &word);
+  // generate a OrQuery with all fuzzies found
+  Query *MakeQuery(const String &word);
 
-	// Fuzzies to be used
-	List filters;
+  // Fuzzies to be used
+  List filters;
 };
 
 #endif

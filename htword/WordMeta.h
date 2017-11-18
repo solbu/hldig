@@ -56,10 +56,10 @@ class WordMetaImp;
 //
 // Serial number range [1-2^32]
 //
-#define WORD_META_SERIAL_INVALID	0
+#define WORD_META_SERIAL_INVALID  0
 
-#define WORD_META_SERIAL_WORD	0
-#define WORD_META_SERIAL_FILE	1
+#define WORD_META_SERIAL_WORD  0
+#define WORD_META_SERIAL_FILE  1
 
 class WordMeta 
 {
@@ -80,8 +80,8 @@ class WordMeta
   int Unlock(const String& resource, WordLock*& lock);
   
  private:
-  WordList		*words;
-  WordDB	        *db;
-  WordMetaImp	        *imp;
+  WordList    *words;
+  WordDB          *db;
+  WordMetaImp          *imp;
 };
 #endif /* _WordMeta_h_ */

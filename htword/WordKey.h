@@ -78,36 +78,36 @@
 // field in set flag that says if a word is just a prefix (incomplete word)
 // WORD_KEY_WORDSUFFIX_DEFINED -> means that word IS complete (not a prefix)
 //
-#define WORD_KEY_WORDSUFFIX_DEFINED	 (1 << 30)
-#define WORD_KEY_WORD_DEFINED		 1
-#define WORD_KEY_WORDFULLY_DEFINED	 ( WORD_KEY_WORDSUFFIX_DEFINED | WORD_KEY_WORD_DEFINED )
+#define WORD_KEY_WORDSUFFIX_DEFINED   (1 << 30)
+#define WORD_KEY_WORD_DEFINED     1
+#define WORD_KEY_WORDFULLY_DEFINED   ( WORD_KEY_WORDSUFFIX_DEFINED | WORD_KEY_WORD_DEFINED )
 
 //
 // Possible return values of Outbound/Overflow/Underflow methods
 //
-#define WORD_INBOUND	0
-#define WORD_OVERFLOW	1
-#define WORD_UNDERFLOW	2
+#define WORD_INBOUND  0
+#define WORD_OVERFLOW  1
+#define WORD_UNDERFLOW  2
 
 //
 // Possible return values of SetToFollowing
 //
-#define WORD_FOLLOWING_ATEND	0x0001
+#define WORD_FOLLOWING_ATEND  0x0001
 //
 // Default value for position argument of SetToFollowing
 // meaning NFields() - 1
 //
-#define WORD_FOLLOWING_MAX	-1
+#define WORD_FOLLOWING_MAX  -1
 
 //
 // Position of the first numerical field (just after the word)
 //
-#define WORD_FIRSTFIELD	1
+#define WORD_FIRSTFIELD  1
 
 //
 // Unknown field position
 //
-#define WORD_KEY_UNKNOWN_POSITION	-1
+#define WORD_KEY_UNKNOWN_POSITION  -1
 
 #ifndef SWIG
 // C comparison function interface for Berkeley DB (bt_compare)
@@ -169,10 +169,10 @@ class WordKey
   void Initialize()
     {
       if(!Info())
-	{
-	  fprintf(stderr, "WordKey::WordKey used before word_key_info set\n");
-	  word_errr("WordKey::initialize");
-	}
+  {
+    fprintf(stderr, "WordKey::WordKey used before word_key_info set\n");
+    word_errr("WordKey::initialize");
+  }
       
       numerical_fields = new WordKeyNum[NFields()-1]; 
       Clear();
@@ -194,24 +194,24 @@ class WordKey
     {
       if(other.IsDefined(0)) { SetWord(other.GetWord()); }
       for(int i=1;i<NFields();i++)
-	{
-	  if(other.IsDefined(i))
-	    {
-	      Set(i, other.Get(i));
-	    }
-	}
+  {
+    if(other.IsDefined(i))
+      {
+        Set(i, other.Get(i));
+      }
+  }
       setbits=other.setbits;
     }
   //-
   // Reset to empty key. 
   //
-  void	Clear() 
+  void  Clear() 
   { 
       setbits = 0;
       kword.trunc();
       for(int i=0;i<NFields()-1;i++)
       {
-	  numerical_fields[i] = 0;
+    numerical_fields[i] = 0;
       }
   }
 
@@ -226,7 +226,7 @@ class WordKey
   // Convenience functions to access the total number of fields
   // in a key (see <i>WordKeyInfo(3)</i>).
   //
-  static inline int 	           NFields() { return Info()->nfields; }
+  static inline int              NFields() { return Info()->nfields; }
   //-
   // Convenience functions to access the 
   // maximum possible value for field at <b>position.</b>
@@ -247,30 +247,30 @@ class WordKey
   //-
   // Returns the word.
   //
-  inline String&	GetWord()       { return kword; }
+  inline String&  GetWord()       { return kword; }
   //-
   // Set the word.
   //
-  inline void	        SetWord(const String& arg) { kword = arg; setbits |= WORD_KEY_WORDFULLY_DEFINED; } 
+  inline void          SetWord(const String& arg) { kword = arg; setbits |= WORD_KEY_WORDFULLY_DEFINED; } 
  protected:
   //-
   // Set the word.
   //
-  inline void	        SetWord(const char* arg, int arg_length) { kword.set(arg, arg_length); setbits |= WORD_KEY_WORDFULLY_DEFINED; } 
+  inline void          SetWord(const char* arg, int arg_length) { kword.set(arg, arg_length); setbits |= WORD_KEY_WORDFULLY_DEFINED; } 
  public:
   //-
   // Change status of the word to <i>undefined.</i> Also undefines
   // its suffix.
   //
-  inline void	        UndefinedWord() { kword.trunc(); setbits &=  ~WORD_KEY_WORDFULLY_DEFINED; } 
+  inline void          UndefinedWord() { kword.trunc(); setbits &=  ~WORD_KEY_WORDFULLY_DEFINED; } 
   //-
   // Set the status of the word suffix to <i>undefined.</i> 
   //
-  inline void		UndefinedWordSuffix() {setbits &= ~WORD_KEY_WORDSUFFIX_DEFINED;}
+  inline void    UndefinedWordSuffix() {setbits &= ~WORD_KEY_WORDSUFFIX_DEFINED;}
   //-
   // Set the status of the word suffix to <i>defined.</i> 
   //
-  inline void		SetDefinedWordSuffix() {setbits |= WORD_KEY_WORDSUFFIX_DEFINED;}
+  inline void    SetDefinedWordSuffix() {setbits |= WORD_KEY_WORDSUFFIX_DEFINED;}
   //-
   // Returns true if word suffix is <i>defined</i>, false otherwise.
   //
@@ -321,15 +321,15 @@ class WordKey
   // Returns true if field at <b>position</b> is <i>defined</i>, false
   // otherwise.
   //
-  int	IsDefined(int position) const { return setbits & (1 << position); }
+  int  IsDefined(int position) const { return setbits & (1 << position); }
   //-
   // Value in field <b>position</b> becomes <i>defined.</i>
   //
-  void	SetDefined(int position)      { setbits |= (1 << position); }
+  void  SetDefined(int position)      { setbits |= (1 << position); }
   //-
   // Value in field <b>position</b> becomes <i>undefined.</i>
   //
-  void	Undefined(int position)       { setbits &= ~(1 << position); }
+  void  Undefined(int position)       { setbits &= ~(1 << position); }
 
 #ifndef SWIG
   //
@@ -365,7 +365,7 @@ class WordKey
   // <b>string</b> buffer or length <b>length.</b>
   // Return OK if successfull, NOTOK otherwise.
   //
-  int 		Unpack(const char* string, int length);
+  int     Unpack(const char* string, int length);
   //
   //-
   // Set structure from disk storage format as found in 
@@ -379,7 +379,7 @@ class WordKey
   // and place the result in <b>data</b> string.
   // Return OK if successfull, NOTOK otherwise.
   //
-  int 		Pack(String& data) const;
+  int     Pack(String& data) const;
 #endif /* SWIG */
 
   //
@@ -390,14 +390,14 @@ class WordKey
   // the corresponding field of the object is not defined. 
   // Return OK if successfull, NOTOK otherwise.
   //
-  int		Merge(const WordKey& other);
+  int    Merge(const WordKey& other);
   //-
   // Undefine all fields found after the first undefined field. The
   // resulting key has a set of defined fields followed by undefined fields.
   // Returns NOTOK if the word is not defined because the resulting key would 
   // be empty and this is considered an error. Returns OK on success.
   //
-  int		PrefixOnly();
+  int    PrefixOnly();
 #ifndef SWIG
   //-
   // Implement ++ on a key.
@@ -423,23 +423,23 @@ class WordKey
   //-
   // Return true if all the fields are <i>defined</i>, false otherwise.
   //
-  int		Filled() const { return setbits == (unsigned int) (((1 << NFields()) - 1) | WORD_KEY_WORDSUFFIX_DEFINED); }
+  int    Filled() const { return setbits == (unsigned int) (((1 << NFields()) - 1) | WORD_KEY_WORDSUFFIX_DEFINED); }
   //-
   // Return true if no fields are <i>defined</i>, false otherwise.
   //
-  int		Empty() const  { return setbits == 0; }
+  int    Empty() const  { return setbits == 0; }
   //-
   // Return true if the object and <b>other</b> are equal. 
   // Only fields defined in both keys are compared.
   //
-  int 		Equal(const WordKey& other) const;
+  int     Equal(const WordKey& other) const;
   //-
   // Return true if the object and <b>other</b> are equal. 
   // All fields are compared. If a field is defined in <b>object</b>
   // and not defined in the object, the key are not considered
   // equal.
   //
-  int 		ExactEqual(const WordKey& other) const {return(Equal(other) && other.setbits == setbits);}
+  int     ExactEqual(const WordKey& other) const {return(Equal(other) && other.setbits == setbits);}
 #ifndef SWIG
   //-
   // Return true if the object and <b>other</b> are equal. 
@@ -447,12 +447,12 @@ class WordKey
   // will be 0 and therefore undistinguishable from a <i>defined</i> field
   // whose value is 0.
   //
-  int 		PackEqual(const WordKey& other) const;
+  int     PackEqual(const WordKey& other) const;
   //-
   // Return true if adding <b>increment</b> in field at <b>position</b> makes
   // it overflow or underflow, false if it fits.
   //
-  int		Outbound(int position, int increment) {
+  int    Outbound(int position, int increment) {
     if(increment < 0) return Underflow(position, increment);
     else if(increment > 0) return Overflow(position, increment);
     else return WORD_INBOUND;
@@ -461,14 +461,14 @@ class WordKey
   // Return true if adding positive <b>increment</b> to field at 
   // <b>position</b> makes it overflow, false if it fits.
   //
-  int		Overflow(int position, int increment) {
+  int    Overflow(int position, int increment) {
     return MaxValue(position) - Get(position) < (WordKeyNum)increment ? WORD_OVERFLOW : WORD_INBOUND;
   }
   //-
   // Return true if subtracting positive <b>increment</b> to field 
   // at <b>position</b> makes it underflow, false if it fits.
   //
-  int		Underflow(int position, int increment) {
+  int    Underflow(int position, int increment) {
     return Get(position) < (WordKeyNum)(-increment) ? WORD_UNDERFLOW : WORD_INBOUND;
   }
 #endif /* SWIG */
@@ -478,7 +478,7 @@ class WordKey
   // are all contiguous, starting from the first field.
   // Otherwise returns NOTOK
   //
-  int		Prefix() const;
+  int    Prefix() const;
 
 #ifndef SWIG
   //-
@@ -487,8 +487,8 @@ class WordKey
   // returned int is as of strcmp and is driven by the key description
   // found in <i>WordKeyInfo.</i>
   //
-  static int 	    Compare(const String& a, const String& b);
-  static int 	    Compare_WordOnly(const String& a, const String& b);
+  static int       Compare(const String& a, const String& b);
+  static int       Compare_WordOnly(const String& a, const String& b);
   //-
   // Compare <b>a</b> and <b>b</b> in the Berkeley DB fashion. 
   // <b>a</b> and <b>b</b> are packed keys. The semantics of the

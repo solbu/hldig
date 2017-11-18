@@ -49,7 +49,7 @@
 class WordList;
 class WordDictCursor;
 
-#define WORD_DICT_SERIAL_INVALID	0
+#define WORD_DICT_SERIAL_INVALID  0
 
 class WordDictRecord {
  public:
@@ -245,8 +245,8 @@ class WordDict
   int Write(FILE* f);
 
  private:
-  WordList*			words;
-  WordDB*	            	db;
+  WordList*      words;
+  WordDB*                db;
 #endif /* SWIG */
 };
 #endif /* _WordDict_h_ */

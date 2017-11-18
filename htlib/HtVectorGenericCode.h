@@ -100,7 +100,7 @@ void HtVectorGType::RemoveFrom(int position)
 
     for (int i = position; i < element_count - 1; i++)
     {
-	data[i] = data[i+1];
+  data[i] = data[i+1];
     }
     element_count -= 1;
 }
@@ -136,16 +136,16 @@ GType &HtVectorGType::Get_First()
 //
 int HtVectorGType::Index(const GType &obj)
 {
-    int			index0 = 0;
+    int      index0 = 0;
 
     while (index0 < element_count && data[index0] != obj)
     {
-	index0++;
+  index0++;
     }
     if (index0 >= element_count)
-	return -1;
+  return -1;
     else
-	return index0;
+  return index0;
 }
 
 
@@ -193,9 +193,9 @@ void HtVectorGType::Remove(const GType &object)
 // HtVectorGType *HtVectorGType::Copy() const
 //   Return a deep copy of the vector.
 //
-Object		 *HtVectorGType::Copy() const
+Object     *HtVectorGType::Copy() const
 {
-    HtVectorGType	*vector = new HtVectorGType(allocated);
+    HtVectorGType  *vector = new HtVectorGType(allocated);
 
     for(int i = 0; i < Count(); i++)
 {
@@ -219,7 +219,7 @@ HtVectorGType &HtVectorGType::operator=(const HtVectorGType &vector)
 
     for(int i = 0; i < vector.Count(); i++)
     {
-	Add(vector.data[i]);
+  Add(vector.data[i]);
     }
     return *this;
 }
@@ -233,23 +233,23 @@ void HtVectorGType::ActuallyAllocate(int capacity)
 {
   if (capacity > allocated) // Darn, we actually have to do work :-)
     {
-      GType	*old_data = data;
+      GType  *old_data = data;
 
       // Ensure we have more than the capacity and we aren't
       // always rebuilding the vector (which leads to quadratic behavior)
       if(!allocated){allocated=1;}
       while (allocated < capacity)
-	allocated *= 2;
+  allocated *= 2;
 
       data = new GType[allocated];
 
       for (int i = 0; i < element_count; i++)
-	{
-	  data[i] = old_data[i];
-	}
+  {
+    data[i] = old_data[i];
+  }
 
       if (old_data)
-	delete [] old_data;
+  delete [] old_data;
     }
 }
 

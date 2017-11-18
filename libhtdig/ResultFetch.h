@@ -48,28 +48,28 @@ public:
     ResultFetch(Dictionary *selected_collections);
     ~ResultFetch();
 
-    void		setStartTemplate(const String& templateName);
-    void		setMatchTemplate(const String& templateName);
-    void		setEndTemplate(const String& templateName);
-	
-    // inline void		setResults(ResultList *results);
-    // inline void		setSearchWords(List *searchWords);
-    inline void		setLimit(HtRegex *);
-    inline void		setExclude(HtRegex *);
-    // inline void		setAllWordsPattern(StringMatch *);
-    inline void		setLogicalWords(char *);
-    inline void		setOriginalWords(char *);
-    inline void		setCGI(cgi *);
-	
-    //void		        fetch(int pageNumber);
-    //void      		fetchMatch(ResultMatch *match, DocumentRef *ref, int current);
-    List *		        fetch();
-    Dictionary *		fetchMatch(ResultMatch *match, DocumentRef *ref, int current);
-    void	        	displayHeader();
-    void		        displayFooter();
-    void        		displayNomatch();
-    void		        displaySyntaxError(const String &);
-	
+    void    setStartTemplate(const String& templateName);
+    void    setMatchTemplate(const String& templateName);
+    void    setEndTemplate(const String& templateName);
+  
+    // inline void    setResults(ResultList *results);
+    // inline void    setSearchWords(List *searchWords);
+    inline void    setLimit(HtRegex *);
+    inline void    setExclude(HtRegex *);
+    // inline void    setAllWordsPattern(StringMatch *);
+    inline void    setLogicalWords(char *);
+    inline void    setOriginalWords(char *);
+    inline void    setCGI(cgi *);
+  
+    //void            fetch(int pageNumber);
+    //void          fetchMatch(ResultMatch *match, DocumentRef *ref, int current);
+    List *            fetch();
+    Dictionary *    fetchMatch(ResultMatch *match, DocumentRef *ref, int current);
+    void            displayHeader();
+    void            displayFooter();
+    void            displayNomatch();
+    void            displaySyntaxError(const String &);
+  
     int                 hasTemplateError() {return templateError;}
 
 protected:
@@ -85,12 +85,12 @@ protected:
     //
     // The list of search results.
     //
-    // ResultList		*results;
+    // ResultList    *results;
 
     //
     // The database that contains documents.
     //
-    // DocumentDB		docDB;
+    // DocumentDB    docDB;
 
     // List of databases to search on
     StringList  collectionList; 
@@ -98,30 +98,30 @@ protected:
     //
     // A list of words that we are searching for
     //
-    // List		*searchWords;
+    // List    *searchWords;
 
     //
     // Pattern that all result URLs must match or exclude
     //
-    HtRegex		*limitTo;
-    HtRegex		*excludeFrom;
+    HtRegex    *limitTo;
+    HtRegex    *excludeFrom;
 
     //
     // Pattern of all the words
     //
-    // StringMatch		*allWordsPattern;
-	
+    // StringMatch    *allWordsPattern;
+  
     //
     // Variables for substitution into text are stored in a dictionary
     //
-    Dictionary		vars;
+    Dictionary    vars;
 
     //
     // Since the creation of excerpts is somewhat time consuming, we will
     // only compute them if they're actually going to be used.  This is the
     // flag that tells us if we will need the excerpt.
     //
-    int			needExcerpt;
+    int      needExcerpt;
 
     //
     // Since we might have errors we cannot recover from, this tells us 
@@ -133,62 +133,62 @@ protected:
     // To allow the result templates to be dependant on the match URL, we need
     // the following:
     //
-    StringMatch		URLtemplate;
-    List		URLtemplateList;
+    StringMatch    URLtemplate;
+    List    URLtemplateList;
 
     //
     // To allow the star images to be dependant on the match URL, we need
     // the following:
     //
-    StringMatch		URLimage;
-    List		URLimageList;
+    StringMatch    URLimage;
+    List    URLimageList;
 
     //
     // Maximum number of stars to display
     //
-    int			maxStars;
-    double		maxScore;
-    double		minScore;
+    int      maxStars;
+    double    maxScore;
+    double    minScore;
 
     //
     // For display, we have different versions of the list of words.
     //
-    String		logicalWords;
-    String		originalWords;
+    String    logicalWords;
+    String    originalWords;
 
     //
     // To be able to recreate the URL that will get to us again, we need
     // the info from the HTML form that called us.
     //
-    cgi			*input;
+    cgi      *input;
 
     //
     // Match output is done through templates.  This is the interface to these
     // templates.
     //
-    TemplateList	templates;
-    Template		*currentTemplate;
-	
+    TemplateList  templates;
+    Template    *currentTemplate;
+  
     //
     // Methods...
     //
-    List		*buildMatchList();
-    void		sort(List *);
+    List    *buildMatchList();
+    void    sort(List *);
 
-    int			includeURL(const String&);
-    String		*readFile(const String&);
-    void		expandVariables(const String&);
-    void		outputVariable(const String&);
-    String		*excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor,
-				 int fanchor, int &first);
-    String		hilight(ResultMatch *match, const String& str, const String& urlanchor, int fanchor);
-    void		setupTemplates();
-    void		setupImages();
-    String		*generateStars(DocumentRef *, int);
-    void		displayParsedFile(const String&);
-    void		setVariables(int, List *);
-    void		createURL(String &, int);
-    void		logSearch(int, List *);
+    int      includeURL(const String&);
+    String    *readFile(const String&);
+    void    expandVariables(const String&);
+    void    outputVariable(const String&);
+    String    *excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor,
+         int fanchor, int &first);
+    String    hilight(ResultMatch *match, const String& str, const String& urlanchor, int fanchor);
+    void    setupTemplates();
+    void    setupImages();
+    String    *generateStars(DocumentRef *, int);
+    void    displayParsedFile(const String&);
+    void    setVariables(int, List *);
+    void    createURL(String &, int);
+    void    logSearch(int, List *);
 };
 
 //*****************************************************************************

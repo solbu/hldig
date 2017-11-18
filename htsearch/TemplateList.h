@@ -27,12 +27,12 @@ public:
     TemplateList();
     ~TemplateList();
 
-    int	       	        createFromString(const String& str);
-    Template		*get(const String& internalName);
-	
-    List	       	displayNames;
-    List	       	internalNames;
-    List	       	templates;
+    int                   createFromString(const String& str);
+    Template    *get(const String& internalName);
+  
+    List           displayNames;
+    List           internalNames;
+    List           templates;
 };
 
 #endif

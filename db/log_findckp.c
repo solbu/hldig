@@ -2,13 +2,13 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 
 #include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)log_findckp.c	11.1 (Sleepycat) 7/24/99";
+static const char sccsid[] = "@(#)log_findckp.c  11.1 (Sleepycat) 7/24/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -52,85 +52,85 @@ static const char sccsid[] = "@(#)log_findckp.c	11.1 (Sleepycat) 7/24/99";
  */
 int
 CDB___log_findckp(dbenv, lsnp)
-	DB_ENV *dbenv;
-	DB_LSN *lsnp;
+  DB_ENV *dbenv;
+  DB_LSN *lsnp;
 {
-	DBT data;
-	DB_LSN ckp_lsn, final_ckp, last_ckp, next_lsn;
-	__txn_ckp_args *ckp_args;
-	int ret;
+  DBT data;
+  DB_LSN ckp_lsn, final_ckp, last_ckp, next_lsn;
+  __txn_ckp_args *ckp_args;
+  int ret;
 
-	/*
-	 * Need to find the appropriate point from which to begin
-	 * recovery.
-	 */
-	memset(&data, 0, sizeof(data));
-	if (F_ISSET(dbenv, DB_ENV_THREAD))
-		F_SET(&data, DB_DBT_MALLOC);
-	ZERO_LSN(ckp_lsn);
-	if ((ret = CDB_log_get(dbenv, &last_ckp, &data, DB_CHECKPOINT)) != 0) {
-		if (ret == ENOENT)
-			goto get_first;
-		else
-			return (ret);
-	}
-	final_ckp = last_ckp;
+  /*
+   * Need to find the appropriate point from which to begin
+   * recovery.
+   */
+  memset(&data, 0, sizeof(data));
+  if (F_ISSET(dbenv, DB_ENV_THREAD))
+    F_SET(&data, DB_DBT_MALLOC);
+  ZERO_LSN(ckp_lsn);
+  if ((ret = CDB_log_get(dbenv, &last_ckp, &data, DB_CHECKPOINT)) != 0) {
+    if (ret == ENOENT)
+      goto get_first;
+    else
+      return (ret);
+  }
+  final_ckp = last_ckp;
 
-	next_lsn = last_ckp;
-	do {
-		if (F_ISSET(dbenv, DB_ENV_THREAD))
-			CDB___os_free(data.data, data.size);
+  next_lsn = last_ckp;
+  do {
+    if (F_ISSET(dbenv, DB_ENV_THREAD))
+      CDB___os_free(data.data, data.size);
 
-		if ((ret = CDB_log_get(dbenv, &next_lsn, &data, DB_SET)) != 0)
-			return (ret);
-		if ((ret = CDB___txn_ckp_read(data.data, &ckp_args)) != 0) {
-			if (F_ISSET(dbenv, DB_ENV_THREAD))
-				CDB___os_free(data.data, data.size);
-			return (ret);
-		}
-		if (IS_ZERO_LSN(ckp_lsn))
-			ckp_lsn = ckp_args->ckp_lsn;
-		if (FLD_ISSET(dbenv->verbose, DB_VERB_CHKPOINT)) {
-			CDB___db_err(dbenv, "Checkpoint at: [%lu][%lu]",
-			    (u_long)last_ckp.file, (u_long)last_ckp.offset);
-			CDB___db_err(dbenv, "Checkpoint LSN: [%lu][%lu]",
-			    (u_long)ckp_args->ckp_lsn.file,
-			    (u_long)ckp_args->ckp_lsn.offset);
-			CDB___db_err(dbenv, "Previous checkpoint: [%lu][%lu]",
-			    (u_long)ckp_args->last_ckp.file,
-			    (u_long)ckp_args->last_ckp.offset);
-		}
-		last_ckp = next_lsn;
-		next_lsn = ckp_args->last_ckp;
-		CDB___os_free(ckp_args, sizeof(*ckp_args));
+    if ((ret = CDB_log_get(dbenv, &next_lsn, &data, DB_SET)) != 0)
+      return (ret);
+    if ((ret = CDB___txn_ckp_read(data.data, &ckp_args)) != 0) {
+      if (F_ISSET(dbenv, DB_ENV_THREAD))
+        CDB___os_free(data.data, data.size);
+      return (ret);
+    }
+    if (IS_ZERO_LSN(ckp_lsn))
+      ckp_lsn = ckp_args->ckp_lsn;
+    if (FLD_ISSET(dbenv->verbose, DB_VERB_CHKPOINT)) {
+      CDB___db_err(dbenv, "Checkpoint at: [%lu][%lu]",
+          (u_long)last_ckp.file, (u_long)last_ckp.offset);
+      CDB___db_err(dbenv, "Checkpoint LSN: [%lu][%lu]",
+          (u_long)ckp_args->ckp_lsn.file,
+          (u_long)ckp_args->ckp_lsn.offset);
+      CDB___db_err(dbenv, "Previous checkpoint: [%lu][%lu]",
+          (u_long)ckp_args->last_ckp.file,
+          (u_long)ckp_args->last_ckp.offset);
+    }
+    last_ckp = next_lsn;
+    next_lsn = ckp_args->last_ckp;
+    CDB___os_free(ckp_args, sizeof(*ckp_args));
 
-		/*
-		 * Keep looping until either you 1) run out of checkpoints,
-		 * 2) you've found a checkpoint before the most recent
-		 * checkpoint's LSN and you have at least 2 checkpoints.
-		 */
-	} while (!IS_ZERO_LSN(next_lsn) &&
-	    (CDB_log_compare(&last_ckp, &ckp_lsn) > 0 ||
-	    CDB_log_compare(&final_ckp, &last_ckp) == 0));
+    /*
+     * Keep looping until either you 1) run out of checkpoints,
+     * 2) you've found a checkpoint before the most recent
+     * checkpoint's LSN and you have at least 2 checkpoints.
+     */
+  } while (!IS_ZERO_LSN(next_lsn) &&
+      (CDB_log_compare(&last_ckp, &ckp_lsn) > 0 ||
+      CDB_log_compare(&final_ckp, &last_ckp) == 0));
 
-	if (F_ISSET(dbenv, DB_ENV_THREAD))
-		CDB___os_free(data.data, data.size);
+  if (F_ISSET(dbenv, DB_ENV_THREAD))
+    CDB___os_free(data.data, data.size);
 
-	/*
-	 * At this point, either, next_lsn is ZERO or ckp_lsn is the
-	 * checkpoint lsn and last_ckp is the LSN of the last checkpoint
-	 * before ckp_lsn.  If the compare in the loop is still true, then
-	 * next_lsn must be 0 and we need to roll forward from the
-	 * beginning of the log.
-	 */
-	if (CDB_log_compare(&last_ckp, &ckp_lsn) >= 0 ||
-	    CDB_log_compare(&final_ckp, &last_ckp) == 0) {
-get_first:	if ((ret = CDB_log_get(dbenv, &last_ckp, &data, DB_FIRST)) != 0)
-			return (ret);
-		if (F_ISSET(dbenv, DB_ENV_THREAD))
-			CDB___os_free(data.data, data.size);
-	}
-	*lsnp = last_ckp;
+  /*
+   * At this point, either, next_lsn is ZERO or ckp_lsn is the
+   * checkpoint lsn and last_ckp is the LSN of the last checkpoint
+   * before ckp_lsn.  If the compare in the loop is still true, then
+   * next_lsn must be 0 and we need to roll forward from the
+   * beginning of the log.
+   */
+  if (CDB_log_compare(&last_ckp, &ckp_lsn) >= 0 ||
+      CDB_log_compare(&final_ckp, &last_ckp) == 0) {
+get_first:  if ((ret = CDB_log_get(dbenv, &last_ckp, &data, DB_FIRST)) != 0)
+      return (ret);
+    if (F_ISSET(dbenv, DB_ENV_THREAD))
+      CDB___os_free(data.data, data.size);
+  }
+  *lsnp = last_ckp;
 
-	return (IS_ZERO_LSN(last_ckp) ? DB_NOTFOUND : 0);
+  return (IS_ZERO_LSN(last_ckp) ? DB_NOTFOUND : 0);
 }

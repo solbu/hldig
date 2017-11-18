@@ -44,7 +44,7 @@ HtConfiguration::Add(const char *name, const char *value, Configuration *aList) 
 
   if (strcmp("url",name)==0) {  //add URL entry
     URL tmpUrl(strdup(value));
-	Dictionary *paths= NULL;
+  Dictionary *paths= NULL;
     if ( (paths=(Dictionary *)dcUrls[tmpUrl.host()]) ) {
       paths->Add(tmpUrl.path(),aList);
     } else {
@@ -56,11 +56,11 @@ HtConfiguration::Add(const char *name, const char *value, Configuration *aList) 
 
       Object *treeEntry=dcBlocks[name];
       if (treeEntry!=NULL) {
-	((Dictionary *)treeEntry)->Add(value,aList);
+  ((Dictionary *)treeEntry)->Add(value,aList);
       } else {
-	treeEntry=new Dictionary(16);
-	((Dictionary *)treeEntry)->Add(value,aList);
-	dcBlocks.Add(name, treeEntry);
+  treeEntry=new Dictionary(16);
+  ((Dictionary *)treeEntry)->Add(value,aList);
+  dcBlocks.Add(name, treeEntry);
       }
     }
 }
@@ -88,12 +88,12 @@ const String HtConfiguration::Find(const char *blockName,const char *name,const 
     else { // end "server"
       tmpPtr.obj=dcBlocks.Find(blockName);
       if (tmpPtr.ptr) {
-	tmpPtr.obj = tmpPtr.dict->Find(name);
-	if (tmpPtr.ptr) {
-	  chr = tmpPtr.conf->Find(value);
-	  if (chr[0] != 0)
-		return chr;
-	}
+  tmpPtr.obj = tmpPtr.dict->Find(name);
+  if (tmpPtr.ptr) {
+    chr = tmpPtr.conf->Find(value);
+    if (chr[0] != 0)
+    return chr;
+  }
       }
     }
  
@@ -121,9 +121,9 @@ const String HtConfiguration::Find(URL *aUrl, const char *value) const
     // Try to find best matched URL
     //
     struct candidate {
-      Object		*obj;
-      unsigned int	len;
-      String		value;
+      Object    *obj;
+      unsigned int  len;
+      String    value;
     } candidate;
     candidate.len=0; 
     String returnValue;
@@ -138,9 +138,9 @@ const String HtConfiguration::Find(URL *aUrl, const char *value) const
     bool found(false);
     while ((confUrl=tmpPtr->Get_Next()) ) {   
       if (strncmp(confUrl,strParamUrl,strlen(confUrl))==0 
-	  && (strlen(confUrl)>=candidate.len))  {
-	// it seems this URL match better
-	candidate.obj=tmpPtr->Find(confUrl);
+    && (strlen(confUrl)>=candidate.len))  {
+  // it seems this URL match better
+  candidate.obj=tmpPtr->Find(confUrl);
 
         // Let's see if it exists
         if (((HtConfiguration *)candidate.obj)->Exists(value))
@@ -206,7 +206,7 @@ return retValue;
 //*********************************************************************
 //*********************************************************************
 int HtConfiguration::Value(URL *aUrl, const char *value,
-			 int default_value ) {
+       int default_value ) {
 int retValue=default_value;
 String tmpStr=Find(aUrl,value);
  if (tmpStr[0]!=0) {
@@ -217,7 +217,7 @@ return retValue;
 
 //*********************************************************************
 double HtConfiguration::Double(URL *aUrl,const char *value,
-				double default_value ) {
+        double default_value ) {
 double retValue=default_value;
 String tmpStr=Find(aUrl,value);
  if (tmpStr[0]!=0) {
@@ -228,7 +228,7 @@ return retValue;
 
 //*********************************************************************
 int HtConfiguration::Boolean(URL *aUrl,const char *value,
-				 int default_value ) {
+         int default_value ) {
 int retValue=default_value;
 String tmpStr=Find(aUrl,value);
  if (tmpStr[0]!=0) {
@@ -253,7 +253,7 @@ HtConfiguration::Read(const String& filename)
 extern FILE* yyin;
 extern int yyparse(void*);
 if ((yyin=fopen(filename,"r"))==NULL) 
-	return NOTOK;
+  return NOTOK;
 
 FileName=filename; // need to be before yyparse() because is used in it
 yyparse(this);
@@ -264,8 +264,8 @@ return OK;
 HtConfiguration* HtConfiguration::_config= NULL;
 
 HtConfiguration* const HtConfiguration::config() {
-	if(_config == NULL) {
-		_config= new HtConfiguration();
-	}
-	return _config;
+  if(_config == NULL) {
+    _config= new HtConfiguration();
+  }
+  return _config;
 }

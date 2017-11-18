@@ -9,7 +9,7 @@
  * See the file LICENSE for redistribution information.
  *
  * Copyright (c) 1996, 1997, 1998, 1999
- *	Sleepycat Software.  All rights reserved.
+ *  Sleepycat Software.  All rights reserved.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -31,7 +31,7 @@
 
 /*
  * snprintf --
- *	Bounded version of sprintf.
+ *  Bounded version of sprintf.
  *
  * PUBLIC: #ifndef HAVE_SNPRINTF
  * PUBLIC: #ifdef __STDC__
@@ -46,29 +46,29 @@ int
 snprintf(char *str, size_t n, const char *fmt, ...)
 #else
 snprintf(str, n, fmt, va_alist)
-	char *str;
-	size_t n;
-	const char *fmt;
-	va_dcl
+  char *str;
+  size_t n;
+  const char *fmt;
+  va_dcl
 #endif
 {
-	va_list ap;
-	int rval;
+  va_list ap;
+  int rval;
 
-	n = 0;
+  n = 0;
 #ifdef __STDC__
-	va_start(ap, fmt);
+  va_start(ap, fmt);
 #else
-	va_start(ap);
+  va_start(ap);
 #endif
 #ifdef SPRINTF_RET_CHARPNT
-	(void)vsprintf(str, fmt, ap);
-	va_end(ap);
-	return (strlen(str));
+  (void)vsprintf(str, fmt, ap);
+  va_end(ap);
+  return (strlen(str));
 #else
-	rval = vsprintf(str, fmt, ap);
-	va_end(ap);
-	return (rval);
+  rval = vsprintf(str, fmt, ap);
+  va_end(ap);
+  return (rval);
 #endif
 }
 #endif /* HAVE_SNPRINTF */

@@ -56,7 +56,7 @@ using namespace std;
 void reportError(const char *msg);
 void usage();
 
-int			debug = 0;
+int      debug = 0;
 
 void
 ParseAndGet(QueryParser &parser, const String &string);
@@ -67,152 +67,152 @@ ParseAndGet(QueryParser &parser, const String &string);
 int
 main(int ac, char **av)
 {
-    int			c;
-    extern char		*optarg;
-    String		configFile = DEFAULT_CONFIG_FILE;
-    String		logicalWords;
-    bool		doall = true,
-			doand = false,
-			door = false,
-			dobool = false,
-			dogeoffs = false;
+    int      c;
+    extern char    *optarg;
+    String    configFile = DEFAULT_CONFIG_FILE;
+    String    logicalWords;
+    bool    doall = true,
+      doand = false,
+      door = false,
+      dobool = false,
+      dogeoffs = false;
 
      //
      // Parse command line arguments
      //
      while ((c = getopt(ac, av, "c:dvkaobg")) != -1)
      {
- 	switch (c)
- 	{
- 	    case 'c':
- 		configFile = optarg;
- 		break;
- 	    case 'v':
- 		debug++;
- 		break;
- 	    case 'd':
- 		debug++;
- 		break;
-	    case 'a':
-		doall = false;
-		doand = true;
-		break;
-	    case 'o':
-		doall = false;
-		door = true;
-		break;
-	    case 'b':
-		doall = false;
-		dobool = true;
-		break;
-	    case 'g':
-		doall = false;
-		dogeoffs = true;
-		break;
-	    case '?':
-	        usage();
+   switch (c)
+   {
+       case 'c':
+     configFile = optarg;
+     break;
+       case 'v':
+     debug++;
+     break;
+       case 'd':
+     debug++;
+     break;
+      case 'a':
+    doall = false;
+    doand = true;
+    break;
+      case 'o':
+    doall = false;
+    door = true;
+    break;
+      case 'b':
+    doall = false;
+    dobool = true;
+    break;
+      case 'g':
+    doall = false;
+    dogeoffs = true;
+    break;
+      case '?':
+          usage();
                 break;
- 	}
+   }
      }
 
     //
     // Parse the CGI parameters.
     //
-    char	none[] = "";
-    cgi		input(optind < ac ? av[optind] : none);
+    char  none[] = "";
+    cgi    input(optind < ac ? av[optind] : none);
 
-    String	 originalWords = input["words"];
+    String   originalWords = input["words"];
     originalWords.chop(" \t\r\n");
 
-	 HtConfiguration* config= HtConfiguration::config();
+   HtConfiguration* config= HtConfiguration::config();
      // Set up the config
     config->Defaults(&defaults[0]);
 
     if (access((char*)configFile, R_OK) < 0)
     {
-    	reportError("Unable to find configuration file");
+      reportError("Unable to find configuration file");
     }
-	
+  
     config->Read(configFile);
 
     // Initialize htword library (key description + wordtype...)
     WordContext::Initialize(*config);    
 
-	OrFuzzyExpander exp;
-	Exact exact(*config);
-	exact.setWeight(1.0);
-	exact.openIndex();
-	exp.Add(&exact);
-	Accents accents(*config);
-	accents.setWeight(0.7);
-	accents.openIndex();
-	exp.Add(&accents);
-	Prefix prefix(*config);
-	prefix.setWeight(0.7);
-	prefix.openIndex();
-	exp.Add(&prefix);
-	QueryParser::SetFuzzyExpander(&exp);
+  OrFuzzyExpander exp;
+  Exact exact(*config);
+  exact.setWeight(1.0);
+  exact.openIndex();
+  exp.Add(&exact);
+  Accents accents(*config);
+  accents.setWeight(0.7);
+  accents.openIndex();
+  exp.Add(&accents);
+  Prefix prefix(*config);
+  prefix.setWeight(0.7);
+  prefix.openIndex();
+  exp.Add(&prefix);
+  QueryParser::SetFuzzyExpander(&exp);
 
-	WordSearcher searcher(config->Find("word_db"));
-	ExactWordQuery::SetSearcher(&searcher);
+  WordSearcher searcher(config->Find("word_db"));
+  ExactWordQuery::SetSearcher(&searcher);
 
-	// -- put here your prefered cache
-	//QueryCache *cache = new XXX;
-	//Query::SetCache(cache);
+  // -- put here your prefered cache
+  //QueryCache *cache = new XXX;
+  //Query::SetCache(cache);
 
-	OrQueryParser o;
-	BooleanQueryParser b;
-	GParser g;
-	AndQueryParser a;
+  OrQueryParser o;
+  BooleanQueryParser b;
+  GParser g;
+  AndQueryParser a;
 
-	if(doall || doand)
-	{
-		cout << "Trying and..." << endl;
-		ParseAndGet(a, originalWords);
-	}
+  if(doall || doand)
+  {
+    cout << "Trying and..." << endl;
+    ParseAndGet(a, originalWords);
+  }
 
-	if(doall || door)
-	{
-		cout << "Trying or..." << endl;
-		ParseAndGet(o, originalWords);
-	}
+  if(doall || door)
+  {
+    cout << "Trying or..." << endl;
+    ParseAndGet(o, originalWords);
+  }
 
-	if(doall || dobool)
-	{
-		cout << "Trying boolean..." << endl;
-		ParseAndGet(b, originalWords);
-	}
+  if(doall || dobool)
+  {
+    cout << "Trying boolean..." << endl;
+    ParseAndGet(b, originalWords);
+  }
 
-	if(doall || dogeoffs)
-	{
-		cout << "Trying no-precedence-boolean..." << endl;
-		ParseAndGet(g, originalWords);
-	}
+  if(doall || dogeoffs)
+  {
+    cout << "Trying no-precedence-boolean..." << endl;
+    ParseAndGet(g, originalWords);
+  }
 }
 
 void
 ParseAndGet(QueryParser &parser, const String &query)
 {
-	Query *q = parser.Parse(query);
-	if(q)
-	{
-		cout << "Parsed: " << q->GetLogicalWords() << endl;
-		ResultList *l = q->GetResults();
-		if(l)
-		{
-			cout << "Evaluated with " << l->Count() << " matches" << endl;
-			if(debug) l->Dump();
-		}
-		else
-		{
-			cout << "No matches" << endl;;
-		}
-	}
-	else
-	{
-		cerr << "syntax error: " << flush << parser.Error() << endl;
-	}
-	delete q;
+  Query *q = parser.Parse(query);
+  if(q)
+  {
+    cout << "Parsed: " << q->GetLogicalWords() << endl;
+    ResultList *l = q->GetResults();
+    if(l)
+    {
+      cout << "Evaluated with " << l->Count() << " matches" << endl;
+      if(debug) l->Dump();
+    }
+    else
+    {
+      cout << "No matches" << endl;;
+    }
+  }
+  else
+  {
+    cerr << "syntax error: " << flush << parser.Error() << endl;
+  }
+  delete q;
 }
 
 

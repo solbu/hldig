@@ -21,13 +21,13 @@
 class OrQueryParser : public SimpleQueryParser
 {
 public:
-	OrQueryParser() {}
+  OrQueryParser() {}
 
 private:
-	OperatorQuery *MakeQuery()
-	{
-		return new OrQuery;
-	}
+  OperatorQuery *MakeQuery()
+  {
+    return new OrQuery;
+  }
 };
 
 #endif
