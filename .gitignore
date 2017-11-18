@@ -22,3 +22,4 @@ include/config.h
 installdir/htdigconfig.8
 libtool
 test/test_functions
+/samplesite/cgi-bin
