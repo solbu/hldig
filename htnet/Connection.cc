@@ -509,7 +509,7 @@ int Connection::Read_Char()
 //*****************************************************************************
 // String *Connection::Read_Line(String &s, char *terminator)
 //
-String *Connection::Read_Line(String &s, char *terminator)
+String *Connection::Read_Line(String &s, const char *terminator)
 {
     int		termseq = 0;
     s = 0;

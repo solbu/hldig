@@ -152,6 +152,9 @@ public:
    // Default: now and local
    HtDateTime() {SettoNow(); ToLocalTime();}
 
+   //virtual Destructor
+   virtual ~HtDateTime() {};
+
    // From an integer (seconds from epoc)
 //   Causes ambiguity in systems with  time_t  an integer...
 //   HtDateTime(const int i) {SetDateTime((time_t)i); ToLocalTime();}
