@@ -39,38 +39,81 @@ know where to find the htdig.conf (-c won't be needed)
 SSL isn't enabled by default, but it's needed for htdig to crawl `https`
 urls. Use ./configure --with-ssl to build htdig with ssl support.
 
+## install lighttpd
+
+One method we use for testing is having htdig crawl a lightweight web server
+that can run locally on your computer. It's more polite than crawling someone's
+public web site.
+
+Download the latest source package of [lighttpd](http://www.lighttpd.net/)
+and extract it to a directory outside of your `htdig` source directory.
+
+You may have to install some dependencies for lighttpd to build.
+Notes about that are on the [lighttpd](wiki).
+
+./configure --prefix=$HOME/usr
+make
+make install
+
+Make an `etc` directory
+    mkdir ~/usr/etc
+
+Copy `lighttpd.conf.sample` to ~/usr/etc.
+Rename it to `lighttpd.conf` and edit the paths for these two variables:
+
+    server.document-root
+    server.breakagelog
+
+Make a directory for the log file
+    mkdir -p $HOME/usr/var/log
+
+cd to $srcdir/samplesite and make a symbolic link to your testing/cgi-bin directory
+    ln -s ../testing/cgi-bin/
+
+Copy `htsearch.sh` from your $srcdir/scripts directory to the cgi-bin directory.
+
+Change back to the top level of your htdig source directory.
+Start the lighttpd server
+    scripts/run-lighttpd
+
+In your browser, navigate to `http://localhost:3002` and you should see
+the htdig local test site.
+
+Later, to kill the server, just use ctrl-c.
+
+Now switch to another terminal window.
+
 ## htdig
 
 Change to the `testing` directory and you should see the following directory structure:
- ```
+```
 andy@oceanus:~/src/htdig/testing$ ls
 bin  cgi-bin  conf  htdocs  include  lib  man  share  var
 ```
 
+Verify that `start_url` in testing/htdig.conf is set to `http://localhost:3002`
+
 Change to testing/bin and run `./htdig -is` to initialize the database. The
 `-i` initializes and adding the `s' shows a summary.
 
-Hint: It will search http://www.htdig.org so try using some keywords you find
-on that web site.
+Hint: It will crawl http://localhost:3002 so try using some keywords you find
+on the htdig local test site.
 
 Use `./htdig --help` to view the options for htdig.
 
-I am going to have to set up a domain or URL that can be crawled for testing.
-I plan to do that soon. For now, I suggest using http://www.htdig.org as the
-start_url  .. For general testing?
-
-Remove the contents of testing/var/htdig/ (the database files). Then from
-testing/bin, run `./htdig -i` but you can use `-ivs` for extra output.
-Using `-ivvs` will show even more output.  Then use the
-`testing/cgi-bin/htsearch` program to search the database for keywords that
-were indexed from the start_url in htdig.conf when `./htdig -i` was run.
+Use the form on the local test site to search the new database you created.
 
 '-i' is used to initialize the database for the first time. Normally it
 wouldn't be used after that. But while testing new changes, often the files
 in the database directory (testing/var/htdig) must be removed to ensure
 an accurate test.
 
+If you make changes to the source code, you will have to run `make install`
+to update the files in testing/.
+
 ## htsearch
+
+### To test `htsearch` from the console
 
 Change to `testing/cgi-bin`
 Use `./htsearch` to search the database. You will get these two prompts:
@@ -87,8 +130,9 @@ htdig was designed to be a search engine for a web site. When `htsearch` is
 used from the command line, the html code it outputs is displayed. Its true
 purpose is to be run through a form on a web site.
 
-Here is an example of where it's used through a web site form. See the box in the
-lower-left corner: http://www.htdig.org/
+Here is an example of where it's used through a web site form:
+
+[htdig Testing Ground](http://htdig.dreamhosters.com/)
 
 The is (old) html code used to display a form on a web site and request
 input from a user. You can see how `htsearch` is called:
@@ -104,7 +148,8 @@ input from a user. You can see how `htsearch` is called:
 
 ## Cleaning up
 
-To uninstall from the testing/ directory (or the directory specified by --prefix)
+To uninstall from the testing/ directory (or the directory specified by --prefix),
+change to the top level of the `htdig` source directory.
 
     make uninstall
 

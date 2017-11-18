@@ -1,0 +1,22 @@
+server.document-root = "$srcdir/htdig/samplesite/"
+
+server.modules = (
+"mod_cgi",
+"mod_accesslog" )
+
+server.bind = "127.0.0.1"
+server.port = 3002
+
+mimetype.assign = (
+  ".html" => "text/html",
+  ".txt" => "text/plain",
+  ".jpg" => "image/jpeg",
+  ".png" => "image/png"
+)
+
+static-file.exclude-extensions = ( ".fcgi", ".php", ".rb", "~", ".inc" )
+index-file.names = ( "index.html" )
+
+cgi.assign = ( ".sh" => "" )
+
+server.breakagelog = "$HOME/usr/var/log/breakage.log"
