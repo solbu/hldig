@@ -72,7 +72,7 @@ public:
    int Listen(int n = 5);
 
    // IO
-   String* Read_Line(String &, char *terminator = (char *)"\n");
+   String* Read_Line(String &, const char *terminator = (char *)"\n");
    char* Read_Line(char *buffer, int maxlength, char *terminator=(char *)"\n");
    String* Read_Line(char *terminator = (char *)"\n");
    virtual int Read_Char();
