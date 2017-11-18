@@ -16,8 +16,8 @@ Install the following packages:
 ### Windows
 (Edit me)
 
-## Build
-* ./configure
+## Testing
+* ./configure --prefix=$PWD/testing --with-ssl
 * make [-j?]
 
 You can often speed up build time by using `make -j<jobs>`.
@@ -29,9 +29,6 @@ Example: `make -j12`
 On some systems, a build will fail if using the `j` option. If that happens,
 try building using only `make` with no options.
 
-## Testing
-* ./configure --prefix=$PWD/testing --with-ssl
-* make [-j?]
 * make install
 
 Files will be installed to $source_dir/testing; as a result, you won't have
