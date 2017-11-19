@@ -17,6 +17,7 @@ AC_CONFIG_SRCDIR([db_byteorder.c])
 AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER([db_config.h])
+AC_CONFIG_MACRO_DIRS([m4])
 AC_CANONICAL_HOST
 
 # Initialize maintainer mode

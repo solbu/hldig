@@ -77,6 +77,10 @@ void reportError (char *msg);
 int
 main (int ac, char **av)
 {
+  setlocale (LC_ALL, "");
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
+
   int c;
   extern char *optarg;
   String credentials;

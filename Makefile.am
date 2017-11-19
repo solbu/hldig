@@ -10,9 +10,14 @@ if TESTS
 TESTDIR = test
 endif
 
-SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include $(TESTDIR)
+SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include $(TESTDIR) po
 
-EXTRA_DIST = .version Makefile.config contrib
+EXTRA_DIST = config.rpath m4/ChangeLog  .version Makefile.config contrib ABOUT-NLS
+
+ACLOCAL_AMFLAGS = -I m4
+
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
 
 dist-hook:
 	find $(distdir) -depth -name CVS -print | xargs rm -fr
@@ -34,3 +39,20 @@ install-data-hook:
 	@echo "Before you can start searching, you will need to create a"
 	@echo "search database.  A sample script to do this has been"
 	@echo "installed as " $(DESTDIR)$(bindir)/rundig
+
+distdir = $(PACKAGE)-$(VERSION)
+dist: Makefile
+	rm -fr $(distdir)
+	mkdir $(distdir)
+	chmod 777 $(distdir)
+	for file in $(DISTFILES); do \
+	  ln $$file $(distdir) 2>/dev/null || cp -p $$file $(distdir); \
+	done
+	for subdir in $(SUBDIRS); do \
+	  mkdir $(distdir)/$$subdir || exit 1; \
+	  chmod 777 $(distdir)/$$subdir; \
+	  (cd $$subdir && $(MAKE) $@) || exit 1; \
+	done
+	tar chozf $(distdir).tar.gz $(distdir)
+	rm -fr $(distdir)
+

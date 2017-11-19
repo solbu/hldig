@@ -39,6 +39,11 @@ using namespace std;
 
 #include <stdio.h>
 
+#include "gettext.h"
+#define _(String) gettext (String)
+#define gettext_noop(String) String
+#define N_(String) gettext_noop (String)
+
 extern int    debug;
 extern DocumentDB  docs;
 extern HtRegexList  limits;

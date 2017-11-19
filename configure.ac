@@ -24,9 +24,11 @@ AC_INIT([htdig], 3.2.0b7)
 AC_CONFIG_SRCDIR([htdig/htdig.cc])
 AM_INIT_AUTOMAKE
 
-AM_CONFIG_HEADER([include/config.h])
+AM_CONFIG_HEADER([include/config.h:include/config.in])
 AC_CONFIG_LIBOBJ_DIR([htlib])
 AC_PREFIX_DEFAULT([/opt/www])
+
+AC_CONFIG_MACRO_DIRS([m4])
 
 # Initialize maintainer mode
 AM_MAINTAINER_MODE
@@ -183,6 +185,10 @@ AC_REPLACE_FUNCS(snprintf vsnprintf)
 # More header checks--here use C++
 AC_LANG([C++])
 AC_CXX_HAVE_STD
+
+# Initialize gettext for translations
+AM_GNU_GETTEXT([external], [need-formatstring-macros])
+AM_GNU_GETTEXT_VERSION([0.19.8])
 
 AC_MSG_CHECKING(whether we need gethostname() prototype?)
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -346,7 +352,7 @@ while echo $VERSION | grep '\$' >/dev/null ; do
   eval "VERSION=$VERSION"
 done
 
-AC_CONFIG_FILES([Makefile
+AC_CONFIG_FILES([Makefile po/Makefile.in
                  htcommon/Makefile
                  htdb/Makefile
                  htdig/Makefile

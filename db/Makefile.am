@@ -7,6 +7,8 @@ EXTRA_DIST = db_config.h.in db.h.in \
 	hash.src log.src qam.src txn.src prefix-symbols.sh \
 	LICENSE
 
+ACLOCAL_AMFLAGS = -I m4
+
 pkglib_LTLIBRARIES = libhtdb.la
 
 libhtdb_la_SOURCES = \
