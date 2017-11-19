@@ -154,7 +154,7 @@ main (int ac, char **av)
   config->Defaults (&defaults[0]);
   if (access ((char *) configFile, R_OK) < 0)
   {
-    reportError (form (_"Unable to find configuration file '%s'"),
+    reportError (form (_("Unable to find configuration file '%s'"),
                        configFile.get ()));
   }
   config->Read (configFile);
@@ -177,7 +177,7 @@ main (int ac, char **av)
         _(" is no longer supported\n");
   }
 
-  if (config->Find ("_(locale")).empty () && debug > 0)
+  if (config->Find (_("locale")).empty () && debug > 0)
     cout << _("Warning: unknown locale!\n");
 
   if (max_hops)
