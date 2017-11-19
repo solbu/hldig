@@ -3,7 +3,14 @@
 Looking for the ChangeLog by the original development team?
 http://www.htdig.org/
 
-### Sat Nob 18 2017
+### Sun Nov 19 2017
+
+Updated the auto-files to support internationalization using
+[gettext](https://www.gnu.org/software/gettext/manual/html_node/index.html#SEC_Contents),
+and added an initial po template that primarily contains the "help" output
+of htdig.
+
+### Sat Nov 18 2017
 
 Updated the "configure.ac" and "Makefile.am" files so aclocal, autoreconf,
 and automake could be run (renamed the "configure.in" files to "configure.ac")
