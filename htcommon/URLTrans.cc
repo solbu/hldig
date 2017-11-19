@@ -72,7 +72,8 @@ String &decodeURL(String &str)
 String &encodeURL(String &str, char *valid)
 {
     String  temp;
-    static char  *digits = "0123456789ABCDEF";
+    static char  *digits;
+    strcpy(digits, "0123456789ABCDEF");
     char  *p;
 
     for (p = str; p && *p; p++)

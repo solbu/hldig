@@ -311,7 +311,7 @@ int StringMatch::Compare(const char *string, int &which, int &length)
     //
     while ((unsigned char)string[pos])
     {
-  new_state = table[trans[string[pos]]][state];
+  new_state = table[trans[(unsigned int)string[pos]]][state];
   if (new_state)
   {
       if (state == 0)

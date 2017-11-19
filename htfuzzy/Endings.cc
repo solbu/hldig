@@ -33,7 +33,7 @@ Endings::Endings(const HtConfiguration& config_arg) :
 {
     root2word = 0;
     word2root = 0;
-    name = "endings";
+    strcpy(name, "endings");
 }
 
 
