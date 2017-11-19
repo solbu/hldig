@@ -5,6 +5,9 @@ http://www.htdig.org/
 
 ### Sat Nob 18 2017
 
+Updated the "configure.ac" and "Makefile.am" files so aclocal, autoreconf,
+and automake could be run (renamed the "configure.in" files to "configure.ac")
+
 Documented how to use [lighttpd](http://www.lighttpd.net/)
 for [testing](https://github.com/andy5995/htdig/blob/master/TESTING.md)
 
