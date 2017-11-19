@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/../htlib
+AM_CPPFLAGS = -I$(top_srcdir)/../htlib
 
 AUTOMAKE_OPTIONS = foreign no-dependencies
 

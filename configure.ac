@@ -1,13 +1,13 @@
 # Configuration for ht://Dig 3.x
 #
 # Part of the ht://Dig package   <http://www.htdig.org/>
-# Copyright (c) 1999-2004 The ht://Dig Group
+# Copyright (c) 1999-2017 The ht://Dig Group
 # For copyright details, see the file COPYING in your distribution
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
 
 AC_PREREQ(2.57)
-AC_INIT
+#AC_INIT
 
 #
 # ht://Dig's version
@@ -20,8 +20,10 @@ AC_SUBST(HTDIG_MINOR_VERSION)
 HTDIG_MICRO_VERSION=[`expr $VERSION : '[0-9][0-9]*\.[0-9][0-9]*\.\([0-9][0-9]*\)'`]
 AC_SUBST(HTDIG_MICRO_VERSION)
 
-AM_INIT_AUTOMAKE([htdig], $VERSION)
+AC_INIT([htdig], 3.2.0b7)
 AC_CONFIG_SRCDIR([htdig/htdig.cc])
+AM_INIT_AUTOMAKE
+
 AM_CONFIG_HEADER([include/config.h])
 AC_CONFIG_LIBOBJ_DIR([htlib])
 AC_PREFIX_DEFAULT([/opt/www])
@@ -130,7 +132,6 @@ CHECK_SSL
 CHECK_ZLIB
 AC_SUBST(CXXFLAGS)
 AC_SUBST(LDFLAGS)
-
 
 # Checks for header files.
 AC_HEADER_STDBOOL

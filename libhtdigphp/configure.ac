@@ -12,7 +12,7 @@ AC_DEFUN(PHP_WITH_PHP_CONFIG,[
   prefix=`$PHP_CONFIG --prefix 2>/dev/null`
   INCLUDES=`$PHP_CONFIG --includes 2>/dev/null`
   EXTENSION_DIR=`$PHP_CONFIG --extension-dir`
- 
+
   if test -z "$prefix"; then
     AC_MSG_ERROR(Cannot find php-config. Please use --with-php-config=PATH)
   fi
