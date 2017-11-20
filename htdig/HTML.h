@@ -22,48 +22,46 @@ class Retriever;
 class URL;
 
 
-class HTML : public Parsable
+class HTML:public Parsable
 {
 public:
-    //
-    // Construction/Destruction
-    //
-                        HTML();
-    virtual    ~HTML();
+  //
+  // Construction/Destruction
+  //
+  HTML ();
+  virtual ~ HTML ();
 
-    //
-    // Main parser interface.
-    //
-    virtual void  parse(Retriever &retriever, URL &baseURL);
+  //
+  // Main parser interface.
+  //
+  virtual void parse (Retriever & retriever, URL & baseURL);
 
 private:
-    //
-    // Our state variables
-    //
-    String    word;
-    URL      *href;
-    String    title;
-    String    description;
-    String    head;
-    String    meta_dsc;
-    String    tag;
-    int      in_title;
-    int      in_ref;
-    int      in_heading;
-    int      noindex;
-    int                 nofollow;
+  //
+  // Our state variables
+  //
+    String word;
+  URL *href;
+  String title;
+  String description;
+  String head;
+  String meta_dsc;
+  String tag;
+  int in_title;
+  int in_ref;
+  int in_heading;
+  int noindex;
+  int nofollow;
 //    unsigned int  minimumWordLength;
-    URL      *base;
-    QuotedStringList  skip_start;
-    QuotedStringList  skip_end;
+  URL *base;
+  QuotedStringList skip_start;
+  QuotedStringList skip_end;
 
-    //
-    // Helper functions
-    //
-    void    do_tag(Retriever &, String &);
-    const String  transSGML(const String& str);
+  //
+  // Helper functions
+  //
+  void do_tag (Retriever &, String &);
+  const String transSGML (const String & str);
 };
 
 #endif
-
-

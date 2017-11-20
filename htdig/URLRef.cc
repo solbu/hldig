@@ -22,7 +22,7 @@
 //*****************************************************************************
 // URLRef::URLRef()
 //
-URLRef::URLRef()
+URLRef::URLRef ()
 {
   hopcount = 0;
 }
@@ -31,17 +31,15 @@ URLRef::URLRef()
 //*****************************************************************************
 // URLRef::~URLRef()
 //
-URLRef::~URLRef()
+URLRef::~URLRef ()
 {
 }
 
 
 //*****************************************************************************
 //
-int URLRef::compare(const URLRef& to) const
+int
+URLRef::compare (const URLRef & to) const const
 {
   return hopcount - to.hopcount;
 }
-
-
-

@@ -28,7 +28,7 @@
 //*****************************************************************************
 // Plaintext::Plaintext()
 //
-Plaintext::Plaintext()
+Plaintext::Plaintext ()
 {
 }
 
@@ -36,7 +36,7 @@ Plaintext::Plaintext()
 //*****************************************************************************
 // Plaintext::~Plaintext()
 //
-Plaintext::~Plaintext()
+Plaintext::~Plaintext ()
 {
 }
 
@@ -45,72 +45,70 @@ Plaintext::~Plaintext()
 // void Plaintext::parse(Retriever &retriever, URL &)
 //
 void
-Plaintext::parse(Retriever &retriever, URL &)
+Plaintext::parse (Retriever & retriever, URL &)
 {
-    if (contents == 0 || contents->length() == 0)
-  return;
+  if (contents == 0 || contents->length () == 0)
+    return;
 
-  HtConfiguration* config= HtConfiguration::config();
-    unsigned char       *position = (unsigned char *) contents->get();
-    static int  minimumWordLength = config->Value("minimum_word_length", 3);
-    int    wordIndex = 1;
-    int    in_space = 0;
-    String  word;
-    String  head;
+  HtConfiguration *config = HtConfiguration::config ();
+  unsigned char *position = (unsigned char *) contents->get ();
+  static int minimumWordLength = config->Value ("minimum_word_length", 3);
+  int wordIndex = 1;
+  int in_space = 0;
+  String word;
+  String head;
 
-    while (*position)
-    {
-  word = 0;
-
-  if (HtIsStrictWordChar(*position))
+  while (*position)
   {
+    word = 0;
+
+    if (HtIsStrictWordChar (*position))
+    {
       //
       // Start of a word.  Try to find the whole thing
       //
       in_space = 0;
-      while (*position && HtIsWordChar(*position))
+      while (*position && HtIsWordChar (*position))
       {
-    word << *position;
-    position++;
+        word << *position;
+        position++;
       }
 
-      if (head.length() < max_head_length)
+      if (head.length () < max_head_length)
       {
-    head << word;
+        head << word;
       }
 
-      if (word.length() >= minimumWordLength)
+      if (word.length () >= minimumWordLength)
       {
-    retriever.got_word((char*)word, wordIndex++, 0);
+        retriever.got_word ((char *) word, wordIndex++, 0);
       }
-  }
-    
-  if (head.length() < max_head_length)
-  {
+    }
+
+    if (head.length () < max_head_length)
+    {
       //
       // Characters that are not part of a word
       //
-      if (*position && isspace(*position))
+      if (*position && isspace (*position))
       {
-    //
-    // Reduce all multiple whitespace to a single space
-    //
-    if (!in_space)
-    {
-        head << ' ';
-    }
-    in_space = 1;
+        //
+        // Reduce all multiple whitespace to a single space
+        //
+        if (!in_space)
+        {
+          head << ' ';
+        }
+        in_space = 1;
       }
       else
       {
-          head << *position;
-    in_space = 0;
+        head << *position;
+        in_space = 0;
       }
-  }
-  if (*position)
-      position++;
     }
-    retriever.got_head((char*)head);
+    if (*position)
+      position++;
+  }
+  retriever.got_head ((char *) head);
 }
-
-

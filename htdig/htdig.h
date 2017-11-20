@@ -24,7 +24,7 @@
 #include "HtRegexList.h"
 #include <stdlib.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -44,17 +44,15 @@ using namespace std;
 #define gettext_noop(String) String
 #define N_(String) gettext_noop (String)
 
-extern int    debug;
-extern DocumentDB  docs;
-extern HtRegexList  limits;
-extern HtRegexList  limitsn;
-extern HtRegexList  excludes;
-extern HtRegexList  badquerystr;
-extern FILE    *urls_seen;
-extern FILE    *images_seen;
+extern int debug;
+extern DocumentDB docs;
+extern HtRegexList limits;
+extern HtRegexList limitsn;
+extern HtRegexList excludes;
+extern HtRegexList badquerystr;
+extern FILE *urls_seen;
+extern FILE *images_seen;
 
-extern void reportError(char *msg);
+extern void reportError (char *msg);
 
 #endif
-
-

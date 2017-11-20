@@ -19,32 +19,51 @@
 #include "htString.h"
 #include "URL.h"
 
-class URLRef : public Object
+class URLRef:public Object
 {
 public:
   //
   // Construction/Destruction
   //
-                  URLRef();
-                  ~URLRef();
+  URLRef ();
+  ~URLRef ();
 
-  const URL  &GetURL() const      {return url;}
-  int    GetHopCount() const    {return hopcount;}
-  const URL  &GetReferer() const    {return referer;}
-  
-  void    SetURL(const URL &u)          {url = u;}
-  void    SetHopCount(int h)    {hopcount = h;}
-  void    SetReferer(const URL &ref)  {referer = ref;}
+  const URL & GetURL () const
+  {
+    return url;
+  }
+  int GetHopCount () const
+  {
+    return hopcount;
+  }
+  const URL & GetReferer () const
+  {
+    return referer;
+  }
 
-  int    compare(const Object& to) const  { return compare((const URLRef&) to); }
-  int    compare(const URLRef& to) const;
-  
+  void SetURL (const URL & u)
+  {
+    url = u;
+  }
+  void SetHopCount (int h)
+  {
+    hopcount = h;
+  }
+  void SetReferer (const URL & ref)
+  {
+    referer = ref;
+  }
+
+  int compare (const Object & to) const
+  {
+    return compare ((const URLRef &) to);
+  }
+  int compare (const URLRef & to) const;
+
 private:
-  URL    url;
-  URL    referer;
-  int    hopcount;
+  URL url;
+  URL referer;
+  int hopcount;
 };
 
 #endif
-
-

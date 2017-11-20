@@ -43,141 +43,142 @@ class Document;
 class URLRef;
 class HtWordList;
 
-enum  RetrieverLog {
-    Retriever_noLog,
-    Retriever_logUrl,
-    Retriever_Restart
+enum RetrieverLog
+{
+  Retriever_noLog,
+  Retriever_logUrl,
+  Retriever_Restart
 };
 
-struct word_entry : public Object
+struct word_entry:public Object
 {
-        word_entry (int loc, int fl, HtWordReference& ref) :
-          location (loc), flags (fl), context (ref)
-      {};
-    int    location;
-    int    flags;
-    HtWordReference context;
+  word_entry (int loc, int fl, HtWordReference & ref):location (loc),
+    flags (fl), context (ref)
+  {
+  };
+  int location;
+  int flags;
+  HtWordReference context;
 };
 
 class Retriever
 {
 public:
-    //
-    // Construction/Destruction
-    //
-          Retriever(RetrieverLog flags = Retriever_noLog);
-    virtual    ~Retriever();
+  //
+  // Construction/Destruction
+  //
+  Retriever (RetrieverLog flags = Retriever_noLog);
+  virtual ~ Retriever ();
 
-    //
-    // Getting it all started
-    //
-    void    Initial(const String& url, int checked = 0);
-    void    Initial(List &list , int checked = 0);
-    void    Start();
+  //
+  // Getting it all started
+  //
+  void Initial (const String & url, int checked = 0);
+  void Initial (List & list, int checked = 0);
+  void Start ();
 
-    //
-    // Report statistics about the parser
-    //
-    void    ReportStatistics(const String& name);
-  
-    //
-    // These are the callbacks that we need to write code for
-    //
-    void    got_word(const char *word, int location, int heading);
-    void    got_href(URL &url, const char *description, int hops = 1);
-    void    got_title(const char *title);
-    void    got_author(const char *author);
-    void    got_time(const char *time);
-    void    got_head(const char *head);
-    void    got_meta_dsc(const char *md);
-    void    got_anchor(const char *anchor);
-    void    got_image(const char *src);
-    void    got_meta_email(const char *);
-    void    got_meta_notification(const char *);
-    void    got_meta_subject(const char *);
-    void                got_noindex();
+  //
+  // Report statistics about the parser
+  //
+  void ReportStatistics (const String & name);
 
-    //
-    // Allow for the indexing of protected sites by using a
-    // username/password
-    //
-    void    setUsernamePassword(const char *credentials);
+  //
+  // These are the callbacks that we need to write code for
+  //
+  void got_word (const char *word, int location, int heading);
+  void got_href (URL & url, const char *description, int hops = 1);
+  void got_title (const char *title);
+  void got_author (const char *author);
+  void got_time (const char *time);
+  void got_head (const char *head);
+  void got_meta_dsc (const char *md);
+  void got_anchor (const char *anchor);
+  void got_image (const char *src);
+  void got_meta_email (const char *);
+  void got_meta_notification (const char *);
+  void got_meta_subject (const char *);
+  void got_noindex ();
 
-    //
-    // Routines for dealing with local filesystem access
-    //
-    StringList *  GetLocal(const String &strurl);
-    StringList *  GetLocalUser(const String &url, StringList *defaultdocs);
-    int      IsLocalURL(const String &url);
+  //
+  // Allow for the indexing of protected sites by using a
+  // username/password
+  //
+  void setUsernamePassword (const char *credentials);
+
+  //
+  // Routines for dealing with local filesystem access
+  //
+  StringList *GetLocal (const String & strurl);
+  StringList *GetLocalUser (const String & url, StringList * defaultdocs);
+  int IsLocalURL (const String & url);
 
 private:
-    //
-    // A hash to keep track of what we've seen
-    //
-    Dictionary    visited;
-    
-    URL      *base;
-    String    current_title;
-    String    current_head;
-    String    current_meta_dsc;
-    time_t    current_time;
-    int      current_id;
-    DocumentRef    *current_ref;
-    int      current_anchor_number;
-    int      trackWords;
-    int      n_links;
-    String    credentials;
-    HtWordReference  word_context;
-    HtWordList    words;
+  //
+  // A hash to keep track of what we've seen
+  //
+    Dictionary visited;
 
-    Dictionary    words_to_add;
-  
-    int      check_unique_md5;
-    int      check_unique_date;
+  URL *base;
+  String current_title;
+  String current_head;
+  String current_meta_dsc;
+  time_t current_time;
+  int current_id;
+  DocumentRef *current_ref;
+  int current_anchor_number;
+  int trackWords;
+  int n_links;
+  String credentials;
+  HtWordReference word_context;
+  HtWordList words;
+
+  Dictionary words_to_add;
+
+  int check_unique_md5;
+  int check_unique_date;
 
 
-    RetrieverLog log;
-    //
-    // These are weights for the words.  The index is the heading level.
-    //
-    long int    factor[12];
-    int      currenthopcount;
+  RetrieverLog log;
+  //
+  // These are weights for the words.  The index is the heading level.
+  //
+  long int factor[12];
+  int currenthopcount;
 
-    //
-    // Some semi-constants...
-    //
-    int      max_hop_count;
-  
-    //
-    // The list of server-specific information objects is indexed by
-    // ip address and port number.  The list contains Server objects.
-    //
-    Dictionary    servers;
+  //
+  // Some semi-constants...
+  //
+  int max_hop_count;
 
-    //
-    // For efficiency reasons, we will only use one document object which
-    // we reuse.
-    //
-    Document    *doc;
+  //
+  // The list of server-specific information objects is indexed by
+  // ip address and port number.  The list contains Server objects.
+  //
+  Dictionary servers;
 
-    Database     *d_md5;
+  //
+  // For efficiency reasons, we will only use one document object which
+  // we reuse.
+  //
+  Document *doc;
 
-    String    notFound;
+  Database *d_md5;
 
-    // Some useful constants
-    int              minimumWordLength;
+  String notFound;
 
-    //
-    // Helper routines
-    //
-    int      Need2Get(const String &url);
-    int      IsValidURL(const String &url);
-    void    RetrievedDocument(Document &, const String &url, DocumentRef *ref);
-    void    parse_url(URLRef &urlRef);
-    void    got_redirect(const char *, DocumentRef *, const char * = 0);
-    void    recordNotFound(const String &url, const String &referer, int reason);
+  // Some useful constants
+  int minimumWordLength;
+
+  //
+  // Helper routines
+  //
+  int Need2Get (const String & url);
+  int IsValidURL (const String & url);
+  void RetrievedDocument (Document &, const String & url, DocumentRef * ref);
+  void parse_url (URLRef & urlRef);
+  void got_redirect (const char *, DocumentRef *, const char * = 0);
+  void recordNotFound (const String & url, const String & referer,
+                       int reason);
 };
 
 #endif
-
-

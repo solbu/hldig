@@ -26,33 +26,31 @@
 class URL;
 
 
-class ExternalParser : public Parsable
+class ExternalParser:public Parsable
 {
 public:
-    //
-    // Construction/Destruction
-    //
-                        ExternalParser(char *contentType);
-    virtual    ~ExternalParser();
+  //
+  // Construction/Destruction
+  //
+  ExternalParser (char *contentType);
+    virtual ~ ExternalParser ();
 
-    //
-    // Main parser interface.
-    //
-    virtual void  parse(Retriever &retriever, URL &);
+  //
+  // Main parser interface.
+  //
+  virtual void parse (Retriever & retriever, URL &);
 
-    //
-    // Check if the given contentType has an external parser associated
-    // with it
-    //
-    static int    canParse(char *contentType);
-    
+  //
+  // Check if the given contentType has an external parser associated
+  // with it
+  //
+  static int canParse (char *contentType);
+
 private:
-    String    currentParser;
-    String    contentType;
+    String currentParser;
+  String contentType;
 
-    int      readLine(FILE *, String &);
+  int readLine (FILE *, String &);
 };
 
 #endif
-
-

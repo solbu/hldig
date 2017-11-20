@@ -24,7 +24,7 @@
 // First we must declare a derived Transport_Response class
 // This requires declaring the main class in advance
 class ExternalTransport;
-class ExternalTransport_Response : public Transport_Response
+class ExternalTransport_Response:public Transport_Response
 {
   friend class ExternalTransport;
 
@@ -32,57 +32,63 @@ class ExternalTransport_Response : public Transport_Response
 };
 
 // Right, now we get on with the show...
-class ExternalTransport : public Transport
+class ExternalTransport:public Transport
 {
 public:
-    //
-    // Construction/Destruction
-    //
-                        ExternalTransport(const String &protocol);
-    virtual    ~ExternalTransport();
+  //
+  // Construction/Destruction
+  //
+  ExternalTransport (const String & protocol);
+    virtual ~ ExternalTransport ();
 
 
-    //
-    // Check if the given protocol has a handler
-    //
-    static int    canHandle(const String &protocol);
-    
-    // Setting connections is obviously a bit different than the base class
-    // from a URL pointer
-    void SetConnection (URL *u);
-    
-    // from a URL object
-    void SetConnection (URL &u)
-        { SetConnection (&u); }
+  //
+  // Check if the given protocol has a handler
+  //
+  static int canHandle (const String & protocol);
 
-    // Make the request
-    DocStatus Request();
-   
-    // Get the response or the status
-    Transport_Response  *GetResponse()   { return _Response; }
-    DocStatus GetDocumentStatus() { return GetDocumentStatus(_Response); }
-    
+  // Setting connections is obviously a bit different than the base class
+  // from a URL pointer
+  void SetConnection (URL * u);
+
+  // from a URL object
+  void SetConnection (URL & u)
+  {
+    SetConnection (&u);
+  }
+
+  // Make the request
+  DocStatus Request ();
+
+  // Get the response or the status
+  Transport_Response *GetResponse ()
+  {
+    return _Response;
+  }
+  DocStatus GetDocumentStatus ()
+  {
+    return GetDocumentStatus (_Response);
+  }
+
 
 private:
-    // The command to handle the current protocol
-    String      _Handler;
-    // And the current protocol
-    String      _Protocol;
-    
-    // The URL to Request()
-    URL        _URL;
-    
-    // The result of the Request()
-    ExternalTransport_Response  *_Response;
+  // The command to handle the current protocol
+  String _Handler;
+  // And the current protocol
+  String _Protocol;
 
-    
-    
-    // Private helper to read in the result from the handler
-    int      readLine(FILE *, String &);
-    // Work out the DocStatus from the HTTP-style status codes
-    DocStatus    GetDocumentStatus(ExternalTransport_Response *r);
+  // The URL to Request()
+  URL _URL;
+
+  // The result of the Request()
+  ExternalTransport_Response *_Response;
+
+
+
+  // Private helper to read in the result from the handler
+  int readLine (FILE *, String &);
+  // Work out the DocStatus from the HTTP-style status codes
+  DocStatus GetDocumentStatus (ExternalTransport_Response * r);
 };
 
 #endif
-
-

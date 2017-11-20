@@ -19,23 +19,21 @@
 class URL;
 
 
-class Plaintext : public Parsable
+class Plaintext:public Parsable
 {
 public:
-    //
-    // Construction/Destruction
-    //
-                        Plaintext();
-    virtual    ~Plaintext();
+  //
+  // Construction/Destruction
+  //
+  Plaintext ();
+  virtual ~ Plaintext ();
 
-    //
-    // Main parser interface.
-    //
-    virtual void  parse(Retriever &retriever, URL &);
-  
+  //
+  // Main parser interface.
+  //
+  virtual void parse (Retriever & retriever, URL &);
+
 private:
 };
 
 #endif
-
-
