@@ -45,7 +45,7 @@ int WordKeyField::SetNum(WordKeyField *previous, char *nname, int nbits)
 
 int WordKeyField::SetString()
 {
-  strcpy(name, "Word");
+  name.set("Word");
   type = WORD_ISA_STRING;
   return 0;
 }

@@ -369,7 +369,8 @@ WordKey::Prefix() const
     //
     // Fields set, then fields unset then field set -> not a prefix
     //
-    if(IsDefined(j)) {
+    if(IsDefined(j)) 
+    {
       if(found_unset) return NOTOK;
     }
     else
