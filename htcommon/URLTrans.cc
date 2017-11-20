@@ -35,27 +35,25 @@ String &decodeURL(String &str)
     String  temp;
     char  *p;
 
-    for (p = str; p && *p; p++)
-    {
-  if (*p == '%')
-  {
-      //
-      // 2 hex digits follow...
-      //
-      int    value = 0;
-      for (int i = 0; p[1] && i < 2; i++)
-      {
-    p++;
-    value <<= 4;
-    if (isdigit(*p))
-        value += *p - '0';
-    else
-        value += toupper(*p) - 'A' + 10;
-      }
-      temp << char(value);
-  }
-  else
-      temp << *p;
+    for (p = str; p && *p; p++){
+
+        if (*p == '%'){
+            //
+            // 2 hex digits follow...
+            //
+            int    value = 0;
+            for (int i = 0; p[1] && i < 2; i++){
+                p++;
+                value <<= 4;
+                if (isdigit(*p))
+                    value += *p - '0';
+                else
+                    value += toupper(*p) - 'A' + 10;
+            }
+            temp << char(value);
+        }
+        else
+            temp << *p;
     }
     str = temp;
     return (str);
@@ -72,19 +70,17 @@ String &decodeURL(String &str)
 String &encodeURL(String &str, char *valid)
 {
     String  temp;
-    static char  *digits = "0123456789ABCDEF";
+    static char *digits = "0123456789ABCDEF";
     char  *p;
 
-    for (p = str; p && *p; p++)
-    {
-  if (isascii(*p) && (isdigit(*p) || isalpha(*p) || strchr(valid, *p)))
-      temp << *p;
-  else
-  {
-      temp << '%';
-      temp << digits[(*p >> 4) & 0x0f];
-      temp << digits[*p & 0x0f];
-  }
+    for (p = str; p && *p; p++){
+        if (isascii(*p) && (isdigit(*p) || isalpha(*p) || strchr(valid, *p)))
+            temp << *p;
+        else {
+            temp << '%';
+            temp << digits[(*p >> 4) & 0x0f];
+            temp << digits[*p & 0x0f];
+        }
     }
     str = temp;
     return (str);
