@@ -1,5 +1,8 @@
 # CONTRIBUTING
 
+## Coding style
+The goal is [GNU style formatting](https://www.gnu.org/prep/standards/html_node/Formatting.html)
+
 ## Pull Requests
 1. Join the [chat room](https://join.slack.com/t/htdig/shared_invite/enQtMjY3NDU1MjMwODk3LTdmM2I2OWI5NWI4MzU4Y2JmMjk2MzAxNDYzM2IzZjJmMGE2MDZmMWMxNDY3MjAwOGFjMmE1YjM2MmM4MzVkNzk)
 so if any problems arise, you can get support.
