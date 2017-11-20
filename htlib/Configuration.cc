@@ -333,7 +333,7 @@ int Configuration::Read(const String& filename)
          name = strtok(current, ": =\t");
          value = strtok(0, "\r\n");
          if (!value)
-             value = "";      // Blank value
+             value = '\0';      // Blank value
  
          //
          // Skip any whitespace before the actual text

@@ -254,7 +254,7 @@ const char *String::get() const
 
 char *String::get()
 {
-  static char  *null = "";
+  static char  *null = '\0';
   if (!Allocated)
     return null;
   Data[Length] = '\0';  // We always leave room for this.

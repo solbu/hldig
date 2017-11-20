@@ -358,7 +358,7 @@ DB_ENV *
 DB2_db::db_init(char *home)
 {
     DB_ENV *dbenv;
-    char *progname = "DB2 problem...";
+    const char *progname = "DB2 problem...";
 
     int error;
     if((error = CDB_db_env_create(&dbenv, 0)) != 0) {
