@@ -39,7 +39,7 @@ URLRef::~URLRef ()
 //*****************************************************************************
 //
 int
-URLRef::compare (const URLRef & to) const const
+URLRef::compare (const URLRef & to) const
 {
   return hopcount - to.hopcount;
 }
