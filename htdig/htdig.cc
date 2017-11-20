@@ -481,50 +481,50 @@ void
 usage ()
 {
   printf (_("usage: htdig [-v][-i][-c configfile][-t][-m minimalfile]\n\
-  This program is part of htdig %s\n\n\
-  Options:\n"), VERSION);
+This program is part of htdig %s\n\n\
+Options:\n"), VERSION);
 
   printf (_("\t-v\tVerbose mode.  This increases the verbosity of the\n\
-  \t\tprogram.  Using more than 2 is probably only useful\n\
-  \t\tfor debugging purposes.  The default verbose mode\n\
-  \t\tgives a nice progress report while digging.\n\n"));
+\t\tprogram.  Using more than 2 is probably only useful\n\
+\t\tfor debugging purposes.  The default verbose mode\n\
+\t\tgives a nice progress report while digging.\n\n"));
 
   printf (_("\t-i\tInitial.  Do not use any old databases.  This is\n\
-  \t\taccomplished by first erasing the databases.\n\n"));
+\t\taccomplished by first erasing the databases.\n\n"));
 
   printf (_("\t-c configfile\n\
-  \t\tUse the specified configuration file instead of the\n\
-  \t\tdefault.\n\n"));
+\t\tUse the specified configuration file instead of the\n\
+\t\tdefault.\n\n"));
 
   printf (_("\t-t\tCreate an ASCII version of the document database.\n\
-  \t\tThis database is easy to parse with other programs so\n\
-  \t\tthat information can be extracted from it.\n\n"));
+\t\tThis database is easy to parse with other programs so\n\
+\t\tthat information can be extracted from it.\n\n"));
 
   printf (_("\t-h hop count\n\
-  \t\tLimit the stored documents to those which are at\n\
-  \t\tmost hopcount links away from the start URL.\n\n"));
+\t\tLimit the stored documents to those which are at\n\
+\t\tmost hopcount links away from the start URL.\n\n"));
 
   printf (_("\t-s\tReport statistics after completion.\n\n"));
 
   printf (_("\t-u username:password\n\
-  \t\tTells htdig to send the supplied username and\n\
-  \t\tpassword with each HTTP request.  The credentials\n\
-  \t\twill be encoded using the 'Basic' authentication scheme.\n\
-  \t\tThere *HAS* to be a colon (:) between the username\n\
-  \t\tand password.\n\n"));
+\t\tTells htdig to send the supplied username and\n\
+\t\tpassword with each HTTP request.  The credentials\n\
+\t\twill be encoded using the 'Basic' authentication scheme.\n\
+\t\tThere *HAS* to be a colon (:) between the username\n\
+\t\tand password.\n\n"));
 
   printf (_("\t-a\tUse alternate work files.\n\
-  \t\tTells htdig to append .work to database files, causing\n\
-  \t\ta second copy of the database to be built.  This allows\n\
-  \t\tthe original files to be used by htsearch during the\n\
-  \t\tindexing run.\n\n"));
+\t\tTells htdig to append .work to database files, causing\n\
+\t\ta second copy of the database to be built.  This allows\n\
+\t\tthe original files to be used by htsearch during the\n\
+\t\tindexing run.\n\n"));
 
   printf (_("\t-m minimalfile  (or just a file name at end of arguments)\n\
-  \t\tTells htdig to read URLs from the supplied file and index\n\
-  \t\tthem in place of (or in addition to) the existing URLs in\n\
-  \t\tthe database and the start_url.  With the -m, only the\n\
-  \t\tURLs specified are added to the database.  A file name of\n\
-  \t\t'-' indicates the standard input.\n\n"));
+\t\tTells htdig to read URLs from the supplied file and index\n\
+\t\tthem in place of (or in addition to) the existing URLs in\n\
+\t\tthe database and the start_url.  With the -m, only the\n\
+\t\tURLs specified are added to the database.  A file name of\n\
+\t\t'-' indicates the standard input.\n\n"));
 
 
 
