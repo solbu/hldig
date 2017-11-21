@@ -1,5 +1,19 @@
 # CONTRIBUTING
 
+If you find an issue that interests you, please leave a note asking about it
+first. If you don't see that anyone has inquired about it, you can simply
+leave a note saying you are going to work on it. If people work on an issue
+without saying they are working on it, the result is sometimes three people
+submit a PR for the same issue.
+
+If you find a problem for which no ticket has yet been created, please don't
+hesitate to open a new ticket, and let us know if you are going to work on
+that issue.
+
+Please leave another note if you change your mind or if you get busy with other
+things and are unable to finish it. That lets me and other people know the
+ticket is available to be worked on by other people.
+
 ## Coding style
 The goal is [GNU style formatting](https://www.gnu.org/prep/standards/html_node/Formatting.html)
 
