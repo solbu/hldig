@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: htdig 3.2.0b7\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-19 15:52-0600\n"
-"PO-Revision-Date: 2017-11-20 18:39-0600\n"
+"PO-Revision-Date: 2017-11-20 18:42-0600\n"
 "Last-Translator: Andy <andy@oceanus>\n"
 "Language-Team: LANGUAGE <andy400-dev@yahoo.com)>\n"
 "Language: \n"
@@ -43,19 +43,13 @@ msgstr ""
 msgid "Warning: unknown locale!\n"
 msgstr ""
 
-#: htdig.cc:185
-msgid "max_hop_count"
-msgstr ""
-
-#: htdig.cc:190
-msgid "authorization"
-msgstr ""
-
+#: Only the words "invalid" and "or" need translating here
 #: htdig.cc:198
 #, c-format
 msgid "Invalid url_part_aliases or common_url_parts: %s"
 msgstr ""
 
+#: Only the word "invalid" need translating here
 #: htdig.cc:206
 #, c-format
 msgid "Invalid url_rewrite_rules: %s"
