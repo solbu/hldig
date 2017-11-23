@@ -42,26 +42,26 @@
 //*****************************************************************************
 // Fuzzy::Fuzzy(const HtConfiguration& config)
 //
-Fuzzy::Fuzzy(const HtConfiguration& config_arg) :
-  config(config_arg)
+Fuzzy::Fuzzy (const HtConfiguration & config_arg):
+config (config_arg)
 {
-    dict = 0;
-    index = 0;
+  dict = 0;
+  index = 0;
 }
 
 
 //*****************************************************************************
 // Fuzzy::~Fuzzy()
 //
-Fuzzy::~Fuzzy()
+Fuzzy::~Fuzzy ()
 {
-    if (index)
-    {
-  index->Close();
-  delete index;
-  index = 0;
-    }
-    delete dict;
+  if (index)
+  {
+    index->Close ();
+    delete index;
+    index = 0;
+  }
+  delete dict;
 }
 
 
@@ -69,47 +69,47 @@ Fuzzy::~Fuzzy()
 // void Fuzzy::getWords(char *word, List &words)
 //
 void
-Fuzzy::getWords(char *word, List &words)
+Fuzzy::getWords (char *word, List & words)
 {
-    if (!index)
-  return;
-    if (!word || !*word)
-      return;
+  if (!index)
+    return;
+  if (!word || !*word)
+    return;
 
-    //
-    // Convert the word to a fuzzy key
-    //
-    String  fuzzyKey;
-    String  data;
-    String  stripped = word;
-    HtStripPunctuation(stripped);
-    generateKey(stripped, fuzzyKey);
-    if (debug > 2)
-      cout << "\n\tkey: " << fuzzyKey << endl;
+  //
+  // Convert the word to a fuzzy key
+  //
+  String fuzzyKey;
+  String data;
+  String stripped = word;
+  HtStripPunctuation (stripped);
+  generateKey (stripped, fuzzyKey);
+  if (debug > 2)
+    cout << "\n\tkey: " << fuzzyKey << endl;
 
-    words.Destroy();
-  
-    if (index->Get(fuzzyKey, data) == OK)
-    {
-  //
-  // Found the entry
-  //
-  char  *token = strtok(data.get(), " ");
-  while (token)
+  words.Destroy ();
+
+  if (index->Get (fuzzyKey, data) == OK)
   {
-      if (mystrcasecmp(token, word) != 0)
-      {
-    words.Add(new String(token));
-      }
-      token = strtok(0, " ");
-  }
-    }
-    else
+    //
+    // Found the entry
+    //
+    char *token = strtok (data.get (), " ");
+    while (token)
     {
-  //
-  // The key wasn't found.
-  //
+      if (mystrcasecmp (token, word) != 0)
+      {
+        words.Add (new String (token));
+      }
+      token = strtok (0, " ");
     }
+  }
+  else
+  {
+    //
+    // The key wasn't found.
+    //
+  }
 }
 
 
@@ -117,21 +117,21 @@ Fuzzy::getWords(char *word, List &words)
 // int Fuzzy::openIndex(const HtConfiguration &config)
 //
 int
-Fuzzy::openIndex()
+Fuzzy::openIndex ()
 {
-    String  var = name;
-    var << "_db";
-    const String  filename = config[var];
+  String var = name;
+  var << "_db";
+  const String filename = config[var];
 
-    index = Database::getDatabaseInstance(DB_HASH);
-    if (index->OpenRead(filename) == NOTOK)
-      {
-  delete index;
-  index = 0;
-        return NOTOK;
-      }
+  index = Database::getDatabaseInstance (DB_HASH);
+  if (index->OpenRead (filename) == NOTOK)
+  {
+    delete index;
+    index = 0;
+    return NOTOK;
+  }
 
-    return OK;
+  return OK;
 }
 
 
@@ -139,43 +139,43 @@ Fuzzy::openIndex()
 // int Fuzzy::writeDB(HtConfiguration &config)
 //
 int
-Fuzzy::writeDB()
+Fuzzy::writeDB ()
 {
-    String  var = name;
-    var << "_db";
-    const String  filename = config[var];
+  String var = name;
+  var << "_db";
+  const String filename = config[var];
 
-    index = Database::getDatabaseInstance(DB_HASH);
-    if (index->OpenReadWrite(filename, 0664) == NOTOK)
-  return NOTOK;
+  index = Database::getDatabaseInstance (DB_HASH);
+  if (index->OpenReadWrite (filename, 0664) == NOTOK)
+    return NOTOK;
 
-    String  *s;
-    char  *fuzzyKey;
+  String *s;
+  char *fuzzyKey;
 
-    int    count = 0;
-  
-    dict->Start_Get();
-    while ((fuzzyKey = dict->Get_Next()))
+  int count = 0;
+
+  dict->Start_Get ();
+  while ((fuzzyKey = dict->Get_Next ()))
+  {
+    s = (String *) dict->Find (fuzzyKey);
+    index->Put (fuzzyKey, *s);
+
+    if (debug > 1)
     {
-  s = (String *) dict->Find(fuzzyKey);
-  index->Put(fuzzyKey, *s);
-
-  if (debug > 1)
-  {
-      cout << "htfuzzy: '" << fuzzyKey << "' ==> '" << s->get() << "'\n";
-  }
-  count++;
-  if ((count % 100) == 0 && debug == 1)
-  {
+      cout << "htfuzzy: '" << fuzzyKey << "' ==> '" << s->get () << "'\n";
+    }
+    count++;
+    if ((count % 100) == 0 && debug == 1)
+    {
       cout << "htfuzzy: keys: " << count << '\n';
-      cout.flush();
+      cout.flush ();
+    }
   }
-    }
-    if (debug == 1)
-    {
-  cout << "htfuzzy:Total keys: " << count << "\n";
-    }
-    return OK;
+  if (debug == 1)
+  {
+    cout << "htfuzzy:Total keys: " << count << "\n";
+  }
+  return OK;
 }
 
 
@@ -183,47 +183,46 @@ Fuzzy::writeDB()
 // Fuzzy algorithm factory.
 //
 Fuzzy *
-Fuzzy::getFuzzyByName(char *name, const HtConfiguration& config)
+Fuzzy::getFuzzyByName (char *name, const HtConfiguration & config)
 {
-    if (mystrcasecmp(name, "exact") == 0)
-  return new Exact(config);
-    else if (mystrcasecmp(name, "soundex") == 0)
-  return new Soundex(config);
-    else if (mystrcasecmp(name, "metaphone") == 0)
-  return new Metaphone(config);
-    else if (mystrcasecmp(name, "accents") == 0)
-  return new Accents(config);
-    else if (mystrcasecmp(name, "endings") == 0)
-  return new Endings(config);
-    else if (mystrcasecmp(name, "synonyms") == 0)
-  return new Synonym(config);
-    else if (mystrcasecmp(name, "substring") == 0)
-  return new Substring(config);
-    else if (mystrcasecmp(name, "prefix") == 0)
-  return new Prefix(config);
-    else if (mystrcasecmp(name, "regex") == 0)
-  return new Regexp(config);
-    else if (mystrcasecmp(name, "speling") == 0)
-  return new Speling(config);
-    else
-  return 0;
+  if (mystrcasecmp (name, "exact") == 0)
+    return new Exact (config);
+  else if (mystrcasecmp (name, "soundex") == 0)
+    return new Soundex (config);
+  else if (mystrcasecmp (name, "metaphone") == 0)
+    return new Metaphone (config);
+  else if (mystrcasecmp (name, "accents") == 0)
+    return new Accents (config);
+  else if (mystrcasecmp (name, "endings") == 0)
+    return new Endings (config);
+  else if (mystrcasecmp (name, "synonyms") == 0)
+    return new Synonym (config);
+  else if (mystrcasecmp (name, "substring") == 0)
+    return new Substring (config);
+  else if (mystrcasecmp (name, "prefix") == 0)
+    return new Prefix (config);
+  else if (mystrcasecmp (name, "regex") == 0)
+    return new Regexp (config);
+  else if (mystrcasecmp (name, "speling") == 0)
+    return new Speling (config);
+  else
+    return 0;
 }
 
 //*****************************************************************************
 int
-Fuzzy::createDB(const HtConfiguration &)
+Fuzzy::createDB (const HtConfiguration &)
 {
-    return OK;
+  return OK;
 }
 
 void
-Fuzzy::generateKey(char *, String &)
+Fuzzy::generateKey (char *, String &)
 {
 }
 
 
 void
-Fuzzy::addWord(char *)
+Fuzzy::addWord (char *)
 {
 }
-

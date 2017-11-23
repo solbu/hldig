@@ -24,24 +24,22 @@ class String;
 class List;
 
 
-class Regexp : public Fuzzy
+class Regexp:public Fuzzy
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    Regexp(const HtConfiguration& config_arg);
-    virtual    ~Regexp();
+  //
+  // Construction/Destruction
+  //
+  Regexp (const HtConfiguration & config_arg);
+    virtual ~ Regexp ();
 
-    virtual void  getWords(char *word, List &words);
-    virtual int    openIndex();
+  virtual void getWords (char *word, List & words);
+  virtual int openIndex ();
 
-    virtual void  generateKey(char *, String &);
-    virtual void  addWord(char *);
-  
+  virtual void generateKey (char *, String &);
+  virtual void addWord (char *);
+
 private:
 };
 
 #endif
-
-

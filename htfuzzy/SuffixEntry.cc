@@ -26,16 +26,16 @@
 //*****************************************************************************
 // SuffixEntry::SuffixEntry()
 //
-SuffixEntry::SuffixEntry(char *str)
+SuffixEntry::SuffixEntry (char *str)
 {
-    parse(str);
+  parse (str);
 }
 
 
 //*****************************************************************************
 // SuffixEntry::~SuffixEntry()
 //
-SuffixEntry::~SuffixEntry()
+SuffixEntry::~SuffixEntry ()
 {
 }
 
@@ -45,33 +45,31 @@ SuffixEntry::~SuffixEntry()
 //   Parse a string in the format <expr> '>' <rule> into ourselves.
 //
 void
-SuffixEntry::parse(char *str)
+SuffixEntry::parse (char *str)
 {
-    String  temp = 0;
-    
-    while (*str == ' ' || *str == '\t')
-  str++;
+  String temp = 0;
 
-    temp = "^.*";
-    while (*str != '>')
-    {
-  if (*str != ' ' && *str != '\t')
+  while (*str == ' ' || *str == '\t')
+    str++;
+
+  temp = "^.*";
+  while (*str != '>')
+  {
+    if (*str != ' ' && *str != '\t')
       temp << *str;
-  str++;
-    }
-    temp << "$";
-    while (*str == ' ' || *str == '\t' || *str == '>')
-  str++;
+    str++;
+  }
+  temp << "$";
+  while (*str == ' ' || *str == '\t' || *str == '>')
+    str++;
 
-    Endings::mungeWord(temp, expression);
-    
-    temp = 0;
-    while (*str != ' ' && *str != '\t' && *str != '\n' && *str != '\r' && *str)
-    {
-  temp << *str;
-  str++;
-    }
-    Endings::mungeWord(temp, rule);
+  Endings::mungeWord (temp, expression);
+
+  temp = 0;
+  while (*str != ' ' && *str != '\t' && *str != '\n' && *str != '\r' && *str)
+  {
+    temp << *str;
+    str++;
+  }
+  Endings::mungeWord (temp, rule);
 }
-
-

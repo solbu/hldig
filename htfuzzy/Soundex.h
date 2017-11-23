@@ -19,22 +19,20 @@
 
 #include "Fuzzy.h"
 
-class Soundex : public Fuzzy
+class Soundex:public Fuzzy
 {
 public:
   //
   // Construction/Destruction
   //
-        Soundex(const HtConfiguration& config_arg);
-  virtual      ~Soundex();
+  Soundex (const HtConfiguration & config_arg);
+    virtual ~ Soundex ();
 
-  virtual void  generateKey(char *word, String &key);
+  virtual void generateKey (char *word, String & key);
 
-  virtual void  addWord(char *word);
-  
+  virtual void addWord (char *word);
+
 private:
 };
 
 #endif
-
-

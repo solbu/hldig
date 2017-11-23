@@ -22,24 +22,22 @@ class String;
 class List;
 
 
-class Exact : public Fuzzy
+class Exact:public Fuzzy
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    Exact(const HtConfiguration& config_arg);
-    virtual    ~Exact();
+  //
+  // Construction/Destruction
+  //
+  Exact (const HtConfiguration & config_arg);
+    virtual ~ Exact ();
 
-    virtual void  getWords(char *word, List &words);
-    virtual int    openIndex();
+  virtual void getWords (char *word, List & words);
+  virtual int openIndex ();
 
-    virtual void  generateKey(char *, String &);
-    virtual void  addWord(char *);
-  
+  virtual void generateKey (char *, String &);
+  virtual void addWord (char *);
+
 private:
 };
 
 #endif
-
-

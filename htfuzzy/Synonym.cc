@@ -41,185 +41,186 @@ using namespace std;
 #endif /* HAVE_STD */
 
 //*****************************************************************************
-Synonym::Synonym(const HtConfiguration& config_arg) :
-  Fuzzy(config_arg)
+Synonym::Synonym (const HtConfiguration & config_arg):
+Fuzzy (config_arg)
 {
-    name = "synonyms";
-    db = 0;
+  name = "synonyms";
+  db = 0;
 }
 
 
 //*****************************************************************************
-Synonym::~Synonym()
+Synonym::~Synonym ()
 {
-    if (db)
-    {
-        db->Close();
-        delete db;
-        db = 0;
-    }
+  if (db)
+  {
+    db->Close ();
+    delete db;
+    db = 0;
+  }
 }
 
 
 //*****************************************************************************
 int
-Synonym::createDB(const HtConfiguration &config)
+Synonym::createDB (const HtConfiguration & config)
 {
-    String      tmpdir = getenv("TMPDIR");
-    String   dbFile;
+  String tmpdir = getenv ("TMPDIR");
+  String dbFile;
 
-#if defined(LIBHTDIG) || defined(LIBHTDIGPHP) || defined(_MSC_VER) //WIN32
-    int ret = -1;
-    char * source = NULL;
-    char * dest = NULL;
+#if defined(LIBHTDIG) || defined(LIBHTDIGPHP) || defined(_MSC_VER)      //WIN32
+  int ret = -1;
+  char *source = NULL;
+  char *dest = NULL;
 #endif
 
-    if (tmpdir.length())
-      dbFile = tmpdir;
-    else
-      dbFile = "/tmp";
+  if (tmpdir.length ())
+    dbFile = tmpdir;
+  else
+    dbFile = "/tmp";
 
-    dbFile << "/synonyms.db";
+  dbFile << "/synonyms.db";
 
-    char  input[1000];
-    FILE  *fl;
-  
-    const String sourceFile = config["synonym_dictionary"];
+  char input[1000];
+  FILE *fl;
 
-    fl = fopen(sourceFile, "r");
-    if (fl == NULL)
-    {
-  cout << "htfuzzy/synonyms: unable to open " << sourceFile << endl;
-  cout << "htfuzzy/synonyms: Use the 'synonym_dictionary' attribute\n";
-  cout << "htfuzzy/synonyms: to specify the file that contains the synonyms\n";
-  return NOTOK;
-    }
+  const String sourceFile = config["synonym_dictionary"];
 
-    Database  *db = Database::getDatabaseInstance(DB_HASH);
+  fl = fopen (sourceFile, "r");
+  if (fl == NULL)
+  {
+    cout << "htfuzzy/synonyms: unable to open " << sourceFile << endl;
+    cout << "htfuzzy/synonyms: Use the 'synonym_dictionary' attribute\n";
+    cout <<
+      "htfuzzy/synonyms: to specify the file that contains the synonyms\n";
+    return NOTOK;
+  }
 
-    if (db->OpenReadWrite(dbFile.get(), 0664) == NOTOK)
-    {
-  delete db;
-  db = 0;
-  return NOTOK;
-    }
+  Database *db = Database::getDatabaseInstance (DB_HASH);
 
-    String  data;
-    String  word;
-    int    count = 0;
-    while (fgets(input, sizeof(input), fl))
-    {
-  StringList  sl(input, " \t\r\n");
-  if (sl.Count() < 2)
-  {    // Avoid segfault caused by calling Database::Put()
-      if (debug)  // with negative length for data field
+  if (db->OpenReadWrite (dbFile.get (), 0664) == NOTOK)
+  {
+    delete db;
+    db = 0;
+    return NOTOK;
+  }
+
+  String data;
+  String word;
+  int count = 0;
+  while (fgets (input, sizeof (input), fl))
+  {
+    StringList sl (input, " \t\r\n");
+    if (sl.Count () < 2)
+    {                           // Avoid segfault caused by calling Database::Put()
+      if (debug)                // with negative length for data field
       {
-    cout<<"htfuzzy/synonyms: Rejected line with less than 2 words: "
-         << input << endl;
-    cout.flush();
+        cout << "htfuzzy/synonyms: Rejected line with less than 2 words: "
+          << input << endl;
+        cout.flush ();
       }
       continue;
-  }
-  for (int i = 0; i < sl.Count(); i++)
-  {
+    }
+    for (int i = 0; i < sl.Count (); i++)
+    {
       data = 0;
-      for (int j = 0; j < sl.Count(); j++)
+      for (int j = 0; j < sl.Count (); j++)
       {
-    if (i != j)
-        data << sl[j] << ' ';
+        if (i != j)
+          data << sl[j] << ' ';
       }
       word = sl[i];
-      word.lowercase();
-      data.lowercase();
-      db->Put(word, String(data.get(), data.length() - 1));
+      word.lowercase ();
+      data.lowercase ();
+      db->Put (word, String (data.get (), data.length () - 1));
       if (debug && (count % 10) == 0)
       {
-                cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
-    cout.flush();
+        cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
+        cout.flush ();
       }
       count++;
+    }
   }
-    }
-    fclose(fl);
-    db->Close();
-    delete db;
+  fclose (fl);
+  db->Close ();
+  delete db;
 
-#if defined(LIBHTDIG) || defined(LIBHTDIGPHP) || defined(_MSC_VER) //WIN32
-    
-    //Uses file_copy function - works on Unix/Linux & WinNT
-    source = dbFile.get();
-    dest = (char *)config["synonym_db"].get();
+#if defined(LIBHTDIG) || defined(LIBHTDIGPHP) || defined(_MSC_VER)      //WIN32
 
-    //Attempt rename, if fail attempt copy & delete.
-    ret = rename(source, dest);
-    if (ret < 0)
-    {
-        ret = file_copy(source, dest, FILECOPY_OVERWRITE_ON);
-        if (ret == TRUE)
-            unlink(source);
-        else
-            return NOTOK;
-    }
+  //Uses file_copy function - works on Unix/Linux & WinNT
+  source = dbFile.get ();
+  dest = (char *) config["synonym_db"].get ();
 
-    if (debug)
-    {
-        cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
-        cout << "htfuzzy/synonyms: Done.\n";
-    }
+  //Attempt rename, if fail attempt copy & delete.
+  ret = rename (source, dest);
+  if (ret < 0)
+  {
+    ret = file_copy (source, dest, FILECOPY_OVERWRITE_ON);
+    if (ret == TRUE)
+      unlink (source);
+    else
+      return NOTOK;
+  }
+
+  if (debug)
+  {
+    cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
+    cout << "htfuzzy/synonyms: Done.\n";
+  }
 
 #else //This code uses a system call - Phase this out
 
-    struct stat stat_buf;
-    String mv("mv");  // assume it's in the PATH if predefined setting fails
-    if ((stat(MV, &stat_buf) != -1) && S_ISREG(stat_buf.st_mode))
-  mv = MV;
-    system(form("%s %s %s",
-    mv.get(), dbFile.get(), config["synonym_db"].get()));
+  struct stat stat_buf;
+  String mv ("mv");             // assume it's in the PATH if predefined setting fails
+  if ((stat (MV, &stat_buf) != -1) && S_ISREG (stat_buf.st_mode))
+    mv = MV;
+  system (form ("%s %s %s",
+                mv.get (), dbFile.get (), config["synonym_db"].get ()));
 
 #endif
 
-    return OK;
+  return OK;
 }
 
 
 //*****************************************************************************
 int
-Synonym::openIndex()
+Synonym::openIndex ()
 {
-    const String  dbFile = config["synonym_db"];
-  
-    if (db)
-    {
-        db->Close();
-        delete db;
-        db = 0;
-    }
-    db = Database::getDatabaseInstance(DB_HASH);
-    if (db->OpenRead(dbFile) == NOTOK)
-    {
-  delete db;
-  db = 0;
-  return NOTOK;
-    }
-    return OK;
+  const String dbFile = config["synonym_db"];
+
+  if (db)
+  {
+    db->Close ();
+    delete db;
+    db = 0;
+  }
+  db = Database::getDatabaseInstance (DB_HASH);
+  if (db->OpenRead (dbFile) == NOTOK)
+  {
+    delete db;
+    db = 0;
+    return NOTOK;
+  }
+  return OK;
 }
 
 
 //*****************************************************************************
 void
-Synonym::getWords(char *originalWord, List &words)
+Synonym::getWords (char *originalWord, List & words)
 {
-    String  data;
-    String  stripped = originalWord;
-    HtStripPunctuation(stripped);
+  String data;
+  String stripped = originalWord;
+  HtStripPunctuation (stripped);
 
-    if (db && db->Get(stripped, data) == OK)
-    {
-  char  *token = strtok(data.get(), " ");
-  while (token)
+  if (db && db->Get (stripped, data) == OK)
   {
-      words.Add(new String(token));
-      token = strtok(0, " ");
-  }
+    char *token = strtok (data.get (), " ");
+    while (token)
+    {
+      words.Add (new String (token));
+      token = strtok (0, " ");
     }
+  }
 }

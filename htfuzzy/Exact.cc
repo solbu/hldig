@@ -26,8 +26,8 @@
 //*****************************************************************************
 // Exact::Exact()
 //
-Exact::Exact(const HtConfiguration& config_arg) :
-  Fuzzy(config_arg)
+Exact::Exact (const HtConfiguration & config_arg):
+Fuzzy (config_arg)
 {
   name = "exact";
 }
@@ -36,25 +36,25 @@ Exact::Exact(const HtConfiguration& config_arg) :
 //*****************************************************************************
 // Exact::~Exact()
 //
-Exact::~Exact()
+Exact::~Exact ()
 {
 }
 
 
 //*****************************************************************************
 void
-Exact::getWords(char *w, List &words)
+Exact::getWords (char *w, List & words)
 {
-    String  stripped = w;
-    HtStripPunctuation(stripped);
+  String stripped = w;
+  HtStripPunctuation (stripped);
 
-    words.Add(new String(stripped));
+  words.Add (new String (stripped));
 }
 
 
 //*****************************************************************************
 int
-Exact::openIndex()
+Exact::openIndex ()
 {
   return 0;
 }
@@ -62,17 +62,13 @@ Exact::openIndex()
 
 //*****************************************************************************
 void
-Exact::generateKey(char *, String &)
+Exact::generateKey (char *, String &)
 {
 }
 
 
 //*****************************************************************************
 void
-Exact::addWord(char *)
+Exact::addWord (char *)
 {
 }
-
-
-
-

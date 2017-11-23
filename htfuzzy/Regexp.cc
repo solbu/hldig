@@ -28,17 +28,17 @@
 //*****************************************************************************
 // Regexp::Regexp(const HtConfiguration& config_arg)
 //
-Regexp::Regexp(const HtConfiguration& config_arg) :
-  Fuzzy(config_arg)
+Regexp::Regexp (const HtConfiguration & config_arg):
+Fuzzy (config_arg)
 {
-    name = "regex";
+  name = "regex";
 }
 
 
 //*****************************************************************************
 // Regexp::~Regexp()
 //
-Regexp::~Regexp()
+Regexp::~Regexp ()
 {
 }
 
@@ -52,47 +52,48 @@ Regexp::~Regexp()
 // linear search, but with much less overhead.
 //
 void
-Regexp::getWords(char *pattern, List &words)
+Regexp::getWords (char *pattern, List & words)
 {
-    HtRegex  regexMatch;
-    String  stripped (pattern);
+  HtRegex regexMatch;
+  String stripped (pattern);
 
-    // First we have to strip the necessary punctuation
+  // First we have to strip the necessary punctuation
 // Why??  lha
 //    stripped.remove("^.[]$()|*+?{},-\\");
 
-    // Anchor the string to be matched
-    regexMatch.set(String("^") + stripped);
+  // Anchor the string to be matched
+  regexMatch.set (String ("^") + stripped);
 
-    HtWordList    wordDB(config);
-    List        *wordList;
-    String  *key;
-    wordDB.Open(config["word_db"], O_RDONLY);
-    wordList = wordDB.Words();
+  HtWordList wordDB (config);
+  List *wordList;
+  String *key;
+  wordDB.Open (config["word_db"], O_RDONLY);
+  wordList = wordDB.Words ();
 
-    int         wordCount = 0;
-    int         maximumWords = config.Value("regex_max_words", 25);
+  int wordCount = 0;
+  int maximumWords = config.Value ("regex_max_words", 25);
 
-    wordList->Start_Get();
-    while (wordCount < maximumWords && (key = (String *) wordList->Get_Next()))
-      {
-        if (regexMatch.match(*key, 0, 0) != 0)
+  wordList->Start_Get ();
+  while (wordCount < maximumWords && (key = (String *) wordList->Get_Next ()))
+  {
+    if (regexMatch.match (*key, 0, 0) != 0)
     {
-            words.Add(new String(*key));
-            wordCount++;
+      words.Add (new String (*key));
+      wordCount++;
     }
-      }
-    if (wordList) {
-      wordList->Destroy();
-      delete wordList;
-    }
-    wordDB.Close();
+  }
+  if (wordList)
+  {
+    wordList->Destroy ();
+    delete wordList;
+  }
+  wordDB.Close ();
 }
 
 
 //*****************************************************************************
 int
-Regexp::openIndex()
+Regexp::openIndex ()
 {
   return 0;
 }
@@ -100,17 +101,13 @@ Regexp::openIndex()
 
 //*****************************************************************************
 void
-Regexp::generateKey(char *, String &)
+Regexp::generateKey (char *, String &)
 {
 }
 
 
 //*****************************************************************************
 void
-Regexp::addWord(char *)
+Regexp::addWord (char *)
 {
 }
-
-
-
-

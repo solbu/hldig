@@ -24,24 +24,22 @@ class String;
 class List;
 
 
-class Substring : public Fuzzy
+class Substring:public Fuzzy
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    Substring(const HtConfiguration& config_arg);
-    virtual    ~Substring();
+  //
+  // Construction/Destruction
+  //
+  Substring (const HtConfiguration & config_arg);
+    virtual ~ Substring ();
 
-    virtual void  getWords(char *word, List &words);
-    virtual int    openIndex();
+  virtual void getWords (char *word, List & words);
+  virtual int openIndex ();
 
-    virtual void  generateKey(char *, String &);
-    virtual void  addWord(char *);
-  
+  virtual void generateKey (char *, String &);
+  virtual void addWord (char *);
+
 private:
 };
 
 #endif
-
-

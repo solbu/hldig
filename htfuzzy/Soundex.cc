@@ -28,17 +28,17 @@
 //*****************************************************************************
 // Soundex::Soundex(const HtConfiguration& config_arg)
 //
-Soundex::Soundex(const HtConfiguration& config_arg) :
-  Fuzzy(config_arg)
+Soundex::Soundex (const HtConfiguration & config_arg):
+Fuzzy (config_arg)
 {
-    name = "soundex";
+  name = "soundex";
 }
 
 
 //*****************************************************************************
 // Soundex::~Soundex()
 //
-Soundex::~Soundex()
+Soundex::~Soundex ()
 {
 }
 
@@ -47,96 +47,96 @@ Soundex::~Soundex()
 // void Soundex::generateKey(char *word, String &key)
 //
 void
-Soundex::generateKey(char *word, String &key)
+Soundex::generateKey (char *word, String & key)
 {
-    int code = 0;
-    int lastcode = 0;
+  int code = 0;
+  int lastcode = 0;
 
-    key = 0;
-    if (!word)
-      {
-  key = '0';
-  return;
-      }
-
-    while (*word && !isalpha(*word))
-      word++;
-
-    if (*word)
-    {
-  key << *word++;
-    }
-    else
-    {
-      key = '0';
-      return;
-    }
-
-
-    while (key.length() < 6)
-    {
-  switch (*word)
+  key = 0;
+  if (!word)
   {
-      case 'b':
-      case 'p':
-      case 'f':
-      case 'v':
-    code = 1;
-    break;
-
-      case 'c':
-      case 's':
-      case 'k':
-      case 'g':
-      case 'j':
-      case 'q':
-      case 'x':
-      case 'z':
-    code = 2;
-    break;
-
-      case 'd':
-      case 't':
-    code = 3;
-    break;
-
-      case 'l':
-    code = 4;
-    break;
-
-      case 'm':
-      case 'n':
-    code = 5;
-    break;
-
-      case 'r':
-    code = 6;
-    break;
-
-      case 'a':
-      case 'e':
-      case 'i':
-      case 'o':
-      case 'u':
-      case 'y':
-      case 'w':
-      case 'h':
-          code = 0;
-    break;
-
-      default:
-          break;
+    key = '0';
+    return;
   }
-  if (code && code != lastcode)
+
+  while (*word && !isalpha (*word))
+    word++;
+
+  if (*word)
+  {
+    key << *word++;
+  }
+  else
+  {
+    key = '0';
+    return;
+  }
+
+
+  while (key.length () < 6)
+  {
+    switch (*word)
+    {
+    case 'b':
+    case 'p':
+    case 'f':
+    case 'v':
+      code = 1;
+      break;
+
+    case 'c':
+    case 's':
+    case 'k':
+    case 'g':
+    case 'j':
+    case 'q':
+    case 'x':
+    case 'z':
+      code = 2;
+      break;
+
+    case 'd':
+    case 't':
+      code = 3;
+      break;
+
+    case 'l':
+      code = 4;
+      break;
+
+    case 'm':
+    case 'n':
+      code = 5;
+      break;
+
+    case 'r':
+      code = 6;
+      break;
+
+    case 'a':
+    case 'e':
+    case 'i':
+    case 'o':
+    case 'u':
+    case 'y':
+    case 'w':
+    case 'h':
+      code = 0;
+      break;
+
+    default:
+      break;
+    }
+    if (code && code != lastcode)
     {
       key << code;
       lastcode = code;
     }
-  if (*word)
+    if (*word)
       word++;
-  else
+    else
       break;
-    }
+  }
 }
 
 
@@ -144,24 +144,24 @@ Soundex::generateKey(char *word, String &key)
 // void Soundex::addWord(char *word)
 //
 void
-Soundex::addWord(char *word)
+Soundex::addWord (char *word)
 {
-    if (!dict)
-    {
-  dict = new Dictionary;
-    }
+  if (!dict)
+  {
+    dict = new Dictionary;
+  }
 
-    String  key;
-    generateKey(word, key);
+  String key;
+  generateKey (word, key);
 
-    String  *s = (String *) dict->Find(key);
-    if (s)
-    {
-      //  if (mystrcasestr(s->get(), word) != 0)
-      (*s) << ' ' << word;
-    }
-    else
-    {
-  dict->Add(key, new String(word));
-    }
+  String *s = (String *) dict->Find (key);
+  if (s)
+  {
+    //  if (mystrcasestr(s->get(), word) != 0)
+    (*s) << ' ' << word;
+  }
+  else
+  {
+    dict->Add (key, new String (word));
+  }
 }

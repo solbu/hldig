@@ -19,22 +19,20 @@
 
 #include "Fuzzy.h"
 
-class Metaphone : public Fuzzy
+class Metaphone:public Fuzzy
 {
 public:
   //
   // Construction/Destruction
   //
-      Metaphone(const HtConfiguration& config_arg);
-  virtual    ~Metaphone();
+  Metaphone (const HtConfiguration & config_arg);
+    virtual ~ Metaphone ();
 
-  virtual void  generateKey(char *word, String &key);
+  virtual void generateKey (char *word, String & key);
 
-  virtual void  addWord(char *word);
-  
+  virtual void addWord (char *word);
+
 private:
 };
 
 #endif
-
-

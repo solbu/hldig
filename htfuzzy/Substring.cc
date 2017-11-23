@@ -29,17 +29,17 @@
 //*****************************************************************************
 // Substring::Substring(const HtConfiguration& config_arg)
 //
-Substring::Substring(const HtConfiguration& config_arg) :
-  Fuzzy(config_arg)
+Substring::Substring (const HtConfiguration & config_arg):
+Fuzzy (config_arg)
 {
-    name = "substring";
+  name = "substring";
 }
 
 
 //*****************************************************************************
 // Substring::~Substring()
 //
-Substring::~Substring()
+Substring::~Substring ()
 {
 }
 
@@ -53,46 +53,47 @@ Substring::~Substring()
 // linear search, but with much less overhead.
 //
 void
-Substring::getWords(char *w, List &words)
+Substring::getWords (char *w, List & words)
 {
-    // First strip the punctuation
-    String  stripped = w;
-    HtStripPunctuation(stripped);
+  // First strip the punctuation
+  String stripped = w;
+  HtStripPunctuation (stripped);
 
-    // Now set up the StringMatch object
-    StringMatch  match;
-    match.Pattern(stripped);
+  // Now set up the StringMatch object
+  StringMatch match;
+  match.Pattern (stripped);
 
-    // And get the list of all possible words
-    HtWordList  wordDB(config);
-    List  *wordList;
-    String  *key;
-    wordDB.Open(config["word_db"], O_RDONLY);
-    wordList = wordDB.Words();
+  // And get the list of all possible words
+  HtWordList wordDB (config);
+  List *wordList;
+  String *key;
+  wordDB.Open (config["word_db"], O_RDONLY);
+  wordList = wordDB.Words ();
 
-    int    wordCount = 0;
-    int    maximumWords = config.Value("substring_max_words", 25);
+  int wordCount = 0;
+  int maximumWords = config.Value ("substring_max_words", 25);
 
-    wordList->Start_Get();
-    while (wordCount < maximumWords && (key = (String *) wordList->Get_Next()))
-    {
-  if (match.FindFirst((char*)*key) >= 0)
+  wordList->Start_Get ();
+  while (wordCount < maximumWords && (key = (String *) wordList->Get_Next ()))
   {
-      words.Add(new String(*key));
+    if (match.FindFirst ((char *) *key) >= 0)
+    {
+      words.Add (new String (*key));
       wordCount++;
+    }
   }
-    }
-    if (wordList) {
-      wordList->Destroy();
-      delete wordList;
-    }
-    wordDB.Close();
+  if (wordList)
+  {
+    wordList->Destroy ();
+    delete wordList;
+  }
+  wordDB.Close ();
 }
 
 
 //*****************************************************************************
 int
-Substring::openIndex()
+Substring::openIndex ()
 {
   return 0;
 }
@@ -100,17 +101,13 @@ Substring::openIndex()
 
 //*****************************************************************************
 void
-Substring::generateKey(char *, String &)
+Substring::generateKey (char *, String &)
 {
 }
 
 
 //*****************************************************************************
 void
-Substring::addWord(char *)
+Substring::addWord (char *)
 {
 }
-
-
-
-

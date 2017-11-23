@@ -21,23 +21,21 @@
 #include "htString.h"
 
 
-class SuffixEntry : public Object
+class SuffixEntry:public Object
 {
 public:
   //
   // Construction/Destruction
   //
-        SuffixEntry(char *);
-        ~SuffixEntry();
+  SuffixEntry (char *);
+   ~SuffixEntry ();
 
-  String      expression;
-  String      rule;
+  String expression;
+  String rule;
 
-  void      parse(char *str);
-  
+  void parse (char *str);
+
 private:
 };
 
 #endif
-
-

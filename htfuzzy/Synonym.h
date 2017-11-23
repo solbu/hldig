@@ -21,31 +21,29 @@
 
 class List;
 
-class Synonym : public Fuzzy
+class Synonym:public Fuzzy
 {
 public:
   //
   // Construction/Destruction
   //
-      Synonym(const HtConfiguration& config_arg);
-      ~Synonym();
+  Synonym (const HtConfiguration & config_arg);
+   ~Synonym ();
 
   //
   // Lookup routines
   //
-  virtual void  getWords(char *word, List &words);
-  virtual int  openIndex();
+  virtual void getWords (char *word, List & words);
+  virtual int openIndex ();
 
   //
   // Creation
   //
-  virtual int  createDB(const HtConfiguration &config);
-  
+  virtual int createDB (const HtConfiguration & config);
+
 protected:
 
-  Database  *db;
+    Database * db;
 };
 
 #endif
-
-
