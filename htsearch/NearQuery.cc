@@ -1,20 +1,20 @@
-// 
+//
 // NearQuery.cc
 //
 // NearQuery: An operator query that filters matches by proximity.
-//           
+//
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
-// <http://www.gnu.org/copyleft/lgpl.html> 
-// 
+// <http://www.gnu.org/copyleft/lgpl.html>
+//
 // $Id: NearQuery.cc,v 1.4 2004/05/28 13:15:24 lha Exp $
-// 
+//
 
 #include "NearQuery.h"
 
-String NearQuery::OperatorString () constconst
+String NearQuery::OperatorString () const
 {
   String
     s;
@@ -101,7 +101,7 @@ NearQuery::Near (const ResultList & l, const ResultList & r)
 //
 //: merge match positions in a 'near' operation
 // all combinations are tested; the pairs of positions near enough are kept
-// 
+//
 List *
 NearQuery::MergeLocations (const List & p, const List & q)
 {

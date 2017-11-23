@@ -70,12 +70,12 @@ QueryLexer::Next ()
     cerr << "lexer current word: " << current << endl;
 }
 
-bool QueryLexer::IsEnd () constconst
+bool QueryLexer::IsEnd () const
 {
   return current == String ("");
 }
 
-bool QueryLexer::IsQuote () constconst
+bool QueryLexer::IsQuote () const
 {
   return current == String ("\"");
 }

@@ -1,4 +1,4 @@
-// 
+//
 // PhraseQuery.cc
 //
 // PhraseQuery: an operator query that filters sequenced word matches
@@ -8,9 +8,9 @@
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
-// 
+//
 // $Id: PhraseQuery.cc,v 1.4 2004/05/28 13:15:24 lha Exp $
-// 
+//
 
 #include "PhraseQuery.h"
 
@@ -60,7 +60,7 @@ PhraseQuery::Evaluate ()
   return result;
 }
 
-String PhraseQuery::GetLogicalWords () constconst
+String PhraseQuery::GetLogicalWords () const
 {
   ListCursor
     c;
@@ -131,7 +131,7 @@ PhraseQuery::Near (const ResultList & l, const ResultList & r)
 // if two contiguous positions are found, they are merged into a single one
 // beginning at the begin of the left operand
 // and ending and the end of the right operand
-// 
+//
 List *
 PhraseQuery::MergeLocations (const List & p, const List & q)
 {
