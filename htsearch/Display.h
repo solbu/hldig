@@ -27,212 +27,214 @@
 #include "Dictionary.h"
 #include "HtRegex.h"
 
-class Display : public Object
+class Display:public Object
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    // Display(const String& docFile, const String& indexFile, const String& excerptFile);
+  //
+  // Construction/Destruction
+  //
+  // Display(const String& docFile, const String& indexFile, const String& excerptFile);
 
-    Display(Dictionary *selected_collections);
-    ~Display();
+  Display (Dictionary * selected_collections);
+  ~Display ();
 
-    void    setStartTemplate(const String& templateName);
-    void    setMatchTemplate(const String& templateName);
-    void    setEndTemplate(const String& templateName);
-  
-    // inline void    setResults(ResultList *results);
-    // inline void    setSearchWords(List *searchWords);
-    inline void    setLimit(HtRegex *);
-    inline void    setExclude(HtRegex *);
-    // inline void    setAllWordsPattern(StringMatch *);
-    inline void    setLogicalWords(char *);
-    inline void    setOriginalWords(char *);
-    inline void    setCGI(cgi *);
-  
-    void    display(int pageNumber);
-    void    displayMatch(ResultMatch *match, DocumentRef *ref, int current);
-    void    displayHTTPheaders();
-    void    displayHeader();
-    void    displayFooter();
-    void    displayNomatch();
-    void    displaySyntaxError(const String &);
-  
-    int                 hasTemplateError() {return templateError;}
+  void setStartTemplate (const String & templateName);
+  void setMatchTemplate (const String & templateName);
+  void setEndTemplate (const String & templateName);
+
+  // inline void    setResults(ResultList *results);
+  // inline void    setSearchWords(List *searchWords);
+  inline void setLimit (HtRegex *);
+  inline void setExclude (HtRegex *);
+  // inline void    setAllWordsPattern(StringMatch *);
+  inline void setLogicalWords (char *);
+  inline void setOriginalWords (char *);
+  inline void setCGI (cgi *);
+
+  void display (int pageNumber);
+  void displayMatch (ResultMatch * match, DocumentRef * ref, int current);
+  void displayHTTPheaders ();
+  void displayHeader ();
+  void displayFooter ();
+  void displayNomatch ();
+  void displaySyntaxError (const String &);
+
+  int hasTemplateError ()
+  {
+    return templateError;
+  }
 
 protected:
-    //
-    // Multiple database support
-    //
-    Dictionary          *selected_collections;
+  //
+  // Multiple database support
+  //
+    Dictionary * selected_collections;
 
-    //
-    // Search Policy
-    char                *search_policy;
+  //
+  // Search Policy
+  char *search_policy;
 
-    //
-    // The list of search results.
-    //
-    // ResultList    *results;
+  //
+  // The list of search results.
+  //
+  // ResultList    *results;
 
-    //
-    // The database that contains documents.
-    //
-    // DocumentDB    docDB;
+  //
+  // The database that contains documents.
+  //
+  // DocumentDB    docDB;
 
-    //
-    // A list of words that we are searching for
-    //
-    // List    *searchWords;
+  //
+  // A list of words that we are searching for
+  //
+  // List    *searchWords;
 
-    //
-    // Pattern that all result URLs must match or exclude
-    //
-    HtRegex    *limitTo;
-    HtRegex    *excludeFrom;
+  //
+  // Pattern that all result URLs must match or exclude
+  //
+  HtRegex *limitTo;
+  HtRegex *excludeFrom;
 
-    //
-    // Pattern of all the words
-    //
-    // StringMatch    *allWordsPattern;
-  
-    //
-    // Variables for substitution into text are stored in a dictionary
-    //
-    Dictionary    vars;
+  //
+  // Pattern of all the words
+  //
+  // StringMatch    *allWordsPattern;
 
-    //
-    // Since the creation of excerpts is somewhat time consuming, we will
-    // only compute them if they're actually going to be used.  This is the
-    // flag that tells us if we will need the excerpt.
-    //
-    int      needExcerpt;
+  //
+  // Variables for substitution into text are stored in a dictionary
+  //
+  Dictionary vars;
 
-    //
-    // Since we might have errors we cannot recover from, this tells us 
-    // what happened.
-    //
-    int                 templateError;
+  //
+  // Since the creation of excerpts is somewhat time consuming, we will
+  // only compute them if they're actually going to be used.  This is the
+  // flag that tells us if we will need the excerpt.
+  //
+  int needExcerpt;
 
-    //
-    // To allow the result templates to be dependant on the match URL, we need
-    // the following:
-    //
-    StringMatch    URLtemplate;
-    List    URLtemplateList;
+  //
+  // Since we might have errors we cannot recover from, this tells us 
+  // what happened.
+  //
+  int templateError;
 
-    //
-    // To allow the star images to be dependant on the match URL, we need
-    // the following:
-    //
-    StringMatch    URLimage;
-    List    URLimageList;
+  //
+  // To allow the result templates to be dependant on the match URL, we need
+  // the following:
+  //
+  StringMatch URLtemplate;
+  List URLtemplateList;
 
-    //
-    // Maximum number of stars to display
-    //
-    int      maxStars;
-    double    maxScore;
-    double    minScore;
+  //
+  // To allow the star images to be dependant on the match URL, we need
+  // the following:
+  //
+  StringMatch URLimage;
+  List URLimageList;
 
-    //
-    // For display, we have different versions of the list of words.
-    //
-    String    logicalWords;
-    String    originalWords;
+  //
+  // Maximum number of stars to display
+  //
+  int maxStars;
+  double maxScore;
+  double minScore;
 
-    //
-    // To be able to recreate the URL that will get to us again, we need
-    // the info from the HTML form that called us.
-    //
-    cgi      *input;
+  //
+  // For display, we have different versions of the list of words.
+  //
+  String logicalWords;
+  String originalWords;
 
-    //
-    // Match output is done through templates.  This is the interface to these
-    // templates.
-    //
-    TemplateList  templates;
-    Template    *currentTemplate;
-  
-    //
-    // Methods...
-    //
-    List    *buildMatchList();
-    void    sort(List *);
+  //
+  // To be able to recreate the URL that will get to us again, we need
+  // the info from the HTML form that called us.
+  //
+  cgi *input;
 
-    int      includeURL(const String&);
-    String    *readFile(const String&);
-    void    expandVariables(const String&);
-    void    outputVariable(const String&);
-    String    *excerpt(ResultMatch *match, DocumentRef *ref,
-            String urlanchor, int fanchor, int &first);
-    const String  buildExcerpts(StringMatch *allWordsPattern,
-            ResultMatch *match, char *head,
-            String urlanchor, int fanchor );
-    String    hilight(ResultMatch *match, const String& str,
-            const String& urlanchor, int fanchor);
-    void    setupTemplates();
-    void    setupImages();
-    String    *generateStars(DocumentRef *, int);
-    void    displayParsedFile(const String&);
-    void    setVariables(int, List *);
-    void    createURL(String &, int);
-    void    logSearch(int, List *);
+  //
+  // Match output is done through templates.  This is the interface to these
+  // templates.
+  //
+  TemplateList templates;
+  Template *currentTemplate;
+
+  //
+  // Methods...
+  //
+  List *buildMatchList ();
+  void sort (List *);
+
+  int includeURL (const String &);
+  String *readFile (const String &);
+  void expandVariables (const String &);
+  void outputVariable (const String &);
+  String *excerpt (ResultMatch * match, DocumentRef * ref,
+                   String urlanchor, int fanchor, int &first);
+  const String buildExcerpts (StringMatch * allWordsPattern,
+                              ResultMatch * match, char *head,
+                              String urlanchor, int fanchor);
+  String hilight (ResultMatch * match, const String & str,
+                  const String & urlanchor, int fanchor);
+  void setupTemplates ();
+  void setupImages ();
+  String *generateStars (DocumentRef *, int);
+  void displayParsedFile (const String &);
+  void setVariables (int, List *);
+  void createURL (String &, int);
+  void logSearch (int, List *);
 };
 
 //*****************************************************************************
 inline void
-Display::setLimit(HtRegex *limit)
+Display::setLimit (HtRegex * limit)
 {
-    limitTo = limit;
+  limitTo = limit;
 }
 
 inline void
-Display::setExclude(HtRegex *exclude)
+Display::setExclude (HtRegex * exclude)
 {
-    excludeFrom = exclude;
+  excludeFrom = exclude;
 }
 
 #if 0
 inline void
-Display::setAllWordsPattern(StringMatch *pattern)
+Display::setAllWordsPattern (StringMatch * pattern)
 {
-    allWordsPattern = pattern;
+  allWordsPattern = pattern;
 }
 
 inline void
-Display::setResults(ResultList *results)
+Display::setResults (ResultList * results)
 {
-    this->results = results;
+  this->results = results;
 }
 
 inline void
-Display::setSearchWords(List *searchWords)
+Display::setSearchWords (List * searchWords)
 {
-    this->searchWords = searchWords;
+  this->searchWords = searchWords;
 }
 #endif
 
 inline void
-Display::setLogicalWords(char *s)
+Display::setLogicalWords (char *s)
 {
-    logicalWords = s;
-    vars.Add("LOGICAL_WORDS", new String(logicalWords));
+  logicalWords = s;
+  vars.Add ("LOGICAL_WORDS", new String (logicalWords));
 }
 
 inline void
-Display::setOriginalWords(char *s)
+Display::setOriginalWords (char *s)
 {
-    originalWords = s;
-    vars.Add("WORDS", new String(originalWords));
+  originalWords = s;
+  vars.Add ("WORDS", new String (originalWords));
 }
 
 inline void
-Display::setCGI(cgi *aCgi)
+Display::setCGI (cgi * aCgi)
 {
-    input = aCgi;
+  input = aCgi;
 }
 
 #endif
-
