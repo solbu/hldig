@@ -106,7 +106,7 @@ Display::Display(Dictionary *collections)
   //
   // Must have been some error.  Resort to the builtin-long (slot 0)
   //
-  currentTemplate = static_cast<Template *> templates.templates[0];
+  currentTemplate = reinterpret_cast<Template *> (templates.templates[0]);
     }
     if (!currentTemplate)
       {
@@ -228,7 +228,7 @@ Display::display(int pageNumber)
     }
     
     matches->Start_Get();
-    while ((match = static_cast<ResultMatch *> matches->Get_Next()) &&
+    while ((match = reinterpret_cast<ResultMatch *> (matches->Get_Next())) &&
      numberDisplayed < number)
     {
   if (currentMatch >= startAt)
@@ -1469,7 +1469,7 @@ Display::buildMatchList()
 //
   selected_collections->Start_Get();
   Collection *collection= NULL;
-  while ((collection = static_cast<Collection *> selected_collections->Get_NextElement()))
+  while ((collection = reinterpret_cast<Collection *> (selected_collections->Get_NextElement())))
   {
     ResultList *results = collection->getResultList();
     if (results == NULL)
