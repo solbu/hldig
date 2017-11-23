@@ -24,32 +24,35 @@
 class URLSeedScore
 {
 public:
-    URLSeedScore(Configuration &);
-    ~URLSeedScore();
+  URLSeedScore (Configuration &);
+  ~URLSeedScore ();
 
-    // Return the "adjusted" score.  Use an inline method to avoid
-    // function-call overhead when this feature is unused.
-    double adjust_score(double score, const String& url)
-    {
-  return myAdjustmentList->Count() == 0
-      ? score : noninline_adjust_score(score, url);
-    }
+  // Return the "adjusted" score.  Use an inline method to avoid
+  // function-call overhead when this feature is unused.
+  double adjust_score (double score, const String & url)
+  {
+    return myAdjustmentList->Count () == 0
+      ? score : noninline_adjust_score (score, url);
+  }
 
-    // If an error was discovered during the parsing of
-    // the configuration, this member gives a
-    // nonempty String with an error message.
-    const String& ErrMsg() { return myErrMsg; }
+  // If an error was discovered during the parsing of
+  // the configuration, this member gives a
+  // nonempty String with an error message.
+  const String & ErrMsg ()
+  {
+    return myErrMsg;
+  }
 
 private:
-    double noninline_adjust_score(double score, const String& url);
+  double noninline_adjust_score (double score, const String & url);
 
-    // These member functions are not supposed to be implemented.
-    URLSeedScore();
-    URLSeedScore(const URLSeedScore &);
-    void operator= (const URLSeedScore &);
+  // These member functions are not supposed to be implemented.
+  URLSeedScore ();
+  URLSeedScore (const URLSeedScore &);
+  void operator= (const URLSeedScore &);
 
-    List *myAdjustmentList;
-    String myErrMsg;
+  List *myAdjustmentList;
+  String myErrMsg;
 };
 
 #endif /* __HtURLSeedScore_h */

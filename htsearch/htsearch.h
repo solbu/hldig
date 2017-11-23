@@ -44,28 +44,26 @@ using namespace std;
 #include <fstream.h>
 #endif /* HAVE_STD */
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
-extern int    n_matches;
-extern int    do_and;
-extern int    do_short;
-extern StringList  fields;
+extern int n_matches;
+extern int do_and;
+extern int do_short;
+extern StringList fields;
 
-#ifndef _MSC_VER /* _WIN32 */
-extern StringMatch  limit_to;
+#ifndef _MSC_VER                /* _WIN32 */
+extern StringMatch limit_to;
 #endif
 
-extern StringMatch  URLimage;
-extern List    URLimageList;
-extern StringMatch  wm;
-extern Database    *dbf;
-extern String    logicalWords;
-extern String    originalWords;
-extern int              debug;
-extern StringList       collectionList;
+extern StringMatch URLimage;
+extern List URLimageList;
+extern StringMatch wm;
+extern Database *dbf;
+extern String logicalWords;
+extern String originalWords;
+extern int debug;
+extern StringList collectionList;
 
 #endif
-
-

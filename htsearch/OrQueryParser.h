@@ -18,13 +18,15 @@
 #include "SimpleQueryParser.h"
 #include "OrQuery.h"
 
-class OrQueryParser : public SimpleQueryParser
+class OrQueryParser:public SimpleQueryParser
 {
 public:
-  OrQueryParser() {}
+  OrQueryParser ()
+  {
+  }
 
 private:
-  OperatorQuery *MakeQuery()
+    OperatorQuery * MakeQuery ()
   {
     return new OrQuery;
   }

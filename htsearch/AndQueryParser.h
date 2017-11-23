@@ -18,13 +18,15 @@
 #include "SimpleQueryParser.h"
 #include "AndQuery.h"
 
-class AndQueryParser : public SimpleQueryParser
+class AndQueryParser:public SimpleQueryParser
 {
 public:
-  AndQueryParser() {}
+  AndQueryParser ()
+  {
+  }
 
 private:
-  OperatorQuery *MakeQuery()
+    OperatorQuery * MakeQuery ()
   {
     return new AndQuery;
   }

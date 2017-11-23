@@ -24,19 +24,22 @@
 
 //
 //
-class NotQuery : public OperatorQuery
+class NotQuery:public OperatorQuery
 {
 public:
 
 private:
   // evaluate operands and operate
-  ResultList *Evaluate();
+  ResultList * Evaluate ();
 
   // create a difference of the operand results
-  ResultList *Subtract(const ResultList &, const List &);
+  ResultList *Subtract (const ResultList &, const List &);
 
   // used by GetLogicalWords
-  String OperatorString() const { return String("not"); }
+  String OperatorString () const
+  {
+    return String ("not");
+  }
 };
 
 #endif

@@ -19,32 +19,30 @@
 
 #include "htString.h"
 #include "WordRecord.h"
-#include "HtWordReference.h"  // for FLAG_...
+#include "HtWordReference.h"    // for FLAG_...
 
-class WeightWord : public Object
+class WeightWord:public Object
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    WeightWord();
-    WeightWord(char *word, double weight);
-    WeightWord(char *word, double weight, unsigned int flags);
-    WeightWord(WeightWord *);
-    
-    virtual    ~WeightWord();
+  //
+  // Construction/Destruction
+  //
+  WeightWord ();
+  WeightWord (char *word, double weight);
+    WeightWord (char *word, double weight, unsigned int flags);
+    WeightWord (WeightWord *);
 
-    void    set(char *word);
+    virtual ~ WeightWord ();
 
-    String    word;
-    double    weight;
-    WordRecord    *records;
-    unsigned int  flags;
-    short int    isExact;
-    short int    isHidden;
-    short int    isIgnore;
+  void set (char *word);
+
+  String word;
+  double weight;
+  WordRecord *records;
+  unsigned int flags;
+  short int isExact;
+  short int isHidden;
+  short int isIgnore;
 };
 
 #endif
-
-

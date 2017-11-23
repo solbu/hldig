@@ -34,54 +34,54 @@
 //
 
 ResultList *
-AndQuery::Evaluate()
+AndQuery::Evaluate ()
 {
   ResultList *result = 0;
   ResultList *shorter = 0;
 
-  operands.Start_Get();
-  Query *operand = (Query *) operands.Get_Next();
-  while(operand && !shorter)
+  operands.Start_Get ();
+  Query *operand = (Query *) operands.Get_Next ();
+  while (operand && !shorter)
   {
-    result = operand->GetResults();
-    if(!result)
+    result = operand->GetResults ();
+    if (!result)
     {
       break;
     }
-    if(!result->IsIgnore())
+    if (!result->IsIgnore ())
     {
       shorter = result;
     }
-    operand = (Query *) operands.Get_Next();
+    operand = (Query *) operands.Get_Next ();
   }
-  if(shorter)
+  if (shorter)
   {
     List longer;
-    while(operand && result)
+    while (operand && result)
     {
-      result = operand->GetResults();
-      if(result && !result->IsIgnore())
+      result = operand->GetResults ();
+      if (result && !result->IsIgnore ())
       {
-        if(result->Count() < shorter->Count())
+        if (result->Count () < shorter->Count ())
         {
-          longer.Add(shorter);
+          longer.Add (shorter);
           shorter = result;
         }
         else
         {
-          longer.Add(result);
+          longer.Add (result);
         }
       }
-      operand = (Query *) operands.Get_Next();
+      operand = (Query *) operands.Get_Next ();
     }
-    if(longer.Count())
+    if (longer.Count ())
     {
-      result = Intersection(*shorter, longer);
-      longer.Release();
+      result = Intersection (*shorter, longer);
+      longer.Release ();
     }
     else
     {
-      result = new ResultList(*shorter);
+      result = new ResultList (*shorter);
     }
   }
   return result;
@@ -104,47 +104,46 @@ AndQuery::Evaluate()
 //
 
 ResultList *
-AndQuery::Intersection(const ResultList &shorter, const List &lists)
+AndQuery::Intersection (const ResultList & shorter, const List & lists)
 {
   ResultList *result = 0;
   DictionaryCursor c;
-  shorter.Start_Get(c);
-  DocMatch *match = (DocMatch *)shorter.Get_NextElement(c);
-  while(match)
+  shorter.Start_Get (c);
+  DocMatch *match = (DocMatch *) shorter.Get_NextElement (c);
+  while (match)
   {
     List confirms;
-  
-    ListCursor lc;  
-    lists.Start_Get(lc);
-    ResultList *list = (ResultList *)lists.Get_Next(lc);
-    while(list)
+
+    ListCursor lc;
+    lists.Start_Get (lc);
+    ResultList *list = (ResultList *) lists.Get_Next (lc);
+    while (list)
     {
-      DocMatch *confirm = list->find(match->GetId());
-      if(confirm)
+      DocMatch *confirm = list->find (match->GetId ());
+      if (confirm)
       {
-        confirms.Add(confirm);
+        confirms.Add (confirm);
       }
-      list = (ResultList *)lists.Get_Next(lc);
+      list = (ResultList *) lists.Get_Next (lc);
     }
-    if(confirms.Count() == lists.Count())
+    if (confirms.Count () == lists.Count ())
     {
-      if(!result)
+      if (!result)
       {
         result = new ResultList;
       }
-      DocMatch *copy = new DocMatch(*match);
-      confirms.Start_Get();
-      DocMatch *confirm = (DocMatch *)confirms.Get_Next();
-      while(confirm)
+      DocMatch *copy = new DocMatch (*match);
+      confirms.Start_Get ();
+      DocMatch *confirm = (DocMatch *) confirms.Get_Next ();
+      while (confirm)
       {
-        copy->Merge(*confirm);
-        confirm = (DocMatch *)confirms.Get_Next();
+        copy->Merge (*confirm);
+        confirm = (DocMatch *) confirms.Get_Next ();
       }
-      result->add(copy);
+      result->add (copy);
     }
-    confirms.Release();
-    match = (DocMatch *)shorter.Get_NextElement(c);
+    confirms.Release ();
+    match = (DocMatch *) shorter.Get_NextElement (c);
   }
   return result;
 }
-

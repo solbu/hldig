@@ -29,21 +29,21 @@ class WordSearcher
 {
 public:
   // constructor
-  WordSearcher(const String &filename);
+  WordSearcher (const String & filename);
 
   // fetch results for one exact word
-  ResultList *Search(const String &word);
+  ResultList *Search (const String & word);
 
 private:
   // word is to be ignored
-  bool IsIgnore(const String &word);
+    bool IsIgnore (const String & word);
 
   // fetch results in database
-  ResultList *Fetch(const String &word);
+  ResultList *Fetch (const String & word);
 
   // the database wrapper
   HtWordList references;
 };
-  
-  
+
+
 #endif /* _WordSearcher_h_ */

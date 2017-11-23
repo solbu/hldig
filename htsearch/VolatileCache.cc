@@ -22,18 +22,19 @@
 //
 ResultList theEmptyResult;
 
-ResultList * const
-VolatileCache::empty = &theEmptyResult;
+ResultList *const
+  VolatileCache::empty = &theEmptyResult;
 
-extern int debug;
+extern int
+  debug;
 
 //
 // find a cache entry
 //
 ResultList *
-VolatileCache::Lookup(const String &signature)
+VolatileCache::Lookup (const String & signature)
 {
-  ResultList *result = (ResultList *)cache[signature];
+  ResultList *result = (ResultList *) cache[signature];
   return result;
 }
 
@@ -41,37 +42,37 @@ VolatileCache::Lookup(const String &signature)
 // add a cache entry
 //
 void
-VolatileCache::Add(const String &signature, ResultList *entry)
+VolatileCache::Add (const String & signature, ResultList * entry)
 {
-  ResultList *previous = (ResultList *)cache[signature];
-  if(previous && previous != empty)
+  ResultList *previous = (ResultList *) cache[signature];
+  if (previous && previous != empty)
   {
     delete previous;
   }
-  if(!entry)
+  if (!entry)
   {
     entry = empty;
   }
-  cache.Add(signature, entry);
+  cache.Add (signature, entry);
 }
 
 //
 // clear the in-memory cache
 // avoids deletion of the shared 'empty' element
 //
-VolatileCache::~VolatileCache()
+VolatileCache::~VolatileCache ()
 {
-  if(debug) cerr << "query CLEAR: entries=" << cache.Count() << endl;
-  cache.Start_Get();
-  ResultList *kill = (ResultList *)cache.Get_NextElement();
-  while(kill)
+  if (debug)
+    cerr << "query CLEAR: entries=" << cache.Count () << endl;
+  cache.Start_Get ();
+  ResultList *kill = (ResultList *) cache.Get_NextElement ();
+  while (kill)
   {
-    if(kill != empty)
+    if (kill != empty)
     {
       delete kill;
     }
-    kill = (ResultList *)cache.Get_NextElement();
+    kill = (ResultList *) cache.Get_NextElement ();
   }
-  cache.Release();
+  cache.Release ();
 }
-

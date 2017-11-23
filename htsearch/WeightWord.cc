@@ -32,76 +32,76 @@ using namespace std;
 //***************************************************************************
 // WeightWord::WeightWord()
 //
-WeightWord::WeightWord()
+WeightWord::WeightWord ()
 {
-    weight = 1;
-    records = 0;
-    isExact = 0;
-    isHidden = 0;
-    isIgnore = 0;
+  weight = 1;
+  records = 0;
+  isExact = 0;
+  isHidden = 0;
+  isIgnore = 0;
 
-    flags = FLAGS_MATCH_ONE;
+  flags = FLAGS_MATCH_ONE;
 }
 
 
 //***************************************************************************
 // WeightWord::WeightWord(WeightWord *ww)
 //
-WeightWord::WeightWord(WeightWord *ww)
+WeightWord::WeightWord (WeightWord * ww)
 {
-    weight = ww->weight;
-    records = ww->records;
-    isExact = ww->isExact;
-    isHidden = ww->isHidden;
-    flags = ww->flags;
-    word = ww->word;
-    isIgnore = 0;
+  weight = ww->weight;
+  records = ww->records;
+  isExact = ww->isExact;
+  isHidden = ww->isHidden;
+  flags = ww->flags;
+  word = ww->word;
+  isIgnore = 0;
 }
 
 
 //***************************************************************************
 // WeightWord::WeightWord(char *word, double weight)
 //
-WeightWord::WeightWord(char *word, double weight)
+WeightWord::WeightWord (char *word, double weight)
 {
-    records = 0;
-    isExact = 0;
-    isHidden = 0;
-    isIgnore = 0;
+  records = 0;
+  isExact = 0;
+  isHidden = 0;
+  isIgnore = 0;
 
-    // allow a match with any field
-    flags = FLAGS_MATCH_ONE;
+  // allow a match with any field
+  flags = FLAGS_MATCH_ONE;
 
-    set(word);
-    this->weight = weight;
+  set (word);
+  this->weight = weight;
 }
 
 //***************************************************************************
 // WeightWord::WeightWord(char *word, double weight, unsigned int f)
 //
-WeightWord::WeightWord(char *word, double weight, unsigned int f)
+WeightWord::WeightWord (char *word, double weight, unsigned int f)
 {
-    records = 0;
+  records = 0;
 
-    flags = f;
-    // if no fields specified, allow a match with any field
-    if (!(flags & FLAGS_MATCH_ONE))
-  flags ^= FLAGS_MATCH_ONE;
+  flags = f;
+  // if no fields specified, allow a match with any field
+  if (!(flags & FLAGS_MATCH_ONE))
+    flags ^= FLAGS_MATCH_ONE;
 
-    // ideally, these flags should all just be stored in a uint...
-    isExact = ((flags & FLAG_EXACT) != 0);
-    isHidden = ((flags & FLAG_HIDDEN) != 0);
-    isIgnore = ((flags & FLAG_IGNORE) != 0);
+  // ideally, these flags should all just be stored in a uint...
+  isExact = ((flags & FLAG_EXACT) != 0);
+  isHidden = ((flags & FLAG_HIDDEN) != 0);
+  isIgnore = ((flags & FLAG_IGNORE) != 0);
 
-    set(word);
-    this->weight = weight;
+  set (word);
+  this->weight = weight;
 }
 
 
 //***************************************************************************
 // WeightWord::~WeightWord()
 //
-WeightWord::~WeightWord()
+WeightWord::~WeightWord ()
 {
 }
 
@@ -109,38 +109,38 @@ WeightWord::~WeightWord()
 //***************************************************************************
 // void WeightWord::set(char *word)
 //
-void WeightWord::set(char *word)
+void
+WeightWord::set (char *word)
 {
 #if 0
-    isExact = 0;
-    isHidden = 0;
-    while (strchr(word, ':'))
-    {
-  //
-  // This word contains modifiers.
-  //
-  if (mystrncasecmp(word, "exact:", 6) == 0)
+  isExact = 0;
+  isHidden = 0;
+  while (strchr (word, ':'))
   {
+    //
+    // This word contains modifiers.
+    //
+    if (mystrncasecmp (word, "exact:", 6) == 0)
+    {
       word += 6;
       isExact = 1;
-  }
-  else if (mystrncasecmp(word, "hidden:", 7) == 0)
-  {
+    }
+    else if (mystrncasecmp (word, "hidden:", 7) == 0)
+    {
       word += 7;
       isHidden = 1;
-  }
-  else
-  {
+    }
+    else
+    {
       //
       // There is a ':' but not a valid attribute.  It must be part
       // of the word we are searching for.
       //
       break;
-  }
-    
     }
-#endif
-    this->word = word;
-    this->word.lowercase();
-}
 
+  }
+#endif
+  this->word = word;
+  this->word.lowercase ();
+}

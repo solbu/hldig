@@ -24,19 +24,22 @@
 //
 // and query
 // 
-class AndQuery : public OperatorQuery
+class AndQuery:public OperatorQuery
 {
 public:
 
 private:
   // evaluate operands and intersect results
-  ResultList *Evaluate();
+  ResultList * Evaluate ();
 
   // create an intersection of the operand results
-  ResultList *Intersection(const ResultList &shorter, const List &longer);
+  ResultList *Intersection (const ResultList & shorter, const List & longer);
 
   // used by GetLogicalWords
-  String OperatorString() const { return String("and"); }
+  String OperatorString () const
+  {
+    return String ("and");
+  }
 };
 
 #endif

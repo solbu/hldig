@@ -25,23 +25,23 @@
 // expr == andlist ( 'or' andlist )
 //
 Query *
-BooleanQueryParser::ParseExpression()
+BooleanQueryParser::ParseExpression ()
 {
   Query *result = 0;
-  Query *term = ParseAnd();
-  if(term)
+  Query *term = ParseAnd ();
+  if (term)
   {
-    if(token.IsOr())
+    if (token.IsOr ())
     {
       result = new OrQuery;
-      result->Add(term);
-      while(term && token.IsOr())
+      result->Add (term);
+      while (term && token.IsOr ())
       {
-        token.Next();
-        term = ParseAnd();
-        if(term)
+        token.Next ();
+        term = ParseAnd ();
+        if (term)
         {
-          result->Add(term);
+          result->Add (term);
         }
       }
     }
@@ -50,7 +50,7 @@ BooleanQueryParser::ParseExpression()
       result = term;
     }
   }
-  if(!term && result)
+  if (!term && result)
   {
     delete result;
     result = 0;
@@ -62,23 +62,23 @@ BooleanQueryParser::ParseExpression()
 // notlist = nearlist { 'not' nearlist }
 //
 Query *
-BooleanQueryParser::ParseNot()
+BooleanQueryParser::ParseNot ()
 {
   Query *result = 0;
-  Query *near = ParseNear();
-  if(near)
+  Query *near = ParseNear ();
+  if (near)
   {
-    if(token.IsNot())
+    if (token.IsNot ())
     {
-      result = new NotQuery();
-      result->Add(near);
-      while(near && token.IsNot())
+      result = new NotQuery ();
+      result->Add (near);
+      while (near && token.IsNot ())
       {
-        token.Next();
-        near = ParseNear();
-        if(near)
+        token.Next ();
+        near = ParseNear ();
+        if (near)
         {
-          result->Add(near);
+          result->Add (near);
         }
       }
     }
@@ -87,7 +87,7 @@ BooleanQueryParser::ParseNot()
       result = near;
     }
   }
-  if(!near && result)
+  if (!near && result)
   {
     delete result;
     result = 0;
@@ -99,24 +99,24 @@ BooleanQueryParser::ParseNot()
 // andlist = notlist { 'and' notlist }
 //
 Query *
-BooleanQueryParser::ParseAnd()
+BooleanQueryParser::ParseAnd ()
 {
   Query *result = 0;
-  Query *notList = ParseNot();
+  Query *notList = ParseNot ();
 
-  if(notList)
+  if (notList)
   {
-    if(token.IsAnd())
+    if (token.IsAnd ())
     {
-      result = new AndQuery();
-      result->Add(notList);
-      while(notList && token.IsAnd())
+      result = new AndQuery ();
+      result->Add (notList);
+      while (notList && token.IsAnd ())
       {
-        token.Next();
-        notList = ParseNot();
-        if(notList)
+        token.Next ();
+        notList = ParseNot ();
+        if (notList)
         {
-          result->Add(notList);
+          result->Add (notList);
         }
       }
     }
@@ -125,7 +125,7 @@ BooleanQueryParser::ParseAnd()
       result = notList;
     }
   }
-  if(!notList && result)
+  if (!notList && result)
   {
     delete result;
     result = 0;
@@ -138,31 +138,31 @@ BooleanQueryParser::ParseAnd()
 // 'near' query is binary
 //
 Query *
-BooleanQueryParser::ParseNear()
+BooleanQueryParser::ParseNear ()
 {
-  Query *result = ParseFactor();
-  while(result && token.IsNear())
+  Query *result = ParseFactor ();
+  while (result && token.IsNear ())
   {
-    token.Next();
-    int distance = 10; // config["default_near_distance"];
-    if(token.IsSlash())
+    token.Next ();
+    int distance = 10;          // config["default_near_distance"];
+    if (token.IsSlash ())
     {
       distance = 0;
-      token.Next();
-      if(token.IsWord())
+      token.Next ();
+      if (token.IsWord ())
       {
-        distance = token.Value().as_integer();
-        token.Next();
+        distance = token.Value ().as_integer ();
+        token.Next ();
       }
     }
-    if(distance > 0)
+    if (distance > 0)
     {
-      Query *right = ParseFactor();
-      if(right)
+      Query *right = ParseFactor ();
+      if (right)
       {
-        Query *tmp = new NearQuery(distance);
-        tmp->Add(result);
-        tmp->Add(right);
+        Query *tmp = new NearQuery (distance);
+        tmp->Add (result);
+        tmp->Add (right);
         result = tmp;
       }
       else
@@ -173,7 +173,7 @@ BooleanQueryParser::ParseNear()
     }
     else
     {
-      Expected("a distance > 0 for 'Near'");
+      Expected ("a distance > 0 for 'Near'");
       delete result;
       result = 0;
     }
@@ -185,45 +185,45 @@ BooleanQueryParser::ParseNear()
 // factor == word | '"' phrase '"' | '(' expression ')'
 //
 Query *
-BooleanQueryParser::ParseFactor()
+BooleanQueryParser::ParseFactor ()
 {
   Query *result = 0;
 
-  if(token.IsWord())
+  if (token.IsWord ())
   {
-    result = ParseWord();
+    result = ParseWord ();
   }
-  else if(token.IsQuote())
+  else if (token.IsQuote ())
   {
-    token.Next();
-    result = ParsePhrase();
-    if(result)
+    token.Next ();
+    result = ParsePhrase ();
+    if (result)
     {
-      if(token.IsQuote())
+      if (token.IsQuote ())
       {
-        token.Next();
+        token.Next ();
       }
       else
       {
-        Expected("closing \"");
+        Expected ("closing \"");
         delete result;
         result = 0;
       }
     }
   }
-  else if(token.IsLeftParen())
+  else if (token.IsLeftParen ())
   {
-    token.Next();
-    result = ParseExpression();
-    if(result)
+    token.Next ();
+    result = ParseExpression ();
+    if (result)
     {
-      if(token.IsRightParen())
+      if (token.IsRightParen ())
       {
-        token.Next();
+        token.Next ();
       }
       else
       {
-        Expected(")");
+        Expected (")");
         delete result;
         result = 0;
       }
@@ -231,8 +231,7 @@ BooleanQueryParser::ParseFactor()
   }
   else
   {
-    Expected("'(', '\"', or a word");
+    Expected ("'(', '\"', or a word");
   }
   return result;
 }
-

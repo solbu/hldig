@@ -21,29 +21,33 @@
 
 #include "OperatorQuery.h"
 
-class NearQuery : public OperatorQuery
+class NearQuery:public OperatorQuery
 {
 public:
   // binary fashion
-  NearQuery(Query *left, Query *right, unsigned int dist) :
-    distance(dist)
-    { Add(left); Add(right); }
+  NearQuery (Query * left, Query * right, unsigned int dist):distance (dist)
+  {
+    Add (left);
+    Add (right);
+  }
 
   // n-ary fashion -- will ignore operands for n>2
-  NearQuery(unsigned int dist = 10) :
-    distance(dist) {}
+NearQuery (unsigned int dist = 10):
+  distance (dist)
+  {
+  }
 
 private:
   // get results from operands and filter
-  ResultList *Evaluate();
+  ResultList * Evaluate ();
 
   // create a result with neighboring matches
-  ResultList *Near(const ResultList &, const ResultList &);
+  ResultList *Near (const ResultList &, const ResultList &);
 
   // merge neighboring location lists
-  List *MergeLocations(const List &, const List &);
+  List *MergeLocations (const List &, const List &);
 
-  String OperatorString() const;
+  String OperatorString () const;
   unsigned int distance;
 };
 

@@ -21,24 +21,31 @@
 
 class OperatorQuery;
 
-class GParser : public QueryParser
+class GParser:public QueryParser
 {
 public:
-  GParser() {}
-  ~GParser() {}
+  GParser ()
+  {
+  }
+   ~GParser ()
+  {
+  }
 
 private:
   // apply the single-level syntax
-  Query *ParseExpression();
+  Query * ParseExpression ();
 
   // apply the factor syntax
-  Query *ParseFactor();
+  Query *ParseFactor ();
 
   // return the adequate operator for an operator keyword
-  OperatorQuery *MakeOperatorQuery(const String &op) const;
+  OperatorQuery *MakeOperatorQuery (const String & op) const;
 
   // give the parent access to the lexical analyzer
-  QueryLexer &Token() { return token; }
+  QueryLexer & Token ()
+  {
+    return token;
+  }
 
   // the lexer
   BooleanLexer token;

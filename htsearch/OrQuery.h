@@ -22,18 +22,21 @@
 
 #include "OperatorQuery.h"
 
-class OrQuery : public OperatorQuery
+class OrQuery:public OperatorQuery
 {
 public:
 
 private:
   // evaluate operands and join results
-  ResultList *Evaluate();
+  ResultList * Evaluate ();
 
   // create a union of the operand results
-  ResultList *Union(const ResultList &longer, const List &shorter);
+  ResultList *Union (const ResultList & longer, const List & shorter);
 
-  String OperatorString() const { return String("or"); }
+  String OperatorString () const
+  {
+    return String ("or");
+  }
 };
 
 #endif

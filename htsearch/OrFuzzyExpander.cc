@@ -27,68 +27,67 @@ extern int debug;
 // additionally, sets fuzzy scores for used words
 //
 Query *
-OrFuzzyExpander::MakeQuery(const String &word)
+OrFuzzyExpander::MakeQuery (const String & word)
 {
   Query *result = 0;
   Dictionary exacts;
 
   // for each configured fuzzy
-  filters.Start_Get();
-  Fuzzy *fuzzy = (Fuzzy *)filters.Get_Next();
-  while(fuzzy)
+  filters.Start_Get ();
+  Fuzzy *fuzzy = (Fuzzy *) filters.Get_Next ();
+  while (fuzzy)
   {
     // for each word expanded by fuzzy
     List words;
     String nonconst = word;
-    fuzzy->getWords(nonconst, words);
-    words.Start_Get();
-    String *w = (String *)words.Get_Next();
-    while(w)
+    fuzzy->getWords (nonconst, words);
+    words.Start_Get ();
+    String *w = (String *) words.Get_Next ();
+    while (w)
     {
       // if not yet expanded by another fuzzy
       // add it to the big Or
-      if(debug) cerr << "fuzzy " << word << "=" << *w << endl;
-      ExactWordQuery *exact = (ExactWordQuery *)exacts[*w];
-      if(!exact)
+      if (debug)
+        cerr << "fuzzy " << word << "=" << *w << endl;
+      ExactWordQuery *exact = (ExactWordQuery *) exacts[*w];
+      if (!exact)
       {
-        exact = new ExactWordQuery(*w);
-        exact->SetWeight(fuzzy->getWeight());
-        exacts.Add(*w, exact);
+        exact = new ExactWordQuery (*w);
+        exact->SetWeight (fuzzy->getWeight ());
+        exacts.Add (*w, exact);
       }
       // otherwise, just adjust the weight
       else
       {
-        exact->SetWeight(
-            exact->GetWeight() +
-            fuzzy->getWeight());
+        exact->SetWeight (exact->GetWeight () + fuzzy->getWeight ());
       }
-      w = (String *)words.Get_Next();
+      w = (String *) words.Get_Next ();
     }
-    fuzzy = (Fuzzy *)filters.Get_Next();
+    fuzzy = (Fuzzy *) filters.Get_Next ();
   }
 
   // return the expanded query
   // a single word or
   // a Or with all the expanded words
-  exacts.Start_Get();
-  Query *exact = (Query *)exacts.Get_NextElement();
-  if(exact)
+  exacts.Start_Get ();
+  Query *exact = (Query *) exacts.Get_NextElement ();
+  if (exact)
   {
     result = exact;
-    exact = (Query *)exacts.Get_NextElement();
+    exact = (Query *) exacts.Get_NextElement ();
   }
-  if(exact)
+  if (exact)
   {
     Query *tmp = result;
     result = new OrQuery;
-    result->Add(tmp);
-    while(exact)
+    result->Add (tmp);
+    while (exact)
     {
-      result->Add(exact);
-      exact = (Query *)exacts.Get_NextElement();
+      result->Add (exact);
+      exact = (Query *) exacts.Get_NextElement ();
     }
   }
-  exacts.Release();
+  exacts.Release ();
 
   return result;
 }

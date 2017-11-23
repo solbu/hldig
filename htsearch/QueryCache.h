@@ -25,21 +25,25 @@
 class ResultList;
 
 // abstract
-class QueryCache : public Object
+class QueryCache:public Object
 {
 public:
   // destructor
-  virtual ~QueryCache() {}
+  virtual ~ QueryCache ()
+  {
+  }
 
   // get cached result for a query signature
-  virtual ResultList *Lookup(const String &signature) = 0;
+  virtual ResultList *Lookup (const String & signature) = 0;
 
   // add result to be cached for a query signature
-  virtual void Add(const String &signature, ResultList *entry) = 0;
+  virtual void Add (const String & signature, ResultList * entry) = 0;
 
 protected:
   // construction
-  QueryCache() {}
+  QueryCache ()
+  {
+  }
 };
 
 #endif

@@ -30,39 +30,47 @@ class FuzzyExpander;
 class QueryParser
 {
 public:
-  virtual ~QueryParser() {}
+  virtual ~ QueryParser ()
+  {
+  }
 
   // do it
-  Query *Parse(const String &query_string);
+  Query *Parse (const String & query_string);
 
   // contains a diagnostic if Parse() failed
-  const String &Error() const
-    { return error; }
+  const String & Error () const
+  {
+    return error;
+  }
 
   // set a fuzzy word expansion policy 
-  static void SetFuzzyExpander(FuzzyExpander *x)
-    { expander = x; }
+  static void SetFuzzyExpander (FuzzyExpander * x)
+  {
+    expander = x;
+  }
 
 protected:
-  QueryParser() {}
+  QueryParser ()
+  {
+  }
 
   // apply a syntax -- tbd by derived classes
-  virtual Query *ParseExpression() = 0;
+  virtual Query *ParseExpression () = 0;
 
   // access to the lexer -- provided by children
-  virtual QueryLexer &Token() = 0;
+  virtual QueryLexer & Token () = 0;
 
   // parse one (fuzzy) word
-  Query *ParseWord();
+  Query *ParseWord ();
 
   // parse an exact word
-  Query *ParseExactWord();
+  Query *ParseExactWord ();
 
   // parse a phrase
-  Query *ParsePhrase();
+  Query *ParsePhrase ();
 
   // set the error string on syntax error
-  void Expected(const String &what);
+  void Expected (const String & what);
 
   // the current fuzzy expansion policy if some
   static FuzzyExpander *expander;

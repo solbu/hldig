@@ -19,29 +19,31 @@
 // return a string with the query as a boolean expression
 // descends recursively over the operand
 //
-String
-OperatorQuery::GetLogicalWords() const
+String OperatorQuery::GetLogicalWords () constconst
 {
-  ListCursor c;
-  String out;
+  ListCursor
+    c;
+  String
+    out;
   out << "(";
-  if(operands.Count())
+  if (operands.Count ())
   {
-    operands.Start_Get(c);
-    out << ((Query *) operands.Get_Next(c))->GetLogicalWords();
-    Query *next = (Query *) operands.Get_Next(c);
-    while(next)
+    operands.Start_Get (c);
+    out << ((Query *) operands.Get_Next (c))->GetLogicalWords ();
+    Query *
+      next = (Query *) operands.Get_Next (c);
+    while (next)
     {
-      out << " " << OperatorString() << " ";
-      if(next)
+      out << " " << OperatorString () << " ";
+      if (next)
       {
-        out << next->GetLogicalWords();
+        out << next->GetLogicalWords ();
       }
       else
       {
         out << "*nothing*";
       }
-      next = (Query *) operands.Get_Next(c);
+      next = (Query *) operands.Get_Next (c);
     }
   }
   out << ")";

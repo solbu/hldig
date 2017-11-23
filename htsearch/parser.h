@@ -31,48 +31,53 @@ class Collection;
 class Parser
 {
 public:
-    Parser();
-  
-    int      checkSyntax(List *);
-    void    parse(List *, ResultList &);
+  Parser ();
 
-    // void    setDatabase(const String& db)    { words.Open(db, O_RDONLY); }
-    void                setCollection(Collection *collection);
-    char    *getErrorMessage()    {return error.get();}
-    int      hadError()      {return valid == 0;}
-  
+  int checkSyntax (List *);
+  void parse (List *, ResultList &);
+
+  // void    setDatabase(const String& db)    { words.Open(db, O_RDONLY); }
+  void setCollection (Collection * collection);
+  char *getErrorMessage ()
+  {
+    return error.get ();
+  }
+  int hadError ()
+  {
+    return valid == 0;
+  }
+
 protected:
-    void    fullexpr(int);
-    int      lexan();
-    void    phrase(int);
-    void    expr(int);
-    void    term(int);
-    void    factor(int);
-    int      match(int);
-    void    setError(char *);
-    void    perform_push();
-    void    perform_and();
-    void    perform_not();
-    void    perform_or();
-    void    perform_phrase(List * &);
+  void fullexpr (int);
+  int lexan ();
+  void phrase (int);
+  void expr (int);
+  void term (int);
+  void factor (int);
+  int match (int);
+  void setError (char *);
+  void perform_push ();
+  void perform_and ();
+  void perform_not ();
+  void perform_or ();
+  void perform_phrase (List * &);
 
-    void    score(List *, double weight, unsigned int flags);
+  void score (List *, double weight, unsigned int flags);
 
-    List    *tokens;
-    List    *result;
-    WeightWord    *current;
-    int      lookahead;
-    int      valid;
-    Stack    stack;
-    String    error;
-    Collection          *collection; // Multiple database support
+  List *tokens;
+  List *result;
+  WeightWord *current;
+  int lookahead;
+  int valid;
+  Stack stack;
+  String error;
+  Collection *collection;       // Multiple database support
 
-    HtWordList    words;
+  HtWordList words;
 };
 
-extern StringList  boolean_keywords;
-enum KeywordIndices  { AND, OR, NOT };
+extern StringList boolean_keywords;
+enum KeywordIndices
+{ AND, OR, NOT };
 
 #endif
-
-

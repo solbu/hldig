@@ -23,22 +23,24 @@
 #include "QueryCache.h"
 #include "Dictionary.h"
 
-class VolatileCache : public QueryCache
+class VolatileCache:public QueryCache
 {
 public:
   // cons & destr
-  VolatileCache() {}
-  ~VolatileCache();
+  VolatileCache ()
+  {
+  }
+   ~VolatileCache ();
 
   // get cached result from in-memory cache
-  ResultList *Lookup(const String &signature);
+  ResultList *Lookup (const String & signature);
 
   // add result to in-memory cache
-  void Add(const String &signature, ResultList *entry);
+  void Add (const String & signature, ResultList * entry);
 
 private:
   Dictionary cache;
-  static ResultList * const empty;
+  static ResultList *const empty;
 };
 
 #endif

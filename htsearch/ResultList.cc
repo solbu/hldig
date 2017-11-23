@@ -24,128 +24,128 @@
 //*****************************************************************************
 // ResultList::ResultList()
 //
-ResultList::ResultList()
+ResultList::ResultList ()
 {
-    isIgnore = 0;
+  isIgnore = 0;
 }
 
 
 //*****************************************************************************
 // ResultList::~ResultList()
 //
-ResultList::~ResultList()
+ResultList::~ResultList ()
 {
-    //Destroy();
+  //Destroy();
 }
 
 
 //*****************************************************************************
 //
 void
-ResultList::add(DocMatch *dm)
+ResultList::add (DocMatch * dm)
 {
-    String  t;
-    t << dm->GetId();
-    Add(t, dm);
+  String t;
+  t << dm->GetId ();
+  Add (t, dm);
 }
 
 
 //*****************************************************************************
 //
 DocMatch *
-ResultList::find(int id) const
+ResultList::find (int id) const
 {
-    String  t;
-    t << id;
-    return (DocMatch *) Find(t);
+  String t;
+  t << id;
+  return (DocMatch *) Find (t);
 }
 
 
 //*****************************************************************************
 //
 DocMatch *
-ResultList::find(char *id) const
+ResultList::find (char *id) const
 {
-    return (DocMatch *) Find(id);
+  return (DocMatch *) Find (id);
 }
 
 
 //*****************************************************************************
 //
 void
-ResultList::remove(int id)
+ResultList::remove (int id)
 {
-    String  t;
-    t << id;
-    Remove(t);
+  String t;
+  t << id;
+  Remove (t);
 }
 
 
 //*****************************************************************************
 //
 int
-ResultList::exists(int id) const
+ResultList::exists (int id) const
 {
-    String  t;
-    t << id;
-    return Exists(t);
+  String t;
+  t << id;
+  return Exists (t);
 }
 
 
 //*****************************************************************************
 //
 HtVector *
-ResultList::elements()
+ResultList::elements ()
 {
-    HtVector  *list = new HtVector(Count() + 1);
-    char  *id;
+  HtVector *list = new HtVector (Count () + 1);
+  char *id;
 
-    Start_Get();
-    while ((id = Get_Next()))
-    {
-  list->Add(Find(id));
-    }
-    return list;
+  Start_Get ();
+  while ((id = Get_Next ()))
+  {
+    list->Add (Find (id));
+  }
+  return list;
 }
 
 void
-ResultList::SetWeight(double weight)
+ResultList::SetWeight (double weight)
 {
-  HtVector *els = elements();
-  for(int i = 0; i < els->Count(); i++)
+  HtVector *els = elements ();
+  for (int i = 0; i < els->Count (); i++)
   {
-    DocMatch *match = (DocMatch *)(*els)[i];
-    match->SetWeight(weight);
+    DocMatch *match = (DocMatch *) (*els)[i];
+    match->SetWeight (weight);
   }
-  els->Release();
+  els->Release ();
 }
 
 
-ResultList::ResultList(const ResultList &other)
+ResultList::ResultList (const ResultList & other)
 {
   DictionaryCursor c;
   isIgnore = other.isIgnore;
-  other.Start_Get(c);
-  DocMatch *match = (DocMatch *)other.Get_NextElement(c);
-  while(match)
+  other.Start_Get (c);
+  DocMatch *match = (DocMatch *) other.Get_NextElement (c);
+  while (match)
   {
-    add(new DocMatch(*match));
-    match = (DocMatch *)other.Get_NextElement(c);
+    add (new DocMatch (*match));
+    match = (DocMatch *) other.Get_NextElement (c);
   }
 }
 
 void
-ResultList::Dump() const
+ResultList::Dump () const
 {
   cerr << "ResultList {" << endl;
-  cerr << "Ignore: " << isIgnore << " Count: " << Count() << endl;
+  cerr << "Ignore: " << isIgnore << " Count: " << Count () << endl;
   DictionaryCursor c;
-  Start_Get(c);
-  DocMatch *match = (DocMatch *)Get_NextElement(c);
-  while(match)
+  Start_Get (c);
+  DocMatch *match = (DocMatch *) Get_NextElement (c);
+  while (match)
   {
-    match->Dump();
-    match = (DocMatch *)Get_NextElement(c);
+    match->Dump ();
+    match = (DocMatch *) Get_NextElement (c);
   }
   cerr << "}" << endl;
 }

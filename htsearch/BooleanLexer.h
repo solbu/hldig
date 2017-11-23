@@ -18,33 +18,33 @@
 //
 
 #include "QueryLexer.h"
- 
-class BooleanLexer : public QueryLexer
+
+class BooleanLexer:public QueryLexer
 {
 public:
   // is the current token a word?
-  bool IsWord() const;
+  bool IsWord () const;
 
   // is the current token the 'and' keyword?
-  bool IsAnd() const;
+  bool IsAnd () const;
 
   // is the current token the 'or' keyword?
-  bool IsOr() const;
+  bool IsOr () const;
 
   // is the current token the 'near' keyword?
-  bool IsNear() const;
+  bool IsNear () const;
 
   // is the current token the 'not' keyword?
-  bool IsNot() const;
+  bool IsNot () const;
 
   // is the current token the '(' sign?
-  bool IsLeftParen() const;
+  bool IsLeftParen () const;
 
   // is the current token the ')' sign?
-  bool IsRightParen() const;
+  bool IsRightParen () const;
 
   // is the current token the '/' sign?
-  bool IsSlash() const;
+  bool IsSlash () const;
 };
 
 #endif

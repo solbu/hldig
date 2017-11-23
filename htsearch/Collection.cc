@@ -37,7 +37,7 @@ using namespace std;
 #include <stdio.h>
 #include <ctype.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <syslog.h>
 #endif
 
@@ -45,61 +45,62 @@ using namespace std;
 
 //*****************************************************************************
 //
-Collection::Collection(const char *name, const char *word_file, 
-                       const char *index_file, const char *doc_file, 
-                       const char *doc_excerpt)
+Collection::Collection (const char *name, const char *word_file,
+                        const char *index_file, const char *doc_file,
+                        const char *doc_excerpt)
 {
-    collectionName = name;
-    wordFile = word_file;
-    indexFile = index_file;
-    docFile = doc_file;
-    docExcerpt = doc_excerpt;
-    matches = NULL;
-    searchWords = NULL;
-    searchWordsPattern = NULL;
-    isopen = 0;
+  collectionName = name;
+  wordFile = word_file;
+  indexFile = index_file;
+  docFile = doc_file;
+  docExcerpt = doc_excerpt;
+  matches = NULL;
+  searchWords = NULL;
+  searchWordsPattern = NULL;
+  isopen = 0;
 }
 
-Collection::~Collection()
+Collection::~Collection ()
 {
-  if(matches) delete matches;
-  if(searchWords) delete searchWords;
-  if(searchWordsPattern) delete searchWordsPattern;
-  Close();
-}
-
-void
-Collection::Open()
-{
-    if (!isopen)
-    {
-        docDB.Read(docFile, indexFile, docExcerpt);
-    }
-    isopen = 1;
+  if (matches)
+    delete matches;
+  if (searchWords)
+    delete searchWords;
+  if (searchWordsPattern)
+    delete searchWordsPattern;
+  Close ();
 }
 
 void
-Collection::Close()
+Collection::Open ()
 {
-    if (isopen)
-    {
-        docDB.Close();
-    }
-    isopen = 0;
+  if (!isopen)
+  {
+    docDB.Read (docFile, indexFile, docExcerpt);
+  }
+  isopen = 1;
+}
+
+void
+Collection::Close ()
+{
+  if (isopen)
+  {
+    docDB.Close ();
+  }
+  isopen = 0;
 }
 
 DocumentRef *
-Collection::getDocumentRef(int id)
+Collection::getDocumentRef (int id)
 {
-    Open();
-    return docDB[id];
+  Open ();
+  return docDB[id];
 }
 
-int 
-Collection::ReadExcerpt(DocumentRef &ref) 
-{ 
-    Open();
-    return docDB.ReadExcerpt(ref); 
+int
+Collection::ReadExcerpt (DocumentRef & ref)
+{
+  Open ();
+  return docDB.ReadExcerpt (ref);
 }
- 
-

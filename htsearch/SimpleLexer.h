@@ -16,14 +16,19 @@
 //
 
 #include "QueryLexer.h"
- 
-class SimpleLexer : public QueryLexer
+
+class SimpleLexer:public QueryLexer
 {
 public:
-  SimpleLexer() : QueryLexer() {}
+  SimpleLexer ():QueryLexer ()
+  {
+  }
 
   // everything is a word
-  bool IsWord() const { return !IsEnd(); }
+  bool IsWord () const
+  {
+    return !IsEnd ();
+  }
 };
 
 #endif

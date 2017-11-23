@@ -15,62 +15,48 @@
 //
 
 #include "BooleanLexer.h"
-bool
-BooleanLexer::IsOr() const
+bool BooleanLexer::IsOr () constconst
 {
-  return current == String("or");
-}
-  
-bool
-BooleanLexer::IsAnd() const
-{
-  return current == String("and");
+  return current == String ("or");
 }
 
-bool
-BooleanLexer::IsNot() const
+bool BooleanLexer::IsAnd () constconst
 {
-  return current == String("not");
+  return current == String ("and");
 }
 
-bool
-BooleanLexer::IsNear() const
+bool BooleanLexer::IsNot () constconst
 {
-  return current == String("near");
+  return current == String ("not");
 }
 
-bool
-BooleanLexer::IsSlash() const
+bool BooleanLexer::IsNear () constconst
 {
-  return current == String("/");
+  return current == String ("near");
 }
 
-bool
-BooleanLexer::IsLeftParen() const
+bool BooleanLexer::IsSlash () constconst
 {
-  return current == String("(");
+  return current == String ("/");
 }
 
-  
-bool
-BooleanLexer::IsRightParen() const
+bool BooleanLexer::IsLeftParen () constconst
 {
-  return current == String(")");
-}
-
-bool
-BooleanLexer::IsWord() const
-{
-  return !IsEnd()
-  && !IsQuote()
-  && !IsRightParen()
-  && !IsLeftParen()
-  && !IsSlash()
-  && !IsAnd()
-  && !IsOr()
-  && !IsAnd()
-  && !IsNot()
-  && !IsNear();
+  return current == String ("(");
 }
 
 
+bool BooleanLexer::IsRightParen () constconst
+{
+  return current == String (")");
+}
+
+bool BooleanLexer::IsWord () constconst
+{
+  return !IsEnd ()
+    && !IsQuote ()
+    && !IsRightParen ()
+    && !IsLeftParen ()
+    && !IsSlash ()
+    && !IsAnd () && !IsOr () && !IsAnd () && !IsNot () && !IsNear ();
+}

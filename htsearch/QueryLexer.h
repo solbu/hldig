@@ -28,32 +28,40 @@
 class QueryLexer
 {
 public:
-  virtual ~QueryLexer() {}
+  virtual ~ QueryLexer ()
+  {
+  }
 
   // set the query string and advance to the first token
-  void Set(const String &query_string);
+  void Set (const String & query_string);
 
   // advance to the next token
-  virtual void Next();
+  virtual void Next ();
 
   // is the current token a word?
-  virtual bool IsWord() const = 0;
+  virtual bool IsWord () const = 0;
 
   // is the current token a quote sign?
-  bool IsQuote() const;
+  bool IsQuote () const;
 
   // is the current token end-of-query?
-  bool IsEnd() const;
+  bool IsEnd () const;
 
   // get the current token value
-  const String &Value() const { return current; }
+  const String & Value () const
+  {
+    return current;
+  }
 
   // get the full query string
-  const String &FullString() const { return query; }
+  const String & FullString () const
+  {
+    return query;
+  }
 
 
 protected:
-  QueryLexer();
+    QueryLexer ();
 
   // the full query string
   String query;

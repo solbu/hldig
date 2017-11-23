@@ -27,27 +27,30 @@
 class SplitMatches
 {
 public:
-    SplitMatches(Configuration &);
-    ~SplitMatches();
+  SplitMatches (Configuration &);
+  ~SplitMatches ();
 
-    void Add(ResultMatch *, char *);
-    List *JoinedLists();
-    List *Get_First()
-    { mySubAreas->Start_Get(); return Get_Next(); }
+  void Add (ResultMatch *, char *);
+  List *JoinedLists ();
+  List *Get_First ()
+  {
+    mySubAreas->Start_Get ();
+    return Get_Next ();
+  }
 
-    List *Get_Next();
+  List *Get_Next ();
 
 private:
-    // These member functions are not supposed to be implemented.
-    SplitMatches();
-    SplitMatches(const SplitMatches &);
-    void operator= (const SplitMatches &);
+  // These member functions are not supposed to be implemented.
+  SplitMatches ();
+  SplitMatches (const SplitMatches &);
+  void operator= (const SplitMatches &);
 
-    // (Lists of) Matches for each sub-area regex.
-    List *mySubAreas;
+  // (Lists of) Matches for each sub-area regex.
+  List *mySubAreas;
 
-    // Matches for everything else.
-    List *myDefaultList;
+  // Matches for everything else.
+  List *myDefaultList;
 };
 
 #endif /* _splitmatches_h */

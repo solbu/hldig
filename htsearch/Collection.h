@@ -25,49 +25,69 @@
 #include "Database.h"
 #include "Dictionary.h"
 
-class Collection : public Object
+class Collection:public Object
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    Collection(const char *name, const char *wordFile, 
-               const char *indexFile, const char *docFile,
-               const char *docExcerpt);
-    ~Collection();
+  //
+  // Construction/Destruction
+  //
+  Collection (const char *name, const char *wordFile,
+              const char *indexFile, const char *docFile,
+              const char *docExcerpt);
+  ~Collection ();
 
-    void Open();
+  void Open ();
 
-    void Close(); 
+  void Close ();
 
-    char *getWordFile() { return wordFile.get(); }
-    DocumentRef         *getDocumentRef(int id);
-    ResultList    *getResultList() { return matches; }
-    void    setResultList(ResultList *list) { matches = list; }
+  char *getWordFile ()
+  {
+    return wordFile.get ();
+  }
+  DocumentRef *getDocumentRef (int id);
+  ResultList *getResultList ()
+  {
+    return matches;
+  }
+  void setResultList (ResultList * list)
+  {
+    matches = list;
+  }
 
-    List                *getSearchWords() { return searchWords; }
-    void                setSearchWords(List *list) { searchWords = list; }
+  List *getSearchWords ()
+  {
+    return searchWords;
+  }
+  void setSearchWords (List * list)
+  {
+    searchWords = list;
+  }
 
-    StringMatch         *getSearchWordsPattern() { return searchWordsPattern;}
-    void                setSearchWordsPattern(StringMatch *smatch)
-                            { searchWordsPattern = smatch; }
-                  
-    int      ReadExcerpt(DocumentRef &ref);
+  StringMatch *getSearchWordsPattern ()
+  {
+    return searchWordsPattern;
+  }
+  void setSearchWordsPattern (StringMatch * smatch)
+  {
+    searchWordsPattern = smatch;
+  }
+
+  int ReadExcerpt (DocumentRef & ref);
 
 protected:
-    String              collectionName;
-    String              wordFile;
-    String              indexFile;
-    String              docFile;
-    String    docExcerpt;
-    ResultList    *matches;
-    List                *searchWords;
-    StringMatch         *searchWordsPattern;
+  String collectionName;
+  String wordFile;
+  String indexFile;
+  String docFile;
+  String docExcerpt;
+  ResultList *matches;
+  List *searchWords;
+  StringMatch *searchWordsPattern;
 
-    DocumentDB          docDB;
-    // Database         *docIndex;     
+  DocumentDB docDB;
+  // Database         *docIndex;     
 
-    int                 isopen;
+  int isopen;
 };
 
 #endif // _Collection_h_

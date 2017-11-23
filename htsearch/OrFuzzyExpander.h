@@ -28,19 +28,27 @@
 // makes a Or query with all the fuzzy expansions
 //
 class Fuzzy;
-class OrFuzzyExpander : public FuzzyExpander
+class OrFuzzyExpander:public FuzzyExpander
 {
 public:
-  OrFuzzyExpander() {}
-  virtual ~OrFuzzyExpander() { filters.Release(); }
+  OrFuzzyExpander ()
+  {
+  }
+  virtual ~ OrFuzzyExpander ()
+  {
+    filters.Release ();
+  }
 
   // use this filter
-  void Add(Fuzzy *filter) { filters.Add(filter); }
+  void Add (Fuzzy * filter)
+  {
+    filters.Add (filter);
+  }
 
 
 private:
   // generate a OrQuery with all fuzzies found
-  Query *MakeQuery(const String &word);
+  Query * MakeQuery (const String & word);
 
   // Fuzzies to be used
   List filters;

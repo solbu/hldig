@@ -34,115 +34,115 @@
 #include <getopt.h>
 #endif
 
-void reportError(char *msg);
-void usage();
+void reportError (char *msg);
+void usage ();
 
-int      debug = 0;
+int debug = 0;
 
 //*****************************************************************************
 // int main()
 //
 int
-main(int ac, char **av)
+main (int ac, char **av)
 {
-    int      c;
-    extern char    *optarg;
-    int            override_config=0;
-    List    *searchWords = NULL;
-    String    configFile = DEFAULT_CONFIG_FILE;
-    String    logicalWords;
+  int c;
+  extern char *optarg;
+  int override_config = 0;
+  List *searchWords = NULL;
+  String configFile = DEFAULT_CONFIG_FILE;
+  String logicalWords;
 
-     //
-     // Parse command line arguments
-     //
-     while ((c = getopt(ac, av, "c:dv")) != -1)
-     {
-   switch (c)
-   {
-       case 'c':
-     configFile = optarg;
-    override_config = 1;
-     break;
-       case 'v':
-     debug++;
-     break;
-       case 'd':
-     debug++;
-     break;
-      case '?':
-          usage();
-                break;
-   }
-     }
-
-    //
-    // Parse the CGI parameters.
-    //
-    char  none[] = "";
-    cgi    input(optind < ac ? av[optind] : none);
-
-    String   originalWords = input["words"];
-    originalWords.chop(" \t\r\n");
-
-     // Set up the config
-    config.Defaults(&defaults[0]);
-
-    if (access((char*)configFile, R_OK) < 0)
+  //
+  // Parse command line arguments
+  //
+  while ((c = getopt (ac, av, "c:dv")) != -1)
+  {
+    switch (c)
     {
-  reportError(form("Unable to find configuration file '%s'",
-       configFile.get()));
+    case 'c':
+      configFile = optarg;
+      override_config = 1;
+      break;
+    case 'v':
+      debug++;
+      break;
+    case 'd':
+      debug++;
+      break;
+    case '?':
+      usage ();
+      break;
     }
-  
-    config.Read(configFile);
+  }
 
-    // Initialize htword library (key description + wordtype...)
-    WordContext::Initialize(config);    
+  //
+  // Parse the CGI parameters.
+  //
+  char none[] = "";
+  cgi input (optind < ac ? av[optind] : none);
 
-    ParseTree    *testParse;
+  String originalWords = input["words"];
+  originalWords.chop (" \t\r\n");
 
-    testParse = new ParseTree;
-    if ( testParse->Parse(originalWords) != NOTOK)
-      {
-  cout << "Parsing as a boolean query... " << endl;
-  cout << "Initial Query:" << testParse->GetQuery() << endl;
-  cout << "Logical Words:" << testParse->GetLogicalWords() << endl;
-      }
-    else
-      cout << "Parsing as a boolean query FAILED" << endl;
-    delete testParse;
+  // Set up the config
+  config.Defaults (&defaults[0]);
 
-    testParse = new AndParseTree;
-    if ( testParse->Parse(originalWords) != NOTOK)
-      {
-  cout << "Parsing as an AND query... " << endl;
-  cout << "Initial Query:" << testParse->GetQuery() << endl;
-  cout << "Logical Words:" << testParse->GetLogicalWords() << endl;
-      }
-    else
-      cout << "Parsing as an AND query FAILED" << endl;
-    delete testParse;
+  if (access ((char *) configFile, R_OK) < 0)
+  {
+    reportError (form ("Unable to find configuration file '%s'",
+                       configFile.get ()));
+  }
 
-    testParse = new OrParseTree;
-    if ( testParse->Parse(originalWords) != NOTOK)
-      {
-  cout << "Parsing as an OR query... " << endl;
-  cout << "Initial Query:" << testParse->GetQuery() << endl;
-  cout << "Logical Words:" << testParse->GetLogicalWords() << endl;
-      }
-    else
-      cout << "Parsing as an OR query FAILED" << endl;
-    delete testParse;
+  config.Read (configFile);
 
-    testParse = new ExactParseTree;
-    if ( testParse->Parse(originalWords) != NOTOK)
-      {
-  cout << "Parsing as an EXACT query... " << endl;
-  cout << "Initial Query:" << testParse->GetQuery() << endl;
-  cout << "Logical Words:" << testParse->GetLogicalWords() << endl;
-      }
-    else
-      cout << "Parsing as an EXACT query FAILED" << endl;
-    delete testParse;
+  // Initialize htword library (key description + wordtype...)
+  WordContext::Initialize (config);
+
+  ParseTree *testParse;
+
+  testParse = new ParseTree;
+  if (testParse->Parse (originalWords) != NOTOK)
+  {
+    cout << "Parsing as a boolean query... " << endl;
+    cout << "Initial Query:" << testParse->GetQuery () << endl;
+    cout << "Logical Words:" << testParse->GetLogicalWords () << endl;
+  }
+  else
+    cout << "Parsing as a boolean query FAILED" << endl;
+  delete testParse;
+
+  testParse = new AndParseTree;
+  if (testParse->Parse (originalWords) != NOTOK)
+  {
+    cout << "Parsing as an AND query... " << endl;
+    cout << "Initial Query:" << testParse->GetQuery () << endl;
+    cout << "Logical Words:" << testParse->GetLogicalWords () << endl;
+  }
+  else
+    cout << "Parsing as an AND query FAILED" << endl;
+  delete testParse;
+
+  testParse = new OrParseTree;
+  if (testParse->Parse (originalWords) != NOTOK)
+  {
+    cout << "Parsing as an OR query... " << endl;
+    cout << "Initial Query:" << testParse->GetQuery () << endl;
+    cout << "Logical Words:" << testParse->GetLogicalWords () << endl;
+  }
+  else
+    cout << "Parsing as an OR query FAILED" << endl;
+  delete testParse;
+
+  testParse = new ExactParseTree;
+  if (testParse->Parse (originalWords) != NOTOK)
+  {
+    cout << "Parsing as an EXACT query... " << endl;
+    cout << "Initial Query:" << testParse->GetQuery () << endl;
+    cout << "Logical Words:" << testParse->GetLogicalWords () << endl;
+  }
+  else
+    cout << "Parsing as an EXACT query FAILED" << endl;
+  delete testParse;
 
 }
 
@@ -150,7 +150,8 @@ main(int ac, char **av)
 // void usage()
 //   Display program usage information--assumes we're running from a cmd line
 //
-void usage()
+void
+usage ()
 {
   cout << "usage: parsetest [-v][-d][-c configfile]\n";
   cout << "This program is part of ht://Dig " << VERSION << "\n\n";
@@ -162,14 +163,15 @@ void usage()
   cout << "\t-c configfile\n";
   cout << "\t\tUse the specified configuration file instead on the\n";
   cout << "\t\tdefault.\n\n";
-  exit(0);
+  exit (0);
 }
 
 //*****************************************************************************
 // Report an error and die
 //
-void reportError(char *msg)
+void
+reportError (char *msg)
 {
-    cout << "parsetest: " << msg << "\n\n";
-    exit(1);
+  cout << "parsetest: " << msg << "\n\n";
+  exit (1);
 }

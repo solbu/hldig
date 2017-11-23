@@ -36,36 +36,36 @@
 //      subtract otherwise
 //
 ResultList *
-NotQuery::Evaluate()
+NotQuery::Evaluate ()
 {
-  operands.Start_Get();
-  Query *operand = (Query *) operands.Get_Next();
+  operands.Start_Get ();
+  Query *operand = (Query *) operands.Get_Next ();
   ResultList *result = 0;
-  ResultList *positive = operand->GetResults();
-  if(positive)
+  ResultList *positive = operand->GetResults ();
+  if (positive)
   {
     List negative;
-    if(!positive->IsIgnore())
+    if (!positive->IsIgnore ())
     {
-      operand = (Query *) operands.Get_Next();
-      while(operand)
+      operand = (Query *) operands.Get_Next ();
+      while (operand)
       {
-        ResultList *next = operand->GetResults();
-        if(next && !next->IsIgnore())
+        ResultList *next = operand->GetResults ();
+        if (next && !next->IsIgnore ())
         {
-          negative.Add(next);
+          negative.Add (next);
         }
-        operand = (Query *) operands.Get_Next();
+        operand = (Query *) operands.Get_Next ();
       }
     }
-    if(negative.Count())
+    if (negative.Count ())
     {
-      result = Subtract(*positive, negative);
-      negative.Release();
+      result = Subtract (*positive, negative);
+      negative.Release ();
     }
     else
     {
-      result = new ResultList(*positive);
+      result = new ResultList (*positive);
     }
   }
   return result;
@@ -76,35 +76,35 @@ NotQuery::Evaluate()
 // with docId absent from negatives
 //
 ResultList *
-NotQuery::Subtract(const ResultList &positive, const List &negatives)
+NotQuery::Subtract (const ResultList & positive, const List & negatives)
 {
   ResultList *result = 0;
   DictionaryCursor pc;
-  positive.Start_Get(pc);
-  DocMatch *match = (DocMatch *)positive.Get_NextElement(pc);
-  while(match)
+  positive.Start_Get (pc);
+  DocMatch *match = (DocMatch *) positive.Get_NextElement (pc);
+  while (match)
   {
     bool confirm = true;
     ListCursor lc;
-    negatives.Start_Get(lc);
-    ResultList *negative = (ResultList *)negatives.Get_Next(lc);
-    while(confirm && negative)
+    negatives.Start_Get (lc);
+    ResultList *negative = (ResultList *) negatives.Get_Next (lc);
+    while (confirm && negative)
     {
-      if(negative->exists(match->GetId()))
+      if (negative->exists (match->GetId ()))
       {
         confirm = false;
       }
-      negative = (ResultList *)negatives.Get_Next(lc);
+      negative = (ResultList *) negatives.Get_Next (lc);
     }
-    if(confirm)
+    if (confirm)
     {
-      if(!result)
+      if (!result)
       {
         result = new ResultList;
       }
-      result->add(new DocMatch(*match));
+      result->add (new DocMatch (*match));
     }
-    match = (DocMatch *)positive.Get_NextElement(pc);
+    match = (DocMatch *) positive.Get_NextElement (pc);
   }
   return result;
 }

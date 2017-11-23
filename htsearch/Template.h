@@ -24,31 +24,47 @@
 //
 // This class holds information about output templates.
 //
-class Template : public Object
+class Template:public Object
 {
 public:
-    Template();
-    ~Template();
+  Template ();
+  ~Template ();
 
-    const String&        getMatchTemplate() const         { return matchTemplate; }
-    const String&       getStartTemplate() const         { return startTemplate; }
-    const String&        getEndTemplate() const         { return endTemplate; }
+  const String & getMatchTemplate () const
+  {
+    return matchTemplate;
+  }
+  const String & getStartTemplate () const
+  {
+    return startTemplate;
+  }
+  const String & getEndTemplate () const
+  {
+    return endTemplate;
+  }
 
-    void           setMatchTemplate(const char *s)  { matchTemplate = s; }
-    void           setStartTemplate(const char *s)  { startTemplate = s; }
-    void           setEndTemplate(const char *s)  { endTemplate = s; }
+  void setMatchTemplate (const char *s)
+  {
+    matchTemplate = s;
+  }
+  void setStartTemplate (const char *s)
+  {
+    startTemplate = s;
+  }
+  void setEndTemplate (const char *s)
+  {
+    endTemplate = s;
+  }
 
-    void           createFromFile(const char *filename);
-  
+  void createFromFile (const char *filename);
+
 protected:
-    String           matchTemplate;
-    String           startTemplate;
-    String           endTemplate;
+  String matchTemplate;
+  String startTemplate;
+  String endTemplate;
 
 private:
-    void           readFile(String &, const char *) const;
+  void readFile (String &, const char *) const;
 };
 
 #endif
-
-

@@ -31,35 +31,39 @@
 #include "List.h"
 
 // abstract
-class OperatorQuery : public Query
+class OperatorQuery:public Query
 {
 public:
-  virtual ~OperatorQuery()
+  virtual ~ OperatorQuery ()
   {
-    operands.Destroy();
+    operands.Destroy ();
   }
 
   // add an operand to the operation
-  void Add(Query *operand)
+  void Add (Query * operand)
   {
-    operands.Add(operand);
+    operands.Add (operand);
   }
 
 protected:
-  OperatorQuery() {}
+  OperatorQuery ()
+  {
+  }
 
   // get results from operands and combine them ad-hoc
-  virtual ResultList *Evaluate() = 0;
+  virtual ResultList *Evaluate () = 0;
 
   // keyword name of the operation
-  virtual String OperatorString() const = 0;
+  virtual String OperatorString () const = 0;
 
   // human-readable unparsed string
-  virtual String GetLogicalWords() const;
+  virtual String GetLogicalWords () const;
 
   // cache index
-  String GetSignature() const
-    { return String("Compound:")+GetLogicalWords(); }
+  String GetSignature () const
+  {
+    return String ("Compound:") + GetLogicalWords ();
+  }
 
   // children query operands
   List operands;

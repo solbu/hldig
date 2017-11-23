@@ -3,9 +3,9 @@
 //
 // Template: A template to set the display of the search results.
 //           MatchTemplate is used for every match, Start and End templates
-//           are used between the header and the first match and the 
+//           are used between the header and the first match and the
 //           last match and the footer respectively.
-//           
+//
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
@@ -25,13 +25,13 @@
 
 
 //*****************************************************************************
-Template::Template()
+Template::Template ()
 {
 }
 
 
 //*****************************************************************************
-Template::~Template()
+Template::~Template ()
 {
 }
 
@@ -42,19 +42,19 @@ Template::~Template()
 // respectively.
 //
 void
-Template::createFromFile(const char *filename)
+Template::createFromFile (const char *filename)
 {
-    String  realFile;
+  String realFile;
 
-    realFile = filename;
-    realFile << ".start";
-    readFile(startTemplate, (char*)realFile);
+  realFile = filename;
+  realFile << ".start";
+  readFile (startTemplate, (char *) realFile);
 
-    realFile = filename;
-    realFile << ".end";
-    readFile(endTemplate, (char*)realFile);
+  realFile = filename;
+  realFile << ".end";
+  readFile (endTemplate, (char *) realFile);
 
-    readFile(matchTemplate, filename);
+  readFile (matchTemplate, filename);
 }
 
 //*****************************************************************************
@@ -62,20 +62,17 @@ Template::createFromFile(const char *filename)
 // doesn't exist.
 //
 void
-Template::readFile(String &s, const char *filename) const
+Template::readFile (String & s, const char *filename) const
 {
-    FILE  *fl = fopen(filename, "r");
-    char  buffer[1000];
+  FILE *fl = fopen (filename, "r");
+  char buffer[1000];
 
-    if (!fl)
-  return;
-    s = 0;
-    while (fgets(buffer, sizeof(buffer), fl))
-    {
-  s << buffer;
-    }
-    fclose(fl);
+  if (!fl)
+    return;
+  s = 0;
+  while (fgets (buffer, sizeof (buffer), fl))
+  {
+    s << buffer;
+  }
+  fclose (fl);
 }
-
-
-

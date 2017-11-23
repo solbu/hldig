@@ -14,10 +14,10 @@
 
 #include "NearQuery.h"
 
-String
-NearQuery::OperatorString() const
+String NearQuery::OperatorString () constconst
 {
-  String s;
+  String
+    s;
   s << "near/" << distance;
   return s;
 }
@@ -36,31 +36,31 @@ NearQuery::OperatorString() const
 //  x  x  x
 //
 ResultList *
-NearQuery::Evaluate()
+NearQuery::Evaluate ()
 {
   ResultList *result = 0;
-  Query *left = (Query *)operands[0];
-  Query *right = (Query *)operands[1];
+  Query *left = (Query *) operands[0];
+  Query *right = (Query *) operands[1];
 
-  if(left && right)
+  if (left && right)
   {
-    ResultList *l = left->GetResults();
-    if(l)
+    ResultList *l = left->GetResults ();
+    if (l)
     {
-      ResultList *r = right->GetResults();
-      if(r)
+      ResultList *r = right->GetResults ();
+      if (r)
       {
-        if(l->IsIgnore())
+        if (l->IsIgnore ())
         {
-          result = new ResultList(*r);
+          result = new ResultList (*r);
         }
-        else if(r->IsIgnore())
+        else if (r->IsIgnore ())
         {
-          result = new ResultList(*l);
+          result = new ResultList (*l);
         }
         else
         {
-          result = Near(*l, *r);
+          result = Near (*l, *r);
         }
       }
     }
@@ -69,32 +69,31 @@ NearQuery::Evaluate()
 }
 
 ResultList *
-NearQuery::Near(const ResultList &l, const ResultList &r)
+NearQuery::Near (const ResultList & l, const ResultList & r)
 {
   ResultList *result = 0;
   DictionaryCursor c;
-  l.Start_Get(c);
-  DocMatch *match = (DocMatch *)l.Get_NextElement(c);
-  while(match)
+  l.Start_Get (c);
+  DocMatch *match = (DocMatch *) l.Get_NextElement (c);
+  while (match)
   {
-    DocMatch *confirm = r.find(match->GetId());
-    if(confirm)
+    DocMatch *confirm = r.find (match->GetId ());
+    if (confirm)
     {
-      List *locations = MergeLocations(
-            *match->GetLocations(),
-            *confirm->GetLocations());
-      if(locations)
+      List *locations = MergeLocations (*match->GetLocations (),
+                                        *confirm->GetLocations ());
+      if (locations)
       {
-        if(!result)
+        if (!result)
         {
           result = new ResultList;
         }
-        DocMatch *copy = new DocMatch(*match);
-        copy->SetLocations(locations);
-        result->add(copy);
+        DocMatch *copy = new DocMatch (*match);
+        copy->SetLocations (locations);
+        result->add (copy);
       }
     }
-    match = (DocMatch *)l.Get_NextElement(c);
+    match = (DocMatch *) l.Get_NextElement (c);
   }
   return result;
 }
@@ -104,40 +103,40 @@ NearQuery::Near(const ResultList &l, const ResultList &r)
 // all combinations are tested; the pairs of positions near enough are kept
 // 
 List *
-NearQuery::MergeLocations(const List &p, const List &q)
+NearQuery::MergeLocations (const List & p, const List & q)
 {
   List *result = 0;
   ListCursor pc;
-  p.Start_Get(pc);
-  const Location *left = (const Location *)p.Get_Next(pc);
-  while(left)
+  p.Start_Get (pc);
+  const Location *left = (const Location *) p.Get_Next (pc);
+  while (left)
   {
     ListCursor qc;
-    q.Start_Get(qc);
-    const Location *right = (const Location *)q.Get_Next(qc);
-    while(right)
+    q.Start_Get (qc);
+    const Location *right = (const Location *) q.Get_Next (qc);
+    while (right)
     {
       int dist = right->from - left->to;
-      if(dist < 1)
+      if (dist < 1)
       {
         dist = left->from - right->to;
-        if(dist < 1)
+        if (dist < 1)
         {
           dist = 0;
         }
       }
-      if(unsigned(dist) <= distance)
+      if (unsigned (dist) <= distance)
       {
-        if(!result)
+        if (!result)
         {
           result = new List;
         }
-        result->Add(new Location(*left));
-        result->Add(new Location(*right));
+        result->Add (new Location (*left));
+        result->Add (new Location (*right));
       }
-      right = (const Location *)q.Get_Next(qc);
+      right = (const Location *) q.Get_Next (qc);
     }
-    left = (const Location *)p.Get_Next(pc);
+    left = (const Location *) p.Get_Next (pc);
   }
   return result;
 }

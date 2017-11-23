@@ -22,31 +22,31 @@
 // expr == term { term }
 //
 Query *
-SimpleQueryParser::ParseExpression()
+SimpleQueryParser::ParseExpression ()
 {
   Query *result = 0;
-  Query *term = ParseTerm();
-  if(term)
+  Query *term = ParseTerm ();
+  if (term)
   {
-    if(token.IsEnd())
+    if (token.IsEnd ())
     {
       result = term;
     }
     else
     {
-      result = MakeQuery();
-      result->Add(term);
-      while(!token.IsEnd())
+      result = MakeQuery ();
+      result->Add (term);
+      while (!token.IsEnd ())
       {
-        term = ParseTerm();
-        if(term)
+        term = ParseTerm ();
+        if (term)
         {
-          result->Add(term);
+          result->Add (term);
         }
       }
     }
   }
-  if(!term)
+  if (!term)
   {
     delete result;
     result = 0;
@@ -59,38 +59,36 @@ SimpleQueryParser::ParseExpression()
 // term == word | '"' phrase '"'
 //
 Query *
-SimpleQueryParser::ParseTerm()
+SimpleQueryParser::ParseTerm ()
 {
   Query *result = 0;
 
-  if(token.IsQuote())
+  if (token.IsQuote ())
   {
-    token.Next();
-    result = ParsePhrase();
-    if(result)
+    token.Next ();
+    result = ParsePhrase ();
+    if (result)
     {
-      if(token.IsQuote())
+      if (token.IsQuote ())
       {
-        token.Next();
+        token.Next ();
       }
       else
       {
-        Expected("closing \"");
+        Expected ("closing \"");
         delete result;
         result = 0;
       }
     }
   }
-  else if(token.IsWord())
+  else if (token.IsWord ())
   {
     // don't advance token here!
-    result = ParseWord();
+    result = ParseWord ();
   }
   else
   {
-    Expected("a word or a quoted phrase");
+    Expected ("a word or a quoted phrase");
   }
   return result;
 }
-
-

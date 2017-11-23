@@ -39,32 +39,32 @@
 //
 
 ResultList *
-OrQuery::Evaluate()
+OrQuery::Evaluate ()
 {
   ResultList *result = 0;
   ResultList *longer = 0;
-  List  shorter;
+  List shorter;
   int ignores = 0;
-  operands.Start_Get();
-  Query *operand = (Query *) operands.Get_Next();
-  while(operand)
+  operands.Start_Get ();
+  Query *operand = (Query *) operands.Get_Next ();
+  while (operand)
   {
-    ResultList *next = operand->GetResults();
-    if(next)
+    ResultList *next = operand->GetResults ();
+    if (next)
     {
-      if(!next->IsIgnore())
+      if (!next->IsIgnore ())
       {
-        if(!longer || longer->Count() < next->Count())
+        if (!longer || longer->Count () < next->Count ())
         {
-          if(longer)
+          if (longer)
           {
-            shorter.Add(longer);
+            shorter.Add (longer);
           }
           longer = next;
         }
         else
         {
-          shorter.Add(next);
+          shorter.Add (next);
         }
       }
       else
@@ -72,17 +72,17 @@ OrQuery::Evaluate()
         ignores++;
       }
     }
-    operand = (Query *) operands.Get_Next();
+    operand = (Query *) operands.Get_Next ();
   }
-  if(longer)
+  if (longer)
   {
-    result = Union(*longer, shorter);
-    shorter.Release();
+    result = Union (*longer, shorter);
+    shorter.Release ();
   }
-  else if(ignores == operands.Count())
+  else if (ignores == operands.Count ())
   {
     result = new ResultList;
-    result->Ignore();
+    result->Ignore ();
   }
   return result;
 }
@@ -94,33 +94,33 @@ OrQuery::Evaluate()
 // this is a modest optimisation
 //
 ResultList *
-OrQuery::Union(const ResultList &longer, const List &lists)
+OrQuery::Union (const ResultList & longer, const List & lists)
 {
-  ResultList *result = new ResultList(longer);
+  ResultList *result = new ResultList (longer);
 
-  ListCursor lc;  
-  lists.Start_Get(lc);
-  ResultList *current = (ResultList *) lists.Get_Next(lc);
-  while(current)
+  ListCursor lc;
+  lists.Start_Get (lc);
+  ResultList *current = (ResultList *) lists.Get_Next (lc);
+  while (current)
   {
     DictionaryCursor c;
-    current->Start_Get(c);
-    DocMatch *match = (DocMatch *) current->Get_NextElement(c);
-    while(match)
+    current->Start_Get (c);
+    DocMatch *match = (DocMatch *) current->Get_NextElement (c);
+    while (match)
     {
-      DocMatch *previous = result->find(match->GetId());
-      if(previous)
+      DocMatch *previous = result->find (match->GetId ());
+      if (previous)
       {
-        previous->Merge(*match);
+        previous->Merge (*match);
       }
       else
       {
-        DocMatch *copy = new DocMatch(*match);
-        result->add(copy);
+        DocMatch *copy = new DocMatch (*match);
+        result->add (copy);
       }
-      match = (DocMatch *) current->Get_NextElement(c);
+      match = (DocMatch *) current->Get_NextElement (c);
     }
-    current = (ResultList *) lists.Get_Next(lc);
+    current = (ResultList *) lists.Get_Next (lc);
   }
   return result;
 }

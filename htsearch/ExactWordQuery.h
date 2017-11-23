@@ -24,39 +24,58 @@
 
 class WordSearcher;
 
-class ExactWordQuery : public Query
+class ExactWordQuery:public Query
 {
 public:
   // construct for word w
-  ExactWordQuery(const String &w) :
-    word(w), weight(1.0) {}
+  ExactWordQuery (const String & w):word (w), weight (1.0)
+  {
+  }
 
   // destruct
-  ~ExactWordQuery() {}
+   ~ExactWordQuery ()
+  {
+  }
 
   // set the common db wrapper
-  static void SetSearcher(WordSearcher *c) { searcher = c; }
+  static void SetSearcher (WordSearcher * c)
+  {
+    searcher = c;
+  }
 
   // weight accessor
-  void SetWeight(double x) { weight = x; }
-  double GetWeight() const { return weight; }
+  void SetWeight (double x)
+  {
+    weight = x;
+  }
+  double GetWeight () const
+  {
+    return weight;
+  }
 
 private:
   // forbidden
-  ExactWordQuery() {}
+    ExactWordQuery ()
+  {
+  }
 
   // go search the db
-  ResultList *Evaluate();
+  ResultList *Evaluate ();
 
   // set my weight to the list
-  void AdjustWeight(ResultList &);
+  void AdjustWeight (ResultList &);
 
   // unparse
-  String GetLogicalWords() const { return word; }
+  String GetLogicalWords () const
+  {
+    return word;
+  }
 
   // unique cache index
-  String GetSignature() const
-    { return String("Exact:")+GetLogicalWords(); }
+  String GetSignature () const
+  {
+    return String ("Exact:") + GetLogicalWords ();
+  }
 
   // i represent this
   String word;

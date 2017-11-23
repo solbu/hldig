@@ -21,25 +21,32 @@
 
 #include "OperatorQuery.h"
 
-class PhraseQuery : public OperatorQuery
+class PhraseQuery:public OperatorQuery
 {
 public:
-  PhraseQuery() {}
-  ~PhraseQuery() {}
+  PhraseQuery ()
+  {
+  }
+   ~PhraseQuery ()
+  {
+  }
 
 private:
   // get results from operands and filter
-  ResultList *Evaluate();
+  ResultList * Evaluate ();
 
   // create a result with neighboring matches
-  ResultList *Near(const ResultList &, const ResultList &);
+  ResultList *Near (const ResultList &, const ResultList &);
 
   // merge neighboring location lists, constructing phrase locations
-  List *MergeLocations(const List &, const List &);
+  List *MergeLocations (const List &, const List &);
 
-  String OperatorString() const { return ""; }
+  String OperatorString () const
+  {
+    return "";
+  }
 
-  String GetLogicalWords() const;
+  String GetLogicalWords () const;
 };
 
 #endif

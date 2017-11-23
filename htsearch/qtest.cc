@@ -53,108 +53,104 @@ using namespace std;
 #include <getopt.h>
 #endif
 
-void reportError(const char *msg);
-void usage();
+void reportError (const char *msg);
+void usage ();
 
-int      debug = 0;
+int debug = 0;
 
-void
-ParseAndGet(QueryParser &parser, const String &string);
+void ParseAndGet (QueryParser & parser, const String & string);
 
 //*****************************************************************************
 // int main()
 //
 int
-main(int ac, char **av)
+main (int ac, char **av)
 {
-    int      c;
-    extern char    *optarg;
-    String    configFile = DEFAULT_CONFIG_FILE;
-    String    logicalWords;
-    bool    doall = true,
-      doand = false,
-      door = false,
-      dobool = false,
-      dogeoffs = false;
+  int c;
+  extern char *optarg;
+  String configFile = DEFAULT_CONFIG_FILE;
+  String logicalWords;
+  bool doall = true,
+    doand = false, door = false, dobool = false, dogeoffs = false;
 
-     //
-     // Parse command line arguments
-     //
-     while ((c = getopt(ac, av, "c:dvkaobg")) != -1)
-     {
-   switch (c)
-   {
-       case 'c':
-     configFile = optarg;
-     break;
-       case 'v':
-     debug++;
-     break;
-       case 'd':
-     debug++;
-     break;
-      case 'a':
-    doall = false;
-    doand = true;
-    break;
-      case 'o':
-    doall = false;
-    door = true;
-    break;
-      case 'b':
-    doall = false;
-    dobool = true;
-    break;
-      case 'g':
-    doall = false;
-    dogeoffs = true;
-    break;
-      case '?':
-          usage();
-                break;
-   }
-     }
-
-    //
-    // Parse the CGI parameters.
-    //
-    char  none[] = "";
-    cgi    input(optind < ac ? av[optind] : none);
-
-    String   originalWords = input["words"];
-    originalWords.chop(" \t\r\n");
-
-   HtConfiguration* config= HtConfiguration::config();
-     // Set up the config
-    config->Defaults(&defaults[0]);
-
-    if (access((char*)configFile, R_OK) < 0)
+  //
+  // Parse command line arguments
+  //
+  while ((c = getopt (ac, av, "c:dvkaobg")) != -1)
+  {
+    switch (c)
     {
-      reportError("Unable to find configuration file");
+    case 'c':
+      configFile = optarg;
+      break;
+    case 'v':
+      debug++;
+      break;
+    case 'd':
+      debug++;
+      break;
+    case 'a':
+      doall = false;
+      doand = true;
+      break;
+    case 'o':
+      doall = false;
+      door = true;
+      break;
+    case 'b':
+      doall = false;
+      dobool = true;
+      break;
+    case 'g':
+      doall = false;
+      dogeoffs = true;
+      break;
+    case '?':
+      usage ();
+      break;
     }
-  
-    config->Read(configFile);
+  }
 
-    // Initialize htword library (key description + wordtype...)
-    WordContext::Initialize(*config);    
+  //
+  // Parse the CGI parameters.
+  //
+  char none[] = "";
+  cgi input (optind < ac ? av[optind] : none);
+
+  String originalWords = input["words"];
+  originalWords.chop (" \t\r\n");
+
+  HtConfiguration *config = HtConfiguration::config ();
+  // Set up the config
+  config->Defaults (&defaults[0]);
+
+  if (access ((char *) configFile, R_OK) < 0)
+  {
+    reportError ("Unable to find configuration file");
+  }
+
+  config->Read (configFile);
+
+  // Initialize htword library (key description + wordtype...)
+  WordContext::Initialize (*config);
 
   OrFuzzyExpander exp;
-  Exact exact(*config);
-  exact.setWeight(1.0);
-  exact.openIndex();
-  exp.Add(&exact);
-  Accents accents(*config);
-  accents.setWeight(0.7);
-  accents.openIndex();
-  exp.Add(&accents);
-  Prefix prefix(*config);
-  prefix.setWeight(0.7);
-  prefix.openIndex();
-  exp.Add(&prefix);
-  QueryParser::SetFuzzyExpander(&exp);
+  Exact exact (*config);
+  exact.setWeight (1.0);
+  exact.openIndex ();
+  exp.Add (&exact);
+  Accents accents (*config);
+  accents.setWeight (0.7);
+  accents.openIndex ();
+  exp.Add (&accents);
+  Prefix prefix (*config);
+  prefix.setWeight (0.7);
+  prefix.openIndex ();
+  exp.Add (&prefix);
+  QueryParser::SetFuzzyExpander (&exp);
 
-  WordSearcher searcher(config->Find("word_db"));
-  ExactWordQuery::SetSearcher(&searcher);
+  WordSearcher searcher (config->Find ("word_db"));
+  ExactWordQuery::SetSearcher (&searcher);
 
   // -- put here your prefered cache
   //QueryCache *cache = new XXX;
@@ -165,43 +161,44 @@ main(int ac, char **av)
   GParser g;
   AndQueryParser a;
 
-  if(doall || doand)
+  if (doall || doand)
   {
     cout << "Trying and..." << endl;
-    ParseAndGet(a, originalWords);
+    ParseAndGet (a, originalWords);
   }
 
-  if(doall || door)
+  if (doall || door)
   {
     cout << "Trying or..." << endl;
-    ParseAndGet(o, originalWords);
+    ParseAndGet (o, originalWords);
   }
 
-  if(doall || dobool)
+  if (doall || dobool)
   {
     cout << "Trying boolean..." << endl;
-    ParseAndGet(b, originalWords);
+    ParseAndGet (b, originalWords);
   }
 
-  if(doall || dogeoffs)
+  if (doall || dogeoffs)
   {
     cout << "Trying no-precedence-boolean..." << endl;
-    ParseAndGet(g, originalWords);
+    ParseAndGet (g, originalWords);
   }
 }
 
 void
-ParseAndGet(QueryParser &parser, const String &query)
+ParseAndGet (QueryParser & parser, const String & query)
 {
-  Query *q = parser.Parse(query);
-  if(q)
+  Query *q = parser.Parse (query);
+  if (q)
   {
-    cout << "Parsed: " << q->GetLogicalWords() << endl;
-    ResultList *l = q->GetResults();
-    if(l)
+    cout << "Parsed: " << q->GetLogicalWords () << endl;
+    ResultList *l = q->GetResults ();
+    if (l)
     {
-      cout << "Evaluated with " << l->Count() << " matches" << endl;
-      if(debug) l->Dump();
+      cout << "Evaluated with " << l->Count () << " matches" << endl;
+      if (debug)
+        l->Dump ();
     }
     else
     {
@@ -210,7 +207,7 @@ ParseAndGet(QueryParser &parser, const String &query)
   }
   else
   {
-    cerr << "syntax error: " << flush << parser.Error() << endl;
+    cerr << "syntax error: " << flush << parser.Error () << endl;
   }
   delete q;
 }
@@ -220,7 +217,8 @@ ParseAndGet(QueryParser &parser, const String &query)
 // void usage()
 //   Display program usage information--assumes we're running from a cmd line
 //
-void usage()
+void
+usage ()
 {
   cout << "usage: qtest [-a][-o][-b][-g][-v][-d][-c configfile]\n";
   cout << "This program is part of ht://Dig " << VERSION << "\n\n";
@@ -236,14 +234,15 @@ void usage()
   cout << "\t-o\tPerform only or/any parsing\n\n";
   cout << "\t-b\tPerform only boolean parsing\n\n";
   cout << "\t-g\tPerform only no-precedence-boolean parsing\n\n";
-  exit(0);
+  exit (0);
 }
 
 //*****************************************************************************
 // Report an error and die
 //
-void reportError(const char *msg)
+void
+reportError (const char *msg)
 {
-    cout << "qtest: " << msg << "\n\n";
-    exit(1);
+  cout << "qtest: " << msg << "\n\n";
+  exit (1);
 }

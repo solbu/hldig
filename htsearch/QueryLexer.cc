@@ -22,63 +22,60 @@
 
 extern int debug;
 
-QueryLexer::QueryLexer()
+QueryLexer::QueryLexer ()
 {
-  HtConfiguration* config= HtConfiguration::config();
-  prefix_match = config->Find("prefix_match_character");
+  HtConfiguration *config = HtConfiguration::config ();
+  prefix_match = config->Find ("prefix_match_character");
 }
 
 void
-QueryLexer::Set(const String &query_string)
+QueryLexer::Set (const String & query_string)
 {
   query = query_string;
   current_char = 0;
-  Next();
+  Next ();
 }
 
 void
-QueryLexer::Next()
+QueryLexer::Next ()
 {
-  HtConfiguration* config= HtConfiguration::config();
-  unsigned char  text = query[current_char];
-  WordType  type(*config);
+  HtConfiguration *config = HtConfiguration::config ();
+  unsigned char text = query[current_char];
+  WordType type (*config);
   current = "";
 
-  while (text
-  && !current.length()
-  && !type.IsStrictChar(text))
+  while (text && !current.length () && !type.IsStrictChar (text))
   {
     if (text == '(' || text == ')' || text == '\"' || text == '/')
     {
-          current << text;
-      if (debug) cerr << "lexer symbol: " << current << endl;
+      current << text;
+      if (debug)
+        cerr << "lexer symbol: " << current << endl;
     }
     text = query[++current_char];
   }
 
-  if (!current.length() && text)
+  if (!current.length () && text)
   {
     while (text
-                && ((type.IsChar(text) && text != '/')
-                  || prefix_match.indexOf(text, 0) != -1))
+           && ((type.IsChar (text) && text != '/')
+               || prefix_match.indexOf (text, 0) != -1))
     {
       current << text;
       text = query[++current_char];
     }
   }
-  current.lowercase();
-  if (debug) cerr << "lexer current word: " << current << endl;
+  current.lowercase ();
+  if (debug)
+    cerr << "lexer current word: " << current << endl;
 }
 
-bool
-QueryLexer::IsEnd() const
+bool QueryLexer::IsEnd () constconst
 {
-  return current == String("");
+  return current == String ("");
 }
 
-bool
-QueryLexer::IsQuote() const
+bool QueryLexer::IsQuote () constconst
 {
-  return current == String("\"");
+  return current == String ("\"");
 }
-

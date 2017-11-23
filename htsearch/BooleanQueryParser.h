@@ -18,23 +18,30 @@
 #include "QueryParser.h"
 #include "BooleanLexer.h"
 
-class BooleanQueryParser : public QueryParser
+class BooleanQueryParser:public QueryParser
 {
 public:
-  BooleanQueryParser() {}
-  ~BooleanQueryParser() {}
+  BooleanQueryParser ()
+  {
+  }
+   ~BooleanQueryParser ()
+  {
+  }
 
 private:
   // recursive parse levels
   // returning constructed query trees
-  Query *ParseExpression();
-  Query *ParseAnd();
-  Query *ParseNot();
-  Query *ParseNear();
-  Query *ParseFactor();
+  Query * ParseExpression ();
+  Query *ParseAnd ();
+  Query *ParseNot ();
+  Query *ParseNear ();
+  Query *ParseFactor ();
 
   // lexer access needed by parent class
-  QueryLexer &Token() { return token; }
+  QueryLexer & Token ()
+  {
+    return token;
+  }
 
   // the lexical analyzer
   BooleanLexer token;

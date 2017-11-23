@@ -21,15 +21,15 @@
 // of ExactWord
 //
 WordSearcher *
-ExactWordQuery::searcher = 0;
+  ExactWordQuery::searcher = 0;
 
 //
 // set the weight of the matches to my weight
 //
 void
-ExactWordQuery::AdjustWeight(ResultList &results)
+ExactWordQuery::AdjustWeight (ResultList & results)
 {
-  results.SetWeight(weight);
+  results.SetWeight (weight);
 }
 
 //
@@ -37,14 +37,14 @@ ExactWordQuery::AdjustWeight(ResultList &results)
 // return 0 if no matches
 //
 ResultList *
-ExactWordQuery::Evaluate()
+ExactWordQuery::Evaluate ()
 {
   ResultList *result = 0;
-  if(searcher)
+  if (searcher)
   {
-    result = searcher->Search(word);
+    result = searcher->Search (word);
   }
-  if(result && !result->Count() && !result->IsIgnore())
+  if (result && !result->Count () && !result->IsIgnore ())
   {
     delete result;
     result = 0;

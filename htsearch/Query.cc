@@ -27,14 +27,15 @@
 VolatileCache theDefaultCache;
 
 QueryCache *
-Query::cache = &theDefaultCache;
+  Query::cache = &theDefaultCache;
 
-extern int debug;
+extern int
+  debug;
 
 //
 // destructor
 //
-Query::~Query()
+Query::~Query ()
 {
 }
 
@@ -48,42 +49,42 @@ Query::~Query()
 //
 //
 ResultList *
-Query::GetResults()
+Query::GetResults ()
 {
   ResultList *result = 0;
 
   // try to find in cache before trying eval
   String signature;
-  if(cache)
+  if (cache)
   {
-    signature = GetSignature();
-    result = cache->Lookup(signature);
+    signature = GetSignature ();
+    result = cache->Lookup (signature);
   }
 
   // no cache or not in cache, evaluate
-  if(!result)
+  if (!result)
   {
-    if(debug) cerr << "EVAL: " << signature << endl;
-    result = Evaluate();
+    if (debug)
+      cerr << "EVAL: " << signature << endl;
+    result = Evaluate ();
 
-    if(cache)
+    if (cache)
     {
-      cache->Add(signature, result);
+      cache->Add (signature, result);
     }
   }
 
   // adjust if something found/returned 
-  if(result)
+  if (result)
   {
-    if(result->Count())
+    if (result->Count ())
     {
-      AdjustWeight(*result);
+      AdjustWeight (*result);
     }
-    else if(!result->IsIgnore())
+    else if (!result->IsIgnore ())
     {
       result = 0;
     }
   }
   return result;
 }
-
