@@ -20,17 +20,17 @@
 #include "htString.h"
 #include "HtCodec.h"
 
-class HtZlibCodec : public HtCodec
+class HtZlibCodec:public HtCodec
 {
 public:
-  static HtZlibCodec *instance();
-  ~HtZlibCodec();
+  static HtZlibCodec *instance ();
+   ~HtZlibCodec ();
 
   // Code what's in this string.
-  String encode(const String &) const;
+  String encode (const String &) const;
 
   // Decode what's in this string.
-  String decode(const String &) const;
+  String decode (const String &) const;
 
   // egcs-1.1 (and some earlier versions) always erroneously
   // warns (even without warning flags) about classic singleton
@@ -38,13 +38,13 @@ public:
   // friends").  Rather than adding autoconf tests to shut these
   // versions up with -Wno-ctor-dtor-privacy, we fake normal
   // conformism for it here (the minimal effort).
-  friend void my_friend_Harvey__a_faked_friend_function();
+  friend void my_friend_Harvey__a_faked_friend_function ();
 
 private:
   // Hide default-constructor, copy-constructor and assignment
   // operator, making this a singleton.
-  HtZlibCodec();
-  HtZlibCodec(const HtZlibCodec &);
+    HtZlibCodec ();
+    HtZlibCodec (const HtZlibCodec &);
   void operator= (const HtZlibCodec &);
 };
 

@@ -25,20 +25,21 @@
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
-# define YYTOKENTYPE
+#define YYTOKENTYPE
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
-   enum yytokentype {
-     NUM = 258,
-     T_DELIMITER = 259,
-     T_NEWLINE = 260,
-     T_RIGHT_BR = 261,
-     T_LEFT_BR = 262,
-     T_SLASH = 263,
-     T_STRING = 264,
-     T_KEYWORD = 265,
-     T_NUMBER = 266
-   };
+enum yytokentype
+{
+  NUM = 258,
+  T_DELIMITER = 259,
+  T_NEWLINE = 260,
+  T_RIGHT_BR = 261,
+  T_LEFT_BR = 262,
+  T_SLASH = 263,
+  T_STRING = 264,
+  T_KEYWORD = 265,
+  T_NUMBER = 266
+};
 #endif
 #define NUM 258
 #define T_DELIMITER 259
@@ -55,19 +56,17 @@
 
 #if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
 
-typedef union YYSTYPE {
+typedef union YYSTYPE
+{
   char *str;
-  ConfigDefaults  *ConfLine;
-  HtConfiguration  *ConfLines;
+  ConfigDefaults *ConfLine;
+  HtConfiguration *ConfLines;
 } YYSTYPE;
 /* Line 1240 of yacc.c.  */
 
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
-# define YYSTYPE_IS_DECLARED 1
-# define YYSTYPE_IS_TRIVIAL 1
+#define yystype YYSTYPE         /* obsolescent; will be withdrawn */
+#define YYSTYPE_IS_DECLARED 1
+#define YYSTYPE_IS_TRIVIAL 1
 #endif
 
 extern YYSTYPE yylval;
-
-
-

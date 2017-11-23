@@ -22,48 +22,46 @@
 #include"HtConfiguration.h"
 #include "WordList.h"
 
-class HtWordList : public WordList
+class HtWordList:public WordList
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    HtWordList(const Configuration  & config_arg) : WordList(config_arg) 
+  //
+  // Construction/Destruction
+  //
+  HtWordList (const Configuration & config_arg):WordList (config_arg)
   {
-      cerr << "HtWordList::HtWordList(Configuration) is not valid" << endl; 
-      abort();
+    cerr << "HtWordList::HtWordList(Configuration) is not valid" << endl;
+    abort ();
   }
-    HtWordList(const HtConfiguration& config_arg);
-    virtual ~HtWordList();
-    
-    //
-    // Update/add a word, perform sanity checking and
-    // fill information.
-    //
-    void    Replace(const WordReference& wordRef);
+  HtWordList (const HtConfiguration & config_arg);
+  virtual ~ HtWordList ();
 
-    //
-    // Skip this document -- ignore all words stored in the object
-    //  from this document
-    //
-    void    Skip();
+  //
+  // Update/add a word, perform sanity checking and
+  // fill information.
+  //
+  void Replace (const WordReference & wordRef);
 
-    //
-    // Flush the words stored in the object to the database
-    //
-    void    Flush();
+  //
+  // Skip this document -- ignore all words stored in the object
+  //  from this document
+  //
+  void Skip ();
 
-    // Write an ascii version of the word database in <filename>
-    int      Dump(const String& filename);
+  //
+  // Flush the words stored in the object to the database
+  //
+  void Flush ();
 
-    // Read in an ascii version of the word database in <filename>
-    int      Load(const String& filename);
+  // Write an ascii version of the word database in <filename>
+  int Dump (const String & filename);
+
+  // Read in an ascii version of the word database in <filename>
+  int Load (const String & filename);
 
 private:
 
-    List      *words;
+  List * words;
 };
 
 #endif
-
-

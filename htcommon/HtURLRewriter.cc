@@ -15,42 +15,43 @@
 //
 
 #include "HtURLRewriter.h"
-#include "defaults.h" // For "config"
+#include "defaults.h"           // For "config"
 
 // Constructor: parses the appropriate parameters using the
 // encapsulated RegexReplaceList class.
 // Only used in privacy.
-HtURLRewriter::HtURLRewriter()
+HtURLRewriter::HtURLRewriter ()
 {
-  HtConfiguration* config= HtConfiguration::config();
-  StringList list(config->Find("url_rewrite_rules"), " \t");
+  HtConfiguration *config = HtConfiguration::config ();
+  StringList list (config->Find ("url_rewrite_rules"), " \t");
 
-  myRegexReplace = new HtRegexReplaceList(list);
+  myRegexReplace = new HtRegexReplaceList (list);
 }
 
 
-HtURLRewriter::~HtURLRewriter()
+HtURLRewriter::~HtURLRewriter ()
 {
   delete myRegexReplace;
 }
 
 // Supposedly used as HtURLRewriter::instance()->ErrMsg()
 // to check if RegexReplaceList liked what was fed.
-const String& HtURLRewriter::ErrMsg()
+const String &
+HtURLRewriter::ErrMsg ()
 {
-  return myRegexReplace->lastError();
+  return myRegexReplace->lastError ();
 }
 
 
 // Canonical singleton interface.
 HtURLRewriter *
-HtURLRewriter::instance()
+HtURLRewriter::instance ()
 {
   static HtURLRewriter *_instance = 0;
 
   if (_instance == 0)
   {
-    _instance = new HtURLRewriter();
+    _instance = new HtURLRewriter ();
   }
 
   return _instance;

@@ -30,33 +30,36 @@
 //   escape character is '%' and is followed by 2 hex digits
 //   representing the octet.
 //
-String &decodeURL(String &str)
+String & decodeURL (String & str)
 {
-    String  temp;
-    char  *p;
+  String temp;
+  char *p;
 
-    for (p = str; p && *p; p++){
+  for (p = str; p && *p; p++)
+  {
 
-        if (*p == '%'){
-            //
-            // 2 hex digits follow...
-            //
-            int    value = 0;
-            for (int i = 0; p[1] && i < 2; i++){
-                p++;
-                value <<= 4;
-                if (isdigit(*p))
-                    value += *p - '0';
-                else
-                    value += toupper(*p) - 'A' + 10;
-            }
-            temp << char(value);
-        }
+    if (*p == '%')
+    {
+      //
+      // 2 hex digits follow...
+      //
+      int value = 0;
+      for (int i = 0; p[1] && i < 2; i++)
+      {
+        p++;
+        value <<= 4;
+        if (isdigit (*p))
+          value += *p - '0';
         else
-            temp << *p;
+          value += toupper (*p) - 'A' + 10;
+      }
+      temp << char (value);
     }
-    str = temp;
-    return (str);
+    else
+      temp << *p;
+  }
+  str = temp;
+  return (str);
 }
 
 
@@ -67,23 +70,23 @@ String &decodeURL(String &str)
 //   escaped.  The escape character is '%' and is followed by 2 hex
 //   digits representing the octet.
 //
-String &encodeURL(String &str, char *valid)
+String & encodeURL (String & str, char *valid)
 {
-    String  temp;
-    string digits = "0123456789ABCDEF";
-    char  *p;
+  String temp;
+  string digits = "0123456789ABCDEF";
+  char *p;
 
-    for (p = str; p && *p; p++){
-        if (isascii(*p) && (isdigit(*p) || isalpha(*p) || strchr(valid, *p)))
-            temp << *p;
-        else {
-            temp << '%';
-            temp << digits[(*p >> 4) & 0x0f];
-            temp << digits[*p & 0x0f];
-        }
+  for (p = str; p && *p; p++)
+  {
+    if (isascii (*p) && (isdigit (*p) || isalpha (*p) || strchr (valid, *p)))
+      temp << *p;
+    else
+    {
+      temp << '%';
+      temp << digits[(*p >> 4) & 0x0f];
+      temp << digits[*p & 0x0f];
     }
-    str = temp;
-    return (str);
+  }
+  str = temp;
+  return (str);
 }
-
-

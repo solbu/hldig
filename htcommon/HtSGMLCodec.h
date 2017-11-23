@@ -23,22 +23,26 @@
 class HtSGMLCodec
 {
 public:
-  static HtSGMLCodec *instance();
-  virtual ~HtSGMLCodec();
+  static HtSGMLCodec *instance ();
+    virtual ~ HtSGMLCodec ();
 
   // Similar to the HtWordCodec class.  Each string may contain
   // zero or more of words from the lists. Here we need to run
   // it through two codecs because we might have two different forms
-  inline String encode(const String &uncoded) const
-  { return myTextWordCodec->encode(myNumWordCodec->encode(uncoded)); }
+  inline String encode (const String & uncoded) const
+  {
+    return myTextWordCodec->encode (myNumWordCodec->encode (uncoded));
+  }
 
   // But we only want to decode into one form i.e. &foo; NOT &#nnn;
-  String decode(const String &coded) const
-  { return myTextWordCodec->decode(coded); }
+  String decode (const String & coded) const
+  {
+    return myTextWordCodec->decode (coded);
+  }
 
   // If an error was discovered during the parsing of
   // entities, this returns an error message
-  String& ErrMsg();
+  String & ErrMsg ();
 
   // egcs-1.1 (and some earlier versions) always erroneously
   // warns (even without warning flags) about classic singleton
@@ -46,17 +50,17 @@ public:
   // friends").  Rather than adding autoconf tests to shut these
   // versions up with -Wno-ctor-dtor-privacy, we fake normal
   // conformism for it here (the minimal effort).
-  friend void my_friend_Harvey__a_faked_friend_function();
+  friend void my_friend_Harvey__a_faked_friend_function ();
 
 private:
   // Hide default-constructor, copy-constructor and assignment
   // operator, making this a singleton.
-  HtSGMLCodec();
-  HtSGMLCodec(const HtSGMLCodec &);
+    HtSGMLCodec ();
+    HtSGMLCodec (const HtSGMLCodec &);
   void operator= (const HtSGMLCodec &);
 
   HtWordCodec *myTextWordCodec; // For &foo;
-  HtWordCodec *myNumWordCodec; // For &#foo;
+  HtWordCodec *myNumWordCodec;  // For &#foo;
   String myErrMsg;
 };
 

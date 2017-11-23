@@ -16,7 +16,7 @@
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#ifdef _MSC_VER /* _WIN32 */
+#ifdef _MSC_VER                 /* _WIN32 */
 #include <io.h>
 #endif
 
@@ -29,7 +29,7 @@
 
 #include <stdlib.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -45,18 +45,18 @@ using namespace std;
 //*****************************************************************************
 // cgi::cgi()
 //
-cgi::cgi()
+cgi::cgi ()
 {
-  init("");
+  init ("");
 }
 
 
 //*****************************************************************************
 // cgi::cgi(char *s)
 //
-cgi::cgi(char *s)
+cgi::cgi (char *s)
 {
-  init(s);
+  init (s);
 }
 
 
@@ -64,14 +64,14 @@ cgi::cgi(char *s)
 // void cgi::init(char *s)
 //
 void
-cgi::init(const char *s)
+cgi::init (const char *s)
 {
   pairs = new Dictionary;
 
   int i;
-  String  method(getenv("REQUEST_METHOD"));
+  String method (getenv ("REQUEST_METHOD"));
 
-  if ((!s || !*s) && method.length() == 0)
+  if ((!s || !*s) && method.length () == 0)
   {
     //
     // Interactive mode
@@ -80,62 +80,62 @@ cgi::init(const char *s)
     return;
   }
   query = 0;
-  String  results;
+  String results;
 
-  if (s && *s && method.length() == 0)
+  if (s && *s && method.length () == 0)
   {
     results = s;
   }
-  else if (strcmp((char*)method, "GET") == 0)
+  else if (strcmp ((char *) method, "GET") == 0)
   {
-    results = getenv("QUERY_STRING");
+    results = getenv ("QUERY_STRING");
   }
   else
   {
-    int    n;
-    char  *buf;
-    
-    buf = getenv("CONTENT_LENGTH");
-    if (!buf || !*buf || (n = atoi(buf)) <= 0)
-      return;    // null query
+    int n;
+    char *buf;
+
+    buf = getenv ("CONTENT_LENGTH");
+    if (!buf || !*buf || (n = atoi (buf)) <= 0)
+      return;                   // null query
     buf = new char[n + 1];
-    int  r, i = 0;
-    while (i < n && (r = read(0, buf+i, n-i)) > 0)
+    int r, i = 0;
+    while (i < n && (r = read (0, buf + i, n - i)) > 0)
       i += r;
     buf[i] = '\0';
     results = buf;
-    delete [] buf;
+    delete[]buf;
   }
 
   //
   // Now we need to split the line up into name/value pairs
   //
-  StringList  list(results, "&;");
-  
+  StringList list (results, "&;");
+
   //
   // Each name/value pair now needs to be added to the dictionary
   //
-  for (i = 0; i < list.Count(); i++)
+  for (i = 0; i < list.Count (); i++)
   {
-    char  *name = good_strtok(list[i], '=');
-    String  value(good_strtok(NULL, '\n'));
-    value.replace('+', ' ');
-    decodeURL(value);
-    String  *str = (String *) pairs->Find(name);
+    char *name = good_strtok (list[i], '=');
+    String value (good_strtok (NULL, '\n'));
+    value.replace ('+', ' ');
+    decodeURL (value);
+    String *str = (String *) pairs->Find (name);
     if (str)
     {
       //
       // Entry was already there.  Append it to the string.
       //
-      str->append('\001');
-      str->append(value);
+      str->append ('\001');
+      str->append (value);
     }
     else
     {
       //
       // New entry.  Add a new string
       //
-      pairs->Add(name, new String(value));
+      pairs->Add (name, new String (value));
     }
   }
 }
@@ -144,7 +144,7 @@ cgi::init(const char *s)
 //*****************************************************************************
 // cgi::~cgi()
 //
-cgi::~cgi()
+cgi::~cgi ()
 {
   delete pairs;
 }
@@ -153,30 +153,32 @@ cgi::~cgi()
 //*****************************************************************************
 // char *cgi::operator [] (char *name)
 //
-const char *cgi::operator [] (const char *name)
+const char *
+cgi::operator [] (const char *name)
 {
-  return get(name);
+  return get (name);
 }
 
 
 //*****************************************************************************
 // char *cgi::get(char *name)
 //
-const char *cgi::get(const char *name)
+const char *
+cgi::get (const char *name)
 {
-  String  *str = (String *) (*pairs)[name];
+  String *str = (String *) (*pairs)[name];
   if (str)
-    return str->get();
+    return str->get ();
   else
   {
     if (query)
     {
-      char  buffer[1000];
+      char buffer[1000];
       cerr << "Enter value for " << name << ": ";
-      cin.getline(buffer, sizeof(buffer));
-      pairs->Add(name, new String(buffer));
+      cin.getline (buffer, sizeof (buffer));
+      pairs->Add (name, new String (buffer));
       str = (String *) (*pairs)[name];
-      return str->get();
+      return str->get ();
     }
     return 0;
   }
@@ -187,27 +189,26 @@ const char *cgi::get(const char *name)
 // int cgi::exists(char *name)
 //
 int
-cgi::exists(char *name)
+cgi::exists (char *name)
 {
-  return pairs->Exists(name);
+  return pairs->Exists (name);
 }
 
 //*****************************************************************************
 // char *cgi::path()
 //
-char *cgi::path()
+char *
+cgi::path ()
 {
-  static char  buffer[1000] = "";
+  static char buffer[1000] = "";
 
   if (query)
   {
     if (*buffer)
       return buffer;
     cerr << "Enter PATH_INFO: ";
-    cin.getline(buffer, sizeof(buffer));
+    cin.getline (buffer, sizeof (buffer));
     return buffer;
   }
-  return getenv("PATH_INFO");
+  return getenv ("PATH_INFO");
 }
-
-

@@ -42,16 +42,16 @@ using namespace std;
 //*****************************************************************************
 // DocumentRef::DocumentRef()
 //
-DocumentRef::DocumentRef()
+DocumentRef::DocumentRef ()
 {
-    Clear();
+  Clear ();
 }
 
 
 //*****************************************************************************
 // DocumentRef::~DocumentRef()
 //
-DocumentRef::~DocumentRef()
+DocumentRef::~DocumentRef ()
 {
 }
 
@@ -59,7 +59,8 @@ DocumentRef::~DocumentRef()
 //*****************************************************************************
 // void DocumentRef::Clear()
 //
-void DocumentRef::Clear()
+void
+DocumentRef::Clear ()
 {
   docID = 0;
   docURL = 0;
@@ -69,12 +70,12 @@ void DocumentRef::Clear()
   docHeadIsSet = 0;
   docMetaDsc = 0;
   docTitle = 0;
-  descriptions.Destroy();
+  descriptions.Destroy ();
   docState = Reference_normal;
   docSize = 0;
   docLinks = 0;
   docBackLinks = 0;
-  docAnchors.Destroy();
+  docAnchors.Destroy ();
   docHopCount = 0;
   docSig = 0;
   docEmail = 0;
@@ -87,49 +88,50 @@ void DocumentRef::Clear()
 //*****************************************************************************
 // void DocumentRef::DocState(int s)
 //
-void DocumentRef::DocState(int s)
+void
+DocumentRef::DocState (int s)
 {
   // You can't easily do this with a cast, so we'll use a switch
-  switch(s)
-    {
-      case 0:
-  docState = Reference_normal;
-  break;
-      case 1:
-  docState = Reference_not_found;
-  break;
-      case 2:
-  docState = Reference_noindex;
-  break;
-      case 3:
-  docState = Reference_obsolete;
-  break;
-    }
+  switch (s)
+  {
+  case 0:
+    docState = Reference_normal;
+    break;
+  case 1:
+    docState = Reference_not_found;
+    break;
+  case 2:
+    docState = Reference_noindex;
+    break;
+  case 3:
+    docState = Reference_obsolete;
+    break;
+  }
 }
 
 
 enum
 {
-    DOC_ID,        // 0
-    DOC_TIME,        // 1
-    DOC_ACCESSED,      // 2
-    DOC_STATE,        // 3
-    DOC_SIZE,        // 4
-    DOC_LINKS,        // 5
-    DOC_IMAGESIZE,      // 6 -- No longer used
-    DOC_HOPCOUNT,      // 7
-    DOC_URL,        // 8
-    DOC_HEAD,        // 9
-    DOC_TITLE,        // 10
-    DOC_DESCRIPTIONS,            // 11
-    DOC_ANCHORS,      // 12
-    DOC_EMAIL,        // 13
-    DOC_NOTIFICATION,            // 14
-    DOC_SUBJECT,      // 15
-    DOC_STRING,                         // 16
-    DOC_METADSC,                        // 17
-    DOC_BACKLINKS,                      // 18
-    DOC_SIG                             // 19
+  DOC_ID,                       // 0
+  DOC_TIME,                     // 1
+  DOC_ACCESSED,                 // 2
+  DOC_STATE,                    // 3
+  DOC_SIZE,                     // 4
+  DOC_LINKS,                    // 5
+  DOC_IMAGESIZE,                // 6 -- No longer used
+  DOC_HOPCOUNT,                 // 7
+  DOC_URL,                      // 8
+  DOC_HEAD,                     // 9
+  DOC_TITLE,                    // 10
+  DOC_DESCRIPTIONS,             // 11
+  DOC_ANCHORS,                  // 12
+  DOC_EMAIL,                    // 13
+  DOC_NOTIFICATION,             // 14
+  DOC_SUBJECT,                  // 15
+  DOC_STRING,                   // 16
+  DOC_METADSC,                  // 17
+  DOC_BACKLINKS,                // 18
+  DOC_SIG                       // 19
 };
 
 // Must be powers of two never reached by the DOC_... enums.
@@ -141,10 +143,11 @@ enum
 //   Convert all the data in the object to a string. 
 //   The data is in the string is tagged with 
 //
-void DocumentRef::Serialize(String &s)
+void
+DocumentRef::Serialize (String & s)
 {
-    int    length;
-    String  *str;
+  int length;
+  String *str;
 
 //
 // The following macros make the serialization process a little easier
@@ -256,31 +259,31 @@ void DocumentRef::Serialize(String &s)
    }                                                                  \
  }
 
-    addnum(DOC_ID, s, docID);
-    addnum(DOC_TIME, s, docTime);
-    addnum(DOC_ACCESSED, s, docAccessed);
-    addnum(DOC_STATE, s, docState);
-    addnum(DOC_SIZE, s, docSize);
-    addnum(DOC_LINKS, s, docLinks);
-    addnum(DOC_BACKLINKS, s, docBackLinks);
-    addnum(DOC_HOPCOUNT, s, docHopCount);
-    addnum(DOC_SIG, s, docSig);
+  addnum (DOC_ID, s, docID);
+  addnum (DOC_TIME, s, docTime);
+  addnum (DOC_ACCESSED, s, docAccessed);
+  addnum (DOC_STATE, s, docState);
+  addnum (DOC_SIZE, s, docSize);
+  addnum (DOC_LINKS, s, docLinks);
+  addnum (DOC_BACKLINKS, s, docBackLinks);
+  addnum (DOC_HOPCOUNT, s, docHopCount);
+  addnum (DOC_SIG, s, docSig);
 
-    // Use a temporary since the addstring macro will evaluate
-    // this multiple times.
-    String tmps = HtURLCodec::instance()->encode(docURL);
-    addstring(DOC_URL, s, tmps);
-    // This is done in the DocumentDB code through the excerpt database
-    //    addstring(DOC_HEAD, s, docHead);
-    addstring(DOC_METADSC, s, docMetaDsc);
-    addstring(DOC_TITLE, s, docTitle);
+  // Use a temporary since the addstring macro will evaluate
+  // this multiple times.
+  String tmps = HtURLCodec::instance ()->encode (docURL);
+  addstring (DOC_URL, s, tmps);
+  // This is done in the DocumentDB code through the excerpt database
+  //    addstring(DOC_HEAD, s, docHead);
+  addstring (DOC_METADSC, s, docMetaDsc);
+  addstring (DOC_TITLE, s, docTitle);
 
-    addlist(DOC_DESCRIPTIONS, s, descriptions);
-    addlist(DOC_ANCHORS, s, docAnchors);
+  addlist (DOC_DESCRIPTIONS, s, descriptions);
+  addlist (DOC_ANCHORS, s, docAnchors);
 
-    addstring(DOC_EMAIL, s, docEmail);
-    addstring(DOC_NOTIFICATION, s, docNotification);
-    addstring(DOC_SUBJECT, s, docSubject);
+  addstring (DOC_EMAIL, s, docEmail);
+  addstring (DOC_NOTIFICATION, s, docNotification);
+  addstring (DOC_SUBJECT, s, docSubject);
 }
 
 
@@ -290,17 +293,18 @@ void DocumentRef::Serialize(String &s)
 //   character string.  The character string is expected to have been
 //   created using the Serialize member.
 //
-void DocumentRef::Deserialize(String &stream)
+void
+DocumentRef::Deserialize (String & stream)
 {
-    Clear();
-    char  *s = stream.get();
-    char  *end = s + stream.length();
-    int    length;
-    int    count;
-    int    i;
-    int    x;
-    int    throwaway; // As the name sounds--used for old fields
-    String  *str;
+  Clear ();
+  char *s = stream.get ();
+  char *end = s + stream.length ();
+  int length;
+  int count;
+  int i;
+  int x;
+  int throwaway;                // As the name sounds--used for old fields
+  String *str;
 
 // There is a problem with getting a numeric value into a
 // numeric unknown type that may be an enum (the other way
@@ -383,165 +387,167 @@ void DocumentRef::Deserialize(String &stream)
    }                                                                  \
  }
 
-    while (s < end)
+  while (s < end)
+  {
+    x = (unsigned char) *s++;
+    switch (x & ~(CHARSIZE_MARKER_BIT | SHORTSIZE_MARKER_BIT))
     {
-        x = (unsigned char) *s++;
-        switch (x & ~(CHARSIZE_MARKER_BIT | SHORTSIZE_MARKER_BIT))
-        {
-        case DOC_ID:
-            getnum(x, s, docID);
-            break;
-        case DOC_TIME:
-            getnum(x, s, docTime);
-            break;
-        case DOC_ACCESSED:
-            getnum(x, s, docAccessed);
-            break;
-        case DOC_STATE:
-            getnum(x, s, docState);
-            break;
-        case DOC_SIZE:
-            getnum(x, s, docSize);
-            break;
-        case DOC_IMAGESIZE: // No longer used
-      getnum(x, s, throwaway);
+    case DOC_ID:
+      getnum (x, s, docID);
       break;
-        case DOC_LINKS:
-            getnum(x, s, docLinks);
-            break;
-        case DOC_HOPCOUNT:
-            getnum(x, s, docHopCount);
-            break;
-  case DOC_BACKLINKS:
-      getnum(x, s, docBackLinks);
+    case DOC_TIME:
+      getnum (x, s, docTime);
       break;
-  case DOC_SIG:
-      getnum(x, s, docSig);
+    case DOC_ACCESSED:
+      getnum (x, s, docAccessed);
       break;
-        case DOC_URL:
+    case DOC_STATE:
+      getnum (x, s, docState);
+      break;
+    case DOC_SIZE:
+      getnum (x, s, docSize);
+      break;
+    case DOC_IMAGESIZE:        // No longer used
+      getnum (x, s, throwaway);
+      break;
+    case DOC_LINKS:
+      getnum (x, s, docLinks);
+      break;
+    case DOC_HOPCOUNT:
+      getnum (x, s, docHopCount);
+      break;
+    case DOC_BACKLINKS:
+      getnum (x, s, docBackLinks);
+      break;
+    case DOC_SIG:
+      getnum (x, s, docSig);
+      break;
+    case DOC_URL:
       {
         // Use a temporary since the addstring macro will evaluate
         // this multiple times.
         String tmps;
-        getstring(x, s, tmps);
+        getstring (x, s, tmps);
 
-        docURL = HtURLCodec::instance()->decode(tmps);
+        docURL = HtURLCodec::instance ()->decode (tmps);
       }
       break;
-        case DOC_HEAD:
-            getstring(x, s, docHead); docHeadIsSet = 1;
-            break;
-  case DOC_METADSC:
-      getstring(x, s, docMetaDsc);
+    case DOC_HEAD:
+      getstring (x, s, docHead);
+      docHeadIsSet = 1;
       break;
-        case DOC_TITLE:
-            getstring(x, s, docTitle);
-            break;
-        case DOC_DESCRIPTIONS:
-            getlist(x, s, descriptions);
-            break;
-        case DOC_ANCHORS:
-            getlist(x, s, docAnchors);
-            break;
-        case DOC_EMAIL:
-            getstring(x, s, docEmail);
-            break;
-        case DOC_NOTIFICATION:
-            getstring(x, s, docNotification);
-            break;
-        case DOC_SUBJECT:
-            getstring(x, s, docSubject);
-            break;
-  case DOC_STRING:
-    // This is just a debugging string. Ignore it.
+    case DOC_METADSC:
+      getstring (x, s, docMetaDsc);
       break;
-        default:
-            cerr << "BAD TAG IN SERIALIZED DATA: " << x << endl;
-            return;
-        }
+    case DOC_TITLE:
+      getstring (x, s, docTitle);
+      break;
+    case DOC_DESCRIPTIONS:
+      getlist (x, s, descriptions);
+      break;
+    case DOC_ANCHORS:
+      getlist (x, s, docAnchors);
+      break;
+    case DOC_EMAIL:
+      getstring (x, s, docEmail);
+      break;
+    case DOC_NOTIFICATION:
+      getstring (x, s, docNotification);
+      break;
+    case DOC_SUBJECT:
+      getstring (x, s, docSubject);
+      break;
+    case DOC_STRING:
+      // This is just a debugging string. Ignore it.
+      break;
+    default:
+      cerr << "BAD TAG IN SERIALIZED DATA: " << x << endl;
+      return;
     }
+  }
 }
 
 
 //*****************************************************************************
 // void DocumentRef::AddDescription(char *d, HtWordList &words)
 //
-void DocumentRef::AddDescription(const char *d, HtWordList &words)
+void
+DocumentRef::AddDescription (const char *d, HtWordList & words)
 {
-    if (!d || !*d)
-        return;
-
-    while (isspace(*d))
-        d++;
-   
-   if (!d || !*d)
-     return;
-
-    String  desc = d;
-    desc.chop(" \t");
-
-    // Add the description text to the word database with proper factor
-    // Do this first because we may have reached the max_description limit
-    // This also ensures we keep the proper weight on descriptions 
-    // that occur many times
-
-    // Parse words.
-    char         *p                   = desc;
-    HtConfiguration* config= HtConfiguration::config();
-    static int    minimum_word_length = config->Value("minimum_word_length", 3);
-    static int    max_descriptions    = config->Value("max_descriptions", 5);
-
-    String word;
-    HtWordReference wordRef;
-    wordRef.Flags(FLAG_LINK_TEXT);
-    wordRef.DocID(docID);
-
-    while (*p)
-    {
-      // Reset contents before adding chars each round.
-      word = 0;
-
-      while (*p && HtIsWordChar(*p))
-        word << *p++;
-
-      HtStripPunctuation(word);
-
-      if (word.length() >= minimum_word_length) {
-        // The wordlist takes care of lowercasing; just add it.
-  wordRef.Location((p - (char*)desc) - word.length());
-  wordRef.Word(word);
-        words.Replace(wordRef);
-      }
-
-      while (*p && !HtIsStrictWordChar(*p))
-        p++;
-    }
-
-    // And let's flush the words! (nice comment hu :-)
-    words.Flush();
-    
-    // Now are we at the max_description limit?
-    if (descriptions.Count() >= max_descriptions)
+  if (!d || !*d)
     return;
-    
-    descriptions.Start_Get();
-    String  *description;
-    while ((description = (String *) descriptions.Get_Next()))
+
+  while (isspace (*d))
+    d++;
+
+  if (!d || !*d)
+    return;
+
+  String desc = d;
+  desc.chop (" \t");
+
+  // Add the description text to the word database with proper factor
+  // Do this first because we may have reached the max_description limit
+  // This also ensures we keep the proper weight on descriptions 
+  // that occur many times
+
+  // Parse words.
+  char *p = desc;
+  HtConfiguration *config = HtConfiguration::config ();
+  static int minimum_word_length = config->Value ("minimum_word_length", 3);
+  static int max_descriptions = config->Value ("max_descriptions", 5);
+
+  String word;
+  HtWordReference wordRef;
+  wordRef.Flags (FLAG_LINK_TEXT);
+  wordRef.DocID (docID);
+
+  while (*p)
+  {
+    // Reset contents before adding chars each round.
+    word = 0;
+
+    while (*p && HtIsWordChar (*p))
+      word << *p++;
+
+    HtStripPunctuation (word);
+
+    if (word.length () >= minimum_word_length)
     {
-        if (mystrcasecmp(description->get(), (char*)desc) == 0)
-            return;
+      // The wordlist takes care of lowercasing; just add it.
+      wordRef.Location ((p - (char *) desc) - word.length ());
+      wordRef.Word (word);
+      words.Replace (wordRef);
     }
-    descriptions.Add(new String(desc));
+
+    while (*p && !HtIsStrictWordChar (*p))
+      p++;
+  }
+
+  // And let's flush the words! (nice comment hu :-)
+  words.Flush ();
+
+  // Now are we at the max_description limit?
+  if (descriptions.Count () >= max_descriptions)
+    return;
+
+  descriptions.Start_Get ();
+  String *description;
+  while ((description = (String *) descriptions.Get_Next ()))
+  {
+    if (mystrcasecmp (description->get (), (char *) desc) == 0)
+      return;
+  }
+  descriptions.Add (new String (desc));
 }
 
 
 //*****************************************************************************
 // void DocumentRef::AddAnchor(char *a)
 //
-void DocumentRef::AddAnchor(const char *a)
+void
+DocumentRef::AddAnchor (const char *a)
 {
-    if (a)
-      docAnchors.Add(new String(a));
+  if (a)
+    docAnchors.Add (new String (a));
 }
-
-

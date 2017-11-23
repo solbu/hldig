@@ -32,65 +32,71 @@
 class DocumentDB
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    DocumentDB();
-    ~DocumentDB();
+  //
+  // Construction/Destruction
+  //
+  DocumentDB ();
+  ~DocumentDB ();
 
 
-    //
-    // Standard database operations
-    //
-    int      Open(const String& filename, const String& indexfilename, const String& headname);
-    int      Read(const String& filename, const String& indexfilename = 0, const String& headfilename = 0);
-    int      Close();
+  //
+  // Standard database operations
+  //
+  int Open (const String & filename, const String & indexfilename,
+            const String & headname);
+  int Read (const String & filename, const String & indexfilename =
+            0, const String & headfilename = 0);
+  int Close ();
 
-    int      Add(DocumentRef &);
-    // These do not read in the excerpt
-    DocumentRef    *operator [] (int DocID);
-    DocumentRef    *operator [] (const String& url);
-    // You must call this to read the excerpt
-    int      ReadExcerpt(DocumentRef &);
-    int      Exists(int DocID);
-    int      Delete(int DocID);
+  int Add (DocumentRef &);
+  // These do not read in the excerpt
+  DocumentRef *operator [] (int DocID);
+  DocumentRef *operator [] (const String & url);
+  // You must call this to read the excerpt
+  int ReadExcerpt (DocumentRef &);
+  int Exists (int DocID);
+  int Delete (int DocID);
 
-    //
-    // The database keeps track of document ids.  Here is a way to get
-    // the next document id.
-    //
-    int      NextDocID()    {return nextDocID++;}
+  //
+  // The database keeps track of document ids.  Here is a way to get
+  // the next document id.
+  //
+  int NextDocID ()
+  {
+    return nextDocID++;
+  }
 
-    // And here's a way to increment NextDocID after adding lots of records
-    // (for example when merging databases!)
-    void                IncNextDocID (int next)     {nextDocID += next;}
+  // And here's a way to increment NextDocID after adding lots of records
+  // (for example when merging databases!)
+  void IncNextDocID (int next)
+  {
+    nextDocID += next;
+  }
 
-    //
-    // We will need to be able to iterate over the complete database.
-    //
+  //
+  // We will need to be able to iterate over the complete database.
+  //
 
-    // This returns a list of all the URLs, as String *
-    List    *URLs();
+  // This returns a list of all the URLs, as String *
+  List *URLs ();
 
-    // This returns a list of all the DocIDs, as IntObject *
-    List    *DocIDs();
+  // This returns a list of all the DocIDs, as IntObject *
+  List *DocIDs ();
 
-    // Dump the database out to an ASCII text file
-    int      DumpDB(const String& filename, int verbose = 0);
+  // Dump the database out to an ASCII text file
+  int DumpDB (const String & filename, int verbose = 0);
 
-    // Read in the database from an ASCII text file
-    // (created by DumpDB)
-    int      LoadDB(const String& filename, int verbose = 0);
+  // Read in the database from an ASCII text file
+  // (created by DumpDB)
+  int LoadDB (const String & filename, int verbose = 0);
 
 private:
-    Database    *dbf;
-    Database    *i_dbf;
-    Database    *h_dbf;
-    int      isopen;
-    int      isread;
-    int      nextDocID;
+  Database * dbf;
+  Database *i_dbf;
+  Database *h_dbf;
+  int isopen;
+  int isread;
+  int nextDocID;
 };
 
 #endif
-
-

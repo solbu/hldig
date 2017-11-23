@@ -44,27 +44,28 @@ using namespace std;
 //*****************************************************************************
 // HtWordList::~HtWordList()
 //
-HtWordList::~HtWordList()
+HtWordList::~HtWordList ()
 {
-    delete words;
+  delete words;
 }
 
 //*****************************************************************************
 //
-HtWordList::HtWordList(const HtConfiguration& config_arg) :
-  WordList(config_arg)
+HtWordList::HtWordList (const HtConfiguration & config_arg):
+WordList (config_arg)
 {
-    words = new List;
+  words = new List;
 }
 
 //*****************************************************************************
 //
-void HtWordList::Replace(const WordReference& arg)
+void
+HtWordList::Replace (const WordReference & arg)
 {
   //
   // New word.  Create a new reference for it and cache it in the object.
   //
-  words->Add(new WordReference(arg));
+  words->Add (new WordReference (arg));
 }
 
 //*****************************************************************************
@@ -73,27 +74,29 @@ void HtWordList::Replace(const WordReference& arg)
 //   the words have been dumped, the list will be destroyed to make
 //   room for the words of the next document.
 //   
-void HtWordList::Flush()
+void
+HtWordList::Flush ()
 {
-  HtWordReference  *wordRef;
+  HtWordReference *wordRef;
 
-    // Provided for backwards compatibility
+  // Provided for backwards compatibility
   if (!isopen)
-    Open(config["word_db"], O_RDWR);
+    Open (config["word_db"], O_RDWR);
 
-  words->Start_Get();
-  while ((wordRef = (HtWordReference *) words->Get_Next()))
+  words->Start_Get ();
+  while ((wordRef = (HtWordReference *) words->Get_Next ()))
+  {
+    if (wordRef->Word ().length () == 0)
     {
-      if (wordRef->Word().length() == 0) {
-  cerr << "HtWordList::Flush: unexpected empty word\n";
-  continue;
-      }
+      cerr << "HtWordList::Flush: unexpected empty word\n";
+      continue;
+    }
 
-      Override(*wordRef);
-    }  
-    
+    Override (*wordRef);
+  }
+
   // Cleanup
-  words->Destroy();
+  words->Destroy ();
 }
 
 //*****************************************************************************
@@ -101,20 +104,24 @@ void HtWordList::Flush()
 //   The current document has disappeared or been modified. 
 //   We do not need to store these words.
 //
-void HtWordList::Skip()
+void
+HtWordList::Skip ()
 {
-  words->Destroy();
+  words->Destroy ();
 }
 
 //
 // Callback data dedicated to Dump and dump_word communication
 //
-class DumpWordData : public Object
+class DumpWordData:public Object
 {
 public:
-  DumpWordData(FILE* fl_arg) { fl = fl_arg; }
+  DumpWordData (FILE * fl_arg)
+  {
+    fl = fl_arg;
+  }
 
-  FILE* fl;
+  FILE *fl;
 };
 
 //*****************************************************************************
@@ -122,13 +129,15 @@ public:
 // Write the ascii representation of a word occurence. Helper
 // of WordList::Dump
 //
-static int dump_word(WordList *, WordDBCursor &, const WordReference *word, Object &data)
+static int
+dump_word (WordList *, WordDBCursor &, const WordReference * word,
+           Object & data)
 {
-  const HtWordReference *word_tmp = (const HtWordReference *)word;
+  const HtWordReference *word_tmp = (const HtWordReference *) word;
 
-  DumpWordData &info = (DumpWordData &)data;
+  DumpWordData & info = (DumpWordData &) data;
 
-  word_tmp->Dump(info.fl);
+  word_tmp->Dump (info.fl);
 
   return OK;
 }
@@ -138,27 +147,32 @@ static int dump_word(WordList *, WordDBCursor &, const WordReference *word, Obje
 //
 // Write an ascii version of the word database in <filename>
 //
-int HtWordList::Dump(const String& filename)
+int
+HtWordList::Dump (const String & filename)
 {
-  FILE    *fl;
+  FILE *fl;
 
-  if (!isopen) {
+  if (!isopen)
+  {
     cerr << "WordList::Dump: database must be opened first\n";
     return NOTOK;
   }
 
-  if((fl = fopen(filename, "w")) == 0) {
-    perror(form("WordList::Dump: opening %s for writing", (const char*)filename));
+  if ((fl = fopen (filename, "w")) == 0)
+  {
+    perror (form
+            ("WordList::Dump: opening %s for writing",
+             (const char *) filename));
     return NOTOK;
   }
 
-  HtWordReference::DumpHeader(fl);
-  DumpWordData data(fl);
-  WordCursor* search = Cursor(dump_word, &data);
-  search->Walk();
+  HtWordReference::DumpHeader (fl);
+  DumpWordData data (fl);
+  WordCursor *search = Cursor (dump_word, &data);
+  search->Walk ();
   delete search;
-  
-  fclose(fl);
+
+  fclose (fl);
 
   return OK;
 }
@@ -168,42 +182,47 @@ int HtWordList::Dump(const String& filename)
 //
 // Read in an ascii version of the word database in <filename>
 //
-int HtWordList::Load(const String& filename)
+int
+HtWordList::Load (const String & filename)
 {
-  FILE    *fl;
-  String  data;
+  FILE *fl;
+  String data;
   HtWordReference *next;
 
-  if (!isopen) {
+  if (!isopen)
+  {
     cerr << "WordList::Load: database must be opened first\n";
     return NOTOK;
   }
 
-  if((fl = fopen(filename, "r")) == 0) {
-    perror(form("WordList::Load: opening %s for reading", (const char*)filename));
+  if ((fl = fopen (filename, "r")) == 0)
+  {
+    perror (form
+            ("WordList::Load: opening %s for reading",
+             (const char *) filename));
     return NOTOK;
   }
 
-  if (HtWordReference::LoadHeader(fl) != OK)
-    {
-      cerr << "WordList::Load: header is not correct\n";
-      return NOTOK;
-    }
-
-  while (data.readLine(fl))
-    {
-      next = new HtWordReference;
-      if (next->Load(data) != OK)
+  if (HtWordReference::LoadHeader (fl) != OK)
   {
-    delete next;
-    continue;
+    cerr << "WordList::Load: header is not correct\n";
+    return NOTOK;
   }
-  
-      words->Add(next);
+
+  while (data.readLine (fl))
+  {
+    next = new HtWordReference;
+    if (next->Load (data) != OK)
+    {
+      delete next;
+      continue;
     }
 
-  Flush();
-  fclose(fl);
+    words->Add (next);
+  }
+
+  Flush ();
+  fclose (fl);
 
   return OK;
 }

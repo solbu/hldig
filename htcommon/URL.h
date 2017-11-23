@@ -22,57 +22,93 @@
 class URL
 {
 public:
-    URL();
-    URL(const String &url);
-    URL(const URL& rhs);
-    URL(const String &ref, const URL &parent);
+  URL ();
+  URL (const String & url);
+    URL (const URL & rhs);
+    URL (const String & ref, const URL & parent);
 
-    void parse(const String &url);
+  void parse (const String & url);
 
-    const String &host() const      {return _host;}
-    void host(const String &h)      {_host = h;}
-    
-    int port() const                {return _port;}
-    void port(const int p)          {_port = p;}
-    int DefaultPort();
-    
-    const String &service() const   {return _service;}
-    void service(const String &s)   {_service = s;}
+  const String & host () const
+  {
+    return _host;
+  }
+  void host (const String & h)
+  {
+    _host = h;
+  }
 
-    const String &path() const      {return _path;}
-    void path(const String &p);
-    
-    int hopcount() const            {return _hopcount;}
-    void hopcount(int h)            {_hopcount = h;}
-    
-    const String &user() const      {return _user;}
-    void user(const String &u)      {_user = u;}
+  int port () const
+  {
+    return _port;
+  }
+  void port (const int p)
+  {
+    _port = p;
+  }
+  int DefaultPort ();
 
-    const String &get() const {return _url;}
-    void    dump();
-    void    normalize();
-    void    rewrite();
-    const String &signature();
+  const String & service () const
+  {
+    return _service;
+  }
+  void service (const String & s)
+  {
+    _service = s;
+  }
 
-    const URL &operator = (const URL &rhs);
+  const String & path () const
+  {
+    return _path;
+  }
+  void path (const String & p);
+
+  int hopcount () const
+  {
+    return _hopcount;
+  }
+  void hopcount (int h)
+  {
+    _hopcount = h;
+  }
+
+  const String & user () const
+  {
+    return _user;
+  }
+  void user (const String & u)
+  {
+    _user = u;
+  }
+
+  const String & get () const
+  {
+    return _url;
+  }
+  void dump ();
+  void normalize ();
+  void rewrite ();
+  const String & signature ();
+
+  const URL & operator = (const URL & rhs);
 
 private:
-    String    _url;
-    String    _path;
-    String    _service;
-    String    _host;
-    int      _port;
-    int      _normal;
-    int      _hopcount;
-    String    _signature;
-    String    _user;
+  String _url;
+  String _path;
+  String _service;
+  String _host;
+  int _port;
+  int _normal;
+  int _hopcount;
+  String _signature;
+  String _user;
 
-    void    removeIndex(String &, String &);
-    void                normalizePath();
-    void    ServerAlias();
-    void    constructURL();
-    // Number of slashes following service specifier.  eg service("http")=2
-    static int    slashes(const String &);
+  void removeIndex (String &, String &);
+  void normalizePath ();
+  void ServerAlias ();
+  void constructURL ();
+  // Number of slashes following service specifier.  eg service("http")=2
+  static int slashes (const String &);
 };
 
 
@@ -91,10 +127,8 @@ private:
 //String &encodeURL(String &, char *valid = "?_@.=&/:");
 //String &encodeURL(String &, char *reserved = ";/?:@&=+$,");
 //                         char *unreserved = "-_.!~*'()");
-String &encodeURL(String &, char *valid = (char *)UNRESERVED);
+String & encodeURL (String &, char *valid = (char *) UNRESERVED);
 
-String &decodeURL(String &);
+String & decodeURL (String &);
 
 #endif
-
-

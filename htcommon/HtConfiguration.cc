@@ -40,92 +40,115 @@ using namespace std;
 //  Add complex entry to the configuration
 //
 void
-HtConfiguration::Add(const char *name, const char *value, Configuration *aList) {
+HtConfiguration::Add (const char *name, const char *value,
+                      Configuration * aList)
+{
 
-  if (strcmp("url",name)==0) {  //add URL entry
-    URL tmpUrl(strdup(value));
-  Dictionary *paths= NULL;
-    if ( (paths=(Dictionary *)dcUrls[tmpUrl.host()]) ) {
-      paths->Add(tmpUrl.path(),aList);
-    } else {
-      paths=new Dictionary();
-      paths->Add(tmpUrl.path(),aList);
-      dcUrls.Add(tmpUrl.host(),paths);
+  if (strcmp ("url", name) == 0)
+  {                             //add URL entry
+    URL tmpUrl (strdup (value));
+    Dictionary *paths = NULL;
+    if ((paths = (Dictionary *) dcUrls[tmpUrl.host ()]))
+    {
+      paths->Add (tmpUrl.path (), aList);
     }
-    } else {
+    else
+    {
+      paths = new Dictionary ();
+      paths->Add (tmpUrl.path (), aList);
+      dcUrls.Add (tmpUrl.host (), paths);
+    }
+  }
+  else
+  {
 
-      Object *treeEntry=dcBlocks[name];
-      if (treeEntry!=NULL) {
-  ((Dictionary *)treeEntry)->Add(value,aList);
-      } else {
-  treeEntry=new Dictionary(16);
-  ((Dictionary *)treeEntry)->Add(value,aList);
-  dcBlocks.Add(name, treeEntry);
-      }
+    Object *treeEntry = dcBlocks[name];
+    if (treeEntry != NULL)
+    {
+      ((Dictionary *) treeEntry)->Add (value, aList);
     }
+    else
+    {
+      treeEntry = new Dictionary (16);
+      ((Dictionary *) treeEntry)->Add (value, aList);
+      dcBlocks.Add (name, treeEntry);
+    }
+  }
 }
 
 //*********************************************************************
-const String HtConfiguration::Find(const char *blockName,const char *name,const char *value) const
+const String
+HtConfiguration::Find (const char *blockName, const char *name,
+                       const char *value) const
 {
-  if (!(blockName && name && value) )
-    return String();
-  union {
-    void      *ptr;
+  if (!(blockName && name && value))
+    return String ();
+  union
+  {
+    void *ptr;
     Object *obj;
     Dictionary *dict;
     HtConfiguration *conf;
   } tmpPtr;
   String chr;
-  
-  if (strcmp("url",blockName)==0) { // URL needs special compare
-    URL paramUrl(name);     // split URL to compare separatly host and path
-    chr=Find(&paramUrl,value);
-    if (chr[0]!=0) {
+
+  if (strcmp ("url", blockName) == 0)
+  {                             // URL needs special compare
+    URL paramUrl (name);        // split URL to compare separatly host and path
+    chr = Find (&paramUrl, value);
+    if (chr[0] != 0)
+    {
       return chr;
     }
-    }
-    else { // end "server"
-      tmpPtr.obj=dcBlocks.Find(blockName);
-      if (tmpPtr.ptr) {
-  tmpPtr.obj = tmpPtr.dict->Find(name);
-  if (tmpPtr.ptr) {
-    chr = tmpPtr.conf->Find(value);
-    if (chr[0] != 0)
-    return chr;
   }
+  else
+  {                             // end "server"
+    tmpPtr.obj = dcBlocks.Find (blockName);
+    if (tmpPtr.ptr)
+    {
+      tmpPtr.obj = tmpPtr.dict->Find (name);
+      if (tmpPtr.ptr)
+      {
+        chr = tmpPtr.conf->Find (value);
+        if (chr[0] != 0)
+          return chr;
       }
     }
- 
+  }
+
   // If this parameter is defined in global then return it
-  chr=Find(value);
-  if (chr[0]!=0) {
+  chr = Find (value);
+  if (chr[0] != 0)
+  {
     return chr;
   }
 #ifdef DEBUG
-  cerr << "Could not find configuration option " << blockName<<":"
-       <<name<<":"<<value<< "\n";
+  cerr << "Could not find configuration option " << blockName << ":"
+    << name << ":" << value << "\n";
 #endif
-  return String();
+  return String ();
 }
 
 //*********************************************************************
 //
-const String HtConfiguration::Find(URL *aUrl, const char *value) const
+const String
+HtConfiguration::Find (URL * aUrl, const char *value) const
 {
- if (!aUrl)
-    return String();
-  Dictionary *tmpPtr=(Dictionary *)dcUrls.Find( aUrl->host() );
-  if (tmpPtr) {       // We've got such host in config
-    tmpPtr->Start_Get();
+  if (!aUrl)
+    return String ();
+  Dictionary *tmpPtr = (Dictionary *) dcUrls.Find (aUrl->host ());
+  if (tmpPtr)
+  {                             // We've got such host in config
+    tmpPtr->Start_Get ();
     // Try to find best matched URL
     //
-    struct candidate {
-      Object    *obj;
-      unsigned int  len;
-      String    value;
+    struct candidate
+    {
+      Object *obj;
+      unsigned int len;
+      String value;
     } candidate;
-    candidate.len=0; 
+    candidate.len = 0;
     String returnValue;
     // Begin competition: which URL is better?
     //
@@ -133,139 +156,160 @@ const String HtConfiguration::Find(URL *aUrl, const char *value) const
     // (or create Dictionary::FindBest ?)
     // or make url list sorted ?
     // or implement abstract Dictionary::Compare?
-    const char *strParamUrl=(const char *)aUrl->path();
-    char* confUrl= NULL;
-    bool found(false);
-    while ((confUrl=tmpPtr->Get_Next()) ) {   
-      if (strncmp(confUrl,strParamUrl,strlen(confUrl))==0 
-    && (strlen(confUrl)>=candidate.len))  {
-  // it seems this URL match better
-  candidate.obj=tmpPtr->Find(confUrl);
+    const char *strParamUrl = (const char *) aUrl->path ();
+    char *confUrl = NULL;
+    bool found (false);
+    while ((confUrl = tmpPtr->Get_Next ()))
+    {
+      if (strncmp (confUrl, strParamUrl, strlen (confUrl)) == 0
+          && (strlen (confUrl) >= candidate.len))
+      {
+        // it seems this URL match better
+        candidate.obj = tmpPtr->Find (confUrl);
 
         // Let's see if it exists
-        if (((HtConfiguration *)candidate.obj)->Exists(value))
+        if (((HtConfiguration *) candidate.obj)->Exists (value))
         {
           // yes, it has! We've got new candidate.
-          candidate.value=((HtConfiguration *)candidate.obj)->Find(value);
-          returnValue=candidate.value;
-          candidate.len=candidate.value.length();
+          candidate.value = ((HtConfiguration *) candidate.obj)->Find (value);
+          returnValue = candidate.value;
+          candidate.len = candidate.value.length ();
           found = true;
         }
       }
     }
 
     if (found)
-      return ParsedString(returnValue).get(dcGlobalVars);
-       
+      return ParsedString (returnValue).get (dcGlobalVars);
+
   }
-  return Find(value);
+  return Find (value);
 }
 
 
 //*********************************************************************
-int HtConfiguration::Value(const char *blockName, const char *name,
-   const char *value, int default_value ) {
-int retValue=default_value;
-String tmpStr=Find(blockName,name,value);
- if (tmpStr[0]!=0) {
-   retValue=atoi(tmpStr.get());
- }
-return retValue;
+int
+HtConfiguration::Value (const char *blockName, const char *name,
+                        const char *value, int default_value)
+{
+  int retValue = default_value;
+  String tmpStr = Find (blockName, name, value);
+  if (tmpStr[0] != 0)
+  {
+    retValue = atoi (tmpStr.get ());
+  }
+  return retValue;
 }
 
 //*********************************************************************
-double HtConfiguration::Double(const char *blockName, const char *name,
-   const char *value, double default_value ) {
-double retValue=default_value;
-String tmpStr=Find(blockName,name,value);
- if (tmpStr[0]!=0) {
-   retValue=atof(tmpStr.get());
- }
-return retValue;
+double
+HtConfiguration::Double (const char *blockName, const char *name,
+                         const char *value, double default_value)
+{
+  double retValue = default_value;
+  String tmpStr = Find (blockName, name, value);
+  if (tmpStr[0] != 0)
+  {
+    retValue = atof (tmpStr.get ());
+  }
+  return retValue;
 }
 
 //*********************************************************************
-int HtConfiguration::Boolean(const char *blockName, const char *name,
-   const char *value, int default_value ) {
-int retValue=default_value;
-String tmpStr=Find(blockName,name,value);
- if (tmpStr[0]!=0) {
-        if (mystrcasecmp((char*)tmpStr, "true") == 0 ||
-            mystrcasecmp((char*)tmpStr, "yes") == 0 ||
-            mystrcasecmp((char*)tmpStr, "1") == 0)
-            retValue = 1;
-        else if (mystrcasecmp((char*)tmpStr, "false") == 0 ||
-                 mystrcasecmp((char*)tmpStr, "no") == 0 ||
-                 mystrcasecmp((char*)tmpStr, "0") == 0)
-            retValue = 0;
+int
+HtConfiguration::Boolean (const char *blockName, const char *name,
+                          const char *value, int default_value)
+{
+  int retValue = default_value;
+  String tmpStr = Find (blockName, name, value);
+  if (tmpStr[0] != 0)
+  {
+    if (mystrcasecmp ((char *) tmpStr, "true") == 0 ||
+        mystrcasecmp ((char *) tmpStr, "yes") == 0 ||
+        mystrcasecmp ((char *) tmpStr, "1") == 0)
+      retValue = 1;
+    else if (mystrcasecmp ((char *) tmpStr, "false") == 0 ||
+             mystrcasecmp ((char *) tmpStr, "no") == 0 ||
+             mystrcasecmp ((char *) tmpStr, "0") == 0)
+      retValue = 0;
 
- }
-return retValue;
+  }
+  return retValue;
 }
 
 //*********************************************************************
 //*********************************************************************
-int HtConfiguration::Value(URL *aUrl, const char *value,
-       int default_value ) {
-int retValue=default_value;
-String tmpStr=Find(aUrl,value);
- if (tmpStr[0]!=0) {
-   retValue=atoi(tmpStr.get());
- }
-return retValue;
+int
+HtConfiguration::Value (URL * aUrl, const char *value, int default_value)
+{
+  int retValue = default_value;
+  String tmpStr = Find (aUrl, value);
+  if (tmpStr[0] != 0)
+  {
+    retValue = atoi (tmpStr.get ());
+  }
+  return retValue;
 }
 
 //*********************************************************************
-double HtConfiguration::Double(URL *aUrl,const char *value,
-        double default_value ) {
-double retValue=default_value;
-String tmpStr=Find(aUrl,value);
- if (tmpStr[0]!=0) {
-   retValue=atof(tmpStr.get());
- }
-return retValue;
+double
+HtConfiguration::Double (URL * aUrl, const char *value, double default_value)
+{
+  double retValue = default_value;
+  String tmpStr = Find (aUrl, value);
+  if (tmpStr[0] != 0)
+  {
+    retValue = atof (tmpStr.get ());
+  }
+  return retValue;
 }
 
 //*********************************************************************
-int HtConfiguration::Boolean(URL *aUrl,const char *value,
-         int default_value ) {
-int retValue=default_value;
-String tmpStr=Find(aUrl,value);
- if (tmpStr[0]!=0) {
-        if (mystrcasecmp((char*)tmpStr, "true") == 0 ||
-            mystrcasecmp((char*)tmpStr, "yes") == 0 ||
-            mystrcasecmp((char*)tmpStr, "1") == 0)
-            retValue = 1;
-        else if (mystrcasecmp((char*)tmpStr, "false") == 0 ||
-                 mystrcasecmp((char*)tmpStr, "no") == 0 ||
-                 mystrcasecmp((char*)tmpStr, "0") == 0)
-            retValue = 0;
+int
+HtConfiguration::Boolean (URL * aUrl, const char *value, int default_value)
+{
+  int retValue = default_value;
+  String tmpStr = Find (aUrl, value);
+  if (tmpStr[0] != 0)
+  {
+    if (mystrcasecmp ((char *) tmpStr, "true") == 0 ||
+        mystrcasecmp ((char *) tmpStr, "yes") == 0 ||
+        mystrcasecmp ((char *) tmpStr, "1") == 0)
+      retValue = 1;
+    else if (mystrcasecmp ((char *) tmpStr, "false") == 0 ||
+             mystrcasecmp ((char *) tmpStr, "no") == 0 ||
+             mystrcasecmp ((char *) tmpStr, "0") == 0)
+      retValue = 0;
 
- }
-return retValue;
+  }
+  return retValue;
 }
 
 //*********************************************************************
 //
-int 
-HtConfiguration::Read(const String& filename)
+int
+HtConfiguration::Read (const String & filename)
 {
-extern FILE* yyin;
-extern int yyparse(void*);
-if ((yyin=fopen(filename,"r"))==NULL) 
-  return NOTOK;
+  extern FILE *yyin;
+  extern int yyparse (void *);
+  if ((yyin = fopen (filename, "r")) == NULL)
+    return NOTOK;
 
-FileName=filename; // need to be before yyparse() because is used in it
-yyparse(this);
-fclose(yyin);
-return OK;
+  FileName = filename;          // need to be before yyparse() because is used in it
+  yyparse (this);
+  fclose (yyin);
+  return OK;
 }
 
-HtConfiguration* HtConfiguration::_config= NULL;
+HtConfiguration *
+  HtConfiguration::_config = NULL;
 
-HtConfiguration* const HtConfiguration::config() {
-  if(_config == NULL) {
-    _config= new HtConfiguration();
+HtConfiguration *const
+HtConfiguration::config ()
+{
+  if (_config == NULL)
+  {
+    _config = new HtConfiguration ();
   }
   return _config;
 }

@@ -43,51 +43,88 @@
 #define FLAG_IGNORE 32768
 // The remainder are undefined
 
-class HtWordReference : public WordReference
+class HtWordReference:public WordReference
 {
 public:
   //
   // Construction/Destruction
   //
-        HtWordReference()  {}
-        HtWordReference(const String& key, const String& record) :
-    WordReference(key, record) { }
-        HtWordReference(const String& word) :
-    WordReference(word) {  }
-        HtWordReference(String word, unsigned int docid, unsigned int flags, unsigned int location, unsigned int anchor) {
-    Word(word);
-    DocID(docid);
-    Location(location);
-    Anchor(anchor);
-    Flags(flags);
+  HtWordReference ()
+  {
+  }
+  HtWordReference (const String & key,
+                   const String & record):WordReference (key, record)
+  {
+  }
+  HtWordReference (const String & word):WordReference (word)
+  {
+  }
+  HtWordReference (String word, unsigned int docid, unsigned int flags,
+                   unsigned int location, unsigned int anchor)
+  {
+    Word (word);
+    DocID (docid);
+    Location (location);
+    Anchor (anchor);
+    Flags (flags);
   }
 
-  ~HtWordReference()  {}
+  ~HtWordReference ()
+  {
+  }
 
   //
   // Accessors
   //
-  String      Word() const { return key.GetWord(); }
-  void      Word(const String& arg) { key.SetWord(arg); }
-  unsigned int    DocID() const { return key.Get( 1 ); }
-  void      DocID(const unsigned int arg) { key.Set( 1, arg); }
-  unsigned int    Flags() const { return key.Get( 2 ); }
-  void      Flags(const unsigned int arg) { key.Set( 2, arg); }
-  unsigned int    Location() const { return key.Get( 3 ); }
-  void      Location(const unsigned int arg) { key.Set( 3, arg); }
-  unsigned int    Anchor() const { return record.info.data; }
-  void      Anchor(const unsigned int arg) { record.info.data = arg; }
+  String Word () const
+  {
+    return key.GetWord ();
+  }
+  void Word (const String & arg)
+  {
+    key.SetWord (arg);
+  }
+  unsigned int DocID () const
+  {
+    return key.Get (1);
+  }
+  void DocID (const unsigned int arg)
+  {
+    key.Set (1, arg);
+  }
+  unsigned int Flags () const
+  {
+    return key.Get (2);
+  }
+  void Flags (const unsigned int arg)
+  {
+    key.Set (2, arg);
+  }
+  unsigned int Location () const
+  {
+    return key.Get (3);
+  }
+  void Location (const unsigned int arg)
+  {
+    key.Set (3, arg);
+  }
+  unsigned int Anchor () const
+  {
+    return record.info.data;
+  }
+  void Anchor (const unsigned int arg)
+  {
+    record.info.data = arg;
+  }
 
   //
   // Dumping/Loading
   //
-  int      Dump(FILE *fl) const;
-  static int    DumpHeader(FILE *fl);
-  int      Load(const String& s);
-  static int    LoadHeader(FILE *fl);
+  int Dump (FILE * fl) const;
+  static int DumpHeader (FILE * fl);
+  int Load (const String & s);
+  static int LoadHeader (FILE * fl);
 };
 
 
 #endif
-
-

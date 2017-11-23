@@ -20,22 +20,22 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "HtURLCodec.h"
-#include "defaults.h" // For "config"
+#include "defaults.h"           // For "config"
 
 // Constructor: parses the appropriate parameters using the
 // encapsulated HtWordCodec class.
 // Only used in privacy.
-HtURLCodec::HtURLCodec()
+HtURLCodec::HtURLCodec ()
 {
-  HtConfiguration* config= HtConfiguration::config();
-  StringList l1(config->Find("url_part_aliases"), " \t");
-  StringList l2(config->Find("common_url_parts"), " \t");
+  HtConfiguration *config = HtConfiguration::config ();
+  StringList l1 (config->Find ("url_part_aliases"), " \t");
+  StringList l2 (config->Find ("common_url_parts"), " \t");
 
-  myWordCodec = new HtWordCodec(l1, l2, myErrMsg);
+  myWordCodec = new HtWordCodec (l1, l2, myErrMsg);
 }
 
 
-HtURLCodec::~HtURLCodec()
+HtURLCodec::~HtURLCodec ()
 {
   delete myWordCodec;
 }
@@ -43,7 +43,7 @@ HtURLCodec::~HtURLCodec()
 
 // Supposedly used as HtURLCodec::instance()->ErrMsg()
 // to check if HtWordCodec liked what was fed.
-String& HtURLCodec::ErrMsg()
+String & HtURLCodec::ErrMsg ()
 {
   return myErrMsg;
 }
@@ -51,13 +51,13 @@ String& HtURLCodec::ErrMsg()
 
 // Canonical singleton interface.
 HtURLCodec *
-HtURLCodec::instance()
+HtURLCodec::instance ()
 {
   static HtURLCodec *_instance = 0;
 
   if (_instance == 0)
   {
-    _instance = new HtURLCodec();
+    _instance = new HtURLCodec ();
   }
 
   return _instance;
