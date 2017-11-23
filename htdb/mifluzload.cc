@@ -44,61 +44,70 @@
 #include <WordContext.h>
 #include <WordList.h>
 
-static void action(WordContext* context, const String& file)
+static void
+action (WordContext * context, const String & file)
 {
-  WordList *words = context->List();
-  if(words->Open(file, O_RDWR | O_TRUNC) != OK) exit(1);
-  if(words->Read(stdin) < 0) exit(1);
-  if(words->Close() != OK) exit(1);
+  WordList *words = context->List ();
+  if (words->Open (file, O_RDWR | O_TRUNC) != OK)
+    exit (1);
+  if (words->Read (stdin) < 0)
+    exit (1);
+  if (words->Close () != OK)
+    exit (1);
   delete words;
 }
 
-static void usage()
+static void
+usage ()
 {
-  fprintf(stderr, "usage: mifluzload [-zv] file\n");
-  exit(1);
+  fprintf (stderr, "usage: mifluzload [-zv] file\n");
+  exit (1);
 }
 
-int main(int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
-  if(argc < 2) usage();
+  if (argc < 2)
+    usage ();
 
-  setlocale(LC_ALL, "");
+  setlocale (LC_ALL, "");
 
   //
   // Mandatory to create global data needed for the library.
   //
-  WordContext *context = new WordContext();
-  if(!context) exit(1);
+  WordContext *context = new WordContext ();
+  if (!context)
+    exit (1);
 
-  Configuration& config = context->GetConfiguration();
+  Configuration & config = context->GetConfiguration ();
 
   //  extern char *optarg;
   extern int optind;
   int ch;
-  while ((ch = getopt(argc, argv, "zv")) != EOF) {
-    switch (ch) {
+  while ((ch = getopt (argc, argv, "zv")) != EOF)
+  {
+    switch (ch)
+    {
     case 'z':
-      config.Add("wordlist_compress", "true");
+      config.Add ("wordlist_compress", "true");
       break;
     case 'v':
       {
-  int value = config.Value("wordlist_verbose", 0);
-  value++;
-  char value_string[64];
-  sprintf(value_string, "%d", value);
-  config.Add("wordlist_verbose", value_string);
+        int value = config.Value ("wordlist_verbose", 0);
+        value++;
+        char value_string[64];
+        sprintf (value_string, "%d", value);
+        config.Add ("wordlist_verbose", value_string);
       }
       break;
     default:
-      usage();
+      usage ();
       break;
     }
   }
 
-  context->ReInitialize();
+  context->ReInitialize ();
 
-  action(context, argv[optind]);
+  action (context, argv[optind]);
   delete context;
 }
-

@@ -18,52 +18,58 @@
 #include <sys/types.h>
 #include <signal.h>
 
-extern "C" {
+extern "C"
+{
 #include "db_int.h"
 #include "common_ext.h"
 }
 
 static int interrupt;
-static void onint(int);
+static void onint (int);
 
 /*
  * onint --
  *  Interrupt signal handler.
  */
-static void onint(int signo)
+static void
+onint (int signo)
 {
-    if ((interrupt = signo) == 0)
-  interrupt = SIGINT;
+  if ((interrupt = signo) == 0)
+    interrupt = SIGINT;
 }
 
-void __db_util_siginit()
+void
+__db_util_siginit ()
 {
-    /*
-     * Initialize the set of signals for which we want to clean up.
-     * Generally, we try not to leave the shared regions locked if
-     * we can.
-     */
+  /*
+   * Initialize the set of signals for which we want to clean up.
+   * Generally, we try not to leave the shared regions locked if
+   * we can.
+   */
 #ifdef SIGHUP
-    (void) signal(SIGHUP, onint);
+  (void) signal (SIGHUP, onint);
 #endif
-    (void) signal(SIGINT, onint);
+  (void) signal (SIGINT, onint);
 #ifdef SIGPIPE
-    (void) signal(SIGPIPE, onint);
+  (void) signal (SIGPIPE, onint);
 #endif
-    (void) signal(SIGTERM, onint);
+  (void) signal (SIGTERM, onint);
 }
 
-int __db_util_interrupted()
+int
+__db_util_interrupted ()
 {
-    return (interrupt != 0);
+  return (interrupt != 0);
 }
 
-void __db_util_sigresend()
+void
+__db_util_sigresend ()
 {
-    /* Resend any caught signal. */
-    if (__db_util_interrupted != 0) {
-  (void) signal(interrupt, SIG_DFL);
-  (void) raise(interrupt);
-  /* NOTREACHED */
-    }
+  /* Resend any caught signal. */
+  if (__db_util_interrupted != 0)
+  {
+    (void) signal (interrupt, SIG_DFL);
+    (void) raise (interrupt);
+    /* NOTREACHED */
+  }
 }

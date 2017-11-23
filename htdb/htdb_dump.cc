@@ -16,8 +16,7 @@
 #include "htconfig.h"
 
 #ifndef lint
-static const char copyright[] =
-"@(#) Copyright (c) 1996, 1997, 1998, 1999\n\
+static const char copyright[] = "@(#) Copyright (c) 1996, 1997, 1998, 1999\n\
   Sleepycat Software Inc.  All rights reserved.\n";
 static const char sccsid[] = "@(#)db_dump.c  11.12 (Sleepycat) 11/10/99";
 #endif
@@ -36,7 +35,8 @@ static const char sccsid[] = "@(#)db_dump.c  11.12 (Sleepycat) 11/10/99";
 #endif /* HAVE_GETOPT_H */
 #endif
 
-extern "C" {
+extern "C"
+{
 #include "db_int.h"
 #include "db_page.h"
 #include "db_shash.h"
@@ -48,25 +48,24 @@ extern "C" {
 #include "WordContext.h"
 #include "WordDBCompress.h"
 
-void   configure __P((char *));
-int   db_init __P((char *, int));
-int   dump __P((DB *, int, int));
-int   dump_sub __P((DB *, char *, int, int));
-int   is_sub __P((DB *, int *));
-int   main __P((int, char *[]));
-void   onint __P((int));
-int   pheader __P((DB *, char *, int, int));
-int   show_subs __P((DB *));
-void   siginit __P((void));
-void   usage __P((void));
+void configure __P ((char *));
+int db_init __P ((char *, int));
+int dump __P ((DB *, int, int));
+int dump_sub __P ((DB *, char *, int, int));
+int is_sub __P ((DB *, int *));
+int main __P ((int, char *[]));
+void onint __P ((int));
+int pheader __P ((DB *, char *, int, int));
+int show_subs __P ((DB *));
+void siginit __P ((void));
+void usage __P ((void));
 
-DB_ENV  *dbenv;
-int   interrupted;
-const char
-  *progname = "htdb_dump";        /* Program name. */
+DB_ENV *dbenv;
+int interrupted;
+const char *progname = "htdb_dump";     /* Program name. */
 
 int
-main(int argc, char *argv[])
+main (int argc, char *argv[])
 {
   extern char *optarg;
   extern int optind;
@@ -83,15 +82,17 @@ main(int argc, char *argv[])
   d_close = e_close = exitval = lflag = Nflag = pflag = 0;
   keyflag = 0;
   dopt = home = subname = NULL;
-  while ((ch = getopt(argc, argv, "d:f:h:klNps:C:zW")) != EOF)
-    switch (ch) {
+  while ((ch = getopt (argc, argv, "d:f:h:klNps:C:zW")) != EOF)
+    switch (ch)
+    {
     case 'd':
       dopt = optarg;
       break;
     case 'f':
-      if (freopen(optarg, "w", stdout) == NULL) {
-        fprintf(stderr, "%s: %s: reopen: %s\n",
-            progname, optarg, strerror(errno));
+      if (freopen (optarg, "w", stdout) == NULL)
+      {
+        fprintf (stderr, "%s: %s: reopen: %s\n",
+                 progname, optarg, strerror (errno));
         exit (1);
       }
       break;
@@ -114,7 +115,7 @@ main(int argc, char *argv[])
       subname = optarg;
       break;
     case 'C':
-      cachesize = atoi(optarg);
+      cachesize = atoi (optarg);
       break;
     case 'z':
       compress = DB_COMPRESS;
@@ -124,120 +125,141 @@ main(int argc, char *argv[])
       break;
     case '?':
     default:
-      usage();
+      usage ();
     }
   argc -= optind;
   argv += optind;
 
   if (argc != 1)
-    usage();
+    usage ();
 
-  if (dopt != NULL && pflag) {
-    fprintf(stderr,
-        "%s: the -d and -p options may not both be specified\n",
-        progname);
+  if (dopt != NULL && pflag)
+  {
+    fprintf (stderr,
+             "%s: the -d and -p options may not both be specified\n",
+             progname);
     exit (1);
   }
-  if (lflag && subname != NULL) {
-    fprintf(stderr,
-        "%s: the -l and -s options may not both be specified\n",
-        progname);
+  if (lflag && subname != NULL)
+  {
+    fprintf (stderr,
+             "%s: the -l and -s options may not both be specified\n",
+             progname);
     exit (1);
   }
 
   /* Handle possible interruptions. */
-  siginit();
+  siginit ();
 
-  if(wordlist && compress) {
+  if (wordlist && compress)
+  {
     static ConfigDefaults defaults[] = {
-      { "wordlist_wordkey_description", "Word/DocID 32/Flag 8/Location 16"},
-      { "wordlist_env_skip", "true"},
-      { 0, 0, 0 }
+      {"wordlist_wordkey_description", "Word/DocID 32/Flag 8/Location 16"},
+      {"wordlist_env_skip", "true"},
+      {0, 0, 0}
     };
-    config = WordContext::Initialize(defaults);
+    config = WordContext::Initialize (defaults);
   }
 
   /*
-     * Create an environment object and initialize it for error
-     * reporting.
-     */
-  if ((ret = CDB_db_env_create(&dbenv, 0)) != 0) {
-    fprintf(stderr,
-      "%s: CDB_db_env_create: %s\n", progname, CDB_db_strerror(ret));
+   * Create an environment object and initialize it for error
+   * reporting.
+   */
+  if ((ret = CDB_db_env_create (&dbenv, 0)) != 0)
+  {
+    fprintf (stderr,
+             "%s: CDB_db_env_create: %s\n", progname, CDB_db_strerror (ret));
     exit (1);
   }
 
   e_close = 1;
-  dbenv->set_errfile(dbenv, stderr);
-  dbenv->set_errpfx(dbenv, progname);
-  if(compress && wordlist) dbenv->mp_cmpr_info = (new WordDBCompress)->CmprInfo();
+  dbenv->set_errfile (dbenv, stderr);
+  dbenv->set_errpfx (dbenv, progname);
+  if (compress && wordlist)
+    dbenv->mp_cmpr_info = (new WordDBCompress)->CmprInfo ();
 
   /* Initialize the environment. */
-  if (db_init(home, Nflag) != 0)
+  if (db_init (home, Nflag) != 0)
     goto err;
 
   /* Create the DB object and open the file. */
-  if ((ret = CDB_db_create(&dbp, dbenv, 0)) != 0) {
-    dbenv->err(dbenv, ret, "CDB_db_create");
+  if ((ret = CDB_db_create (&dbp, dbenv, 0)) != 0)
+  {
+    dbenv->err (dbenv, ret, "CDB_db_create");
     goto err;
   }
-  if(cachesize > 0) dbp->set_cachesize(dbp, 0, cachesize, 1);
+  if (cachesize > 0)
+    dbp->set_cachesize (dbp, 0, cachesize, 1);
   d_close = 1;
-  if ((ret = dbp->open(dbp,
-      argv[0], subname, DB_UNKNOWN, (DB_RDONLY | compress), 0)) != 0) {
-    dbp->err(dbp, ret, "open: %s", argv[0]);
+  if ((ret = dbp->open (dbp,
+                        argv[0], subname, DB_UNKNOWN, (DB_RDONLY | compress),
+                        0)) != 0)
+  {
+    dbp->err (dbp, ret, "open: %s", argv[0]);
     goto err;
   }
 
-  if (dopt != NULL) {
-    if (CDB___db_dump(dbp, dopt, NULL)) {
-      dbp->err(dbp, ret, "CDB___db_dump: %s", argv[0]);
+  if (dopt != NULL)
+  {
+    if (CDB___db_dump (dbp, dopt, NULL))
+    {
+      dbp->err (dbp, ret, "CDB___db_dump: %s", argv[0]);
       goto err;
     }
-  } else if (lflag) {
-    if (is_sub(dbp, &subs))
+  }
+  else if (lflag)
+  {
+    if (is_sub (dbp, &subs))
       goto err;
-    if (subs == 0) {
-      dbp->errx(dbp,
-          "%s: does not contain subdatabases", argv[0]);
+    if (subs == 0)
+    {
+      dbp->errx (dbp, "%s: does not contain subdatabases", argv[0]);
       goto err;
     }
-    if (show_subs(dbp))
+    if (show_subs (dbp))
       goto err;
-  } else {
+  }
+  else
+  {
     subs = 0;
-    if (subname == NULL && is_sub(dbp, &subs))
+    if (subname == NULL && is_sub (dbp, &subs))
       goto err;
-    if (subs) {
-      if (dump_sub(dbp, argv[0], pflag, keyflag))
+    if (subs)
+    {
+      if (dump_sub (dbp, argv[0], pflag, keyflag))
         goto err;
-    } else
-      if (pheader(dbp, NULL, pflag, keyflag)
-          || dump(dbp, pflag, keyflag))
-        goto err;
+    }
+    else
+      if (pheader (dbp, NULL, pflag, keyflag) || dump (dbp, pflag, keyflag))
+      goto err;
   }
 
-  if (0) {
-err:    exitval = 1;
+  if (0)
+  {
+  err:exitval = 1;
   }
-  if (d_close && (ret = dbp->close(dbp, 0)) != 0) {
+  if (d_close && (ret = dbp->close (dbp, 0)) != 0)
+  {
     exitval = 1;
-    dbp->err(dbp, ret, "close");
+    dbp->err (dbp, ret, "close");
   }
-  if (e_close && (ret = dbenv->close(dbenv, 0)) != 0) {
+  if (e_close && (ret = dbenv->close (dbenv, 0)) != 0)
+  {
     exitval = 1;
-    fprintf(stderr,
-        "%s: dbenv->close: %s\n", progname, CDB_db_strerror(ret));
+    fprintf (stderr,
+             "%s: dbenv->close: %s\n", progname, CDB_db_strerror (ret));
   }
 
-  if (interrupted) {
-    (void)signal(interrupted, SIG_DFL);
-    (void)raise(interrupted);
+  if (interrupted)
+  {
+    (void) signal (interrupted, SIG_DFL);
+    (void) raise (interrupted);
     /* NOTREACHED */
   }
 
-  if(config) {
-    WordContext::Finish();
+  if (config)
+  {
+    WordContext::Finish ();
     delete config;
   }
 
@@ -249,19 +271,22 @@ err:    exitval = 1;
  *  Initialize the environment.
  */
 int
-db_init(char *home, int Nflag)
+db_init (char *home, int Nflag)
 {
   u_int32_t flags;
   int ret;
 
   /* Optionally turn mutexes off. */
-  if (Nflag) {
-    if ((ret = dbenv->set_mutexlocks(dbenv, 0)) != 0) {
-      dbenv->err(dbenv, ret, "set_mutexlocks");
+  if (Nflag)
+  {
+    if ((ret = dbenv->set_mutexlocks (dbenv, 0)) != 0)
+    {
+      dbenv->err (dbenv, ret, "set_mutexlocks");
       return (1);
     }
-    if ((ret = dbenv->set_panic(dbenv, 0)) != 0) {
-      dbenv->err(dbenv, ret, "set_panic");
+    if ((ret = dbenv->set_panic (dbenv, 0)) != 0)
+    {
+      dbenv->err (dbenv, ret, "set_panic");
       return (1);
     }
   }
@@ -272,7 +297,7 @@ db_init(char *home, int Nflag)
    * cache hasn't been flushed.
    */
   flags = DB_USE_ENVIRON | DB_INIT_MPOOL | DB_INIT_LOCK;
-  if (dbenv->open(dbenv, home, NULL, flags, 0) == 0)
+  if (dbenv->open (dbenv, home, NULL, flags, 0) == 0)
     return (0);
 
   /*
@@ -285,12 +310,12 @@ db_init(char *home, int Nflag)
    * an mpool region exists).  Create one, but make it private so that
    * no files are actually created.
    */
-  LF_SET(DB_CREATE | DB_PRIVATE);
-  if ((ret = dbenv->open(dbenv, home, NULL, flags, 0)) == 0)
+  LF_SET (DB_CREATE | DB_PRIVATE);
+  if ((ret = dbenv->open (dbenv, home, NULL, flags, 0)) == 0)
     return (0);
 
   /* An environment is required. */
-  dbenv->err(dbenv, ret, "open");
+  dbenv->err (dbenv, ret, "open");
   return (1);
 }
 
@@ -299,82 +324,87 @@ db_init(char *home, int Nflag)
  *  Write out the header information.
  */
 int
-pheader(DB *dbp, char *subname, int pflag, int keyflag)
+pheader (DB * dbp, char *subname, int pflag, int keyflag)
 {
   DB_BTREE_STAT *btsp;
   DB_HASH_STAT *hsp;
   DB_QUEUE_STAT *qsp;
   int ret;
 
-  printf("VERSION=2\n");
-  printf("format=%s\n", pflag ? "print" : "bytevalue");
+  printf ("VERSION=2\n");
+  printf ("format=%s\n", pflag ? "print" : "bytevalue");
   if (subname != NULL)
-    printf("subdatabase=%s\n", subname);
-  switch (dbp->type) {
+    printf ("subdatabase=%s\n", subname);
+  switch (dbp->type)
+  {
   case DB_BTREE:
-    printf("type=btree\n");
-    if ((ret = dbp->stat(dbp, &btsp, NULL, 0)) != 0) {
-      dbp->err(dbp, ret, "DB->stat");
+    printf ("type=btree\n");
+    if ((ret = dbp->stat (dbp, &btsp, NULL, 0)) != 0)
+    {
+      dbp->err (dbp, ret, "DB->stat");
       return (1);
     }
-    if (F_ISSET(dbp, BTM_RECNUM))
-      printf("recnum=1\n");
+    if (F_ISSET (dbp, BTM_RECNUM))
+      printf ("recnum=1\n");
     if (btsp->bt_maxkey != 0)
-      printf("bt_maxkey=%lu\n", (u_long)btsp->bt_maxkey);
+      printf ("bt_maxkey=%lu\n", (u_long) btsp->bt_maxkey);
     if (btsp->bt_minkey != 0 && btsp->bt_minkey != DEFMINKEYPAGE)
-      printf("bt_minkey=%lu\n", (u_long)btsp->bt_minkey);
+      printf ("bt_minkey=%lu\n", (u_long) btsp->bt_minkey);
     break;
   case DB_HASH:
-    printf("type=hash\n");
-    if ((ret = dbp->stat(dbp, &hsp, NULL, 0)) != 0) {
-      dbp->err(dbp, ret, "DB->stat");
+    printf ("type=hash\n");
+    if ((ret = dbp->stat (dbp, &hsp, NULL, 0)) != 0)
+    {
+      dbp->err (dbp, ret, "DB->stat");
       return (1);
     }
     if (hsp->hash_ffactor != 0)
-      printf("h_ffactor=%lu\n", (u_long)hsp->hash_ffactor);
+      printf ("h_ffactor=%lu\n", (u_long) hsp->hash_ffactor);
     if (hsp->hash_nelem != 0 || hsp->hash_nrecs != 0)
-      printf("h_nelem=%lu\n",
-          hsp->hash_nelem > hsp->hash_nrecs ?
-          (u_long)hsp->hash_nelem : (u_long)hsp->hash_nrecs);
+      printf ("h_nelem=%lu\n",
+              hsp->hash_nelem > hsp->hash_nrecs ?
+              (u_long) hsp->hash_nelem : (u_long) hsp->hash_nrecs);
     break;
   case DB_QUEUE:
-    printf("type=queue\n");
-    if ((ret = dbp->stat(dbp, &qsp, NULL, 0)) != 0) {
-      dbp->err(dbp, ret, "DB->stat");
+    printf ("type=queue\n");
+    if ((ret = dbp->stat (dbp, &qsp, NULL, 0)) != 0)
+    {
+      dbp->err (dbp, ret, "DB->stat");
       return (1);
     }
-    printf("re_len=%lu\n", (u_long)qsp->qs_re_len);
+    printf ("re_len=%lu\n", (u_long) qsp->qs_re_len);
     if (qsp->qs_re_pad != 0 && qsp->qs_re_pad != ' ')
-      printf("re_pad=%#x\n", qsp->qs_re_pad);
+      printf ("re_pad=%#x\n", qsp->qs_re_pad);
     break;
   case DB_RECNO:
-    printf("type=recno\n");
-    if ((ret = dbp->stat(dbp, &btsp, NULL, 0)) != 0) {
-      dbp->err(dbp, ret, "DB->stat");
+    printf ("type=recno\n");
+    if ((ret = dbp->stat (dbp, &btsp, NULL, 0)) != 0)
+    {
+      dbp->err (dbp, ret, "DB->stat");
       return (1);
     }
-    if (F_ISSET(dbp, BTM_RENUMBER))
-      printf("renumber=1\n");
-    if (F_ISSET(dbp, BTM_FIXEDLEN))
-      printf("re_len=%lu\n", (u_long)btsp->bt_re_len);
+    if (F_ISSET (dbp, BTM_RENUMBER))
+      printf ("renumber=1\n");
+    if (F_ISSET (dbp, BTM_FIXEDLEN))
+      printf ("re_len=%lu\n", (u_long) btsp->bt_re_len);
     if (btsp->bt_re_pad != 0 && btsp->bt_re_pad != ' ')
-      printf("re_pad=%#x\n", btsp->bt_re_pad);
+      printf ("re_pad=%#x\n", btsp->bt_re_pad);
     break;
   case DB_UNKNOWN:
-    abort();      /* Impossible. */
+    abort ();                   /* Impossible. */
     /* NOTREACHED */
   }
 
-  if (F_ISSET(dbp, DB_AM_DUP))
-    printf("duplicates=1\n");
+  if (F_ISSET (dbp, DB_AM_DUP))
+    printf ("duplicates=1\n");
 
-  if (!F_ISSET(dbp, DB_AM_PGDEF))
-    printf("db_pagesize=%lu\n", (u_long)dbp->pgsize);
+  if (!F_ISSET (dbp, DB_AM_PGDEF))
+    printf ("db_pagesize=%lu\n", (u_long) dbp->pgsize);
 
   if (keyflag)
-    printf("keys=1\n");
+    printf ("keys=1\n");
 
-  printf("HEADER=END\n");
+  printf ("HEADER=END\n");
   return (0);
 }
 
@@ -383,34 +413,37 @@ pheader(DB *dbp, char *subname, int pflag, int keyflag)
  *  Return if the database contains subdatabases.
  */
 int
-is_sub(DB *dbp, int *yesno)
+is_sub (DB * dbp, int *yesno)
 {
   DB_BTREE_STAT *btsp;
   DB_HASH_STAT *hsp;
   int ret;
 
-  switch (dbp->type) {
+  switch (dbp->type)
+  {
   case DB_BTREE:
   case DB_RECNO:
-    if ((ret = dbp->stat(dbp, &btsp, NULL, 0)) != 0) {
-      dbp->err(dbp, ret, "DB->stat");
+    if ((ret = dbp->stat (dbp, &btsp, NULL, 0)) != 0)
+    {
+      dbp->err (dbp, ret, "DB->stat");
       break;
     }
     *yesno = btsp->bt_metaflags & BTM_SUBDB ? 1 : 0;
-    free(btsp);
+    free (btsp);
     break;
   case DB_HASH:
-    if ((ret = dbp->stat(dbp, &hsp, NULL, 0)) != 0) {
-      dbp->err(dbp, ret, "DB->stat");
+    if ((ret = dbp->stat (dbp, &hsp, NULL, 0)) != 0)
+    {
+      dbp->err (dbp, ret, "DB->stat");
       break;
     }
     *yesno = hsp->hash_metaflags & DB_HASH_SUBDB ? 1 : 0;
-    free(hsp);
+    free (hsp);
     break;
   case DB_QUEUE:
     return (0);
   default:
-    abort();
+    abort ();
     /* NOTREACHED */
   }
   return (ret);
@@ -421,7 +454,7 @@ is_sub(DB *dbp, int *yesno)
  *  Dump out the records for a DB containing subdatabases.
  */
 int
-dump_sub(DB *parent_dbp, char *parent_name, int pflag, int keyflag)
+dump_sub (DB * parent_dbp, char *parent_name, int pflag, int keyflag)
 {
   DB *dbp;
   DBC *dbcp;
@@ -433,48 +466,52 @@ dump_sub(DB *parent_dbp, char *parent_name, int pflag, int keyflag)
    * Get a cursor and step through the database, dumping out each
    * subdatabase.
    */
-  if ((ret = parent_dbp->cursor(parent_dbp, NULL, &dbcp, 0)) != 0) {
-    dbenv->err(dbenv, ret, "DB->cursor");
+  if ((ret = parent_dbp->cursor (parent_dbp, NULL, &dbcp, 0)) != 0)
+  {
+    dbenv->err (dbenv, ret, "DB->cursor");
     return (1);
   }
 
-  memset(&key, 0, sizeof(key));
-  memset(&data, 0, sizeof(data));
-  while ((ret = dbcp->c_get(dbcp, &key, &data, DB_NEXT)) == 0) {
+  memset (&key, 0, sizeof (key));
+  memset (&data, 0, sizeof (data));
+  while ((ret = dbcp->c_get (dbcp, &key, &data, DB_NEXT)) == 0)
+  {
     /* Nul terminate the subdatabase name. */
-    if ((subdb = (char*)malloc(key.size + 1)) == NULL) {
-      dbenv->err(dbenv, ENOMEM, NULL);
+    if ((subdb = (char *) malloc (key.size + 1)) == NULL)
+    {
+      dbenv->err (dbenv, ENOMEM, NULL);
       return (1);
     }
-    memcpy(subdb, key.data, key.size);
+    memcpy (subdb, key.data, key.size);
     subdb[key.size] = '\0';
 
     /* Create the DB object and open the file. */
-    if ((ret = CDB_db_create(&dbp, dbenv, 0)) != 0) {
-      dbenv->err(dbenv, ret, "CDB_db_create");
-      free(subdb);
+    if ((ret = CDB_db_create (&dbp, dbenv, 0)) != 0)
+    {
+      dbenv->err (dbenv, ret, "CDB_db_create");
+      free (subdb);
       return (1);
     }
-    if ((ret = dbp->open(dbp,
-        parent_name, subdb, DB_UNKNOWN, DB_RDONLY, 0)) != 0)
-      dbp->err(dbp, ret,
-          "DB->open: %s:%s", parent_name, subdb);
+    if ((ret = dbp->open (dbp,
+                          parent_name, subdb, DB_UNKNOWN, DB_RDONLY, 0)) != 0)
+      dbp->err (dbp, ret, "DB->open: %s:%s", parent_name, subdb);
     if (ret == 0 &&
-        (pheader(dbp, subdb, pflag, keyflag) ||
-        dump(dbp, pflag, keyflag)))
+        (pheader (dbp, subdb, pflag, keyflag) || dump (dbp, pflag, keyflag)))
       ret = 1;
-    (void)dbp->close(dbp, 0);
-    free(subdb);
+    (void) dbp->close (dbp, 0);
+    free (subdb);
     if (ret != 0)
       return (1);
   }
-  if (ret != DB_NOTFOUND) {
-    dbp->err(dbp, ret, "DBcursor->get");
+  if (ret != DB_NOTFOUND)
+  {
+    dbp->err (dbp, ret, "DBcursor->get");
     return (1);
   }
 
-  if ((ret = dbcp->c_close(dbcp)) != 0) {
-    dbp->err(dbp, ret, "DBcursor->close");
+  if ((ret = dbcp->c_close (dbcp)) != 0)
+  {
+    dbp->err (dbp, ret, "DBcursor->close");
     return (1);
   }
 
@@ -486,7 +523,7 @@ dump_sub(DB *parent_dbp, char *parent_name, int pflag, int keyflag)
  *  Display the subdatabases for a database.
  */
 int
-show_subs(DB *dbp)
+show_subs (DB * dbp)
 {
   DBC *dbcp;
   DBT key, data;
@@ -496,26 +533,31 @@ show_subs(DB *dbp)
    * Get a cursor and step through the database, printing out the key
    * of each key/data pair.
    */
-  if ((ret = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
-    dbp->err(dbp, ret, "DB->cursor");
+  if ((ret = dbp->cursor (dbp, NULL, &dbcp, 0)) != 0)
+  {
+    dbp->err (dbp, ret, "DB->cursor");
     return (1);
   }
 
-  memset(&key, 0, sizeof(key));
-  memset(&data, 0, sizeof(data));
-  while ((ret = dbcp->c_get(dbcp, &key, &data, DB_NEXT)) == 0) {
-    if ((ret = CDB___db_prdbt(&key, 1, NULL, stdout, 0)) != 0) {
-      dbp->errx(dbp, NULL);
+  memset (&key, 0, sizeof (key));
+  memset (&data, 0, sizeof (data));
+  while ((ret = dbcp->c_get (dbcp, &key, &data, DB_NEXT)) == 0)
+  {
+    if ((ret = CDB___db_prdbt (&key, 1, NULL, stdout, 0)) != 0)
+    {
+      dbp->errx (dbp, NULL);
       return (1);
     }
   }
-  if (ret != DB_NOTFOUND) {
-    dbp->err(dbp, ret, "DBcursor->get");
+  if (ret != DB_NOTFOUND)
+  {
+    dbp->err (dbp, ret, "DBcursor->get");
     return (1);
   }
 
-  if ((ret = dbcp->c_close(dbcp)) != 0) {
-    dbp->err(dbp, ret, "DBcursor->close");
+  if ((ret = dbcp->c_close (dbcp)) != 0)
+  {
+    dbp->err (dbp, ret, "DBcursor->close");
     return (1);
   }
   return (0);
@@ -526,7 +568,7 @@ show_subs(DB *dbp)
  *  Dump out the records for a DB.
  */
 int
-dump(DB *dbp, int pflag, int keyflag)
+dump (DB * dbp, int pflag, int keyflag)
 {
   DBC *dbcp;
   DBT key, data;
@@ -536,33 +578,38 @@ dump(DB *dbp, int pflag, int keyflag)
    * Get a cursor and step through the database, printing out each
    * key/data pair.
    */
-  if ((ret = dbp->cursor(dbp, NULL, &dbcp, 0)) != 0) {
-    dbp->err(dbp, ret, "DB->cursor");
+  if ((ret = dbp->cursor (dbp, NULL, &dbcp, 0)) != 0)
+  {
+    dbp->err (dbp, ret, "DB->cursor");
     return (1);
   }
 
-  memset(&key, 0, sizeof(key));
-  memset(&data, 0, sizeof(data));
+  memset (&key, 0, sizeof (key));
+  memset (&data, 0, sizeof (data));
   is_recno = (dbp->type == DB_RECNO || dbp->type == DB_QUEUE);
   keyflag = is_recno ? keyflag : 1;
-  while ((ret = dbcp->c_get(dbcp, &key, &data, DB_NEXT)) == 0)
+  while ((ret = dbcp->c_get (dbcp, &key, &data, DB_NEXT)) == 0)
     if ((keyflag && (ret =
-        CDB___db_prdbt(&key, pflag, " ", stdout, is_recno)) != 0) ||
-        (ret = CDB___db_prdbt(&data, pflag, " ", stdout, 0)) != 0) {
-      dbp->errx(dbp, NULL);
+                     CDB___db_prdbt (&key, pflag, " ", stdout,
+                                     is_recno)) != 0)
+        || (ret = CDB___db_prdbt (&data, pflag, " ", stdout, 0)) != 0)
+    {
+      dbp->errx (dbp, NULL);
       return (1);
     }
-  if (ret != DB_NOTFOUND) {
-    dbp->err(dbp, ret, "DBcursor->get");
+  if (ret != DB_NOTFOUND)
+  {
+    dbp->err (dbp, ret, "DBcursor->get");
     return (1);
   }
 
-  if ((ret = dbcp->c_close(dbcp)) != 0) {
-    dbp->err(dbp, ret, "DBcursor->close");
+  if ((ret = dbcp->c_close (dbcp)) != 0)
+  {
+    dbp->err (dbp, ret, "DBcursor->close");
     return (1);
   }
 
-  printf("DATA=END\n");
+  printf ("DATA=END\n");
   return (0);
 }
 
@@ -573,16 +620,16 @@ dump(DB *dbp, int pflag, int keyflag)
  *  we can.
  */
 void
-siginit()
+siginit ()
 {
 #ifdef SIGHUP
-  (void)signal(SIGHUP, onint);
+  (void) signal (SIGHUP, onint);
 #endif
-  (void)signal(SIGINT, onint);
+  (void) signal (SIGINT, onint);
 #ifdef SIGPIPE
-  (void)signal(SIGPIPE, onint);
+  (void) signal (SIGPIPE, onint);
 #endif
-  (void)signal(SIGTERM, onint);
+  (void) signal (SIGTERM, onint);
 }
 
 /*
@@ -590,7 +637,7 @@ siginit()
  *  Interrupt signal handler.
  */
 void
-onint(int signo)
+onint (int signo)
 {
   if ((interrupted = signo) == 0)
     interrupted = SIGINT;
@@ -601,9 +648,9 @@ onint(int signo)
  *  Display the usage message.
  */
 void
-usage()
+usage ()
 {
-  (void)fprintf(stderr,
-"usage: htdb_dump [-klNpWz] [-C cachesize] [-d ahr] [-f file] [-h home] [-s subdb] db_file\n");
-  exit(1);
+  (void) fprintf (stderr,
+                  "usage: htdb_dump [-klNpWz] [-C cachesize] [-d ahr] [-f file] [-h home] [-s subdb] db_file\n");
+  exit (1);
 }

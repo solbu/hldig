@@ -44,31 +44,39 @@
 #include <WordList.h>
 #include <Configuration.h>
 
-static void action(WordContext* context, const String& file)
+static void
+action (WordContext * context, const String & file)
 {
-  WordList *words = context->List();
-  if(words->Open(file, O_RDONLY) != OK) exit(1);
-  if(words->Write(stdout) != OK) exit(1);
-  if(words->Close() != OK) exit(1);
+  WordList *words = context->List ();
+  if (words->Open (file, O_RDONLY) != OK)
+    exit (1);
+  if (words->Write (stdout) != OK)
+    exit (1);
+  if (words->Close () != OK)
+    exit (1);
   delete words;
 }
 
-static void usage()
+static void
+usage ()
 {
-  fprintf(stderr, "usage: mifluzdump file\n");
-  exit(1);
+  fprintf (stderr, "usage: mifluzdump file\n");
+  exit (1);
 }
 
-int main(int argc, char *argv[]) {
+int
+main (int argc, char *argv[])
+{
 
-  if(argc != 2) usage();
-  
+  if (argc != 2)
+    usage ();
+
   //
   // Mandatory to create global data needed for the library.
   //
-  WordContext *context = new WordContext();
-  if(!context) exit(1);
-  action(context, argv[1]);
+  WordContext *context = new WordContext ();
+  if (!context)
+    exit (1);
+  action (context, argv[1]);
   delete context;
 }
-

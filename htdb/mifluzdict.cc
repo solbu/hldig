@@ -47,59 +47,73 @@
 
 typedef struct
 {
-    String prefix;
+  String prefix;
 } params_t;
 
-static void action(WordContext* context, const String& file, params_t* params)
+static void
+action (WordContext * context, const String & file, params_t * params)
 {
-  WordList *words = context->List();
-  if(words->Open(file, O_RDONLY) != OK) exit(1);
-  if(params->prefix.empty()) {
-    if(words->WriteDict(stdout) != OK) exit(1);
-  } else {
-    WordDict *dict = words->Dict();
-    WordDictCursor *cursor = dict->CursorPrefix(params->prefix);
+  WordList *words = context->List ();
+  if (words->Open (file, O_RDONLY) != OK)
+    exit (1);
+  if (params->prefix.empty ())
+  {
+    if (words->WriteDict (stdout) != OK)
+      exit (1);
+  }
+  else
+  {
+    WordDict *dict = words->Dict ();
+    WordDictCursor *cursor = dict->CursorPrefix (params->prefix);
     String word;
     WordDictRecord record;
-    while(dict->NextPrefix(cursor, word, record) == 0) {
-      printf("%s %d %d\n", (char*)word.get(), record.Id(), record.Count());
+    while (dict->NextPrefix (cursor, word, record) == 0)
+    {
+      printf ("%s %d %d\n", (char *) word.get (), record.Id (),
+              record.Count ());
     }
   }
-  if(words->Close() != OK) exit(1);
+  if (words->Close () != OK)
+    exit (1);
   delete words;
 }
 
-static void usage()
+static void
+usage ()
 {
-  fprintf(stderr, "usage: mifluzdict [-p prefix] file\n");
-  exit(1);
+  fprintf (stderr, "usage: mifluzdict [-p prefix] file\n");
+  exit (1);
 }
 
-int main(int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
   params_t params;
   extern char *optarg;
   extern int optind;
   int ch;
-  while ((ch = getopt(argc, argv, "p:")) != EOF) {
-    switch (ch) {
+  while ((ch = getopt (argc, argv, "p:")) != EOF)
+  {
+    switch (ch)
+    {
     case 'p':
       params.prefix = optarg;
       break;
     default:
-      usage();
+      usage ();
       break;
     }
   }
 
-  if(optind != argc - 1) usage();
+  if (optind != argc - 1)
+    usage ();
 
   //
   // Mandatory to create global data needed for the library.
   //
-  WordContext *context = new WordContext();
-  if(!context) exit(1);
-  action(context, argv[optind], &params);
+  WordContext *context = new WordContext ();
+  if (!context)
+    exit (1);
+  action (context, argv[optind], &params);
   delete context;
 }
-
