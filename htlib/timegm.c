@@ -42,23 +42,25 @@
 #include <stdlib.h>
 #endif
 
-static struct tm *my_mktime_gmtime_r (const time_t *t, struct tm *tp);
+static struct tm *my_mktime_gmtime_r (const time_t * t, struct tm *tp);
 
-static struct tm *my_mktime_gmtime_r (const time_t *t, struct tm *tp)
+static struct tm *
+my_mktime_gmtime_r (const time_t * t, struct tm *tp)
 {
   struct tm *l = gmtime (t);
-  if (! l)
+  if (!l)
     return 0;
   *tp = *l;
   return tp;
 }
 
-time_t __mktime_internal(struct tm *,
-       struct tm *(*) (const time_t *, struct tm *),
-       time_t *);
+time_t __mktime_internal (struct tm *,
+                          struct tm * (*)(const time_t *, struct tm *),
+                          time_t *);
 
-time_t Httimegm(tmp)
-struct tm *tmp;
+time_t
+Httimegm (tmp)
+     struct tm *tmp;
 {
   static time_t gmtime_offset;
   tmp->tm_isdst = 0;
@@ -67,36 +69,38 @@ struct tm *tmp;
 
 #ifdef TEST_TIMEGM
 
-void parse_time(char *s, struct tm *tm)
+void
+parse_time (char *s, struct tm *tm)
 {
-  sscanf(s, "%d.%d.%d %d:%d:%d", 
-   &tm->tm_year, &tm->tm_mon, &tm->tm_mday,
-   &tm->tm_hour, &tm->tm_min, &tm->tm_sec);
+  sscanf (s, "%d.%d.%d %d:%d:%d",
+          &tm->tm_year, &tm->tm_mon, &tm->tm_mday,
+          &tm->tm_hour, &tm->tm_min, &tm->tm_sec);
   tm->tm_year -= 1900;
   tm->tm_mon--;
 }
 
-void print_time(struct tm *tm)
+void
+print_time (struct tm *tm)
 {
-  fprintf(stderr, "%04d.%02d.%02d %02d:%02d:%02d",
-    tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
-    tm->tm_hour, tm->tm_min, tm->tm_sec);
+  fprintf (stderr, "%04d.%02d.%02d %02d:%02d:%02d",
+           tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday,
+           tm->tm_hour, tm->tm_min, tm->tm_sec);
 }
 
-int time_equal(struct tm *tm1, struct tm *tm2)
+int
+time_equal (struct tm *tm1, struct tm *tm2)
 {
   return ((tm1->tm_year == tm2->tm_year) &&
-    (tm1->tm_mon == tm2->tm_mon) &&
-    (tm1->tm_mday == tm2->tm_mday) &&
-    (tm1->tm_hour == tm2->tm_hour) && 
-    (tm1->tm_min == tm2->tm_min) &&
-    (tm1->tm_sec == tm2->tm_sec));
+          (tm1->tm_mon == tm2->tm_mon) &&
+          (tm1->tm_mday == tm2->tm_mday) &&
+          (tm1->tm_hour == tm2->tm_hour) &&
+          (tm1->tm_min == tm2->tm_min) && (tm1->tm_sec == tm2->tm_sec));
 }
 
-int main(void)
+int
+main (void)
 {
-  char *test_dates[] = 
-  {
+  char *test_dates[] = {
     "1970.01.01 00:00:00",
     "1970.01.01 00:00:01",
     "1972.02.05 23:59:59",
@@ -123,20 +127,20 @@ int main(void)
 
   for (i = 0; (test_dates[i]); i++)
   {
-    parse_time(test_dates[i], &orig);
-    t = Httimegm(&orig);
-    conv = gmtime(&t);
-    if (!time_equal(&orig, conv))
+    parse_time (test_dates[i], &orig);
+    t = Httimegm (&orig);
+    conv = gmtime (&t);
+    if (!time_equal (&orig, conv))
     {
-      fprintf(stderr, "timegm() test failed!\n  Original: ");
-      print_time(&orig);
-      fprintf(stderr, "\n  Converted: ");
-      print_time(conv);
-      fprintf(stderr, "\n  time_t: %ld\n", (long) t);
+      fprintf (stderr, "timegm() test failed!\n  Original: ");
+      print_time (&orig);
+      fprintf (stderr, "\n  Converted: ");
+      print_time (conv);
+      fprintf (stderr, "\n  time_t: %ld\n", (long) t);
       ok = 0;
     }
   }
-  exit(ok ? 0 : 1);
+  exit (ok ? 0 : 1);
 }
 
 #endif

@@ -20,34 +20,40 @@
 #include <db.h>
 #include <fcntl.h>
 
-class DB2_db : public Database
+class DB2_db:public Database
 {
-    //
-    // Construction/Destruction
-    //
+  //
+  // Construction/Destruction
+  //
 protected:
-    DB2_db();
+  DB2_db ();
 public:
-    ~DB2_db();
+  ~DB2_db ();
 
-    static DB2_db  *getDatabaseInstance(DBTYPE type);
-  
-    virtual int    OpenReadWrite(const char *filename, int mode) { return Open(filename, DB_CREATE, mode); }
-    virtual int    OpenRead(const char *filename) { return Open(filename, DB_RDONLY, 0666); }
-    virtual int    Close();
-    virtual int    Get(const String &, String &);
-    virtual int    Put(const String &, const String &);
-    virtual int    Exists(const String &);
-    virtual int    Delete(const String &);
-  
-    virtual void  Start_Get();
-    virtual char  *Get_Next(String &item, String &key);
-    virtual void  Start_Seq(const String& key);
-  
+  static DB2_db *getDatabaseInstance (DBTYPE type);
+
+  virtual int OpenReadWrite (const char *filename, int mode)
+  {
+    return Open (filename, DB_CREATE, mode);
+  }
+  virtual int OpenRead (const char *filename)
+  {
+    return Open (filename, DB_RDONLY, 0666);
+  }
+  virtual int Close ();
+  virtual int Get (const String &, String &);
+  virtual int Put (const String &, const String &);
+  virtual int Exists (const String &);
+  virtual int Delete (const String &);
+
+  virtual void Start_Get ();
+  virtual char *Get_Next (String & item, String & key);
+  virtual void Start_Seq (const String & key);
+
 private:
-    DB_ENV    *db_init(char *);
+  DB_ENV * db_init (char *);
 
-    int      Open(const char *filename, int flags, int mode);
+  int Open (const char *filename, int flags, int mode);
 };
 
 #endif

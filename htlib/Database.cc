@@ -23,7 +23,7 @@
 //*****************************************************************************
 // Database::Database()
 //
-Database::Database()
+Database::Database ()
 {
 }
 
@@ -31,7 +31,7 @@ Database::Database()
 //*****************************************************************************
 // Database::~Database()
 //
-Database::~Database()
+Database::~Database ()
 {
 }
 
@@ -40,14 +40,11 @@ Database::~Database()
 // Database *Database::getDatabaseInstance()
 //
 Database *
-Database::getDatabaseInstance(DBTYPE type = DB_BTREE)
+Database::getDatabaseInstance (DBTYPE type = DB_BTREE)
 {
-  Database* db = DB2_db::getDatabaseInstance(type);
+  Database *db = DB2_db::getDatabaseInstance (type);
 
   db->db_type = type;
 
   return db;
 }
-
-
-

@@ -27,10 +27,10 @@
 #define TRUE        1
 #endif
 
-#define FILECOPY_OVERWRITE_ON 1 
+#define FILECOPY_OVERWRITE_ON 1
 #define FILECOPY_OVERWRITE_OFF 2
 
-int file_copy (char * from, char * to, char flags);
+int file_copy (char *from, char *to, char flags);
 
 
 #ifdef __cplusplus

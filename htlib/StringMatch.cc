@@ -307,7 +307,7 @@ StringMatch::Compare (const char *string, int &which, int &length)
   //
   while (string[pos] != '\0')
   {
-    new_state = table[trans[(unsigned int)string[pos]]][state];
+    new_state = table[trans[(unsigned int) string[pos]]][state];
     if (new_state)
     {
       if (state == 0)

@@ -47,20 +47,20 @@
 #include <sys/stat.h>
 
 #if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
+#include <dirent.h>
+#define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# endif
+#define dirent direct
+#define NAMLEN(dirent) (dirent)->d_namlen
+#if HAVE_SYS_NDIR_H
+#include <sys/ndir.h>
+#endif
+#if HAVE_SYS_DIR_H
+#include <sys/dir.h>
+#endif
+#if HAVE_NDIR_H
+#include <ndir.h>
+#endif
 #endif
 
 #include <errno.h>
@@ -68,7 +68,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -91,9 +91,9 @@
  * PUBLIC: #endif
  */
 char *
-getcwd(pt, size)
-  char *pt;
-  size_t size;
+getcwd (pt, size)
+     char *pt;
+     size_t size;
 {
   register struct dirent *dp;
   register DIR *dir;
@@ -113,20 +113,26 @@ getcwd(pt, size)
    * If a buffer is specified, the size has to be non-zero.  The path
    * is built from the end of the buffer backwards.
    */
-  if (pt) {
+  if (pt)
+  {
     ptsize = 0;
-    if (!size) {
-      __os_set_errno(EINVAL);
+    if (!size)
+    {
+      __os_set_errno (EINVAL);
       return (NULL);
     }
-    if (size == 1) {
-      __os_set_errno(ERANGE);
+    if (size == 1)
+    {
+      __os_set_errno (ERANGE);
       return (NULL);
     }
     ept = pt + size;
-  } else {
-    if ((ret = __os_malloc(ptsize = 1024 - 4, NULL, &pt)) != 0) {
-      __os_set_errno(ret);
+  }
+  else
+  {
+    if ((ret = __os_malloc (ptsize = 1024 - 4, NULL, &pt)) != 0)
+    {
+      __os_set_errno (ret);
       return (NULL);
     }
     ept = pt + ptsize;
@@ -139,7 +145,7 @@ getcwd(pt, size)
    * Should always be enough (it's 340 levels).  If it's not, allocate
    * as necessary.  Special case the first stat, it's ".", not "..".
    */
-  if ((ret = __os_malloc(upsize = 1024 - 4, NULL, &up)) != 0)
+  if ((ret = __os_malloc (upsize = 1024 - 4, NULL, &up)) != 0)
     goto err;
   eup = up + 1024;
   bup = up;
@@ -147,16 +153,17 @@ getcwd(pt, size)
   up[1] = '\0';
 
   /* Save root values, so know when to stop. */
-  if (stat("/", &s))
+  if (stat ("/", &s))
     goto err;
   root_dev = s.st_dev;
   root_ino = s.st_ino;
 
-  __os_set_errno(0);    /* XXX readdir has no error return. */
+  __os_set_errno (0);           /* XXX readdir has no error return. */
 
-  for (first = 1;; first = 0) {
+  for (first = 1;; first = 0)
+  {
     /* Stat the current level. */
-    if (lstat(up, &s))
+    if (lstat (up, &s))
       goto err;
 
     /* Save current node values. */
@@ -164,15 +171,16 @@ getcwd(pt, size)
     dev = s.st_dev;
 
     /* Check for reaching root. */
-    if (root_dev == dev && root_ino == ino) {
+    if (root_dev == dev && root_ino == ino)
+    {
       *--bpt = PATH_SEPARATOR[0];
       /*
        * It's unclear that it's a requirement to copy the
        * path to the beginning of the buffer, but it's always
        * been that way and stuff would probably break.
        */
-      bcopy(bpt, pt, ept - bpt);
-      __os_free(up, upsize);
+      bcopy (bpt, pt, ept - bpt);
+      __os_free (up, upsize);
       return (pt);
     }
 
@@ -181,8 +189,9 @@ getcwd(pt, size)
      * as necessary.  Max length is 3 for "../", the largest
      * possible component name, plus a trailing NULL.
      */
-    if (bup + 3  + MAXNAMLEN + 1 >= eup) {
-      if (__os_realloc(upsize *= 2, NULL, &up) != 0)
+    if (bup + 3 + MAXNAMLEN + 1 >= eup)
+    {
+      if (__os_realloc (upsize *= 2, NULL, &up) != 0)
         goto err;
       bup = up;
       eup = up + upsize;
@@ -192,7 +201,7 @@ getcwd(pt, size)
     *bup = '\0';
 
     /* Open and stat parent directory. */
-    if (!(dir = opendir(up)) || fstat(dirfd(dir), &s))
+    if (!(dir = opendir (up)) || fstat (dirfd (dir), &s))
       goto err;
 
     /* Add trailing slash for next directory. */
@@ -204,26 +213,31 @@ getcwd(pt, size)
      * parent directory, not the inode number of the mounted file.
      */
     save_errno = 0;
-    if (s.st_dev == dev) {
-      for (;;) {
-        if (!(dp = readdir(dir)))
+    if (s.st_dev == dev)
+    {
+      for (;;)
+      {
+        if (!(dp = readdir (dir)))
           goto notfound;
         if (dp->d_fileno == ino)
           break;
       }
-    } else
-      for (;;) {
-        if (!(dp = readdir(dir)))
+    }
+    else
+      for (;;)
+      {
+        if (!(dp = readdir (dir)))
           goto notfound;
-        if (ISDOT(dp))
+        if (ISDOT (dp))
           continue;
-        bcopy(dp->d_name, bup, dp->d_namlen + 1);
+        bcopy (dp->d_name, bup, dp->d_namlen + 1);
 
         /* Save the first error for later. */
-        if (lstat(up, &s)) {
+        if (lstat (up, &s))
+        {
           if (save_errno == 0)
-            save_errno = __os_get_errno();
-          __os_set_errno(0);
+            save_errno = __os_get_errno ();
+          __os_set_errno (0);
           continue;
         }
         if (s.st_dev == dev && s.st_ino == ino)
@@ -234,27 +248,29 @@ getcwd(pt, size)
      * Check for length of the current name, preceding slash,
      * leading slash.
      */
-    if (bpt - pt < dp->d_namlen + (first ? 1 : 2)) {
+    if (bpt - pt < dp->d_namlen + (first ? 1 : 2))
+    {
       size_t len, off;
 
-      if (!ptsize) {
-        __os_set_errno(ERANGE);
+      if (!ptsize)
+      {
+        __os_set_errno (ERANGE);
         goto err;
       }
       off = bpt - pt;
       len = ept - bpt;
-      if (__os_realloc(ptsize *= 2, NULL, &pt) != 0)
+      if (__os_realloc (ptsize *= 2, NULL, &pt) != 0)
         goto err;
       bpt = pt + off;
       ept = pt + ptsize;
-      bcopy(bpt, ept - len, len);
+      bcopy (bpt, ept - len, len);
       bpt = ept - len;
     }
     if (!first)
       *--bpt = PATH_SEPARATOR[0];
     bpt -= dp->d_namlen;
-    bcopy(dp->d_name, bpt, dp->d_namlen);
-    (void)closedir(dir);
+    bcopy (dp->d_name, bpt, dp->d_namlen);
+    (void) closedir (dir);
 
     /* Truncate any file name. */
     *bup = '\0';
@@ -266,13 +282,13 @@ notfound:
    * didn't find the current directory in its parent directory, set
    * errno to ENOENT.
    */
-  if (__os_get_errno() == 0)
-    __os_set_errno(save_errno == 0 ? ENOENT : save_errno);
+  if (__os_get_errno () == 0)
+    __os_set_errno (save_errno == 0 ? ENOENT : save_errno);
   /* FALLTHROUGH */
 err:
   if (ptsize)
-    __os_free(pt, ptsize);
-  __os_free(up, upsize);
+    __os_free (pt, ptsize);
+  __os_free (up, upsize);
   return (NULL);
 }
 #endif /* HAVE_GETCWD */

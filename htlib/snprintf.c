@@ -43,13 +43,13 @@
  */
 int
 #ifdef __STDC__
-snprintf(char *str, size_t n, const char *fmt, ...)
+snprintf (char *str, size_t n, const char *fmt, ...)
 #else
-snprintf(str, n, fmt, va_alist)
-  char *str;
-  size_t n;
-  const char *fmt;
-  va_dcl
+snprintf (str, n, fmt, va_alist)
+     char *str;
+     size_t n;
+     const char *fmt;
+     va_dcl
 #endif
 {
   va_list ap;
@@ -57,19 +57,18 @@ snprintf(str, n, fmt, va_alist)
 
   n = 0;
 #ifdef __STDC__
-  va_start(ap, fmt);
+  va_start (ap, fmt);
 #else
-  va_start(ap);
+  va_start (ap);
 #endif
 #ifdef SPRINTF_RET_CHARPNT
-  (void)vsprintf(str, fmt, ap);
-  va_end(ap);
-  return (strlen(str));
+  (void) vsprintf (str, fmt, ap);
+  va_end (ap);
+  return (strlen (str));
 #else
-  rval = vsprintf(str, fmt, ap);
-  va_end(ap);
+  rval = vsprintf (str, fmt, ap);
+  va_end (ap);
   return (rval);
 #endif
 }
 #endif /* HAVE_SNPRINTF */
-

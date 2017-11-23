@@ -16,21 +16,21 @@
 #ifndef _lib_h
 #define _lib_h
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include "clib.h"
 #endif
 
 #include <string.h>
 
-#ifdef _MSC_VER /* _WIN32 */
+#ifdef _MSC_VER                 /* _WIN32 */
 #include "dirent_local.h"
 #define S_ISDIR(v)  ((v)&_S_IFDIR)
 #define S_ISREG(v)  ((v)&_S_IFREG)
 #else
-#include <dirent.h> // for scandir
+#include <dirent.h>             // for scandir
 #endif
 
-#ifdef _MSC_VER /* _WIN32 */
+#ifdef _MSC_VER                 /* _WIN32 */
 #include <io.h>
 #include <stdlib.h>
 #define S_IFIFO        _S_IFIFO // pipe
@@ -47,14 +47,14 @@
 #endif
 
 #if TIME_WITH_SYS_TIME
-# include <sys/time.h>
-# include <time.h>
+#include <sys/time.h>
+#include <time.h>
 #else
-# if HAVE_SYS_TIME_H
-#  include <sys/time.h>
-# else
-#  include <time.h>
-# endif
+#if HAVE_SYS_TIME_H
+#include <sys/time.h>
+#else
+#include <time.h>
+#endif
 #endif
 
 //
@@ -67,24 +67,24 @@
 // To get rid of inconsistencies between different machines we will ALWAYS
 // use our own version of the following routines
 //
-int mystrcasecmp(const char *, const char *);
-int mystrncasecmp(const char *, const char *, int);
+int mystrcasecmp (const char *, const char *);
+int mystrncasecmp (const char *, const char *, int);
 
 //
 // The standard strstr() function is limited in that it does case-sensitive
 // searches.  This version will ignore case.
 //
-const char *mystrcasestr(const char *s, const char *pattern);
+const char *mystrcasestr (const char *s, const char *pattern);
 
 //
 // Too many problems with system strptime() functions...  Just use our own
 // version of it.
 //
-char *mystrptime(const char *buf, const char *fmt, struct tm *tm);
+char *mystrptime (const char *buf, const char *fmt, struct tm *tm);
 
 //
 // timegm() is quite rare, so provide our own.
 //
-extern "C" time_t Httimegm(struct tm *tm);
+extern "C" time_t Httimegm (struct tm *tm);
 
 #endif

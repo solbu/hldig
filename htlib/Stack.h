@@ -18,35 +18,38 @@
 
 #include "Object.h"
 
-class Stack : public Object
+class Stack:public Object
 {
 public:
   //
   // Constructors/Destructor
   //
-          Stack();
-          ~Stack();
+  Stack ();
+  ~Stack ();
 
   //
   // Stack access
   //
-  void      push(Object *obj);
-  Object      *peek();
-  Object      *pop();
-  int        Size()          {return size;}
+  void push (Object * obj);
+  Object *peek ();
+  Object *pop ();
+  int Size ()
+  {
+    return size;
+  }
 
   //
   // Stack destruction
   //
-  void      destroy();
+  void destroy ();
 
 protected:
   //
   // These variables are to keep track of the linked list
   //
-  void      *sp;
+  void *sp;
 
-  int        size;
+  int size;
 };
 
 #endif

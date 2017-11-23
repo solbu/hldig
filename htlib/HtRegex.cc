@@ -20,86 +20,101 @@
 #include <locale.h>
 
 
-HtRegex::HtRegex() : compiled(0) { }
-
-HtRegex::HtRegex(const char *str, int case_sensitive) : compiled(0)
+HtRegex::HtRegex ():compiled (0)
 {
-        set(str, case_sensitive);
 }
 
-HtRegex::~HtRegex()
+HtRegex::HtRegex (const char *str, int case_sensitive):compiled (0)
 {
-  if (compiled != 0) regfree(&re);
+  set (str, case_sensitive);
+}
+
+HtRegex::~HtRegex ()
+{
+  if (compiled != 0)
+    regfree (&re);
   compiled = 0;
 }
 
-const String &HtRegex::lastError()
+const String &
+HtRegex::lastError ()
 {
   return lastErrorMessage;
 }
 
 int
-HtRegex::set(const char * str, int case_sensitive)
+HtRegex::set (const char *str, int case_sensitive)
 {
-  if (compiled != 0) regfree(&re);
+  if (compiled != 0)
+    regfree (&re);
 
   int err;
   compiled = 0;
-  if (str == NULL) return 0;
-  if (strlen(str) <= 0) return 0;
-  if (err = regcomp(&re, str, case_sensitive ? REG_EXTENDED : (REG_EXTENDED|REG_ICASE)), err == 0)
-    {
-      compiled = 1;
-    }
+  if (str == NULL)
+    return 0;
+  if (strlen (str) <= 0)
+    return 0;
+  if (err =
+      regcomp (&re, str,
+               case_sensitive ? REG_EXTENDED : (REG_EXTENDED | REG_ICASE)),
+      err == 0)
+  {
+    compiled = 1;
+  }
   else
-    {
-      size_t len = regerror(err, &re, 0, 0);
-      char *buf = new char[len];
-      regerror(err, &re, buf, len);
-      lastErrorMessage = buf;
-      delete buf;
-    }
+  {
+    size_t len = regerror (err, &re, 0, 0);
+    char *buf = new char[len];
+    regerror (err, &re, buf, len);
+    lastErrorMessage = buf;
+    delete buf;
+  }
   return compiled;
 }
 
 int
-HtRegex::setEscaped(StringList &list, int case_sensitive)
+HtRegex::setEscaped (StringList & list, int case_sensitive)
 {
-    String *str;
-    String transformedLimits;
-    list.Start_Get();
-    while ((str = (String *) list.Get_Next()))
+  String *str;
+  String transformedLimits;
+  list.Start_Get ();
+  while ((str = (String *) list.Get_Next ()))
+  {
+    if (str->indexOf ('[') == 0
+        && str->lastIndexOf (']') == str->length () - 1)
+    {
+      transformedLimits << str->sub (1, str->length () - 2).get ();
+    }
+    else                        // Backquote any regex special characters
+    {
+      for (int pos = 0; pos < str->length (); pos++)
       {
-  if (str->indexOf('[') == 0 && str->lastIndexOf(']') == str->length()-1)
-    {
-      transformedLimits << str->sub(1,str->length()-2).get();
-    }
-  else   // Backquote any regex special characters
-    {
-      for (int pos = 0; pos < str->length(); pos++)
-        { 
-    if (strchr("^.[$()|*+?{\\", str->Nth(pos)))
-      transformedLimits << '\\';
-    transformedLimits << str->Nth(pos);
-        }
-    }
-  transformedLimits << "|";
+        if (strchr ("^.[$()|*+?{\\", str->Nth (pos)))
+          transformedLimits << '\\';
+        transformedLimits << str->Nth (pos);
       }
-    transformedLimits.chop(1);
+    }
+    transformedLimits << "|";
+  }
+  transformedLimits.chop (1);
 
-    return set(transformedLimits, case_sensitive);
+  return set (transformedLimits, case_sensitive);
 }
 
 int
-HtRegex::match(const char * str, int nullpattern, int nullstr)
+HtRegex::match (const char *str, int nullpattern, int nullstr)
 {
-  int  rval;
-  
-  if (compiled == 0) return(nullpattern);
-  if (str == NULL) return(nullstr);
-  if (strlen(str) <= 0) return(nullstr);
-  rval = regexec(&re, str, (size_t) 0, NULL, 0);
-  if (rval == 0) return(1);
-  else return(0);
-}
+  int rval;
 
+  if (compiled == 0)
+    return (nullpattern);
+  if (str == NULL)
+    return (nullstr);
+  if (strlen (str) <= 0)
+    return (nullstr);
+  rval = regexec (&re, str, (size_t) 0, NULL, 0);
+  if (rval == 0)
+    return (1);
+  else
+    return (0);
+}

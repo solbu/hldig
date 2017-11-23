@@ -26,7 +26,7 @@
 // Object::Object()
 //
 #ifdef NOINLINE
-Object::Object()
+Object::Object ()
 {
 }
 
@@ -34,7 +34,7 @@ Object::Object()
 //***************************************************************************
 // Object::~Object()
 //
-Object::~Object()
+Object::~Object ()
 {
 }
 
@@ -42,7 +42,8 @@ Object::~Object()
 //***************************************************************************
 // int Object::compare(Object *)
 //
-int Object::compare(Object *)
+int
+Object::compare (Object *)
 {
   return 0;
 }
@@ -51,7 +52,8 @@ int Object::compare(Object *)
 //***************************************************************************
 // Object *Object::Copy()
 //
-Object *Object::Copy()
+Object *
+Object::Copy ()
 {
   return new Object;
 }
@@ -60,7 +62,8 @@ Object *Object::Copy()
 //***************************************************************************
 // void Object::Serialize(String &)
 //
-void Object::Serialize(String &)
+void
+Object::Serialize (String &)
 {
 }
 
@@ -68,9 +71,8 @@ void Object::Serialize(String &)
 //***************************************************************************
 // void Object::Deserialize(String &, int &)
 //
-void Object::Deserialize(String &, int &)
+void
+Object::Deserialize (String &, int &)
 {
 }
 #endif
-
-

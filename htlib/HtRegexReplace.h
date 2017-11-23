@@ -21,38 +21,41 @@
 
 #include "HtRegex.h"
 
-class HtRegexReplace : public HtRegex
+class HtRegexReplace:public HtRegex
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    HtRegexReplace();
-    HtRegexReplace(const char *from, const char *to, int case_sensitive = 0);
-    virtual ~HtRegexReplace();
+  //
+  // Construction/Destruction
+  //
+  HtRegexReplace ();
+  HtRegexReplace (const char *from, const char *to, int case_sensitive = 0);
+    virtual ~ HtRegexReplace ();
 
-    //
-    // Methods for setting the replacement pattern
-    //
-  void  setReplace(const String& str) { setReplace(str.get()); }
-  void  setReplace(const char *str);
+  //
+  // Methods for setting the replacement pattern
+  //
+  void setReplace (const String & str)
+  {
+    setReplace (str.get ());
+  }
+  void setReplace (const char *str);
 
-    //
-    // Methods for replacing
-    //
-    int    replace(String &str, int nullpattern = 0, int nullstr = 0);
+  //
+  // Methods for replacing
+  //
+  int replace (String & str, int nullpattern = 0, int nullstr = 0);
 
 protected:
-  char  *repBuf;      // Replace text.
-  size_t  segSize, segUsed;
-  int    *segMark;
-  size_t  repLen;
+  char *repBuf;                 // Replace text.
+  size_t segSize, segUsed;
+  int *segMark;
+  size_t repLen;
 
-    regmatch_t    regs[10];
+  regmatch_t regs[10];
 
   // Various private methods
-  void putMark(int n);
-  void empty();
+  void putMark (int n);
+  void empty ();
 };
 
 #endif

@@ -14,36 +14,36 @@ extern "C"
 {
 
 #ifndef HAVE_GETCWD
-char *getcwd(char *, size_t);
+  char *getcwd (char *, size_t);
 #endif
 
 #ifndef HAVE_MEMCMP
-int memcmp(const void *, const void *, size_t);
+  int memcmp (const void *, const void *, size_t);
 #endif
 
 #ifndef HAVE_MEMCPY
-void *memcpy(void *, const void *, size_t);
+  void *memcpy (void *, const void *, size_t);
 #endif
 
 #ifndef HAVE_MEMMOVE
-void *memmove(void *, const void *, size_t);
+  void *memmove (void *, const void *, size_t);
 #endif
 
 #ifndef HAVE_RAISE
-int raise (int);
+  int raise (int);
 #endif
 
 #ifndef HAVE_SNPRINTF
-int snprintf(char *, size_t, const char *, ...);
+  int snprintf (char *, size_t, const char *, ...);
 #endif
 
 #ifndef HAVE_STRERROR
-char *strerror(int);
+  char *strerror (int);
 #endif
 
 #ifndef HAVE_VSNPRINTF
-int vsnprintf(char *, size_t, const char *, ...);
+  int vsnprintf (char *, size_t, const char *, ...);
 #endif
 }
 
-#endif /* _clib_h_ */
+#endif                          /* _clib_h_ */

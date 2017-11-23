@@ -17,36 +17,39 @@
 
 #include "Object.h"
 
-class Queue : public Object
+class Queue:public Object
 {
 public:
   //
   // Constructors/Destructor
   //
-          Queue();
-          ~Queue();
+  Queue ();
+  ~Queue ();
 
   //
   // Queue access
   //
-  void      push(Object *obj);
-  Object      *peek();
-  Object      *pop();
-  int        Size()          {return size;}
+  void push (Object * obj);
+  Object *peek ();
+  Object *pop ();
+  int Size ()
+  {
+    return size;
+  }
 
   //
   // Queue destruction
   //
-  void      destroy();
+  void destroy ();
 
 protected:
   //
   // These variables are to keep track of the linked list
   //
-  void      *head;
-  void      *tail;
+  void *head;
+  void *tail;
 
-  int        size;
+  int size;
 };
 
 #endif

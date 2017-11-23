@@ -21,14 +21,14 @@
 
 struct Queuenode
 {
-  Queuenode  *next;
-  Object    *obj;
+  Queuenode *next;
+  Object *obj;
 };
 
 //***************************************************************************
 // Queue::Queue()
 //
-Queue::Queue()
+Queue::Queue ()
 {
   head = tail = 0;
   size = 0;
@@ -38,20 +38,21 @@ Queue::Queue()
 //***************************************************************************
 // Queue::~Queue()
 //
-Queue::~Queue()
+Queue::~Queue ()
 {
-  destroy();
+  destroy ();
 }
 
 
 //***************************************************************************
 // void Queue::destroy()
 //
-void Queue::destroy()
+void
+Queue::destroy ()
 {
   while (head)
   {
-    Object  *obj = pop();
+    Object *obj = pop ();
     delete obj;
   }
   size = 0;
@@ -63,9 +64,10 @@ void Queue::destroy()
 // void Queue::push(Object *obj)
 //    Push an object onto the Queue.
 //
-void Queue::push(Object *obj)
+void
+Queue::push (Object * obj)
 {
-  Queuenode  *node = new Queuenode;
+  Queuenode *node = new Queuenode;
 
   node->obj = obj;
   node->next = 0;
@@ -82,13 +84,14 @@ void Queue::push(Object *obj)
 // Object *Queue::pop()
 //    Return the object at the head of the Queue and remove it
 //
-Object *Queue::pop()
+Object *
+Queue::pop ()
 {
   if (size == 0)
     return 0;
 
-  Queuenode  *node = (Queuenode *) head;
-  Object    *obj = node->obj;
+  Queuenode *node = (Queuenode *) head;
+  Object *obj = node->obj;
   head = (void *) node->next;
   delete node;
   size--;
@@ -103,10 +106,11 @@ Object *Queue::pop()
 // Object *Queue::peek()
 //    Return the object at the top of the Queue.
 //
-Object *Queue::peek()
+Object *
+Queue::peek ()
 {
   if (size == 0)
     return 0;
 
-  return ((Queuenode *)head)->obj;
+  return ((Queuenode *) head)->obj;
 }

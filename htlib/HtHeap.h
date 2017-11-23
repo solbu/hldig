@@ -23,70 +23,88 @@
 #include "Object.h"
 #include "HtVector.h"
 
-class HtHeap : public Object
+class HtHeap:public Object
 {
 public:
-    //
-    // Constructor/Destructor
-    //
-    HtHeap();
-    HtHeap(HtVector vector);
-    ~HtHeap();
+  //
+  // Constructor/Destructor
+  //
+  HtHeap ();
+  HtHeap (HtVector vector);
+  ~HtHeap ();
 
-    //
-    // Add() will add an Object to the heap in the appropriate location
-    //
-    void    Add(Object *);
+  //
+  // Add() will add an Object to the heap in the appropriate location
+  //
+  void Add (Object *);
 
-    //
-    // Destroy() will delete all the objects in the heap.  This is
-    // equivalent to calling the destructor
-    //
-    void    Destroy();
+  //
+  // Destroy() will delete all the objects in the heap.  This is
+  // equivalent to calling the destructor
+  //
+  void Destroy ();
 
-    //
-    // Peek() will return a reference to the top object in the heap.
-    //
-    Object    *Peek()      {return data->Nth(0);}
+  //
+  // Peek() will return a reference to the top object in the heap.
+  //
+  Object *Peek ()
+  {
+    return data->Nth (0);
+  }
 
-    //
-    // Remove() will return a reference as Peek() but will also
-    // remove the reference from the heap and re-heapify
-    //
-    Object     *Remove();
+  //
+  // Remove() will return a reference as Peek() but will also
+  // remove the reference from the heap and re-heapify
+  //
+  Object *Remove ();
 
-    //
-    // Access to the number of elements
-    //
-    int      Count()     {return data->Count();}
-    int      IsEmpty()    {return data->IsEmpty();}
+  //
+  // Access to the number of elements
+  //
+  int Count ()
+  {
+    return data->Count ();
+  }
+  int IsEmpty ()
+  {
+    return data->IsEmpty ();
+  }
 
-    //
-    // Deep copy member function
-    //
-    Object    *Copy() const;
+  //
+  // Deep copy member function
+  //
+  Object *Copy () const;
 
-    //
-    // Assignment
-    //
-    HtHeap    &operator= (HtHeap *heap)  {return *this = *heap;}
-    HtHeap    &operator= (HtHeap &heap);
+  //
+  // Assignment
+  //
+  HtHeap & operator= (HtHeap * heap)
+  {
+    return *this = *heap;
+  }
+  HtHeap & operator= (HtHeap & heap);
 
 protected:
-    // The vector class should keep track of everything for us
-    HtVector    *data;
+  // The vector class should keep track of everything for us
+  HtVector * data;
 
-    // Functions for establishing the relations between elements
-    int  parentOf (int i)
-      { return (i - 1)/2; }
-    int  leftChildOf (int i)
-      { return 2*i + 1; }
-    int rightChildOf (int i)
-      { return 2* (i+1); }
+  // Functions for establishing the relations between elements
+  int parentOf (int i)
+  {
+    return (i - 1) / 2;
+  }
+  int leftChildOf (int i)
+  {
+    return 2 * i + 1;
+  }
+  int rightChildOf (int i)
+  {
+    return 2 * (i + 1);
+  }
 
-    // Protected procedures for performing heap-making operations
-    void percolateUp (int leaf);  // pushes the node up as far as possible
-    void pushDownRoot (int root); // pushes the node down as necessary
+  // Protected procedures for performing heap-making operations
+  void percolateUp (int leaf);  // pushes the node up as far as possible
+  void pushDownRoot (int root); // pushes the node down as necessary
 };
 
 #endif

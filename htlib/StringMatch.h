@@ -38,79 +38,80 @@
 #include "Object.h"
 #include "HtWordType.h"
 
-class StringMatch : public Object
+class StringMatch:public Object
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    StringMatch();
-    ~StringMatch();
+  //
+  // Construction/Destruction
+  //
+  StringMatch ();
+  ~StringMatch ();
 
-    //
-    // Set the pattern to search for.  If given as a string needs to
-    // be in the form <string1>|<string2>|...  If in the form of a
-    // List, it should be a list of String objects.
-    //
-    void    Pattern(char *pattern, char sep = '|');
+  //
+  // Set the pattern to search for.  If given as a string needs to
+  // be in the form <string1>|<string2>|...  If in the form of a
+  // List, it should be a list of String objects.
+  //
+  void Pattern (char *pattern, char sep = '|');
 
-    //
-    // Search for any of the strings in the pattern in the given
-    // string The return value is the offset in the source a pattern
-    // was found.  In this case, the which variable will be set to the
-    // index of the pattern string and length will be set to the
-    // length of that pattern string.  If none of the pattern strings
-    // could be found, the return value will be -1
-    //
-    int      FindFirst(const char *string, int &which, int &length);
-    int      FindFirst(const char *string);
-  
-    int      FindFirstWord(const char *string, int &which, int &length);
-    int      FindFirstWord(const char *string);
-  
-    //
-    // If you are interested in matching instead of searching, use
-    // the following.  Same parameters except that the return value will
-    // be 1 if there was a match, 0 if there was not.
-    //
-    int      Compare(const char *string, int &which, int &length);
-    int      Compare(const char *string);
+  //
+  // Search for any of the strings in the pattern in the given
+  // string The return value is the offset in the source a pattern
+  // was found.  In this case, the which variable will be set to the
+  // index of the pattern string and length will be set to the
+  // length of that pattern string.  If none of the pattern strings
+  // could be found, the return value will be -1
+  //
+  int FindFirst (const char *string, int &which, int &length);
+  int FindFirst (const char *string);
 
-    int      CompareWord(const char *string, int &which, int &length);
-    int      CompareWord(const char *string);
-    
-    //
-    // Provide a character translation table which will be applied to
-    // both the pattern and the input string.  This table should be an
-    // array of 256 characters.  If is the caller's responsibility to
-    // manage this table's allocation.  The table should remain valid
-    // until this object has been destroyed.
-    //
-    void    TranslationTable(char *table);
-  
-    //
-    // Build a local translation table which maps all uppercase
-    // characters to lowercase
-    //
-    void    IgnoreCase();
+  int FindFirstWord (const char *string, int &which, int &length);
+  int FindFirstWord (const char *string);
 
-    //
-    // Build a local translation table which ignores all given punctuation
-    // characters
-    //
-    void    IgnorePunct(char *punct = (char*)NULL);
+  //
+  // If you are interested in matching instead of searching, use
+  // the following.  Same parameters except that the return value will
+  // be 1 if there was a match, 0 if there was not.
+  //
+  int Compare (const char *string, int &which, int &length);
+  int Compare (const char *string);
 
-    //
-    // Determine if there is a pattern associated with this Match object.
-    //
-    int      hasPattern()    {return table[0] != 0;}
-  
+  int CompareWord (const char *string, int &which, int &length);
+  int CompareWord (const char *string);
+
+  //
+  // Provide a character translation table which will be applied to
+  // both the pattern and the input string.  This table should be an
+  // array of 256 characters.  If is the caller's responsibility to
+  // manage this table's allocation.  The table should remain valid
+  // until this object has been destroyed.
+  //
+  void TranslationTable (char *table);
+
+  //
+  // Build a local translation table which maps all uppercase
+  // characters to lowercase
+  //
+  void IgnoreCase ();
+
+  //
+  // Build a local translation table which ignores all given punctuation
+  // characters
+  //
+  void IgnorePunct (char *punct = (char *) NULL);
+
+  //
+  // Determine if there is a pattern associated with this Match object.
+  //
+  int hasPattern ()
+  {
+    return table[0] != 0;
+  }
+
 protected:
-    int      *table[256];
-    unsigned char  *trans;
-    int      local_alloc;
+  int *table[256];
+  unsigned char *trans;
+  int local_alloc;
 };
 
 #endif
-
-

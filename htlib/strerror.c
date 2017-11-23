@@ -55,32 +55,35 @@
  * PUBLIC: #endif
  */
 char *
-strerror(num)
-  int num;
+strerror (num)
+     int num;
 {
   extern int sys_nerr;
   extern char *sys_errlist[];
 #undef  UPREFIX
 #define  UPREFIX  "Unknown error: "
-  static char ebuf[40] = UPREFIX;    /* 64-bit number + slop */
+  static char ebuf[40] = UPREFIX;       /* 64-bit number + slop */
   int errnum;
   char *p, *t, tmp[40];
 
-  errnum = num;        /* convert to unsigned */
+  errnum = num;                 /* convert to unsigned */
   if (errnum < sys_nerr)
-    return(sys_errlist[errnum]);
+    return (sys_errlist[errnum]);
 
   /* Do this by hand, so we don't include stdio(3). */
   t = tmp;
-  do {
+  do
+  {
     *t++ = "0123456789"[errnum % 10];
-  } while (errnum /= 10);
-  for (p = ebuf + sizeof(UPREFIX) - 1;;) {
+  }
+  while (errnum /= 10);
+  for (p = ebuf + sizeof (UPREFIX) - 1;;)
+  {
     *p++ = *--t;
     if (t <= tmp)
       break;
   }
-  return(ebuf);
+  return (ebuf);
 }
 
 #endif /* HAVE_STRERROR */

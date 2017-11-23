@@ -17,21 +17,21 @@
 
 #include "htString.h"
 
-class HtCodec : public Object
+class HtCodec:public Object
 {
 public:
-  HtCodec();
-  virtual ~HtCodec();
+  HtCodec ();
+  virtual ~ HtCodec ();
 
   // Code what's in this string.
-  virtual String encode(const String &) const = 0;
+  virtual String encode (const String &) const = 0;
 
   // Decode what's in this string.
-  virtual String decode(const String &) const = 0;
+  virtual String decode (const String &) const = 0;
 
 private:
-  HtCodec(const HtCodec &);     // Not supposed to be implemented.
-  void operator= (const HtCodec &); // Not supposed to be implemented.
+    HtCodec (const HtCodec &);  // Not supposed to be implemented.
+  void operator= (const HtCodec &);     // Not supposed to be implemented.
 };
 
 #endif /* __HtCodec_h */

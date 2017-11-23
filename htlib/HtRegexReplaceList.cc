@@ -30,9 +30,9 @@ using namespace std;
 #include <iostream.h>
 #endif /* HAVE_STD */
 
-HtRegexReplaceList::HtRegexReplaceList(StringList &list, int case_sensitive )
+HtRegexReplaceList::HtRegexReplaceList (StringList & list, int case_sensitive)
 {
-  if (list.Count() & 1)
+  if (list.Count () & 1)
   {
     lastErrorMessage = "HtRegexReplaceList needs an even number of strings";
     return;
@@ -41,14 +41,15 @@ HtRegexReplaceList::HtRegexReplaceList(StringList &list, int case_sensitive )
   int i;
   String err;
 
-  for (i = 0; i < list.Count(); i += 2)
+  for (i = 0; i < list.Count (); i += 2)
   {
     String from = list[i];
-    String to  = list[i+1];
-    HtRegexReplace *replacer = new HtRegexReplace(from.get(), to.get(), case_sensitive);
-    replacers.Add(replacer);    // Stash it even if there's an error so it will get destroyed later
-    const String &err = replacer->lastError();
-    if (err.length() != 0)
+    String to = list[i + 1];
+    HtRegexReplace *replacer =
+      new HtRegexReplace (from.get (), to.get (), case_sensitive);
+    replacers.Add (replacer);   // Stash it even if there's an error so it will get destroyed later
+    const String & err = replacer->lastError ();
+    if (err.length () != 0)
     {
       lastErrorMessage = err;
       return;
@@ -56,27 +57,29 @@ HtRegexReplaceList::HtRegexReplaceList(StringList &list, int case_sensitive )
   }
 }
 
-HtRegexReplaceList::~HtRegexReplaceList()
+HtRegexReplaceList::~HtRegexReplaceList ()
 {
   // replacers gets chucked away
 }
 
-int HtRegexReplaceList::replace(String &str, int nullpattern , int nullstr )
+int
+HtRegexReplaceList::replace (String & str, int nullpattern, int nullstr)
 {
-  int repCount = replacers.Count();
+  int repCount = replacers.Count ();
   int doneCount = 0;
 
   for (int rep = 0; rep < repCount; rep++)
   {
     HtRegexReplace *replacer = (HtRegexReplace *) replacers[rep];
-    if (replacer->replace(str, nullpattern, nullstr) > 0)
+    if (replacer->replace (str, nullpattern, nullstr) > 0)
       doneCount++;
   }
 
   return doneCount;
 }
 
-const String &HtRegexReplaceList::lastError()
+const String &
+HtRegexReplaceList::lastError ()
 {
   return lastErrorMessage;
 }

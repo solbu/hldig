@@ -23,21 +23,22 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#ifdef _MSC_VER /* _WIN32 */
+#ifdef _MSC_VER                 /* _WIN32 */
 #define vsnprintf _vsnprintf
 #endif
 
-static char  buf[10000];
+static char buf[10000];
 
 //*****************************************************************************
 // char *form(char *fmt, ...)
 //
-char *form(const char *fmt, ...)
+char *
+form (const char *fmt, ...)
 {
-  va_list  args;
-  va_start(args, fmt);
-  vsnprintf(buf, sizeof(buf), fmt, args);
-  va_end(args);
+  va_list args;
+  va_start (args, fmt);
+  vsnprintf (buf, sizeof (buf), fmt, args);
+  va_end (args);
   return buf;
 }
 
@@ -45,10 +46,9 @@ char *form(const char *fmt, ...)
 //*****************************************************************************
 // char *vform(char *fmt, va_list args)
 //
-char *vform(const char *fmt, va_list args)
+char *
+vform (const char *fmt, va_list args)
 {
-  vsnprintf(buf, sizeof(buf), fmt, args);
+  vsnprintf (buf, sizeof (buf), fmt, args);
   return buf;
 }
-
-

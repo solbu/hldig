@@ -25,22 +25,23 @@
 // Perform the same function as the standard strtok() function except that
 // multiple separators are NOT collapsed into one.
 //
-char *good_strtok(char *str, char term)
+char *
+good_strtok (char *str, char term)
 {
-    static char    *string;
+  static char *string;
 
-    if (str)
-    {
-  string = str;
-    }
+  if (str)
+  {
+    string = str;
+  }
 
-    if (string == NULL || *string == '\0')
-  return NULL;
+  if (string == NULL || *string == '\0')
+    return NULL;
 
-    char *p = string;
-    while (*string && *string!=term)
-  string++;
-    if (*string)
-  *string++ = '\0';
-    return p;
+  char *p = string;
+  while (*string && *string != term)
+    string++;
+  if (*string)
+    *string++ = '\0';
+  return p;
 }

@@ -25,75 +25,88 @@
 class Dictionary;
 class DictionaryEntry;
 
-class DictionaryCursor {
- public:
-    //
-    // Support for the Start_Get and Get_Next routines
-    //
-    int      currentTableIndex;
-    DictionaryEntry  *currentDictionaryEntry;
-};
-
-class Dictionary : public Object
+class DictionaryCursor
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    Dictionary();
-    Dictionary(const Dictionary& other);
-    Dictionary(int initialCapacity);
-    Dictionary(int initialCapacity, float loadFactor);
-    ~Dictionary();
+  //
+  // Support for the Start_Get and Get_Next routines
+  //
+  int currentTableIndex;
+  DictionaryEntry *currentDictionaryEntry;
+};
 
-    //
-    // Adding and deleting items to and from the dictionary
-    //
-    void    Add(const String& name, Object *obj);
-    int      Remove(const String& name);
+class Dictionary:public Object
+{
+public:
+  //
+  // Construction/Destruction
+  //
+  Dictionary ();
+  Dictionary (const Dictionary & other);
+    Dictionary (int initialCapacity);
+    Dictionary (int initialCapacity, float loadFactor);
+   ~Dictionary ();
 
-    //
-    // Searching can be done with the Find() member of the array indexing
-    // operator
-    //
-    Object    *Find(const String& name) const;
-    Object    *operator[](const String& name) const;
-    int      Exists(const String& name) const;
+  //
+  // Adding and deleting items to and from the dictionary
+  //
+  void Add (const String & name, Object * obj);
+  int Remove (const String & name);
 
-    //
-    // We want to be able to go through all the entries in the
-    // dictionary in sequence.  To do this, we have the same
-    // traversal interface as the List class
-    //
-    void    Start_Get() { Start_Get(cursor); }
-    void    Start_Get(DictionaryCursor& cursor) const;
-    //
-    // Get the next key
-    //
-    char    *Get_Next() { return Get_Next(cursor); }
-    char    *Get_Next(DictionaryCursor& cursor) const;
-    //
-    // Get the next entry
-    //
-    Object              *Get_NextElement() { return Get_NextElement(cursor); }
-    Object              *Get_NextElement(DictionaryCursor& cursor) const;
-    void    Release();
-    void    Destroy();
-    int      Count()  const  { return count; }
-    
+  //
+  // Searching can be done with the Find() member of the array indexing
+  // operator
+  //
+  Object *Find (const String & name) const;
+  Object *operator[] (const String & name) const;
+  int Exists (const String & name) const;
+
+  //
+  // We want to be able to go through all the entries in the
+  // dictionary in sequence.  To do this, we have the same
+  // traversal interface as the List class
+  //
+  void Start_Get ()
+  {
+    Start_Get (cursor);
+  }
+  void Start_Get (DictionaryCursor & cursor) const;
+  //
+  // Get the next key
+  //
+  char *Get_Next ()
+  {
+    return Get_Next (cursor);
+  }
+  char *Get_Next (DictionaryCursor & cursor) const;
+  //
+  // Get the next entry
+  //
+  Object *Get_NextElement ()
+  {
+    return Get_NextElement (cursor);
+  }
+  Object *Get_NextElement (DictionaryCursor & cursor) const;
+  void Release ();
+  void Destroy ();
+  int Count () const
+  {
+    return count;
+  }
+
 private:
-    DictionaryEntry  **table;
-    int      tableLength;
-    int      initialCapacity;
-    int      count;
-    int      threshold;
-    float    loadFactor;
+    DictionaryEntry ** table;
+  int tableLength;
+  int initialCapacity;
+  int count;
+  int threshold;
+  float loadFactor;
 
-    DictionaryCursor  cursor;
+  DictionaryCursor cursor;
 
-    void    rehash();
-    void    init(int, float);
-    unsigned int  hashCode(const char *key) const;
+  void rehash ();
+  void init (int, float);
+  unsigned int hashCode (const char *key) const;
 };
 
 #endif

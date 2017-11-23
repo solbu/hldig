@@ -32,19 +32,20 @@
 #define GETOPT_LOCAL
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* header for getopt_local.c */
 
-extern int optind;
-extern int opterr;
-extern char *optarg;
+  extern int optind;
+  extern int opterr;
+  extern char *optarg;
 
-int getopt(int, char *[], char *);
+  int getopt (int, char *[], char *);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* GETOPT_LOCAL_H */
+#endif                          /* GETOPT_LOCAL_H */

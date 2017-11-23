@@ -18,7 +18,6 @@
 #ifndef  _good_strtok_h_
 #define  _good_strtok_h_
 
-char  *good_strtok(char *, char);
+char *good_strtok (char *, char);
 
 #endif
-

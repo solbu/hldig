@@ -4,15 +4,15 @@
 // HtHeap: A Heap class which holds objects of type Object.
 //         (A heap is a semi-ordered tree-like structure.
 //          it ensures that the first item is *always* the largest.
-//          NOTE: To use a heap, you must implement the Compare() function for 
-//                 your Object classes. The assumption used here is -1 means 
-//                 less-than, 0 means equal, and +1 means greater-than. Thus 
+//          NOTE: To use a heap, you must implement the Compare() function for
+//                 your Object classes. The assumption used here is -1 means
+//                 less-than, 0 means equal, and +1 means greater-than. Thus
 //                 this is a "min heap" for that definition.)
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License (LGPL) version 2 or later 
+// or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
 // $Id: HtHeap.cc,v 1.12 2004/05/28 13:15:20 lha Exp $
@@ -37,7 +37,7 @@ using namespace std;
 // void HtHeap::HtHeap()
 //   Default constructor
 //
-HtHeap::HtHeap()
+HtHeap::HtHeap ()
 {
   data = new HtVector;
 }
@@ -48,16 +48,16 @@ HtHeap::HtHeap()
 //   Constructor from vector
 //   (has the side effect of not allocating double memory)
 //
-HtHeap::HtHeap(HtVector vector)
+HtHeap::HtHeap (HtVector vector)
 {
-  int size = vector.Count();
-  data = static_cast<HtVector*>(vector.Copy());
+  int size = vector.Count ();
+  data = static_cast < HtVector * >(vector.Copy ());
 
   // Now we have to "heapify" -- start at the first interior node
   // And push each node down into its subtree
   // (This is O(n)!)
-  for (int i = parentOf(size); i >= 0; i--)
-    pushDownRoot(i);
+  for (int i = parentOf (size); i >= 0; i--)
+    pushDownRoot (i);
 }
 
 
@@ -65,9 +65,9 @@ HtHeap::HtHeap(HtVector vector)
 // void HtHeap::~HtHeap()
 //   Destructor
 //
-HtHeap::~HtHeap()
+HtHeap::~HtHeap ()
 {
-  Destroy();
+  Destroy ();
 }
 
 
@@ -75,9 +75,10 @@ HtHeap::~HtHeap()
 // void HtHeap::Destroy()
 //   Deletes all objects from the heap
 //
-void HtHeap::Destroy()
+void
+HtHeap::Destroy ()
 {
-  data->Destroy();
+  data->Destroy ();
   delete data;
 }
 
@@ -86,10 +87,11 @@ void HtHeap::Destroy()
 // void HtHeap::Add(Object *object)
 //   Add an object to the heap.
 //
-void HtHeap::Add(Object *object)
+void
+HtHeap::Add (Object * object)
 {
-  data->Add(object);
-  percolateUp(data->Count() - 1);
+  data->Add (object);
+  percolateUp (data->Count () - 1);
 }
 
 
@@ -100,15 +102,16 @@ void HtHeap::Add(Object *object)
 //   This requires re-heapifying by placing the last element on the top
 //   and pushing it down.
 //
-Object *HtHeap::Remove()
+Object *
+HtHeap::Remove ()
 {
-  Object *min = Peek();
+  Object *min = Peek ();
 
-  data->Assign(data->Last(), 0);
-  data->RemoveFrom(data->Count()-1);
-  
-  if (data->Count() > 1)
-    pushDownRoot(0);
+  data->Assign (data->Last (), 0);
+  data->RemoveFrom (data->Count () - 1);
+
+  if (data->Count () > 1)
+    pushDownRoot (0);
 
   return min;
 }
@@ -117,11 +120,12 @@ Object *HtHeap::Remove()
 // HtHeap *HtHeap::Copy() const
 //   Return a deep copy of the heap.
 //
-Object *HtHeap::Copy() const
+Object *
+HtHeap::Copy () const
 {
-    HtHeap  *heap = new HtHeap(*data);
+  HtHeap *heap = new HtHeap (*data);
 
-    return heap;
+  return heap;
 }
 
 
@@ -129,11 +133,11 @@ Object *HtHeap::Copy() const
 // HtHeap &HtHeap::operator=(HtHeap &heap)
 //   Return a deep copy of the heap.
 //
-HtHeap &HtHeap::operator=(HtHeap &heap)
+HtHeap & HtHeap::operator= (HtHeap & heap)
 {
-    Destroy();
-    data = heap.data;
-    return *this;
+  Destroy ();
+  data = heap.data;
+  return *this;
 }
 
 //*********************************************************************
@@ -141,18 +145,18 @@ HtHeap &HtHeap::operator=(HtHeap &heap)
 // Pushes the node pointed to by leaf upwards
 // it will travel as far as possible upwards to ensure the data is a heap
 //
-void HtHeap:: percolateUp(int leaf)
+void
+HtHeap::percolateUp (int leaf)
 {
-  int parent = parentOf(leaf);
-  Object *value = data->Nth(leaf);
-  while (leaf > 0 &&
-   (value->compare(*(data->Nth(parent))) < 0))
-    {
-      data->Assign(data->Nth(parent), leaf);
-      leaf = parent;
-      parent = parentOf(leaf);
-    }
-  data->Assign(value, leaf);
+  int parent = parentOf (leaf);
+  Object *value = data->Nth (leaf);
+  while (leaf > 0 && (value->compare (*(data->Nth (parent))) < 0))
+  {
+    data->Assign (data->Nth (parent), leaf);
+    leaf = parent;
+    parent = parentOf (leaf);
+  }
+  data->Assign (value, leaf);
 }
 
 //*********************************************************************
@@ -160,39 +164,40 @@ void HtHeap:: percolateUp(int leaf)
 // Pushes the node pointed to by root into the heap
 // it will go down as far as necessary to ensure the data is a heap
 //
-void HtHeap::pushDownRoot(int root)
+void
+HtHeap::pushDownRoot (int root)
 {
-  int size = data->Count() - 1;
-  Object *value = data->Nth(root); 
+  int size = data->Count () - 1;
+  Object *value = data->Nth (root);
   while (root < size)
-    {
-      int childPos = leftChildOf(root);
-      if (childPos < size)
   {
-    if ( rightChildOf(root) < size &&
-         data->Nth(childPos + 1)->compare(*(data->Nth(childPos))) < 0 )
+    int childPos = leftChildOf (root);
+    if (childPos < size)
+    {
+      if (rightChildOf (root) < size &&
+          data->Nth (childPos + 1)->compare (*(data->Nth (childPos))) < 0)
       {
         childPos++;
       }
-    if ( data->Nth(childPos)->compare(*value) < 0 ) // -1, so smaller
+      if (data->Nth (childPos)->compare (*value) < 0)   // -1, so smaller
       {
         // We have to swap this node with the root and then loop
-        data->Assign(data->Nth(childPos), root);
-        data->Assign(value, childPos);
+        data->Assign (data->Nth (childPos), root);
+        data->Assign (value, childPos);
         root = childPos;
       }
-    else
+      else
       {
         // Found the right position, so we're done
-        data->Assign(value, root);
+        data->Assign (value, root);
         return;
       }
-  }
-      else // childPos >= heapSize
-  {
-    // At a leaf, so we're done
-    data->Assign(value, root);
-    return;
-  }
     }
+    else                        // childPos >= heapSize
+    {
+      // At a leaf, so we're done
+      data->Assign (value, root);
+      return;
+    }
+  }
 }

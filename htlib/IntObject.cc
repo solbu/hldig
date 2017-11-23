@@ -22,7 +22,7 @@
 //*******************************************************************************
 // IntObject::IntObject()
 //
-IntObject::IntObject()
+IntObject::IntObject ()
 {
 }
 
@@ -30,8 +30,6 @@ IntObject::IntObject()
 //*******************************************************************************
 // IntObject::~IntObject()
 //
-IntObject::~IntObject()
+IntObject::~IntObject ()
 {
 }
-
-

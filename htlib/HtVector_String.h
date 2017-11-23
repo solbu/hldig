@@ -18,6 +18,3 @@
 #include "HtVectorGeneric.h"
 
 #endif
-
-
-

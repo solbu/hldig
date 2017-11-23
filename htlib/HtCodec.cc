@@ -21,10 +21,12 @@
 
 #include "HtCodec.h"
 
-HtCodec::HtCodec()
-{ }
+HtCodec::HtCodec ()
+{
+}
 
-HtCodec::~HtCodec()
-{ }
+HtCodec::~HtCodec ()
+{
+}
 
 // End of HtCodec.cc

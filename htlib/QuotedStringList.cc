@@ -22,69 +22,67 @@
 
 
 //*****************************************************************************
-QuotedStringList::QuotedStringList()
+QuotedStringList::QuotedStringList ()
 {
 }
 
 //*****************************************************************************
 int
-QuotedStringList::Create(const char *str, const char *sep, int single)
+QuotedStringList::Create (const char *str, const char *sep, int single)
 {
-    char  quote = 0;
-    int    quoted = 0;
-    String  word;
+  char quote = 0;
+  int quoted = 0;
+  String word;
 
-    while (str && *str)
+  while (str && *str)
+  {
+    if (*str == '\\')
     {
-  if (*str == '\\')
-  {
       if (!str[1])
-    break;
+        break;
       word << *++str;
-  }
-  else if (*str == quote)
-  {
+    }
+    else if (*str == quote)
+    {
       quote = 0;
-  }
-  else if (!quote && (*str == '"' || *str == '\''))
-  {
+    }
+    else if (!quote && (*str == '"' || *str == '\''))
+    {
       quote = *str;
       quoted++;
-  }
-  else if (quote == 0 && strchr(sep, *str))
-  {
-      Add(new String(word));
+    }
+    else if (quote == 0 && strchr (sep, *str))
+    {
+      Add (new String (word));
       word = 0;
       quoted = 0;
       if (!single)
       {
-    while (strchr(sep, *str))
-        str++;
-    str--;
+        while (strchr (sep, *str))
+          str++;
+        str--;
       }
-  }
-  else
-      word << *str;
-  str++;
     }
+    else
+      word << *str;
+    str++;
+  }
 
-    //
-    // Add the last word to the list
-    //
-    if (word.length() || quoted)
-  Add(new String(word));
-    return Count();
+  //
+  // Add the last word to the list
+  //
+  if (word.length () || quoted)
+    Add (new String (word));
+  return Count ();
 }
 
 
 //*****************************************************************************
 int
-QuotedStringList::Create(const char *str, char sep, int single)
+QuotedStringList::Create (const char *str, char sep, int single)
 {
-    char  t[2] = "1";
+  char t[2] = "1";
 
-    t[0] = sep;
-    return Create(str, t, single);
+  t[0] = sep;
+  return Create (str, t, single);
 }
-
-

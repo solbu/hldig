@@ -55,17 +55,19 @@
  * PUBLIC: #endif
  */
 int
-memcmp(s1, s2, n)
-  char *s1, *s2;
-  size_t n;
+memcmp (s1, s2, n)
+     char *s1, *s2;
+     size_t n;
 {
-  if (n != 0) {
-    unsigned char *p1 = (unsigned char *)s1,
-            *p2 = (unsigned char *)s2;
-    do {
+  if (n != 0)
+  {
+    unsigned char *p1 = (unsigned char *) s1, *p2 = (unsigned char *) s2;
+    do
+    {
       if (*p1++ != *p2++)
         return (*--p1 - *--p2);
-    } while (--n != 0);
+    }
+    while (--n != 0);
   }
   return (0);
 }

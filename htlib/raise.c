@@ -31,9 +31,9 @@
  * PUBLIC: #endif
  */
 int
-raise(s)
-  int s;
+raise (s)
+     int s;
 {
-  return (kill(getpid(), s));
+  return (kill (getpid (), s));
 }
 #endif /* HAVE_RAISE */

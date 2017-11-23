@@ -21,12 +21,12 @@
 // Max/Min value of an array
 class HtMaxMin
 {
- public:
-    // compute max/min of an array of values
-    static unsigned int   max_v(unsigned int   *vals,int n);
-    static unsigned short max_v(unsigned short *vals,int n);
-    static unsigned int   min_v(unsigned int   *vals,int n);
-    static unsigned short min_v(unsigned short *vals,int n);
+public:
+  // compute max/min of an array of values
+  static unsigned int max_v (unsigned int *vals, int n);
+  static unsigned short max_v (unsigned short *vals, int n);
+  static unsigned int min_v (unsigned int *vals, int n);
+  static unsigned short min_v (unsigned short *vals, int n);
 };
 
 

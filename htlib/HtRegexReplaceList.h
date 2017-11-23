@@ -21,18 +21,18 @@
 #include "List.h"
 #include "StringList.h"
 
-class HtRegexReplaceList : public Object
+class HtRegexReplaceList:public Object
 {
 public:
   // Construct a HtRegexReplaceList. |list| should contain an even
   // number of strings that constitute from/to pairs.
-  HtRegexReplaceList(StringList &list, int case_sensitive = 0);
-  virtual ~HtRegexReplaceList();
-  int replace(String &str, int nullpattern = 0, int nullstr = 0);
-  virtual const String &lastError();
+  HtRegexReplaceList (StringList & list, int case_sensitive = 0);
+    virtual ~ HtRegexReplaceList ();
+  int replace (String & str, int nullpattern = 0, int nullstr = 0);
+  virtual const String & lastError ();
 
 private:
-  List replacers;
+    List replacers;
   String lastErrorMessage;
 };
 

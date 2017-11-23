@@ -42,81 +42,79 @@ static char *next_arg = (char *) 0;
 #define OPT_PLAIN       1
 #define OPT_ARG         2
 
-        
+
 /* ----- getopt -------------------------------------- Oct 23, 1999  21:48 ---
  */
 int
-getopt(int argc, char *argv[], char *optstring)
+getopt (int argc, char *argv[], char *optstring)
 {
-    int ret;
-    int which = NO_OPT;
-        
-    if (next_arg == (char*) 0)
+  int ret;
+  int which = NO_OPT;
+
+  if (next_arg == (char *) 0)
+  {
+    if (argv[optind] == (char *) 0 || argv[optind][0] != '-')
+      return -1;
+    next_arg = &argv[optind][1];
+  }
+
+  if ((*next_arg == '\0') || (*next_arg == '-'))
+  {
+    optind++;
+    return -1;
+  }
+
+  while (*optstring)
+    if (*next_arg == *optstring++)
+      which = (*optstring == ':') ? OPT_ARG : OPT_PLAIN;
+
+  switch (which)
+  {
+  case NO_OPT:
+  case OPT_PLAIN:
+    ret = *next_arg++;
+
+    if (*next_arg == '\0')
     {
-        if (argv[optind] == (char *) 0 || argv[optind][0] != '-')
-            return -1;
-        next_arg = &argv[optind][1];
+      optind++;
+      next_arg = (char *) 0;
     }
 
-    if ((*next_arg == '\0') || (*next_arg == '-'))
+    if (which == OPT_PLAIN)
+      return ret;
+
+    if (opterr)
+      fprintf (stderr, "%s: illegal option -- %c\n", argv[0], ret);
+
+    return '?';
+
+  case OPT_ARG:
+    ret = *next_arg++;
+    optind++;
+
+    if (*next_arg != '\0')
     {
-        optind++;
-        return -1;
+      optarg = next_arg;
+      next_arg = (char *) 0;
+      return ret;
     }
 
-    while(*optstring)
-        if (*next_arg == *optstring++)
-            which = (*optstring == ':') ? OPT_ARG : OPT_PLAIN;
-                        
-    switch (which)
+    if (argv[optind] != (char *) 0)
     {
-    case NO_OPT:
-    case OPT_PLAIN:
-        ret = *next_arg++;
-
-        if (*next_arg == '\0')
-        {
-            optind++;
-            next_arg = (char *)0;
-        }
-
-        if (which == OPT_PLAIN)
-            return ret;
-
-        if (opterr)
-            fprintf(stderr, "%s: illegal option -- %c\n", argv[0], ret);
-
-        return '?';
-
-    case OPT_ARG:
-        ret = *next_arg++;
-        optind++;
-
-        if (*next_arg != '\0')
-        {
-            optarg = next_arg;
-            next_arg = (char*) 0;
-            return ret;
-        }
-
-        if (argv[optind] != (char*) 0)
-        {
-            optarg = argv[optind];
-            optind++;
-            next_arg = (char*) 0;
-            return ret;
-        }
-
-        next_arg = (char*) 0;
-        if (opterr)
-            fprintf(stderr, "%s: option requires an option -- %c\n",
-                    argv[0], ret);
-        return '?';
+      optarg = argv[optind];
+      optind++;
+      next_arg = (char *) 0;
+      return ret;
     }
 
-    return(-1);
+    next_arg = (char *) 0;
+    if (opterr)
+      fprintf (stderr, "%s: option requires an option -- %c\n", argv[0], ret);
+    return '?';
+  }
+
+  return (-1);
 }
-#elif defined(_MSC_VER) /* _WIN32 */
+#elif defined(_MSC_VER)         /* _WIN32 */
 #error _MSC_VER but !GETOPT_LOCAL
 #endif /* GETOPT_LOCAL */
-

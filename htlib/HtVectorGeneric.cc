@@ -50,15 +50,18 @@
 
 class ZOZO
 {
-    int a,b,c;
+  int a, b, c;
 public:
-    void show(){printf("ZOZO SHOW:%d %d %d\n",a,b,c);}
-    ZOZO()
-    {
-  a=1;
-  b=2;
-  c=3;
-    }
+  void show ()
+  {
+    printf ("ZOZO SHOW:%d %d %d\n", a, b, c);
+  }
+  ZOZO ()
+  {
+    a = 1;
+    b = 2;
+    c = 3;
+  }
 };
 
 
@@ -72,20 +75,19 @@ public:
 #include "HtVectorGenericCode.h"
 
 void
-test_HtVectorGeneric()
+test_HtVectorGeneric ()
 {
-    HtVector_int  intv;
-    HtVector_char charv;
-    HtVector_ZOZO vz;
-    ZOZO zz;
-    vz.push_back(zz);
-    vz.push_back(zz);
-    vz.push_back(zz);
+  HtVector_int intv;
+  HtVector_char charv;
+  HtVector_ZOZO vz;
+  ZOZO zz;
+  vz.push_back (zz);
+  vz.push_back (zz);
+  vz.push_back (zz);
 
-    int i;
-    for(i=0;i<vz.size();i++)
-    {
-  vz[i].show();
-    }
+  int i;
+  for (i = 0; i < vz.size (); i++)
+  {
+    vz[i].show ();
+  }
 }
-

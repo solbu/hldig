@@ -20,52 +20,79 @@
 #include "htString.h"
 
 
-class StringList : public List
+class StringList:public List
 {
 public:
-    //
-    // Construction/Destruction
-    //
-    StringList();
+  //
+  // Construction/Destruction
+  //
+  StringList ();
 
-    //
-    // Creation of a String from a string or String
-    //
-    StringList(const char *str, char sep = '\t') { Create(str, sep); }
-    StringList(const String &str, char sep = '\t') { Create(str, sep); }
-    StringList(const char *str, const char *sep) { Create(str, sep); }
-    StringList(const String &str, const char *sep) { Create(str, sep); }
+  //
+  // Creation of a String from a string or String
+  //
+  StringList (const char *str, char sep = '\t')
+  {
+    Create (str, sep);
+  }
+  StringList (const String & str, char sep = '\t')
+  {
+    Create (str, sep);
+  }
+  StringList (const char *str, const char *sep)
+  {
+    Create (str, sep);
+  }
+  StringList (const String & str, const char *sep)
+  {
+    Create (str, sep);
+  }
 
-    int      Create(const char *str, char sep = '\t');
-    int      Create(const String &str, char sep = '\t') { return Create(str.get(), sep); }
-    int      Create(const char *str, const char *sep);
-    int      Create(const String &str, const char *sep) { return Create(str.get(), sep); }
+  int Create (const char *str, char sep = '\t');
+  int Create (const String & str, char sep = '\t')
+  {
+    return Create (str.get (), sep);
+  }
+  int Create (const char *str, const char *sep);
+  int Create (const String & str, const char *sep)
+  {
+    return Create (str.get (), sep);
+  }
 
-    //
-    // Standard List operations...
-    //
-    void    Add(const char *);
-    void    Add(String *obj) { List::Add(obj); }
-    void    Insert(const char *, int pos);
-    void    Insert(String *obj, int pos) { List::Insert(obj, pos); }
-    void    Assign(const char *, int pos);
-    void    Assign(String *obj, int pos) { List::Assign(obj, pos); }
+  //
+  // Standard List operations...
+  //
+  void Add (const char *);
+  void Add (String * obj)
+  {
+    List::Add (obj);
+  }
+  void Insert (const char *, int pos);
+  void Insert (String * obj, int pos)
+  {
+    List::Insert (obj, pos);
+  }
+  void Assign (const char *, int pos);
+  void Assign (String * obj, int pos)
+  {
+    List::Assign (obj, pos);
+  }
 
-    //
-    // Since we know we only store strings, we can reliably sort them.
-    // If direction is 1, the sort will be in descending order
-    //
-    void    Sort(int direction = 0);
-  
-    //
-    // Join the Elements of the StringList together
-    //
-    String              Join(char) const;
+  //
+  // Since we know we only store strings, we can reliably sort them.
+  // If direction is 1, the sort will be in descending order
+  //
+  void Sort (int direction = 0);
 
-    //
-    // Getting at the parts of the StringList
-    //
-    char    *operator [] (int n);
+  //
+  // Join the Elements of the StringList together
+  //
+  String Join (char) const;
+
+  //
+  // Getting at the parts of the StringList
+  //
+  char *operator [] (int n);
 
 private:
 };

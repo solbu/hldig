@@ -16,12 +16,12 @@
 
 #include "htString.h"
 
-extern int HtIsWordChar(char c);
-extern int HtIsStrictWordChar(char c);
-extern int HtWordNormalize(String &w);
-extern int HtStripPunctuation(String &w);
+extern int HtIsWordChar (char c);
+extern int HtIsStrictWordChar (char c);
+extern int HtWordNormalize (String & w);
+extern int HtStripPunctuation (String & w);
 
 // Like strtok(), but using our rules for word separation.
-extern char *HtWordToken(char *s);
+extern char *HtWordToken (char *s);
 
 #endif /* _HtWordType_h */

@@ -46,10 +46,10 @@ realloc (ptr, size)
   size_t block, blocks, oldlimit;
 
   if (size == 0)
-    {
-      free (ptr);
-      return malloc (0);
-    }
+  {
+    free (ptr);
+    return malloc (0);
+  }
   else if (ptr == NULL)
     return malloc (size);
 
@@ -60,87 +60,87 @@ realloc (ptr, size)
 
   type = _heapinfo[block].busy.type;
   switch (type)
-    {
-    case 0:
-      /* Maybe reallocate a large block to a small fragment.  */
-      if (size <= BLOCKSIZE / 2)
   {
-    result = malloc (size);
-    if (result != NULL)
+  case 0:
+    /* Maybe reallocate a large block to a small fragment.  */
+    if (size <= BLOCKSIZE / 2)
+    {
+      result = malloc (size);
+      if (result != NULL)
       {
         memcpy (result, ptr, size);
         free (ptr);
         return result;
       }
-  }
+    }
 
-      /* The new size is a large allocation as well;
-   see if we can hold it in place. */
-      blocks = BLOCKIFY (size);
-      if (blocks < _heapinfo[block].busy.info.size)
-  {
-    /* The new size is smaller; return
-       excess memory to the free list. */
-    _heapinfo[block + blocks].busy.type = 0;
-    _heapinfo[block + blocks].busy.info.size
-      = _heapinfo[block].busy.info.size - blocks;
-    _heapinfo[block].busy.info.size = blocks;
-    free (ADDRESS (block + blocks));
-    result = ptr;
-  }
-      else if (blocks == _heapinfo[block].busy.info.size)
-  /* No size change necessary.  */
-  result = ptr;
-      else
-  {
-    /* Won't fit, so allocate a new region that will.
-       Free the old region first in case there is sufficient
-       adjacent free space to grow without moving. */
-    blocks = _heapinfo[block].busy.info.size;
-    /* Prevent free from actually returning memory to the system.  */
-    oldlimit = _heaplimit;
-    _heaplimit = 0;
-    free (ptr);
-    _heaplimit = oldlimit;
-    result = malloc (size);
-    if (result == NULL)
+    /* The new size is a large allocation as well;
+       see if we can hold it in place. */
+    blocks = BLOCKIFY (size);
+    if (blocks < _heapinfo[block].busy.info.size)
+    {
+      /* The new size is smaller; return
+         excess memory to the free list. */
+      _heapinfo[block + blocks].busy.type = 0;
+      _heapinfo[block + blocks].busy.info.size
+        = _heapinfo[block].busy.info.size - blocks;
+      _heapinfo[block].busy.info.size = blocks;
+      free (ADDRESS (block + blocks));
+      result = ptr;
+    }
+    else if (blocks == _heapinfo[block].busy.info.size)
+      /* No size change necessary.  */
+      result = ptr;
+    else
+    {
+      /* Won't fit, so allocate a new region that will.
+         Free the old region first in case there is sufficient
+         adjacent free space to grow without moving. */
+      blocks = _heapinfo[block].busy.info.size;
+      /* Prevent free from actually returning memory to the system.  */
+      oldlimit = _heaplimit;
+      _heaplimit = 0;
+      free (ptr);
+      _heaplimit = oldlimit;
+      result = malloc (size);
+      if (result == NULL)
       {
         /* Now we're really in trouble.  We have to unfree
-     the thing we just freed.  Unfortunately it might
-     have been coalesced with its neighbors.  */
+           the thing we just freed.  Unfortunately it might
+           have been coalesced with its neighbors.  */
         if (_heapindex == block)
           (void) malloc (blocks * BLOCKSIZE);
         else
-    {
-      __ptr_t previous = malloc ((block - _heapindex) * BLOCKSIZE);
-      (void) malloc (blocks * BLOCKSIZE);
-      free (previous);
-    }
+        {
+          __ptr_t previous = malloc ((block - _heapindex) * BLOCKSIZE);
+          (void) malloc (blocks * BLOCKSIZE);
+          free (previous);
+        }
         return NULL;
       }
-    if (ptr != result)
-      memmove (result, ptr, blocks * BLOCKSIZE);
-  }
-      break;
-
-    default:
-      /* Old size is a fragment; type is logarithm
-   to base two of the fragment size.  */
-      if (size > (size_t) (1 << (type - 1)) && size <= (size_t) (1 << type))
-  /* The new size is the same kind of fragment.  */
-  result = ptr;
-      else
-  {
-    /* The new size is different; allocate a new space,
-       and copy the lesser of the new size and the old. */
-    result = malloc (size);
-    if (result == NULL)
-      return NULL;
-    memcpy (result, ptr, min (size, (size_t) 1 << type));
-    free (ptr);
-  }
-      break;
+      if (ptr != result)
+        memmove (result, ptr, blocks * BLOCKSIZE);
     }
+    break;
+
+  default:
+    /* Old size is a fragment; type is logarithm
+       to base two of the fragment size.  */
+    if (size > (size_t) (1 << (type - 1)) && size <= (size_t) (1 << type))
+      /* The new size is the same kind of fragment.  */
+      result = ptr;
+    else
+    {
+      /* The new size is different; allocate a new space,
+         and copy the lesser of the new size and the old. */
+      result = malloc (size);
+      if (result == NULL)
+        return NULL;
+      memcpy (result, ptr, min (size, (size_t) 1 << type));
+      free (ptr);
+    }
+    break;
+  }
 
   return result;
 }

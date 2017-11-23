@@ -9,15 +9,17 @@
 #define _myqsort_h
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-typedef int (*myqsort_cmp)(void *data, void *a, void *b);
+  typedef int (*myqsort_cmp) (void *data, void *a, void *b);
 
-void myqsort(void *const pbase, size_t total_elems, size_t size, myqsort_cmp cmp, void *data);
+  void myqsort (void *const pbase, size_t total_elems, size_t size,
+                myqsort_cmp cmp, void *data);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _myqsort_h */
+#endif                          /* _myqsort_h */

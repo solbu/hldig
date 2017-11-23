@@ -39,20 +39,19 @@
  */
 
 int
-vsnprintf(str, n, fmt, ap)
-  char *str;
-  size_t n;
-  const char *fmt;
-  va_list ap;
+vsnprintf (str, n, fmt, ap)
+     char *str;
+     size_t n;
+     const char *fmt;
+     va_list ap;
 {
   n = 0;
 
 #ifdef SPRINTF_RET_CHARPNT
-  (void)vsprintf(str, fmt, ap);
-  return (strlen(str));
+  (void) vsprintf (str, fmt, ap);
+  return (strlen (str));
 #else
-  return (vsprintf(str, fmt, ap));
+  return (vsprintf (str, fmt, ap));
 #endif
 }
 #endif /* HAVE_VSNPRINTF */
-

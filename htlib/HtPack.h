@@ -27,13 +27,11 @@
 
 // Pack.
 // The parameter "format" is not const but should normally be.
-extern String
-htPack(const char format[], const char *theStruct);
+extern String htPack (const char format[], const char *theStruct);
 
 // Unpack.
 // The parameter "theString" will be updated to point after the
 // processed amount of data.
-extern String
-htUnpack(const char format[], const char *thePackedData);
+extern String htUnpack (const char format[], const char *thePackedData);
 
 #endif // __HtPack_h

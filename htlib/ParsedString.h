@@ -20,22 +20,22 @@
 #include "htString.h"
 #include "Dictionary.h"
 
-class ParsedString : public Object
+class ParsedString:public Object
 {
 public:
   //
   // Construction/Destruction
   //
-          ParsedString();
-          ParsedString(const String& s);
-          ~ParsedString();
+  ParsedString ();
+  ParsedString (const String & s);
+  ~ParsedString ();
 
-  void      set(const String& s);
-  const String    get(const Dictionary &d) const;
+  void set (const String & s);
+  const String get (const Dictionary & d) const;
 private:
-  String      value;
+    String value;
 
-  void      getFileContents(String &str, const String& filename) const;
+  void getFileContents (String & str, const String & filename) const;
 };
 
 #endif
