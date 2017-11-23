@@ -106,7 +106,7 @@ Display::Display(Dictionary *collections)
   //
   // Must have been some error.  Resort to the builtin-long (slot 0)
   //
-  currentTemplate = (Template *) templates.templates[0];
+  currentTemplate = reinterpret_cast<Template *> (templates.templates[0]);
     }
     if (!currentTemplate)
       {
@@ -228,7 +228,7 @@ Display::display(int pageNumber)
     }
     
     matches->Start_Get();
-    while ((match = (ResultMatch *)matches->Get_Next()) &&
+    while ((match = reinterpret_cast<ResultMatch *> (matches->Get_Next())) &&
      numberDisplayed < number)
     {
   if (currentMatch >= startAt)
@@ -374,10 +374,10 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
     
     {
   str = new String();
-  char    buffer[100];
   time_t    t = ref->DocTime();
   if (t)
   {
+      char    buffer[100];
       struct tm  *tm = localtime(&t);
       String datefmt = config->Find("date_format");
       const String locale  = config->Find("locale");
@@ -417,15 +417,18 @@ Display::displayMatch(ResultMatch *match, DocumentRef *ref, int current)
         vars.Add("DESCRIPTION", description);
     }
 
-    int    index = 0;
-    int    length = 0;
-    int    status = -1;
-    if (URLtemplate.hasPattern())
-  status = URLtemplate.FindFirst(ref->DocURL(), index, length);
-    if (status >= 0 && index >= 0)
-  displayParsedFile( ((String*) URLtemplateList[index])->get() );
-    else
-  expandVariables(currentTemplate->getMatchTemplate());
+    {
+      int    index = 0;
+      int    status = -1;
+      if (URLtemplate.hasPattern()){
+        int    length = 0;
+        status = URLtemplate.FindFirst(ref->DocURL(), index, length);
+      }
+      if (status >= 0 && index >= 0)
+        displayParsedFile( ((String*) URLtemplateList[index])->get() );
+      else
+        expandVariables(currentTemplate->getMatchTemplate());
+    }
 }
 
 //*****************************************************************************
@@ -487,7 +490,6 @@ Display::setVariables(int pageNumber, List *matches)
   
     String  *str;
     const char  *format = input->get("format");
-    String  *in;
 
     vars.Add("SELECTED_FORMAT", new String(format));
 
@@ -495,13 +497,14 @@ Display::setVariables(int pageNumber, List *matches)
     *str << "<select name=\"format\">\n";
     for (i = 0; i < templates.displayNames.Count(); i++)
     {
-  in = (String *) templates.internalNames[i];
-  *str << "<option value=\"" << in->get() << '"';
-  if (format && mystrcasecmp(in->get(), format) == 0)
-  {
-      *str << " selected";
-  }
-  *str << '>' << ((String*)templates.displayNames[i])->get() << '\n';
+      String  *in;
+      in = (String *) templates.internalNames[i];
+      *str << "<option value=\"" << in->get() << '"';
+      if (format && mystrcasecmp(in->get(), format) == 0)
+      {
+        *str << " selected";
+      }
+      *str << '>' << ((String*)templates.displayNames[i])->get() << '\n';
     }
     *str << "</select>\n";
     vars.Add("FORMAT", str);
@@ -592,102 +595,102 @@ Display::setVariables(int pageNumber, List *matches)
     QuotedStringList  builds(config->Find("build_select_lists"), " \t\r\n");
     for (int b = 0; b <= builds.Count()-8; b += 8)
     {
-  int  ntuple = atoi(builds[b+3]);
-  int  ivalue = atoi(builds[b+4]);
-  int  ilabel = atoi(builds[b+5]);
-  int  nsel = 0;
-  int  mult = 0, asinput = 0;
-  const char *cp;
-  char  sepc = '\001';
-  String  currval;
-  String  pre, post;
-  QuotedStringList  nameopt(builds[b], ",", 1);
-  QuotedStringList  namelist(config->Find(builds[b+2]), " \t\r\n");
-  if (ntuple > 0 && ivalue > 0 && ivalue <= ntuple
-    && ilabel > 0 && ilabel <= ntuple && namelist.Count() % ntuple == 0
-    && nameopt.Count() > 0)
-  {
-      if (strcmp(builds[b+1], "restrict") == 0
-    || strcmp(builds[b+1], "exclude") == 0)
-        sepc = '|';
-      if (nameopt.Count() == 1)
-    ;    // default is single select
-      else if (mystrcasecmp(nameopt[1], "multiple") == 0)
-    mult = 1;
-      else if (mystrcasecmp(nameopt[1], "radio") == 0)
-    asinput = 1;
-      else if (mystrcasecmp(nameopt[1], "checkbox") == 0)
+      int  ntuple = atoi(builds[b+3]);
+      int  ivalue = atoi(builds[b+4]);
+      int  ilabel = atoi(builds[b+5]);
+      String  currval;
+      String  pre, post;
+      QuotedStringList  nameopt(builds[b], ",", 1);
+      QuotedStringList  namelist(config->Find(builds[b+2]), " \t\r\n");
+      if (ntuple > 0 && ivalue > 0 && ivalue <= ntuple
+          && ilabel > 0 && ilabel <= ntuple && namelist.Count() % ntuple == 0
+          && nameopt.Count() > 0)
       {
-    mult = 1;
-    asinput = 1; 
-      }
-      if (nameopt.Count() > 2)
-    pre = nameopt[2];
-      else
-    pre = "";
-      if (nameopt.Count() > 3)
-    post = nameopt[3];
-      else
-    post = "";
-
-      str = new String();
-      if (!asinput)
-      {
-    *str << "<select ";
-    if (mult)
-        *str << "multiple ";
-    *str << "name=\"" << builds[b+1] << "\">\n";
-      }
-      for (i = 0; i < namelist.Count(); i += ntuple)
-      {
-    if (*builds[b+6])
-        currval = config->Find(builds[b+6]);
-    else if (input->exists(builds[b+1]))
-        currval = input->get(builds[b+1]);
-    else
-        currval = 0;
-    if (!asinput)
-        *str << pre << "<option value=\"" << namelist[i+ivalue-1] << '"';
-    else if (mult)
-        *str << pre << "<input type=\"checkbox\" name=\"" << builds[b+1]
-       << "\" value=\"" << namelist[i+ivalue-1] << '"';
-    else
-        *str << pre << "<input type=\"radio\" name=\"" << builds[b+1]
-       << "\" value=\"" << namelist[i+ivalue-1] << '"';
-    if (!mult
-        && mystrcasecmp(namelist[i+ivalue-1], currval.get()) == 0
-        || mult &&
-         (cp = mystrcasestr(currval.get(), namelist[i+ivalue-1])) != NULL
-      && (cp == currval.get() || cp[-1] == '\001' || cp[-1] == sepc)
-      && (*(cp += strlen(namelist[i+ivalue-1])) == '\0'
-        || *cp == '\001' || *cp == sepc))
-    {
-        if (!asinput)
-      *str << " selected";
+        int  nsel = 0;
+        int  mult = 0, asinput = 0;
+        char  sepc = '\001';
+        if (strcmp(builds[b+1], "restrict") == 0
+            || strcmp(builds[b+1], "exclude") == 0)
+          sepc = '|';
+        if (nameopt.Count() == 1)
+          ;    // default is single select
+        else if (mystrcasecmp(nameopt[1], "multiple") == 0)
+          mult = 1;
+        else if (mystrcasecmp(nameopt[1], "radio") == 0)
+          asinput = 1;
+        else if (mystrcasecmp(nameopt[1], "checkbox") == 0)
+        {
+          mult = 1;
+          asinput = 1; 
+        }
+        if (nameopt.Count() > 2)
+          pre = nameopt[2];
         else
-      *str << " checked";
-        ++nsel;
-    }
-    *str << '>' << namelist[i+ilabel-1] << post << '\n';
+          pre = "";
+        if (nameopt.Count() > 3)
+          post = nameopt[3];
+        else
+          post = "";
+
+        str = new String();
+        if (!asinput)
+        {
+          *str << "<select ";
+          if (mult)
+            *str << "multiple ";
+          *str << "name=\"" << builds[b+1] << "\">\n";
+        }
+        for (i = 0; i < namelist.Count(); i += ntuple)
+        {
+          const char *cp;
+          if (*builds[b+6])
+            currval = config->Find(builds[b+6]);
+          else if (input->exists(builds[b+1]))
+            currval = input->get(builds[b+1]);
+          else
+            currval = 0;
+          if (!asinput)
+            *str << pre << "<option value=\"" << namelist[i+ivalue-1] << '"';
+          else if (mult)
+            *str << pre << "<input type=\"checkbox\" name=\"" << builds[b+1]
+              << "\" value=\"" << namelist[i+ivalue-1] << '"';
+          else
+            *str << pre << "<input type=\"radio\" name=\"" << builds[b+1]
+              << "\" value=\"" << namelist[i+ivalue-1] << '"';
+          if (!mult
+              && mystrcasecmp(namelist[i+ivalue-1], currval.get()) == 0
+              || mult &&
+              (cp = mystrcasestr(currval.get(), namelist[i+ivalue-1])) != NULL
+              && (cp == currval.get() || cp[-1] == '\001' || cp[-1] == sepc)
+              && (*(cp += strlen(namelist[i+ivalue-1])) == '\0'
+                || *cp == '\001' || *cp == sepc))
+          {
+            if (!asinput)
+              *str << " selected";
+            else
+              *str << " checked";
+            ++nsel;
+          }
+          *str << '>' << namelist[i+ilabel-1] << post << '\n';
+        }
+        if (!nsel && builds[b+7][0] && input->exists(builds[b+1]))
+        {
+          if (!asinput)
+            *str << pre << "<option value=\"" << input->get(builds[b+1])
+              << "\" selected>" << builds[b+7] << post << '\n';
+          else if (mult)
+            *str << pre << "<input type=\"checkbox\" name=\"" << builds[b+1]
+              << "\" value=\"" << input->get(builds[b+1])
+              << "\" checked>" << builds[b+7] << post << '\n';
+          else
+            *str << pre << "<input type=\"radio\" name=\"" << builds[b+1]
+              << "\" value=\"" << input->get(builds[b+1])
+              << "\" checked>" << builds[b+7] << post << '\n';
+        }
+        if (!asinput)
+          *str << "</select>\n";
+        vars.Add(nameopt[0], str);
       }
-      if (!nsel && builds[b+7][0] && input->exists(builds[b+1]))
-      {
-    if (!asinput)
-        *str << pre << "<option value=\"" << input->get(builds[b+1])
-             << "\" selected>" << builds[b+7] << post << '\n';
-    else if (mult)
-        *str << pre << "<input type=\"checkbox\" name=\"" << builds[b+1]
-       << "\" value=\"" << input->get(builds[b+1])
-       << "\" checked>" << builds[b+7] << post << '\n';
-    else
-        *str << pre << "<input type=\"radio\" name=\"" << builds[b+1]
-       << "\" value=\"" << input->get(builds[b+1])
-       << "\" checked>" << builds[b+7] << post << '\n';
-      }
-      if (!asinput)
-    *str << "</select>\n";
-      vars.Add(nameopt[0], str);
-  }
     }
   
     //
@@ -1032,11 +1035,12 @@ Display::generateStars(DocumentRef *ref, int right)
     }
 
     int    match = 0;
-    int    length = 0;
     int    status;
 
-    if (URLimage.hasPattern())
+    if (URLimage.hasPattern()){
+      int    length = 0;
       status = URLimage.FindFirst(ref->DocURL(), match, length);
+    }
     else
       status = -1;
 
@@ -1465,7 +1469,7 @@ Display::buildMatchList()
 //
   selected_collections->Start_Get();
   Collection *collection= NULL;
-  while ((collection = (Collection *) selected_collections->Get_NextElement()))
+  while ((collection = reinterpret_cast<Collection *> (selected_collections->Get_NextElement())))
   {
     ResultList *results = collection->getResultList();
     if (results == NULL)
@@ -1567,7 +1571,7 @@ Display::buildMatchList()
 
   score = adjustments.adjust_score(score, thisRef->DocURL());
 
-  score = log(1.0 + score);
+  score = log1p(score);
   thisMatch->setScore(score);
   thisMatch->setAnchor(dm->anchor);
     
@@ -1641,7 +1645,6 @@ Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fan
     //head_string = HtSGMLCodec::instance()->decode(head);
     //head = head_string.get();
 
-    int    which, length;
     char  *temp = head;
     String  part;
     String  *text = new String("");
@@ -1662,7 +1665,7 @@ Display::excerpt(ResultMatch *match, DocumentRef *ref, String urlanchor, int fan
     !allWordsPattern->hasPattern())
       first = 0;
     else
-      first = allWordsPattern->FindFirstWord(head, which, length);
+      first = allWordsPattern->FindFirstWord(head);
 
     if (first < 0 && config->Boolean("no_excerpt_show_top"))
       first = 0;  // No excerpt, but we want to show the top.
@@ -1838,7 +1841,6 @@ Display::hilight(ResultMatch *match, const String& str_arg, const String& urlanc
     String    result;
     int      pos = 0;
     int      which, length;
-    WeightWord    *ww;
     int      first = 1;
     String    s;
 #define SGMLencodedChars(p, l) (s = 0, s.append(p, l), HtSGMLCodec::instance()->decode(s))
@@ -1857,6 +1859,7 @@ Display::hilight(ResultMatch *match, const String& str_arg, const String& urlanc
     while (allWordsPattern->hasPattern() &&
      (pos = allWordsPattern->FindFirstWord(str, which, length)) >= 0)
     {
+      WeightWord    *ww;
   //result.append(str, pos);
   result << SGMLencodedChars(str, pos);
   ww = (WeightWord *) (*searchWords)[which];
