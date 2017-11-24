@@ -180,8 +180,8 @@ CSCOPE = cscope
 DIST_SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig \
 	htsearch httools installdir include test po
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/Makefile.config \
-	ABOUT-NLS COPYING ChangeLog compile config.guess config.rpath \
-	config.sub install-sh ltmain.sh missing mkinstalldirs ylwrap
+	ABOUT-NLS COPYING compile config.guess config.rpath config.sub \
+	install-sh ltmain.sh missing mkinstalldirs ylwrap
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 top_distdir = $(distdir)
 am__remove_distdir = \
@@ -408,10 +408,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
 		$(top_builddir)/htword/libhtword.la \
 		$(top_builddir)/htlib/libht.la \
-		$(top_builddir)/htcommon/libcommon.la \
-		$(top_builddir)/htword/libhtword.la \
-		$(top_builddir)/db/libhtdb.la \
-		$(top_builddir)/htlib/libht.la
+		$(top_builddir)/db/libhtdb.la
 
 @TESTS_TRUE@TESTDIR = test
 SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include $(TESTDIR) po

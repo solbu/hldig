@@ -376,10 +376,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
 		$(top_builddir)/htword/libhtword.la \
 		$(top_builddir)/htlib/libht.la \
-		$(top_builddir)/htcommon/libcommon.la \
-		$(top_builddir)/htword/libhtword.la \
-		$(top_builddir)/db/libhtdb.la \
-		$(top_builddir)/htlib/libht.la
+		$(top_builddir)/db/libhtdb.la
 
 htdig_SOURCES = Document.cc HTML.cc \
 	Parsable.cc Plaintext.cc \
