@@ -23,7 +23,6 @@ subdir = @top_srcdir@
 datadir = @datadir@
 datarootdir= @datarootdir@
 localedir = @localedir@
-DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
 LIBS = @LIBINTL@ @LIBS@
 
 htdig_DEPENDENCIES = $(HTLIBS)
