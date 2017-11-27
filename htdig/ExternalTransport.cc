@@ -136,8 +136,7 @@ Transport::DocStatus ExternalTransport::Request ()
   // Start the external handler, passing the protocol, URL and config file
   // as command arguments
   //
-  StringList
-  hargs (_Handler);
+  StringList hargs (_Handler);
   char **
     handlargs = new char *[hargs.Count () + 5];
   int
@@ -216,8 +215,7 @@ Transport::DocStatus ExternalTransport::Request ()
 
 
   // OK, now parse the stuff we got back from the handler...
-  String
-    line;
+  String line;
   char *
     token1;
   int
@@ -337,12 +335,12 @@ Transport::DocStatus ExternalTransport::Request ()
 // private
 // DocStatus ExternalTransport::GetDocumentStatus(ExternalTransport_Response *r)
 //
-Transport::DocStatus ExternalTransport::
-GetDocumentStatus (ExternalTransport_Response * r)
+Transport::
+  DocStatus ExternalTransport::GetDocumentStatus (ExternalTransport_Response *
+                                                  r)
 {
   // The default is 'not found' if we can't figure it out...
-  DocStatus
-    returnStatus = Document_not_found;
+  DocStatus returnStatus = Document_not_found;
   int
     statuscode = r->GetStatusCode ();
 

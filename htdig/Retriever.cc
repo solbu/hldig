@@ -129,8 +129,8 @@ words (*(HtConfiguration::config ())), words_to_add (100, 0.75)
 
     if (d_md5->OpenReadWrite (config->Find ("md5_db"), 0666) != OK)
     {
-      cerr << "DocumentDB::Open: " << config->
-        Find ("md5_db") << " " << strerror (errno) << "\n";
+      cerr << "DocumentDB::Open: " << config->Find ("md5_db") << " " <<
+        strerror (errno) << "\n";
     }
   }
 
@@ -440,8 +440,8 @@ Retriever::Start ()
     while ((server = (Server *) servers.Get_NextElement ()) && noSignal)
     {
       if (debug > 1)
-        cout << "pick: " << server->host () << ", # servers = " << servers.
-          Count () << endl;
+        cout << "pick: " << server->
+          host () << ", # servers = " << servers.Count () << endl;
 
       // We already know if a server supports HTTP pers. connections,
       // because we asked it for the robots.txt file (constructor of
@@ -456,8 +456,8 @@ Retriever::Start ()
         // Let's check for a '0' value (out of range)
         // If set, we change it to 1.
 
-        if (config->
-            Value ("server", server->host (), "max_connection_requests") == 0)
+        if (config->Value
+            ("server", server->host (), "max_connection_requests") == 0)
           max_connection_requests = 1;
         else
           max_connection_requests =
@@ -467,8 +467,8 @@ Retriever::Start ()
         if (debug > 2)
         {
 
-          cout << "> " << server->
-            host () << " supports HTTP persistent connections";
+          cout << "> " << server->host () <<
+            " supports HTTP persistent connections";
 
           if (max_connection_requests == -1)
             cout << " (" << "infinite" << ")" << endl;
@@ -486,8 +486,8 @@ Retriever::Start ()
         max_connection_requests = 1;
 
         if (debug > 2)
-          cout << "> " << server->
-            host () << " with a traditional HTTP connection" << endl;
+          cout << "> " << server->host () <<
+            " with a traditional HTTP connection" << endl;
 
       }
 

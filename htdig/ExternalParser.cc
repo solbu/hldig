@@ -434,8 +434,8 @@ ExternalParser::parse (Retriever & retriever, URL & base)
           {
             metadatetags = new StringMatch ();
             metadatetags->IgnoreCase ();
-            metadatetags->
-              Pattern ("date|dc.date|dc.date.created|dc.date.modified");
+            metadatetags->Pattern
+              ("date|dc.date|dc.date.created|dc.date.modified");
           }
 
           // <URL:http://www.w3.org/MarkUp/html-spec/html-spec_5.html#SEC5.2.5> 

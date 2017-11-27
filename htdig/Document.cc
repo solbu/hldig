@@ -277,7 +277,8 @@ Transport::DocStatus Document::Retrieve (Server * server, HtDateTime date)
   {
     if (externalConnect)
     {
-      delete externalConnect;
+      delete
+        externalConnect;
     }
     externalConnect = new ExternalTransport (url->service ());
     transportConnect = externalConnect;
@@ -339,8 +340,8 @@ Transport::DocStatus Document::Retrieve (Server * server, HtDateTime date)
         cout << "Making HTTPS request on " << url->get ();
 
         if (useproxy)
-          cout << " via proxy (" << proxy->
-            host () << ":" << proxy->port () << ")";
+          cout << " via proxy (" << proxy->host () << ":" << proxy->
+            port () << ")";
 
         cout << endl;
       }
@@ -406,8 +407,8 @@ Transport::DocStatus Document::Retrieve (Server * server, HtDateTime date)
         cout << "Making HTTP request on " << url->get ();
 
         if (useproxy)
-          cout << " via proxy (" << proxy->
-            host () << ":" << proxy->port () << ")";
+          cout << " via proxy (" << proxy->host () << ":" << proxy->
+            port () << ")";
 
         cout << endl;
       }

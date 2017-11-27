@@ -85,27 +85,24 @@ skip_end (HtConfiguration::config ()->Find ("noindex_end"), " \t")
   // The tags Match object is used to match tag commands while
   //
   tags.IgnoreCase ();
-  tags.
-    Pattern
+  tags.Pattern
     ("title|/title|a|/a|h1|h2|h3|h4|h5|h6|/h1|/h2|/h3|/h4|/h5|/h6|noindex|/noindex|img|li|meta|frame|area|base|embed|object|link|style|/style|script|/script");
 
   // These tags don't cause a word break.  They may also be in "tags" above,
   // except for the "a" tag, which must be handled as a special case.
   // Note that <sup> & <sub> should cause a word break.
   nobreaktags.IgnoreCase ();
-  nobreaktags.
-    Pattern
+  nobreaktags.Pattern
     ("font|/font|em|/em|strong|/strong|i|/i|b|/b|u|/u|tt|/tt|abbr|/abbr|code|/code|q|/q|samp|/samp|kbd|/kbd|var|/var|dfn|/dfn|cite|/cite|blink|/blink|big|/big|small|/small|s|/s");
 
   // These tags, which may also be in "tags" above, cause word breaks and
   // therefore cause space to be inserted before (or after) do_tag() is done.
   spacebeforetags.IgnoreCase ();
-  spacebeforetags.
-    Pattern
+  spacebeforetags.Pattern
     ("title|h1|h2|h3|h4|h5|h6|address|blockquote|noindex|img|li|th|td|dt|dd|p|br|hr|center|spacer");
   spaceaftertags.IgnoreCase ();
-  spaceaftertags.
-    Pattern ("/title|/h1|/h2|/h3|/h4|/h5|/h6|/address|/blockquote");
+  spaceaftertags.Pattern
+    ("/title|/h1|/h2|/h3|/h4|/h5|/h6|/address|/blockquote");
 
   // These are the name values of meta tags that carry date information.
   metadatetags.IgnoreCase ();
@@ -751,9 +748,8 @@ HTML::do_tag (Retriever & retriever, String & tag)
         retriever.got_meta_email (transSGML (attrs["htdig-email"]));
 
       if (!attrs["htdig-notification-date"].empty ())
-        retriever.
-          got_meta_notification (transSGML
-                                 (attrs["htdig-notification-date"]));
+        retriever.got_meta_notification (transSGML
+                                         (attrs["htdig-notification-date"]));
 
       if (!attrs["htdig-email-subject"].empty ())
         retriever.got_meta_subject (transSGML (attrs["htdig-email-subject"]));
