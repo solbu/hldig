@@ -59,24 +59,26 @@
 //
 class WordRecordInfo
 {
- public:
-    WordRecordInfo(const Configuration& config);
-    //
-    // Unique instance handlers 
-    //
-    static void Initialize(const Configuration& config);
-    static WordRecordInfo* Instance() {
-      if(instance) return instance;
-      fprintf(stderr, "WordRecordInfo::Instance: no instance\n");
-      return 0;
-    }
+public:
+  WordRecordInfo (const Configuration & config);
+  //
+  // Unique instance handlers 
+  //
+  static void Initialize (const Configuration & config);
+  static WordRecordInfo *Instance ()
+  {
+    if (instance)
+      return instance;
+    fprintf (stderr, "WordRecordInfo::Instance: no instance\n");
+    return 0;
+  }
 
-    int default_type;
+  int default_type;
 
-    //
-    // Unique instance pointer
-    //
-    static WordRecordInfo* instance;
+  //
+  // Unique instance pointer
+  //
+  static WordRecordInfo *instance;
 };
 #endif /* SWIG */
 

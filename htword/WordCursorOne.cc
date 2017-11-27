@@ -24,71 +24,77 @@
 
 //
 // WordCursorOne implementation
-// 
+//
 
 // *****************************************************************************
-WordCursorOne::WordCursorOne(WordList *words) :
-  WordCursor(words->GetContext()),
-  prefixKey(words->GetContext())
+WordCursorOne::WordCursorOne (WordList * words):
+WordCursor (words->GetContext ()), prefixKey (words->GetContext ())
 {
-  Clear();
+  Clear ();
 }
 
 // *****************************************************************************
-WordCursorOne::WordCursorOne(WordList *words, wordlist_walk_callback_t callback, Object * callback_data) :
-  WordCursor(words->GetContext()),
-  prefixKey(words->GetContext())
+WordCursorOne::WordCursorOne (WordList * words, wordlist_walk_callback_t callback, Object * callback_data):
+WordCursor (words->GetContext ()),
+prefixKey (words->GetContext ())
 {
-  Clear();
-  Initialize(words, WordKey(words->GetContext()), callback, callback_data, HTDIG_WORDLIST_WALKER);
+  Clear ();
+  Initialize (words, WordKey (words->GetContext ()), callback, callback_data,
+              HTDIG_WORDLIST_WALKER);
 }
 
 // *****************************************************************************
-WordCursorOne::WordCursorOne(WordList *words, const WordKey &searchKey, int action = HTDIG_WORDLIST_WALKER) :
-  WordCursor(words->GetContext()),
-  prefixKey(words->GetContext())
+WordCursorOne::WordCursorOne (WordList * words, const WordKey & searchKey, int action = HTDIG_WORDLIST_WALKER):
+WordCursor (words->GetContext ()),
+prefixKey (words->GetContext ())
 {
-  Clear();
-  Initialize(words, searchKey, 0, 0, action);
+  Clear ();
+  Initialize (words, searchKey, 0, 0, action);
 }
 
 // *****************************************************************************
-WordCursorOne::WordCursorOne(WordList *words, const WordKey &searchKey, wordlist_walk_callback_t callback, Object * callback_data) :
-  WordCursor(words->GetContext()),
-  prefixKey(words->GetContext())
+WordCursorOne::WordCursorOne (WordList * words, const WordKey & searchKey,
+                              wordlist_walk_callback_t callback,
+                              Object * callback_data):
+WordCursor (words->GetContext ()),
+prefixKey (words->GetContext ())
 {
-  Clear();
-  Initialize(words, searchKey, callback, callback_data, HTDIG_WORDLIST_WALKER);
+  Clear ();
+  Initialize (words, searchKey, callback, callback_data,
+              HTDIG_WORDLIST_WALKER);
 }
 
 // *****************************************************************************
 //
-int WordCursorOne::Initialize(WordList *nwords, const WordKey &nsearchKey, wordlist_walk_callback_t ncallback, Object *ncallback_data, int naction)
+int
+WordCursorOne::Initialize (WordList * nwords, const WordKey & nsearchKey,
+                           wordlist_walk_callback_t ncallback,
+                           Object * ncallback_data, int naction)
 {
   action = naction;
   searchKey = nsearchKey;
   callback = ncallback;
   callback_data = ncallback_data;
   words = nwords;
-  cursor = ((WordListOne*)nwords)->db->Cursor();
+  cursor = ((WordListOne *) nwords)->db->Cursor ();
   return OK;
 }
 
 // *****************************************************************************
 //
-void 
-WordCursorOne::Clear()
+void
+WordCursorOne::Clear ()
 {
-  searchKey.Clear();
+  searchKey.Clear ();
   action = 0;
   callback = 0;
   callback_data = 0;
-  ClearResult();
-  ClearInternal();
+  ClearResult ();
+  ClearInternal ();
   words = 0;
 
   //
-  // Debugging section. 
+  // Debugging section.
   //
   traceRes = 0;
 }
@@ -96,11 +102,11 @@ WordCursorOne::Clear()
 // *****************************************************************************
 //
 void
-WordCursorOne::ClearInternal()
+WordCursorOne::ClearInternal ()
 {
-  key.trunc();
-  data.trunc();
-  prefixKey.Clear();
+  key.trunc ();
+  data.trunc ();
+  prefixKey.Clear ();
   cursor_get_flags = DB_SET_RANGE;
   searchKeyIsSameAsPrefix = 0;
 }
@@ -108,26 +114,27 @@ WordCursorOne::ClearInternal()
 // *****************************************************************************
 //
 void
-WordCursorOne::ClearResult()
+WordCursorOne::ClearResult ()
 {
   collectRes = 0;
-  found.Clear();
+  found.Clear ();
   status = OK;
 }
 
 int
-WordCursorOne::ContextRestore(const String& buffer)
+WordCursorOne::ContextRestore (const String & buffer)
 {
   int ret = OK;
-  if(!buffer.empty()) {
-    WordKey key(words->GetContext(), buffer);
-    if((ret = Seek(key)) != OK)
+  if (!buffer.empty ())
+  {
+    WordKey key (words->GetContext (), buffer);
+    if ((ret = Seek (key)) != OK)
       return ret;
     //
     // Move to restored position so that next call to
     // WalkNext will go above the restored position.
     //
-    if((ret = WalkNext()) != OK)
+    if ((ret = WalkNext ()) != OK)
       return ret;
   }
   return ret;
@@ -148,52 +155,62 @@ WordCursorOne::ContextRestore(const String& buffer)
 // all the word occurrences matching the fields set in the key are retrieved. It may
 // be fast if key is a prefix (see WordKey::Prefix for a definition). It may
 // be *slow* if key is not a prefix because it forces a complete walk of the
-// index. 
+// index.
 //
-int 
-WordCursorOne::Walk()
+int
+WordCursorOne::Walk ()
 {
   int ret;
-  if((ret = WalkInit()) != OK) return ret;
-  while((ret = WalkNext()) == OK)
+  if ((ret = WalkInit ()) != OK)
+    return ret;
+  while ((ret = WalkNext ()) == OK)
     ;
   int ret1;
-  if((ret1 = WalkFinish()) != OK) return ret1;
+  if ((ret1 = WalkFinish ()) != OK)
+    return ret1;
 
   return ret == WORD_WALK_ATEND ? OK : NOTOK;
 }
 
-int 
-WordCursorOne::WalkInit()
+int
+WordCursorOne::WalkInit ()
 {
-  ClearResult();
-  ClearInternal();
+  ClearResult ();
+  ClearInternal ();
 
-  WordReference wordRef(words->GetContext());
+  WordReference wordRef (words->GetContext ());
 
   {
     int ret;
-    if((ret = cursor->Open()) != 0)
+    if ((ret = cursor->Open ()) != 0)
       return ret;
   }
 
-  if(words->verbose) fprintf(stderr, "WordCursorOne::WalkInit: action = %d, SearchKey = %s\n", action, (char*)searchKey.Get());
+  if (words->verbose)
+    fprintf (stderr, "WordCursorOne::WalkInit: action = %d, SearchKey = %s\n",
+             action, (char *) searchKey.Get ());
 
-  if(action & HTDIG_WORDLIST_COLLECTOR) {
+  if (action & HTDIG_WORDLIST_COLLECTOR)
+  {
     collectRes = new List;
   }
 
-  WordKey first_key(words->GetContext());
+  WordKey first_key (words->GetContext ());
   //
   // Move the cursor to start walking and do some sanity checks.
   //
-  if(searchKey.Empty()) {
+  if (searchKey.Empty ())
+  {
     //
     // Move past the stat data
     //
-    if(words->verbose) fprintf(stderr, "WordCursorOne::WalkInit: at start of keys because search key is empty\n");
+    if (words->verbose)
+      fprintf (stderr,
+               "WordCursorOne::WalkInit: at start of keys because search key is empty\n");
 
-  } else {
+  }
+  else
+  {
     prefixKey = searchKey;
     //
     // If the key is a prefix, the start key is
@@ -201,38 +218,48 @@ WordCursorOne::WalkInit()
     // key does not contain any prefix, start from the beginning
     // of the file.
     //
-    if(prefixKey.PrefixOnly() == NOTOK) {
-      if(words->verbose) fprintf(stderr, "WordCursorOne::WalkInit: at start of keys because search key is not a prefix\n");
-      prefixKey.Clear();
-    } else {
-      if(words->verbose) fprintf(stderr, "WordCursorOne::WalkInit: go to %s \n", (char*)prefixKey.Get());
+    if (prefixKey.PrefixOnly () == NOTOK)
+    {
+      if (words->verbose)
+        fprintf (stderr,
+                 "WordCursorOne::WalkInit: at start of keys because search key is not a prefix\n");
+      prefixKey.Clear ();
+    }
+    else
+    {
+      if (words->verbose)
+        fprintf (stderr, "WordCursorOne::WalkInit: go to %s \n",
+                 (char *) prefixKey.Get ());
       first_key = prefixKey;
     }
   }
 
-  first_key.Pack(key);
+  first_key.Pack (key);
   //
   // Allow Seek immediately after Init
   //
-  found.Key() = first_key;
+  found.Key () = first_key;
 
   status = OK;
-  searchKeyIsSameAsPrefix = searchKey.ExactEqual(prefixKey);
+  searchKeyIsSameAsPrefix = searchKey.ExactEqual (prefixKey);
   cursor_get_flags = DB_SET_RANGE;
 
   return OK;
 }
 
-int 
-WordCursorOne::WalkRewind()
+int
+WordCursorOne::WalkRewind ()
 {
-  WordKey first_key(words->GetContext());
+  WordKey first_key (words->GetContext ());
   //
   // Move the cursor to start walking and do some sanity checks.
   //
-  if(searchKey.Empty()) {
-    first_key.Clear();
-  } else {
+  if (searchKey.Empty ())
+  {
+    first_key.Clear ();
+  }
+  else
+  {
     prefixKey = searchKey;
     //
     // If the key is a prefix, the start key is
@@ -240,50 +267,61 @@ WordCursorOne::WalkRewind()
     // key does not contain any prefix, start from the beginning
     // of the file.
     //
-    if(prefixKey.PrefixOnly() == NOTOK) {
-      prefixKey.Clear();
-      first_key.Clear();
-    } else {
+    if (prefixKey.PrefixOnly () == NOTOK)
+    {
+      prefixKey.Clear ();
+      first_key.Clear ();
+    }
+    else
+    {
       first_key = prefixKey;
     }
   }
 
-  first_key.Pack(key);
+  first_key.Pack (key);
   //
   // Allow Seek immediately after Rewind
   //
-  found.Key() = first_key;
+  found.Key () = first_key;
 
   status = OK;
-  searchKeyIsSameAsPrefix = searchKey.ExactEqual(prefixKey);
+  searchKeyIsSameAsPrefix = searchKey.ExactEqual (prefixKey);
   cursor_get_flags = DB_SET_RANGE;
 
   return OK;
 }
 
-int 
-WordCursorOne::WalkNext()
+int
+WordCursorOne::WalkNext ()
 {
   int ret;
-  while((ret = WalkNextStep()) == WORD_WALK_NOMATCH_FAILED)
-    if(words->verbose > 1) fprintf(stderr, "WordCursorOne::WalkNext: got false match, retry\n");
+  while ((ret = WalkNextStep ()) == WORD_WALK_NOMATCH_FAILED)
+    if (words->verbose > 1)
+      fprintf (stderr, "WordCursorOne::WalkNext: got false match, retry\n");
 
   return ret;
 }
 
-int 
-WordCursorOne::WalkNextStep()
+int
+WordCursorOne::WalkNextStep ()
 {
   status = OK;
 
   {
     int error;
-    if((error = cursor->Get(key, data, cursor_get_flags)) != 0) {
-      if(error == DB_NOTFOUND) {
-  if(words->verbose) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, no more matches\n", (char*)searchKey.Get());
-  return (status = WORD_WALK_ATEND);
-      } else {
-  return WORD_WALK_GET_FAILED;
+    if ((error = cursor->Get (key, data, cursor_get_flags)) != 0)
+    {
+      if (error == DB_NOTFOUND)
+      {
+        if (words->verbose)
+          fprintf (stderr,
+                   "WordCursorOne::WalkNextStep: looking for %s, no more matches\n",
+                   (char *) searchKey.Get ());
+        return (status = WORD_WALK_ATEND);
+      }
+      else
+      {
+        return WORD_WALK_GET_FAILED;
       }
     }
   }
@@ -293,19 +331,24 @@ WordCursorOne::WalkNextStep()
   //
   cursor_get_flags = DB_NEXT;
 
-  found.Unpack(key, data);
+  found.Unpack (key, data);
 
-  if(words->Dead()->Exists(found.Key()))
+  if (words->Dead ()->Exists (found.Key ()))
     return WORD_WALK_NOMATCH_FAILED;
 
-  if(traceRes) traceRes->Add(new WordReference(found));
+  if (traceRes)
+    traceRes->Add (new WordReference (found));
 
-  if(words->verbose > 1) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, candidate is %s\n", (char*)searchKey.Get(), (char*)found.Get());
+  if (words->verbose > 1)
+    fprintf (stderr,
+             "WordCursorOne::WalkNextStep: looking for %s, candidate is %s\n",
+             (char *) searchKey.Get (), (char *) found.Get ());
 
   //
   // Don't bother to compare keys if we want to walk all the entries
   //
-  if(!(searchKey.Empty()))     {
+  if (!(searchKey.Empty ()))
+  {
     // examples
     // searchKey: aabc 1 ? ? ?
     // prefixKey: aabc 1 ? ? ?
@@ -316,91 +359,117 @@ WordCursorOne::WalkNextStep()
     // prefix key.
     // (ie. stop loop if we're past last possible match...)
     //
-    if(!prefixKey.Empty() &&
-       !prefixKey.Equal(found.Key()))  {
-      if(words->verbose) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, no more matches because found a key that is greater than searchKey\n", (char*)searchKey.Get());
+    if (!prefixKey.Empty () && !prefixKey.Equal (found.Key ()))
+    {
+      if (words->verbose)
+        fprintf (stderr,
+                 "WordCursorOne::WalkNextStep: looking for %s, no more matches because found a key that is greater than searchKey\n",
+                 (char *) searchKey.Get ());
       return (status = WORD_WALK_ATEND);
     }
 
     //
     // Skip entries that do not exactly match the specified key.
-    // 
-    if(!searchKeyIsSameAsPrefix && 
-       !searchKey.Equal(found.Key()))  {
+    //
+    if (!searchKeyIsSameAsPrefix && !searchKey.Equal (found.Key ()))
+    {
       int ret;
-      switch((ret = SkipUselessSequentialWalking())) {
+      switch ((ret = SkipUselessSequentialWalking ()))
+      {
       case OK:
-  if(words->verbose > 1) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, false match jump to %s\n", (char*)searchKey.Get(), (char*)found.Get());
-  return WORD_WALK_NOMATCH_FAILED;
-  break;
+        if (words->verbose > 1)
+          fprintf (stderr,
+                   "WordCursorOne::WalkNextStep: looking for %s, false match jump to %s\n",
+                   (char *) searchKey.Get (), (char *) found.Get ());
+        return WORD_WALK_NOMATCH_FAILED;
+        break;
       case WORD_WALK_ATEND:
-  if(words->verbose) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, no more matches according to SkipUselessSequentialWalking\n", (char*)searchKey.Get());
-  return (status = WORD_WALK_ATEND);
-  break;
+        if (words->verbose)
+          fprintf (stderr,
+                   "WordCursorOne::WalkNextStep: looking for %s, no more matches according to SkipUselessSequentialWalking\n",
+                   (char *) searchKey.Get ());
+        return (status = WORD_WALK_ATEND);
+        break;
       default:
-  fprintf(stderr, "WordCursorOne::WalkNextStep: SkipUselessSequentialWalking failed %d\n", ret);
-  return NOTOK;
-  break;
+        fprintf (stderr,
+                 "WordCursorOne::WalkNextStep: SkipUselessSequentialWalking failed %d\n",
+                 ret);
+        return NOTOK;
+        break;
       }
     }
   }
 
-  if(words->verbose) fprintf(stderr, "WordCursorOne::WalkNextStep: looking for %s, found %s\n", (char*)searchKey.Get(), (char*)found.Get());
+  if (words->verbose)
+    fprintf (stderr,
+             "WordCursorOne::WalkNextStep: looking for %s, found %s\n",
+             (char *) searchKey.Get (), (char *) found.Get ());
 
-  if(collectRes) {
-    if(words->verbose > 2) fprintf(stderr, "WordCursorOne::WalkNextStep: collect\n");
-    collectRes->Add(new WordReference(found));
-  } else if(callback) {
-    if(words->verbose > 2) fprintf(stderr, "WordCursorOne::WalkNextStep: calling callback\n");
-    int ret = (*callback)(words, *cursor, &found, *(callback_data) );
+  if (collectRes)
+  {
+    if (words->verbose > 2)
+      fprintf (stderr, "WordCursorOne::WalkNextStep: collect\n");
+    collectRes->Add (new WordReference (found));
+  }
+  else if (callback)
+  {
+    if (words->verbose > 2)
+      fprintf (stderr, "WordCursorOne::WalkNextStep: calling callback\n");
+    int ret = (*callback) (words, *cursor, &found, *(callback_data));
     //
     // The callback function tells us that something went wrong, might
     // as well stop walking.
     //
-    if(ret != OK) {
-      if(words->verbose) fprintf(stderr, "WordCursorOne::WalkNextStep: callback returned NOTOK");
-      return WORD_WALK_CALLBACK_FAILED|(status = WORD_WALK_ATEND);
+    if (ret != OK)
+    {
+      if (words->verbose)
+        fprintf (stderr,
+                 "WordCursorOne::WalkNextStep: callback returned NOTOK");
+      return WORD_WALK_CALLBACK_FAILED | (status = WORD_WALK_ATEND);
     }
   }
 
   return OK;
 }
 
-int 
-WordCursorOne::WalkFinish()
+int
+WordCursorOne::WalkFinish ()
 {
-  if(words->verbose) fprintf(stderr, "WordCursorOne::WalkFinish\n");
+  if (words->verbose)
+    fprintf (stderr, "WordCursorOne::WalkFinish\n");
 
-  return cursor->Close() == 0 ? OK : NOTOK;
+  return cursor->Close () == 0 ? OK : NOTOK;
 }
 
 // *****************************************************************************
 //
-// Helper for SkipUselessSequentialWalking. 
+// Helper for SkipUselessSequentialWalking.
 // Undefine in foundKey all fields defined in searchKey
 // so that they are not considered by SetToFollowing.
 // It could become a method of WordKey but lacks generalisation and
 // from what I see it is a rather specific operation.
 //
-static inline void complement(WordContext* context, WordKey& key, const WordKey& mask)
+static inline void
+complement (WordContext * context, WordKey & key, const WordKey & mask)
 {
-  int nfields = context->GetKeyInfo().nfields;
+  int nfields = context->GetKeyInfo ().nfields;
   int i;
   //
   // Undefine in 'key' all fields defined in 'mask'
   //
-  for(i = 0; i < nfields; i++) {
-    if(mask.IsDefined(i))
-      key.Undefined(i);
+  for (i = 0; i < nfields; i++)
+  {
+    if (mask.IsDefined (i))
+      key.Undefined (i);
     else
-      key.SetDefined(i);
+      key.SetDefined (i);
   }
 }
 
 // *****************************************************************************
 //
-// Find out if we should better jump to the next possible key (DB_SET_RANGE) instead of 
-// sequential iterating (DB_NEXT). 
+// Find out if we should better jump to the next possible key (DB_SET_RANGE) instead of
+// sequential iterating (DB_NEXT).
 // If it is decided that jump is a better move :
 //   cursor_set_flags = DB_SET_RANGE
 //   key = calculated next possible key
@@ -411,11 +480,11 @@ static inline void complement(WordContext* context, WordKey& key, const WordKey&
 // WORD_WALK_ATEND : no more possible match, reached the maximum
 // WORD_WALK_FAILED: general failure, occurs if called and no skipping
 //                   necessary.
-// 
+//
 // Sequential searching can waste time by searching all keys, for example:
 // If searching for Key: argh <DEF> <UNDEF> 10
 // Under normal circonstances we would do the following
-// 
+//
 //    DATA            STATUS   ACTION
 // 1: argh 1 10       match    DB_NEXT
 // 2: argh 2 11       nomatch  DB_NEXT
@@ -431,22 +500,22 @@ static inline void complement(WordContext* context, WordKey& key, const WordKey&
 //    DATA            STATUS   ACTION
 // 1: argh 1 10       match    DB_NEXT
 // 2: argh 2 11       nomatch  DB_SET_RANGE argh 3 10
-// 3: argh 2 15       
-// 4: argh 2 20       
+// 3: argh 2 15
+// 4: argh 2 20
 // 5: argh 2 30
 // 6: argh 5 1        nomatch  DB_SET_RANGE argh 5 10
 // 7: argh 5 8
 // 8: argh 8 6        nomatch  DB_SET_RANGE argh 8 10
 //
-// That saves a lot of unecessary hit. The underlying logic is a bit 
+// That saves a lot of unecessary hit. The underlying logic is a bit
 // more complex but you have the idea.
 //
 int
-WordCursorOne::SkipUselessSequentialWalking()
+WordCursorOne::SkipUselessSequentialWalking ()
 {
-  WordKey&      foundKey         = found.Key();
+  WordKey & foundKey = found.Key ();
 
-  int nfields = words->GetContext()->GetKeyInfo().nfields;
+  int nfields = words->GetContext ()->GetKeyInfo ().nfields;
   int i;
 
   //
@@ -454,7 +523,8 @@ WordCursorOne::SkipUselessSequentialWalking()
   //
   int diff_field = 0;
   int lower = 0;
-  if(!foundKey.Diff(searchKey, diff_field, lower)) {
+  if (!foundKey.Diff (searchKey, diff_field, lower))
+  {
     //
     // foundKey matches searchKey (no difference), don't
     // skip, everything is fine. The caller of SkipUselessSequentialWalking
@@ -463,13 +533,16 @@ WordCursorOne::SkipUselessSequentialWalking()
     return WORD_WALK_FAILED;
   }
 
-  if(words->verbose > 2) fprintf(stderr, "WordCursorOne::SkipUselessSequentialWalking: looking for %s, candidate is %s\n", (char*)searchKey.Get(), (char*)foundKey.Get());
+  if (words->verbose > 2)
+    fprintf (stderr,
+             "WordCursorOne::SkipUselessSequentialWalking: looking for %s, candidate is %s\n",
+             (char *) searchKey.Get (), (char *) foundKey.Get ());
 
   //
   // Undefine in foundKey all fields defined in searchKey
   // so that they are not considered by SetToFollowing.
   //
-  complement(words->GetContext(), foundKey, searchKey);
+  complement (words->GetContext (), foundKey, searchKey);
 
   //
   // If the key found is lower than the searched key when
@@ -478,12 +551,20 @@ WordCursorOne::SkipUselessSequentialWalking()
   // Otherwise we need to increment the found key to jump
   // properly.
   //
-  if(lower) {
-    if(words->verbose > 1) fprintf(stderr, "WordCursorOne::SkipUselessSequentialWalking: enforcing the search constraint is enough to jump forward\n");
-    for(i = diff_field + 1; i < nfields; i++)
-      if(foundKey.IsDefined(i)) foundKey.Set(i, 0);
-  } else {
-    if(words->verbose > 1) fprintf(stderr, "WordCursorOne::SkipUselessSequentialWalking: increment the key to jump forward\n");
+  if (lower)
+  {
+    if (words->verbose > 1)
+      fprintf (stderr,
+               "WordCursorOne::SkipUselessSequentialWalking: enforcing the search constraint is enough to jump forward\n");
+    for (i = diff_field + 1; i < nfields; i++)
+      if (foundKey.IsDefined (i))
+        foundKey.Set (i, 0);
+  }
+  else
+  {
+    if (words->verbose > 1)
+      fprintf (stderr,
+               "WordCursorOne::SkipUselessSequentialWalking: increment the key to jump forward\n");
     //
     // diff_field - 1 is not really necessary because diff_field is undefined
     // in foundKey and would therefore be ignored by SetToFollowing. We write
@@ -491,7 +572,7 @@ WordCursorOne::SkipUselessSequentialWalking()
     // field for which a difference was found.
     //
     int ret;
-    if((ret = foundKey.SetToFollowing(diff_field - 1)) != OK)
+    if ((ret = foundKey.SetToFollowing (diff_field - 1)) != OK)
       return ret;
   }
 
@@ -500,14 +581,18 @@ WordCursorOne::SkipUselessSequentialWalking()
   // searchKey in foundKey because all these fields have been
   // previously undefined in foundKey.
   //
-  foundKey.Merge(searchKey);
+  foundKey.Merge (searchKey);
 
-  if(words->verbose > 2) fprintf(stderr, "WordCursorOne::SkipUselessSequentialWalking: looking for %s, jump to %s\n", (char*)searchKey.Get(), (char*)foundKey.Get());
+  if (words->verbose > 2)
+    fprintf (stderr,
+             "WordCursorOne::SkipUselessSequentialWalking: looking for %s, jump to %s\n",
+             (char *) searchKey.Get (), (char *) foundKey.Get ());
 
   //
   // Instruct Next function to jump to the calculated key
   //
-  if(foundKey.Pack(key) == NOTOK) {
+  if (foundKey.Pack (key) == NOTOK)
+  {
     return WORD_WALK_FAILED;
   }
   cursor_get_flags = DB_SET_RANGE;
@@ -517,7 +602,7 @@ WordCursorOne::SkipUselessSequentialWalking()
 
 // *****************************************************************************
 //
-// Copy defined fields in patch into foundKey and 
+// Copy defined fields in patch into foundKey and
 // initialize internal state so that WalkNext jumps to
 // this key next time it's called.
 //
@@ -527,64 +612,73 @@ WordCursorOne::SkipUselessSequentialWalking()
 // cursor_get_flags to DB_SET_RANGE.
 //
 int
-WordCursorOne::Seek(const WordKey& patch)
+WordCursorOne::Seek (const WordKey & patch)
 {
-  int nfields = words->GetContext()->GetKeyInfo().nfields;
+  int nfields = words->GetContext ()->GetKeyInfo ().nfields;
   WordKey pos = searchKey;
 
-  if(patch.Empty()) {
-    fprintf(stderr, "WordCursorOne::Seek: empty patch is useless\n");
+  if (patch.Empty ())
+  {
+    fprintf (stderr, "WordCursorOne::Seek: empty patch is useless\n");
     return NOTOK;
   }
-  
+
   int i;
   //
   // Leave the most significant fields untouched
   //
-  for(i = WORD_KEY_WORD + 1; i < nfields; i++)
-    if(patch.IsDefined(i))
+  for (i = WORD_KEY_WORD + 1; i < nfields; i++)
+    if (patch.IsDefined (i))
       break;
   //
   // From the first value set in the patch to the end
   // override.
   //
-  for(; i < nfields; i++) {
-    if(patch.IsDefined(i))
-      pos.Set(i, patch.Get(i));
+  for (; i < nfields; i++)
+  {
+    if (patch.IsDefined (i))
+      pos.Set (i, patch.Get (i));
     else
-      pos.Set(i, 0);
+      pos.Set (i, 0);
   }
 
-  if(!pos.Filled()) {
-    fprintf(stderr, "WordCursorOne::Seek: only make sense if the resulting key is fully defined\n");
+  if (!pos.Filled ())
+  {
+    fprintf (stderr,
+             "WordCursorOne::Seek: only make sense if the resulting key is fully defined\n");
     return NOTOK;
   }
 
-  if(words->verbose > 2) fprintf(stderr, "WordCursorOne::Seek: seek to %s\n", (char*)pos.Get());
+  if (words->verbose > 2)
+    fprintf (stderr, "WordCursorOne::Seek: seek to %s\n",
+             (char *) pos.Get ());
 
   //
   // Next move will jump to the patched key
   //
-  pos.Pack(key);
+  pos.Pack (key);
   cursor_get_flags = DB_SET_RANGE;
-  
+
   return OK;
 }
 
 //
 // Convert the whole structure to an ascii string description
 //
-int WordCursorOne::Get(String& bufferout) const
+int
+WordCursorOne::Get (String & bufferout) const
 {
   String tmp;
-  bufferout.trunc();
+  bufferout.trunc ();
 
-  searchKey.Get(tmp);
-  bufferout << "Input: searchKey = " << tmp << ", action = " <<  action << "; Output: collectRes " << (collectRes ? "set" : "not set");
-  found.Get(tmp);
+  searchKey.Get (tmp);
+  bufferout << "Input: searchKey = " << tmp << ", action = " << action <<
+    "; Output: collectRes " << (collectRes ? "set" : "not set");
+  found.Get (tmp);
   bufferout << ", found = " << tmp << ", status = " << status;
-  prefixKey.Get(tmp);
-  bufferout << "; Internal State: prefixKey = " << tmp << ", cursor_get_flags = " << cursor_get_flags;
+  prefixKey.Get (tmp);
+  bufferout << "; Internal State: prefixKey = " << tmp <<
+    ", cursor_get_flags = " << cursor_get_flags;
 
   return OK;
 }

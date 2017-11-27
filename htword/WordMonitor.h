@@ -46,11 +46,11 @@
 #include <sys/time.h>
 #include <time.h>
 #else
-# if HAVE_SYS_TIME_H
-#  include <sys/time.h>
-# else
-#  include <time.h>
-# endif
+#if HAVE_SYS_TIME_H
+#include <sys/time.h>
+#else
+#include <time.h>
+#endif
 #endif
 
 #define WORD_MONITOR_WRITE      1
@@ -81,13 +81,14 @@
 #define WORD_MONITOR_VALUES_SIZE         50
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-  void word_monitor_click();
-  void word_monitor_add(int index, unsigned int value);
-  void word_monitor_set(int index, unsigned int value);
-  unsigned int word_monitor_get(int index);
+  void word_monitor_click ();
+  void word_monitor_add (int index, unsigned int value);
+  void word_monitor_set (int index, unsigned int value);
+  unsigned int word_monitor_get (int index);
 
 #ifdef __cplusplus
 }
@@ -98,44 +99,56 @@ extern "C" {
 #include "Configuration.h"
 #include "htString.h"
 
-class WordMonitor {
- public:
-    WordMonitor(const Configuration &config);
-    ~WordMonitor();
+class WordMonitor
+{
+public:
+  WordMonitor (const Configuration & config);
+   ~WordMonitor ();
 
-    //
-    // Unique instance handlers
-    //
-    static void Initialize(const Configuration& config);
-    static WordMonitor* Instance() { return instance; }
+  //
+  // Unique instance handlers
+  //
+  static void Initialize (const Configuration & config);
+  static WordMonitor *Instance ()
+  {
+    return instance;
+  }
 
-    void Add(int index, unsigned int value) { values[index] += value; }
-    void Set(int index, unsigned int value) { values[index] = value; }
-    unsigned int Get(int index) { return values[index]; }
+  void Add (int index, unsigned int value)
+  {
+    values[index] += value;
+  }
+  void Set (int index, unsigned int value)
+  {
+    values[index] = value;
+  }
+  unsigned int Get (int index)
+  {
+    return values[index];
+  }
 
-    const String Report() const;
+  const String Report () const;
 
-    void TimerStart();
-    void TimerClick(int signal);
-    void TimerStop();
+  void TimerStart ();
+  void TimerClick (int signal);
+  void TimerStop ();
 
- private:
-    unsigned int values[WORD_MONITOR_VALUES_SIZE];
-    unsigned int old_values[WORD_MONITOR_VALUES_SIZE];
-    time_t started;
-    time_t elapsed;
-    int period;
-    FILE* output;
-    int output_style;
-    static const char* values_names[WORD_MONITOR_VALUES_SIZE];
+private:
+  unsigned int values[WORD_MONITOR_VALUES_SIZE];
+  unsigned int old_values[WORD_MONITOR_VALUES_SIZE];
+  time_t started;
+  time_t elapsed;
+  int period;
+  FILE *output;
+  int output_style;
+  static const char *values_names[WORD_MONITOR_VALUES_SIZE];
 
-    //
-    // Unique instance pointer
-    //
-    static WordMonitor* instance;
+  //
+  // Unique instance pointer
+  //
+  static WordMonitor *instance;
 };
 
 #endif /* __cplusplus */
 
 #endif /* _WordMonitor_h_ */
-

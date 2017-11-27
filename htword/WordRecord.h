@@ -63,10 +63,11 @@
 //
 // Statistical information on a word
 //
-class WordRecordStat {
- public:
-  unsigned int    noccurrence;
-  unsigned int    ndoc;
+class WordRecordStat
+{
+public:
+  unsigned int noccurrence;
+  unsigned int ndoc;
 };
 
 //
@@ -74,16 +75,17 @@ class WordRecordStat {
 // is quite difficult to handle properly for scripting language
 // interfaces.
 //
-class WordRecordStorage {
- public:
+class WordRecordStorage
+{
+public:
   //
   // Arbitrary data
   //
-  unsigned int    data;
+  unsigned int data;
   //
   // Statistical data used by WordStat
   //
-  WordRecordStat  stats;
+  WordRecordStat stats;
 };
 
 //
@@ -96,71 +98,89 @@ class WordRecordStorage {
 //
 class WordRecord
 {
- public:
-  WordRecord() { Clear(); }
+public:
+  WordRecord ()
+  {
+    Clear ();
+  }
 
-  void  Clear() { memset((char*)&info, '\0', sizeof(info)); type = DefaultType(); }
+  void Clear ()
+  {
+    memset ((char *) &info, '\0', sizeof (info));
+    type = DefaultType ();
+  }
 
 #ifndef SWIG
   //
   // Convenience functions to access key structure information (see WordKeyInfo.h)
   //
-  static inline const WordRecordInfo* Info()   { return WordRecordInfo::Instance(); }
+  static inline const WordRecordInfo *Info ()
+  {
+    return WordRecordInfo::Instance ();
+  }
 #endif /* SWIG */
-  static inline int                   DefaultType() { return Info()->default_type; }
+  static inline int DefaultType ()
+  {
+    return Info ()->default_type;
+  }
 
 #ifndef SWIG
-  int Pack(String& packed) const {
-    switch(type) {
+  int Pack (String & packed) const
+  {
+    switch (type)
+    {
 
     case WORD_RECORD_DATA:
-      packed = htPack(WORD_RECORD_DATA_FORMAT, (char *)&info.data);
+      packed = htPack (WORD_RECORD_DATA_FORMAT, (char *) &info.data);
       break;
 
-    case WORD_RECORD_STATS:
-      packed = htPack(WORD_RECORD_STATS_FORMAT, (char *)&info.stats);
+      case WORD_RECORD_STATS:packed =
+        htPack (WORD_RECORD_STATS_FORMAT, (char *) &info.stats);
       break;
 
-    case WORD_RECORD_NONE:
-      packed.trunc();
+      case WORD_RECORD_NONE:packed.trunc ();
       break;
 
-    default:
-      fprintf(stderr, "WordRecord::Pack: unknown type %d\n", type);
+      default:fprintf (stderr, "WordRecord::Pack: unknown type %d\n", type);
       return NOTOK;
       break;
     }
     return OK;
   }
 
-  int Unpack(const String& packed) {
+  int Unpack (const String & packed)
+  {
     String decompressed;
 
-    switch(type) {
+    switch (type)
+    {
 
     case WORD_RECORD_DATA:
-      decompressed = htUnpack(WORD_RECORD_DATA_FORMAT, packed);
-      if(decompressed.length() != sizeof(info.data)) {
-  fprintf(stderr, "WordRecord::Unpack: decoding mismatch\n");
-  return NOTOK;
+      decompressed = htUnpack (WORD_RECORD_DATA_FORMAT, packed);
+      if (decompressed.length () != sizeof (info.data))
+      {
+        fprintf (stderr, "WordRecord::Unpack: decoding mismatch\n");
+        return NOTOK;
       }
-      memcpy((char*)&info.data, (char*)decompressed, sizeof(info.data));
+      memcpy ((char *) &info.data, (char *) decompressed, sizeof (info.data));
       break;
 
     case WORD_RECORD_STATS:
-      decompressed = htUnpack(WORD_RECORD_STATS_FORMAT, packed);
-      if(decompressed.length() != sizeof(info.stats)) {
-  fprintf(stderr, "WordRecord::Unpack: decoding mismatch\n");
-  return NOTOK;
+      decompressed = htUnpack (WORD_RECORD_STATS_FORMAT, packed);
+      if (decompressed.length () != sizeof (info.stats))
+      {
+        fprintf (stderr, "WordRecord::Unpack: decoding mismatch\n");
+        return NOTOK;
       }
-      memcpy((char*)&info.stats, (char*)decompressed, sizeof(info.stats));
+      memcpy ((char *) &info.stats, (char *) decompressed,
+              sizeof (info.stats));
       break;
 
     case WORD_RECORD_NONE:
       break;
 
     default:
-      fprintf(stderr, "WordRecord::Pack: unknown type %d\n", (int)type);
+      fprintf (stderr, "WordRecord::Pack: unknown type %d\n", (int) type);
       return NOTOK;
       break;
     }
@@ -173,26 +193,25 @@ class WordRecord
   //
   // Set the whole structure from ASCII string description
   //
-  int Set(const String& bufferin);
-  int SetList(StringList& fields);
+  int Set (const String & bufferin);
+  int SetList (StringList & fields);
   //
   // Convert the whole structure to an ASCII string description
   //
-  int Get(String& bufferout) const;
-  String Get() const;
+  int Get (String & bufferout) const;
+  String Get () const;
 #endif /* SWIG */
 
 #ifndef SWIG
   //
   // Print object in ASCII form on FILE (uses Get)
   //
-  int Write(FILE* f) const;
+  int Write (FILE * f) const;
 #endif /* SWIG */
-  void Print() const;
-  
-  unsigned char      type;
-  WordRecordStorage    info;
+  void Print () const;
+
+  unsigned char type;
+  WordRecordStorage info;
 };
 
 #endif /* _WordRecord_h_ */
-

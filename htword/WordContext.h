@@ -54,7 +54,7 @@
 //
 class WordContext
 {
- public:
+public:
   //-
   // Create environment. Must be called before any other class are used.
   //
@@ -76,7 +76,7 @@ class WordContext
   // Initialize -> delete DB_ENV -> new DB_ENV (thru WordDBInfo)
   // </pre>
   //
-  static void               Initialize(Configuration &config);
+  static void Initialize (Configuration & config);
 #ifndef SWIG
   //-
   // Build a <i>Configuration</i> object from the file pointed to by the 
@@ -89,13 +89,14 @@ class WordContext
   // Refer to the <i>Configuration</i> description for more information.
   //
   //
-  static Configuration     *Initialize(const ConfigDefaults* config_defaults = 0);
-#endif /* SWIG */
+  static Configuration *Initialize (const ConfigDefaults * config_defaults =
+                                    0);
+#endif                          /* SWIG */
   //-
   // Destroy environment. Must be called after all other <i>mifluz</i>
   // objects are destroyed.
   // 
-  static void               Finish();
+  static void Finish ();
 };
 
 #endif // _WordContext_h_

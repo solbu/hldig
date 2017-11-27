@@ -74,97 +74,106 @@ typedef unsigned int WordKeyNum;
 //
 class WordKeyField
 {
- public:
-    WordKeyField() {
-      type = lowbits = lastbits = bytesize = bytes_offset = bits = bits_offset = 0;
-    }
+public:
+  WordKeyField ()
+  {
+    type = lowbits = lastbits = bytesize = bytes_offset = bits = bits_offset =
+      0;
+  }
 
-    //
-    // Precompute information that will be needed to pack/unpack the key
-    // to/from disk.
-    // 
-    // The <previous> field is used to compute the position of the field
-    // in packed string.  <nname> is the symbolic name of the field
-    // <nbits> is the number of bits actualy used in a number.
-    //
-    int SetNum(WordKeyField *previous, char *nname, int nbits);
-    //
-    // Set the one and only string field
-    //
-    int SetString();
+  //
+  // Precompute information that will be needed to pack/unpack the key
+  // to/from disk.
+  // 
+  // The <previous> field is used to compute the position of the field
+  // in packed string.  <nname> is the symbolic name of the field
+  // <nbits> is the number of bits actualy used in a number.
+  //
+  int SetNum (WordKeyField * previous, char *nname, int nbits);
+  //
+  // Set the one and only string field
+  //
+  int SetString ();
 
-    //
-    // Maximum possible value for this field.
-    //
-    WordKeyNum MaxValue() const {
-      return bits >= WORD_KEY_MAXBITS ? WORD_KEY_MAXVALUE : ((1 << bits) - 1);
-    }
+  //
+  // Maximum possible value for this field.
+  //
+  WordKeyNum MaxValue () const
+  {
+    return bits >= WORD_KEY_MAXBITS ? WORD_KEY_MAXVALUE : ((1 << bits) - 1);
+  }
 
-    //
-    // Debugging and printing
-    //
-    void Show();
+  //
+  // Debugging and printing
+  //
+  void Show ();
 
-    String name;      // Symbolic name of the field
-    int type;        // WORD_ISA_{STRING|NUMBER} 
-    //
-    // 01234567012345670123456701234567
-    // +-------+-------+-------+-------+--
-    //    100101010011100111101011110
-    // ^^^                     ^^^^^^
-    //   |                        |
-    // lowbits = 3           lastbits = 6
-    //
-    int lowbits;      
-    int lastbits;      
-    int bytesize;      // Number of bytes involved
-    int bytes_offset;      // Offset of first byte from start
-    int bits;        // Size of field in bits
-    int bits_offset;                    // Offset of first bit from start
+  String name;                  // Symbolic name of the field
+  int type;                     // WORD_ISA_{STRING|NUMBER} 
+  //
+  // 01234567012345670123456701234567
+  // +-------+-------+-------+-------+--
+  //    100101010011100111101011110
+  // ^^^                     ^^^^^^
+  //   |                        |
+  // lowbits = 3           lastbits = 6
+  //
+  int lowbits;
+  int lastbits;
+  int bytesize;                 // Number of bytes involved
+  int bytes_offset;             // Offset of first byte from start
+  int bits;                     // Size of field in bits
+  int bits_offset;              // Offset of first bit from start
 };
 
 //
 // Description of the key structure
 //
-class WordKeyInfo 
+class WordKeyInfo
 {
- public:
-    WordKeyInfo(const Configuration& config);
-    ~WordKeyInfo() { if(sort) delete [] sort; }
+public:
+  WordKeyInfo (const Configuration & config);
+   ~WordKeyInfo ()
+  {
+    if (sort)
+      delete[]sort;
+  }
 
-    //
-    // Unique instance handlers 
-    //
-    static void Initialize(const Configuration& config);
-    static void InitializeFromString(const String &desc);
-    static WordKeyInfo* Instance() {
-      if(instance) return instance;
-      fprintf(stderr, "WordKeyInfo::Instance: no instance\n");
-      return 0;
-    }
+  //
+  // Unique instance handlers 
+  //
+  static void Initialize (const Configuration & config);
+  static void InitializeFromString (const String & desc);
+  static WordKeyInfo *Instance ()
+  {
+    if (instance)
+      return instance;
+    fprintf (stderr, "WordKeyInfo::Instance: no instance\n");
+    return 0;
+  }
 
-    int         Alloc(int nnfields);
-    int         Set(const String &desc);
+  int Alloc (int nnfields);
+  int Set (const String & desc);
 
-    void  Show();
+  void Show ();
 
-    //
-    // Array describing the fields, in sort order.
-    //
-    WordKeyField *sort;
-    //
-    // Total number of fields
-    //
-    int nfields;
-    //
-    // Total number of bytes used by numerical fields
-    //
-    int num_length;
+  //
+  // Array describing the fields, in sort order.
+  //
+  WordKeyField *sort;
+  //
+  // Total number of fields
+  //
+  int nfields;
+  //
+  // Total number of bytes used by numerical fields
+  //
+  int num_length;
 
-    //
-    // Unique instance pointer
-    //
-    static WordKeyInfo* instance;
+  //
+  // Unique instance pointer
+  //
+  static WordKeyInfo *instance;
 };
 
 #endif

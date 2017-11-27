@@ -30,66 +30,79 @@
 #include "WordRecord.h"
 #include "WordMonitor.h"
 
-void WordContext::Initialize(Configuration &config)
+void
+WordContext::Initialize (Configuration & config)
 {
 #if !defined(HAVE_LIBZ) || !defined(HAVE_ZLIB_H)
-  config.Add("wordlist_compress", "false");
+  config.Add ("wordlist_compress", "false");
 #endif
 
-  WordType::Initialize(config);
-  WordKeyInfo::Initialize(config);
-  WordRecordInfo::Initialize(config);
-  WordDBInfo::Initialize(config);
-  if(config.Boolean("wordlist_monitor"))
-    WordMonitor::Initialize(config);
+  WordType::Initialize (config);
+  WordKeyInfo::Initialize (config);
+  WordRecordInfo::Initialize (config);
+  WordDBInfo::Initialize (config);
+  if (config.Boolean ("wordlist_monitor"))
+    WordMonitor::Initialize (config);
 }
 
-Configuration *WordContext::Initialize(const ConfigDefaults* config_defaults /* = 0 */)
+Configuration *
+WordContext::Initialize (const ConfigDefaults * config_defaults /* = 0 */ )
 {
-  Configuration *config = new Configuration();
+  Configuration *config = new Configuration ();
 
-  if(config_defaults)
-    config->Defaults(config_defaults);
+  if (config_defaults)
+    config->Defaults (config_defaults);
 
   String filename;
   //
   // Check file pointed by MIFLUZ_CONFIG environment variable
   //
-  if(getenv("MIFLUZ_CONFIG")) {
-    filename << getenv("MIFLUZ_CONFIG");
+  if (getenv ("MIFLUZ_CONFIG"))
+  {
+    filename << getenv ("MIFLUZ_CONFIG");
     struct stat statbuf;
-    if(stat((char*)filename, &statbuf) < 0) {
-      if(errno != ENOENT) {
-  fprintf(stderr, "WordContext::Initialize: MIFLUZ_CONFIG could not stat %s\n", (char*)filename);
-  perror("");
+    if (stat ((char *) filename, &statbuf) < 0)
+    {
+      if (errno != ENOENT)
+      {
+        fprintf (stderr,
+                 "WordContext::Initialize: MIFLUZ_CONFIG could not stat %s\n",
+                 (char *) filename);
+        perror ("");
       }
-      filename.trunc();
+      filename.trunc ();
     }
   }
   //
   // Check for ~/.mifluz
   //
-  if(filename.empty()) {
-    const char* home = getenv("HOME");
-    if(home) {
+  if (filename.empty ())
+  {
+    const char *home = getenv ("HOME");
+    if (home)
+    {
       filename << home << "/.mifluz";
       struct stat statbuf;
-      if(stat((char*)filename, &statbuf) < 0) {
-  if(errno != ENOENT) {
-    fprintf(stderr, "WordContext::Initialize: could not stat %s\n", (char*)filename);
-    perror("");
-  }
-  filename.trunc();
+      if (stat ((char *) filename, &statbuf) < 0)
+      {
+        if (errno != ENOENT)
+        {
+          fprintf (stderr, "WordContext::Initialize: could not stat %s\n",
+                   (char *) filename);
+          perror ("");
+        }
+        filename.trunc ();
       }
     }
   }
 
-  if(!filename.empty())
-    config->Read(filename);
+  if (!filename.empty ())
+    config->Read (filename);
 
-  Initialize(*config);
+  Initialize (*config);
 
-  if(filename.empty() && !config_defaults) {
+  if (filename.empty () && !config_defaults)
+  {
     delete config;
     config = 0;
   }
@@ -97,11 +110,13 @@ Configuration *WordContext::Initialize(const ConfigDefaults* config_defaults /* 
   return config;
 }
 
-void WordContext::Finish()
+void
+WordContext::Finish ()
 {
-  delete WordType::Instance();
-  delete WordKeyInfo::Instance();
-  delete WordRecordInfo::Instance();
-  delete WordDBInfo::Instance();
-  if(WordMonitor::Instance()) delete WordMonitor::Instance();
+  delete WordType::Instance ();
+  delete WordKeyInfo::Instance ();
+  delete WordRecordInfo::Instance ();
+  delete WordDBInfo::Instance ();
+  if (WordMonitor::Instance ())
+    delete WordMonitor::Instance ();
 }

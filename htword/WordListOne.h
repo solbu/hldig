@@ -61,82 +61,118 @@ class WordContext;
 // 
 // Inverted index interface
 //
-class WordListOne : public WordList
+class WordListOne:public WordList
 {
- public:
-    //-
-    // Constructor. Build inverted index handling object using
-    // run time configuration parameters listed in the <b>CONFIGURATION</b>
-    // section of the <b>WordList</b> manual page.
-    //
-    WordListOne(WordContext* ncontext);
-    virtual ~WordListOne();
+public:
+  //-
+  // Constructor. Build inverted index handling object using
+  // run time configuration parameters listed in the <b>CONFIGURATION</b>
+  // section of the <b>WordList</b> manual page.
+  //
+  WordListOne (WordContext * ncontext);
+  virtual ~ WordListOne ();
 
-    virtual int Override(const WordReference& wordRef);
+  virtual int Override (const WordReference & wordRef);
 
-    virtual inline int Exists(const WordReference& wordRef) {
-      return (!Dead()->Exists(wordRef.Key()) && db->Exists(wordRef) == 0) ? OK : NOTOK; }
+  virtual inline int Exists (const WordReference & wordRef)
+  {
+    return (!Dead ()->Exists (wordRef.Key ())
+            && db->Exists (wordRef) == 0) ? OK : NOTOK;
+  }
 
-    virtual int WalkDelete(const WordReference& wordRef);
-    virtual inline int Delete(const WordReference& wordRef) {
-      if(db->Del(wordRef) == 0)
-  return dict->Unref(wordRef.GetWord());
-      else
-  return NOTOK;
-    }
-    //-
-    // Delete the inverted index entry currently pointed to by the
-    // <b>cursor.</b> 
-    // Returns 0 on success, Berkeley DB error code on error. This
-    // is mainly useful when implementing a callback function for
-    // a <b>WordCursor.</b> 
-    //
-    int DeleteCursor(WordDBCursor& cursor) { return cursor.Del(); }
+  virtual int WalkDelete (const WordReference & wordRef);
+  virtual inline int Delete (const WordReference & wordRef)
+  {
+    if (db->Del (wordRef) == 0)
+      return dict->Unref (wordRef.GetWord ());
+    else
+      return NOTOK;
+  }
+  //-
+  // Delete the inverted index entry currently pointed to by the
+  // <b>cursor.</b> 
+  // Returns 0 on success, Berkeley DB error code on error. This
+  // is mainly useful when implementing a callback function for
+  // a <b>WordCursor.</b> 
+  //
+  int DeleteCursor (WordDBCursor & cursor)
+  {
+    return cursor.Del ();
+  }
 
-    virtual int Open(const String& filename, int mode);
-    virtual int Close();
-    virtual unsigned int Size() const;
-    virtual int Pagesize() const {
-      Configuration& config = context->GetConfiguration();
+  virtual int Open (const String & filename, int mode);
+  virtual int Close ();
+  virtual unsigned int Size () const;
+  virtual int Pagesize () const
+  {
+    Configuration & config = context->GetConfiguration ();
 
-      return config.Value("wordlist_page_size", 0);
-    }
+    return config.Value ("wordlist_page_size", 0);
+  }
 
-    virtual inline WordDict *Dict() { return dict; }
-    virtual inline WordMeta *Meta() { return meta; }
-    virtual inline WordDead *Dead() { return dead; }
+  virtual inline WordDict *Dict ()
+  {
+    return dict;
+  }
+  virtual inline WordMeta *Meta ()
+  {
+    return meta;
+  }
+  virtual inline WordDead *Dead ()
+  {
+    return dead;
+  }
 
-    virtual List *operator [] (const WordReference& wordRef);
-    virtual List *Prefix (const WordReference& prefix);
+  virtual List *operator [] (const WordReference & wordRef);
+  virtual List *Prefix (const WordReference & prefix);
 
-    virtual List *Words() { return dict->Words(); }
-    virtual List *WordRefs();
+  virtual List *Words ()
+  {
+    return dict->Words ();
+  }
+  virtual List *WordRefs ();
 
-    virtual inline WordCursor *Cursor(wordlist_walk_callback_t callback, Object *callback_data) { return new WordCursorOne(this, callback, callback_data); }
-    virtual inline WordCursor *Cursor(const WordKey &searchKey, int action = HTDIG_WORDLIST_WALKER) { return new WordCursorOne(this, searchKey, action); }
-    virtual inline WordCursor *Cursor(const WordKey &searchKey, wordlist_walk_callback_t callback, Object * callback_data) { return new WordCursorOne(this, searchKey, callback, callback_data); }
+  virtual inline WordCursor *Cursor (wordlist_walk_callback_t callback,
+                                     Object * callback_data)
+  {
+    return new WordCursorOne (this, callback, callback_data);
+  }
+  virtual inline WordCursor *Cursor (const WordKey & searchKey, int action =
+                                     HTDIG_WORDLIST_WALKER)
+  {
+    return new WordCursorOne (this, searchKey, action);
+  }
+  virtual inline WordCursor *Cursor (const WordKey & searchKey,
+                                     wordlist_walk_callback_t callback,
+                                     Object * callback_data)
+  {
+    return new WordCursorOne (this, searchKey, callback, callback_data);
+  }
 
-    virtual WordKey Key(const String& bufferin);
+  virtual WordKey Key (const String & bufferin);
 
-    virtual WordReference Word(const String& bufferin, int exists = 0);
+  virtual WordReference Word (const String & bufferin, int exists = 0);
 
-    virtual void BatchEnd();
+  virtual void BatchEnd ();
 
-    virtual int Noccurrence(const String& key, unsigned int& noccurrence) const;
+  virtual int Noccurrence (const String & key,
+                           unsigned int &noccurrence) const;
 
-    virtual int Write(FILE* f);
+  virtual int Write (FILE * f);
 
-    virtual inline int WriteDict(FILE* f) { return dict->Write(f); }
+  virtual inline int WriteDict (FILE * f)
+  {
+    return dict->Write (f);
+  }
 
-    virtual int Read(FILE* f);
+  virtual int Read (FILE * f);
 
-    virtual List *Collect(const WordReference& word);
+  virtual List *Collect (const WordReference & word);
 
-    WordDB                *db;
-    WordDict                *dict;
-    WordMeta                *meta;
-    WordDead                *dead;
+  WordDB *db;
+  WordDict *dict;
+  WordMeta *meta;
+  WordDead *dead;
 };
 
 #endif /* _WordListOne_h_ */
-

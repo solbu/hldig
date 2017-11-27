@@ -16,9 +16,10 @@
 
 #include "WordReference.h"
 
-int WordReference::Merge(const WordReference& other)
+int
+WordReference::Merge (const WordReference & other)
 {
-  int ret = key.Merge(other.Key());
+  int ret = key.Merge (other.Key ());
   record = other.record;
 
   return ret;
@@ -28,61 +29,64 @@ int WordReference::Merge(const WordReference& other)
 // Set the structure from an ascii representation
 //
 int
-WordReference::Set(const String& buffer)
+WordReference::Set (const String & buffer)
 {
-  StringList fields(buffer, "\t ");
-  return SetList(fields);
+  StringList fields (buffer, "\t ");
+  return SetList (fields);
 }
 
 //
 // Set the structure from list of fields
 //
 int
-WordReference::SetList(StringList& fields)
+WordReference::SetList (StringList & fields)
 {
-  Clear();
-  if(key.SetList(fields) != OK ||
-     record.SetList(fields) != OK)
+  Clear ();
+  if (key.SetList (fields) != OK || record.SetList (fields) != OK)
     return NOTOK;
   else
     return OK;
-}      
+}
 
 //
 // Convert the whole structure to an ascii string description
 //
 int
-WordReference::Get(String& buffer) const
+WordReference::Get (String & buffer) const
 {
   String tmp;
-  buffer.trunc();
+  buffer.trunc ();
 
-  if(key.Get(tmp) != OK) return NOTOK;
-  buffer.append(tmp);
+  if (key.Get (tmp) != OK)
+    return NOTOK;
+  buffer.append (tmp);
 
-  if(record.Get(tmp) != OK) return NOTOK;
-  buffer.append(tmp);
+  if (record.Get (tmp) != OK)
+    return NOTOK;
+  buffer.append (tmp);
 
   return OK;
 }
 
-String
-WordReference::Get() const
+String WordReference::Get () const
 {
-  String tmp;
-  key.Get(tmp);
+  String
+    tmp;
+  key.Get (tmp);
   return tmp;
 }
 
-int WordReference::Write(FILE* f) const
+int
+WordReference::Write (FILE * f) const
 {
   String tmp;
-  key.Get(tmp);
-  fprintf(f, "%s", (char*)tmp);
+  key.Get (tmp);
+  fprintf (f, "%s", (char *) tmp);
   return 0;
 }
 
-void WordReference::Print() const
+void
+WordReference::Print () const
 {
-  Write(stderr);
+  Write (stderr);
 }

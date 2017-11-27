@@ -19,9 +19,11 @@
 
 #include "../db/db.h"
 
-const char* dberror(int errval) {
+const char *
+dberror (int errval)
+{
 #define DB_MAX_ERROR  (-DB_TXN_CKP + 1)
-  static const char* dbstr[DB_MAX_ERROR] = {
+  static const char *dbstr[DB_MAX_ERROR] = {
     "",
     "DB_INCOMPLETE",
     "DB_KEYEMPTY",
@@ -36,35 +38,39 @@ const char* dberror(int errval) {
     "DB_SWAPBYTES",
     "DB_TXN_CKP",
   };
-  if(errval < 0 && -errval < DB_MAX_ERROR)
+  if (errval < 0 && -errval < DB_MAX_ERROR)
     return dbstr[-errval];
   else
-    return strerror(errval);
+    return strerror (errval);
 }
 
-int WordDB::Open(const String& filename, DBTYPE type, int flags, int mode) {
-  if(is_open) {
+int
+WordDB::Open (const String & filename, DBTYPE type, int flags, int mode)
+{
+  if (is_open)
+  {
     int error = 0;
-    if((error = Close()) != 0)
+    if ((error = Close ()) != 0)
       return error;
   }
 
-  if(!dbenv) {
-    const char* progname = "WordDB";
+  if (!dbenv)
+  {
+    const char *progname = "WordDB";
 
     //
     // Environment initialization
     //
     // Output errors to the application's log.
     //
-    db->set_errfile(db, stderr);
-    db->set_errpfx(db, progname);
- 
+    db->set_errfile (db, stderr);
+    db->set_errpfx (db, progname);
+
   }
 
-  int error = db->open(db, filename, NULL, type, (u_int32_t)flags, mode);
+  int error = db->open (db, filename, NULL, type, (u_int32_t) flags, mode);
 
-  if(error == 0)
+  if (error == 0)
     is_open = 1;
 
   return error;

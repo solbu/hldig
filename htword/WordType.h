@@ -8,7 +8,7 @@
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License (LGPL) version 2 or later 
+// or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
 // $Id: WordType.h,v 1.5 2004/05/28 13:15:28 lha Exp $
@@ -44,70 +44,72 @@
            WORD_NORMALIZE_BAD| \
            WORD_NORMALIZE_NULL| \
            WORD_NORMALIZE_NOALPHA)
-           
+
 class WordType
 {
 public:
   //
   // Constructors
   //
-  WordType(const Configuration& config);
+  WordType (const Configuration & config);
 
   //
   // Destructor
   //
-  virtual  ~WordType();
+    virtual ~ WordType ();
 
   //
-  // Unique instance handlers 
+  // Unique instance handlers
   //
-  static void Initialize(const Configuration& config);
-  static WordType* Instance() {
-    if(instance) return instance;
-    fprintf(stderr, "WordType::Instance: no instance\n");
+  static void Initialize (const Configuration & config);
+  static WordType *Instance ()
+  {
+    if (instance)
+      return instance;
+    fprintf (stderr, "WordType::Instance: no instance\n");
     return 0;
   }
-  
+
   //
   // Predicates
-  // 
-  virtual int IsChar(int c) const;
-  virtual int IsStrictChar(int c) const;
-  virtual int IsDigit(int c) const;
-  virtual int IsControl(int c) const;
+  //
+  virtual int IsChar (int c) const;
+  virtual int IsStrictChar (int c) const;
+  virtual int IsDigit (int c) const;
+  virtual int IsControl (int c) const;
 
   //
   // Transformations
   //
-  virtual int StripPunctuation(String &s) const;
-  virtual int Normalize(String &s) const;
+  virtual int StripPunctuation (String & s) const;
+  virtual int Normalize (String & s) const;
 
   //
   // Splitting
   //
-  virtual String WordToken(const String s, int &pointer) const;
+  virtual String WordToken (const String s, int &pointer) const;
 
   //
   // Error handling
   //
-  static String NormalizeStatus(int flags);
+  static String NormalizeStatus (int flags);
 
 private:
 
-  String    valid_punctuation;     // The same as the attribute.
-  String    extra_word_characters; // Likewise.
-  String    other_chars_in_word;   // Attribute "valid_punctuation" plus
+  String valid_punctuation;     // The same as the attribute.
+  String extra_word_characters; // Likewise.
+  String other_chars_in_word;   // Attribute "valid_punctuation" plus
   // "extra_word_characters".
-  char      chrtypes[256];          // quick lookup table for types
-  int      minimum_length;    // Minimum word length
-  int      maximum_length;    // Maximum word length
-  int      allow_numbers;    // True if a word may contain numbers
-  Dictionary    badwords;    // List of excluded words
+  char chrtypes[256];           // quick lookup table for types
+  int minimum_length;           // Minimum word length
+  int maximum_length;           // Maximum word length
+  int allow_numbers;            // True if a word may contain numbers
+  Dictionary badwords;          // List of excluded words
 
   //
   // Unique instance pointer
   //
-  static WordType* instance;
+  static WordType *instance;
 };
 
 // Bits to set in chrtypes[]:
@@ -120,37 +122,40 @@ private:
 // One for characters that when put together are a word
 // (including punctuation).
 inline int
-WordType::IsChar(int c) const
+WordType::IsChar (int c) const
 {
-  return (chrtypes[(unsigned char)c] & (WORD_TYPE_ALPHA|WORD_TYPE_DIGIT|WORD_TYPE_EXTRA|WORD_TYPE_VALIDPUNCT)) != 0;
+  return (chrtypes[(unsigned char) c] &
+          (WORD_TYPE_ALPHA | WORD_TYPE_DIGIT | WORD_TYPE_EXTRA |
+           WORD_TYPE_VALIDPUNCT)) != 0;
 }
 
 // Similar, but no punctuation characters.
 inline int
-WordType::IsStrictChar(int c) const
+WordType::IsStrictChar (int c) const
 {
-  return (chrtypes[(unsigned char)c] & (WORD_TYPE_ALPHA|WORD_TYPE_DIGIT|WORD_TYPE_EXTRA)) != 0;
+  return (chrtypes[(unsigned char) c] &
+          (WORD_TYPE_ALPHA | WORD_TYPE_DIGIT | WORD_TYPE_EXTRA)) != 0;
 }
 
-// Reimplementation of isdigit() using the lookup table chrtypes[] 
+// Reimplementation of isdigit() using the lookup table chrtypes[]
 inline int
-WordType::IsDigit(int c) const
+WordType::IsDigit (int c) const
 {
-  return (chrtypes[(unsigned char)c] & WORD_TYPE_DIGIT) != 0;
+  return (chrtypes[(unsigned char) c] & WORD_TYPE_DIGIT) != 0;
 }
 
 // Similar to IsDigit, but for iscntrl()
 inline int
-WordType::IsControl(int c) const
+WordType::IsControl (int c) const
 {
-  return (chrtypes[(unsigned char)c] & WORD_TYPE_CONTROL) != 0;
+  return (chrtypes[(unsigned char) c] & WORD_TYPE_CONTROL) != 0;
 }
 
 // Let caller get rid of getting and holding a configuration parameter.
 inline int
-WordType::StripPunctuation(String &s) const
+WordType::StripPunctuation (String & s) const
 {
-  return s.remove(valid_punctuation);
+  return s.remove (valid_punctuation);
 }
 
 

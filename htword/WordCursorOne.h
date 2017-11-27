@@ -66,51 +66,60 @@ class WordList;
 class WordDBCursor;
 #endif /* SWIG */
 
-class WordCursorOne : public WordCursor
+class WordCursorOne:public WordCursor
 {
- public:
+public:
 #ifndef SWIG
   //-
   // Private constructor. Creator of the object must then call Initialize()
   // prior to using any other methods.
   //
-  WordCursorOne(WordList *words);
+  WordCursorOne (WordList * words);
   //-
   // Private constructor. See WordList::Cursor method with same prototype for
   // description.
   //
-  WordCursorOne(WordList *words, wordlist_walk_callback_t callback, Object * callback_data);
+  WordCursorOne (WordList * words, wordlist_walk_callback_t callback,
+                 Object * callback_data);
   //-
   // Private constructor. See WordList::Cursor method with same prototype for
   // description.
   //
-  WordCursorOne(WordList *words, const WordKey &searchKey, int action = HTDIG_WORDLIST_WALKER);
+  WordCursorOne (WordList * words, const WordKey & searchKey, int action =
+                 HTDIG_WORDLIST_WALKER);
   //-
   // Private constructor. See WordList::Cursor method with same prototype for
   // description.
   //
-  WordCursorOne(WordList *words, const WordKey &searchKey, wordlist_walk_callback_t callback, Object * callback_data);
-#endif /* SWIG */
-  virtual ~WordCursorOne() {
-    if(cursor) delete cursor;
+    WordCursorOne (WordList * words, const WordKey & searchKey,
+                   wordlist_walk_callback_t callback, Object * callback_data);
+#endif                          /* SWIG */
+    virtual ~ WordCursorOne ()
+  {
+    if (cursor)
+      delete cursor;
   }
-  virtual void Clear();
-  virtual void ClearInternal();
-  virtual void ClearResult();
+  virtual void Clear ();
+  virtual void ClearInternal ();
+  virtual void ClearResult ();
 
-  virtual inline int ContextSave(String& buffer) const { found.Get(buffer); return OK; }
-  virtual int ContextRestore(const String& buffer);
+  virtual inline int ContextSave (String & buffer) const
+  {
+    found.Get (buffer);
+    return OK;
+  }
+  virtual int ContextRestore (const String & buffer);
 
 #ifndef SWIG
-  virtual int Walk();
+  virtual int Walk ();
 #endif /* SWIG */
-  virtual int WalkInit();
-  virtual int WalkRewind();
-  virtual int WalkNext();
+  virtual int WalkInit ();
+  virtual int WalkRewind ();
+  virtual int WalkNext ();
 #ifndef SWIG
-  virtual int WalkNextStep();
+  virtual int WalkNextStep ();
 #endif /* SWIG */
-  virtual int WalkFinish();
+  virtual int WalkFinish ();
   //
   // Find out if cursor should better jump to the next possible key
   // (DB_SET_RANGE) instead of sequential iterating (DB_NEXT).  If it
@@ -121,17 +130,24 @@ class WordCursorOne : public WordCursor
   // WORD_WALK_FAILED on general failure, occurs if called and no
   // skipping necessary.
   // 
-  int SkipUselessSequentialWalking();
+  int SkipUselessSequentialWalking ();
 
-  virtual int Seek(const WordKey& patch);
+  virtual int Seek (const WordKey & patch);
 
 #ifndef SWIG
-  virtual int Get(String& bufferout) const;
-  inline String Get() const { String tmp; Get(tmp); return tmp; }
+  virtual int Get (String & bufferout) const;
+  inline String Get () const
+  {
+    String tmp;
+      Get (tmp);
+      return tmp;
+  }
 
- protected:
+protected:
 
-  int Initialize(WordList *nwords, const WordKey &nsearchKey, wordlist_walk_callback_t ncallback, Object * ncallback_data, int naction);
+  int Initialize (WordList * nwords, const WordKey & nsearchKey,
+                  wordlist_walk_callback_t ncallback, Object * ncallback_data,
+                  int naction);
 
   //
   // Internal state
@@ -139,7 +155,7 @@ class WordCursorOne : public WordCursor
   //
   // The actual Berkeley DB cursor.
   //
-  WordDBCursor* cursor;
+  WordDBCursor *cursor;
   //
   // The latest retrieved key and data
   //

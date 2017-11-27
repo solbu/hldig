@@ -26,11 +26,12 @@
 // Convert the whole structure to an ascii string description
 //
 int
-WordRecord::Get(String& buffer) const
+WordRecord::Get (String & buffer) const
 {
-  buffer.trunc();
+  buffer.trunc ();
 
-  switch(type) {
+  switch (type)
+  {
 
   case WORD_RECORD_DATA:
     buffer << info.data;
@@ -45,7 +46,7 @@ WordRecord::Get(String& buffer) const
     break;
 
   default:
-    fprintf(stderr, "WordRecord::Get: unknown type %d\n", type);
+    fprintf (stderr, "WordRecord::Get: unknown type %d\n", type);
     return NOTOK;
     break;
   }
@@ -53,11 +54,11 @@ WordRecord::Get(String& buffer) const
   return OK;
 }
 
-String
-WordRecord::Get() const
+String WordRecord::Get () const
 {
-  String tmp;
-  Get(tmp);
+  String
+    tmp;
+  Get (tmp);
   return tmp;
 }
 
@@ -65,80 +66,83 @@ WordRecord::Get() const
 // Set a record from an ascii representation
 //
 int
-WordRecord::Set(const String& buffer)
+WordRecord::Set (const String & buffer)
 {
-  StringList fields(buffer, "\t ");
-  return SetList(fields);
+  StringList fields (buffer, "\t ");
+  return SetList (fields);
 }
 
 int
-WordRecord::SetList(StringList& fields)
+WordRecord::SetList (StringList & fields)
 {
   int i = 0;
-  
-  switch(type) 
+
+  switch (type)
+  {
+
+  case WORD_RECORD_DATA:
     {
-  
-    case WORD_RECORD_DATA:
+      String *field = (String *) fields.Get_First ();
+
+      if (field == 0)
       {
-  String* field = (String*)fields.Get_First();
-
-  if(field == 0) {
-    fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
-    return NOTOK;
-  }
-  info.data = (unsigned int)atoi(field->get());
-  fields.Remove(field);
-  i++;
+        fprintf (stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
+        return NOTOK;
       }
-      break;
-
-    case WORD_RECORD_STATS:
-      {
-  String* field = (String*)fields.Get_First();
-
-  if(field == 0) {
-    fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
-    return NOTOK;
-  }
-  info.stats.noccurrence = (unsigned int)atoi(field->get());
-  fields.Remove(field);
-  i++;
-
-  field = (String*)fields.Get_First();
-
-  if(field == 0) {
-    fprintf(stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
-    return NOTOK;
-  }
-  info.stats.ndoc = (unsigned int)atoi(field->get());
-  fields.Remove(field);
-  i++;
-      }
-      break;
-
-    case WORD_RECORD_NONE:
-      break;
-
-    default:
-      fprintf(stderr, "WordRecord::Set: unknown type %d\n", type);
-      break;
+      info.data = (unsigned int) atoi (field->get ());
+      fields.Remove (field);
+      i++;
     }
+    break;
+
+  case WORD_RECORD_STATS:
+    {
+      String *field = (String *) fields.Get_First ();
+
+      if (field == 0)
+      {
+        fprintf (stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
+        return NOTOK;
+      }
+      info.stats.noccurrence = (unsigned int) atoi (field->get ());
+      fields.Remove (field);
+      i++;
+
+      field = (String *) fields.Get_First ();
+
+      if (field == 0)
+      {
+        fprintf (stderr, "WordRecord::Set: failed to retrieve field %d\n", i);
+        return NOTOK;
+      }
+      info.stats.ndoc = (unsigned int) atoi (field->get ());
+      fields.Remove (field);
+      i++;
+    }
+    break;
+
+  case WORD_RECORD_NONE:
+    break;
+
+  default:
+    fprintf (stderr, "WordRecord::Set: unknown type %d\n", type);
+    break;
+  }
 
   return OK;
 }
 
 int
-WordRecord::Write(FILE* f) const
+WordRecord::Write (FILE * f) const
 {
   String tmp;
-  Get(tmp);
-  fprintf(f, "%s", (char*)tmp);
+  Get (tmp);
+  fprintf (f, "%s", (char *) tmp);
   return 0;
 }
 
 void
-WordRecord::Print() const
+WordRecord::Print () const
 {
-  Write(stderr);
+  Write (stderr);
 }

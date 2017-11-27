@@ -16,4 +16,5 @@
 
 #include "WordStat.h"
 
-WordReference* WordStat::word_stat_last = 0;
+WordReference *
+  WordStat::word_stat_last = 0;

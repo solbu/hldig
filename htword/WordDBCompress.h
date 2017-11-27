@@ -82,33 +82,35 @@
 //
 class WordDBCompress
 {
- public:
-    WordDBCompress();
-    WordDBCompress(int, int);
+public:
+  WordDBCompress ();
+  WordDBCompress (int, int);
 
-    int Compress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t** outbuffp, int* outbuff_lengthp);
-    int Uncompress(const  u_int8_t* inbuff, int inbuff_length, u_int8_t* outbuff, int outbuff_length);
-    
-    //
-    // Return a new DB_CMPR_INFO initialized with characteristics of the
-    // current object and suitable as WordDB::CmprInfo argument.
-    //
-    DB_CMPR_INFO *CmprInfo();
+  int Compress (const u_int8_t * inbuff, int inbuff_length,
+                u_int8_t ** outbuffp, int *outbuff_lengthp);
+  int Uncompress (const u_int8_t * inbuff, int inbuff_length,
+                  u_int8_t * outbuff, int outbuff_length);
 
- private:
-    DB_CMPR_INFO *cmprInfo;
+  //
+  // Return a new DB_CMPR_INFO initialized with characteristics of the
+  // current object and suitable as WordDB::CmprInfo argument.
+  //
+  DB_CMPR_INFO *CmprInfo ();
 
-    //ZLIB WordDBCompression Flags
-    int use_zlib;
-    int zlib_level;
+private:
+    DB_CMPR_INFO * cmprInfo;
+
+  //ZLIB WordDBCompression Flags
+  int use_zlib;
+  int zlib_level;
 
 // DEBUGING / BENCHMARKING
-    int debug;
+  int debug;
 // 0 : no debug no check
 // 1 : TestCompress before each compression (but no debug within Compress Uncompress)
 // 2 : use_tags (BitStream) within TestCompress ->  Compress Uncompress
 // 3 : verbose
-    int TestCompress(const  u_int8_t* pagebuff, int pagebuffsize);
+  int TestCompress (const u_int8_t * pagebuff, int pagebuffsize);
 };
 
 #endif

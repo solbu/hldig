@@ -18,106 +18,121 @@
 #include "WordDead.h"
 #include "WordListOne.h"
 
-class WordDeadCursor {
+class WordDeadCursor
+{
 public:
-  WordDBCursor* cursor;
+  WordDBCursor * cursor;
 };
 
-WordDead::~WordDead()
+WordDead::~WordDead ()
 {
   delete db;
   delete mask;
 }
 
-int WordDead::Initialize(WordList* nwords)
+int
+WordDead::Initialize (WordList * nwords)
 {
   words = nwords;
-  db = new WordDB(nwords->GetContext()->GetDBInfo());
-  mask = new WordKey(words->GetContext());
+  db = new WordDB (nwords->GetContext ()->GetDBInfo ());
+  mask = new WordKey (words->GetContext ());
   return OK;
 }
 
-int WordDead::Open()
+int
+WordDead::Open ()
 {
-  const String& filename = words->Filename();
-  int flags = words->Flags();
+  const String & filename = words->Filename ();
+  int flags = words->Flags ();
 
-  db->set_pagesize(words->Pagesize());
+  db->set_pagesize (words->Pagesize ());
 
-  return db->Open(filename, "dead", DB_BTREE, flags, 0666, WORD_DB_DEAD) == 0 ? OK : NOTOK;
+  return db->Open (filename, "dead", DB_BTREE, flags, 0666,
+                   WORD_DB_DEAD) == 0 ? OK : NOTOK;
 }
 
-int WordDead::Remove()
+int
+WordDead::Remove ()
 {
-  return db->Remove(words->Filename(), "dead") == 0 ? OK : NOTOK;
+  return db->Remove (words->Filename (), "dead") == 0 ? OK : NOTOK;
 }
 
-int WordDead::Close()
+int
+WordDead::Close ()
 {
-  return db->Close() == 0 ? OK : NOTOK;
+  return db->Close () == 0 ? OK : NOTOK;
 }
 
-int WordDead::Normalize(WordKey& key) const
+int
+WordDead::Normalize (WordKey & key) const
 {
-  int nfields = words->GetContext()->GetKeyInfo().nfields;
+  int nfields = words->GetContext ()->GetKeyInfo ().nfields;
   int i;
   //
   // Undefine in 'key' all fields not defined in 'mask'
   //
-  for(i = 0; i < nfields; i++) {
-    if(!mask->IsDefined(i))
-      key.Set(i, WORD_KEY_VALUE_INVALID);
+  for (i = 0; i < nfields; i++)
+  {
+    if (!mask->IsDefined (i))
+      key.Set (i, WORD_KEY_VALUE_INVALID);
   }
 
   return OK;
 }
 
-int WordDead::Exists(const WordKey& key) const
+int
+WordDead::Exists (const WordKey & key) const
 {
   WordKey tmp_key = key;
 
-  Normalize(tmp_key);
+  Normalize (tmp_key);
 
   String coded;
   String dummy;
 
-  tmp_key.Pack(coded);
+  tmp_key.Pack (coded);
 
-  return db->Get(0, coded, dummy, 0) == 0;
+  return db->Get (0, coded, dummy, 0) == 0;
 }
 
-int WordDead::Put(const WordKey& key) const
+int
+WordDead::Put (const WordKey & key) const
 {
   WordKey tmp_key = key;
 
-  Normalize(tmp_key);
+  Normalize (tmp_key);
 
   String coded;
   String dummy;
 
-  tmp_key.Pack(coded);
+  tmp_key.Pack (coded);
 
-  return db->Put(0, coded, dummy, 0) == 0 ? OK : NOTOK;
+  return db->Put (0, coded, dummy, 0) == 0 ? OK : NOTOK;
 }
 
-WordDeadCursor* WordDead::Cursor() const
+WordDeadCursor *
+WordDead::Cursor () const
 {
-  WordDeadCursor* cursor = new WordDeadCursor;
-  cursor->cursor = db->Cursor();
+  WordDeadCursor *cursor = new WordDeadCursor;
+  cursor->cursor = db->Cursor ();
 
   return cursor;
 }
 
-int WordDead::Next(WordDeadCursor* cursor, WordKey& key)
+int
+WordDead::Next (WordDeadCursor * cursor, WordKey & key)
 {
   String coded;
   String dummy;
-  int ret = cursor->cursor->Get(coded, dummy, DB_NEXT);
-  if(ret != 0) {
+  int ret = cursor->cursor->Get (coded, dummy, DB_NEXT);
+  if (ret != 0)
+  {
     delete cursor->cursor;
     delete cursor;
-  } else {
-    key.Unpack(coded);
+  }
+  else
+  {
+    key.Unpack (coded);
   }
   return ret;
 }

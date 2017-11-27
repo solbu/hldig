@@ -61,27 +61,32 @@ class WordMetaImp;
 #define WORD_META_SERIAL_WORD  0
 #define WORD_META_SERIAL_FILE  1
 
-class WordMeta 
+class WordMeta
 {
- public:
-  WordMeta() { words = 0; db = 0; imp = 0; }
-  ~WordMeta();
+public:
+  WordMeta ()
+  {
+    words = 0;
+    db = 0;
+    imp = 0;
+  }
+   ~WordMeta ();
 
-  int Initialize(WordList* words);
+  int Initialize (WordList * words);
 
-  int Open();
-  int Close();
-    
-  int Serial(int what, unsigned int& serial);
-  int GetSerial(int what, unsigned int& serial);
-  int SetSerial(int what, unsigned int serial);
+  int Open ();
+  int Close ();
 
-  int Lock(const String& resource, WordLock*& lock);
-  int Unlock(const String& resource, WordLock*& lock);
-  
- private:
-  WordList    *words;
-  WordDB          *db;
-  WordMetaImp          *imp;
+  int Serial (int what, unsigned int &serial);
+  int GetSerial (int what, unsigned int &serial);
+  int SetSerial (int what, unsigned int serial);
+
+  int Lock (const String & resource, WordLock * &lock);
+  int Unlock (const String & resource, WordLock * &lock);
+
+private:
+  WordList * words;
+  WordDB *db;
+  WordMetaImp *imp;
 };
 #endif /* _WordMeta_h_ */

@@ -15,12 +15,12 @@
 //  }
 // --------------------------
 #ifdef WORD_HAVE_TypeA
-    STATEMENT(TypeA);
+STATEMENT (TypeA);
 #endif /* WORD_HAVE_TypeA */
 #ifdef WORD_HAVE_TypeB
-    STATEMENT(TypeB);
+STATEMENT (TypeB);
 #endif /* WORD_HAVE_TypeB */
 #ifdef WORD_HAVE_TypeC
-    STATEMENT(TypeC);
+STATEMENT (TypeC);
 #endif /* WORD_HAVE_TypeC */
-#undef STATEMENT      
+#undef STATEMENT

@@ -39,32 +39,41 @@
 class WordList;
 class WordDeadCursor;
 
-class WordDead 
+class WordDead
 {
- public:
-  WordDead() { words = 0; db = 0; mask = 0; }
-  ~WordDead();
+public:
+  WordDead ()
+  {
+    words = 0;
+    db = 0;
+    mask = 0;
+  }
+   ~WordDead ();
 
-  int Initialize(WordList* words);
+  int Initialize (WordList * words);
 
-  int Open();
-  int Remove();
-  int Close();
-    
-  int Mask(const WordKey& nmask) { *mask = nmask; return OK; }
+  int Open ();
+  int Remove ();
+  int Close ();
 
-  List* Words() const;
+  int Mask (const WordKey & nmask)
+  {
+    *mask = nmask;
+    return OK;
+  }
 
-  int Normalize(WordKey& key) const;
-  int Exists(const WordKey& key) const;
-  int Put(const WordKey& key) const;
+  List *Words () const;
 
-  WordDeadCursor* Cursor() const;
-  int Next(WordDeadCursor* cursor, WordKey& key);
+  int Normalize (WordKey & key) const;
+  int Exists (const WordKey & key) const;
+  int Put (const WordKey & key) const;
 
- private:
-  WordList*      words;
-  WordDB*                db;
-  WordKey*      mask;
+  WordDeadCursor *Cursor () const;
+  int Next (WordDeadCursor * cursor, WordKey & key);
+
+private:
+  WordList * words;
+  WordDB *db;
+  WordKey *mask;
 };
 #endif /* _WordDead_h_ */
