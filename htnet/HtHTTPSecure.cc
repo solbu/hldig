@@ -32,14 +32,14 @@ using namespace std;
 
 // HtHTTPSecure constructor
 //
-HtHTTPSecure::HtHTTPSecure()
-: HtHTTP(*(new SSLConnection())) // Create a new "secure" connection
+HtHTTPSecure::HtHTTPSecure ():HtHTTP (*(new SSLConnection ()))
+                                        // Create a new "secure" connection
 {
 }
 
 // HtHTTPSecure destructor
 //
-HtHTTPSecure::~HtHTTPSecure()
+HtHTTPSecure::~HtHTTPSecure ()
 {
 }
 

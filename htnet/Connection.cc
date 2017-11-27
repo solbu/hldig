@@ -2,14 +2,14 @@
 // Connection.cc
 //
 // Connection: This class forms a easy to use interface to the berkeley
-//             tcp socket library. All the calls are basically the same, 
+//             tcp socket library. All the calls are basically the same,
 //             but the parameters do not have any stray _addr or _in
 //             mixed in...
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1999-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License (LGPL) version 2 or later 
+// or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
 // $Id: Connection.cc,v 1.10 2004/05/28 13:15:22 lha Exp $
@@ -26,21 +26,21 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#ifdef _MSC_VER /* _WIN32 */
+#ifdef _MSC_VER                 /* _WIN32 */
 #include <windows.h>
 #include <winsock.h>
 #define EALREADY     WSAEALREADY
 #define EISCONN      WSAEISCONN
 #else
 #include <sys/socket.h>
-#include <arpa/inet.h>  // For inet_ntoa
+#include <arpa/inet.h>          // For inet_ntoa
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
 #include <sys/uio.h>
 #endif
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <sys/file.h>
 #include <sys/time.h>
 #else
@@ -51,7 +51,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -64,16 +64,17 @@
 
 typedef void (*SIGNAL_HANDLER) (...);
 
-#ifndef _MSC_VER /* _WIN32 */
-extern "C" {
-    int rresvport(int *);
+#ifndef _MSC_VER                /* _WIN32 */
+extern "C"
+{
+  int rresvport (int *);
 }
 #endif
 
 #undef MIN
 #define  MIN(a,b)    ((a)<(b)?(a):(b))
 
-List  all_connections;
+List all_connections;
 
 //*************************************************************************
 // Connection::Connection(int socket)
@@ -84,44 +85,56 @@ List  all_connections;
 //   int socket:  obvious!!!!
 //
 //*************************************************************************
-Connection::Connection(int socket)
-: pos(0), pos_max(0),
-   sock(socket), connected(0), peer(""), server_name(""), server_ip_address(""),
-   need_io_stop(0), timeout_value(0), retry_value(1),
-   wait_time(5) // wait 5 seconds after a failed connection attempt
+Connection::Connection (int socket):
+pos (0),
+pos_max (0),
+sock (socket),
+connected (0),
+peer (""),
+server_name (""),
+server_ip_address (""),
+need_io_stop (0),
+timeout_value (0),
+retry_value (1),
+wait_time (5)                   // wait 5 seconds after a failed connection attempt
 {
-   Win32Socket_Init();
+  Win32Socket_Init ();
 
-   if (socket > 0)
-   {
-      GETPEERNAME_LENGTH_T length = sizeof(server);
-      if (getpeername(socket, (struct sockaddr *)&server, &length) < 0)
-         perror("getpeername");
-   }
-   
-   all_connections.Add(this);
+  if (socket > 0)
+  {
+    GETPEERNAME_LENGTH_T length = sizeof (server);
+    if (getpeername (socket, (struct sockaddr *) &server, &length) < 0)
+      perror ("getpeername");
+  }
+
+  all_connections.Add (this);
 }
 
 // Copy constructor
-Connection::Connection(const Connection& rhs)
-: pos(rhs.pos), pos_max(rhs.pos_max),
-   sock(rhs.sock), connected(rhs.connected),
-   peer(rhs.peer), server_name(rhs.server_name), server_ip_address(rhs.server_ip_address),
-   need_io_stop(rhs.need_io_stop), timeout_value(rhs.timeout_value),
-   retry_value(rhs.retry_value),
-   wait_time(rhs.wait_time) // wait 5 seconds after a failed connection attempt
+Connection::Connection (const Connection & rhs):
+pos (rhs.pos),
+pos_max (rhs.pos_max),
+sock (rhs.sock),
+connected (rhs.connected),
+peer (rhs.peer),
+server_name (rhs.server_name),
+server_ip_address (rhs.server_ip_address),
+need_io_stop (rhs.need_io_stop),
+timeout_value (rhs.timeout_value),
+retry_value (rhs.retry_value),
+wait_time (rhs.wait_time)       // wait 5 seconds after a failed connection attempt
 {
-    all_connections.Add(this);
+  all_connections.Add (this);
 }
 
 
 //*****************************************************************************
 // Connection::~Connection()
 //
-Connection::~Connection()
+Connection::~Connection ()
 {
-    all_connections.Remove(this);
-    this->Close();
+  all_connections.Remove (this);
+  this->Close ();
 }
 
 
@@ -130,72 +143,77 @@ Connection::~Connection()
 //
 // This function is only used when Code is compiled as a Native Windows
 // application
-// 
+//
 // The native Windows socket system needs to be initialized.
 //
-int Connection::Win32Socket_Init(void)
+int
+Connection::Win32Socket_Init (void)
 {
-#ifdef _MSC_VER /* _WIN32 */
-    WORD    wVersionRequested;
-    WSADATA wsaData;
+#ifdef _MSC_VER                 /* _WIN32 */
+  WORD wVersionRequested;
+  WSADATA wsaData;
 
-    wVersionRequested = MAKEWORD(2, 2);
+  wVersionRequested = MAKEWORD (2, 2);
 
-    if (WSAStartup(wVersionRequested, &wsaData))
-        return(-1);
+  if (WSAStartup (wVersionRequested, &wsaData))
+    return (-1);
 
-    if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2 ) {
-        WSACleanup();
-        return(-1);
-    }
+  if (LOBYTE (wsaData.wVersion) != 2 || HIBYTE (wsaData.wVersion) != 2)
+  {
+    WSACleanup ();
+    return (-1);
+  }
 #endif
 
-    return(0);
+  return (0);
 }
+
 //*****************************************************************************
 // int Connection::Open(int priv)
 //
-int Connection::Open(int priv)
+int
+Connection::Open (int priv)
 {
-    if (priv)
-    {
-  int  aport = IPPORT_RESERVED - 1;
+  if (priv)
+  {
+    int aport = IPPORT_RESERVED - 1;
 
 //  Native Windows (MSVC) has no rresvport
-#ifndef _MSC_VER /* _WIN32 */
-  sock = rresvport(&aport);
+#ifndef _MSC_VER                /* _WIN32 */
+    sock = rresvport (&aport);
 #else
-  return NOTOK;
+    return NOTOK;
 #endif
-    }
-    else
-    {
-      sock = socket(AF_INET, SOCK_STREAM, 0);
-  //cout << "socket()  sock=" << sock << endl;
-    }
+  }
+  else
+  {
+    sock = socket (AF_INET, SOCK_STREAM, 0);
+    //cout << "socket()  sock=" << sock << endl;
+  }
 
-    if (sock == NOTOK)
-  return NOTOK;
+  if (sock == NOTOK)
+    return NOTOK;
 
-    int  on = 1;
-    setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof(on));
-    server.sin_family = AF_INET;
+  int on = 1;
+  setsockopt (sock, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof (on));
+  server.sin_family = AF_INET;
 
-    return OK;
+  return OK;
 }
 
 
 //*****************************************************************************
 // int Connection::Ndelay()
 //
-int Connection::Ndelay()
+int
+Connection::Ndelay ()
 {
-#ifndef _MSC_VER /* _WIN32 */
-    return fcntl(sock, F_SETFL, FNDELAY);
+#ifndef _MSC_VER                /* _WIN32 */
+  return fcntl (sock, F_SETFL, FNDELAY);
 #else
-    // Note:  This function is never called
-    // TODO: Look into ioctsocket(..) of Win32 Socket API
-    return(0);
+  // Note:  This function is never called
+  // TODO: Look into ioctsocket(..) of Win32 Socket API
+  return (0);
 #endif
 }
 
@@ -203,277 +221,293 @@ int Connection::Ndelay()
 //*****************************************************************************
 // int Connection::Nondelay()
 //
-int Connection::Nondelay()
+int
+Connection::Nondelay ()
 {
-#ifndef _MSC_VER /* _WIN32 */
-    return fcntl(sock, F_SETFL, 0);
+#ifndef _MSC_VER                /* _WIN32 */
+  return fcntl (sock, F_SETFL, 0);
 #else
-    // Note:  This function is never called
-    // TODO: Look into ioctsocket(..) of Win32 Socket API
-    return(0);
+  // Note:  This function is never called
+  // TODO: Look into ioctsocket(..) of Win32 Socket API
+  return (0);
 #endif
 }
 
 //*****************************************************************************
 // int Connection::Timeout(int value)
 //
-int Connection::Timeout(int value)
+int
+Connection::Timeout (int value)
 {
-    int oval = timeout_value;
-    timeout_value = value;
-    return oval;
+  int oval = timeout_value;
+  timeout_value = value;
+  return oval;
 }
 
 //*****************************************************************************
 // int Connection::retries(int value)
 //
-int Connection::Retries(int value)
+int
+Connection::Retries (int value)
 {
-    int oval = retry_value;
-    retry_value = value;
-    return oval;
+  int oval = retry_value;
+  retry_value = value;
+  return oval;
 }
 
 //*****************************************************************************
 // int Connection::Close()
 //
-int Connection::Close()
+int
+Connection::Close ()
 {
-    connected = 0;
-    if (sock >= 0)
-    {
-  int ret = close(sock);
-  sock = -1;
-  return ret;
-    }
-    return NOTOK;
+  connected = 0;
+  if (sock >= 0)
+  {
+    int ret = close (sock);
+    sock = -1;
+    return ret;
+  }
+  return NOTOK;
 }
 
 
 //*****************************************************************************
 // int Connection::Assign_Port(int port)
 //
-int Connection::Assign_Port(int port)
+int
+Connection::Assign_Port (int port)
 {
-    server.sin_port = htons(port);
-    return OK;
+  server.sin_port = htons (port);
+  return OK;
 }
 
 
 //*****************************************************************************
 // int Connection::Assign_Port(char *service)
 //
-int Connection::Assign_Port(const String &service)
+int
+Connection::Assign_Port (const String & service)
 {
-    struct servent    *sp;
+  struct servent *sp;
 
-    sp = getservbyname(service, "tcp");
-    if (sp == 0)
-    {
-  return NOTOK;
-    }
-    server.sin_port = sp->s_port;
-    return OK;
+  sp = getservbyname (service, "tcp");
+  if (sp == 0)
+  {
+    return NOTOK;
+  }
+  server.sin_port = sp->s_port;
+  return OK;
 }
 
 //*****************************************************************************
 // int Connection::Assign_Server(unsigned int addr)
 //
-int Connection::Assign_Server(unsigned int addr)
+int
+Connection::Assign_Server (unsigned int addr)
 {
-    server.sin_addr.s_addr = addr;
-    return OK;
+  server.sin_addr.s_addr = addr;
+  return OK;
 }
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 //extern "C" unsigned int   inet_addr(char *);
 #endif
 
 //*****************************************************************************
 //
-int Connection::Assign_Server(const String& name)
+int
+Connection::Assign_Server (const String & name)
 {
-    struct hostent *hp;
-    char **alias_list;
-    unsigned int addr;
+  struct hostent *hp;
+  char **alias_list;
+  unsigned int addr;
 
-    //
-    // inet_addr arg IS const char even though prototype says otherwise
-    //
-    addr = inet_addr((char*)name.get());
-    if (addr == (unsigned int)~0)
-    {
-        // Gets the host given a string
-        hp = gethostbyname(name);
+  //
+  // inet_addr arg IS const char even though prototype says otherwise
+  //
+  addr = inet_addr ((char *) name.get ());
+  if (addr == (unsigned int) ~0)
+  {
+    // Gets the host given a string
+    hp = gethostbyname (name);
 
-        if (hp == 0)
-           return NOTOK;
+    if (hp == 0)
+      return NOTOK;
 
-        alias_list = hp->h_aliases;
-        memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
-    }
-    else
-    {
-        memcpy((char *)&server.sin_addr, (char *)&addr, sizeof(addr));
-    }
+    alias_list = hp->h_aliases;
+    memcpy ((char *) &server.sin_addr, (char *) hp->h_addr, hp->h_length);
+  }
+  else
+  {
+    memcpy ((char *) &server.sin_addr, (char *) &addr, sizeof (addr));
+  }
 
-    server_name = name.get();
-    server_ip_address = inet_ntoa(server.sin_addr);
+  server_name = name.get ();
+  server_ip_address = inet_ntoa (server.sin_addr);
 
-    return OK;
+  return OK;
 }
 
 //
 // Do nothing, we are only interested in the EINTR return of the
 // running system call.
 //
-static void handler_timeout(int) {
+static void
+handler_timeout (int)
+{
 }
 
 //*****************************************************************************
 // int Connection::Connect()
 //
-int Connection::Connect()
+int
+Connection::Connect ()
 {
-    int  status;
-    int retries = retry_value;
+  int status;
+  int retries = retry_value;
 
-    while (retries--)
-      {
-#ifndef _MSC_VER /* _WIN32 */
-  //
-  // Set an alarm to make sure the connect() call times out
-  // appropriately This ensures the call won't hang on a
-  // dead server or bad DNS call.
-  // Save the previous alarm signal handling policy, if any.
-  //
-  struct sigaction action;
-  struct sigaction old_action;
-  memset((char*)&action, '\0', sizeof(struct sigaction));
-  memset((char*)&old_action, '\0', sizeof(struct sigaction));
-  action.sa_handler = handler_timeout;
-  sigaction(SIGALRM, &action, &old_action);
-  alarm(timeout_value);
+  while (retries--)
+  {
+#ifndef _MSC_VER                /* _WIN32 */
+    //
+    // Set an alarm to make sure the connect() call times out
+    // appropriately This ensures the call won't hang on a
+    // dead server or bad DNS call.
+    // Save the previous alarm signal handling policy, if any.
+    //
+    struct sigaction action;
+    struct sigaction old_action;
+    memset ((char *) &action, '\0', sizeof (struct sigaction));
+    memset ((char *) &old_action, '\0', sizeof (struct sigaction));
+    action.sa_handler = handler_timeout;
+    sigaction (SIGALRM, &action, &old_action);
+    alarm (timeout_value);
 #endif
 
-  status = connect(sock, (struct sockaddr *)&server, sizeof(server));
+    status = connect (sock, (struct sockaddr *) &server, sizeof (server));
 
-  //
-  // Disable alarm and restore previous policy if any
-  //
-#ifndef _MSC_VER /* _WIN32 */
-  alarm(0);
-         sigaction(SIGALRM, &old_action, 0);
+    //
+    // Disable alarm and restore previous policy if any
+    //
+#ifndef _MSC_VER                /* _WIN32 */
+    alarm (0);
+    sigaction (SIGALRM, &old_action, 0);
 #endif
 
-  if (status == 0 || errno == EALREADY || errno == EISCONN)
+    if (status == 0 || errno == EALREADY || errno == EISCONN)
     {
       connected = 1;
       return OK;
     }
 
-  //
-  // Only loop if timed out. Other errors are fatal.
-  //
-  if (status < 0 && errno != EINTR)
-    break;
-  
-  // cout << " <"  << ::strerror(errno) << "> ";
-  close(sock);
-        Open();
+    //
+    // Only loop if timed out. Other errors are fatal.
+    //
+    if (status < 0 && errno != EINTR)
+      break;
 
-        sleep(wait_time);
+    // cout << " <"  << ::strerror(errno) << "> ";
+    close (sock);
+    Open ();
 
-      }
+    sleep (wait_time);
+
+  }
 
 #if 0
-    if (status == ECONNREFUSED)
-    {
-  //
-  // For the case where the connection attempt is refused, we need
-  // to close the socket and create a new one in order to do any
-  // more with it.
-  //
-  Close(sock);
-  Open();
-    }
+  if (status == ECONNREFUSED)
+  {
+    //
+    // For the case where the connection attempt is refused, we need
+    // to close the socket and create a new one in order to do any
+    // more with it.
+    //
+    Close (sock);
+    Open ();
+  }
 #else
-    close(sock);
-    Open(0);
+  close (sock);
+  Open (0);
 #endif
 
-    connected = 0;
-    return NOTOK;
+  connected = 0;
+  return NOTOK;
 }
 
 
 //*****************************************************************************
 // int Connection::Bind()
 //
-int Connection::Bind()
+int
+Connection::Bind ()
 {
-    if (bind(sock, (struct sockaddr *)&server, sizeof(server)) == NOTOK)
-    {
-  return NOTOK;
-    }
-    return OK;
+  if (bind (sock, (struct sockaddr *) &server, sizeof (server)) == NOTOK)
+  {
+    return NOTOK;
+  }
+  return OK;
 }
 
 
 //*****************************************************************************
 // int Connection::Get_Port()
 //
-int Connection::Get_Port()
+int
+Connection::Get_Port ()
 {
-    GETPEERNAME_LENGTH_T length = sizeof(server);
-    
-    if (getsockname(sock, (struct sockaddr *)&server, &length) == NOTOK)
-    {
-  return NOTOK;
-    }
-    return ntohs(server.sin_port);
+  GETPEERNAME_LENGTH_T length = sizeof (server);
+
+  if (getsockname (sock, (struct sockaddr *) &server, &length) == NOTOK)
+  {
+    return NOTOK;
+  }
+  return ntohs (server.sin_port);
 }
 
 
 //*****************************************************************************
 // int Connection::Listen(int n)
 //
-int Connection::Listen(int n)
+int
+Connection::Listen (int n)
 {
-    return listen(sock, n);
+  return listen (sock, n);
 }
 
 
 //*****************************************************************************
 // Connection *Connection::Accept(int priv)
 //
-Connection *Connection::Accept(int priv)
+Connection *
+Connection::Accept (int priv)
 {
-    int  newsock;
+  int newsock;
 
-    while (1)
-    {
-  newsock = accept(sock, (struct sockaddr *)0, (GETPEERNAME_LENGTH_T *)0);
-  if (newsock == NOTOK && errno == EINTR)
+  while (1)
+  {
+    newsock =
+      accept (sock, (struct sockaddr *) 0, (GETPEERNAME_LENGTH_T *) 0);
+    if (newsock == NOTOK && errno == EINTR)
       continue;
-  break;
-    }
-    if (newsock == NOTOK)
-  return (Connection *)0;
+    break;
+  }
+  if (newsock == NOTOK)
+    return (Connection *) 0;
 
-    Connection  *newconnect = new Connection;
-    newconnect->sock = newsock;
+  Connection *newconnect = new Connection;
+  newconnect->sock = newsock;
 
-    GETPEERNAME_LENGTH_T length = sizeof(newconnect->server);
-    getpeername(newsock, (struct sockaddr *)&newconnect->server, &length);
+  GETPEERNAME_LENGTH_T length = sizeof (newconnect->server);
+  getpeername (newsock, (struct sockaddr *) &newconnect->server, &length);
 
-    if (priv && newconnect->server.sin_port >= IPPORT_RESERVED)
-    {
-  delete newconnect;
-  return (Connection *)0;
-    }
+  if (priv && newconnect->server.sin_port >= IPPORT_RESERVED)
+  {
+    delete newconnect;
+    return (Connection *) 0;
+  }
 
-    return newconnect;
+  return newconnect;
 }
 
 
@@ -483,54 +517,57 @@ Connection *Connection::Accept(int priv)
 //   Accept  in  incoming  connection  but  only  if  it  is  from a
 //   privileged port
 //
-Connection * Connection::Accept_Privileged()
+Connection *
+Connection::Accept_Privileged ()
 {
-    return Accept(1);
+  return Accept (1);
 }
 
 //*****************************************************************************
 // int Connection::read_char()
 //
-int Connection::Read_Char()
+int
+Connection::Read_Char ()
 {
-    if (pos >= pos_max)
-    {
-  pos_max = Read_Partial(buffer, sizeof(buffer));
-  pos = 0;
-  if (pos_max <= 0)
+  if (pos >= pos_max)
   {
+    pos_max = Read_Partial (buffer, sizeof (buffer));
+    pos = 0;
+    if (pos_max <= 0)
+    {
       return -1;
-  }
     }
-    return buffer[pos++] & 0xff;
+  }
+  return buffer[pos++] & 0xff;
 }
 
 
 //*****************************************************************************
 // String *Connection::Read_Line(String &s, char *terminator)
 //
-String *Connection::Read_Line(String &s, const char *terminator)
+String *
+Connection::Read_Line (String & s, const char *terminator)
 {
-    int    termseq = 0;
-    s = 0;
+  int termseq = 0;
+  s = 0;
 
-    for (;;)
-    {
-  int  ch = Read_Char();
-  if (ch < 0)
+  for (;;)
   {
+    int ch = Read_Char ();
+    if (ch < 0)
+    {
       //
       // End of file reached.  If we still have stuff in the input buffer
       // we need to return it first.  When we get called again we will
       // return 0 to let the caller know about the EOF condition.
       //
-      if (s.length())
-    break;
+      if (s.length ())
+        break;
       else
-    return (String *) 0;
-  }
-  else if (terminator[termseq] && ch == terminator[termseq])
-  {
+        return (String *) 0;
+    }
+    else if (terminator[termseq] && ch == terminator[termseq])
+    {
       //
       // Got one of the terminator characters.  We will not put
       // it in the string but keep track of the fact that we
@@ -538,55 +575,57 @@ String *Connection::Read_Line(String &s, const char *terminator)
       //
       termseq++;
       if (!terminator[termseq])
-    break;
-  }
-  else
-  {
-      s << (char) ch;
-  }
+        break;
     }
+    else
+    {
+      s << (char) ch;
+    }
+  }
 
-    return &s;
+  return &s;
 }
 
 
 //*****************************************************************************
 // String *Connection::read_line(char *terminator)
 //
-String *Connection::Read_Line(char *terminator)
+String *
+Connection::Read_Line (char *terminator)
 {
-    String  *s;
+  String *s;
 
-    s = new String;
-    return Read_Line(*s, terminator);
+  s = new String;
+  return Read_Line (*s, terminator);
 }
 
 
 //*****************************************************************************
 // char *Connection::read_line(char *buffer, int maxlength, char *terminator)
 //
-char *Connection::Read_Line(char *buffer, int maxlength, char *terminator)
+char *
+Connection::Read_Line (char *buffer, int maxlength, char *terminator)
 {
-    char  *start = buffer;
-    int    termseq = 0;
+  char *start = buffer;
+  int termseq = 0;
 
-    while (maxlength > 0)
-    {
-  int    ch = Read_Char();
-  if (ch < 0)
+  while (maxlength > 0)
   {
+    int ch = Read_Char ();
+    if (ch < 0)
+    {
       //
       // End of file reached.  If we still have stuff in the input buffer
       // we need to return it first.  When we get called again, we will
       // return 0 to let the caller know about the EOF condition.
       //
       if (buffer > start)
-    break;
+        break;
       else
-    return (char *) 0;
-  }
-  else if (terminator[termseq] && ch == terminator[termseq])
-  {
+        return (char *) 0;
+    }
+    else if (terminator[termseq] && ch == terminator[termseq])
+    {
       //
       // Got one of the terminator characters.  We will not put
       // it in the string but keep track of the fact that we
@@ -594,104 +633,108 @@ char *Connection::Read_Line(char *buffer, int maxlength, char *terminator)
       //
       termseq++;
       if (!terminator[termseq])
-    break;
-  }
-  else
-  {
+        break;
+    }
+    else
+    {
       *buffer++ = ch;
       maxlength--;
-  }
     }
-    *buffer = '\0';
+  }
+  *buffer = '\0';
 
-    return start;
+  return start;
 }
 
 
 //*****************************************************************************
 // int Connection::write_line(char *str, char *eol)
 //
-int Connection::Write_Line(char *str, char *eol)
+int
+Connection::Write_Line (char *str, char *eol)
 {
-    int    n, nn;
+  int n, nn;
 
-    if ((n = Write(str)) < 0)
-  return -1;
+  if ((n = Write (str)) < 0)
+    return -1;
 
-    if ((nn = Write(eol)) < 0)
-  return -1;
+  if ((nn = Write (eol)) < 0)
+    return -1;
 
-    return n + nn;
+  return n + nn;
 }
 
 
 //*****************************************************************************
 // int Connection::Write(char *buffer, int length)
 //
-int Connection::Write(char *buffer, int length)
+int
+Connection::Write (char *buffer, int length)
 {
-    int    nleft, nwritten;
+  int nleft, nwritten;
 
-    if (length == -1)
-  length = strlen(buffer);
+  if (length == -1)
+    length = strlen (buffer);
 
-    nleft = length;
-    while (nleft > 0)
-    {
-  nwritten = Write_Partial(buffer, nleft);
-  if (nwritten < 0 && errno == EINTR)
+  nleft = length;
+  while (nleft > 0)
+  {
+    nwritten = Write_Partial (buffer, nleft);
+    if (nwritten < 0 && errno == EINTR)
       continue;
-  if (nwritten <= 0)
+    if (nwritten <= 0)
       return nwritten;
-  nleft -= nwritten;
-  buffer += nwritten;
-    }
-    return length - nleft;
+    nleft -= nwritten;
+    buffer += nwritten;
+  }
+  return length - nleft;
 }
 
 
 //*****************************************************************************
 // int Connection::Read(char *buffer, int length)
 //
-int Connection::Read(char *buffer, int length)
+int
+Connection::Read (char *buffer, int length)
 {
-    int    nleft, nread;
+  int nleft, nread;
 
-    nleft = length;
+  nleft = length;
 
-    //
-    // If there is data in our internal input buffer, use that first.
-    //
-    if (pos < pos_max)
-    {
-  int n = MIN(length, pos_max - pos);
+  //
+  // If there is data in our internal input buffer, use that first.
+  //
+  if (pos < pos_max)
+  {
+    int n = MIN (length, pos_max - pos);
 
-  memcpy(buffer, &this->buffer[pos], n);
-  pos += n;
-  buffer += n;
-  nleft -= n;
-    }
+    memcpy (buffer, &this->buffer[pos], n);
+    pos += n;
+    buffer += n;
+    nleft -= n;
+  }
 
-    while (nleft > 0)
-    {
-  nread = Read_Partial(buffer, nleft);
-  if (nread < 0 && errno == EINTR)
+  while (nleft > 0)
+  {
+    nread = Read_Partial (buffer, nleft);
+    if (nread < 0 && errno == EINTR)
       continue;
-  if (nread < 0)
+    if (nread < 0)
       return -1;
-  else if (nread == 0)
+    else if (nread == 0)
       break;
 
-  nleft -= nread;
-  buffer += nread;
-    }
-    return length - nleft;
+    nleft -= nread;
+    buffer += nread;
+  }
+  return length - nleft;
 }
 
 
-void Connection::Flush()
+void
+Connection::Flush ()
 {
-   pos = pos_max = 0;
+  pos = pos_max = 0;
 }
 
 //*************************************************************************
@@ -710,58 +753,61 @@ void Connection::Flush()
 // FUNCTIONS USED:
 //   read()
 //
-int Connection::Read_Partial(char *buffer, int maxlength)
+int
+Connection::Read_Partial (char *buffer, int maxlength)
 {
-    int    count;
+  int count;
 
-    need_io_stop = 0;
-    do
+  need_io_stop = 0;
+  do
+  {
+    errno = 0;
+
+    if (timeout_value > 0)
     {
-      errno = 0;
+      FD_SET_T fds;
+      FD_ZERO (&fds);
+      FD_SET (sock, &fds);
 
-      if (timeout_value > 0) {
-          FD_SET_T fds;
-          FD_ZERO(&fds);
-          FD_SET(sock, &fds);
+      timeval tv;
+      tv.tv_sec = timeout_value;
+      tv.tv_usec = 0;
 
-          timeval tv;
-          tv.tv_sec = timeout_value;
-          tv.tv_usec = 0;
-
-          int selected = select(sock+1, &fds, 0, 0, &tv);
-          if (selected <= 0)
-              need_io_stop++;
-      }
-
-      if (!need_io_stop)
-          count = recv(sock, buffer, maxlength, 0);
-      else
-          count = -1;         // Input timed out
+      int selected = select (sock + 1, &fds, 0, 0, &tv);
+      if (selected <= 0)
+        need_io_stop++;
     }
-    while (count <= 0 && errno == EINTR && !need_io_stop);
-    need_io_stop = 0;
 
-    return count;
+    if (!need_io_stop)
+      count = recv (sock, buffer, maxlength, 0);
+    else
+      count = -1;               // Input timed out
+  }
+  while (count <= 0 && errno == EINTR && !need_io_stop);
+  need_io_stop = 0;
+
+  return count;
 }
 
 
 //*************************************************************************
 // int Connection::Write_Partial(char *buffer, int maxlength)
 //
-int Connection::Write_Partial(char *buffer, int maxlength)
+int
+Connection::Write_Partial (char *buffer, int maxlength)
 {
-    int    count;
+  int count;
 
-    do
-    {
+  do
+  {
 
-       count = send(sock, buffer, maxlength, 0);
-  
-    }
-    while (count < 0 && errno == EINTR && !need_io_stop);
-    need_io_stop = 0;
+    count = send (sock, buffer, maxlength, 0);
 
-    return count;
+  }
+  while (count < 0 && errno == EINTR && !need_io_stop);
+  need_io_stop = 0;
+
+  return count;
 }
 
 
@@ -771,82 +817,86 @@ int Connection::Write_Partial(char *buffer, int maxlength)
 //   Return  the  numeric  ASCII  equivalent  of  the socket number.
 //   This is needed to pass the socket to another program
 //
-char * Connection::Socket_as_String()
+char *
+Connection::Socket_as_String ()
 {
-    char  *buffer = new char[20];
+  char *buffer = new char[20];
 
-    sprintf(buffer, "%d", sock);
-    return buffer;
+  sprintf (buffer, "%d", sock);
+  return buffer;
 }
 
-#ifndef _MSC_VER /* _WIN32 */
-extern "C" char *inet_ntoa(struct in_addr);
+#ifndef _MSC_VER                /* _WIN32 */
+extern "C" char *inet_ntoa (struct in_addr);
 #endif
 
 //*************************************************************************
 // char *Connection::Get_Peername()
 //
-const char* Connection::Get_Peername()
+const char *
+Connection::Get_Peername ()
 {
-    if (peer.empty())
-    {
-  struct sockaddr_in  p;
-  GETPEERNAME_LENGTH_T  length = sizeof(p);
-  struct hostent    *hp;
-  
-  if (getpeername(sock, (struct sockaddr *) &p, &length) < 0)
+  if (peer.empty ())
   {
+    struct sockaddr_in p;
+    GETPEERNAME_LENGTH_T length = sizeof (p);
+    struct hostent *hp;
+
+    if (getpeername (sock, (struct sockaddr *) &p, &length) < 0)
+    {
       return 0;
-  }
-  
-  length = sizeof(p.sin_addr);
-  hp = gethostbyaddr((const char *) &p.sin_addr, length, AF_INET);
-  if (hp)
-      peer = (char *) hp->h_name;
-  else
-      peer = (char *) inet_ntoa(p.sin_addr);
     }
-    return (const char*) peer.get();
+
+    length = sizeof (p.sin_addr);
+    hp = gethostbyaddr ((const char *) &p.sin_addr, length, AF_INET);
+    if (hp)
+      peer = (char *) hp->h_name;
+    else
+      peer = (char *) inet_ntoa (p.sin_addr);
+  }
+  return (const char *) peer.get ();
 }
 
 
 //*************************************************************************
 // char *Connection::Get_PeerIP()
 //
-const char* Connection::Get_PeerIP() const
+const char *
+Connection::Get_PeerIP () const
 {
-    struct sockaddr_in  p;
-    GETPEERNAME_LENGTH_T  length = sizeof(p);
-    
-    if (getpeername(sock, (struct sockaddr *) &p, &length) < 0)
-    {
-  return 0;
-    }
-    return (const char*) inet_ntoa(p.sin_addr);
+  struct sockaddr_in p;
+  GETPEERNAME_LENGTH_T length = sizeof (p);
+
+  if (getpeername (sock, (struct sockaddr *) &p, &length) < 0)
+  {
+    return 0;
+  }
+  return (const char *) inet_ntoa (p.sin_addr);
 }
 
 #ifdef NEED_PROTO_GETHOSTNAME
-extern "C" int gethostname(char *name, int namelen);
+extern "C" int gethostname (char *name, int namelen);
 #endif
 
 //*************************************************************************
 // unsigned int GetHostIP(char *ip, int length)
 //
-unsigned int GetHostIP(char *ip, int length)
+unsigned int
+GetHostIP (char *ip, int length)
 {
-    char  hostname[100];
-    if (gethostname(hostname, sizeof(hostname)) == NOTOK)
-  return 0;
+  char hostname[100];
+  if (gethostname (hostname, sizeof (hostname)) == NOTOK)
+    return 0;
 
-    struct hostent  *ent = gethostbyname(hostname);
-    if (!ent)
-  return 0;
+  struct hostent *ent = gethostbyname (hostname);
+  if (!ent)
+    return 0;
 
-    struct in_addr  addr;
-    memcpy((char *) &addr.s_addr, ent->h_addr, sizeof(addr));
-    if (ip)
-  strncpy(ip, inet_ntoa(addr), length);
-    return addr.s_addr;
+  struct in_addr addr;
+  memcpy ((char *) &addr.s_addr, ent->h_addr, sizeof (addr));
+  if (ip)
+    strncpy (ip, inet_ntoa (addr), length);
+  return addr.s_addr;
 }
 
 
@@ -854,8 +904,9 @@ unsigned int GetHostIP(char *ip, int length)
 //*************************************************************************
 // int Connection::WaitTime(unsigned int _wt)
 //
-int Connection::WaitTime(unsigned int _wt)
+int
+Connection::WaitTime (unsigned int _wt)
 {
-   wait_time = _wt;
-   return OK;
+  wait_time = _wt;
+  return OK;
 }

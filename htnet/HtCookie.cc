@@ -56,7 +56,8 @@ using namespace std;
 ///////
 
    // Debug level
-   int HtCookie::debug = 0;
+int
+  HtCookie::debug = 0;
 
 // Precompiled constants regarding the cookies file format (field order)
 #define COOKIES_FILE_DOMAIN  0
@@ -69,339 +70,340 @@ using namespace std;
 
 
 // Default constructor
-HtCookie::HtCookie()
-:   name(0),
-   value(0),
-   path(0),
-   domain(0),
-   expires(0),
-   isSecure(false),
-   isDomainValid(true),
-   srcURL(0),
-   issue_time(),
-   max_age(-1),
-   rfc_version(0)
+HtCookie::HtCookie ():name (0),
+value (0),
+path (0),
+domain (0),
+expires (0),
+isSecure (false),
+isDomainValid (true), srcURL (0), issue_time (), max_age (-1), rfc_version (0)
 {
 }
 
 
 // Constructor that accepts a name and a value
 // and the calling URL
-HtCookie::HtCookie(const String &aName, const String &aValue,
-    const String& aURL)
-:   name(aName),
-   value(aValue),
-   path(0),
-   domain(0),
-   expires(0),
-   isSecure(false),
-   isDomainValid(true),
-   srcURL(aURL),
-   issue_time(),
-   max_age(-1),
-   rfc_version(0)
+HtCookie::HtCookie (const String & aName, const String & aValue,
+                    const String & aURL):
+name (aName),
+value (aValue),
+path (0),
+domain (0),
+expires (0),
+isSecure (false),
+isDomainValid (true),
+srcURL (aURL),
+issue_time (),
+max_age (-1),
+rfc_version (0)
 {
 }
 
 
 // Constructor from a server response header
-HtCookie::HtCookie(const String &setCookieLine, const String& aURL)
-:   name(0),
-   value(0),
-   path(0),
-   domain(0),
-   expires(0),
-   isSecure(false),
-   isDomainValid(true),
-   srcURL(aURL),
-   issue_time(),
-   max_age(-1),
-   rfc_version(0)
+HtCookie::HtCookie (const String & setCookieLine, const String & aURL):
+name (0),
+value (0),
+path (0),
+domain (0),
+expires (0),
+isSecure (false),
+isDomainValid (true),
+srcURL (aURL),
+issue_time (),
+max_age (-1),
+rfc_version (0)
 {
 
-   String cookieLineStr(setCookieLine);
-   char * token;
-   const char * str;
+  String cookieLineStr (setCookieLine);
+  char *token;
+  const char *str;
 
-   if (debug > 5)
-      cout << "Creating cookie from response header: " << cookieLineStr << endl;
+  if (debug > 5)
+    cout << "Creating cookie from response header: " << cookieLineStr << endl;
 
-   // Parse the cookie line
-   token = strtok(cookieLineStr, "=");
-   if (token != NULL)
-   {
-      SetName(token);
-      token = strtok(NULL, ";");
-      SetValue(token);
-   }
+  // Parse the cookie line
+  token = strtok (cookieLineStr, "=");
+  if (token != NULL)
+  {
+    SetName (token);
+    token = strtok (NULL, ";");
+    SetValue (token);
+  }
 
-   // Get all the fields returned by the server
-   while ((str = strtok(NULL, "=")))
-   {
-      const char * ctoken;
+  // Get all the fields returned by the server
+  while ((str = strtok (NULL, "=")))
+  {
+    const char *ctoken;
 
-      token = stripAllWhitespace(str);
-    
-      if (mystrcasecmp(token, "path") == 0)
-      {
-         // Let's grab the path
-         ctoken = strtok(NULL, ";");
-         SetPath(ctoken);
-      }
-      else if (mystrcasecmp(token, "expires") == 0)
+    token = stripAllWhitespace (str);
+
+    if (mystrcasecmp (token, "path") == 0)
     {
-         // Let's grab the expiration date
-         HtDateTime dt;
-  
-         ctoken = strtok(NULL, ";");
+      // Let's grab the path
+      ctoken = strtok (NULL, ";");
+      SetPath (ctoken);
+    }
+    else if (mystrcasecmp (token, "expires") == 0)
+    {
+      // Let's grab the expiration date
+      HtDateTime dt;
 
-         if (ctoken && SetDate(ctoken, dt))
-            SetExpires(&dt);
-         else
-            SetExpires(0);
-      } else if (mystrcasecmp(token, "secure") == 0)
-         SetIsSecure(true);
-      else if (mystrcasecmp(token, "domain") == 0)
-      {
-         ctoken = strtok(NULL, ";");
-         SetDomain(ctoken);
-      }
-      else if (mystrcasecmp(token, "max-age") == 0)
-      {
-         ctoken = strtok(NULL, ";");
-         SetMaxAge(atoi(ctoken));
-      }
-      else if (mystrcasecmp(token, "version") == 0)
-      {
-         ctoken = strtok(NULL, ";");
-         SetVersion(atoi(ctoken));
-      }
+      ctoken = strtok (NULL, ";");
 
-      if (token)
-       delete[](token);
+      if (ctoken && SetDate (ctoken, dt))
+        SetExpires (&dt);
+      else
+        SetExpires (0);
+    }
+    else if (mystrcasecmp (token, "secure") == 0)
+      SetIsSecure (true);
+    else if (mystrcasecmp (token, "domain") == 0)
+    {
+      ctoken = strtok (NULL, ";");
+      SetDomain (ctoken);
+    }
+    else if (mystrcasecmp (token, "max-age") == 0)
+    {
+      ctoken = strtok (NULL, ";");
+      SetMaxAge (atoi (ctoken));
+    }
+    else if (mystrcasecmp (token, "version") == 0)
+    {
+      ctoken = strtok (NULL, ";");
+      SetVersion (atoi (ctoken));
+    }
 
-   }
+    if (token)
+      delete[](token);
 
-   if (debug>3)
-      printDebug();
+  }
+
+  if (debug > 3)
+    printDebug ();
 
 }
 
 
 // Constructor from a line of a cookie file (according to Netscape format)
-HtCookie::HtCookie(const String &CookieFileLine)
-:   name(0),
-   value(0),
-   path(0),
-   domain(0),
-   expires(0),
-   isSecure(false),
-   isDomainValid(true),
-   srcURL(0),
-   issue_time(),
-   max_age(-1),
-   rfc_version(0)
+HtCookie::HtCookie (const String & CookieFileLine):
+name (0),
+value (0),
+path (0),
+domain (0),
+expires (0),
+isSecure (false),
+isDomainValid (true),
+srcURL (0),
+issue_time (),
+max_age (-1),
+rfc_version (0)
 {
 
-   String cookieLineStr(CookieFileLine);
-   char * token;
-   const char * str;
+  String cookieLineStr (CookieFileLine);
+  char *token;
+  const char *str;
 
-   if (debug > 5)
-      cout << "Creating cookie from a cookie file line: " << cookieLineStr << endl;
+  if (debug > 5)
+    cout << "Creating cookie from a cookie file line: " << cookieLineStr <<
+      endl;
 
-   // Parse the cookie line
-   if ((str = strtok(cookieLineStr, "\t")))
-   {
-       int num_field = 0;
-       int expires_value; // Holds the expires value that will be read
+  // Parse the cookie line
+  if ((str = strtok (cookieLineStr, "\t")))
+  {
+    int num_field = 0;
+    int expires_value;          // Holds the expires value that will be read
 
-       // According to the field number, set the appropriate object member's value       
-       do
-       {
-       
-          token = stripAllWhitespace(str);
-    
-    switch(num_field)
+    // According to the field number, set the appropriate object member's value       
+    do
     {
-       case COOKIES_FILE_DOMAIN:
-          SetDomain(token);
-          break;
-       case COOKIES_FILE_FLAG:
-          // Ignored
-          break;
-       case COOKIES_FILE_PATH:
-          SetPath(token);
-          break;
-       case COOKIES_FILE_SECURE:
-          if (mystrcasecmp(token, "false"))
-       SetIsSecure(true);
-    else
-       SetIsSecure(false);
-          break;
-       case COOKIES_FILE_EXPIRES:
-    if ((expires_value = atoi(token) > 0)) // Sets the expires value only if > 0
-    {
-       time_t tmp = atoi(token);  // avoid ambiguous arg list
-       expires = new HtDateTime(tmp);
-    }
-          break;
-       case COOKIES_FILE_NAME:
-          SetName(token);
-          break;
-       case COOKIES_FILE_VALUE:
-          SetValue(token);
-    break;
-    }
 
-          ++num_field;
-       } while((str = strtok(NULL, "\t")));
-   }
+      token = stripAllWhitespace (str);
 
-   if (debug>3)
-      printDebug();
+      switch (num_field)
+      {
+      case COOKIES_FILE_DOMAIN:
+        SetDomain (token);
+        break;
+      case COOKIES_FILE_FLAG:
+        // Ignored
+        break;
+      case COOKIES_FILE_PATH:
+        SetPath (token);
+        break;
+      case COOKIES_FILE_SECURE:
+        if (mystrcasecmp (token, "false"))
+          SetIsSecure (true);
+        else
+          SetIsSecure (false);
+        break;
+      case COOKIES_FILE_EXPIRES:
+        if ((expires_value = atoi (token) > 0)) // Sets the expires value only if > 0
+        {
+          time_t tmp = atoi (token);    // avoid ambiguous arg list
+          expires = new HtDateTime (tmp);
+        }
+        break;
+      case COOKIES_FILE_NAME:
+        SetName (token);
+        break;
+      case COOKIES_FILE_VALUE:
+        SetValue (token);
+        break;
+      }
+
+      ++num_field;
+    }
+    while ((str = strtok (NULL, "\t")));
+  }
+
+  if (debug > 3)
+    printDebug ();
 
 }
 
 
 // Copy constructor
-HtCookie::HtCookie(const HtCookie& rhs)
-:   name(rhs.name),
-   value(rhs.value),
-   path(rhs.path),
-   domain(rhs.domain),
-   expires(0),
-   isSecure(rhs.isSecure),
-   isDomainValid(rhs.isDomainValid),
-   srcURL(rhs.srcURL),
-   issue_time(rhs.issue_time),
-   max_age(rhs.max_age),
-   rfc_version(rhs.rfc_version)
+HtCookie::HtCookie (const HtCookie & rhs):
+name (rhs.name),
+value (rhs.value),
+path (rhs.path),
+domain (rhs.domain),
+expires (0),
+isSecure (rhs.isSecure),
+isDomainValid (rhs.isDomainValid),
+srcURL (rhs.srcURL),
+issue_time (rhs.issue_time),
+max_age (rhs.max_age),
+rfc_version (rhs.rfc_version)
 {
   if (rhs.expires)
-    expires = new HtDateTime(*rhs.expires);
+    expires = new HtDateTime (*rhs.expires);
 }
 
 // Destructor
-HtCookie::~HtCookie()
+HtCookie::~HtCookie ()
 {
-   // Delete the DateTime info
-   if (expires)
-      delete expires;
+  // Delete the DateTime info
+  if (expires)
+    delete expires;
 }
 
 
 // Set the expires datetime
-void HtCookie::SetExpires(const HtDateTime *aDateTime)
+void
+HtCookie::SetExpires (const HtDateTime * aDateTime)
 {
-   //
-   // If expires has not yet been set,
-   // we just copy the reference
-   // otherwise, we just change the contents
-   // of our internal attribute
-   //
-   
-   // We don't have a valid datetime, it's null
-   if (!aDateTime)
-   {
-      if (expires)
-         delete expires;
-         
-      expires=0;
+  //
+  // If expires has not yet been set,
+  // we just copy the reference
+  // otherwise, we just change the contents
+  // of our internal attribute
+  //
 
-   }
-   else
-   {
-      // We do have a valid datetime
+  // We don't have a valid datetime, it's null
+  if (!aDateTime)
+  {
+    if (expires)
+      delete expires;
 
-      // Let's check whether expires has already been created
-      if (!expires)
-         expires = new HtDateTime(*aDateTime); // No ... let's create it and copy it
+    expires = 0;
 
-   }
+  }
+  else
+  {
+    // We do have a valid datetime
+
+    // Let's check whether expires has already been created
+    if (!expires)
+      expires = new HtDateTime (*aDateTime);    // No ... let's create it and copy it
+
+  }
 
 }
 
 // Strip all the whitespaces
-char * HtCookie::stripAllWhitespace(const char * str)
+char *
+HtCookie::stripAllWhitespace (const char *str)
 {
   int len;
   int i;
   int j;
-  char * newstr;
+  char *newstr;
 
-  len = strlen(str);
+  len = strlen (str);
   newstr = new char[len + 1];
   j = 0;
-  for (i = 0; i < len; i++) {
+  for (i = 0; i < len; i++)
+  {
     char c;
-    
+
     c = str[i];
-    if (isspace(c) == 0)
+    if (isspace (c) == 0)
       newstr[j++] = c;
   }
-  newstr[j++] = (char)0;
+  newstr[j++] = (char) 0;
   return newstr;
 }
 
 
 // Copy operator overload
-const HtCookie &HtCookie::operator = (const HtCookie &rhs)
+const HtCookie &
+HtCookie::operator = (const HtCookie & rhs)
 {
 
-   // Prevent from copying itself
-   if (this == &rhs)
-       return *this;
-   
-   // Copy all the values
+  // Prevent from copying itself
+  if (this == &rhs)
+    return *this;
 
-   name = rhs.name;
-   value = rhs.value;
-   path = rhs.path;
-   domain = rhs.domain;
-   srcURL = rhs.srcURL;
+  // Copy all the values
 
-   // Set the expiration time   
-   SetExpires(rhs.expires);
+  name = rhs.name;
+  value = rhs.value;
+  path = rhs.path;
+  domain = rhs.domain;
+  srcURL = rhs.srcURL;
 
-   isSecure = rhs.isSecure;
-   isDomainValid = rhs.isDomainValid;
+  // Set the expiration time   
+  SetExpires (rhs.expires);
 
-   issue_time = rhs.issue_time;
-   max_age = rhs.max_age;
-   
-   return *this;
+  isSecure = rhs.isSecure;
+  isDomainValid = rhs.isDomainValid;
+
+  issue_time = rhs.issue_time;
+  max_age = rhs.max_age;
+
+  return *this;
 }
-      
+
 
 // Print a debug message
-ostream& HtCookie::printDebug(ostream &out)
+ostream & HtCookie::printDebug (ostream & out)
 {
 
-   out << "   - ";
+  out << "   - ";
 
-   out << "NAME=" << name << " VALUE=" << value << " PATH=" << path;
+  out << "NAME=" << name << " VALUE=" << value << " PATH=" << path;
 
-   if (expires)
-      out << " EXPIRES=" << expires->GetRFC850();
+  if (expires)
+    out << " EXPIRES=" << expires->GetRFC850 ();
 
-   if (domain.length())
-      out << " DOMAIN=" << domain << " ("
-      << (isDomainValid?"VALID":"INVALID")
-      << ")";
+  if (domain.length ())
+    out << " DOMAIN=" << domain << " ("
+      << (isDomainValid ? "VALID" : "INVALID") << ")";
 
-   if (max_age >= 0)
-      out << " MAX-AGE=" << max_age;
+  if (max_age >= 0)
+    out << " MAX-AGE=" << max_age;
 
-   if (isSecure)
-      out << " SECURE";
+  if (isSecure)
+    out << " SECURE";
 
-   if (srcURL.length() > 0)
-      out << " - Issued by: " << srcURL;
-   
-   out << endl;
+  if (srcURL.length () > 0)
+    out << " - Issued by: " << srcURL;
 
-   return out;
+  out << endl;
+
+  return out;
 
 }
 
@@ -412,55 +414,56 @@ ostream& HtCookie::printDebug(ostream &out)
 // It returns true if everything goes ok
 // and false otherwise.
 //
-int HtCookie::SetDate(const char *datestring, HtDateTime &dt)
+int
+HtCookie::SetDate (const char *datestring, HtDateTime & dt)
 {
-   if (!datestring) // for any reason we don't have a string for the date
-      return 0;     // and we exit
+  if (!datestring)              // for any reason we don't have a string for the date
+    return 0;                   // and we exit
 
-   DateFormat df;
+  DateFormat df;
 
-   while (*datestring && isspace(*datestring))
-      datestring++; // skip initial spaces
+  while (*datestring && isspace (*datestring))
+    datestring++;               // skip initial spaces
 
-   df = RecognizeDateFormat(datestring);
-   if (df == DateFormat_NotRecognized)
-   {
-      // Not recognized
-      if (debug > 0)
+  df = RecognizeDateFormat (datestring);
+  if (df == DateFormat_NotRecognized)
+  {
+    // Not recognized
+    if (debug > 0)
       cout << "Cookie '" << name
-         << "' date format not recognized: " << datestring << endl;
-    
-      return false;
-   }
+        << "' date format not recognized: " << datestring << endl;
 
-   dt.ToGMTime(); // Set to GM time
-   
-   switch(df)
-   {
-      // Asc Time format
-      case DateFormat_AscTime:
-         dt.SetAscTime((char *)datestring);
-         break;
+    return false;
+  }
 
-      // RFC 1123
-      case DateFormat_RFC1123:
-         dt.SetRFC1123((char *)datestring);
-         break;
+  dt.ToGMTime ();               // Set to GM time
 
-      // RFC 850
-      case DateFormat_RFC850:
-         dt.SetRFC850((char *)datestring);
-         break;
+  switch (df)
+  {
+    // Asc Time format
+  case DateFormat_AscTime:
+    dt.SetAscTime ((char *) datestring);
+    break;
 
-      default:
-         if (debug > 0)
-            cout << "Cookie '" << name
-               << "' date format not handled: " << (int)df << endl;
-         break;
-   }
+    // RFC 1123
+  case DateFormat_RFC1123:
+    dt.SetRFC1123 ((char *) datestring);
+    break;
 
-   return !(df==DateFormat_NotRecognized);
-  
+    // RFC 850
+  case DateFormat_RFC850:
+    dt.SetRFC850 ((char *) datestring);
+    break;
+
+  default:
+    if (debug > 0)
+      cout << "Cookie '" << name
+        << "' date format not handled: " << (int) df << endl;
+    break;
+  }
+
+  return !(df == DateFormat_NotRecognized);
+
 }
 
 
@@ -477,37 +480,37 @@ int HtCookie::SetDate(const char *datestring, HtDateTime &dt)
 // of the date must be dashes. 
 //  
 
-HtCookie::DateFormat HtCookie::RecognizeDateFormat(const char *datestring)
+HtCookie::DateFormat HtCookie::RecognizeDateFormat (const char *datestring)
 {
 
-   register const char *s;
+  register const char *
+    s;
 
-   if (datestring)
-   {
+  if (datestring)
+  {
 
-      if ((s=strchr(datestring, ',')))
-      {
-         // A comma is present.
-         // Two chances: RFC1123 or RFC850
-    
-         if(strchr(s, '-'))
-            return DateFormat_RFC850;  // RFC 850 recognized   
-         else return DateFormat_RFC1123; // RFC 1123 recognized
-      }
+    if ((s = strchr (datestring, ',')))
+    {
+      // A comma is present.
+      // Two chances: RFC1123 or RFC850
+
+      if (strchr (s, '-'))
+        return DateFormat_RFC850;       // RFC 850 recognized   
       else
-      {
-         // No comma present
-    
-         // Let's try C Asctime:    Sun Nov  6 08:49:37 1994
-         if (strlen(datestring) == 24)
-         {
-            return DateFormat_AscTime;
-         }
-      }
-   }
+        return DateFormat_RFC1123;      // RFC 1123 recognized
+    }
+    else
+    {
+      // No comma present
 
-   return DateFormat_NotRecognized;
+      // Let's try C Asctime:    Sun Nov  6 08:49:37 1994
+      if (strlen (datestring) == 24)
+      {
+        return DateFormat_AscTime;
+      }
+    }
+  }
+
+  return DateFormat_NotRecognized;
 
 }
-
-

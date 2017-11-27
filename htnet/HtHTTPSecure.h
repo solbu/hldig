@@ -24,14 +24,13 @@
 
 #ifdef HAVE_SSL_H
 
-class HtHTTPSecure : public HtHTTP
+class HtHTTPSecure:public HtHTTP
 {
- public:
-  HtHTTPSecure();
-  ~HtHTTPSecure();
+public:
+  HtHTTPSecure ();
+  ~HtHTTPSecure ();
 };
 
 #endif
 
 #endif
-

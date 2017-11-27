@@ -34,97 +34,110 @@
 
 class HtFile;
 
-class HtFile_Response : public Transport_Response
+class HtFile_Response:public Transport_Response
 {
 
-   friend class HtFile;    // declaring friendship
-   
-   public:
+  friend class HtFile;          // declaring friendship
+
+public:
 ///////
-   //    Construction / Destruction
+  //    Construction / Destruction
 ///////
-   
-      HtFile_Response();
-      ~HtFile_Response();
+
+    HtFile_Response ();
+   ~HtFile_Response ();
 };
 
-class HtFile : public Transport
+class HtFile:public Transport
 {
 public:
 
 ///////
-   //    Construction/Destruction
+  //    Construction/Destruction
 ///////
 
-    HtFile();
-    ~HtFile();
+  HtFile ();
+  ~HtFile ();
 
-   // Information about the method to be used in the request
+  // Information about the method to be used in the request
 
-   // manages a Transport request (method inherited from Transport class)
-   virtual DocStatus Request ();
+  // manages a Transport request (method inherited from Transport class)
+  virtual DocStatus Request ();
 
-   // Determine Mime type of file from its extension
-   static const String *Ext2Mime (const char *);
+  // Determine Mime type of file from its extension
+  static const String *Ext2Mime (const char *);
 
-   // Determine Mime type of file from its contents
-   static String File2Mime (const char *);
+  // Determine Mime type of file from its contents
+  static String File2Mime (const char *);
 
- ///////
-    //    Interface for resource retrieving
- ///////
-   
- ///////
-    //    Interface for resource retrieving
- ///////
+  ///////
+  //    Interface for resource retrieving
+  ///////
 
-   // Set and get the document to be retrieved
-   void SetRequestURL(URL &u) { _url = u;}
-   URL GetRequestURL () { return _url;}
+  ///////
+  //    Interface for resource retrieving
+  ///////
 
-
-   // Set and get the referring URL
-   void SetRefererURL (URL u) { _referer = u;}
-   URL GetRefererURL () { return _referer;}
-
-
- ///////
-    //    Interface for the HTTP Response
- ///////
-
-   // We have a valid response only if the status code is not equal to
-   // initialization value
-   
-   Transport_Response *GetResponse()
-   {
-      if (_response._status_code != -1)
-         return &_response;
-      else return NULL;}
+  // Set and get the document to be retrieved
+  void SetRequestURL (URL & u)
+  {
+    _url = u;
+  }
+  URL GetRequestURL ()
+  {
+    return _url;
+  }
 
 
-   // Get the document status 
-   virtual DocStatus GetDocumentStatus();
-   
+  // Set and get the referring URL
+  void SetRefererURL (URL u)
+  {
+    _referer = u;
+  }
+  URL GetRefererURL ()
+  {
+    return _referer;
+  }
+
+
+  ///////
+  //    Interface for the HTTP Response
+  ///////
+
+  // We have a valid response only if the status code is not equal to
+  // initialization value
+
+  Transport_Response *GetResponse ()
+  {
+    if (_response._status_code != -1)
+      return &_response;
+    else
+      return NULL;
+  }
+
+
+  // Get the document status 
+  virtual DocStatus GetDocumentStatus ();
+
 protected:
 
 ///////
-   //    Member attributes
+  //    Member attributes
 ///////
 
-   ///////
-      //    Http single Request information (Member attributes)
-   ///////
+  ///////
+  //    Http single Request information (Member attributes)
+  ///////
 
-   URL    _url;               // URL to retrieve
-   URL    _referer;      // Referring URL
-   
-   ///////
-      //    Http Response information
-   ///////
+  URL _url;                     // URL to retrieve
+  URL _referer;                 // Referring URL
 
-   HtFile_Response   _response;    // Object where response
-                                  // information will be stored into
+  ///////
+  //    Http Response information
+  ///////
+
+  HtFile_Response _response;    // Object where response
+  // information will be stored into
 };
 
 #endif
-

@@ -30,14 +30,13 @@ using namespace std;
 
 // HtHTTPBasic constructor
 //
-HtHTTPBasic::HtHTTPBasic()
-: HtHTTP(*(new Connection())) // Creates a new connection
+HtHTTPBasic::HtHTTPBasic ():HtHTTP (*(new Connection ()))
+                                // Creates a new connection
 {
 }
 
 // HtHTTPBasic destructor
 //
-HtHTTPBasic::~HtHTTPBasic()
+HtHTTPBasic::~HtHTTPBasic ()
 {
 }
-

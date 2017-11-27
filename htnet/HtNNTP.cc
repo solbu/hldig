@@ -30,7 +30,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <ctype.h>
-#include <stdio.h>      // for sscanf
+#include <stdio.h>              // for sscanf
 
 // for setw()
 #ifdef HAVE_STD
@@ -49,9 +49,12 @@ typedef SIG_PF SIGNAL_HANDLER;
 #endif
 
    // Stats information
-      int HtNNTP::_tot_seconds = 0;
-      int HtNNTP::_tot_requests = 0;
-      int HtNNTP::_tot_bytes = 0;
+int
+  HtNNTP::_tot_seconds = 0;
+int
+  HtNNTP::_tot_requests = 0;
+int
+  HtNNTP::_tot_bytes = 0;
 
 ///////
    //    HtNNTP_Response class
@@ -62,7 +65,7 @@ typedef SIG_PF SIGNAL_HANDLER;
 
 // Construction
 
-HtNNTP_Response::HtNNTP_Response()
+HtNNTP_Response::HtNNTP_Response ()
 {
 
 }
@@ -70,18 +73,19 @@ HtNNTP_Response::HtNNTP_Response()
 
 // Destruction
 
-HtNNTP_Response::~HtNNTP_Response()
+HtNNTP_Response::~HtNNTP_Response ()
 {
 }
 
 
-void HtNNTP_Response::Reset()
+void
+HtNNTP_Response::Reset ()
 {
 
-   // Call the base class method in order to reset
-   // the base class attributes
+  // Call the base class method in order to reset
+  // the base class attributes
 
-   Transport_Response::Reset();
+  Transport_Response::Reset ();
 
 }
 
@@ -97,20 +101,17 @@ void HtNNTP_Response::Reset()
 
 // Construction
 
-HtNNTP::HtNNTP()
-: Transport(new Connection()),
-   _bytes_read(0),
-   _useproxy(0)
+HtNNTP::HtNNTP ():Transport (new Connection ()), _bytes_read (0), _useproxy (0)
 {
 }
 
 // Destruction
 
-HtNNTP::~HtNNTP()
+HtNNTP::~HtNNTP ()
 {
   // Free the connection
   //
-  CloseConnection();
+  CloseConnection ();
   if (_connection)
     delete _connection;
   _connection = 0;
@@ -121,21 +122,23 @@ HtNNTP::~HtNNTP()
    //    Manages the requesting process
 ///////
 
-Transport::DocStatus HtNNTP::Request()
+Transport::DocStatus HtNNTP::Request ()
 {
 
-   DocStatus result = Document_ok;
-   _response.Reset();   // Reset the response
+  DocStatus
+    result = Document_ok;
+  _response.Reset ();           // Reset the response
 
-   return result;
+  return result;
 
 }
 
 
-void HtNNTP::SetRequestCommand(String &cmd)
+void
+HtNNTP::SetRequestCommand (String & cmd)
 {
 
-   cmd << "\r\n";
+  cmd << "\r\n";
 
 }
 
@@ -146,122 +149,127 @@ void HtNNTP::SetRequestCommand(String &cmd)
 // int HtNNTP::ParseHeader()
 //   Parse the header of the document
 //
-int HtNNTP::ParseHeader()
+int
+HtNNTP::ParseHeader ()
 {
-    String  line = 0;
-    int    inHeader = 1;
+  String line = 0;
+  int inHeader = 1;
 
-    if (_response._modification_time)
+  if (_response._modification_time)
+  {
+    delete _response._modification_time;
+    _response._modification_time = NULL;
+  }
+  while (inHeader)
+  {
+
+    line.trunc ();
+
+    if (!_connection->Read_Line (line, "\n"))
+      return -1;                // Connection down
+
+    _bytes_read += line.length ();
+    line.chop ('\r');
+
+    if (line.length () == 0)
+      inHeader = 0;
+    else
     {
-  delete _response._modification_time;
-  _response._modification_time=NULL;
-    }
-    while (inHeader)
-    {
+      // Found a not-empty line
 
-      line.trunc();
-
-      if(! _connection->Read_Line(line, "\n"))
-         return -1;  // Connection down
-  
-      _bytes_read+=line.length();
-      line.chop('\r');
-
-      if (line.length() == 0)
-         inHeader = 0;
-      else
-      {
-         // Found a not-empty line
-  
-         if (debug > 3)
-            cout << "Header line: " << line << endl;
-  
-         // Status - Line check
-         char  *token = line.get();
-
-         while (*token && !isspace(*token))
-            token++;
-
-         while (*token && isspace(*token))
-            token++;
-      }
-    }
-
-    if (_response._modification_time == NULL)
-    {
       if (debug > 3)
-         cout << "No modification time returned: assuming now" << endl;
+        cout << "Header line: " << line << endl;
 
-         //Set the modification time
-      _response._modification_time = new HtDateTime;
-      _response._modification_time->ToGMTime(); // Set to GM time
+      // Status - Line check
+      char *token = line.get ();
 
+      while (*token && !isspace (*token))
+        token++;
+
+      while (*token && isspace (*token))
+        token++;
     }
+  }
 
-    return 1;
+  if (_response._modification_time == NULL)
+  {
+    if (debug > 3)
+      cout << "No modification time returned: assuming now" << endl;
+
+    //Set the modification time
+    _response._modification_time = new HtDateTime;
+    _response._modification_time->ToGMTime ();  // Set to GM time
+
+  }
+
+  return 1;
 
 }
 
 
-HtNNTP::DocStatus HtNNTP::GetDocumentStatus(HtNNTP_Response &r)
+HtNNTP::DocStatus HtNNTP::GetDocumentStatus (HtNNTP_Response & r)
 {
 
-   // Let's give a look at the return status code
+  // Let's give a look at the return status code
 
-   HtNNTP::DocStatus returnStatus=Document_not_found;
-   int statuscode;
+  HtNNTP::DocStatus returnStatus = Document_not_found;
+  int
+    statuscode;
 
-   statuscode=r.GetStatusCode();
+  statuscode = r.GetStatusCode ();
 
-   if(statuscode==200)
-   {
-      returnStatus = Document_ok;   // OK
-   }
+  if (statuscode == 200)
+  {
+    returnStatus = Document_ok; // OK
+  }
 
-   // Exit the function
-   return returnStatus;
-  
+  // Exit the function
+  return returnStatus;
+
 }
 
 
-int HtNNTP::ReadBody()
+int
+HtNNTP::ReadBody ()
 {
 
-    _response._contents = 0;  // Initialize the string
+  _response._contents = 0;      // Initialize the string
 
-    char  docBuffer[8192];
-    int    bytesRead = 0;
-    int    bytesToGo = _response._content_length;
+  char docBuffer[8192];
+  int bytesRead = 0;
+  int bytesToGo = _response._content_length;
 
-    if (bytesToGo < 0 || bytesToGo > _max_document_size)
-        bytesToGo = _max_document_size;
+  if (bytesToGo < 0 || bytesToGo > _max_document_size)
+    bytesToGo = _max_document_size;
 
-    if( _connection == NULL )
-      {
-  cout << "HtNNTP::ReadBody: _connection is NULL\n";
-  exit(0);
-      }
+  if (_connection == NULL)
+  {
+    cout << "HtNNTP::ReadBody: _connection is NULL\n";
+    exit (0);
+  }
 
 
-    while (bytesToGo > 0)
-    {
-        int len = bytesToGo< (int)sizeof(docBuffer) ? bytesToGo : (int)sizeof(docBuffer);
-        bytesRead = _connection->Read(docBuffer, len);
-        if (bytesRead <= 0)
-            break;
+  while (bytesToGo > 0)
+  {
+    int len =
+      bytesToGo <
+      (int) sizeof (docBuffer) ? bytesToGo : (int) sizeof (docBuffer);
+    bytesRead = _connection->Read (docBuffer, len);
+    if (bytesRead <= 0)
+      break;
 
-  _response._contents.append(docBuffer, bytesRead);
+    _response._contents.append (docBuffer, bytesRead);
 
-  bytesToGo -= bytesRead;
-  
-  _bytes_read+=bytesRead;
+    bytesToGo -= bytesRead;
 
-    }
+    _bytes_read += bytesRead;
 
-    // Set document length
-    _response._document_length = _response._contents.length();
+  }
 
-   return bytesRead;
+  // Set document length
+  _response._document_length = _response._contents.length ();
+
+  return bytesRead;
 
 }
 
@@ -270,17 +278,18 @@ int HtNNTP::ReadBody()
    //    Show the statistics
 ///////
 
-ostream &HtNNTP::ShowStatistics (ostream &out)
+ostream & HtNNTP::ShowStatistics (ostream & out)
 {
-   Transport::ShowStatistics(out);  // call the base class method
+  Transport::ShowStatistics (out);      // call the base class method
 
-   out << " NNTP Requests             : " << GetTotRequests() << endl;
-   out << " NNTP KBytes requested     : " << (double)GetTotBytes()/1024 << endl;
-   out << " NNTP Average request time : " << GetAverageRequestTime()
-      << " secs" << endl;
+  out << " NNTP Requests             : " << GetTotRequests () << endl;
+  out << " NNTP KBytes requested     : " << (double) GetTotBytes () /
+    1024 << endl;
+  out << " NNTP Average request time : " << GetAverageRequestTime () <<
+    " secs" << endl;
 
-   out << " NNTP Average speed        : " << GetAverageSpeed()/1024
-      << " KBytes/secs" << endl;
+  out << " NNTP Average speed        : " << GetAverageSpeed () / 1024
+    << " KBytes/secs" << endl;
 
-   return out;
+  return out;
 }

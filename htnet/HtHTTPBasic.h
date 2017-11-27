@@ -16,18 +16,18 @@
 #ifndef _HTHTTPBASIC_H
 #define _HTHTTPBASIC_H
 
-#include "HtHTTP.h"      // We inherrit from this
+#include "HtHTTP.h"             // We inherrit from this
 #include "Transport.h"
 #include "Connection.h"
 #include "URL.h"
 #include "htString.h"
 
-class HtHTTPBasic : public HtHTTP
+class HtHTTPBasic:public HtHTTP
 {
- public:
+public:
 
-  HtHTTPBasic();
-  ~HtHTTPBasic();
+  HtHTTPBasic ();
+  ~HtHTTPBasic ();
 
 };
 

@@ -50,78 +50,77 @@ using namespace std;
 #include <iostream.h>
 #endif /* HAVE_STD */
 
-class HtCookieMemJar : public HtCookieJar
+class HtCookieMemJar:public HtCookieJar
 {
 
-   public:
-   
-   ///////
-      //    Construction/Destruction
-   ///////
+public:
 
-      HtCookieMemJar();
-      HtCookieMemJar(const HtCookieMemJar& rhs);
-      virtual ~HtCookieMemJar();
+  ///////
+  //    Construction/Destruction
+  ///////
 
-   ///////
-      //    Interface methods
-   ///////
-   
-      // Set the request string to be sent to an HTTP server
-      // for cookies. It manages all the process regarding
-      // domains and subdomains.
-      virtual int SetHTTPRequest_CookiesString(const URL &_url,
-         String &RequestString);
-   
-      virtual int AddCookie(const String &CookieString,
-         const URL &url);
+  HtCookieMemJar ();
+  HtCookieMemJar (const HtCookieMemJar & rhs);
+    virtual ~ HtCookieMemJar ();
 
-      // Get the next cookie
-      virtual const HtCookie* NextCookie();
+  ///////
+  //    Interface methods
+  ///////
 
-      // Reset the iterator
-      virtual void ResetIterator();
+  // Set the request string to be sent to an HTTP server
+  // for cookies. It manages all the process regarding
+  // domains and subdomains.
+  virtual int SetHTTPRequest_CookiesString (const URL & _url,
+                                            String & RequestString);
 
-      // Show stats
-#ifdef _MSC_VER /* _WIN32 */
-      virtual ostream &ShowSummary (ostream &out = cout);
+  virtual int AddCookie (const String & CookieString, const URL & url);
+
+  // Get the next cookie
+  virtual const HtCookie *NextCookie ();
+
+  // Reset the iterator
+  virtual void ResetIterator ();
+
+  // Show stats
+#ifdef _MSC_VER                 /* _WIN32 */
+  virtual ostream & ShowSummary (ostream & out = cout);
 #else
-      virtual ostream &ShowSummary (ostream &out = std::cout);
+  virtual ostream & ShowSummary (ostream & out = std::cout);
 #endif
 
-      void printDebug();
+  void printDebug ();
 
-   protected:
+protected:
 
-   ///////
-      //    Protected methods
-   ///////
+  ///////
+  //    Protected methods
+  ///////
 
-      // Passed a domain, this method writes all the cookies
-      // directly in the request string for HTTP.
-      int WriteDomainCookiesString(const URL &_url,
-         const String &Domain, String &RequestString);
+  // Passed a domain, this method writes all the cookies
+  // directly in the request string for HTTP.
+  int WriteDomainCookiesString (const URL & _url,
+                                const String & Domain,
+                                String & RequestString);
 
-      // Get a list of the cookies for a domain
-      List *cookiesForDomain(const String &DomainName);
+  // Get a list of the cookies for a domain
+  List *cookiesForDomain (const String & DomainName);
 
-      // Add a cookie in memory
-      int AddCookieForHost(HtCookie *cookie, String HostName);
-      
-   ///////
-      //    Protected attributes
-   ///////
+  // Add a cookie in memory
+  int AddCookieForHost (HtCookie * cookie, String HostName);
 
-      ///////
-         //    Internal dictionary of cookies
-      ///////
+  ///////
+  //    Protected attributes
+  ///////
 
-      Dictionary * cookieDict;
-      char* _key;    // For iteration purposes
-      List* _list;   // ditto
-      int _idx;      // ditto
+  ///////
+  //    Internal dictionary of cookies
+  ///////
+
+  Dictionary *cookieDict;
+  char *_key;                   // For iteration purposes
+  List *_list;                  // ditto
+  int _idx;                     // ditto
 
 };
 
 #endif
-

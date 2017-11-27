@@ -25,23 +25,23 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
-class SSLConnection : public Connection
+class SSLConnection:public Connection
 {
- public:
-  SSLConnection();
-  SSLConnection(int socket);
-  ~SSLConnection();
+public:
+  SSLConnection ();
+  SSLConnection (int socket);
+   ~SSLConnection ();
 
- protected:
+protected:
   static SSL_CTX *ctx;
   SSL *ssl;
 
-  void InitSSL();
-  int  Connect();
-  int  Close();
+  void InitSSL ();
+  int Connect ();
+  int Close ();
 
-  int Read_Partial( char *buffer, int maxlength );
-  int Write_Partial( char *buffer, int maxlength );
+  int Read_Partial (char *buffer, int maxlength);
+  int Write_Partial (char *buffer, int maxlength);
 };
 #endif
 

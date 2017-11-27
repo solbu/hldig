@@ -26,7 +26,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: HtCookieJar.cc,v 1.6 2004/05/28 13:15:23 lha Exp $ 
+// $Id: HtCookieJar.cc,v 1.6 2004/05/28 13:15:23 lha Exp $
 //
 
 #include "HtCookieJar.h"
@@ -36,7 +36,8 @@
 ///////
 
    // Debug level
-   int HtCookieJar::debug = 0;
+int
+  HtCookieJar::debug = 0;
 
 ///////
    //    Writes the HTTP request line given a cookie
@@ -56,95 +57,97 @@
    //
 
 
-int HtCookieJar::WriteCookieHTTPRequest(const HtCookie &Cookie,
-   String &RequestString, const int &NumCookies)
+int
+HtCookieJar::WriteCookieHTTPRequest (const HtCookie & Cookie,
+                                     String & RequestString,
+                                     const int &NumCookies)
 {
-   
-   switch (Cookie.GetVersion())
-   {
-      // RFC2109 Version
-      case 1:
-          // Writes the string to be sent to the web server
-         if (NumCookies == 1)
-            RequestString << "Cookie: $Version=\"1\"; ";
-         else
-            RequestString << "; " ;
 
-         // Print complete debug info
-         if (debug > 6)
-         {
-            cout << "Cookie (RFC2109) info: NAME=" << Cookie.GetName()
-         << " VALUE="<< Cookie.GetValue()
-               << " PATH=" << Cookie.GetPath();
+  switch (Cookie.GetVersion ())
+  {
+    // RFC2109 Version
+  case 1:
+    // Writes the string to be sent to the web server
+    if (NumCookies == 1)
+      RequestString << "Cookie: $Version=\"1\"; ";
+    else
+      RequestString << "; ";
 
-            if (Cookie.GetExpires())
-            cout << " EXPIRES=" << Cookie.GetExpires()->GetRFC850();
+    // Print complete debug info
+    if (debug > 6)
+    {
+      cout << "Cookie (RFC2109) info: NAME=" << Cookie.GetName ()
+        << " VALUE=" << Cookie.GetValue () << " PATH=" << Cookie.GetPath ();
 
-            cout << endl;
-         }
-   
-         // Prepare cookie line for HTTP protocol
-         RequestString << Cookie.GetName() << "=" << Cookie.GetValue();
+      if (Cookie.GetExpires ())
+        cout << " EXPIRES=" << Cookie.GetExpires ()->GetRFC850 ();
 
-         if (Cookie.GetPath().length() > 0)
-            RequestString << " ;$Path=" << Cookie.GetPath();
+      cout << endl;
+    }
 
-         if (Cookie.GetDomain().length() > 0)
-            RequestString << " ;$Domain=" << Cookie.GetDomain();
-   break;
+    // Prepare cookie line for HTTP protocol
+    RequestString << Cookie.GetName () << "=" << Cookie.GetValue ();
 
-      // Netscape specification
-      case 0:
-         // Writes the string to be sent to the web server
-         if (NumCookies == 1)
-            RequestString << "Cookie: ";
-         else
-            RequestString << "; " ;
+    if (Cookie.GetPath ().length () > 0)
+      RequestString << " ;$Path=" << Cookie.GetPath ();
 
-         // Print complete debug info
-         if (debug > 6)
-         {
-            cout << "Cookie (Netscape spec) info: NAME=" << Cookie.GetName()
-               << " VALUE=" << Cookie.GetValue()
-               << " PATH=" << Cookie.GetPath();
+    if (Cookie.GetDomain ().length () > 0)
+      RequestString << " ;$Domain=" << Cookie.GetDomain ();
+    break;
 
-            if (Cookie.GetExpires())
-               cout << " EXPIRES=" << Cookie.GetExpires()->GetRFC850();
+    // Netscape specification
+  case 0:
+    // Writes the string to be sent to the web server
+    if (NumCookies == 1)
+      RequestString << "Cookie: ";
+    else
+      RequestString << "; ";
 
-            cout << endl;
-         }
+    // Print complete debug info
+    if (debug > 6)
+    {
+      cout << "Cookie (Netscape spec) info: NAME=" << Cookie.GetName ()
+        << " VALUE=" << Cookie.GetValue () << " PATH=" << Cookie.GetPath ();
 
-         // Prepare cookie line for HTTP protocol
-         RequestString << Cookie.GetName() << "=" << Cookie.GetValue();
-         
-   break;
-   }
+      if (Cookie.GetExpires ())
+        cout << " EXPIRES=" << Cookie.GetExpires ()->GetRFC850 ();
 
-   return true;
-      
+      cout << endl;
+    }
+
+    // Prepare cookie line for HTTP protocol
+    RequestString << Cookie.GetName () << "=" << Cookie.GetValue ();
+
+    break;
+  }
+
+  return true;
+
 }
 
 
-int HtCookieJar::GetDomainMinNumberOfPeriods(const String& domain) const
+int
+HtCookieJar::GetDomainMinNumberOfPeriods (const String & domain) const
 {
-    // Well ... if a domain has been specified, we need some check-ups
-    // as the standard says.
-    static char* TopLevelDomains[] = { "com", "edu", "net", "org",
-        "gov", "mil", "int", 0};
+  // Well ... if a domain has been specified, we need some check-ups
+  // as the standard says.
+  static char *TopLevelDomains[] = { "com", "edu", "net", "org",
+    "gov", "mil", "int", 0
+  };
 
-    const char* s = strrchr(domain.get(), '.');
+  const char *s = strrchr (domain.get (), '.');
 
-    if (!s) // no 'dot' has been found. Not valid
-        return 0;
+  if (!s)                       // no 'dot' has been found. Not valid
+    return 0;
 
-    if (! *(++s))   // nothing after the dot. Not Valid
-        return 0;
-    
-    for (char** p = TopLevelDomains; *p; ++p)
-    {
-        if (!strncmp(*p, s, strlen(*p)))
-            return 2;
-    }
-    
-    return 3;   // By default the minimum value
+  if (!*(++s))                  // nothing after the dot. Not Valid
+    return 0;
+
+  for (char **p = TopLevelDomains; *p; ++p)
+  {
+    if (!strncmp (*p, s, strlen (*p)))
+      return 2;
+  }
+
+  return 3;                     // By default the minimum value
 }

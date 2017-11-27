@@ -46,36 +46,36 @@
 #include "HtCookieMemJar.h"
 #include "htString.h"
 
-class HtCookieInFileJar: public HtCookieMemJar
+class HtCookieInFileJar:public HtCookieMemJar
 {
 
 // Public Interface
 public:
 
   // Default constructor
-  HtCookieInFileJar(const String& fn, int& result);
+  HtCookieInFileJar (const String & fn, int &result);
 
   // Copy constructor
-  HtCookieInFileJar(const HtCookieInFileJar& rhs);
+    HtCookieInFileJar (const HtCookieInFileJar & rhs);
 
   // Destructor
-  ~HtCookieInFileJar();
+   ~HtCookieInFileJar ();
 
   // Assignment operator
-  HtCookieInFileJar& operator=(const HtCookieInFileJar& rhs);
+    HtCookieInFileJar & operator= (const HtCookieInFileJar & rhs);
 
   // Show stats
-#ifdef _MSC_VER /* _WIN32 */
-  virtual ostream &ShowSummary (ostream &out = cout);
+#ifdef _MSC_VER                 /* _WIN32 */
+  virtual ostream & ShowSummary (ostream & out = cout);
 #else
-  virtual ostream &ShowSummary (ostream &out = std::cout);
+  virtual ostream & ShowSummary (ostream & out = std::cout);
 #endif
 
 // Protected attributes
 protected:
-  String _filename;  // Filename
+    String _filename;           // Filename
 
-  int Load();  // Load the contents of a cookies file into memory
+  int Load ();                  // Load the contents of a cookies file into memory
 };
 
 #endif

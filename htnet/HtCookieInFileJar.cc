@@ -50,100 +50,108 @@
 #define MAX_COOKIE_LINE 16384
 
 // Costruttore (default constructor)
-HtCookieInFileJar::HtCookieInFileJar(const String& fn, int& result)
-: _filename(fn)
+HtCookieInFileJar::HtCookieInFileJar (const String & fn, int &result):_filename
+  (fn)
 {
-  result = Load();
+  result = Load ();
 }
 
 // Costruttore di copia (copy constructor)
-HtCookieInFileJar::HtCookieInFileJar(const HtCookieInFileJar& rhs)
+HtCookieInFileJar::HtCookieInFileJar (const HtCookieInFileJar & rhs)
 {
 }
 
 // Distruttore
-HtCookieInFileJar::~HtCookieInFileJar()
+HtCookieInFileJar::~HtCookieInFileJar ()
 {
 }
 
 // Operatore di assegnamento (assignment operator)
-HtCookieInFileJar& HtCookieInFileJar::operator=(const HtCookieInFileJar& rhs)
+HtCookieInFileJar & HtCookieInFileJar::
+operator= (const HtCookieInFileJar & rhs)
 {
   if (this == &rhs)
     return *this;
 
   // Code for attributes copy
 
-  return *this; // ritorna se stesso
+  return *this;                 // ritorna se stesso
 }
 
 
 // Loads the contents of a cookies file into memory
-int HtCookieInFileJar::Load()
+int
+HtCookieInFileJar::Load ()
 {
-  FILE *f = fopen((const char *)_filename, "r");
+  FILE *f = fopen ((const char *) _filename, "r");
 
   if (f == NULL)
     return -1;
-  
+
   char buf[MAX_COOKIE_LINE];
-  while(fgets(buf, MAX_COOKIE_LINE, f))
+  while (fgets (buf, MAX_COOKIE_LINE, f))
   {
-    if (*buf && *buf != '#' && (strlen(buf) > 10))  // 10 is an indicative value
+    if (*buf && *buf != '#' && (strlen (buf) > 10))     // 10 is an indicative value
     {
-      HtCookie *Cookie = new HtCookie(buf);
+      HtCookie *Cookie = new HtCookie (buf);
 
       // Interface to the insert method  
       // If the cookie is not valid or has not been added, we'd better delete it
-      if (!Cookie->GetName().length()
-        || !AddCookieForHost (Cookie, Cookie->GetSrcURL()))
+      if (!Cookie->GetName ().length ()
+          || !AddCookieForHost (Cookie, Cookie->GetSrcURL ()))
       {
         if (debug > 2)
           cout << "Discarded cookie line: " << buf;
         delete Cookie;
       }
-      
+
     }
   }
-  
+
   return 0;
-  
+
 }
 
 
 // Outputs a summary of the cookies that have been imported
-ostream &HtCookieInFileJar::ShowSummary(ostream &out)
+ostream & HtCookieInFileJar::ShowSummary (ostream & out)
 {
 
-  char * key;
-  int num_cookies = 0; // Global number of cookies
-  
-  cookieDict->Start_Get();
-  
-  out << endl << "Cookies that have been correctly imported from: " << _filename << endl;
-  
-  while ((key = cookieDict->Get_Next()))
-  {
-    List * list;
-    HtCookie * cookie;
+  char *
+    key;
+  int
+    num_cookies = 0;            // Global number of cookies
 
-    list = (List *)cookieDict->Find(key);
-    list->Start_Get();
-    
-    while ((cookie = (HtCookie *)list->Get_Next()))
+  cookieDict->Start_Get ();
+
+  out << endl << "Cookies that have been correctly imported from: " <<
+    _filename << endl;
+
+  while ((key = cookieDict->Get_Next ()))
+  {
+    List *
+      list;
+    HtCookie *
+      cookie;
+
+    list = (List *) cookieDict->Find (key);
+    list->Start_Get ();
+
+    while ((cookie = (HtCookie *) list->Get_Next ()))
     {
       ++num_cookies;
-      out << "  " << num_cookies << ". " << cookie->GetName()
-        << ": " << cookie->GetValue() << " (Domain: " << cookie->GetDomain();
+      out << "  " << num_cookies << ". " << cookie->GetName ()
+        << ": " << cookie->GetValue () << " (Domain: " << cookie->
+        GetDomain ();
       if (debug > 1)
       {
-        out << " - Path: " << cookie->GetPath();
-        if (cookie->GetExpires())
-          out << " - Expires: " << cookie->GetExpires()->GetRFC850();
+        out << " - Path: " << cookie->GetPath ();
+        if (cookie->GetExpires ())
+          out << " - Expires: " << cookie->GetExpires ()->GetRFC850 ();
       }
       out << ")" << endl;
     }
-    
+
 
     // Global number of cookies
   }

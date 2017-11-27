@@ -56,73 +56,76 @@ using namespace std;
 #endif /* HAVE_STD */
 
 
-class HtCookieJar : public Object
+class HtCookieJar:public Object
 {
 
-   public:
-   
-   ///////
-      //    Construction/Destruction
-   ///////
+public:
 
-      HtCookieJar() {};    // empty
-      virtual ~HtCookieJar() {};   // empty
+  ///////
+  //    Construction/Destruction
+  ///////
 
-   ///////
-      //    Interface methods
-   ///////
+  HtCookieJar ()
+  {
+  };                            // empty
+  virtual ~ HtCookieJar ()
+  {
+  };                            // empty
 
-      // This method allow the insertion of a cookie
-      // into the jar.   
-      virtual int AddCookie(const String &CookieString,
-         const URL &url) = 0;
+  ///////
+  //    Interface methods
+  ///////
 
-      // Set the request string to be sent to an HTTP server
-      // for cookies. It manages all the process regarding
-      // domains and subdomains.
-      virtual int SetHTTPRequest_CookiesString(const URL &_url,
-         String &RequestString) = 0;
-   
-      // Get the next cookie
-      virtual const HtCookie* NextCookie() = 0;
+  // This method allow the insertion of a cookie
+  // into the jar.   
+  virtual int AddCookie (const String & CookieString, const URL & url) = 0;
 
-      // Reset the iterator
-      virtual void ResetIterator() = 0;
+  // Set the request string to be sent to an HTTP server
+  // for cookies. It manages all the process regarding
+  // domains and subdomains.
+  virtual int SetHTTPRequest_CookiesString (const URL & _url,
+                                            String & RequestString) = 0;
 
-      // Get the minimum number of periods from a specified domain
-      // returns 0 if not valid
-      virtual int GetDomainMinNumberOfPeriods(const String& domain) const;
-      
-      // Set its debug level and HtCookie class'
-      static void SetDebugLevel (int d)
-      {
-         debug=d;  // internal one
-         HtCookie::SetDebugLevel(d);  // HtCookie's debug level
-      }   
+  // Get the next cookie
+  virtual const HtCookie *NextCookie () = 0;
 
-      // Show summary (abstract)
-      virtual ostream &ShowSummary (ostream &out) = 0;
+  // Reset the iterator
+  virtual void ResetIterator () = 0;
 
-   protected:
+  // Get the minimum number of periods from a specified domain
+  // returns 0 if not valid
+  virtual int GetDomainMinNumberOfPeriods (const String & domain) const;
 
-   ///////
-      //    Protected attributes
-   ///////
+  // Set its debug level and HtCookie class'
+  static void SetDebugLevel (int d)
+  {
+    debug = d;                  // internal one
+    HtCookie::SetDebugLevel (d);        // HtCookie's debug level
+  }
 
-      // Writes the HTTP request line given a cookie
-      virtual int WriteCookieHTTPRequest(const HtCookie &Cookie,
-         String &RequestString, const int &NumCookies);
-      
-      // Print debug info
-      virtual void printDebug() = 0;
+  // Show summary (abstract)
+  virtual ostream & ShowSummary (ostream & out) = 0;
 
-      ///////
-         //    Debug level
-      ///////
+protected:
 
-      static int debug;
+  ///////
+  //    Protected attributes
+  ///////
+
+  // Writes the HTTP request line given a cookie
+  virtual int WriteCookieHTTPRequest (const HtCookie & Cookie,
+                                      String & RequestString,
+                                      const int &NumCookies);
+
+  // Print debug info
+  virtual void printDebug () = 0;
+
+  ///////
+  //    Debug level
+  ///////
+
+  static int debug;
 
 };
 
 #endif
-

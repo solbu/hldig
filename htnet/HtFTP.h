@@ -34,87 +34,100 @@
 
 class HtFTP;
 
-class HtFTP_Response : public Transport_Response
+class HtFTP_Response:public Transport_Response
 {
 
-   friend class HtFTP;    // declaring friendship
-   
-   public:
+  friend class HtFTP;           // declaring friendship
+
+public:
 ///////
-   //    Construction / Destruction
+  //    Construction / Destruction
 ///////
-   
-      HtFTP_Response();
-      ~HtFTP_Response();
+
+    HtFTP_Response ();
+   ~HtFTP_Response ();
 };
 
-class HtFTP : public Transport
+class HtFTP:public Transport
 {
 public:
 
 ///////
-   //    Construction/Destruction
+  //    Construction/Destruction
 ///////
 
-    HtFTP();
-    ~HtFTP();
+  HtFTP ();
+  ~HtFTP ();
 
-   // Information about the method to be used in the request
+  // Information about the method to be used in the request
 
-   // manages a Transport request (method inherited from Transport class)
-   virtual DocStatus Request ();
-   
- ///////
-    //    Interface for resource retrieving
- ///////
+  // manages a Transport request (method inherited from Transport class)
+  virtual DocStatus Request ();
 
-   // Set and get the document to be retrieved
-   void SetRequestURL(URL &u) { _url = u;}
-   URL GetRequestURL () { return _url;}
+  ///////
+  //    Interface for resource retrieving
+  ///////
 
-
-   // Set and get the referring URL
-   void SetRefererURL (URL u) { _referer = u;}
-   URL GetRefererURL () { return _referer;}
-
-
- ///////
-    //    Interface for the HTTP Response
- ///////
-
-   // We have a valid response only if the status code is not equal to
-   // initialization value
-   
-   Transport_Response *GetResponse()
-   {
-      if (_response._status_code != -1)
-         return &_response;
-      else return NULL;}
+  // Set and get the document to be retrieved
+  void SetRequestURL (URL & u)
+  {
+    _url = u;
+  }
+  URL GetRequestURL ()
+  {
+    return _url;
+  }
 
 
-   // Get the document status 
-   virtual DocStatus GetDocumentStatus();
-   
+  // Set and get the referring URL
+  void SetRefererURL (URL u)
+  {
+    _referer = u;
+  }
+  URL GetRefererURL ()
+  {
+    return _referer;
+  }
+
+
+  ///////
+  //    Interface for the HTTP Response
+  ///////
+
+  // We have a valid response only if the status code is not equal to
+  // initialization value
+
+  Transport_Response *GetResponse ()
+  {
+    if (_response._status_code != -1)
+      return &_response;
+    else
+      return NULL;
+  }
+
+
+  // Get the document status 
+  virtual DocStatus GetDocumentStatus ();
+
 protected:
 
 ///////
-   //    Member attributes
+  //    Member attributes
 ///////
 
-   ///////
-      //    Http single Request information (Member attributes)
-   ///////
+  ///////
+  //    Http single Request information (Member attributes)
+  ///////
 
-   URL    _url;               // URL to retrieve
-   URL    _referer;      // Referring URL
-   
-   ///////
-      //    Http Response information
-   ///////
+  URL _url;                     // URL to retrieve
+  URL _referer;                 // Referring URL
 
-   HtFTP_Response   _response;    // Object where response
-                                  // information will be stored into
+  ///////
+  //    Http Response information
+  ///////
+
+  HtFTP_Response _response;     // Object where response
+  // information will be stored into
 };
 
 #endif
-
