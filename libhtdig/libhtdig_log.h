@@ -29,10 +29,9 @@
 #endif
 
 
-int  logOpen(char *file);
-void logEntry(char *msg);
-void reportError(char *msg);
-int logClose(void);
+int logOpen (char *file);
+void logEntry (char *msg);
+void reportError (char *msg);
+int logClose (void);
 
 #endif /* LIBHTDIG_LOG_H */
-

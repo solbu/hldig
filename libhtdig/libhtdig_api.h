@@ -37,7 +37,7 @@
 #define HTDIG_DOCUMENT_TITLE_L                256
 #define HTDIG_DOCUMENT_META_L                4096
 #define HTDIG_DOCUMENT_CONTENT_TYPE_L          32
-#define HTDIG_DOCUMENT_EXCERPT_L              1024  
+#define HTDIG_DOCUMENT_EXCERPT_L              1024
 //make sure HTDIG_DOCUMENT_EXCERPT_L is more than config 'excerpt_length'
 
 //default failsafe size of 'excerpt' document
@@ -45,62 +45,62 @@
 #define HTDIG_DEFAULT_EXCERPT_SIZE         524288
 
 //should be the same as the default value in HTDIG
-#define HTDIG_MAX_QUERY_L                     256       
+#define HTDIG_MAX_QUERY_L                     256
 
 
 #define HTDIG_CUSTOM_TEXT_MIME_TYPE           "text/vnd.customdocument"
 
 //htfuzzy
-#define  HTDIG_ALG_ACCENTS                  0x00000100         //"accents"
+#define  HTDIG_ALG_ACCENTS                  0x00000100  //"accents"
 #define  HTDIG_ALG_ACCENTS_STR              "accents"
 
-#define  HTDIG_ALG_ENDINGS                  0x00001000         //"endings"     
-#define  HTDIG_ALG_ENDINGS_STR              "endings"     
+#define  HTDIG_ALG_ENDINGS                  0x00001000  //"endings"
+#define  HTDIG_ALG_ENDINGS_STR              "endings"
 
-#define  HTDIG_ALG_METAPHONE                0x00000010         //"metaphone"
+#define  HTDIG_ALG_METAPHONE                0x00000010  //"metaphone"
 #define  HTDIG_ALG_METAPHONE_STR            "metaphone"
 
-#define  HTDIG_ALG_SOUNDEX                  0x00000001         //"soundex"
+#define  HTDIG_ALG_SOUNDEX                  0x00000001  //"soundex"
 #define  HTDIG_ALG_SOUNDEX_STR              "soundex"
 
-#define  HTDIG_ALG_SYNONYMS                 0x00010000         //"synonyms"
+#define  HTDIG_ALG_SYNONYMS                 0x00010000  //"synonyms"
 #define  HTDIG_ALG_SYNONYMS_STR             "synonyms"
 
 
 //searching
-#define  HTSEARCH_ALG_AND                   0x00000100         //"and"
+#define  HTSEARCH_ALG_AND                   0x00000100  //"and"
 #define  HTSEARCH_ALG_AND_STR               "and"
 
-#define  HTSEARCH_ALG_BOOLEAN               0x00000001         //"boolean"
+#define  HTSEARCH_ALG_BOOLEAN               0x00000001  //"boolean"
 #define  HTSEARCH_ALG_BOOLEAN_STR           "boolean"
 
-#define  HTSEARCH_ALG_OR                    0x00000010         //"or"
+#define  HTSEARCH_ALG_OR                    0x00000010  //"or"
 #define  HTSEARCH_ALG_OR_STR                "or"
 
 
-#define  HTSEARCH_FORMAT_LONG               0x00000001         //"long"
+#define  HTSEARCH_FORMAT_LONG               0x00000001  //"long"
 #define  HTSEARCH_FORMAT_LONG_STR           "long"
 
-#define  HTSEARCH_FORMAT_SHORT              0x00000010         //"short"
+#define  HTSEARCH_FORMAT_SHORT              0x00000010  //"short"
 #define  HTSEARCH_FORMAT_SHORT_STR          "short"
 
 
-#define  HTSEARCH_SORT_SCORE                0x00000001         //"score"
+#define  HTSEARCH_SORT_SCORE                0x00000001  //"score"
 #define  HTSEARCH_SORT_SCORE_STR            "score"
 
-#define  HTSEARCH_SORT_REV_SCORE            0x00000010         //"reverse score"
+#define  HTSEARCH_SORT_REV_SCORE            0x00000010  //"reverse score"
 #define  HTSEARCH_SORT_REV_SCORE_STR        "reverse score"
 
-#define  HTSEARCH_SORT_TIME                 0x00000100         //"time"
+#define  HTSEARCH_SORT_TIME                 0x00000100  //"time"
 #define  HTSEARCH_SORT_TIME_STR             "time"
 
-#define  HTSEARCH_SORT_REV_TIME             0x00001000         //"reverse time"
+#define  HTSEARCH_SORT_REV_TIME             0x00001000  //"reverse time"
 #define  HTSEARCH_SORT_REV_TIME_STR         "reverse time"
 
-#define  HTSEARCH_SORT_TITLE                0x00010000         //"title"
+#define  HTSEARCH_SORT_TITLE                0x00010000  //"title"
 #define  HTSEARCH_SORT_TITLE_STR            "title"
 
-#define  HTSEARCH_SORT_REV_TITLE            0x00100000         //"reverse title"
+#define  HTSEARCH_SORT_REV_TITLE            0x00100000  //"reverse title"
 #define  HTSEARCH_SORT_REV_TITLE_STR        "reverse title"
 
 
@@ -227,18 +227,19 @@
  *
  ******************************************************************/
 
-typedef struct htdig_parameters_struct {
+typedef struct htdig_parameters_struct
+{
 
   char configFile[HTDIG_MAX_FILENAME_PATH_L];
   char DBpath[HTDIG_MAX_FILENAME_PATH_L];
   char credentials[HTDIG_MAX_FILENAME_PATH_L];
-  char max_hops[10];    //9 digit limit
+  char max_hops[10];            //9 digit limit
   char minimalFile[HTDIG_MAX_FILENAME_PATH_L];
 
   //debugging & logfile
-  char logFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
-  int debug;            //0, 1 ,2, 3, 4, 5
-  
+  char logFile[HTDIG_MAX_FILENAME_PATH_L];      //location of log file
+  int debug;                    //0, 1 ,2, 3, 4, 5
+
   //booelan values
   int initial;
   int create_text_database;
@@ -259,11 +260,11 @@ typedef struct htdig_parameters_struct {
   char title_factor[16];
   char text_factor[16];
   char meta_description_factor[16];
-  int  max_hop_count;
-  
+  int max_hop_count;
+
   //the rewritten URL - OUTGOING after htdig_index_test_url
   char rewritten_URL[HTDIG_MAX_FILENAME_PATH_L];
-  
+
 } htdig_parameters_struct;
 
 /*****************************************************************
@@ -295,29 +296,30 @@ typedef struct htdig_parameters_struct {
  * 
  *****************************************************************/
 
-typedef struct htdig_simple_doc_struct {
-    
-    char location[HTDIG_MAX_FILENAME_PATH_L];
-    char documentid[HTDIG_DOCUMENT_ID_L];
-    char title[HTDIG_DOCUMENT_TITLE_L];
-    char meta[HTDIG_DOCUMENT_META_L];
-    char *contents;                               //MUST ALLOCATE & FREE!!!
-    char content_type[HTDIG_DOCUMENT_CONTENT_TYPE_L];   //MIME-ISH string
-    //struct tm time_tm;                      // use to override index time
-    time_t doc_time;
-    
+typedef struct htdig_simple_doc_struct
+{
+
+  char location[HTDIG_MAX_FILENAME_PATH_L];
+  char documentid[HTDIG_DOCUMENT_ID_L];
+  char title[HTDIG_DOCUMENT_TITLE_L];
+  char meta[HTDIG_DOCUMENT_META_L];
+  char *contents;               //MUST ALLOCATE & FREE!!!
+  char content_type[HTDIG_DOCUMENT_CONTENT_TYPE_L];     //MIME-ISH string
+  //struct tm time_tm;                      // use to override index time
+  time_t doc_time;
+
 } htdig_simple_doc_struct;
 
 
-int htdig_index_open(htdig_parameters_struct *);
-int htdig_index_simple_doc(htdig_simple_doc_struct * );
-int htdig_index_urls(void);
-int htdig_index_reset(void);
-int htdig_index_close(void);
+int htdig_index_open (htdig_parameters_struct *);
+int htdig_index_simple_doc (htdig_simple_doc_struct *);
+int htdig_index_urls (void);
+int htdig_index_reset (void);
+int htdig_index_close (void);
 
-int htdig_index_test_url(htdig_parameters_struct *htparms);
-    
-int htdig_get_max_head_length(void);
+int htdig_index_test_url (htdig_parameters_struct * htparms);
+
+int htdig_get_max_head_length (void);
 
 
 
@@ -363,21 +365,22 @@ int htdig_get_max_head_length(void);
  *
  *************************************************/
 
-typedef struct htmerge_parameters_struct {
+typedef struct htmerge_parameters_struct
+{
 
   char configFile[HTDIG_MAX_FILENAME_PATH_L];
   char merge_configFile[HTDIG_MAX_FILENAME_PATH_L];
 
   //debugging & logfile
-  char logFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
-  int debug;            //0, 1 ,2, 3, 4, 5
-  
+  char logFile[HTDIG_MAX_FILENAME_PATH_L];      //location of log file
+  int debug;                    //0, 1 ,2, 3, 4, 5
+
   //booelan values
   int alt_work_area;
 
 } htmerge_parameters_struct;
 
-int htmerge_index_merge(htmerge_parameters_struct *);
+int htmerge_index_merge (htmerge_parameters_struct *);
 
 
 
@@ -420,22 +423,23 @@ int htmerge_index_merge(htmerge_parameters_struct *);
  ***************************************************/
 
 
-typedef struct htfuzzy_parameters_struct {
+typedef struct htfuzzy_parameters_struct
+{
 
   char configFile[HTDIG_MAX_FILENAME_PATH_L];
-  int  algorithms_flag;
+  int algorithms_flag;
 
   //debugging & logfile
-  char logFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
-  int debug;            //0, 1 ,2, 3, 4, 5
-  
+  char logFile[HTDIG_MAX_FILENAME_PATH_L];      //location of log file
+  int debug;                    //0, 1 ,2, 3, 4, 5
+
   //booelan values
 
 } htfuzzy_parameters_struct;
 
 
 // htfuzzy functions
-int htfuzzy_index(htfuzzy_parameters_struct *);
+int htfuzzy_index (htfuzzy_parameters_struct *);
 
 
 
@@ -466,23 +470,24 @@ int htfuzzy_index(htfuzzy_parameters_struct *);
  *
  **************************************************/
 
-typedef struct htsearch_parameters_struct {
+typedef struct htsearch_parameters_struct
+{
 
   char configFile[HTDIG_MAX_FILENAME_PATH_L];
   char DBpath[HTDIG_MAX_FILENAME_PATH_L];
   char locale[16];
 
   //debugging & logfile
-  char logFile[HTDIG_MAX_FILENAME_PATH_L];   //location of log file
-  int debug;            //0, 1 ,2, 3, 4, 5
- 
+  char logFile[HTDIG_MAX_FILENAME_PATH_L];      //location of log file
+  int debug;                    //0, 1 ,2, 3, 4, 5
+
   //filters
   char search_restrict[HTDIG_MAX_FILENAME_PATH_L];
   char search_exclude[HTDIG_MAX_FILENAME_PATH_L];
   char title_factor[16];
   char text_factor[16];
   char meta_description_factor[16];
-  
+
 } htsearch_parameters_struct;
 
 
@@ -543,14 +548,15 @@ typedef struct htsearch_parameters_struct {
  * 
  *****************************************************************/
 
-typedef struct htsearch_query_struct {
+typedef struct htsearch_query_struct
+{
 
   char raw_query[HTDIG_MAX_QUERY_L];
-  
-  int  algorithms_flag;
-  int  sortby_flag;
+
+  int algorithms_flag;
+  int sortby_flag;
   int format;
-  
+
 } htsearch_query_struct;
 
 
@@ -584,31 +590,31 @@ typedef struct htsearch_query_struct {
  * 
  *****************************************************************/
 
-typedef struct htsearch_query_match_struct {
+typedef struct htsearch_query_match_struct
+{
 
-    char title[HTDIG_DOCUMENT_TITLE_L];
-    char URL[HTDIG_MAX_FILENAME_PATH_L];
-    char excerpt[HTDIG_DOCUMENT_EXCERPT_L];
-    int  score;
-    int  score_percent;     //top result is 100%
-    struct tm time_tm;
-    int  size;
+  char title[HTDIG_DOCUMENT_TITLE_L];
+  char URL[HTDIG_MAX_FILENAME_PATH_L];
+  char excerpt[HTDIG_DOCUMENT_EXCERPT_L];
+  int score;
+  int score_percent;            //top result is 100%
+  struct tm time_tm;
+  int size;
 
 } htsearch_query_match_struct;
 
 
 // htsearch functions
 
-int htsearch_open(htsearch_parameters_struct *);
-int htsearch_query(htsearch_query_struct *);
+int htsearch_open (htsearch_parameters_struct *);
+int htsearch_query (htsearch_query_struct *);
 
-int htsearch_get_nth_match(int, htsearch_query_match_struct *);
-int htsearch_close();
+int htsearch_get_nth_match (int, htsearch_query_match_struct *);
+int htsearch_close ();
 
 //htsearch_free(indicator)
 
-char * htsearch_get_error();
+char *htsearch_get_error ();
 
 
 #endif /* LIBHTDIG_API_H */
-

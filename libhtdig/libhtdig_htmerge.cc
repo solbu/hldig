@@ -26,7 +26,8 @@
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-extern "C" {
+extern "C"
+{
 #include "libhtdig_api.h"
 }
 
@@ -48,7 +49,7 @@ using namespace std;
 #endif
 #else
 #include <fstream.h>
-#endif /* HAVE_STD */
+#endif                          /* HAVE_STD */
 
 #include <stdio.h>
 
@@ -94,314 +95,323 @@ static String merge_configFile = 0;
 // Component procedures
 static int mergeDB ();
 
-int  htmerge_index_merge(htmerge_parameters_struct *htmerge_parms)
+int
+htmerge_index_merge (htmerge_parameters_struct * htmerge_parms)
 {
-    int ret = -1;
-    int merge_ret = -1;
+  int ret = -1;
+  int merge_ret = -1;
 
-    //load htmerge 'command-line parameters'    
-    configFile = htmerge_parms->configFile;
-    merge_configFile = htmerge_parms->merge_configFile;
-    verbose = htmerge_parms->debug;
-    if(verbose != 0)
+  //load htmerge 'command-line parameters'    
+  configFile = htmerge_parms->configFile;
+  merge_configFile = htmerge_parms->merge_configFile;
+  verbose = htmerge_parms->debug;
+  if (verbose != 0)
+  {
+    ret = logOpen (htmerge_parms->logFile);
+
+    if (ret == FALSE)
     {
-        ret = logOpen(htmerge_parms->logFile);
-
-        if(ret == FALSE)
-        {
-            reportError (form ("[HTDIG] Error opening log file [%s] . Error:[%d], %s\n",
-                   htmerge_parms->logFile, errno, strerror(errno)) );
-            return(HTMERGE_ERROR_LOGFILE_OPEN);
-        }
+      reportError (form
+                   ("[HTDIG] Error opening log file [%s] . Error:[%d], %s\n",
+                    htmerge_parms->logFile, errno, strerror (errno)));
+      return (HTMERGE_ERROR_LOGFILE_OPEN);
     }
- 
-    alt_work_area = htmerge_parms->alt_work_area;
+  }
+
+  alt_work_area = htmerge_parms->alt_work_area;
 
 
 
-    config = HtConfiguration::config ();
-    config->Defaults (&defaults[0]);
+  config = HtConfiguration::config ();
+  config->Defaults (&defaults[0]);
 
-    if (access ((char *) configFile, R_OK) < 0)
+  if (access ((char *) configFile, R_OK) < 0)
+  {
+    reportError (form ("[HTMERGE] Unable to find configuration file '%s'",
+                       configFile.get ()));
+    return (HTMERGE_ERROR_CONFIG_READ);
+  }
+
+  config->Read (configFile);
+
+  //
+  // Check url_part_aliases and common_url_parts for
+  // errors.
+  String url_part_errors = HtURLCodec::instance ()->ErrMsg ();
+
+  if (url_part_errors.length () != 0)
+  {
+    reportError (form
+                 ("[HTMERGE] Invalid url_part_aliases or common_url_parts: %s",
+                  url_part_errors.get ()));
+    return (HTMERGE_ERROR_URL_PART);
+  }
+
+  if (merge_configFile.length ())
+  {
+    merge_config.Defaults (&defaults[0]);
+    if (access ((char *) merge_configFile, R_OK) < 0)
     {
-        reportError (form ("[HTMERGE] Unable to find configuration file '%s'",
-                        configFile.get ()));
-        return(HTMERGE_ERROR_CONFIG_READ);
+      reportError (form ("[HTMERGE] Unable to find configuration file '%s'",
+                         merge_configFile.get ()));
+      return (HTMERGE_ERROR_CONFIG_READ);
     }
+    merge_config.Read (merge_configFile);
+  }
 
-    config->Read (configFile);
+  if (alt_work_area != 0)
+  {
+    String configValue;
 
-    //
-    // Check url_part_aliases and common_url_parts for
-    // errors.
-    String url_part_errors = HtURLCodec::instance ()->ErrMsg ();
-
-    if (url_part_errors.length () != 0)
+    configValue = config->Find ("word_db");
+    if (configValue.length () != 0)
     {
-        reportError (form("[HTMERGE] Invalid url_part_aliases or common_url_parts: %s",
-                    url_part_errors.get ()));
-        return(HTMERGE_ERROR_URL_PART);
-    }
-
-    if (merge_configFile.length ())
-    {
-        merge_config.Defaults (&defaults[0]);
-        if (access ((char *) merge_configFile, R_OK) < 0)
-        {
-            reportError (form ("[HTMERGE] Unable to find configuration file '%s'",
-                            merge_configFile.get ()));
-            return(HTMERGE_ERROR_CONFIG_READ);
-        }
-        merge_config.Read (merge_configFile);
-    }
-
-    if (alt_work_area != 0)
-    {
-        String configValue;
-
-        configValue = config->Find ("word_db");
-        if (configValue.length () != 0)
-        {
-            configValue << ".work";
-            config->Add ("word_db", configValue);
-        }
-
-        configValue = config->Find ("doc_db");
-        if (configValue.length () != 0)
-        {
-            configValue << ".work";
-            config->Add ("doc_db", configValue);
-        }
-
-        configValue = config->Find ("doc_index");
-        if (configValue.length () != 0)
-        {
-            configValue << ".work";
-            config->Add ("doc_index", configValue);
-        }
-
-        configValue = config->Find ("doc_excerpt");
-        if (configValue.length () != 0)
-        {
-            configValue << ".work";
-            config->Add ("doc_excerpt", configValue);
-        }
+      configValue << ".work";
+      config->Add ("word_db", configValue);
     }
 
-    WordContext::Initialize(*config);
-
-    if (merge_configFile.length())
+    configValue = config->Find ("doc_db");
+    if (configValue.length () != 0)
     {
-        // Merge the databases specified in merge_configFile into the current
-        // databases. Do this first then update the other databases as usual
-        // Note: We don't have to specify anything, it's all in the config vars
-
-        merge_ret = mergeDB();
+      configValue << ".work";
+      config->Add ("doc_db", configValue);
     }
 
-    //call destructors here
-    config->~HtConfiguration();
-    merge_config.~HtConfiguration();
-
-       if (verbose != 0)
+    configValue = config->Find ("doc_index");
+    if (configValue.length () != 0)
     {
-        ret = logClose();
-
-        if (ret == FALSE)
-        {
-            reportError (form("[HTMERGE]: Error closing file [%s]. Error:[%d], %s\n",
-                   htmerge_parms->logFile, errno, strerror(errno)) );
-            return(HTMERGE_ERROR_LOGFILE_CLOSE);
-        }
+      configValue << ".work";
+      config->Add ("doc_index", configValue);
     }
 
-    return(TRUE);
+    configValue = config->Find ("doc_excerpt");
+    if (configValue.length () != 0)
+    {
+      configValue << ".work";
+      config->Add ("doc_excerpt", configValue);
+    }
+  }
+
+  WordContext::Initialize (*config);
+
+  if (merge_configFile.length ())
+  {
+    // Merge the databases specified in merge_configFile into the current
+    // databases. Do this first then update the other databases as usual
+    // Note: We don't have to specify anything, it's all in the config vars
+
+    merge_ret = mergeDB ();
+  }
+
+  //call destructors here
+  config->~HtConfiguration ();
+  merge_config. ~ HtConfiguration ();
+
+  if (verbose != 0)
+  {
+    ret = logClose ();
+
+    if (ret == FALSE)
+    {
+      reportError (form
+                   ("[HTMERGE]: Error closing file [%s]. Error:[%d], %s\n",
+                    htmerge_parms->logFile, errno, strerror (errno)));
+      return (HTMERGE_ERROR_LOGFILE_CLOSE);
+    }
+  }
+
+  return (TRUE);
 }
 
 //*****************************************************************************
 // void mergeDB()
 //
-static int mergeDB ()
+static int
+mergeDB ()
 {
-    HtConfiguration *config = HtConfiguration::config ();
-    DocumentDB merge_db, db;
-    List *urls;
-    Dictionary merge_dup_ids, db_dup_ids;    // Lists of DocIds to ignore
-    int docIDOffset;
+  HtConfiguration *config = HtConfiguration::config ();
+  DocumentDB merge_db, db;
+  List *urls;
+  Dictionary merge_dup_ids, db_dup_ids; // Lists of DocIds to ignore
+  int docIDOffset;
 
-    const String doc_index = config->Find ("doc_index");
-    if (access (doc_index, R_OK) < 0)
-    {
-        reportError (form
-                   ("[HTMERGE] Unable to open document index '%s'",
-                    (const char *) doc_index));
-        return(HTMERGE_ERROR_DOCINDEX_READ);
-    }
-    const String doc_excerpt = config->Find ("doc_excerpt");
-    if (access (doc_excerpt, R_OK) < 0)
-    {
-        reportError (form
-                   ("[HTMERGE] Unable to open document excerpts '%s'",
-                    (const char *) doc_excerpt));
-        return(HTMERGE_ERROR_EXCERPTDB_READ);
-    }
-    const String doc_db = config->Find ("doc_db");
-    if (db.Open (doc_db, doc_index, doc_excerpt) < 0)
-    {
-        reportError (form ("[HTMERGE] Unable to open/create document database '%s'",
-                        (const char *) doc_db));
-        return(HTMERGE_ERROR_DOCDB_READ);
-    }
+  const String doc_index = config->Find ("doc_index");
+  if (access (doc_index, R_OK) < 0)
+  {
+    reportError (form
+                 ("[HTMERGE] Unable to open document index '%s'",
+                  (const char *) doc_index));
+    return (HTMERGE_ERROR_DOCINDEX_READ);
+  }
+  const String doc_excerpt = config->Find ("doc_excerpt");
+  if (access (doc_excerpt, R_OK) < 0)
+  {
+    reportError (form
+                 ("[HTMERGE] Unable to open document excerpts '%s'",
+                  (const char *) doc_excerpt));
+    return (HTMERGE_ERROR_EXCERPTDB_READ);
+  }
+  const String doc_db = config->Find ("doc_db");
+  if (db.Open (doc_db, doc_index, doc_excerpt) < 0)
+  {
+    reportError (form
+                 ("[HTMERGE] Unable to open/create document database '%s'",
+                  (const char *) doc_db));
+    return (HTMERGE_ERROR_DOCDB_READ);
+  }
 
 
-    const String merge_doc_index = merge_config["doc_index"];
-    if (access (merge_doc_index, R_OK) < 0)
-    {
-        reportError (form
-                   ("[HTMERGE] Unable to open document index '%s'",
-                    (const char *) merge_doc_index));
-        return(HTMERGE_ERROR_DOCINDEX_READ);
-    }
-    const String merge_doc_excerpt = merge_config["doc_excerpt"];
-    if (access (merge_doc_excerpt, R_OK) < 0)
-    {
-        reportError (form
-                   ("[HTMERGE] Unable to open document excerpts '%s'",
-                    (const char *) merge_doc_excerpt));
-        return(HTMERGE_ERROR_EXCERPTDB_READ);
-    }
-    const String merge_doc_db = merge_config["doc_db"];
-    if (merge_db.Open (merge_doc_db, merge_doc_index, merge_doc_excerpt) < 0)
-    {
-        reportError (form ("[HTMERGE] Unable to open document database '%s'",
-                        (const char *) merge_doc_db));
-        return(HTMERGE_ERROR_DOCDB_READ);
-    }
+  const String merge_doc_index = merge_config["doc_index"];
+  if (access (merge_doc_index, R_OK) < 0)
+  {
+    reportError (form
+                 ("[HTMERGE] Unable to open document index '%s'",
+                  (const char *) merge_doc_index));
+    return (HTMERGE_ERROR_DOCINDEX_READ);
+  }
+  const String merge_doc_excerpt = merge_config["doc_excerpt"];
+  if (access (merge_doc_excerpt, R_OK) < 0)
+  {
+    reportError (form
+                 ("[HTMERGE] Unable to open document excerpts '%s'",
+                  (const char *) merge_doc_excerpt));
+    return (HTMERGE_ERROR_EXCERPTDB_READ);
+  }
+  const String merge_doc_db = merge_config["doc_db"];
+  if (merge_db.Open (merge_doc_db, merge_doc_index, merge_doc_excerpt) < 0)
+  {
+    reportError (form ("[HTMERGE] Unable to open document database '%s'",
+                       (const char *) merge_doc_db));
+    return (HTMERGE_ERROR_DOCDB_READ);
+  }
 
-    // Start the merging by going through all the URLs that are in
-    // the database to be merged
+  // Start the merging by going through all the URLs that are in
+  // the database to be merged
 
-    urls = merge_db.URLs ();
-    // This ensures that every document added from merge_db has a unique ID
-    // in the new database
-    docIDOffset = db.NextDocID ();
+  urls = merge_db.URLs ();
+  // This ensures that every document added from merge_db has a unique ID
+  // in the new database
+  docIDOffset = db.NextDocID ();
 
-    urls->Start_Get ();
-    String *url;
-    String id;
-    while ((url = (String *) urls->Get_Next ()))
+  urls->Start_Get ();
+  String *url;
+  String id;
+  while ((url = (String *) urls->Get_Next ()))
+  {
+    DocumentRef *ref = merge_db[url->get ()];
+    DocumentRef *old_ref = db[url->get ()];
+    if (!ref)
+      continue;
+
+    if (old_ref)
     {
-        DocumentRef *ref = merge_db[url->get ()];
-        DocumentRef *old_ref = db[url->get ()];
-        if (!ref)
-            continue;
+      // Oh well, we knew this would happen. Let's get the duplicate
+      // And we'll only use the most recent date.
 
-        if (old_ref)
+      if (old_ref->DocTime () >= ref->DocTime ())
+      {
+        // Cool, the ref we're merging is too old, just ignore it
+        char str[20];
+        sprintf (str, "%d", ref->DocID ());
+        merge_dup_ids.Add (str, 0);
+
+        if (verbose > 1)
         {
-            // Oh well, we knew this would happen. Let's get the duplicate
-            // And we'll only use the most recent date.
-
-            if (old_ref->DocTime () >= ref->DocTime ())
-            {
-                // Cool, the ref we're merging is too old, just ignore it
-                char str[20];
-                sprintf (str, "%d", ref->DocID ());
-                merge_dup_ids.Add (str, 0);
-
-                if (verbose > 1)
-                {
-                    logEntry(form("[HTMERGE] Duplicate, URL: {%s} ignoring & merging copy\n", url));
-                }
-            }
-            else
-            {
-                // The ref we're merging is newer, delete the old one and add
-                char str[20];
-                sprintf (str, "%d", old_ref->DocID ());
-                db_dup_ids.Add (str, 0);
-                db.Delete (old_ref->DocID ());
-                ref->DocID (ref->DocID () + docIDOffset);
-                db.Add (*ref);
-                if (verbose > 1)
-                {
-                    logEntry(form("[HTMERGE] Duplicate, URL: {%s}  ignoring destination copy\n",url->get()));
-                }
-            }
+          logEntry (form
+                    ("[HTMERGE] Duplicate, URL: {%s} ignoring & merging copy\n",
+                     url));
         }
-        else
+      }
+      else
+      {
+        // The ref we're merging is newer, delete the old one and add
+        char str[20];
+        sprintf (str, "%d", old_ref->DocID ());
+        db_dup_ids.Add (str, 0);
+        db.Delete (old_ref->DocID ());
+        ref->DocID (ref->DocID () + docIDOffset);
+        db.Add (*ref);
+        if (verbose > 1)
         {
-            // It's a new URL, just add it, making sure to load the excerpt
-            merge_db.ReadExcerpt (*ref);
-            ref->DocID (ref->DocID () + docIDOffset);
-            db.Add (*ref);
-            if (verbose > 1)
-            {
-                logEntry(form("[HTMERGE] Merged URL: {%s} \n",url->get()));
-            }
+          logEntry (form
+                    ("[HTMERGE] Duplicate, URL: {%s}  ignoring destination copy\n",
+                     url->get ()));
         }
-        delete ref;
-        delete old_ref;
+      }
     }
-    delete urls;
-
-    // As reported by Roman Dimov, we must update db.NextDocID()
-    // because of all the added records...
-    db.IncNextDocID (merge_db.NextDocID ());
-    merge_db.Close ();
-    db.Close ();
-
-    // OK, after merging the doc DBs, we do the same for the words
-    HtWordList mergeWordDB (*config), wordDB (*config);
-    List *words;
-    String docIDKey;
-
-    if (wordDB.Open (config->Find ("word_db"), O_RDWR) < 0)
+    else
     {
-        reportError (form ("[HTMERGE] Unable to open/create word database '%s'",
-                        (const char *) config->Find ("word_db")));
-        return(HTMERGE_ERROR_WORDDB_READ);
+      // It's a new URL, just add it, making sure to load the excerpt
+      merge_db.ReadExcerpt (*ref);
+      ref->DocID (ref->DocID () + docIDOffset);
+      db.Add (*ref);
+      if (verbose > 1)
+      {
+        logEntry (form ("[HTMERGE] Merged URL: {%s} \n", url->get ()));
+      }
     }
+    delete ref;
+    delete old_ref;
+  }
+  delete urls;
 
-    if (mergeWordDB.Open (merge_config["word_db"], O_RDONLY) < 0)
-    {
-        reportError (form ("[HTMERGE] Unable to open word database '%s'",
-                        (const char *) merge_config["word_db"]));
-        return(HTMERGE_ERROR_WORDDB_READ);
-    }
+  // As reported by Roman Dimov, we must update db.NextDocID()
+  // because of all the added records...
+  db.IncNextDocID (merge_db.NextDocID ());
+  merge_db.Close ();
+  db.Close ();
 
-    // Start the merging by going through all the URLs that are in
-    // the database to be merged
+  // OK, after merging the doc DBs, we do the same for the words
+  HtWordList mergeWordDB (*config), wordDB (*config);
+  List *words;
+  String docIDKey;
 
-    words = mergeWordDB.WordRefs ();
+  if (wordDB.Open (config->Find ("word_db"), O_RDWR) < 0)
+  {
+    reportError (form ("[HTMERGE] Unable to open/create word database '%s'",
+                       (const char *) config->Find ("word_db")));
+    return (HTMERGE_ERROR_WORDDB_READ);
+  }
 
-    words->Start_Get ();
-    HtWordReference *word;
-    while ((word = (HtWordReference *) words->Get_Next ()))
-    {
-        docIDKey = word->DocID ();
-        if (merge_dup_ids.Exists (docIDKey))
-            continue;
+  if (mergeWordDB.Open (merge_config["word_db"], O_RDONLY) < 0)
+  {
+    reportError (form ("[HTMERGE] Unable to open word database '%s'",
+                       (const char *) merge_config["word_db"]));
+    return (HTMERGE_ERROR_WORDDB_READ);
+  }
 
-        word->DocID (word->DocID () + docIDOffset);
-        wordDB.Override (*word);
-    }
-    delete words;
+  // Start the merging by going through all the URLs that are in
+  // the database to be merged
 
-    words = wordDB.WordRefs ();
-    words->Start_Get ();
-    while ((word = (HtWordReference *) words->Get_Next ()))
-    {
-        docIDKey = word->DocID ();
-        if (db_dup_ids.Exists (docIDKey))
-            wordDB.Delete (*word);
-    }
-    delete words;
+  words = mergeWordDB.WordRefs ();
 
-    // Cleanup--just close the two word databases
-    mergeWordDB.Close ();
-    wordDB.Close ();
+  words->Start_Get ();
+  HtWordReference *word;
+  while ((word = (HtWordReference *) words->Get_Next ()))
+  {
+    docIDKey = word->DocID ();
+    if (merge_dup_ids.Exists (docIDKey))
+      continue;
 
-    return(TRUE);
+    word->DocID (word->DocID () + docIDOffset);
+    wordDB.Override (*word);
+  }
+  delete words;
+
+  words = wordDB.WordRefs ();
+  words->Start_Get ();
+  while ((word = (HtWordReference *) words->Get_Next ()))
+  {
+    docIDKey = word->DocID ();
+    if (db_dup_ids.Exists (docIDKey))
+      wordDB.Delete (*word);
+  }
+  delete words;
+
+  // Cleanup--just close the two word databases
+  mergeWordDB.Close ();
+  wordDB.Close ();
+
+  return (TRUE);
 
 }
-

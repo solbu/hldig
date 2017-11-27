@@ -77,7 +77,7 @@ using namespace std;
 #endif
 #else
 #include <fstream.h>
-#endif /* HAVE_STD */
+#endif                          /* HAVE_STD */
 
 #include <stdio.h>
 
@@ -85,7 +85,7 @@ using namespace std;
 
 extern int debug;
 
-static HtConfiguration * config = NULL;
+static HtConfiguration *config = NULL;
 
 
 //*****************************************************************************
@@ -93,173 +93,179 @@ static HtConfiguration * config = NULL;
 //
 //int main(int ac, char **av)
 
-int htfuzzy_index(htfuzzy_parameters_struct * htfuzzy_parms)
+int
+htfuzzy_index (htfuzzy_parameters_struct * htfuzzy_parms)
 {
-    String configFile = DEFAULT_CONFIG_FILE;
-    int ret = 0;
+  String configFile = DEFAULT_CONFIG_FILE;
+  int ret = 0;
 
-    //
-    // Parse command line arguments
-    //
+  //
+  // Parse command line arguments
+  //
 
-    debug = htfuzzy_parms->debug;
-    if (debug != 0)
+  debug = htfuzzy_parms->debug;
+  if (debug != 0)
+  {
+    ret = logOpen (htfuzzy_parms->logFile);
+
+    if (ret == FALSE)
     {
-        ret = logOpen(htfuzzy_parms->logFile);
+      fprintf (stderr, "htdig: Error opening file [%s]. Error:[%d], %s\n",
+               htfuzzy_parms->logFile, errno, strerror (errno));
+    }
+  }
 
-        if (ret == FALSE)
+
+  configFile = htfuzzy_parms->configFile;
+
+  config = HtConfiguration::config ();
+
+  //
+  // Determine what algorithms to use
+  //
+  List wordAlgorithms;
+  List noWordAlgorithms;
+
+  if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_SOUNDEX)
+  {
+    wordAlgorithms.Add (new Soundex (*config));
+  }
+  else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_METAPHONE)
+  {
+    wordAlgorithms.Add (new Metaphone (*config));
+  }
+  else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_ACCENTS)
+  {
+    wordAlgorithms.Add (new Accents (*config));
+  }
+  else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_ENDINGS)
+  {
+    noWordAlgorithms.Add (new Endings (*config));
+  }
+  else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_SYNONYMS)
+  {
+    noWordAlgorithms.Add (new Synonym (*config));
+  }
+
+
+  if (wordAlgorithms.Count () == 0 && noWordAlgorithms.Count () == 0)
+  {
+    logEntry (form ("htfuzzy: No algorithms specified\n"));
+  }
+
+  //
+  // Find and parse the configuration file.
+  //
+  config->Defaults (&defaults[0]);
+  if (access ((char *) configFile, R_OK) < 0)
+  {
+    reportError (form
+                 ("[HTFUZZY] Unable to find configuration file '%s'",
+                  configFile.get ()));
+  }
+  config->Read (configFile);
+
+  // Initialize htword library (key description + wordtype...)
+  WordContext::Initialize (*config);
+
+  Fuzzy *fuzzy;
+  if (wordAlgorithms.Count () > 0)
+  {
+    //
+    // Open the word database so that we can grab the words from it.
+    //
+    HtWordList worddb (*config);
+    if (worddb.Open (config->Find ("word_db"), O_RDONLY) == OK)
+    {
+      //
+      // Go through all the words in the database
+      //
+      List *words = worddb.Words ();
+      String *key;
+      Fuzzy *fuzzy = 0;
+      String word, fuzzyKey;
+      int count = 0;
+
+      words->Start_Get ();
+      while ((key = (String *) words->Get_Next ()))
+      {
+        word = *key;
+        wordAlgorithms.Start_Get ();
+        while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next ()))
         {
-            fprintf(stderr, "htdig: Error opening file [%s]. Error:[%d], %s\n",
-                   htfuzzy_parms->logFile, errno, strerror(errno));
+          fuzzy->addWord (word);
         }
-    }
-
-
-    configFile = htfuzzy_parms->configFile;
-
-    config = HtConfiguration::config();
-    
-    //
-    // Determine what algorithms to use
-    //
-    List wordAlgorithms;
-    List noWordAlgorithms;
-
-    if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_SOUNDEX)
-    {
-        wordAlgorithms.Add(new Soundex(*config));
-    }
-    else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_METAPHONE)
-    {
-        wordAlgorithms.Add(new Metaphone(*config));
-    }
-    else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_ACCENTS)
-    {
-        wordAlgorithms.Add(new Accents(*config));
-    }
-    else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_ENDINGS)
-    {
-        noWordAlgorithms.Add(new Endings(*config));
-    }
-    else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_SYNONYMS)
-    {
-        noWordAlgorithms.Add(new Synonym(*config));
-    }
-
-
-    if (wordAlgorithms.Count() == 0 && noWordAlgorithms.Count() == 0)
-    {
-        logEntry(form("htfuzzy: No algorithms specified\n"));
-    }
-
-    //
-    // Find and parse the configuration file.
-    //
-    config->Defaults(&defaults[0]);
-    if (access((char *) configFile, R_OK) < 0)
-    {
-        reportError(form("[HTFUZZY] Unable to find configuration file '%s'", configFile.get()));
-    }
-    config->Read(configFile);
-
-    // Initialize htword library (key description + wordtype...)
-    WordContext::Initialize(*config);
-
-    Fuzzy *fuzzy;
-    if (wordAlgorithms.Count() > 0)
-    {
-        //
-        // Open the word database so that we can grab the words from it.
-        //
-        HtWordList worddb(*config);
-        if (worddb.Open(config->Find("word_db"), O_RDONLY) == OK)
+        count++;
+        if ((count % 100) == 0 && debug)
         {
-            //
-            // Go through all the words in the database
-            //
-            List *words = worddb.Words();
-            String *key;
-            Fuzzy *fuzzy = 0;
-            String word, fuzzyKey;
-            int count = 0;
-
-            words->Start_Get();
-            while ((key = (String *) words->Get_Next()))
-            {
-                word = *key;
-                wordAlgorithms.Start_Get();
-                while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next()))
-                {
-                    fuzzy->addWord(word);
-                }
-                count++;
-                if ((count % 100) == 0 && debug)
-                {
-                    //cout << "htfuzzy: words: " << count << '\n';
-                }
-            }
-            if (debug)
-            {
-                logEntry(form("htfuzzy: total words: %d\n", count));
-                logEntry(form("htfuzzy: Writing index files...\n"));
-            }
-
-            //
-            // All the information is now in memory.
-            // Write all of it out to the individual databases
-            //
-            wordAlgorithms.Start_Get();
-            while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next()))
-            {
-                fuzzy->writeDB();
-            }
-            worddb.Close();
-            words->Destroy();
-            delete words;
-            if (fuzzy)
-                delete fuzzy;
+          //cout << "htfuzzy: words: " << count << '\n';
         }
-        else
-        {
-            reportError(form("[htfuzzy] Unable to open word database %s", config->Find("word_db").get()));
-        }
+      }
+      if (debug)
+      {
+        logEntry (form ("htfuzzy: total words: %d\n", count));
+        logEntry (form ("htfuzzy: Writing index files...\n"));
+      }
+
+      //
+      // All the information is now in memory.
+      // Write all of it out to the individual databases
+      //
+      wordAlgorithms.Start_Get ();
+      while ((fuzzy = (Fuzzy *) wordAlgorithms.Get_Next ()))
+      {
+        fuzzy->writeDB ();
+      }
+      worddb.Close ();
+      words->Destroy ();
+      delete words;
+      if (fuzzy)
+        delete fuzzy;
     }
-    if (noWordAlgorithms.Count() > 0)
+    else
     {
-        noWordAlgorithms.Start_Get();
-        while ((fuzzy = (Fuzzy *) noWordAlgorithms.Get_Next()))
-        {
-            if (debug)
-            {
-                logEntry(form( "htfuzzy: Selected algorithm: %s\n", fuzzy->getName()));
-            }
-            if (fuzzy->createDB(*config) == NOTOK)
-            {
-                logEntry(form("htfuzzy: Could not create database for algorithm: %s\n", fuzzy->getName()));
-            }
-        }
+      reportError (form
+                   ("[htfuzzy] Unable to open word database %s",
+                    config->Find ("word_db").get ()));
     }
-
-    if (debug)
+  }
+  if (noWordAlgorithms.Count () > 0)
+  {
+    noWordAlgorithms.Start_Get ();
+    while ((fuzzy = (Fuzzy *) noWordAlgorithms.Get_Next ()))
     {
-        logEntry("htfuzzy: Done.\n");
+      if (debug)
+      {
+        logEntry (form
+                  ("htfuzzy: Selected algorithm: %s\n", fuzzy->getName ()));
+      }
+      if (fuzzy->createDB (*config) == NOTOK)
+      {
+        logEntry (form
+                  ("htfuzzy: Could not create database for algorithm: %s\n",
+                   fuzzy->getName ()));
+      }
     }
+  }
 
-       if (debug != 0)
+  if (debug)
+  {
+    logEntry ("htfuzzy: Done.\n");
+  }
+
+  if (debug != 0)
+  {
+    ret = logClose ();
+
+    if (ret == FALSE)
     {
-        ret = logClose();
-
-        if (ret == FALSE)
-        {
-            fprintf(stderr, "htfuzzy: Error closing file [%s]. Error:[%d], %s\n",
-                   htfuzzy_parms->logFile, errno, strerror(errno));
-        }
+      fprintf (stderr, "htfuzzy: Error closing file [%s]. Error:[%d], %s\n",
+               htfuzzy_parms->logFile, errno, strerror (errno));
     }
+  }
 
 
-    delete config;
+  delete config;
 
-    return 0;
+  return 0;
 }
-
-

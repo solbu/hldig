@@ -56,50 +56,51 @@ typedef SIG_PF SIGNAL_HANDLER;
 //   If the max_size is given, use that for size, otherwise use the
 //   config value.
 //
-BasicDocument::BasicDocument(char *loc, int suggested_size)
+BasicDocument::BasicDocument (char *loc, int suggested_size)
 {
-    int temp_size = 0;
+  int temp_size = 0;
 
-    id = 0;
-    location = 0;
-    title = 0;
-    metacontent = 0;
-    contents = 0;
-    document_length = 0;
+  id = 0;
+  location = 0;
+  title = 0;
+  metacontent = 0;
+  contents = 0;
+  document_length = 0;
 
 
-    HtConfiguration *config = HtConfiguration::config();
+  HtConfiguration *config = HtConfiguration::config ();
 
-    //We probably need to move assignment of max_doc_size, according
-    //to a configuration value. 
+  //We probably need to move assignment of max_doc_size, according
+  //to a configuration value. 
 
-    if (suggested_size > 0)
-        temp_size = suggested_size;
-    else
-        temp_size = config->Value("max_doc_size");
+  if (suggested_size > 0)
+    temp_size = suggested_size;
+  else
+    temp_size = config->Value ("max_doc_size");
 
-    contents.allocate(temp_size + 100);
+  contents.allocate (temp_size + 100);
 
-    contentType = "";
+  contentType = "";
 
-    if (loc)
-    {
-        Location(loc);
-    }
+  if (loc)
+  {
+    Location (loc);
+  }
 }
 
 
 //*****************************************************************************
 // BasicDocument::~BasicDocument()
 //
-BasicDocument::~BasicDocument()
+BasicDocument::~BasicDocument ()
 {
-    // We delete only the derived class objects
+  // We delete only the derived class objects
 
 #if MEM_DEBUG
-    char *p = new char;
-    cout << "==== BasicDocument deleted: " << this << " new at " << ((void *) p) << endl;
-    delete p;
+  char *p = new char;
+  cout << "==== BasicDocument deleted: " << this << " new at " << ((void *) p)
+    << endl;
+  delete p;
 #endif
 }
 
@@ -109,17 +110,17 @@ BasicDocument::~BasicDocument()
 //   Restore the BasicDocument object to an initial state.
 //
 void
-BasicDocument::Reset()
+BasicDocument::Reset ()
 {
 
-    id = 0;
-    location = 0;
-    title = 0;
-    metacontent = 0;
-    contents = 0;
+  id = 0;
+  location = 0;
+  title = 0;
+  metacontent = 0;
+  contents = 0;
 
-    contentType = 0;
-    document_length = 0;
+  contentType = 0;
+  document_length = 0;
 
 }
 
@@ -128,19 +129,19 @@ BasicDocument::Reset()
 //   Return/Calc length of BasicDocument... icummulative size of the Strings
 //
 int
-BasicDocument::Length()
+BasicDocument::Length ()
 {
-    if (document_length < 0)
-    {
-        document_length = 0;
-        document_length += location.length();
-        document_length += title.length();
-        document_length += metacontent.length();
-        document_length += contents.length();
-        document_length += id.length();
-    }
+  if (document_length < 0)
+  {
+    document_length = 0;
+    document_length += location.length ();
+    document_length += title.length ();
+    document_length += metacontent.length ();
+    document_length += contents.length ();
+    document_length += id.length ();
+  }
 
-    return (document_length);
+  return (document_length);
 }
 
 
@@ -152,60 +153,61 @@ BasicDocument::Length()
 //   parsers are external programs that will be used.
 
 Parsable *
-BasicDocument::getParsable()
+BasicDocument::getParsable ()
 {
-    static HTML *html = 0;
-    static Plaintext *plaintext = 0;
-    static ExternalParser *externalParser = 0;
+  static HTML *html = 0;
+  static Plaintext *plaintext = 0;
+  static ExternalParser *externalParser = 0;
 
-    Parsable *parsable = 0;
+  Parsable *parsable = 0;
 
-    if (ExternalParser::canParse(contentType))
+  if (ExternalParser::canParse (contentType))
+  {
+    if (externalParser)
     {
-        if (externalParser)
-        {
-            delete externalParser;
-        }
-        externalParser = new ExternalParser(contentType);
-        parsable = externalParser;
+      delete externalParser;
     }
-    else if (mystrncasecmp((char *) contentType, "text/html", 9) == 0)
+    externalParser = new ExternalParser (contentType);
+    parsable = externalParser;
+  }
+  else if (mystrncasecmp ((char *) contentType, "text/html", 9) == 0)
+  {
+    if (!html)
+      html = new HTML ();
+    parsable = html;
+  }
+  else if (mystrncasecmp ((char *) contentType, "text/plain", 10) == 0)
+  {
+    if (!plaintext)
+      plaintext = new Plaintext ();
+    parsable = plaintext;
+  }
+  else if (mystrncasecmp ((char *) contentType, "text/css", 8) == 0)
+  {
+    return NULL;
+  }
+  else if (mystrncasecmp ((char *) contentType, "text/", 5) == 0)
+  {
+    if (!plaintext)
+      plaintext = new Plaintext ();
+    parsable = plaintext;
+    if (debug > 1)
     {
-        if (!html)
-            html = new HTML();
-        parsable = html;
+      cout << '"' << contentType <<
+        "\" not a recognized type.  Assuming text/plain\n";
     }
-    else if (mystrncasecmp((char *) contentType, "text/plain", 10) == 0)
+  }
+  else
+  {
+    if (debug > 1)
     {
-        if (!plaintext)
-            plaintext = new Plaintext();
-        parsable = plaintext;
+      cout << '"' << contentType << "\" not a recognized type.  Ignoring\n";
     }
-    else if (mystrncasecmp((char *) contentType, "text/css", 8) == 0)
-    {
-        return NULL;
-    }
-    else if (mystrncasecmp((char *) contentType, "text/", 5) == 0)
-    {
-        if (!plaintext)
-            plaintext = new Plaintext();
-        parsable = plaintext;
-        if (debug > 1)
-        {
-            cout << '"' << contentType << "\" not a recognized type.  Assuming text/plain\n";
-        }
-    }
-    else
-    {
-        if (debug > 1)
-        {
-            cout << '"' << contentType << "\" not a recognized type.  Ignoring\n";
-        }
-        return NULL;
-    }
+    return NULL;
+  }
 
-    parsable->setContents(contents.get(), contents.length());
-    return parsable;
+  parsable->setContents (contents.get (), contents.length ());
+  return parsable;
 }
 
 //*****************************************************************************
@@ -213,104 +215,105 @@ BasicDocument::getParsable()
 //  Test for self parseaable
 //
 int
-BasicDocument::SelfParseable()
+BasicDocument::SelfParseable ()
 {
 
-    if (mystrncasecmp((char *) contentType, "text/vnd.customdocument", 10) == 0)
-    {
-        return (TRUE);
-    }
-    else
-        return (FALSE);
+  if (mystrncasecmp ((char *) contentType, "text/vnd.customdocument", 10) ==
+      0)
+  {
+    return (TRUE);
+  }
+  else
+    return (FALSE);
 
 }
 
 
 //*****************************************************************************
 // Parsable *BasicDocument::internalParser()
-int     
-BasicDocument::internalParser(TextCollector & textcollector)
+int
+BasicDocument::internalParser (TextCollector & textcollector)
 {
-    HtConfiguration* config= HtConfiguration::config();
-    char *position = NULL;
-    static int minimumWordLength = config->Value("minimum_word_length", 3);
-    int wordIndex = 1;
-    String word;
-    int letter_count = 0;
+  HtConfiguration *config = HtConfiguration::config ();
+  char *position = NULL;
+  static int minimumWordLength = config->Value ("minimum_word_length", 3);
+  int wordIndex = 1;
+  String word;
+  int letter_count = 0;
 
-    //First Process Title
-    textcollector.got_title((char *) title);
+  //First Process Title
+  textcollector.got_title ((char *) title);
 
-    //Next Process Contents
-    position = contents;
+  //Next Process Contents
+  position = contents;
 
-    while (*position)
+  while (*position)
+  {
+    word = 0;
+
+    if (HtIsStrictWordChar (*position))
     {
-        word = 0;
+      //
+      // Start of a word.  Try to find the whole thing
+      //
+      //TODO NEAL RICHTER  Imposed a 50-letter word length limit here
+      //
+      while (*position && HtIsWordChar (*position) && (letter_count < 50))
+      {
+        word << *position;
+        position++;
+        letter_count++;
+      }
 
-        if (HtIsStrictWordChar(*position))
-        {
-            //
-            // Start of a word.  Try to find the whole thing
-            //
-            //TODO NEAL RICHTER  Imposed a 50-letter word length limit here
-            //
-            while (*position && HtIsWordChar(*position) && (letter_count < 50))
-            {
-                word << *position;
-                position++;
-                letter_count++;
-            }
+      letter_count = 0;
+      if (word.length () >= minimumWordLength)
+      {
+        textcollector.got_word ((char *) word, wordIndex++, 0);
+      }
+    }
 
-            letter_count = 0;
-            if (word.length() >= minimumWordLength)
-            {
-                textcollector.got_word((char *) word, wordIndex++, 0);
-            }
-        }
-        
-        if (*position)
-            position++;
+    if (*position)
+      position++;
 
-    }//end while
+  }                             //end while
 
-    textcollector.got_head((char*) contents);
+  textcollector.got_head ((char *) contents);
 
-      //Third, Process MetaContent
-    position = metacontent;
-    textcollector.got_meta_dsc(metacontent);
-    
+  //Third, Process MetaContent
+  position = metacontent;
+  textcollector.got_meta_dsc (metacontent);
 
-    //max_meta_description_length???
-    
-    while (*position)
+
+  //max_meta_description_length???
+
+  while (*position)
+  {
+    word = 0;
+
+    if (HtIsStrictWordChar (*position))
     {
-        word = 0;
+      //
+      // Start of a word.  Try to find the whole thing
+      //
+      while (*position && HtIsWordChar (*position) && (letter_count < 50))
+      {
+        word << *position;
+        position++;
+        letter_count++;
+      }
 
-        if (HtIsStrictWordChar(*position))
-        {
-            //
-            // Start of a word.  Try to find the whole thing
-            //
-            while (*position && HtIsWordChar(*position) && (letter_count < 50))
-            {
-                word << *position;
-                position++;
-                letter_count++;
-            }
+      letter_count = 0;
 
-            letter_count = 0;
+      if (word.length () >= minimumWordLength)
+      {
+        textcollector.got_word ((char *) word, wordIndex++, 9);
+      }
+    }
 
-            if (word.length() >= minimumWordLength)
-            {
-                textcollector.got_word((char *) word, wordIndex++, 9);
-            }
-        }
-        
-        if (*position)
-            position++;
+    if (*position)
+      position++;
 
-    }//end while
+  }                             //end while
 
-    return(1);
+  return (1);
 }

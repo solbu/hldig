@@ -43,24 +43,26 @@ using namespace std;
 
 static FILE *errorlog_fp = NULL;
 
-int  logOpen(char *filename)
+int
+logOpen (char *filename)
 {
-    if(errorlog_fp == NULL)
-        errorlog_fp = fopen(filename, "a+");
+  if (errorlog_fp == NULL)
+    errorlog_fp = fopen (filename, "a+");
 
-    if (errorlog_fp == NULL)
-      return (TRUE);
-    else
-      return (FALSE);
+  if (errorlog_fp == NULL)
+    return (TRUE);
+  else
+    return (FALSE);
 }
 
 
-void logEntry (char *msg)
+void
+logEntry (char *msg)
 {
-    time_t now = time(NULL);
-    
-    if(errorlog_fp != NULL)
-      fprintf(errorlog_fp, "[%s] %s\n", ctime(&now), msg);
+  time_t now = time (NULL);
+
+  if (errorlog_fp != NULL)
+    fprintf (errorlog_fp, "[%s] %s\n", ctime (&now), msg);
 
 }
 
@@ -68,32 +70,34 @@ void logEntry (char *msg)
 //*****************************************************************************
 // Report an error
 
-void reportError (char *msg)
+void
+reportError (char *msg)
 {
-    time_t now = time(NULL);
-    
-    if(errorlog_fp != NULL)
-      fprintf(errorlog_fp, "%s  [ERROR] %s\n", ctime(&now), msg);
+  time_t now = time (NULL);
 
-    fprintf(stderr, "%s  [ERROR] %s\n", ctime(&now), msg);
-    
+  if (errorlog_fp != NULL)
+    fprintf (errorlog_fp, "%s  [ERROR] %s\n", ctime (&now), msg);
+
+  fprintf (stderr, "%s  [ERROR] %s\n", ctime (&now), msg);
+
 }
 
 
-int logClose()
+int
+logClose ()
 {
-    int ret = -1;
+  int ret = -1;
 
-    if(errorlog_fp != NULL)
-    {
-        ret = fclose(errorlog_fp);
-        errorlog_fp = NULL;
+  if (errorlog_fp != NULL)
+  {
+    ret = fclose (errorlog_fp);
+    errorlog_fp = NULL;
 
-        if(ret == 0)
-            return(TRUE);
-        else
-            return(FALSE);
-    }
+    if (ret == 0)
+      return (TRUE);
+    else
+      return (FALSE);
+  }
 
-    return(TRUE);
+  return (TRUE);
 }

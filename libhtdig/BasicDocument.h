@@ -43,76 +43,161 @@ class TextCollector;
 
 class BasicDocument:public Object
 {
-   public:
-    //
-    // Construction/Destruction
-    //
-    BasicDocument(char *location = 0, int max_size = 0);
-    ~BasicDocument();
+public:
+  //
+  // Construction/Destruction
+  //
+  BasicDocument (char *location = 0, int max_size = 0);
+   ~BasicDocument ();
 
-    //
-    // Interface to the document.
-    //
-    void  Reset();
-    int   Length();
+  //
+  // Interface to the document.
+  //
+  void Reset ();
+  int Length ();
 
-    //int                StoredLength()   {return contents.length();}
+  //int                StoredLength()   {return contents.length();}
 
-    char *Title()                          {return title;}
-    void  Title(char *t)                   {title = t; document_length = -1;}
-    void  Title(const String & t)          {title = t; document_length = -1;}
-    int   TitleLength()                    {return title.length();}
+  char *Title ()
+  {
+    return title;
+  }
+  void Title (char *t)
+  {
+    title = t;
+    document_length = -1;
+  }
+  void Title (const String & t)
+  {
+    title = t;
+    document_length = -1;
+  }
+  int TitleLength ()
+  {
+    return title.length ();
+  }
 
-    char *MetaContent()                    {return metacontent;}
-    void  MetaContent(char *m)             {metacontent = m; document_length = -1;}
-    void  MetaContent(const String & m)    {metacontent = m; document_length = -1;}
-    int   MetaContentLength()              {return metacontent.length();}
+  char *MetaContent ()
+  {
+    return metacontent;
+  }
+  void MetaContent (char *m)
+  {
+    metacontent = m;
+    document_length = -1;
+  }
+  void MetaContent (const String & m)
+  {
+    metacontent = m;
+    document_length = -1;
+  }
+  int MetaContentLength ()
+  {
+    return metacontent.length ();
+  }
 
-    char *Contents()                       {return contents;}
-    void  Contents(char *s)                {contents = s; document_length = -1;}
-    void  Contents(const String & s)       {contents = s; document_length = -1;}
-    int   ContentsLength()                 {return contents.length();}
+  char *Contents ()
+  {
+    return contents;
+  }
+  void Contents (char *s)
+  {
+    contents = s;
+    document_length = -1;
+  }
+  void Contents (const String & s)
+  {
+    contents = s;
+    document_length = -1;
+  }
+  int ContentsLength ()
+  {
+    return contents.length ();
+  }
 
-    char *Location()                       {return location;}
-    void  Location(char *l)                {location = l; document_length = -1;}
-    void  Location(const String & l)       {location = l; document_length = -1;}
-    int  LocationLength()                  {return location.length();}
+  char *Location ()
+  {
+    return location;
+  }
+  void Location (char *l)
+  {
+    location = l;
+    document_length = -1;
+  }
+  void Location (const String & l)
+  {
+    location = l;
+    document_length = -1;
+  }
+  int LocationLength ()
+  {
+    return location.length ();
+  }
 
-    char *DocumentID()                     {return id;}
-    void  DocumentID(char *ida)            {id = ida; document_length = -1;}
-    void  DocumentID(const String & ida)   {id = ida; document_length = -1;}
-    int   DocumentIDLength()               {return id.length();}
+  char *DocumentID ()
+  {
+    return id;
+  }
+  void DocumentID (char *ida)
+  {
+    id = ida;
+    document_length = -1;
+  }
+  void DocumentID (const String & ida)
+  {
+    id = ida;
+    document_length = -1;
+  }
+  int DocumentIDLength ()
+  {
+    return id.length ();
+  }
 
-    char *ContentType()                    {return contentType;}
-    void  ContentType(char *ct)            {contentType = ct;}
-    void  ContentType(const String & ct)   {contentType = ct;}
-    
-    time_t ModTime()                       {return modtime.GetTime_t();}
-    void   ModTime(time_t t)               {modtime = t;}
+  char *ContentType ()
+  {
+    return contentType;
+  }
+  void ContentType (char *ct)
+  {
+    contentType = ct;
+  }
+  void ContentType (const String & ct)
+  {
+    contentType = ct;
+  }
 
-    //
-    // Return an appropriate parsable object for the document type.
-    //
-    Parsable *getParsable();
+  time_t ModTime ()
+  {
+    return modtime.GetTime_t ();
+  }
+  void ModTime (time_t t)
+  {
+    modtime = t;
+  }
 
-    int     internalParser(TextCollector & textcollector);
-    int     SelfParseable();
+  //
+  // Return an appropriate parsable object for the document type.
+  //
+  Parsable *getParsable ();
 
-   private:
+  int internalParser (TextCollector & textcollector);
+  int SelfParseable ();
 
-    String          id;
-    String          location;
-    String          title;
-    String          metacontent;
-    String          contents;
+private:
 
-    String          contentType;
+  String id;
+  String location;
+  String title;
+  String metacontent;
+  String contents;
 
-    HtDateTime      modtime;
+  String contentType;
 
-    int             document_length;
-    
-    //int max_doc_size;
+  HtDateTime modtime;
+
+  int document_length;
+
+  //int max_doc_size;
 
 };
 
