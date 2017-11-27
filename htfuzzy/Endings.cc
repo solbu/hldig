@@ -3,7 +3,7 @@
 //
 // Endings: A fuzzy matching algorithm to match the grammatical endings rules
 //          used by the ispell dictionary files.
-//           
+//
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
@@ -33,7 +33,9 @@ Fuzzy (config_arg)
 {
   root2word = 0;
   word2root = 0;
-  strcpy (name, "endings");
+  name = "endings";
+  /* Replacing the line above with the line below will cause a segfault */
+  /*   strcpy (name, "endings"); */
 }
 
 
