@@ -10,7 +10,8 @@
 #include "htconfig.h"
 
 #ifndef lint
-static const char revid[] = "$Id: db_vrfyutil.c,v 1.2 2002/02/02 18:18:05 ghutchis Exp $";
+static const char revid[] =
+  "$Id: db_vrfyutil.c,v 1.2 2002/02/02 18:18:05 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,7 +25,7 @@ static const char revid[] = "$Id: db_vrfyutil.c,v 1.2 2002/02/02 18:18:05 ghutch
 #include "db_verify.h"
 #include "db_ext.h"
 
-static int __db_vrfy_pgset_iinc __P((DB *, db_pgno_t, int));
+static int __db_vrfy_pgset_iinc __P ((DB *, db_pgno_t, int));
 
 /*
  * CDB___db_vrfy_dbinfo_create --
@@ -35,9 +36,9 @@ static int __db_vrfy_pgset_iinc __P((DB *, db_pgno_t, int));
  */
 int
 CDB___db_vrfy_dbinfo_create (dbenv, pgsize, vdpp)
-  DB_ENV *dbenv;
-  u_int32_t pgsize;
-  VRFY_DBINFO **vdpp;
+     DB_ENV *dbenv;
+     u_int32_t pgsize;
+     VRFY_DBINFO **vdpp;
 {
   DB *cdbp, *pgdbp, *pgset;
   VRFY_DBINFO *vdp;
@@ -46,38 +47,36 @@ CDB___db_vrfy_dbinfo_create (dbenv, pgsize, vdpp)
   vdp = NULL;
   cdbp = pgdbp = pgset = NULL;
 
-  if ((ret = CDB___os_calloc(NULL,
-      1, sizeof(VRFY_DBINFO), (void **)&vdp)) != 0)
+  if ((ret = CDB___os_calloc (NULL,
+                              1, sizeof (VRFY_DBINFO), (void **) &vdp)) != 0)
     goto err;
 
-  if ((ret = CDB_db_create(&cdbp, dbenv, 0)) != 0)
+  if ((ret = CDB_db_create (&cdbp, dbenv, 0)) != 0)
     goto err;
 
-  if ((ret = cdbp->set_flags(cdbp, DB_DUP | DB_DUPSORT)) != 0)
+  if ((ret = cdbp->set_flags (cdbp, DB_DUP | DB_DUPSORT)) != 0)
     goto err;
 
-  if ((ret = cdbp->set_pagesize(cdbp, pgsize)) != 0)
+  if ((ret = cdbp->set_pagesize (cdbp, pgsize)) != 0)
     goto err;
 
-  if ((ret =
-      cdbp->open(cdbp, NULL, NULL, DB_BTREE, DB_CREATE, 0600)) != 0)
+  if ((ret = cdbp->open (cdbp, NULL, NULL, DB_BTREE, DB_CREATE, 0600)) != 0)
     goto err;
 
-  if ((ret = CDB_db_create(&pgdbp, dbenv, 0)) != 0)
+  if ((ret = CDB_db_create (&pgdbp, dbenv, 0)) != 0)
     goto err;
 
-  if ((ret = pgdbp->set_pagesize(pgdbp, pgsize)) != 0)
+  if ((ret = pgdbp->set_pagesize (pgdbp, pgsize)) != 0)
     goto err;
 
-  if ((ret =
-      pgdbp->open(pgdbp, NULL, NULL, DB_BTREE, DB_CREATE, 0600)) != 0)
+  if ((ret = pgdbp->open (pgdbp, NULL, NULL, DB_BTREE, DB_CREATE, 0600)) != 0)
     goto err;
 
-  if ((ret = CDB___db_vrfy_pgset(dbenv, pgsize, &pgset)) != 0)
+  if ((ret = CDB___db_vrfy_pgset (dbenv, pgsize, &pgset)) != 0)
     goto err;
 
-  LIST_INIT(&vdp->subdbs);
-  LIST_INIT(&vdp->activepips);
+  LIST_INIT (&vdp->subdbs);
+  LIST_INIT (&vdp->activepips);
 
   vdp->cdbp = cdbp;
   vdp->pgdbp = pgdbp;
@@ -85,12 +84,12 @@ CDB___db_vrfy_dbinfo_create (dbenv, pgsize, vdpp)
   *vdpp = vdp;
   return (0);
 
-err:  if (cdbp != NULL)
-    (void)cdbp->close(cdbp, 0);
+err:if (cdbp != NULL)
+    (void) cdbp->close (cdbp, 0);
   if (pgdbp != NULL)
-    (void)pgdbp->close(pgdbp, 0);
+    (void) pgdbp->close (pgdbp, 0);
   if (vdp != NULL)
-    CDB___os_free(vdp, sizeof(VRFY_DBINFO));
+    CDB___os_free (vdp, sizeof (VRFY_DBINFO));
   return (ret);
 }
 
@@ -102,31 +101,32 @@ err:  if (cdbp != NULL)
  * PUBLIC: int CDB___db_vrfy_dbinfo_destroy __P((VRFY_DBINFO *));
  */
 int
-CDB___db_vrfy_dbinfo_destroy(vdp)
-  VRFY_DBINFO *vdp;
+CDB___db_vrfy_dbinfo_destroy (vdp)
+     VRFY_DBINFO *vdp;
 {
   VRFY_CHILDINFO *c, *d;
   int t_ret, ret;
 
   ret = 0;
 
-  for (c = LIST_FIRST(&vdp->subdbs); c != NULL; c = d) {
-    d = LIST_NEXT(c, links);
-    CDB___os_free(c, 0);
+  for (c = LIST_FIRST (&vdp->subdbs); c != NULL; c = d)
+  {
+    d = LIST_NEXT (c, links);
+    CDB___os_free (c, 0);
   }
 
-  if ((t_ret = vdp->pgdbp->close(vdp->pgdbp, 0)) != 0)
+  if ((t_ret = vdp->pgdbp->close (vdp->pgdbp, 0)) != 0)
     ret = t_ret;
 
-  if ((t_ret = vdp->cdbp->close(vdp->cdbp, 0)) != 0 && ret == 0)
+  if ((t_ret = vdp->cdbp->close (vdp->cdbp, 0)) != 0 && ret == 0)
     ret = t_ret;
 
-  if ((t_ret = vdp->pgset->close(vdp->pgset, 0)) != 0 && ret == 0)
+  if ((t_ret = vdp->pgset->close (vdp->pgset, 0)) != 0 && ret == 0)
     ret = t_ret;
 
-  DB_ASSERT(LIST_FIRST(&vdp->activepips) == NULL);
+  DB_ASSERT (LIST_FIRST (&vdp->activepips) == NULL);
 
-  CDB___os_free(vdp, sizeof(VRFY_DBINFO));
+  CDB___os_free (vdp, sizeof (VRFY_DBINFO));
   return (ret);
 }
 
@@ -138,10 +138,10 @@ CDB___db_vrfy_dbinfo_destroy(vdp)
  * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t, VRFY_PAGEINFO **));
  */
 int
-CDB___db_vrfy_getpageinfo(vdp, pgno, pipp)
-  VRFY_DBINFO *vdp;
-  db_pgno_t pgno;
-  VRFY_PAGEINFO **pipp;
+CDB___db_vrfy_getpageinfo (vdp, pgno, pipp)
+     VRFY_DBINFO *vdp;
+     db_pgno_t pgno;
+     VRFY_PAGEINFO **pipp;
 {
   DBT key, data;
   DB *pgdbp;
@@ -167,40 +167,42 @@ CDB___db_vrfy_getpageinfo(vdp, pgno, pipp)
    */
 
   /* Case 1. */
-  for (pip = LIST_FIRST(&vdp->activepips); pip != NULL;
-      pip = LIST_NEXT(pip, links))
+  for (pip = LIST_FIRST (&vdp->activepips); pip != NULL;
+       pip = LIST_NEXT (pip, links))
     if (pip->pgno == pgno)
       /* Found it. */
       goto found;
 
   /* Case 2. */
   pgdbp = vdp->pgdbp;
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
-  F_SET(&data, DB_DBT_MALLOC);
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
+  F_SET (&data, DB_DBT_MALLOC);
   key.data = &pgno;
-  key.size = sizeof(db_pgno_t);
+  key.size = sizeof (db_pgno_t);
 
-  if ((ret = pgdbp->get(pgdbp, NULL, &key, &data, 0)) == 0) {
+  if ((ret = pgdbp->get (pgdbp, NULL, &key, &data, 0)) == 0)
+  {
     /* Found it. */
-    DB_ASSERT(data.size = sizeof(VRFY_PAGEINFO));
+    DB_ASSERT (data.size = sizeof (VRFY_PAGEINFO));
     pip = data.data;
-    DB_ASSERT(pip->pi_refcount == 0);
-    LIST_INSERT_HEAD(&vdp->activepips, pip, links);
+    DB_ASSERT (pip->pi_refcount == 0);
+    LIST_INSERT_HEAD (&vdp->activepips, pip, links);
     goto found;
-  } else if (ret != DB_NOTFOUND)  /* Something nasty happened. */
+  }
+  else if (ret != DB_NOTFOUND)  /* Something nasty happened. */
     return (ret);
 
   /* Case 3 */
-  if ((ret = CDB___db_vrfy_pageinfo_create(&pip)) != 0)
+  if ((ret = CDB___db_vrfy_pageinfo_create (&pip)) != 0)
     return (ret);
 
-  LIST_INSERT_HEAD(&vdp->activepips, pip, links);
-found:  pip->pi_refcount++;
+  LIST_INSERT_HEAD (&vdp->activepips, pip, links);
+found:pip->pi_refcount++;
 
   *pipp = pip;
 
-  DB_ASSERT(pip->pi_refcount > 0);
+  DB_ASSERT (pip->pi_refcount > 0);
   return (0);
 }
 
@@ -211,9 +213,9 @@ found:  pip->pi_refcount++;
  * PUBLIC: int CDB___db_vrfy_putpageinfo __P((VRFY_DBINFO *, VRFY_PAGEINFO *));
  */
 int
-CDB___db_vrfy_putpageinfo(vdp, pip)
-  VRFY_DBINFO *vdp;
-  VRFY_PAGEINFO *pip;
+CDB___db_vrfy_putpageinfo (vdp, pip)
+     VRFY_DBINFO *vdp;
+     VRFY_PAGEINFO *pip;
 {
   DBT key, data;
   DB *pgdbp;
@@ -229,33 +231,33 @@ CDB___db_vrfy_putpageinfo(vdp, pip)
     return (0);
 
   pgdbp = vdp->pgdbp;
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
 
   key.data = &pip->pgno;
-  key.size = sizeof(db_pgno_t);
+  key.size = sizeof (db_pgno_t);
   data.data = pip;
-  data.size = sizeof(VRFY_PAGEINFO);
+  data.size = sizeof (VRFY_PAGEINFO);
 
-  if ((ret = pgdbp->put(pgdbp, NULL, &key, &data, 0)) != 0)
+  if ((ret = pgdbp->put (pgdbp, NULL, &key, &data, 0)) != 0)
     return (ret);
 
-  for (p = LIST_FIRST(&vdp->activepips); p != NULL;
-      p = LIST_NEXT(p, links))
-    if (p == pip) {
+  for (p = LIST_FIRST (&vdp->activepips); p != NULL; p = LIST_NEXT (p, links))
+    if (p == pip)
+    {
 #ifdef DIAGNOSTIC
       found++;
 #endif
-      DB_ASSERT(p->pi_refcount == 0);
-      LIST_REMOVE(p, links);
+      DB_ASSERT (p->pi_refcount == 0);
+      LIST_REMOVE (p, links);
       break;
     }
 #ifdef DIAGNOSTIC
-  DB_ASSERT(found == 1);
+  DB_ASSERT (found == 1);
 #endif
 
-  DB_ASSERT(pip->pi_refcount == 0);
-  CDB___os_free(pip, 0);
+  DB_ASSERT (pip->pi_refcount == 0);
+  CDB___os_free (pip, 0);
   return (0);
 }
 
@@ -268,22 +270,22 @@ CDB___db_vrfy_putpageinfo(vdp, pip)
  * PUBLIC: int CDB___db_vrfy_pgset __P((DB_ENV *, u_int32_t, DB **));
  */
 int
-CDB___db_vrfy_pgset(dbenv, pgsize, dbpp)
-  DB_ENV *dbenv;
-  u_int32_t pgsize;
-  DB **dbpp;
+CDB___db_vrfy_pgset (dbenv, pgsize, dbpp)
+     DB_ENV *dbenv;
+     u_int32_t pgsize;
+     DB **dbpp;
 {
   DB *dbp;
   int ret;
 
-  if ((ret = CDB_db_create(&dbp, dbenv, 0)) != 0)
+  if ((ret = CDB_db_create (&dbp, dbenv, 0)) != 0)
     return (ret);
-  if ((ret = dbp->set_pagesize(dbp, pgsize)) != 0)
+  if ((ret = dbp->set_pagesize (dbp, pgsize)) != 0)
     goto err;
-  if ((ret = dbp->open(dbp, NULL, NULL, DB_BTREE, DB_CREATE, 0600)) == 0)
+  if ((ret = dbp->open (dbp, NULL, NULL, DB_BTREE, DB_CREATE, 0600)) == 0)
     *dbpp = dbp;
   else
-err:    (void)dbp->close(dbp, 0);
+  err:(void) dbp->close (dbp, 0);
 
   return (ret);
 }
@@ -296,27 +298,29 @@ err:    (void)dbp->close(dbp, 0);
  * PUBLIC: int CDB___db_vrfy_pgset_get __P((DB *, db_pgno_t, int *));
  */
 int
-CDB___db_vrfy_pgset_get(dbp, pgno, valp)
-  DB *dbp;
-  db_pgno_t pgno;
-  int *valp;
+CDB___db_vrfy_pgset_get (dbp, pgno, valp)
+     DB *dbp;
+     db_pgno_t pgno;
+     int *valp;
 {
   DBT key, data;
   int ret, val;
 
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
 
   key.data = &pgno;
-  key.size = sizeof(db_pgno_t);
+  key.size = sizeof (db_pgno_t);
   data.data = &val;
-  data.ulen = sizeof(int);
-  F_SET(&data, DB_DBT_USERMEM);
+  data.ulen = sizeof (int);
+  F_SET (&data, DB_DBT_USERMEM);
 
-  if ((ret = dbp->get(dbp, NULL, &key, &data, 0)) == 0) {
-    DB_ASSERT(data.size = sizeof(int));
-    memcpy(&val, data.data, sizeof(int));
-  } else if (ret == DB_NOTFOUND)
+  if ((ret = dbp->get (dbp, NULL, &key, &data, 0)) == 0)
+  {
+    DB_ASSERT (data.size = sizeof (int));
+    memcpy (&val, data.data, sizeof (int));
+  }
+  else if (ret == DB_NOTFOUND)
     val = 0;
   else
     return (ret);
@@ -332,12 +336,12 @@ CDB___db_vrfy_pgset_get(dbp, pgno, valp)
  * PUBLIC: int CDB___db_vrfy_pgset_inc __P((DB *, db_pgno_t));
  */
 int
-CDB___db_vrfy_pgset_inc(dbp, pgno)
-  DB *dbp;
-  db_pgno_t pgno;
+CDB___db_vrfy_pgset_inc (dbp, pgno)
+     DB *dbp;
+     db_pgno_t pgno;
 {
 
-  return (__db_vrfy_pgset_iinc(dbp, pgno, 1));
+  return (__db_vrfy_pgset_iinc (dbp, pgno, 1));
 }
 
 /*
@@ -347,12 +351,12 @@ CDB___db_vrfy_pgset_inc(dbp, pgno)
  * PUBLIC: int CDB___db_vrfy_pgset_dec __P((DB *, db_pgno_t));
  */
 int
-CDB___db_vrfy_pgset_dec(dbp, pgno)
-  DB *dbp;
-  db_pgno_t pgno;
+CDB___db_vrfy_pgset_dec (dbp, pgno)
+     DB *dbp;
+     db_pgno_t pgno;
 {
 
-  return (__db_vrfy_pgset_iinc(dbp, pgno, -1));
+  return (__db_vrfy_pgset_iinc (dbp, pgno, -1));
 }
 
 /*
@@ -361,36 +365,38 @@ CDB___db_vrfy_pgset_dec(dbp, pgno)
  *
  */
 static int
-__db_vrfy_pgset_iinc(dbp, pgno, i)
-  DB *dbp;
-  db_pgno_t pgno;
-  int i;
+__db_vrfy_pgset_iinc (dbp, pgno, i)
+     DB *dbp;
+     db_pgno_t pgno;
+     int i;
 {
   DBT key, data;
   int ret;
   int val;
 
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
 
   val = 0;
 
   key.data = &pgno;
-  key.size = sizeof(db_pgno_t);
+  key.size = sizeof (db_pgno_t);
   data.data = &val;
-  data.ulen = sizeof(int);
-  F_SET(&data, DB_DBT_USERMEM);
+  data.ulen = sizeof (int);
+  F_SET (&data, DB_DBT_USERMEM);
 
-  if ((ret = dbp->get(dbp, NULL, &key, &data, 0)) == 0) {
-    DB_ASSERT(data.size = sizeof(int));
-    memcpy(&val, data.data, sizeof(int));
-  } else if (ret != DB_NOTFOUND)
+  if ((ret = dbp->get (dbp, NULL, &key, &data, 0)) == 0)
+  {
+    DB_ASSERT (data.size = sizeof (int));
+    memcpy (&val, data.data, sizeof (int));
+  }
+  else if (ret != DB_NOTFOUND)
     return (ret);
 
-  data.size = sizeof(int);
+  data.size = sizeof (int);
   val += i;
 
-  return (dbp->put(dbp, NULL, &key, &data, 0));
+  return (dbp->put (dbp, NULL, &key, &data, 0));
 }
 
 /*
@@ -401,26 +407,26 @@ __db_vrfy_pgset_iinc(dbp, pgno, i)
  * PUBLIC: int CDB___db_vrfy_pgset_next __P((DBC *, db_pgno_t *));
  */
 int
-CDB___db_vrfy_pgset_next(dbc, pgnop)
-  DBC *dbc;
-  db_pgno_t *pgnop;
+CDB___db_vrfy_pgset_next (dbc, pgnop)
+     DBC *dbc;
+     db_pgno_t *pgnop;
 {
   DBT key, data;
   db_pgno_t pgno;
   int ret;
 
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
   /* We don't care about the data, just the keys. */
-  F_SET(&data, DB_DBT_USERMEM | DB_DBT_PARTIAL);
-  F_SET(&key, DB_DBT_USERMEM);
+  F_SET (&data, DB_DBT_USERMEM | DB_DBT_PARTIAL);
+  F_SET (&key, DB_DBT_USERMEM);
   key.data = &pgno;
-  key.ulen = sizeof(db_pgno_t);
+  key.ulen = sizeof (db_pgno_t);
 
-  if ((ret = dbc->c_get(dbc, &key, &data, DB_NEXT)) != 0)
+  if ((ret = dbc->c_get (dbc, &key, &data, DB_NEXT)) != 0)
     return (ret);
 
-  DB_ASSERT(key.size == sizeof(db_pgno_t));
+  DB_ASSERT (key.size == sizeof (db_pgno_t));
   *pgnop = pgno;
 
   return (0);
@@ -434,9 +440,9 @@ CDB___db_vrfy_pgset_next(dbc, pgnop)
  * PUBLIC: int CDB___db_vrfy_childcursor __P((VRFY_DBINFO *, DBC **));
  */
 int
-CDB___db_vrfy_childcursor(vdp, dbcp)
-  VRFY_DBINFO *vdp;
-  DBC **dbcp;
+CDB___db_vrfy_childcursor (vdp, dbcp)
+     VRFY_DBINFO *vdp;
+     DBC **dbcp;
 {
   DB *cdbp;
   DBC *dbc;
@@ -444,7 +450,7 @@ CDB___db_vrfy_childcursor(vdp, dbcp)
 
   cdbp = vdp->cdbp;
 
-  if ((ret = cdbp->cursor(cdbp, NULL, &dbc, 0)) == 0)
+  if ((ret = cdbp->cursor (cdbp, NULL, &dbc, 0)) == 0)
     *dbcp = dbc;
 
   return (ret);
@@ -458,24 +464,24 @@ CDB___db_vrfy_childcursor(vdp, dbcp)
  * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t, VRFY_CHILDINFO *));
  */
 int
-CDB___db_vrfy_childput(vdp, pgno, cip)
-  VRFY_DBINFO *vdp;
-  db_pgno_t pgno;
-  VRFY_CHILDINFO *cip;
+CDB___db_vrfy_childput (vdp, pgno, cip)
+     VRFY_DBINFO *vdp;
+     db_pgno_t pgno;
+     VRFY_CHILDINFO *cip;
 {
   DBT key, data;
   DB *cdbp;
   int ret;
 
   cdbp = vdp->cdbp;
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
 
   key.data = &pgno;
-  key.size = sizeof(db_pgno_t);
+  key.size = sizeof (db_pgno_t);
 
   data.data = cip;
-  data.size = sizeof(VRFY_CHILDINFO);
+  data.size = sizeof (VRFY_CHILDINFO);
 
   /*
    * Don't add duplicate (data) entries for a given child, and accept
@@ -483,7 +489,7 @@ CDB___db_vrfy_childput(vdp, pgno, cip)
    * each child once, even if a child (such as an overflow key) is
    * multiply referenced.
    */
-  ret = cdbp->put(cdbp, NULL, &key, &data, DB_NODUPDATA);
+  ret = cdbp->put (cdbp, NULL, &key, &data, DB_NODUPDATA);
   return (ret == DB_KEYEXIST ? 0 : ret);
 }
 
@@ -495,25 +501,25 @@ CDB___db_vrfy_childput(vdp, pgno, cip)
  * PUBLIC: int CDB___db_vrfy_ccset __P((DBC *, db_pgno_t, VRFY_CHILDINFO **));
  */
 int
-CDB___db_vrfy_ccset(dbc, pgno, cipp)
-  DBC *dbc;
-  db_pgno_t pgno;
-  VRFY_CHILDINFO **cipp;
+CDB___db_vrfy_ccset (dbc, pgno, cipp)
+     DBC *dbc;
+     db_pgno_t pgno;
+     VRFY_CHILDINFO **cipp;
 {
   DBT key, data;
   int ret;
 
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
 
   key.data = &pgno;
-  key.size = sizeof(db_pgno_t);
+  key.size = sizeof (db_pgno_t);
 
-  if ((ret = dbc->c_get(dbc, &key, &data, DB_SET)) != 0)
+  if ((ret = dbc->c_get (dbc, &key, &data, DB_SET)) != 0)
     return (ret);
 
-  DB_ASSERT(data.size == sizeof(VRFY_CHILDINFO));
-  *cipp = (VRFY_CHILDINFO *)data.data;
+  DB_ASSERT (data.size == sizeof (VRFY_CHILDINFO));
+  *cipp = (VRFY_CHILDINFO *) data.data;
 
   return (0);
 }
@@ -527,21 +533,21 @@ CDB___db_vrfy_ccset(dbc, pgno, cipp)
  * PUBLIC: int CDB___db_vrfy_ccnext __P((DBC *, VRFY_CHILDINFO **));
  */
 int
-CDB___db_vrfy_ccnext(dbc, cipp)
-  DBC *dbc;
-  VRFY_CHILDINFO **cipp;
+CDB___db_vrfy_ccnext (dbc, cipp)
+     DBC *dbc;
+     VRFY_CHILDINFO **cipp;
 {
   DBT key, data;
   int ret;
 
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
 
-  if ((ret = dbc->c_get(dbc, &key, &data, DB_NEXT_DUP)) != 0)
+  if ((ret = dbc->c_get (dbc, &key, &data, DB_NEXT_DUP)) != 0)
     return (ret);
 
-  DB_ASSERT(data.size == sizeof(VRFY_CHILDINFO));
-  *cipp = (VRFY_CHILDINFO *)data.data;
+  DB_ASSERT (data.size == sizeof (VRFY_CHILDINFO));
+  *cipp = (VRFY_CHILDINFO *) data.data;
 
   return (0);
 }
@@ -558,11 +564,11 @@ CDB___db_vrfy_ccnext(dbc, cipp)
  * PUBLIC: int CDB___db_vrfy_ccclose __P((DBC *));
  */
 int
-CDB___db_vrfy_ccclose(dbc)
-  DBC *dbc;
+CDB___db_vrfy_ccclose (dbc)
+     DBC *dbc;
 {
 
-  return (dbc->c_close(dbc));
+  return (dbc->c_close (dbc));
 }
 
 /*
@@ -572,17 +578,18 @@ CDB___db_vrfy_ccclose(dbc)
  * PUBLIC: int CDB___db_vrfy_pageinfo_create __P((VRFY_PAGEINFO **));
  */
 int
-CDB___db_vrfy_pageinfo_create(pgipp)
-  VRFY_PAGEINFO **pgipp;
+CDB___db_vrfy_pageinfo_create (pgipp)
+     VRFY_PAGEINFO **pgipp;
 {
   VRFY_PAGEINFO *pgip;
   int ret;
 
-  if ((ret = CDB___os_calloc(NULL,
-      1, sizeof(VRFY_PAGEINFO), (void **)&pgip)) != 0)
+  if ((ret = CDB___os_calloc (NULL,
+                              1, sizeof (VRFY_PAGEINFO),
+                              (void **) &pgip)) != 0)
     return (ret);
 
-  DB_ASSERT(pgip->pi_refcount == 0);
+  DB_ASSERT (pgip->pi_refcount == 0);
 
   *pgipp = pgip;
   return (0);
@@ -595,25 +602,25 @@ CDB___db_vrfy_pageinfo_create(pgipp)
  * PUBLIC: int  CDB___db_salvage_init __P((VRFY_DBINFO *));
  */
 int
-CDB___db_salvage_init(vdp)
-  VRFY_DBINFO *vdp;
+CDB___db_salvage_init (vdp)
+     VRFY_DBINFO *vdp;
 {
   DB *dbp;
   int ret;
 
-  if ((ret = CDB_db_create(&dbp, NULL, 0)) != 0)
+  if ((ret = CDB_db_create (&dbp, NULL, 0)) != 0)
     return (ret);
 
-  if ((ret = dbp->set_pagesize(dbp, 1024)) != 0)
+  if ((ret = dbp->set_pagesize (dbp, 1024)) != 0)
     goto err;
 
-  if ((ret = dbp->open(dbp, NULL, NULL, DB_BTREE, DB_CREATE, 0)) != 0)
+  if ((ret = dbp->open (dbp, NULL, NULL, DB_BTREE, DB_CREATE, 0)) != 0)
     goto err;
 
   vdp->salvage_pages = dbp;
   return (0);
 
-err:  (void)dbp->close(dbp, 0);
+err:(void) dbp->close (dbp, 0);
   return (ret);
 }
 
@@ -623,10 +630,10 @@ err:  (void)dbp->close(dbp, 0);
  * PUBLIC: void  CDB___db_salvage_destroy __P((VRFY_DBINFO *));
  */
 void
-CDB___db_salvage_destroy(vdp)
-  VRFY_DBINFO *vdp;
+CDB___db_salvage_destroy (vdp)
+     VRFY_DBINFO *vdp;
 {
-  (void)vdp->salvage_pages->close(vdp->salvage_pages, 0);
+  (void) vdp->salvage_pages->close (vdp->salvage_pages, 0);
 }
 
 /*
@@ -639,10 +646,10 @@ CDB___db_salvage_destroy(vdp)
  * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t *, u_int32_t *));
  */
 int
-CDB___db_salvage_getnext(vdp, pgnop, pgtypep)
-  VRFY_DBINFO *vdp;
-  db_pgno_t *pgnop;
-  u_int32_t *pgtypep;
+CDB___db_salvage_getnext (vdp, pgnop, pgtypep)
+     VRFY_DBINFO *vdp;
+     db_pgno_t *pgnop;
+     u_int32_t *pgtypep;
 {
   DB *dbp;
   DBC *dbc;
@@ -652,17 +659,18 @@ CDB___db_salvage_getnext(vdp, pgnop, pgtypep)
 
   dbp = vdp->salvage_pages;
 
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
 
-  if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
+  if ((ret = dbp->cursor (dbp, NULL, &dbc, 0)) != 0)
     return (ret);
 
-  while ((ret = dbc->c_get(dbc, &key, &data, DB_NEXT)) == 0) {
-    DB_ASSERT(data.size == sizeof(u_int32_t));
-    memcpy(&pgtype, data.data, sizeof(pgtype));
+  while ((ret = dbc->c_get (dbc, &key, &data, DB_NEXT)) == 0)
+  {
+    DB_ASSERT (data.size == sizeof (u_int32_t));
+    memcpy (&pgtype, data.data, sizeof (pgtype));
 
-    if ((ret = dbc->c_del(dbc, 0)) != 0)
+    if ((ret = dbc->c_del (dbc, 0)) != 0)
       goto err;
     if (pgtype != SALVAGE_IGNORE)
       goto found;
@@ -670,15 +678,16 @@ CDB___db_salvage_getnext(vdp, pgnop, pgtypep)
 
   /* No more entries--ret probably equals DB_NOTFOUND. */
 
-  if (0) {
-found:    DB_ASSERT(key.size == sizeof(db_pgno_t));
-    DB_ASSERT(data.size == sizeof(u_int32_t));
+  if (0)
+  {
+  found:DB_ASSERT (key.size == sizeof (db_pgno_t));
+    DB_ASSERT (data.size == sizeof (u_int32_t));
 
-    *pgnop = *(db_pgno_t *)key.data;
-    *pgtypep = *(u_int32_t *)data.data;
+    *pgnop = *(db_pgno_t *) key.data;
+    *pgtypep = *(u_int32_t *) data.data;
   }
 
-err:  (void)dbc->c_close(dbc);
+err:(void) dbc->c_close (dbc);
   return (ret);
 }
 
@@ -693,9 +702,9 @@ err:  (void)dbc->c_close(dbc);
  * PUBLIC: int CDB___db_salvage_isdone __P((VRFY_DBINFO *, db_pgno_t));
  */
 int
-CDB___db_salvage_isdone(vdp, pgno)
-  VRFY_DBINFO *vdp;
-  db_pgno_t pgno;
+CDB___db_salvage_isdone (vdp, pgno)
+     VRFY_DBINFO *vdp;
+     db_pgno_t pgno;
 {
   DBT key, data;
   DB *dbp;
@@ -704,16 +713,16 @@ CDB___db_salvage_isdone(vdp, pgno)
 
   dbp = vdp->salvage_pages;
 
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
 
   currtype = SALVAGE_INVALID;
   data.data = &currtype;
-  data.ulen = sizeof(u_int32_t);
+  data.ulen = sizeof (u_int32_t);
   data.flags = DB_DBT_USERMEM;
 
   key.data = &pgno;
-  key.size = sizeof(db_pgno_t);
+  key.size = sizeof (db_pgno_t);
 
   /*
    * Put an entry for this page, with pgno as key and type as data,
@@ -721,8 +730,9 @@ CDB___db_salvage_isdone(vdp, pgno)
    * If it's there and is marked anything else, that's fine--we
    * want to mark it done.
    */
-  ret = dbp->get(dbp, NULL, &key, &data, 0);
-  if (ret == 0) {
+  ret = dbp->get (dbp, NULL, &key, &data, 0);
+  if (ret == 0)
+  {
     /*
      * The key's already here.  Check and see if it's already
      * marked done.  If it is, return DB_KEYEXIST.  If it's not,
@@ -732,7 +742,8 @@ CDB___db_salvage_isdone(vdp, pgno)
       return (DB_KEYEXIST);
     else
       return (0);
-  } else if (ret != DB_NOTFOUND)
+  }
+  else if (ret != DB_NOTFOUND)
     return (ret);
 
   /* The pgno is not yet marked anything; return 0. */
@@ -746,9 +757,9 @@ CDB___db_salvage_isdone(vdp, pgno)
  * PUBLIC: int CDB___db_salvage_markdone __P((VRFY_DBINFO *, db_pgno_t));
  */
 int
-CDB___db_salvage_markdone(vdp, pgno)
-  VRFY_DBINFO *vdp;
-  db_pgno_t pgno;
+CDB___db_salvage_markdone (vdp, pgno)
+     VRFY_DBINFO *vdp;
+     db_pgno_t pgno;
 {
   DBT key, data;
   DB *dbp;
@@ -758,16 +769,16 @@ CDB___db_salvage_markdone(vdp, pgno)
   pgtype = SALVAGE_IGNORE;
   dbp = vdp->salvage_pages;
 
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
 
   currtype = SALVAGE_INVALID;
   data.data = &currtype;
-  data.ulen = sizeof(u_int32_t);
+  data.ulen = sizeof (u_int32_t);
   data.flags = DB_DBT_USERMEM;
 
   key.data = &pgno;
-  key.size = sizeof(db_pgno_t);
+  key.size = sizeof (db_pgno_t);
 
   /*
    * Put an entry for this page, with pgno as key and type as data,
@@ -776,13 +787,13 @@ CDB___db_salvage_markdone(vdp, pgno)
    * want to mark it done, but db_salvage_isdone only lets
    * us know if it's marked IGNORE.
    */
-  if ((ret = CDB___db_salvage_isdone(vdp, pgno)) != 0)
+  if ((ret = CDB___db_salvage_isdone (vdp, pgno)) != 0)
     return (ret);
 
-  data.size = sizeof(u_int32_t);
+  data.size = sizeof (u_int32_t);
   data.data = &pgtype;
 
-  return (dbp->put(dbp, NULL, &key, &data, 0));
+  return (dbp->put (dbp, NULL, &key, &data, 0));
 }
 
 /*
@@ -794,10 +805,10 @@ CDB___db_salvage_markdone(vdp, pgno)
  * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t, u_int32_t));
  */
 int
-CDB___db_salvage_markneeded(vdp, pgno, pgtype)
-  VRFY_DBINFO *vdp;
-  db_pgno_t pgno;
-  u_int32_t pgtype;
+CDB___db_salvage_markneeded (vdp, pgno, pgtype)
+     VRFY_DBINFO *vdp;
+     db_pgno_t pgno;
+     u_int32_t pgtype;
 {
   DB *dbp;
   DBT key, data;
@@ -805,20 +816,20 @@ CDB___db_salvage_markneeded(vdp, pgno, pgtype)
 
   dbp = vdp->salvage_pages;
 
-  memset(&key, 0, sizeof(DBT));
-  memset(&data, 0, sizeof(DBT));
+  memset (&key, 0, sizeof (DBT));
+  memset (&data, 0, sizeof (DBT));
 
   key.data = &pgno;
-  key.size = sizeof(db_pgno_t);
+  key.size = sizeof (db_pgno_t);
 
   data.data = &pgtype;
-  data.size = sizeof(u_int32_t);
+  data.size = sizeof (u_int32_t);
 
   /*
    * Put an entry for this page, with pgno as key and type as data,
    * unless it's already there, in which case it's presumably
    * already been marked done.
    */
-  ret = dbp->put(dbp, NULL, &key, &data, DB_NOOVERWRITE);
+  ret = dbp->put (dbp, NULL, &key, &data, DB_NOOVERWRITE);
   return (ret == DB_KEYEXIST ? 0 : ret);
 }

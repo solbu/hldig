@@ -16,7 +16,7 @@ static const char sccsid[] = "@(#)CDB_log_get.c  11.4 (Sleepycat) 9/16/99";
 #include <errno.h>
 #include <string.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -32,43 +32,45 @@ static const char sccsid[] = "@(#)CDB_log_get.c  11.4 (Sleepycat) 9/16/99";
  *  Get a log record.
  */
 int
-CDB_log_get(dbenv, alsn, dbt, flags)
-  DB_ENV *dbenv;
-  DB_LSN *alsn;
-  DBT *dbt;
-  u_int32_t flags;
+CDB_log_get (dbenv, alsn, dbt, flags)
+     DB_ENV *dbenv;
+     DB_LSN *alsn;
+     DBT *dbt;
+     u_int32_t flags;
 {
   DB_LOG *dblp;
   int ret;
 
-  PANIC_CHECK(dbenv);
-  ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
+  PANIC_CHECK (dbenv);
+  ENV_REQUIRES_CONFIG (dbenv, dbenv->lg_handle, DB_INIT_LOG);
 
   /* Validate arguments. */
   if (flags != DB_CHECKPOINT && flags != DB_CURRENT &&
       flags != DB_FIRST && flags != DB_LAST &&
       flags != DB_NEXT && flags != DB_PREV && flags != DB_SET)
-    return (CDB___db_ferr(dbenv, "CDB_log_get", 1));
+    return (CDB___db_ferr (dbenv, "CDB_log_get", 1));
 
-  if (F_ISSET(dbenv, DB_ENV_THREAD)) {
+  if (F_ISSET (dbenv, DB_ENV_THREAD))
+  {
     if (flags == DB_NEXT || flags == DB_PREV || flags == DB_CURRENT)
-      return (CDB___db_ferr(dbenv, "CDB_log_get", 1));
-    if (!F_ISSET(dbt,
-        DB_DBT_MALLOC | DB_DBT_REALLOC | DB_DBT_USERMEM))
-      return (CDB___db_ferr(dbenv, "threaded data", 1));
+      return (CDB___db_ferr (dbenv, "CDB_log_get", 1));
+    if (!F_ISSET (dbt, DB_DBT_MALLOC | DB_DBT_REALLOC | DB_DBT_USERMEM))
+      return (CDB___db_ferr (dbenv, "threaded data", 1));
   }
 
   dblp = dbenv->lg_handle;
-  R_LOCK(dbenv, &dblp->reginfo);
+  R_LOCK (dbenv, &dblp->reginfo);
 
   /*
    * If we get one of the log's header records, repeat the operation.
    * This assumes that applications don't ever request the log header
    * records by LSN, but that seems reasonable to me.
    */
-  ret = CDB___log_get(dblp, alsn, dbt, flags, 0);
-  if (ret == 0 && alsn->offset == 0) {
-    switch (flags) {
+  ret = CDB___log_get (dblp, alsn, dbt, flags, 0);
+  if (ret == 0 && alsn->offset == 0)
+  {
+    switch (flags)
+    {
     case DB_FIRST:
       flags = DB_NEXT;
       break;
@@ -76,10 +78,10 @@ CDB_log_get(dbenv, alsn, dbt, flags)
       flags = DB_PREV;
       break;
     }
-    ret = CDB___log_get(dblp, alsn, dbt, flags, 0);
+    ret = CDB___log_get (dblp, alsn, dbt, flags, 0);
   }
 
-  R_UNLOCK(dbenv, &dblp->reginfo);
+  R_UNLOCK (dbenv, &dblp->reginfo);
 
   return (ret);
 }
@@ -91,12 +93,12 @@ CDB_log_get(dbenv, alsn, dbt, flags)
  * PUBLIC: int CDB___log_get __P((DB_LOG *, DB_LSN *, DBT *, u_int32_t, int));
  */
 int
-CDB___log_get(dblp, alsn, dbt, flags, silent)
-  DB_LOG *dblp;
-  DB_LSN *alsn;
-  DBT *dbt;
-  u_int32_t flags;
-  int silent;
+CDB___log_get (dblp, alsn, dbt, flags, silent)
+     DB_LOG *dblp;
+     DB_LSN *alsn;
+     DBT *dbt;
+     u_int32_t flags;
+     int silent;
 {
   DB_LSN nlsn;
   HDR hdr;
@@ -113,24 +115,27 @@ CDB___log_get(dblp, alsn, dbt, flags, silent)
   fail = np = tbuf = NULL;
 
   nlsn = dblp->c_lsn;
-  switch (flags) {
+  switch (flags)
+  {
   case DB_CHECKPOINT:
     nlsn = lp->chkpt_lsn;
-    if (IS_ZERO_LSN(nlsn)) {
+    if (IS_ZERO_LSN (nlsn))
+    {
       ret = ENOENT;
       goto err2;
     }
     break;
-  case DB_NEXT:        /* Next log record. */
-    if (!IS_ZERO_LSN(nlsn)) {
+  case DB_NEXT:                /* Next log record. */
+    if (!IS_ZERO_LSN (nlsn))
+    {
       /* Increment the cursor by the cursor record size. */
       nlsn.offset += dblp->c_len;
       break;
     }
     /* FALLTHROUGH */
-  case DB_FIRST:        /* Find the first log record. */
+  case DB_FIRST:               /* Find the first log record. */
     /* Find the first log file. */
-    if ((ret = CDB___log_find(dblp, 1, &cnt)) != 0)
+    if ((ret = CDB___log_find (dblp, 1, &cnt)) != 0)
       goto err2;
 
     /*
@@ -144,34 +149,37 @@ CDB___log_get(dblp, alsn, dbt, flags, silent)
     nlsn.file = cnt;
     nlsn.offset = 0;
     break;
-  case DB_CURRENT:      /* Current log record. */
+  case DB_CURRENT:             /* Current log record. */
     break;
-  case DB_PREV:        /* Previous log record. */
-    if (!IS_ZERO_LSN(nlsn)) {
+  case DB_PREV:                /* Previous log record. */
+    if (!IS_ZERO_LSN (nlsn))
+    {
       /* If at start-of-file, move to the previous file. */
-      if (nlsn.offset == 0) {
-        if (nlsn.file == 1 ||
-            CDB___log_valid(dblp, nlsn.file - 1, 0) != 0)
+      if (nlsn.offset == 0)
+      {
+        if (nlsn.file == 1 || CDB___log_valid (dblp, nlsn.file - 1, 0) != 0)
           return (DB_NOTFOUND);
 
         --nlsn.file;
         nlsn.offset = dblp->c_off;
-      } else
+      }
+      else
         nlsn.offset = dblp->c_off;
       break;
     }
     /* FALLTHROUGH */
-  case DB_LAST:        /* Last log record. */
+  case DB_LAST:                /* Last log record. */
     nlsn.file = lp->lsn.file;
     nlsn.offset = lp->lsn.offset - lp->len;
     break;
-  case DB_SET:        /* Set log record. */
+  case DB_SET:                 /* Set log record. */
     nlsn = *alsn;
     break;
   }
 
-  if (0) {        /* Move to the next file. */
-next_file:  ++nlsn.file;
+  if (0)
+  {                             /* Move to the next file. */
+  next_file:++nlsn.file;
     nlsn.offset = 0;
   }
 
@@ -181,32 +189,36 @@ next_file:  ++nlsn.file;
     return (DB_NOTFOUND);
 
   /* If we've switched files, discard the current file handle. */
-  if (dblp->c_lsn.file != nlsn.file &&
-      F_ISSET(&dblp->c_fh, DB_FH_VALID))
-    (void)CDB___os_closehandle(&dblp->c_fh);
+  if (dblp->c_lsn.file != nlsn.file && F_ISSET (&dblp->c_fh, DB_FH_VALID))
+    (void) CDB___os_closehandle (&dblp->c_fh);
 
   /* If the entire record is in the in-memory buffer, copy it out. */
-  if (nlsn.file == lp->lsn.file && nlsn.offset >= lp->w_off) {
+  if (nlsn.file == lp->lsn.file && nlsn.offset >= lp->w_off)
+  {
     /* Copy the header. */
     p = dblp->bufp + (nlsn.offset - lp->w_off);
-    memcpy(&hdr, p, sizeof(HDR));
+    memcpy (&hdr, p, sizeof (HDR));
 
     /* Copy the record. */
-    len = hdr.len - sizeof(HDR);
-    if ((ret = CDB___db_retcopy(NULL, dbt, p + sizeof(HDR),
-        len, &dblp->c_dbt.data, &dblp->c_dbt.ulen)) != 0)
+    len = hdr.len - sizeof (HDR);
+    if ((ret = CDB___db_retcopy (NULL, dbt, p + sizeof (HDR),
+                                 len, &dblp->c_dbt.data,
+                                 &dblp->c_dbt.ulen)) != 0)
       goto err1;
     goto cksum;
   }
 
   /* Acquire a file descriptor. */
-  if (!F_ISSET(&dblp->c_fh, DB_FH_VALID)) {
-    if ((ret = CDB___log_name(dblp, nlsn.file,
-        &np, &dblp->c_fh, DB_OSO_RDONLY | DB_OSO_SEQ)) != 0) {
+  if (!F_ISSET (&dblp->c_fh, DB_FH_VALID))
+  {
+    if ((ret = CDB___log_name (dblp, nlsn.file,
+                               &np, &dblp->c_fh,
+                               DB_OSO_RDONLY | DB_OSO_SEQ)) != 0)
+    {
       fail = np;
       goto err1;
     }
-    CDB___os_freestr(np);
+    CDB___os_freestr (np);
     np = NULL;
   }
 
@@ -215,24 +227,29 @@ next_file:  ++nlsn.file;
    * may be pre-allocated, we have to make sure that we're not reading
    * past the information in the start of the in-memory buffer.
    */
-  if ((ret = CDB___os_seek(
-      &dblp->c_fh, 0, 0, nlsn.offset, 0, DB_OS_SEEK_SET)) != 0) {
+  if ((ret =
+       CDB___os_seek (&dblp->c_fh, 0, 0, nlsn.offset, 0,
+                      DB_OS_SEEK_SET)) != 0)
+  {
     fail = "seek";
     goto err1;
   }
-  if (nlsn.file == lp->lsn.file && nlsn.offset + sizeof(HDR) > lp->w_off)
+  if (nlsn.file == lp->lsn.file && nlsn.offset + sizeof (HDR) > lp->w_off)
     nr = lp->w_off - nlsn.offset;
   else
-    nr = sizeof(HDR);
-  if ((ret = CDB___os_read(&dblp->c_fh, &hdr, nr, &nr)) != 0) {
+    nr = sizeof (HDR);
+  if ((ret = CDB___os_read (&dblp->c_fh, &hdr, nr, &nr)) != 0)
+  {
     fail = "read";
     goto err1;
   }
-  if (nr == sizeof(HDR))
+  if (nr == sizeof (HDR))
     shortp = NULL;
-  else {
+  else
+  {
     /* If read returns EOF, try the next file. */
-    if (nr == 0) {
+    if (nr == 0)
+    {
       if (flags != DB_NEXT || nlsn.file == lp->lsn.file)
         goto corrupt;
       goto next_file;
@@ -242,12 +259,12 @@ next_file:  ++nlsn.file;
      * If read returns a short count the rest of the record has
      * to be in the in-memory buffer.
      */
-    if (lp->b_off < sizeof(HDR) - nr)
+    if (lp->b_off < sizeof (HDR) - nr)
       goto corrupt;
 
     /* Get the rest of the header from the in-memory buffer. */
-    memcpy((u_int8_t *)&hdr + nr, dblp->bufp, sizeof(HDR) - nr);
-    shortp = dblp->bufp + (sizeof(HDR) - nr);
+    memcpy ((u_int8_t *) & hdr + nr, dblp->bufp, sizeof (HDR) - nr);
+    shortp = dblp->bufp + (sizeof (HDR) - nr);
   }
 
   /*
@@ -259,16 +276,17 @@ next_file:  ++nlsn.file;
    */
   if (hdr.len == 0)
     goto next_file;
-  if (hdr.len <= sizeof(HDR) || hdr.len > lp->persist.lg_max)
+  if (hdr.len <= sizeof (HDR) || hdr.len > lp->persist.lg_max)
     goto corrupt;
-  len = hdr.len - sizeof(HDR);
+  len = hdr.len - sizeof (HDR);
 
   /* If we've already moved to the in-memory buffer, fill from there. */
-  if (shortp != NULL) {
-    if (lp->b_off < ((u_int8_t *)shortp - dblp->bufp) + len)
+  if (shortp != NULL)
+  {
+    if (lp->b_off < ((u_int8_t *) shortp - dblp->bufp) + len)
       goto corrupt;
-    if ((ret = CDB___db_retcopy(NULL, dbt, shortp, len,
-        &dblp->c_dbt.data, &dblp->c_dbt.ulen)) != 0)
+    if ((ret = CDB___db_retcopy (NULL, dbt, shortp, len,
+                                 &dblp->c_dbt.data, &dblp->c_dbt.ulen)) != 0)
       goto err1;
     goto cksum;
   }
@@ -280,7 +298,7 @@ next_file:  ++nlsn.file;
    * We're calling malloc(3) with a region locked.  This isn't
    * a good idea.
    */
-  if ((ret = CDB___os_malloc(len, NULL, &tbuf)) != 0)
+  if ((ret = CDB___os_malloc (len, NULL, &tbuf)) != 0)
     goto err1;
 
   /*
@@ -294,34 +312,37 @@ next_file:  ++nlsn.file;
    * buffer.
    */
   if (nlsn.file == lp->lsn.file &&
-      nlsn.offset + sizeof(HDR) + len > lp->w_off)
-    nr = lp->w_off - (nlsn.offset + sizeof(HDR));
+      nlsn.offset + sizeof (HDR) + len > lp->w_off)
+    nr = lp->w_off - (nlsn.offset + sizeof (HDR));
   else
     nr = len;
-  if ((ret = CDB___os_read(&dblp->c_fh, tbuf, nr, &nr)) != 0) {
+  if ((ret = CDB___os_read (&dblp->c_fh, tbuf, nr, &nr)) != 0)
+  {
     fail = "read";
     goto err1;
   }
   if (len - nr > lp->buffer_size)
     goto corrupt;
-  if (nr != (ssize_t)len) {
+  if (nr != (ssize_t) len)
+  {
     if (lp->b_off < len - nr)
       goto corrupt;
 
     /* Get the rest of the record from the in-memory buffer. */
-    memcpy((u_int8_t *)tbuf + nr, dblp->bufp, len - nr);
+    memcpy ((u_int8_t *) tbuf + nr, dblp->bufp, len - nr);
   }
 
   /* Copy the record into the user's DBT. */
-  if ((ret = CDB___db_retcopy(NULL, dbt, tbuf, len,
-      &dblp->c_dbt.data, &dblp->c_dbt.ulen)) != 0)
+  if ((ret = CDB___db_retcopy (NULL, dbt, tbuf, len,
+                               &dblp->c_dbt.data, &dblp->c_dbt.ulen)) != 0)
     goto err1;
-  CDB___os_free(tbuf, 0);
+  CDB___os_free (tbuf, 0);
   tbuf = NULL;
 
-cksum:  if (hdr.cksum != CDB___ham_func4(dbt->data, dbt->size)) {
+cksum:if (hdr.cksum != CDB___ham_func4 (dbt->data, dbt->size))
+  {
     if (!silent)
-      CDB___db_err(dblp->dbenv, "CDB_log_get: checksum mismatch");
+      CDB___db_err (dblp->dbenv, "CDB_log_get: checksum mismatch");
     goto corrupt;
   }
 
@@ -332,24 +353,25 @@ cksum:  if (hdr.cksum != CDB___ham_func4(dbt->data, dbt->size)) {
 
   return (0);
 
-corrupt:/*
-   * This is the catchall -- for some reason we didn't find enough
-   * information or it wasn't reasonable information, and it wasn't
-   * because a system call failed.
-   */
+corrupt:                       /*
+                                 * This is the catchall -- for some reason we didn't find enough
+                                 * information or it wasn't reasonable information, and it wasn't
+                                 * because a system call failed.
+                                 */
   ret = EIO;
   fail = "read";
 
-err1:  if (!silent) {
+err1:if (!silent)
+  {
     if (fail == NULL)
-      CDB___db_err(dblp->dbenv, "CDB_log_get: %s", CDB_db_strerror(ret));
+      CDB___db_err (dblp->dbenv, "CDB_log_get: %s", CDB_db_strerror (ret));
     else
-      CDB___db_err(dblp->dbenv,
-          "CDB_log_get: %s: %s", fail, CDB_db_strerror(ret));
+      CDB___db_err (dblp->dbenv,
+                    "CDB_log_get: %s: %s", fail, CDB_db_strerror (ret));
   }
-err2:  if (np != NULL)
-    CDB___os_freestr(np);
+err2:if (np != NULL)
+    CDB___os_freestr (np);
   if (tbuf != NULL)
-    CDB___os_free(tbuf, 0);
+    CDB___os_free (tbuf, 0);
   return (ret);
 }

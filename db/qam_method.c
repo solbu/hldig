@@ -26,14 +26,14 @@ static const char sccsid[] = "@(#)qam_method.c  11.1 (Sleepycat) 8/19/99";
  * PUBLIC: int CDB___qam_db_create __P((DB *));
  */
 int
-CDB___qam_db_create(dbp)
-  DB *dbp;
+CDB___qam_db_create (dbp)
+     DB *dbp;
 {
   QUEUE *t;
   int ret;
 
   /* Allocate and initialize the private queue structure. */
-  if ((ret = CDB___os_calloc(1, sizeof(QUEUE), &t)) != 0)
+  if ((ret = CDB___os_calloc (1, sizeof (QUEUE), &t)) != 0)
     return (ret);
   dbp->q_internal = t;
 
@@ -49,14 +49,14 @@ CDB___qam_db_create(dbp)
  * PUBLIC: int CDB___qam_db_close __P((DB *));
  */
 int
-CDB___qam_db_close(dbp)
-  DB *dbp;
+CDB___qam_db_close (dbp)
+     DB *dbp;
 {
   QUEUE *t;
 
   t = dbp->q_internal;
 
-  CDB___os_free(t, sizeof(QUEUE));
+  CDB___os_free (t, sizeof (QUEUE));
   dbp->q_internal = NULL;
 
   return (0);

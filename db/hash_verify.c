@@ -10,7 +10,8 @@
 #include "htconfig.h"
 
 #ifndef lint
-static const char revid[] = "$Id: hash_verify.c,v 1.2 2002/02/02 18:18:05 ghutchis Exp $";
+static const char revid[] =
+  "$Id: hash_verify.c,v 1.2 2002/02/02 18:18:05 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,11 +27,12 @@ static const char revid[] = "$Id: hash_verify.c,v 1.2 2002/02/02 18:18:05 ghutch
 #include "btree.h"
 #include "hash.h"
 
-static int __ham_dups_unsorted __P((DB *, u_int8_t *, u_int32_t));
-static int __ham_vrfy_bucket __P((DB *, VRFY_DBINFO *, HMETA *, u_int32_t,
-    u_int32_t));
-static int __ham_vrfy_item __P((DB *,
-    VRFY_DBINFO *, db_pgno_t, PAGE *, u_int32_t, u_int32_t));
+static int __ham_dups_unsorted __P ((DB *, u_int8_t *, u_int32_t));
+static int __ham_vrfy_bucket __P ((DB *, VRFY_DBINFO *, HMETA *, u_int32_t,
+                                   u_int32_t));
+static int __ham_vrfy_item __P ((DB *,
+                                 VRFY_DBINFO *, db_pgno_t, PAGE *, u_int32_t,
+                                 u_int32_t));
 
 /*
  * CDB___ham_vrfy_meta --
@@ -44,20 +46,20 @@ static int __ham_vrfy_item __P((DB *,
  * PUBLIC:     db_pgno_t, u_int32_t));
  */
 int
-CDB___ham_vrfy_meta(dbp, vdp, m, pgno, flags)
-  DB *dbp;
-  VRFY_DBINFO *vdp;
-  HMETA *m;
-  db_pgno_t pgno;
-  u_int32_t flags;
+CDB___ham_vrfy_meta (dbp, vdp, m, pgno, flags)
+     DB *dbp;
+     VRFY_DBINFO *vdp;
+     HMETA *m;
+     db_pgno_t pgno;
+     u_int32_t flags;
 {
   HASH *hashp;
   VRFY_PAGEINFO *pip;
   int i, ret, t_ret, isbad;
   u_int32_t pwr, mbucket;
-  u_int32_t (*hfunc) __P((const void *, u_int32_t));
+  u_int32_t (*hfunc) __P ((const void *, u_int32_t));
 
-  if ((ret = CDB___db_vrfy_getpageinfo(vdp, pgno, &pip)) != 0)
+  if ((ret = CDB___db_vrfy_getpageinfo (vdp, pgno, &pip)) != 0)
     return (ret);
   isbad = 0;
 
@@ -72,8 +74,9 @@ CDB___ham_vrfy_meta(dbp, vdp, m, pgno, flags)
    * If we haven't already checked the common fields in pagezero,
    * check them.
    */
-  if (!F_ISSET(pip, VRFY_INCOMPLETE) &&
-      (ret = CDB___db_vrfy_meta(dbp, vdp, &m->dbmeta, pgno, flags)) != 0) {
+  if (!F_ISSET (pip, VRFY_INCOMPLETE) &&
+      (ret = CDB___db_vrfy_meta (dbp, vdp, &m->dbmeta, pgno, flags)) != 0)
+  {
     if (ret == DB_VERIFY_BAD)
       isbad = 1;
     else
@@ -81,11 +84,11 @@ CDB___ham_vrfy_meta(dbp, vdp, m, pgno, flags)
   }
 
   /* h_charkey */
-  if (!LF_ISSET(DB_NOORDERCHK))
-    if (m->h_charkey != hfunc(CHARKEY, sizeof(CHARKEY))) {
-      EPRINT((dbp->dbenv,
-"Database has different custom hash function; reverify with DB_NOORDERCHK set"
-          ));
+  if (!LF_ISSET (DB_NOORDERCHK))
+    if (m->h_charkey != hfunc (CHARKEY, sizeof (CHARKEY)))
+    {
+      EPRINT ((dbp->dbenv,
+               "Database has different custom hash function; reverify with DB_NOORDERCHK set"));
       /*
        * Return immediately;  this is probably a sign
        * of user error rather than database corruption, so
@@ -96,10 +99,11 @@ CDB___ham_vrfy_meta(dbp, vdp, m, pgno, flags)
     }
 
   /* max_bucket must be less than the last pgno. */
-  if (m->max_bucket > vdp->last_pgno) {
-    EPRINT((dbp->dbenv,
-        "Impossible max_bucket %lu on meta page %lu",
-        m->max_bucket, pgno));
+  if (m->max_bucket > vdp->last_pgno)
+  {
+    EPRINT ((dbp->dbenv,
+             "Impossible max_bucket %lu on meta page %lu",
+             m->max_bucket, pgno));
     /*
      * Most other fields depend somehow on max_bucket, so
      * we just return--there will be lots of extraneous
@@ -116,18 +120,20 @@ CDB___ham_vrfy_meta(dbp, vdp, m, pgno, flags)
    *
    *
    */
-  pwr = (m->max_bucket == 0) ? 1 : 1 << CDB___db_log2(m->max_bucket + 1);
-  if (m->high_mask != pwr - 1) {
-    EPRINT((dbp->dbenv,
-        "Incorrect high_mask %lu on page %lu, should be %lu",
-        m->high_mask, pgno, pwr - 1));
+  pwr = (m->max_bucket == 0) ? 1 : 1 << CDB___db_log2 (m->max_bucket + 1);
+  if (m->high_mask != pwr - 1)
+  {
+    EPRINT ((dbp->dbenv,
+             "Incorrect high_mask %lu on page %lu, should be %lu",
+             m->high_mask, pgno, pwr - 1));
     isbad = 1;
   }
   pwr >>= 1;
-  if (m->low_mask != pwr - 1) {
-    EPRINT((dbp->dbenv,
-        "Incorrect low_mask %lu on page %lu, should be %lu",
-        m->low_mask, pgno, pwr - 1));
+  if (m->low_mask != pwr - 1)
+  {
+    EPRINT ((dbp->dbenv,
+             "Incorrect low_mask %lu on page %lu, should be %lu",
+             m->low_mask, pgno, pwr - 1));
     isbad = 1;
   }
 
@@ -139,40 +145,41 @@ CDB___ham_vrfy_meta(dbp, vdp, m, pgno, flags)
    * same check that hash_upgrade does, since there was a bug in 2.X
    * which could make nelem go "negative".
    */
-  if (m->nelem > 0x80000000) {
-    EPRINT((dbp->dbenv,
-        "Suspiciously high nelem of %lu on page %lu",
-        m->nelem, pgno));
+  if (m->nelem > 0x80000000)
+  {
+    EPRINT ((dbp->dbenv,
+             "Suspiciously high nelem of %lu on page %lu", m->nelem, pgno));
     isbad = 1;
     pip->h_nelem = 0;
-  } else
+  }
+  else
     pip->h_nelem = m->nelem;
 
   /* flags */
-  if (F_ISSET(&m->dbmeta, DB_HASH_DUP))
-    F_SET(pip, VRFY_HAS_DUPS);
-  if (F_ISSET(&m->dbmeta, DB_HASH_DUPSORT))
-    F_SET(pip, VRFY_HAS_DUPSORT);
+  if (F_ISSET (&m->dbmeta, DB_HASH_DUP))
+    F_SET (pip, VRFY_HAS_DUPS);
+  if (F_ISSET (&m->dbmeta, DB_HASH_DUPSORT))
+    F_SET (pip, VRFY_HAS_DUPSORT);
   /* XXX: Why is the DB_HASH_SUBDB flag necessary? */
 
   /* spares array */
-  for (i = 0; m->spares[i] != 0 && i < NCACHED; i++) {
+  for (i = 0; m->spares[i] != 0 && i < NCACHED; i++)
+  {
     /*
      * We set mbucket to the maximum bucket that would use a given
      * spares entry;  we want to ensure that it's always less
      * than last_pgno.
      */
     mbucket = (1 << i) - 1;
-    if (mbucket + m->spares[CDB___db_log2(mbucket + 1)] >
-        vdp->last_pgno) {
-      EPRINT((dbp->dbenv,
-          "Spares array entry %lu, page %lu is invalid",
-          i, pgno));
+    if (mbucket + m->spares[CDB___db_log2 (mbucket + 1)] > vdp->last_pgno)
+    {
+      EPRINT ((dbp->dbenv,
+               "Spares array entry %lu, page %lu is invalid", i, pgno));
       isbad = 1;
     }
   }
 
-err:  if ((t_ret = CDB___db_vrfy_putpageinfo(vdp, pip)) != 0 && ret == 0)
+err:if ((t_ret = CDB___db_vrfy_putpageinfo (vdp, pip)) != 0 && ret == 0)
     ret = t_ret;
   return ((ret == 0 && isbad == 1) ? DB_VERIFY_BAD : ret);
 }
@@ -185,35 +192,38 @@ err:  if ((t_ret = CDB___db_vrfy_putpageinfo(vdp, pip)) != 0 && ret == 0)
  * PUBLIC:     u_int32_t));
  */
 int
-CDB___ham_vrfy(dbp, vdp, h, pgno, flags)
-  DB *dbp;
-  VRFY_DBINFO *vdp;
-  PAGE *h;
-  db_pgno_t pgno;
-  u_int32_t flags;
+CDB___ham_vrfy (dbp, vdp, h, pgno, flags)
+     DB *dbp;
+     VRFY_DBINFO *vdp;
+     PAGE *h;
+     db_pgno_t pgno;
+     u_int32_t flags;
 {
   VRFY_PAGEINFO *pip;
   db_indx_t ent, himark, inpend;
   int isbad, ret, t_ret;
 
   isbad = 0;
-  if ((ret = CDB___db_vrfy_getpageinfo(vdp, pgno, &pip)) != 0)
+  if ((ret = CDB___db_vrfy_getpageinfo (vdp, pgno, &pip)) != 0)
     return (ret);
 
   /* Sanity check our flags and page type. */
-  if ((ret = CDB___db_fchk(dbp->dbenv, "CDB___ham_vrfy",
-      flags, DB_AGGRESSIVE | DB_NOORDERCHK | DB_SALVAGE)) != 0)
+  if ((ret = CDB___db_fchk (dbp->dbenv, "CDB___ham_vrfy",
+                            flags,
+                            DB_AGGRESSIVE | DB_NOORDERCHK | DB_SALVAGE)) != 0)
     goto err;
 
-  if (TYPE(h) != P_HASH) {
-    TYPE_ERR_PRINT(dbp->dbenv, "CDB___ham_vrfy", pgno, TYPE(h));
-    DB_ASSERT(0);
+  if (TYPE (h) != P_HASH)
+  {
+    TYPE_ERR_PRINT (dbp->dbenv, "CDB___ham_vrfy", pgno, TYPE (h));
+    DB_ASSERT (0);
     ret = EINVAL;
     goto err;
   }
 
   /* Verify and save off fields common to all PAGEs. */
-  if ((ret = CDB___db_vrfy_datapage(dbp, vdp, h, pgno, flags)) != 0) {
+  if ((ret = CDB___db_vrfy_datapage (dbp, vdp, h, pgno, flags)) != 0)
+  {
     if (ret == DB_VERIFY_BAD)
       isbad = 1;
     else
@@ -229,30 +239,32 @@ CDB___ham_vrfy(dbp, vdp, h, pgno, flags)
    * be unsafe to proceed.
    */
   for (ent = 0, himark = dbp->pgsize,
-      inpend = (u_int8_t *)h->inp - (u_int8_t *)h;
-      ent < NUM_ENT(h); ent++)
-    if (h->inp[ent] >= himark) {
-      EPRINT((dbp->dbenv,
-          "Item %lu on page %lu out of order or nonsensical",
-          ent, pgno));
+       inpend = (u_int8_t *) h->inp - (u_int8_t *) h;
+       ent < NUM_ENT (h); ent++)
+    if (h->inp[ent] >= himark)
+    {
+      EPRINT ((dbp->dbenv,
+               "Item %lu on page %lu out of order or nonsensical",
+               ent, pgno));
       isbad = 1;
       goto err;
-    } else if (inpend >= himark) {
-      EPRINT((dbp->dbenv,
-          "inp array collided with data on page %lu",
-          pgno));
+    }
+    else if (inpend >= himark)
+    {
+      EPRINT ((dbp->dbenv, "inp array collided with data on page %lu", pgno));
       isbad = 1;
       goto err;
 
-    } else {
+    }
+    else
+    {
       himark = h->inp[ent];
-      inpend += sizeof(db_indx_t);
-      if ((ret = __ham_vrfy_item(
-          dbp, vdp, pgno, h, ent, flags)) != 0)
+      inpend += sizeof (db_indx_t);
+      if ((ret = __ham_vrfy_item (dbp, vdp, pgno, h, ent, flags)) != 0)
         goto err;
     }
 
-err:  if ((t_ret = CDB___db_vrfy_putpageinfo(vdp, pip)) != 0 && ret == 0)
+err:if ((t_ret = CDB___db_vrfy_putpageinfo (vdp, pip)) != 0 && ret == 0)
     ret = t_ret;
   return (ret == 0 && isbad == 1 ? DB_VERIFY_BAD : ret);
 }
@@ -263,12 +275,12 @@ err:  if ((t_ret = CDB___db_vrfy_putpageinfo(vdp, pip)) != 0 && ret == 0)
  *  and save off any overflow items or off-page dup children as necessary.
  */
 static int
-__ham_vrfy_item(dbp, vdp, pgno, h, i, flags)
-  DB *dbp;
-  VRFY_DBINFO *vdp;
-  db_pgno_t pgno;
-  PAGE *h;
-  u_int32_t i, flags;
+__ham_vrfy_item (dbp, vdp, pgno, h, i, flags)
+     DB *dbp;
+     VRFY_DBINFO *vdp;
+     db_pgno_t pgno;
+     PAGE *h;
+     u_int32_t i, flags;
 {
   HOFFPAGE hop;
   HOFFDUP hod;
@@ -278,19 +290,21 @@ __ham_vrfy_item(dbp, vdp, pgno, h, i, flags)
   int ret, t_ret;
   u_int8_t *databuf;
 
-  if ((ret = CDB___db_vrfy_getpageinfo(vdp, pgno, &pip)) != 0)
+  if ((ret = CDB___db_vrfy_getpageinfo (vdp, pgno, &pip)) != 0)
     return (ret);
 
-  switch (HPAGE_TYPE(h, i)) {
+  switch (HPAGE_TYPE (h, i))
+  {
   case H_KEYDATA:
     /* Nothing to do here--everything but the type field is data */
     break;
   case H_DUPLICATE:
     /* Are we a datum or a key?  Better be the former. */
-    if (i % 2 == 0) {
-      EPRINT((dbp->dbenv,
-          "Hash key stored as duplicate at page %lu item %lu",
-          pip->pgno, i));
+    if (i % 2 == 0)
+    {
+      EPRINT ((dbp->dbenv,
+               "Hash key stored as duplicate at page %lu item %lu",
+               pip->pgno, i));
     }
     /*
      * Dups are encoded as a series within a single HKEYDATA,
@@ -302,16 +316,18 @@ __ham_vrfy_item(dbp, vdp, pgno, h, i, flags)
      * Note that at this point, we've verified item i-1, so
      * it's safe to use LEN_HKEYDATA (which looks at inp[i-1]).
      */
-    len = LEN_HKEYDATA(h, dbp->pgsize, i);
-    databuf = HKEYDATA_DATA(P_ENTRY(h, i));
-    for (offset = 0; offset < len; offset += DUP_SIZE(dlen)) {
-      memcpy(&dlen, databuf + offset, sizeof(db_indx_t));
+    len = LEN_HKEYDATA (h, dbp->pgsize, i);
+    databuf = HKEYDATA_DATA (P_ENTRY (h, i));
+    for (offset = 0; offset < len; offset += DUP_SIZE (dlen))
+    {
+      memcpy (&dlen, databuf + offset, sizeof (db_indx_t));
 
       /* Make sure the length is plausible. */
-      if (offset + DUP_SIZE(dlen) > len) {
-        EPRINT((dbp->dbenv,
-          "Duplicate item %lu, page %lu has bad length",
-            i, pip->pgno));
+      if (offset + DUP_SIZE (dlen) > len)
+      {
+        EPRINT ((dbp->dbenv,
+                 "Duplicate item %lu, page %lu has bad length",
+                 i, pip->pgno));
         ret = DB_VERIFY_BAD;
         goto err;
       }
@@ -320,66 +336,67 @@ __ham_vrfy_item(dbp, vdp, pgno, h, i, flags)
        * Make sure the second copy of the length is the
        * same as the first.
        */
-      memcpy(&elen,
-          databuf + offset + dlen + sizeof(db_indx_t),
-          sizeof(db_indx_t));
-      if (elen != dlen) {
-        EPRINT((dbp->dbenv,
-    "Duplicate item %lu, page %lu has two different lengths",
-            i, pip->pgno));
+      memcpy (&elen,
+              databuf + offset + dlen + sizeof (db_indx_t),
+              sizeof (db_indx_t));
+      if (elen != dlen)
+      {
+        EPRINT ((dbp->dbenv,
+                 "Duplicate item %lu, page %lu has two different lengths",
+                 i, pip->pgno));
         ret = DB_VERIFY_BAD;
         goto err;
       }
     }
-    F_SET(pip, VRFY_HAS_DUPS);
-    if (!LF_ISSET(DB_NOORDERCHK) &&
-        __ham_dups_unsorted(dbp, databuf, len))
-      F_SET(pip, VRFY_DUPS_UNSORTED);
+    F_SET (pip, VRFY_HAS_DUPS);
+    if (!LF_ISSET (DB_NOORDERCHK) && __ham_dups_unsorted (dbp, databuf, len))
+      F_SET (pip, VRFY_DUPS_UNSORTED);
     break;
   case H_OFFPAGE:
     /* Offpage item.  Make sure pgno is sane, save off. */
-    memcpy(&hop, P_ENTRY(h, i), HOFFPAGE_SIZE);
-    if (!IS_VALID_PGNO(hop.pgno) || hop.pgno == pip->pgno ||
-        hop.pgno == PGNO_INVALID) {
-      EPRINT((dbp->dbenv,
-          "Offpage item %lu, page %lu has bad page number",
-          i, pip->pgno));
+    memcpy (&hop, P_ENTRY (h, i), HOFFPAGE_SIZE);
+    if (!IS_VALID_PGNO (hop.pgno) || hop.pgno == pip->pgno ||
+        hop.pgno == PGNO_INVALID)
+    {
+      EPRINT ((dbp->dbenv,
+               "Offpage item %lu, page %lu has bad page number",
+               i, pip->pgno));
       ret = DB_VERIFY_BAD;
       goto err;
     }
-    memset(&child, 0, sizeof(VRFY_CHILDINFO));
+    memset (&child, 0, sizeof (VRFY_CHILDINFO));
     child.pgno = hop.pgno;
     child.type = V_OVERFLOW;
-    child.tlen = hop.tlen; /* This will get checked later. */
-    if ((ret = CDB___db_vrfy_childput(vdp, pip->pgno, &child)) != 0)
+    child.tlen = hop.tlen;      /* This will get checked later. */
+    if ((ret = CDB___db_vrfy_childput (vdp, pip->pgno, &child)) != 0)
       goto err;
     break;
   case H_OFFDUP:
     /* Offpage duplicate item.  Same drill. */
-    memcpy(&hod, P_ENTRY(h, i), HOFFDUP_SIZE);
-    if (!IS_VALID_PGNO(hod.pgno) || hod.pgno == pip->pgno ||
-        hod.pgno == PGNO_INVALID) {
-      EPRINT((dbp->dbenv,
-          "Offpage item %lu, page %lu has bad page number",
-          i, pip->pgno));
+    memcpy (&hod, P_ENTRY (h, i), HOFFDUP_SIZE);
+    if (!IS_VALID_PGNO (hod.pgno) || hod.pgno == pip->pgno ||
+        hod.pgno == PGNO_INVALID)
+    {
+      EPRINT ((dbp->dbenv,
+               "Offpage item %lu, page %lu has bad page number",
+               i, pip->pgno));
       ret = DB_VERIFY_BAD;
       goto err;
     }
-    memset(&child, 0, sizeof(VRFY_CHILDINFO));
+    memset (&child, 0, sizeof (VRFY_CHILDINFO));
     child.pgno = hod.pgno;
     child.type = V_DUPLICATE;
-    if ((ret = CDB___db_vrfy_childput(vdp, pip->pgno, &child)) != 0)
+    if ((ret = CDB___db_vrfy_childput (vdp, pip->pgno, &child)) != 0)
       goto err;
-    F_SET(pip, VRFY_HAS_DUPS);
+    F_SET (pip, VRFY_HAS_DUPS);
     break;
   default:
-    EPRINT((dbp->dbenv,
-        "Item %i, page %lu has bad type", i, pip->pgno));
+    EPRINT ((dbp->dbenv, "Item %i, page %lu has bad type", i, pip->pgno));
     ret = DB_VERIFY_BAD;
     break;
   }
 
-err:  if ((t_ret = CDB___db_vrfy_putpageinfo(vdp, pip)) != 0 && ret == 0)
+err:if ((t_ret = CDB___db_vrfy_putpageinfo (vdp, pip)) != 0 && ret == 0)
     ret = t_ret;
   return (ret);
 }
@@ -392,11 +409,11 @@ err:  if ((t_ret = CDB___db_vrfy_putpageinfo(vdp, pip)) != 0 && ret == 0)
  * PUBLIC:     u_int32_t));
  */
 int
-CDB___ham_vrfy_structure(dbp, vdp, meta_pgno, flags)
-  DB *dbp;
-  VRFY_DBINFO *vdp;
-  db_pgno_t meta_pgno;
-  u_int32_t flags;
+CDB___ham_vrfy_structure (dbp, vdp, meta_pgno, flags)
+     DB *dbp;
+     VRFY_DBINFO *vdp;
+     db_pgno_t meta_pgno;
+     u_int32_t flags;
 {
   DB *pgset;
   HMETA *m;
@@ -410,29 +427,29 @@ CDB___ham_vrfy_structure(dbp, vdp, meta_pgno, flags)
   h = NULL;
   pgset = vdp->pgset;
 
-  if ((ret = CDB___db_vrfy_pgset_get(pgset, meta_pgno, &p)) != 0)
+  if ((ret = CDB___db_vrfy_pgset_get (pgset, meta_pgno, &p)) != 0)
     return (ret);
-  if (p != 0) {
-    EPRINT((dbp->dbenv,
-        "Hash meta page %lu referenced twice", meta_pgno));
+  if (p != 0)
+  {
+    EPRINT ((dbp->dbenv, "Hash meta page %lu referenced twice", meta_pgno));
     return (DB_VERIFY_BAD);
   }
-  if ((ret = CDB___db_vrfy_pgset_inc(pgset, meta_pgno)) != 0)
+  if ((ret = CDB___db_vrfy_pgset_inc (pgset, meta_pgno)) != 0)
     return (ret);
 
   /* Get the meta page;  we'll need it frequently. */
-  if ((ret = CDB_memp_fget(dbp->mpf, &meta_pgno, 0, &m)) != 0)
+  if ((ret = CDB_memp_fget (dbp->mpf, &meta_pgno, 0, &m)) != 0)
     return (ret);
 
   /* Loop through bucket by bucket. */
   for (bucket = 0; bucket <= m->max_bucket; bucket++)
-    if ((ret =
-        __ham_vrfy_bucket(dbp, vdp, m, bucket, flags)) != 0) {
+    if ((ret = __ham_vrfy_bucket (dbp, vdp, m, bucket, flags)) != 0)
+    {
       if (ret == DB_VERIFY_BAD)
         isbad = 1;
       else
         goto err;
-        }
+    }
 
   /*
    * There may be unused hash pages corresponding to buckets
@@ -440,53 +457,57 @@ CDB___ham_vrfy_structure(dbp, vdp, meta_pgno, flags)
    * than max_bucket.  Loop through them, too, and make sure they're
    * all empty.
    */
-  for (bucket = m->max_bucket + 1; bucket <= m->high_mask; bucket++) {
-    pgno = bucket + m->spares[CDB___db_log2(bucket + 1)];
-    if ((ret = CDB___db_vrfy_getpageinfo(vdp, pgno, &pip)) != 0)
+  for (bucket = m->max_bucket + 1; bucket <= m->high_mask; bucket++)
+  {
+    pgno = bucket + m->spares[CDB___db_log2 (bucket + 1)];
+    if ((ret = CDB___db_vrfy_getpageinfo (vdp, pgno, &pip)) != 0)
       goto err;
 
     /* It's okay if these pages are totally zeroed;  unmark it. */
-    F_CLR(pip, VRFY_IS_ALLZEROES);
+    F_CLR (pip, VRFY_IS_ALLZEROES);
 
-    if (pip->type != P_HASH) {
-      EPRINT((dbp->dbenv,
-          "Hash bucket %lu maps to non-hash page %lu",
-          bucket, pgno));
+    if (pip->type != P_HASH)
+    {
+      EPRINT ((dbp->dbenv,
+               "Hash bucket %lu maps to non-hash page %lu", bucket, pgno));
       isbad = 1;
-    } else if (pip->entries != 0) {
-      EPRINT((dbp->dbenv,
-          "Non-empty page %lu in unused hash bucket %lu",
-          pgno, bucket));
+    }
+    else if (pip->entries != 0)
+    {
+      EPRINT ((dbp->dbenv,
+               "Non-empty page %lu in unused hash bucket %lu", pgno, bucket));
       isbad = 1;
-    } else {
-      if ((ret = CDB___db_vrfy_pgset_get(pgset, pgno, &p)) != 0)
+    }
+    else
+    {
+      if ((ret = CDB___db_vrfy_pgset_get (pgset, pgno, &p)) != 0)
         goto err;
-      if (p != 0) {
-        EPRINT((dbp->dbenv,
-            "Hash page %lu above max_bucket referenced",
-            pgno));
+      if (p != 0)
+      {
+        EPRINT ((dbp->dbenv,
+                 "Hash page %lu above max_bucket referenced", pgno));
         isbad = 1;
-      } else {
-        if ((ret =
-            CDB___db_vrfy_pgset_inc(pgset, pgno)) != 0)
+      }
+      else
+      {
+        if ((ret = CDB___db_vrfy_pgset_inc (pgset, pgno)) != 0)
           goto err;
-        if ((ret =
-            CDB___db_vrfy_putpageinfo(vdp, pip)) != 0)
+        if ((ret = CDB___db_vrfy_putpageinfo (vdp, pip)) != 0)
           goto err;
         continue;
       }
     }
 
     /* If we got here, it's an error. */
-    (void)CDB___db_vrfy_putpageinfo(vdp, pip);
+    (void) CDB___db_vrfy_putpageinfo (vdp, pip);
     goto err;
   }
 
-err:  if ((t_ret = CDB_memp_fput(dbp->mpf, m, 0)) != 0)
+err:if ((t_ret = CDB_memp_fput (dbp->mpf, m, 0)) != 0)
     return (t_ret);
-  if (h != NULL && (t_ret = CDB_memp_fput(dbp->mpf, h, 0)) != 0)
+  if (h != NULL && (t_ret = CDB_memp_fput (dbp->mpf, h, 0)) != 0)
     return (t_ret);
-  return ((isbad == 1 && ret == 0) ? DB_VERIFY_BAD: ret);
+  return ((isbad == 1 && ret == 0) ? DB_VERIFY_BAD : ret);
 }
 
 /*
@@ -494,11 +515,11 @@ err:  if ((t_ret = CDB_memp_fput(dbp->mpf, m, 0)) != 0)
  *  Verify a given bucket.
  */
 static int
-__ham_vrfy_bucket(dbp, vdp, m, bucket, flags)
-  DB *dbp;
-  VRFY_DBINFO *vdp;
-  HMETA *m;
-  u_int32_t bucket, flags;
+__ham_vrfy_bucket (dbp, vdp, m, bucket, flags)
+     DB *dbp;
+     VRFY_DBINFO *vdp;
+     HMETA *m;
+     u_int32_t bucket, flags;
 {
   HASH *hashp;
   VRFY_CHILDINFO *child;
@@ -506,7 +527,7 @@ __ham_vrfy_bucket(dbp, vdp, m, bucket, flags)
   int ret, t_ret, isbad, p;
   db_pgno_t pgno, next_pgno;
   DBC *cc;
-  u_int32_t (*hfunc) __P((const void *, u_int32_t));
+  u_int32_t (*hfunc) __P ((const void *, u_int32_t));
 
   isbad = 0;
   pip = NULL;
@@ -518,47 +539,51 @@ __ham_vrfy_bucket(dbp, vdp, m, bucket, flags)
   else
     hfunc = CDB___ham_func5;
 
-  if ((ret = CDB___db_vrfy_getpageinfo(vdp, PGNO(m), &mip)) != 0)
+  if ((ret = CDB___db_vrfy_getpageinfo (vdp, PGNO (m), &mip)) != 0)
     return (ret);
 
   /* Calculate the first pgno for this bucket. */
-  pgno = bucket + m->spares[CDB___db_log2(bucket + 1)];
+  pgno = bucket + m->spares[CDB___db_log2 (bucket + 1)];
 
-  if ((ret = CDB___db_vrfy_getpageinfo(vdp, pgno, &pip)) != 0)
+  if ((ret = CDB___db_vrfy_getpageinfo (vdp, pgno, &pip)) != 0)
     goto err;
 
   /* Make sure we got a plausible page number. */
-  if (pgno > vdp->last_pgno || pip->type != P_HASH) {
-    EPRINT((dbp->dbenv, "Bucket %lu has impossible first page %lu",
-        bucket, pgno));
+  if (pgno > vdp->last_pgno || pip->type != P_HASH)
+  {
+    EPRINT ((dbp->dbenv, "Bucket %lu has impossible first page %lu",
+             bucket, pgno));
     /* Unsafe to continue. */
     isbad = 1;
     goto err;
   }
 
-  if (pip->prev_pgno != PGNO_INVALID) {
-    EPRINT((dbp->dbenv,
-        "First hash page %lu in bucket %lu has a prev_pgno", pgno));
+  if (pip->prev_pgno != PGNO_INVALID)
+  {
+    EPRINT ((dbp->dbenv,
+             "First hash page %lu in bucket %lu has a prev_pgno", pgno));
     isbad = 1;
   }
 
   /*
    * Set flags for dups and sorted dups.
    */
-  flags |= F_ISSET(mip, VRFY_HAS_DUPS) ? ST_DUPOK : 0;
-  flags |= F_ISSET(mip, VRFY_HAS_DUPSORT) ? ST_DUPSORT : 0;
+  flags |= F_ISSET (mip, VRFY_HAS_DUPS) ? ST_DUPOK : 0;
+  flags |= F_ISSET (mip, VRFY_HAS_DUPSORT) ? ST_DUPSORT : 0;
 
   /* Loop until we find a fatal bug, or until we run out of pages. */
-  for (;;) {
-    if ((ret = CDB___db_vrfy_pgset_get(vdp->pgset, pgno, &p)) != 0)
+  for (;;)
+  {
+    if ((ret = CDB___db_vrfy_pgset_get (vdp->pgset, pgno, &p)) != 0)
       goto err;
-    if (p != 0) {
-      EPRINT((dbp->dbenv,
-          "Hash page %lu referenced twice", pgno));
+    if (p != 0)
+    {
+      EPRINT ((dbp->dbenv, "Hash page %lu referenced twice", pgno));
       isbad = 1;
       /* Unsafe to continue. */
       goto err;
-    } else if ((ret = CDB___db_vrfy_pgset_inc(vdp->pgset, pgno)) != 0)
+    }
+    else if ((ret = CDB___db_vrfy_pgset_inc (vdp->pgset, pgno)) != 0)
       goto err;
 
     /*
@@ -571,14 +596,14 @@ __ham_vrfy_bucket(dbp, vdp, m, bucket, flags)
      * to have no flags set and zero entries, so should
      * otherwise verify correctly.
      */
-    F_CLR(pip, VRFY_IS_ALLZEROES);
+    F_CLR (pip, VRFY_IS_ALLZEROES);
 
     /* If we have dups, our meta page had better know about it. */
-    if (F_ISSET(pip, VRFY_HAS_DUPS)
-        && !F_ISSET(mip, VRFY_HAS_DUPS)) {
-      EPRINT((dbp->dbenv,
-        "Duplicates present in non-duplicate database, page %lu",
-          pgno));
+    if (F_ISSET (pip, VRFY_HAS_DUPS) && !F_ISSET (mip, VRFY_HAS_DUPS))
+    {
+      EPRINT ((dbp->dbenv,
+               "Duplicates present in non-duplicate database, page %lu",
+               pgno));
       isbad = 1;
     }
 
@@ -586,51 +611,57 @@ __ham_vrfy_bucket(dbp, vdp, m, bucket, flags)
      * If the database has sorted dups, this page had better
      * not have unsorted ones.
      */
-    if (F_ISSET(mip, VRFY_HAS_DUPSORT) &&
-        F_ISSET(pip, VRFY_DUPS_UNSORTED)) {
-      EPRINT((dbp->dbenv,
-          "Unsorted dups in sorted-dup database, page %lu",
-          pgno));
+    if (F_ISSET (mip, VRFY_HAS_DUPSORT) && F_ISSET (pip, VRFY_DUPS_UNSORTED))
+    {
+      EPRINT ((dbp->dbenv,
+               "Unsorted dups in sorted-dup database, page %lu", pgno));
       isbad = 1;
     }
 
     /* Walk overflow chains and offpage dup trees. */
-    if ((ret = CDB___db_vrfy_childcursor(vdp, &cc)) != 0)
+    if ((ret = CDB___db_vrfy_childcursor (vdp, &cc)) != 0)
       goto err;
-    for (ret = CDB___db_vrfy_ccset(cc, pip->pgno, &child); ret == 0;
-        ret = CDB___db_vrfy_ccnext(cc, &child))
-      if (child->type == V_OVERFLOW) {
-        if ((ret = CDB___db_vrfy_ovfl_structure(dbp, vdp,
-            child->pgno, child->tlen, flags)) != 0) {
-          if (ret == DB_VERIFY_BAD)
-            isbad = 1;
-          else
-            goto err;
-        }
-      } else if (child->type == V_DUPLICATE) {
-        if ((ret = CDB___db_vrfy_duptype(dbp,
-            vdp, child->pgno, flags)) != 0) {
-          isbad = 1;
-          continue;
-        }
-        if ((ret = CDB___bam_vrfy_subtree(dbp, vdp,
-            child->pgno, NULL, NULL,
-            flags | ST_RECNUM, NULL,
-            NULL, NULL)) != 0) {
+    for (ret = CDB___db_vrfy_ccset (cc, pip->pgno, &child); ret == 0;
+         ret = CDB___db_vrfy_ccnext (cc, &child))
+      if (child->type == V_OVERFLOW)
+      {
+        if ((ret = CDB___db_vrfy_ovfl_structure (dbp, vdp,
+                                                 child->pgno, child->tlen,
+                                                 flags)) != 0)
+        {
           if (ret == DB_VERIFY_BAD)
             isbad = 1;
           else
             goto err;
         }
       }
-    if ((ret = CDB___db_vrfy_ccclose(cc)) != 0)
+      else if (child->type == V_DUPLICATE)
+      {
+        if ((ret = CDB___db_vrfy_duptype (dbp, vdp, child->pgno, flags)) != 0)
+        {
+          isbad = 1;
+          continue;
+        }
+        if ((ret = CDB___bam_vrfy_subtree (dbp, vdp,
+                                           child->pgno, NULL, NULL,
+                                           flags | ST_RECNUM, NULL,
+                                           NULL, NULL)) != 0)
+        {
+          if (ret == DB_VERIFY_BAD)
+            isbad = 1;
+          else
+            goto err;
+        }
+      }
+    if ((ret = CDB___db_vrfy_ccclose (cc)) != 0)
       goto err;
     cc = NULL;
 
     /* If it's safe to check that things hash properly, do so. */
-    if (isbad == 0 && !LF_ISSET(DB_NOORDERCHK) &&
-        (ret = CDB___ham_vrfy_hashing(dbp, pip->entries,
-        m, bucket, pgno, flags, hfunc)) != 0) {
+    if (isbad == 0 && !LF_ISSET (DB_NOORDERCHK) &&
+        (ret = CDB___ham_vrfy_hashing (dbp, pip->entries,
+                                       m, bucket, pgno, flags, hfunc)) != 0)
+    {
       if (ret == DB_VERIFY_BAD)
         isbad = 1;
       else
@@ -638,41 +669,42 @@ __ham_vrfy_bucket(dbp, vdp, m, bucket, flags)
     }
 
     next_pgno = pip->next_pgno;
-    ret = CDB___db_vrfy_putpageinfo(vdp, pip);
+    ret = CDB___db_vrfy_putpageinfo (vdp, pip);
 
     pip = NULL;
     if (ret != 0)
       goto err;
 
     if (next_pgno == PGNO_INVALID)
-      break;    /* End of the bucket. */
+      break;                    /* End of the bucket. */
 
     /* We already checked this, but just in case... */
-    if (!IS_VALID_PGNO(next_pgno)) {
-      DB_ASSERT(0);
-      EPRINT((dbp->dbenv,
-          "Hash page %lu has bad next_pgno", pgno));
+    if (!IS_VALID_PGNO (next_pgno))
+    {
+      DB_ASSERT (0);
+      EPRINT ((dbp->dbenv, "Hash page %lu has bad next_pgno", pgno));
       isbad = 1;
       goto err;
     }
 
-    if ((ret = CDB___db_vrfy_getpageinfo(vdp, next_pgno, &pip)) != 0)
+    if ((ret = CDB___db_vrfy_getpageinfo (vdp, next_pgno, &pip)) != 0)
       goto err;
 
-    if (pip->prev_pgno != pgno) {
-      EPRINT((dbp->dbenv, "Hash page %lu has bad prev_pgno",
-          next_pgno));
+    if (pip->prev_pgno != pgno)
+    {
+      EPRINT ((dbp->dbenv, "Hash page %lu has bad prev_pgno", next_pgno));
       isbad = 1;
     }
     pgno = next_pgno;
   }
 
-err:  if (cc != NULL && ((t_ret = CDB___db_vrfy_ccclose(cc)) != 0) && ret == 0)
+err:if (cc != NULL && ((t_ret = CDB___db_vrfy_ccclose (cc)) != 0)
+      && ret == 0)
     ret = t_ret;
-  if (mip != NULL && ((t_ret = CDB___db_vrfy_putpageinfo(vdp, mip)) != 0) &&
+  if (mip != NULL && ((t_ret = CDB___db_vrfy_putpageinfo (vdp, mip)) != 0) &&
       ret == 0)
     ret = t_ret;
-  if (pip != NULL && ((t_ret = CDB___db_vrfy_putpageinfo(vdp, pip)) != 0) &&
+  if (pip != NULL && ((t_ret = CDB___db_vrfy_putpageinfo (vdp, pip)) != 0) &&
       ret == 0)
     ret = t_ret;
   return ((ret == 0 && isbad == 1) ? DB_VERIFY_BAD : ret);
@@ -687,14 +719,14 @@ err:  if (cc != NULL && ((t_ret = CDB___db_vrfy_ccclose(cc)) != 0) && ret == 0)
  * PUBLIC:     u_int32_t (*) __P((const void *, u_int32_t))));
  */
 int
-CDB___ham_vrfy_hashing(dbp, nentries, m, thisbucket, pgno, flags, hfunc)
-  DB *dbp;
-  u_int32_t nentries;
-  HMETA *m;
-  u_int32_t thisbucket;
-  db_pgno_t pgno;
-  u_int32_t flags;
-  u_int32_t (*hfunc) __P((const void *, u_int32_t));
+CDB___ham_vrfy_hashing (dbp, nentries, m, thisbucket, pgno, flags, hfunc)
+     DB *dbp;
+     u_int32_t nentries;
+     HMETA *m;
+     u_int32_t thisbucket;
+     db_pgno_t pgno;
+     u_int32_t flags;
+u_int32_t (*hfunc) __P ((const void *, u_int32_t));
 {
   DBT dbt;
   PAGE *h;
@@ -703,13 +735,14 @@ CDB___ham_vrfy_hashing(dbp, nentries, m, thisbucket, pgno, flags, hfunc)
   u_int32_t hval, bucket;
 
   ret = isbad = 0;
-  memset(&dbt, 0, sizeof(DBT));
-  F_SET(&dbt, DB_DBT_REALLOC);
+  memset (&dbt, 0, sizeof (DBT));
+  F_SET (&dbt, DB_DBT_REALLOC);
 
-  if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &h)) != 0)
+  if ((ret = CDB_memp_fget (dbp->mpf, &pgno, 0, &h)) != 0)
     return (ret);
 
-  for (i = 0; i < nentries; i += 2) {
+  for (i = 0; i < nentries; i += 2)
+  {
     /*
      * We've already verified the page integrity and that of any
      * overflow chains linked off it;  it is therefore safe to use
@@ -718,25 +751,25 @@ CDB___ham_vrfy_hashing(dbp, nentries, m, thisbucket, pgno, flags, hfunc)
      * can tweak this a bit if this proves to be a bottleneck,
      * but for now, take the easy route.
      */
-    if ((ret = CDB___db_ret(dbp, h, i, &dbt, NULL, NULL)) != 0)
+    if ((ret = CDB___db_ret (dbp, h, i, &dbt, NULL, NULL)) != 0)
       goto err;
-    hval = hfunc(dbt.data, dbt.size);
+    hval = hfunc (dbt.data, dbt.size);
 
     bucket = hval & m->high_mask;
     if (bucket > m->max_bucket)
       bucket = bucket & m->low_mask;
 
-    if (bucket != thisbucket) {
-      EPRINT((dbp->dbenv,
-          "Item %lu on page %lu hashes incorrectly",
-          i, pgno));
+    if (bucket != thisbucket)
+    {
+      EPRINT ((dbp->dbenv,
+               "Item %lu on page %lu hashes incorrectly", i, pgno));
       isbad = 1;
     }
   }
 
-err:  if (dbt.data != NULL)
-    CDB___os_free(dbt.data, 0);
-  if ((t_ret = CDB_memp_fput(dbp->mpf, h, 0)) != 0)
+err:if (dbt.data != NULL)
+    CDB___os_free (dbt.data, 0);
+  if ((t_ret = CDB_memp_fput (dbp->mpf, h, 0)) != 0)
     return (t_ret);
 
   return ((ret == 0 && isbad == 1) ? DB_VERIFY_BAD : ret);
@@ -751,14 +784,14 @@ err:  if (dbt.data != NULL)
  * PUBLIC:     void *, int (*)(void *, const void *), u_int32_t));
  */
 int
-CDB___ham_salvage(dbp, vdp, pgno, h, handle, callback, flags)
-  DB *dbp;
-  VRFY_DBINFO *vdp;
-  db_pgno_t pgno;
-  PAGE *h;
-  void *handle;
-  int (*callback) __P((void *, const void *));
-  u_int32_t flags;
+CDB___ham_salvage (dbp, vdp, pgno, h, handle, callback, flags)
+     DB *dbp;
+     VRFY_DBINFO *vdp;
+     db_pgno_t pgno;
+     PAGE *h;
+     void *handle;
+     int (*callback) __P ((void *, const void *));
+     u_int32_t flags;
 {
   DBT dbt, unkdbt;
   db_pgno_t dpgno;
@@ -768,11 +801,11 @@ CDB___ham_salvage(dbp, vdp, pgno, h, handle, callback, flags)
   void *buf;
   db_indx_t dlen, len, i;
 
-  memset(&dbt, 0, sizeof(DBT));
+  memset (&dbt, 0, sizeof (DBT));
   dbt.flags = DB_DBT_REALLOC;
 
-  memset(&unkdbt, 0, sizeof(DBT));
-  unkdbt.size = strlen("UNKNOWN") + 1;
+  memset (&unkdbt, 0, sizeof (DBT));
+  unkdbt.size = strlen ("UNKNOWN") + 1;
   unkdbt.data = "UNKNOWN";
 
   err_ret = 0;
@@ -781,85 +814,90 @@ CDB___ham_salvage(dbp, vdp, pgno, h, handle, callback, flags)
    * Allocate a buffer for overflow items.  Start at one page;
    * CDB___db_safe_goff will realloc as needed.
    */
-  if ((ret = CDB___os_malloc(dbp->dbenv, dbp->pgsize, NULL, &buf)) != 0)
+  if ((ret = CDB___os_malloc (dbp->dbenv, dbp->pgsize, NULL, &buf)) != 0)
     return (ret);
 
   himark = dbp->pgsize;
-  for (i = 0;; i++) {
+  for (i = 0;; i++)
+  {
     /* If we're not aggressive, break when we hit NUM_ENT(h). */
-    if (!LF_ISSET(DB_AGGRESSIVE) && i >= NUM_ENT(h))
+    if (!LF_ISSET (DB_AGGRESSIVE) && i >= NUM_ENT (h))
       break;
 
     /* Verify the current item. */
-    ret = CDB___db_vrfy_inpitem(dbp,
-        h, pgno, i, 0, flags, &himark, NULL);
+    ret = CDB___db_vrfy_inpitem (dbp, h, pgno, i, 0, flags, &himark, NULL);
     /* If this returned a fatality, it's time to break. */
     if (ret == DB_VERIFY_FATAL)
       break;
 
-    if (ret == 0) {
-      hk = P_ENTRY(h, i);
-      len = LEN_HKEYDATA(h, dbp->pgsize, i);
-      if ((u_int32_t)(hk + len - (u_int8_t *)h) >
-          dbp->pgsize) {
+    if (ret == 0)
+    {
+      hk = P_ENTRY (h, i);
+      len = LEN_HKEYDATA (h, dbp->pgsize, i);
+      if ((u_int32_t) (hk + len - (u_int8_t *) h) > dbp->pgsize)
+      {
         /*
          * Item is unsafely large;  either continue
          * or set it to the whole page, depending on
          * aggressiveness.
          */
-        if (!LF_ISSET(DB_AGGRESSIVE))
+        if (!LF_ISSET (DB_AGGRESSIVE))
           continue;
-        len = dbp->pgsize -
-            (u_int32_t)(hk - (u_int8_t *)h);
+        len = dbp->pgsize - (u_int32_t) (hk - (u_int8_t *) h);
         err_ret = DB_VERIFY_BAD;
       }
-      switch (HPAGE_PTYPE(hk)) {
+      switch (HPAGE_PTYPE (hk))
+      {
       default:
-        if (!LF_ISSET(DB_AGGRESSIVE))
+        if (!LF_ISSET (DB_AGGRESSIVE))
           break;
         err_ret = DB_VERIFY_BAD;
         /* FALLTHROUGH */
       case H_KEYDATA:
-keydata:      memcpy(buf, HKEYDATA_DATA(hk), len);
+      keydata:memcpy (buf, HKEYDATA_DATA (hk), len);
         dbt.size = len;
         dbt.data = buf;
-        if ((ret = CDB___db_prdbt(&dbt,
-            0, " ", handle, callback, 0, NULL)) != 0)
+        if ((ret = CDB___db_prdbt (&dbt,
+                                   0, " ", handle, callback, 0, NULL)) != 0)
           err_ret = ret;
         break;
       case H_OFFPAGE:
-        if (len < HOFFPAGE_SIZE) {
+        if (len < HOFFPAGE_SIZE)
+        {
           err_ret = DB_VERIFY_BAD;
           continue;
         }
-        memcpy(&dpgno,
-            HOFFPAGE_PGNO(hk), sizeof(dpgno));
-        if ((ret = CDB___db_safe_goff(dbp, vdp,
-            dpgno, &dbt, &buf, flags)) != 0) {
+        memcpy (&dpgno, HOFFPAGE_PGNO (hk), sizeof (dpgno));
+        if ((ret = CDB___db_safe_goff (dbp, vdp,
+                                       dpgno, &dbt, &buf, flags)) != 0)
+        {
           err_ret = ret;
-          (void)CDB___db_prdbt(&unkdbt, 0, " ",
-              handle, callback, 0, NULL);
+          (void) CDB___db_prdbt (&unkdbt, 0, " ", handle, callback, 0, NULL);
           break;
         }
-        if ((ret = CDB___db_prdbt(&dbt,
-            0, " ", handle, callback, 0, NULL)) != 0)
+        if ((ret = CDB___db_prdbt (&dbt,
+                                   0, " ", handle, callback, 0, NULL)) != 0)
           err_ret = ret;
         break;
       case H_OFFDUP:
-        if (len < HOFFPAGE_SIZE) {
+        if (len < HOFFPAGE_SIZE)
+        {
           err_ret = DB_VERIFY_BAD;
           continue;
         }
-        memcpy(&dpgno,
-            HOFFPAGE_PGNO(hk), sizeof(dpgno));
+        memcpy (&dpgno, HOFFPAGE_PGNO (hk), sizeof (dpgno));
         /* UNKNOWN iff pgno is bad or we're a key. */
-        if (!IS_VALID_PGNO(dpgno) || (i % 2 == 0)) {
-          if ((ret = CDB___db_prdbt(&unkdbt, 0, " ",
-              handle, callback, 0, NULL)) != 0)
+        if (!IS_VALID_PGNO (dpgno) || (i % 2 == 0))
+        {
+          if ((ret = CDB___db_prdbt (&unkdbt, 0, " ",
+                                     handle, callback, 0, NULL)) != 0)
             err_ret = ret;
-        } else if ((ret = CDB___db_salvage_duptree(dbp,
-            vdp, dpgno, &dbt, handle, callback,
-            flags | SA_SKIPFIRSTKEY)) != 0)
+        }
+        else if ((ret = CDB___db_salvage_duptree (dbp,
+                                                  vdp, dpgno, &dbt, handle,
+                                                  callback,
+                                                  flags | SA_SKIPFIRSTKEY)) !=
+                 0)
           err_ret = ret;
         break;
       case H_DUPLICATE:
@@ -869,45 +907,46 @@ keydata:      memcpy(buf, HKEYDATA_DATA(hk), len);
          * pretend this is a key and let the app.
          * programmer sort out the mess.
          */
-        if (i % 2 == 0) {
+        if (i % 2 == 0)
+        {
           err_ret = ret;
-          if (LF_ISSET(DB_AGGRESSIVE))
+          if (LF_ISSET (DB_AGGRESSIVE))
             goto keydata;
           break;
         }
 
         /* Too small to have any data. */
-        if (len <
-            HKEYDATA_SIZE(2 * sizeof(db_indx_t))) {
+        if (len < HKEYDATA_SIZE (2 * sizeof (db_indx_t)))
+        {
           err_ret = DB_VERIFY_BAD;
           continue;
         }
 
         /* Loop until we hit the total length. */
-        for (tlen = 0; tlen + sizeof(db_indx_t) < len;
-            tlen += dlen) {
-          tlen += sizeof(db_indx_t);
-          memcpy(&dlen, hk, sizeof(db_indx_t));
+        for (tlen = 0; tlen + sizeof (db_indx_t) < len; tlen += dlen)
+        {
+          tlen += sizeof (db_indx_t);
+          memcpy (&dlen, hk, sizeof (db_indx_t));
           /*
            * If dlen is too long, print all the
            * rest of the dup set in a chunk.
            */
           if (dlen + tlen > len)
             dlen = len - tlen;
-          memcpy(buf, hk + tlen, dlen);
+          memcpy (buf, hk + tlen, dlen);
           dbt.size = dlen;
           dbt.data = buf;
-          if ((ret = CDB___db_prdbt(&dbt, 0, " ",
-              handle, callback, 0, NULL)) != 0)
+          if ((ret = CDB___db_prdbt (&dbt, 0, " ",
+                                     handle, callback, 0, NULL)) != 0)
             err_ret = ret;
-          tlen += sizeof(db_indx_t);
+          tlen += sizeof (db_indx_t);
         }
         break;
       }
     }
   }
 
-  if ((t_ret = CDB___db_salvage_markdone(vdp, pgno)) != 0)
+  if ((t_ret = CDB___db_salvage_markdone (vdp, pgno)) != 0)
     return (t_ret);
   return ((ret == 0 && err_ret != 0) ? err_ret : ret);
 }
@@ -920,12 +959,13 @@ keydata:      memcpy(buf, HKEYDATA_DATA(hk), len);
  * PUBLIC: int CDB___ham_meta2pgset __P((DB *, VRFY_DBINFO *, HMETA *, u_int32_t,
  * PUBLIC:     DB *));
  */
-int CDB___ham_meta2pgset(dbp, vdp, hmeta, flags, pgset)
-  DB *dbp;
-  VRFY_DBINFO *vdp;
-  HMETA *hmeta;
-  u_int32_t flags;
-  DB *pgset;
+int
+CDB___ham_meta2pgset (dbp, vdp, hmeta, flags, pgset)
+     DB *dbp;
+     VRFY_DBINFO *vdp;
+     HMETA *hmeta;
+     u_int32_t flags;
+     DB *pgset;
 {
   PAGE *h;
   db_pgno_t pgno;
@@ -936,9 +976,9 @@ int CDB___ham_meta2pgset(dbp, vdp, hmeta, flags, pgset)
    * We don't really need flags, but leave them for consistency with
    * CDB___bam_meta2pgset.
    */
-  COMPQUIET(flags, 0);
+  COMPQUIET (flags, 0);
 
-  DB_ASSERT(pgset != NULL);
+  DB_ASSERT (pgset != NULL);
 
   totpgs = 0;
 
@@ -946,8 +986,9 @@ int CDB___ham_meta2pgset(dbp, vdp, hmeta, flags, pgset)
    * Loop through all the buckets, pushing onto pgset the corresponding
    * page(s) for each one.
    */
-  for (bucket = 0; bucket <= hmeta->max_bucket; bucket++) {
-    pgno = bucket + hmeta->spares[CDB___db_log2(bucket + 1)];
+  for (bucket = 0; bucket <= hmeta->max_bucket; bucket++)
+  {
+    pgno = bucket + hmeta->spares[CDB___db_log2 (bucket + 1)];
 
     /*
      * We know the initial pgno is safe because the spares array has
@@ -955,45 +996,47 @@ int CDB___ham_meta2pgset(dbp, vdp, hmeta, flags, pgset)
      *
      * Safely walk the list of pages in this bucket.
      */
-    for (;;) {
-      if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &h)) != 0)
+    for (;;)
+    {
+      if ((ret = CDB_memp_fget (dbp->mpf, &pgno, 0, &h)) != 0)
         return (ret);
-      if (TYPE(h) == P_HASH) {
+      if (TYPE (h) == P_HASH)
+      {
 
         /*
          * Make sure we don't go past the end of
          * pgset.
          */
-        if (++totpgs > vdp->last_pgno) {
-          (void)CDB_memp_fput(dbp->mpf, h, 0);
+        if (++totpgs > vdp->last_pgno)
+        {
+          (void) CDB_memp_fput (dbp->mpf, h, 0);
           return (DB_VERIFY_BAD);
         }
-        if ((ret =
-            CDB___db_vrfy_pgset_inc(pgset, pgno)) != 0)
+        if ((ret = CDB___db_vrfy_pgset_inc (pgset, pgno)) != 0)
           return (ret);
 
-        pgno = NEXT_PGNO(h);
-      } else
+        pgno = NEXT_PGNO (h);
+      }
+      else
         pgno = PGNO_INVALID;
 
-      if ((ret = CDB_memp_fput(dbp->mpf, h, 0)) != 0)
+      if ((ret = CDB_memp_fput (dbp->mpf, h, 0)) != 0)
         return (ret);
 
       /* If the new pgno is wonky, go onto the next bucket. */
-      if (!IS_VALID_PGNO(pgno) ||
-          pgno == PGNO_INVALID)
+      if (!IS_VALID_PGNO (pgno) || pgno == PGNO_INVALID)
         goto nextbucket;
 
       /*
        * If we've touched this page before, we have a cycle;
        * go on to the next bucket.
        */
-      if ((ret = CDB___db_vrfy_pgset_get(pgset, pgno, &val)) != 0)
+      if ((ret = CDB___db_vrfy_pgset_get (pgset, pgno, &val)) != 0)
         return (ret);
       if (val != 0)
         goto nextbucket;
     }
-nextbucket:  ;
+  nextbucket:;
   }
   return (0);
 }
@@ -1005,17 +1048,17 @@ nextbucket:  ;
  *  0 if there are not.
  */
 static int
-__ham_dups_unsorted(dbp, buf, len)
-  DB *dbp;
-  u_int8_t *buf;
-  u_int32_t len;
+__ham_dups_unsorted (dbp, buf, len)
+     DB *dbp;
+     u_int8_t *buf;
+     u_int32_t len;
 {
   DBT a, b;
   db_indx_t offset, dlen;
-  int (*func) __P((const DBT *, const DBT *));
+  int (*func) __P ((const DBT *, const DBT *));
 
-  memset(&a, 0, sizeof(DBT));
-  memset(&b, 0, sizeof(DBT));
+  memset (&a, 0, sizeof (DBT));
+  memset (&b, 0, sizeof (DBT));
 
   func = (dbp->dup_compare == NULL) ? CDB___bam_defcmp : dbp->dup_compare;
 
@@ -1024,12 +1067,13 @@ __ham_dups_unsorted(dbp, buf, len)
    * a pair of dups that's out of order.  b is always the current
    * dup, a the one before it.
    */
-  for (offset = 0; offset < len; offset += DUP_SIZE(dlen)) {
-    memcpy(&dlen, buf + offset, sizeof(db_indx_t));
-    b.data = buf + offset + sizeof(db_indx_t);
+  for (offset = 0; offset < len; offset += DUP_SIZE (dlen))
+  {
+    memcpy (&dlen, buf + offset, sizeof (db_indx_t));
+    b.data = buf + offset + sizeof (db_indx_t);
     b.size = dlen;
 
-    if (a.data != NULL && func(&a, &b) > 0)
+    if (a.data != NULL && func (&a, &b) > 0)
       return (1);
 
     a.data = b.data;

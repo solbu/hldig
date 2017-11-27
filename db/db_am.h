@@ -11,7 +11,7 @@
 
 #define  DB_MINPAGECACHE  10    /* Min pages access methods cache. */
 
-#define DB_ISBIG  0x01    /* DB recovery operation codes. */
+#define DB_ISBIG  0x01          /* DB recovery operation codes. */
 #define  DB_ISSUBDB  0x02
 #define  DB_ADD_DUP  0x10
 #define  DB_REM_DUP  0x20

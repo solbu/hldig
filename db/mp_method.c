@@ -18,8 +18,9 @@ static const char sccsid[] = "@(#)mp_method.c  11.2 (Sleepycat) 10/6/99";
 #include "db_shash.h"
 #include "mp.h"
 
-static int CDB___memp_set_cachesize __P((DB_ENV *, u_int32_t, u_int32_t, int));
-static int CDB___memp_set_mp_mmapsize __P((DB_ENV *, size_t));
+static int CDB___memp_set_cachesize
+__P ((DB_ENV *, u_int32_t, u_int32_t, int));
+static int CDB___memp_set_mp_mmapsize __P ((DB_ENV *, size_t));
 
 /*
  * CDB___memp_dbenv_create --
@@ -28,8 +29,8 @@ static int CDB___memp_set_mp_mmapsize __P((DB_ENV *, size_t));
  * PUBLIC: void CDB___memp_dbenv_create __P((DB_ENV *));
  */
 void
-CDB___memp_dbenv_create(dbenv)
-  DB_ENV *dbenv;
+CDB___memp_dbenv_create (dbenv)
+     DB_ENV *dbenv;
 {
   /*
    * We default to 32 8K pages.  We don't default to a flat 256K, because
@@ -38,7 +39,7 @@ CDB___memp_dbenv_create(dbenv)
    * a POSIX pthread mutex and almost 200 bytes per buffer header, while
    * Solaris needs 24 and 52 bytes for the same structures.
    */
-  dbenv->mp_bytes = 32 * ((8 * 1024) + sizeof(BH));
+  dbenv->mp_bytes = 32 * ((8 * 1024) + sizeof (BH));
   dbenv->mp_ncache = 1;
 
   dbenv->set_mp_mmapsize = CDB___memp_set_mp_mmapsize;
@@ -50,12 +51,12 @@ CDB___memp_dbenv_create(dbenv)
  *  Initialize the cache size.
  */
 static int
-CDB___memp_set_cachesize(dbenv, gbytes, bytes, ncache)
-  DB_ENV *dbenv;
-  u_int32_t gbytes, bytes;
-  int ncache;
+CDB___memp_set_cachesize (dbenv, gbytes, bytes, ncache)
+     DB_ENV *dbenv;
+     u_int32_t gbytes, bytes;
+     int ncache;
 {
-  ENV_ILLEGAL_AFTER_OPEN(dbenv, "set_cachesize");
+  ENV_ILLEGAL_AFTER_OPEN (dbenv, "set_cachesize");
 
   dbenv->mp_gbytes = gbytes + bytes / GIGABYTE;
   dbenv->mp_bytes = bytes % GIGABYTE;
@@ -70,7 +71,8 @@ CDB___memp_set_cachesize(dbenv, gbytes, bytes, ncache)
    *
    * There is a minimum cache size, regardless.
    */
-  if (dbenv->mp_gbytes == 0) {
+  if (dbenv->mp_gbytes == 0)
+  {
     if (dbenv->mp_bytes < 500 * MEGABYTE)
       dbenv->mp_bytes += dbenv->mp_bytes / 4;
     if (dbenv->mp_bytes < DB_CACHESIZE_MIN)
@@ -85,9 +87,9 @@ CDB___memp_set_cachesize(dbenv, gbytes, bytes, ncache)
  *  Set the maximum mapped file size.
  */
 static int
-CDB___memp_set_mp_mmapsize(dbenv, mp_mmapsize )
-  DB_ENV *dbenv;
-  size_t mp_mmapsize;
+CDB___memp_set_mp_mmapsize (dbenv, mp_mmapsize)
+     DB_ENV *dbenv;
+     size_t mp_mmapsize;
 {
   dbenv->mp_mmapsize = mp_mmapsize;
   return (0);

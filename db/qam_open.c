@@ -32,10 +32,10 @@ static const char sccsid[] = "@(#)qam_open.c  11.12 (Sleepycat) 10/25/99";
  * PUBLIC: int CDB___qam_open __P((DB *, const char *, db_pgno_t));
  */
 int
-CDB___qam_open(dbp, name, base_pgno)
-  DB *dbp;
-  const char *name;
-  db_pgno_t base_pgno;
+CDB___qam_open (dbp, name, base_pgno)
+     DB *dbp;
+     const char *name;
+     db_pgno_t base_pgno;
 {
   QUEUE *t;
   DBC *dbc;
@@ -55,15 +55,16 @@ CDB___qam_open(dbp, name, base_pgno)
   metalock.off = LOCK_INVALID;
 
   /* Get a cursor. */
-  if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
+  if ((ret = dbp->cursor (dbp, NULL, &dbc, 0)) != 0)
     return (ret);
 
   /* Get, and optionally create the metadata page. */
   if ((ret =
-      CDB___db_lget(dbc, 0, base_pgno, DB_LOCK_WRITE, 0, &metalock)) != 0)
+       CDB___db_lget (dbc, 0, base_pgno, DB_LOCK_WRITE, 0, &metalock)) != 0)
     goto err;
-  if ((ret = CDB_memp_fget(
-      dbp->mpf, &base_pgno, DB_MPOOL_CREATE, (PAGE **)&qmeta)) != 0)
+  if ((ret =
+       CDB_memp_fget (dbp->mpf, &base_pgno, DB_MPOOL_CREATE,
+                      (PAGE **) & qmeta)) != 0)
     goto err;
 
   /*
@@ -71,19 +72,20 @@ CDB___qam_open(dbp, name, base_pgno)
    * Correct any fields that may not be right.  Note, all of the
    * local flags were set by DB->open.
    */
-  if (qmeta->dbmeta.magic == DB_QAMMAGIC) {
+  if (qmeta->dbmeta.magic == DB_QAMMAGIC)
+  {
     t->re_pad = qmeta->re_pad;
     t->re_len = qmeta->re_len;
     t->rec_page = qmeta->rec_page;
 
-    (void)CDB_memp_fput(dbp->mpf, (PAGE *)qmeta, 0);
+    (void) CDB_memp_fput (dbp->mpf, (PAGE *) qmeta, 0);
     goto done;
   }
 
   /* Initialize the tree structure metadata information. */
   orig_lsn = qmeta->dbmeta.lsn;
-  memset(qmeta, 0, sizeof(QMETA));
-  ZERO_LSN(qmeta->dbmeta.lsn);
+  memset (qmeta, 0, sizeof (QMETA));
+  ZERO_LSN (qmeta->dbmeta.lsn);
   qmeta->dbmeta.pgno = base_pgno;
   qmeta->dbmeta.magic = DB_QAMMAGIC;
   qmeta->dbmeta.version = DB_QAMVERSION;
@@ -92,28 +94,30 @@ CDB___qam_open(dbp, name, base_pgno)
   qmeta->re_pad = t->re_pad;
   qmeta->start = 1;
   qmeta->re_len = t->re_len;
-  qmeta->rec_page = CALC_QAM_RECNO_PER_PAGE(dbp);
+  qmeta->rec_page = CALC_QAM_RECNO_PER_PAGE (dbp);
   t->rec_page = qmeta->rec_page;
-  memcpy(qmeta->dbmeta.uid, dbp->fileid, DB_FILE_ID_LEN);
+  memcpy (qmeta->dbmeta.uid, dbp->fileid, DB_FILE_ID_LEN);
 
   /* Verify that we can fit at least one record per page. */
-  if (QAM_RECNO_PER_PAGE(dbp) < 1) {
-    CDB___db_err(dbp->dbenv,
-        "Record size of %d too large for page size of %d",
-        t->re_len, dbp->pgsize);
-    (void)CDB_memp_fput(dbp->mpf, (PAGE *)qmeta, 0);
+  if (QAM_RECNO_PER_PAGE (dbp) < 1)
+  {
+    CDB___db_err (dbp->dbenv,
+                  "Record size of %d too large for page size of %d",
+                  t->re_len, dbp->pgsize);
+    (void) CDB_memp_fput (dbp->mpf, (PAGE *) qmeta, 0);
     ret = EINVAL;
     goto err;
   }
 
-  if ((ret = CDB___db_log_page(dbp,
-      name, &orig_lsn, base_pgno, (PAGE *)qmeta)) != 0)
+  if ((ret = CDB___db_log_page (dbp,
+                                name, &orig_lsn, base_pgno,
+                                (PAGE *) qmeta)) != 0)
     goto err;
 
   /* Release the metadata page. */
-  if ((ret = CDB_memp_fput(dbp->mpf, (PAGE *)qmeta, DB_MPOOL_DIRTY)) != 0)
+  if ((ret = CDB_memp_fput (dbp->mpf, (PAGE *) qmeta, DB_MPOOL_DIRTY)) != 0)
     goto err;
-  DB_TEST_RECOVERY(dbp, DB_TEST_POSTLOG, ret, name);
+  DB_TEST_RECOVERY (dbp, DB_TEST_POSTLOG, ret, name);
 
   /*
    * Flush the metadata page to disk.
@@ -122,20 +126,20 @@ CDB___qam_open(dbp, name, base_pgno)
    * It's not useful to return not-yet-flushed here -- convert it to
    * an error.
    */
-  if ((ret = CDB_memp_fsync(dbp->mpf)) == DB_INCOMPLETE)
+  if ((ret = CDB_memp_fsync (dbp->mpf)) == DB_INCOMPLETE)
     ret = EINVAL;
-  DB_TEST_RECOVERY(dbp, DB_TEST_POSTSYNC, ret, name);
+  DB_TEST_RECOVERY (dbp, DB_TEST_POSTSYNC, ret, name);
 
-done:  t->q_meta = base_pgno;
+done:t->q_meta = base_pgno;
   t->q_root = base_pgno + 1;
 
 err:
-DB_TEST_RECOVERY_LABEL
-  /* Don't hold the meta page long term. */
-  if (metalock.off != LOCK_INVALID)
-    (void)__LPUT(dbc, metalock);
+  DB_TEST_RECOVERY_LABEL
+    /* Don't hold the meta page long term. */
+    if (metalock.off != LOCK_INVALID)
+    (void) __LPUT (dbc, metalock);
 
-  if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+  if ((t_ret = dbc->c_close (dbc)) != 0 && ret == 0)
     ret = t_ret;
 
   return (ret);
@@ -147,10 +151,10 @@ DB_TEST_RECOVERY_LABEL
  * PUBLIC: int CDB___qam_metachk __P((DB *, const char *, QMETA *));
  */
 int
-CDB___qam_metachk(dbp, name, qmeta)
-  DB *dbp;
-  const char *name;
-  QMETA *qmeta;
+CDB___qam_metachk (dbp, name, qmeta)
+     DB *dbp;
+     const char *name;
+     QMETA *qmeta;
 {
   DB_ENV *dbenv;
   u_int32_t vers;
@@ -163,33 +167,35 @@ CDB___qam_metachk(dbp, name, qmeta)
    * Check the version, the database may be out of date.
    */
   vers = qmeta->dbmeta.version;
-  if (F_ISSET(dbp, DB_AM_SWAP))
-    M_32_SWAP(vers);
-  switch (vers) {
+  if (F_ISSET (dbp, DB_AM_SWAP))
+    M_32_SWAP (vers);
+  switch (vers)
+  {
   case 1:
     break;
   default:
-    CDB___db_err(dbenv,
-        "%s: unsupported qam version: %lu", name, (u_long)vers);
+    CDB___db_err (dbenv,
+                  "%s: unsupported qam version: %lu", name, (u_long) vers);
     return (EINVAL);
   }
 
   /* Swap the page if we need to. */
-  if (F_ISSET(dbp, DB_AM_SWAP) && (ret = CDB___qam_mswap((PAGE *)qmeta)) != 0)
+  if (F_ISSET (dbp, DB_AM_SWAP)
+      && (ret = CDB___qam_mswap ((PAGE *) qmeta)) != 0)
     return (ret);
 
   /* Check the type. */
   if (dbp->type != DB_QUEUE && dbp->type != DB_UNKNOWN)
     return (EINVAL);
   dbp->type = DB_QUEUE;
-  DB_ILLEGAL_METHOD(dbp, DB_OK_QUEUE);
+  DB_ILLEGAL_METHOD (dbp, DB_OK_QUEUE);
 
   /* Set the page size. */
   dbp->pgsize = qmeta->dbmeta.pagesize;
-  F_CLR(dbp, DB_AM_PGDEF);
+  F_CLR (dbp, DB_AM_PGDEF);
 
   /* Copy the file's ID. */
-  memcpy(dbp->fileid, qmeta->dbmeta.uid, DB_FILE_ID_LEN);
+  memcpy (dbp->fileid, qmeta->dbmeta.uid, DB_FILE_ID_LEN);
 
   return (0);
 }

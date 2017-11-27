@@ -43,50 +43,52 @@
  */
 
 /* Hash internal structure. */
-typedef struct hash_t {
-  DB *dbp;    /* Pointer to enclosing DB */
-  db_pgno_t meta_pgno;  /* Page number of the meta data page. */
-  u_int32_t h_ffactor;  /* Fill factor. */
-  u_int32_t h_nelem;  /* Number of elements. */
-        /* Hash function. */
-  u_int32_t (*h_hash) __P((const void *, u_int32_t));
+typedef struct hash_t
+{
+  DB *dbp;                      /* Pointer to enclosing DB */
+  db_pgno_t meta_pgno;          /* Page number of the meta data page. */
+  u_int32_t h_ffactor;          /* Fill factor. */
+  u_int32_t h_nelem;            /* Number of elements. */
+  /* Hash function. */
+    u_int32_t (*h_hash) __P ((const void *, u_int32_t));
 } HASH;
 
 /* Cursor structure definitions. */
-typedef struct cursor_t {
-  DBC    *dbc;
+typedef struct cursor_t
+{
+  DBC *dbc;
 
   /* Per-thread information */
-  DB_LOCK hlock;      /* Metadata page lock. */
-  HMETA *hdr;      /* Pointer to meta-data page. */
-  PAGE *split_buf;    /* Temporary buffer for splits. */
+  DB_LOCK hlock;                /* Metadata page lock. */
+  HMETA *hdr;                   /* Pointer to meta-data page. */
+  PAGE *split_buf;              /* Temporary buffer for splits. */
 
   /* Hash cursor information */
-  db_pgno_t  bucket;    /* Bucket we are traversing. */
-  db_pgno_t  lbucket;  /* Bucket for which we are locked. */
-  DB_LOCK    lock;    /* Lock held on the current bucket. */
-  db_lockmode_t  mode;    /* Lock mode of lock. */
-  PAGE    *pagep;    /* The current page. */
-  db_pgno_t  pgno;    /* Current page number. */
-  db_indx_t  bndx;    /* Index within the current page. */
-  PAGE    *dpagep;  /* Duplicate page pointer. */
-  db_pgno_t  dpgno;    /* Duplicate page number. */
-  db_indx_t  dndx;    /* Index within a duplicate set. */
-  db_indx_t  dup_off;  /* Offset within a duplicate set. */
-  db_indx_t  dup_len;  /* Length of current duplicate. */
-  db_indx_t  dup_tlen;  /* Total length of duplicate entry. */
-  u_int32_t  seek_size;  /* Number of bytes we need for add. */
-  db_pgno_t  seek_found_page;/* Page on which we can insert. */
+  db_pgno_t bucket;             /* Bucket we are traversing. */
+  db_pgno_t lbucket;            /* Bucket for which we are locked. */
+  DB_LOCK lock;                 /* Lock held on the current bucket. */
+  db_lockmode_t mode;           /* Lock mode of lock. */
+  PAGE *pagep;                  /* The current page. */
+  db_pgno_t pgno;               /* Current page number. */
+  db_indx_t bndx;               /* Index within the current page. */
+  PAGE *dpagep;                 /* Duplicate page pointer. */
+  db_pgno_t dpgno;              /* Duplicate page number. */
+  db_indx_t dndx;               /* Index within a duplicate set. */
+  db_indx_t dup_off;            /* Offset within a duplicate set. */
+  db_indx_t dup_len;            /* Length of current duplicate. */
+  db_indx_t dup_tlen;           /* Total length of duplicate entry. */
+  u_int32_t seek_size;          /* Number of bytes we need for add. */
+  db_pgno_t seek_found_page;    /* Page on which we can insert. */
 
-#define  H_DELETED  0x0001    /* Cursor item is deleted. */
-#define  H_DUPONLY  0x0002    /* Dups only; do not change key. */
-#define  H_EXPAND  0x0004    /* Table expanded. */
-#define  H_ISDUP    0x0008    /* Cursor is within duplicate set. */
-#define  H_NOMORE  0x0010    /* No more entries in bucket. */
-#define  H_OK    0x0020    /* Request succeeded. */
-#define H_DIRTY    0x0040    /* Meta-data page needs to be written */
-#define  H_ORIGINAL  0x0080    /* Bucket lock existed on entry. */
-  u_int32_t  flags;
+#define  H_DELETED  0x0001      /* Cursor item is deleted. */
+#define  H_DUPONLY  0x0002      /* Dups only; do not change key. */
+#define  H_EXPAND  0x0004       /* Table expanded. */
+#define  H_ISDUP    0x0008      /* Cursor is within duplicate set. */
+#define  H_NOMORE  0x0010       /* No more entries in bucket. */
+#define  H_OK    0x0020         /* Request succeeded. */
+#define H_DIRTY    0x0040       /* Meta-data page needs to be written */
+#define  H_ORIGINAL  0x0080     /* Bucket lock existed on entry. */
+  u_int32_t flags;
 } HASH_CURSOR;
 
 #define  IS_VALID(C) ((C)->bucket != BUCKET_INVALID)

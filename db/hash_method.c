@@ -19,9 +19,10 @@ static const char sccsid[] = "@(#)hash_method.c  11.3 (Sleepycat) 9/29/99";
 #include "db_page.h"
 #include "hash.h"
 
-static int CDB___ham_set_h_ffactor __P((DB *, u_int32_t));
-static int CDB___ham_set_h_hash __P((DB *, u_int32_t(*)(const void *, u_int32_t)));
-static int CDB___ham_set_h_nelem __P((DB *, u_int32_t));
+static int CDB___ham_set_h_ffactor __P ((DB *, u_int32_t));
+static int CDB___ham_set_h_hash
+__P ((DB *, u_int32_t (*)(const void *, u_int32_t)));
+static int CDB___ham_set_h_nelem __P ((DB *, u_int32_t));
 
 /*
  * CDB___ham_db_create --
@@ -30,18 +31,18 @@ static int CDB___ham_set_h_nelem __P((DB *, u_int32_t));
  * PUBLIC: int CDB___ham_db_create __P((DB *));
  */
 int
-CDB___ham_db_create(dbp)
-  DB *dbp;
+CDB___ham_db_create (dbp)
+     DB *dbp;
 {
   HASH *hashp;
   int ret;
 
-  if ((ret = CDB___os_malloc(sizeof(HASH), NULL, &dbp->h_internal)) != 0)
+  if ((ret = CDB___os_malloc (sizeof (HASH), NULL, &dbp->h_internal)) != 0)
     return (ret);
 
   hashp = dbp->h_internal;
 
-  hashp->h_nelem = 0;      /* Defaults. */
+  hashp->h_nelem = 0;           /* Defaults. */
   hashp->h_ffactor = 0;
   hashp->h_hash = NULL;
 
@@ -56,12 +57,12 @@ CDB___ham_db_create(dbp)
  * PUBLIC: int CDB___ham_db_close __P((DB *));
  */
 int
-CDB___ham_db_close(dbp)
-  DB *dbp;
+CDB___ham_db_close (dbp)
+     DB *dbp;
 {
   if (dbp->h_internal == NULL)
     return (0);
-  CDB___os_free(dbp->h_internal, sizeof(HASH));
+  CDB___os_free (dbp->h_internal, sizeof (HASH));
   dbp->h_internal = NULL;
   return (0);
 }
@@ -71,14 +72,14 @@ CDB___ham_db_close(dbp)
  *  Set the fill factor.
  */
 static int
-CDB___ham_set_h_ffactor(dbp, h_ffactor)
-  DB *dbp;
-  u_int32_t h_ffactor;
+CDB___ham_set_h_ffactor (dbp, h_ffactor)
+     DB *dbp;
+     u_int32_t h_ffactor;
 {
   HASH *hashp;
 
-  DB_ILLEGAL_AFTER_OPEN(dbp, "set_h_ffactor");
-  DB_ILLEGAL_METHOD(dbp, DB_OK_HASH);
+  DB_ILLEGAL_AFTER_OPEN (dbp, "set_h_ffactor");
+  DB_ILLEGAL_METHOD (dbp, DB_OK_HASH);
 
   hashp = dbp->h_internal;
   hashp->h_ffactor = h_ffactor;
@@ -90,14 +91,14 @@ CDB___ham_set_h_ffactor(dbp, h_ffactor)
  *  Set the hash function.
  */
 static int
-CDB___ham_set_h_hash(dbp, func)
-  DB *dbp;
-  u_int32_t (*func) __P((const void *, u_int32_t));
+CDB___ham_set_h_hash (dbp, func)
+     DB *dbp;
+u_int32_t (*func) __P ((const void *, u_int32_t));
 {
   HASH *hashp;
 
-  DB_ILLEGAL_AFTER_OPEN(dbp, "set_h_hash");
-  DB_ILLEGAL_METHOD(dbp, DB_OK_HASH);
+  DB_ILLEGAL_AFTER_OPEN (dbp, "set_h_hash");
+  DB_ILLEGAL_METHOD (dbp, DB_OK_HASH);
 
   hashp = dbp->h_internal;
   hashp->h_hash = func;
@@ -109,14 +110,14 @@ CDB___ham_set_h_hash(dbp, func)
  *  Set the table size.
  */
 static int
-CDB___ham_set_h_nelem(dbp, h_nelem)
-  DB *dbp;
-  u_int32_t h_nelem;
+CDB___ham_set_h_nelem (dbp, h_nelem)
+     DB *dbp;
+     u_int32_t h_nelem;
 {
   HASH *hashp;
 
-  DB_ILLEGAL_AFTER_OPEN(dbp, "set_h_nelem");
-  DB_ILLEGAL_METHOD(dbp, DB_OK_HASH);
+  DB_ILLEGAL_AFTER_OPEN (dbp, "set_h_nelem");
+  DB_ILLEGAL_METHOD (dbp, DB_OK_HASH);
 
   hashp = dbp->h_internal;
   hashp->h_nelem = h_nelem;

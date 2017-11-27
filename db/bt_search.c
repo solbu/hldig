@@ -66,12 +66,12 @@ static const char sccsid[] = "@(#)bt_search.c  11.8 (Sleepycat) 10/21/99";
  * PUBLIC:     const DBT *, u_int32_t, int, db_recno_t *, int *));
  */
 int
-CDB___bam_search(dbc, key, flags, stop, recnop, exactp)
-  DBC *dbc;
-  const DBT *key;
-  u_int32_t flags;
-  int stop, *exactp;
-  db_recno_t *recnop;
+CDB___bam_search (dbc, key, flags, stop, recnop, exactp)
+     DBC *dbc;
+     const DBT *key;
+     u_int32_t flags;
+     int stop, *exactp;
+     db_recno_t *recnop;
 {
   BTREE *t;
   BTREE_CURSOR *cp;
@@ -89,7 +89,7 @@ CDB___bam_search(dbc, key, flags, stop, recnop, exactp)
   t = dbp->bt_internal;
   recno = 0;
 
-  BT_STK_CLR(cp);
+  BT_STK_CLR (cp);
 
   /*
    * There are several ways we search a btree tree.  The flags argument
@@ -107,14 +107,15 @@ CDB___bam_search(dbc, key, flags, stop, recnop, exactp)
    *
    * Retrieve the root page.
    */
-  pg = ((BTREE *)dbp->bt_internal)->bt_root;
-  stack = F_ISSET(dbp, DB_BT_RECNUM) && LF_ISSET(S_STACK);
+  pg = ((BTREE *) dbp->bt_internal)->bt_root;
+  stack = F_ISSET (dbp, DB_BT_RECNUM) && LF_ISSET (S_STACK);
   lock_mode = stack ? DB_LOCK_WRITE : DB_LOCK_READ;
-  if ((ret = CDB___db_lget(dbc, 0, pg, lock_mode, 0, &lock)) != 0)
+  if ((ret = CDB___db_lget (dbc, 0, pg, lock_mode, 0, &lock)) != 0)
     return (ret);
-  if ((ret = CDB_memp_fget(dbp->mpf, &pg, 0, &h)) != 0) {
+  if ((ret = CDB_memp_fget (dbp->mpf, &pg, 0, &h)) != 0)
+  {
     /* Did not read it, so we can release the lock */
-    (void)__LPUT(dbc, lock);
+    (void) __LPUT (dbc, lock);
     return (ret);
   }
 
@@ -127,22 +128,25 @@ CDB___bam_search(dbc, key, flags, stop, recnop, exactp)
    * for a write lock.
    */
   if (!stack &&
-      ((LF_ISSET(S_PARENT) && (u_int8_t)(stop + 1) >= h->level) ||
-      (LF_ISSET(S_WRITE) && h->level == LEAFLEVEL))) {
-    (void)CDB_memp_fput(dbp->mpf, h, 0);
-    (void)__LPUT(dbc, lock);
+      ((LF_ISSET (S_PARENT) && (u_int8_t) (stop + 1) >= h->level) ||
+       (LF_ISSET (S_WRITE) && h->level == LEAFLEVEL)))
+  {
+    (void) CDB_memp_fput (dbp->mpf, h, 0);
+    (void) __LPUT (dbc, lock);
     lock_mode = DB_LOCK_WRITE;
-    if ((ret = CDB___db_lget(dbc, 0, pg, lock_mode, 0, &lock)) != 0)
+    if ((ret = CDB___db_lget (dbc, 0, pg, lock_mode, 0, &lock)) != 0)
       return (ret);
-    if ((ret = CDB_memp_fget(dbp->mpf, &pg, 0, &h)) != 0) {
+    if ((ret = CDB_memp_fget (dbp->mpf, &pg, 0, &h)) != 0)
+    {
       /* Did not read it, so we can release the lock */
-      (void)__LPUT(dbc, lock);
+      (void) __LPUT (dbc, lock);
       return (ret);
     }
     stack = 1;
   }
 
-  for (;;) {
+  for (;;)
+  {
     /*
      * Do a binary search on the current page.  If we're searching
      * a leaf page, we have to manipulate the indices in groups of
@@ -150,17 +154,18 @@ CDB___bam_search(dbc, key, flags, stop, recnop, exactp)
      * per page item.  If we find an exact match on a leaf page,
      * we're done.
      */
-    jump = TYPE(h) == P_LBTREE ? P_INDX : O_INDX;
-    for (base = 0,
-        lim = NUM_ENT(h) / (db_indx_t)jump; lim != 0; lim >>= 1) {
+    jump = TYPE (h) == P_LBTREE ? P_INDX : O_INDX;
+    for (base = 0, lim = NUM_ENT (h) / (db_indx_t) jump; lim != 0; lim >>= 1)
+    {
       indx = base + ((lim >> 1) * jump);
-      if ((cmp = CDB___bam_cmp(dbp,
-          key, h, indx, t->bt_compare)) == 0) {
-        if (TYPE(h) == P_LBTREE)
+      if ((cmp = CDB___bam_cmp (dbp, key, h, indx, t->bt_compare)) == 0)
+      {
+        if (TYPE (h) == P_LBTREE)
           goto match;
         goto next;
       }
-      if (cmp > 0) {
+      if (cmp > 0)
+      {
         base = indx + jump;
         --lim;
       }
@@ -173,10 +178,11 @@ CDB___bam_search(dbc, key, flags, stop, recnop, exactp)
      * If it's a leaf page, return base as the "found" value.
      * Delete only deletes exact matches.
      */
-    if (TYPE(h) == P_LBTREE) {
+    if (TYPE (h) == P_LBTREE)
+    {
       *exactp = 0;
 
-      if (LF_ISSET(S_EXACT))
+      if (LF_ISSET (S_EXACT))
         goto notfound;
 
       /*
@@ -187,7 +193,7 @@ CDB___bam_search(dbc, key, flags, stop, recnop, exactp)
        * to find an undeleted record.  This is handled by the
        * calling routine.
        */
-      BT_STK_ENTER(cp, h, base, lock, lock_mode, ret);
+      BT_STK_ENTER (cp, h, base, lock, lock_mode, ret);
       return (ret);
     }
 
@@ -203,57 +209,59 @@ CDB___bam_search(dbc, key, flags, stop, recnop, exactp)
      * If we're trying to calculate the record number, sum up
      * all the record numbers on this page up to the indx point.
      */
-next:    if (recnop != NULL)
+  next:if (recnop != NULL)
       for (i = 0; i < indx; ++i)
-        recno += GET_BINTERNAL(h, i)->nrecs;
+        recno += GET_BINTERNAL (h, i)->nrecs;
 
-    pg = GET_BINTERNAL(h, indx)->pgno;
-    if (stack) {
+    pg = GET_BINTERNAL (h, indx)->pgno;
+    if (stack)
+    {
       /* Return if this is the lowest page wanted. */
-      if (LF_ISSET(S_PARENT) && stop == h->level) {
-        BT_STK_ENTER(cp, h, indx, lock, lock_mode, ret);
+      if (LF_ISSET (S_PARENT) && stop == h->level)
+      {
+        BT_STK_ENTER (cp, h, indx, lock, lock_mode, ret);
         return (ret);
       }
-      BT_STK_PUSH(cp, h, indx, lock, lock_mode, ret);
+      BT_STK_PUSH (cp, h, indx, lock, lock_mode, ret);
       if (ret != 0)
         goto err;
 
       lock_mode = DB_LOCK_WRITE;
-      if ((ret =
-          CDB___db_lget(dbc, 0, pg, lock_mode, 0, &lock)) != 0)
+      if ((ret = CDB___db_lget (dbc, 0, pg, lock_mode, 0, &lock)) != 0)
         goto err;
-    } else {
+    }
+    else
+    {
       /*
        * Decide if we want to return a reference to the next
        * page in the return stack.  If so, lock it and never
        * unlock it.
        */
-      if ((LF_ISSET(S_PARENT) &&
-          (u_int8_t)(stop + 1) >= (u_int8_t)(h->level - 1)) ||
+      if ((LF_ISSET (S_PARENT) &&
+           (u_int8_t) (stop + 1) >= (u_int8_t) (h->level - 1)) ||
           (h->level - 1) == LEAFLEVEL)
         stack = 1;
 
-      (void)CDB_memp_fput(dbp->mpf, h, 0);
+      (void) CDB_memp_fput (dbp->mpf, h, 0);
 
-      lock_mode = stack &&
-          LF_ISSET(S_WRITE) ? DB_LOCK_WRITE : DB_LOCK_READ;
-      if ((ret =
-          CDB___db_lget(dbc, 1, pg, lock_mode, 0, &lock)) != 0) {
+      lock_mode = stack && LF_ISSET (S_WRITE) ? DB_LOCK_WRITE : DB_LOCK_READ;
+      if ((ret = CDB___db_lget (dbc, 1, pg, lock_mode, 0, &lock)) != 0)
+      {
         /*
          * If we fail, discard the lock we held.  This
          * is OK because this only happens when we are
          * descending the tree holding read-locks.
          */
-        __LPUT(dbc, lock);
+        __LPUT (dbc, lock);
         goto err;
       }
     }
-    if ((ret = CDB_memp_fget(dbp->mpf, &pg, 0, &h)) != 0)
+    if ((ret = CDB_memp_fget (dbp->mpf, &pg, 0, &h)) != 0)
       goto err;
   }
   /* NOTREACHED */
 
-match:  *exactp = 1;
+match:*exactp = 1;
 
   /*
    * If we're trying to calculate the record number, add in the
@@ -271,13 +279,12 @@ match:  *exactp = 1;
    * all duplicate sets that are not on overflow pages exist on a
    * single leaf page.
    */
-  if (LF_ISSET(S_DUPLAST))
-    while (indx < (db_indx_t)(NUM_ENT(h) - P_INDX) &&
-        h->inp[indx] == h->inp[indx + P_INDX])
+  if (LF_ISSET (S_DUPLAST))
+    while (indx < (db_indx_t) (NUM_ENT (h) - P_INDX) &&
+           h->inp[indx] == h->inp[indx + P_INDX])
       indx += P_INDX;
   else
-    while (indx > 0 &&
-        h->inp[indx] == h->inp[indx - P_INDX])
+    while (indx > 0 && h->inp[indx] == h->inp[indx - P_INDX])
       indx -= P_INDX;
 
   /*
@@ -286,38 +293,39 @@ match:  *exactp = 1;
    * not move from the original found key on the basis of the S_DELNO
    * flag.)
    */
-  if (LF_ISSET(S_DELNO)) {
-    if (LF_ISSET(S_DUPLAST))
-      while (B_DISSET(GET_BKEYDATA(h, indx + O_INDX)->type) &&
-          indx > 0 &&
-          h->inp[indx] == h->inp[indx - P_INDX])
+  if (LF_ISSET (S_DELNO))
+  {
+    if (LF_ISSET (S_DUPLAST))
+      while (B_DISSET (GET_BKEYDATA (h, indx + O_INDX)->type) &&
+             indx > 0 && h->inp[indx] == h->inp[indx - P_INDX])
         indx -= P_INDX;
     else
-      while (B_DISSET(GET_BKEYDATA(h, indx + O_INDX)->type) &&
-          indx < (db_indx_t)(NUM_ENT(h) - P_INDX) &&
-          h->inp[indx] == h->inp[indx + P_INDX])
+      while (B_DISSET (GET_BKEYDATA (h, indx + O_INDX)->type) &&
+             indx < (db_indx_t) (NUM_ENT (h) - P_INDX) &&
+             h->inp[indx] == h->inp[indx + P_INDX])
         indx += P_INDX;
 
     /*
      * If we weren't able to find a non-deleted duplicate, return
      * DB_NOTFOUND.
      */
-    if (B_DISSET(GET_BKEYDATA(h, indx + O_INDX)->type))
+    if (B_DISSET (GET_BKEYDATA (h, indx + O_INDX)->type))
       goto notfound;
   }
 
-  BT_STK_ENTER(cp, h, indx, lock, lock_mode, ret);
+  BT_STK_ENTER (cp, h, indx, lock, lock_mode, ret);
   return (ret);
 
 notfound:
   /* Keep the page locked for serializability. */
-  (void)CDB_memp_fput(dbp->mpf, h, 0);
-  (void)__TLPUT(dbc, lock);
+  (void) CDB_memp_fput (dbp->mpf, h, 0);
+  (void) __TLPUT (dbc, lock);
   ret = DB_NOTFOUND;
 
-err:  if (cp->csp > cp->sp) {
-    BT_STK_POP(cp);
-    CDB___bam_stkrel(dbc, 0);
+err:if (cp->csp > cp->sp)
+  {
+    BT_STK_POP (cp);
+    CDB___bam_stkrel (dbc, 0);
   }
   return (ret);
 }
@@ -332,9 +340,9 @@ err:  if (cp->csp > cp->sp) {
  * PUBLIC: int CDB___bam_stkrel __P((DBC *, int));
  */
 int
-CDB___bam_stkrel(dbc, nolocks)
-  DBC *dbc;
-  int nolocks;
+CDB___bam_stkrel (dbc, nolocks)
+     DBC *dbc;
+     int nolocks;
 {
   BTREE_CURSOR *cp;
   DB *dbp;
@@ -344,19 +352,21 @@ CDB___bam_stkrel(dbc, nolocks)
   cp = dbc->internal;
 
   /* Release inner pages first. */
-  for (epg = cp->sp; epg <= cp->csp; ++epg) {
+  for (epg = cp->sp; epg <= cp->csp; ++epg)
+  {
     if (epg->page != NULL)
-      (void)CDB_memp_fput(dbp->mpf, epg->page, 0);
-    if (epg->lock.off != LOCK_INVALID) {
+      (void) CDB_memp_fput (dbp->mpf, epg->page, 0);
+    if (epg->lock.off != LOCK_INVALID)
+    {
       if (nolocks)
-        (void)__LPUT(dbc, epg->lock);
+        (void) __LPUT (dbc, epg->lock);
       else
-        (void)__TLPUT(dbc, epg->lock);
+        (void) __TLPUT (dbc, epg->lock);
     }
   }
 
   /* Clear the stack, all pages have been released. */
-  BT_STK_CLR(cp);
+  BT_STK_CLR (cp);
 
   return (0);
 }
@@ -368,8 +378,8 @@ CDB___bam_stkrel(dbc, nolocks)
  * PUBLIC: int CDB___bam_stkgrow __P((BTREE_CURSOR *));
  */
 int
-CDB___bam_stkgrow(cp)
-  BTREE_CURSOR *cp;
+CDB___bam_stkgrow (cp)
+     BTREE_CURSOR *cp;
 {
   EPG *p;
   size_t entries;
@@ -377,11 +387,11 @@ CDB___bam_stkgrow(cp)
 
   entries = cp->esp - cp->sp;
 
-  if ((ret = CDB___os_calloc(entries * 2, sizeof(EPG), &p)) != 0)
+  if ((ret = CDB___os_calloc (entries * 2, sizeof (EPG), &p)) != 0)
     return (ret);
-  memcpy(p, cp->sp, entries * sizeof(EPG));
+  memcpy (p, cp->sp, entries * sizeof (EPG));
   if (cp->sp != cp->stack)
-    CDB___os_free(cp->sp, entries * sizeof(EPG));
+    CDB___os_free (cp->sp, entries * sizeof (EPG));
   cp->sp = p;
   cp->csp = p + entries;
   cp->esp = p + entries * 2;

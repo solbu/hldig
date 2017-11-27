@@ -55,15 +55,15 @@ static const char sccsid[] = "@(#)mut_pthread.c  11.15 (Sleepycat) 11/9/99";
  * PUBLIC: int CDB___db_pthread_mutex_init __P((DB_ENV *, MUTEX *, u_int32_t));
  */
 int
-CDB___db_pthread_mutex_init(dbenv, mutexp, flags)
-  DB_ENV *dbenv;
-  MUTEX *mutexp;
-  u_int32_t flags;
+CDB___db_pthread_mutex_init (dbenv, mutexp, flags)
+     DB_ENV *dbenv;
+     MUTEX *mutexp;
+     u_int32_t flags;
 {
   int ret;
 
   ret = 0;
-  memset(mutexp, 0, sizeof(*mutexp));
+  memset (mutexp, 0, sizeof (*mutexp));
 
   /*
    * If this is a thread lock or the process has told us that there are
@@ -73,49 +73,54 @@ CDB___db_pthread_mutex_init(dbenv, mutexp, flags)
    * This is where we decide to ignore locks we don't need to set -- if
    * the application isn't threaded, there aren't any threads to block.
    */
-  if (LF_ISSET(MUTEX_THREAD) || F_ISSET(dbenv, DB_ENV_PRIVATE)) {
-    if (!F_ISSET(dbenv, DB_ENV_THREAD)) {
-      F_SET(mutexp, MUTEX_IGNORE);
+  if (LF_ISSET (MUTEX_THREAD) || F_ISSET (dbenv, DB_ENV_PRIVATE))
+  {
+    if (!F_ISSET (dbenv, DB_ENV_THREAD))
+    {
+      F_SET (mutexp, MUTEX_IGNORE);
       return (0);
     }
-    F_SET(mutexp, MUTEX_THREAD);
+    F_SET (mutexp, MUTEX_THREAD);
   }
 
 #ifdef HAVE_MUTEX_PTHREADS
   {
-  pthread_condattr_t condattr, *condattrp = NULL;
-  pthread_mutexattr_t mutexattr, *mutexattrp = NULL;
+    pthread_condattr_t condattr, *condattrp = NULL;
+    pthread_mutexattr_t mutexattr, *mutexattrp = NULL;
 
-  if (!F_ISSET(mutexp, MUTEX_THREAD)) {
-    ret = pthread_condattr_init(&condattr);
-    if (ret == 0)
-      ret = pthread_condattr_setpshared(
-          &condattr, PTHREAD_PROCESS_SHARED);
-    condattrp = &condattr;
+    if (!F_ISSET (mutexp, MUTEX_THREAD))
+    {
+      ret = pthread_condattr_init (&condattr);
+      if (ret == 0)
+        ret = pthread_condattr_setpshared (&condattr, PTHREAD_PROCESS_SHARED);
+      condattrp = &condattr;
+
+      if (ret == 0)
+        ret = pthread_mutexattr_init (&mutexattr);
+      if (ret == 0)
+        ret =
+          pthread_mutexattr_setpshared (&mutexattr, PTHREAD_PROCESS_SHARED);
+      mutexattrp = &mutexattr;
+    }
 
     if (ret == 0)
-      ret = pthread_mutexattr_init(&mutexattr);
-    if (ret == 0)
-      ret = pthread_mutexattr_setpshared(
-          &mutexattr, PTHREAD_PROCESS_SHARED);
-    mutexattrp = &mutexattr;
+      ret = pthread_mutex_init (&mutexp->mutex, mutexattrp);
+    if (mutexattrp != NULL)
+      pthread_mutexattr_destroy (mutexattrp);
+    if (LF_ISSET (MUTEX_SELF_BLOCK))
+    {
+      if (ret == 0)
+        ret = pthread_cond_init (&mutexp->cond, condattrp);
+
+      F_SET (mutexp, MUTEX_SELF_BLOCK);
+      if (condattrp != NULL)
+        pthread_condattr_destroy (condattrp);
+    }
   }
-
-  if (ret == 0)
-    ret = pthread_mutex_init(&mutexp->mutex, mutexattrp);
-  if (mutexattrp != NULL)
-    pthread_mutexattr_destroy(mutexattrp);
-  if (LF_ISSET(MUTEX_SELF_BLOCK)) {
-    if (ret == 0)
-      ret = pthread_cond_init(&mutexp->cond, condattrp);
-
-    F_SET(mutexp, MUTEX_SELF_BLOCK);
-    if (condattrp != NULL)
-      pthread_condattr_destroy(condattrp);
-  }}
 #endif
 #ifdef HAVE_MUTEX_SOLARIS_LWP
-  if (F_ISSET(mutexp, MUTEX_THREAD)) {
+  if (F_ISSET (mutexp, MUTEX_THREAD))
+  {
     static lwp_mutex_t mi = DEFAULTMUTEX;
 
     /*
@@ -126,40 +131,48 @@ CDB___db_pthread_mutex_init(dbenv, mutexp, flags)
      * to work.  We don't use memcpy instead of structure assignment
      * because gcc figures that one out and drops core anyway.
      */
-    CDB___ua_memcpy(&mutexp->mutex, &mi, sizeof(mi));
-  } else {
+    CDB___ua_memcpy (&mutexp->mutex, &mi, sizeof (mi));
+  }
+  else
+  {
     static lwp_mutex_t mi = SHAREDMUTEX;
 
-    CDB___ua_memcpy(&mutexp->mutex, &mi, sizeof(mi));
+    CDB___ua_memcpy (&mutexp->mutex, &mi, sizeof (mi));
   }
-  if (LF_ISSET(MUTEX_SELF_BLOCK)) {
-    if (F_ISSET(mutexp, MUTEX_THREAD)) {
+  if (LF_ISSET (MUTEX_SELF_BLOCK))
+  {
+    if (F_ISSET (mutexp, MUTEX_THREAD))
+    {
       static lwp_cond_t ci = DEFAULTCV;
 
-      CDB___ua_memcpy(&mutexp->cond, &ci, sizeof(ci));
-    } else {
+      CDB___ua_memcpy (&mutexp->cond, &ci, sizeof (ci));
+    }
+    else
+    {
       static lwp_cond_t ci = SHAREDCV;
 
-      CDB___ua_memcpy(&mutexp->cond, &ci, sizeof(ci));
+      CDB___ua_memcpy (&mutexp->cond, &ci, sizeof (ci));
     }
-    F_SET(mutexp, MUTEX_SELF_BLOCK);
+    F_SET (mutexp, MUTEX_SELF_BLOCK);
   }
 #endif
 #ifdef HAVE_MUTEX_UI_THREADS
   {
-  int type;
+    int type;
 
-  type = F_ISSET(mutexp, MUTEX_THREAD) ? USYNC_THREAD : USYNC_PROCESS;
+    type = F_ISSET (mutexp, MUTEX_THREAD) ? USYNC_THREAD : USYNC_PROCESS;
 
-  ret = mutex_init(&mutexp->mutex, type, NULL);
-  if (ret == 0 && LF_ISSET(MUTEX_SELF_BLOCK)) {
-    ret = cond_init(&mutexp->cond, type, NULL);
+    ret = mutex_init (&mutexp->mutex, type, NULL);
+    if (ret == 0 && LF_ISSET (MUTEX_SELF_BLOCK))
+    {
+      ret = cond_init (&mutexp->cond, type, NULL);
 
-    F_SET(mutexp, MUTEX_SELF_BLOCK);
-  }}
+      F_SET (mutexp, MUTEX_SELF_BLOCK);
+    }
+  }
 #endif
 
-  mutexp->spins = CDB___os_spin();
+  mutexp->spins = CDB___os_spin ();
 
   return (ret);
 }
@@ -171,26 +184,28 @@ CDB___db_pthread_mutex_init(dbenv, mutexp, flags)
  * PUBLIC: int CDB___db_pthread_mutex_lock __P((MUTEX *));
  */
 int
-CDB___db_pthread_mutex_lock(mutexp)
-  MUTEX *mutexp;
+CDB___db_pthread_mutex_lock (mutexp)
+     MUTEX *mutexp;
 {
   u_int32_t nspins;
   int ret, waited;
 
-  if (!DB_GLOBAL(db_mutexlocks) || F_ISSET(mutexp, MUTEX_IGNORE))
+  if (!DB_GLOBAL (db_mutexlocks) || F_ISSET (mutexp, MUTEX_IGNORE))
     return (0);
 
   /* Attempt to acquire the resource for N spins. */
   for (nspins = mutexp->spins; nspins > 0; --nspins)
-    if (pthread_mutex_trylock(&mutexp->mutex) == 0)
+    if (pthread_mutex_trylock (&mutexp->mutex) == 0)
       break;
 
-  if (nspins == 0 && (ret = pthread_mutex_lock(&mutexp->mutex)) != 0)
+  if (nspins == 0 && (ret = pthread_mutex_lock (&mutexp->mutex)) != 0)
     return (ret);
 
-  if (F_ISSET(mutexp, MUTEX_SELF_BLOCK)) {
-    for (waited = 0; mutexp->locked != 0; waited = 1) {
-      ret = pthread_cond_wait(&mutexp->cond, &mutexp->mutex);
+  if (F_ISSET (mutexp, MUTEX_SELF_BLOCK))
+  {
+    for (waited = 0; mutexp->locked != 0; waited = 1)
+    {
+      ret = pthread_cond_wait (&mutexp->cond, &mutexp->mutex);
       /*
        * !!!
        * Solaris bug workaround:
@@ -215,25 +230,28 @@ CDB___db_pthread_mutex_lock(mutexp)
       ++mutexp->mutex_set_nowait;
 
 #ifdef DIAGNOSTIC
-    mutexp->locked = (u_int32_t)pthread_self();
+    mutexp->locked = (u_int32_t) pthread_self ();
 #else
     mutexp->locked = 1;
 #endif
-    if ((ret = pthread_mutex_unlock(&mutexp->mutex)) != 0)
+    if ((ret = pthread_mutex_unlock (&mutexp->mutex)) != 0)
       return (ret);
-  } else {
+  }
+  else
+  {
     if (nspins == mutexp->spins)
       ++mutexp->mutex_set_nowait;
     else
       ++mutexp->mutex_set_wait;
 #ifdef DIAGNOSTIC
-    if (mutexp->locked) {
+    if (mutexp->locked)
+    {
       char msgbuf[128];
-      (void)snprintf(msgbuf,
-          sizeof(msgbuf), MSG1, (u_long)mutexp->locked);
-      (void)write(STDERR_FILENO, msgbuf, strlen(msgbuf));
+      (void) snprintf (msgbuf,
+                       sizeof (msgbuf), MSG1, (u_long) mutexp->locked);
+      (void) write (STDERR_FILENO, msgbuf, strlen (msgbuf));
     }
-    mutexp->locked = (u_int32_t)pthread_self();
+    mutexp->locked = (u_int32_t) pthread_self ();
 #else
     mutexp->locked = 1;
 #endif
@@ -248,34 +266,37 @@ CDB___db_pthread_mutex_lock(mutexp)
  * PUBLIC: int CDB___db_pthread_mutex_unlock __P((MUTEX *));
  */
 int
-CDB___db_pthread_mutex_unlock(mutexp)
-  MUTEX *mutexp;
+CDB___db_pthread_mutex_unlock (mutexp)
+     MUTEX *mutexp;
 {
   int ret;
 
-  if (!DB_GLOBAL(db_mutexlocks) || F_ISSET(mutexp, MUTEX_IGNORE))
+  if (!DB_GLOBAL (db_mutexlocks) || F_ISSET (mutexp, MUTEX_IGNORE))
     return (0);
 
 #ifdef DIAGNOSTIC
   if (!mutexp->locked)
-    (void)write(STDERR_FILENO, MSG2, sizeof(MSG2) - 1);
+    (void) write (STDERR_FILENO, MSG2, sizeof (MSG2) - 1);
 #endif
 
-  if (F_ISSET(mutexp, MUTEX_SELF_BLOCK)) {
-    if ((ret = pthread_mutex_lock(&mutexp->mutex)) != 0)
+  if (F_ISSET (mutexp, MUTEX_SELF_BLOCK))
+  {
+    if ((ret = pthread_mutex_lock (&mutexp->mutex)) != 0)
       return (ret);
 
     mutexp->locked = 0;
 
-    if ((ret = pthread_mutex_unlock(&mutexp->mutex)) != 0)
+    if ((ret = pthread_mutex_unlock (&mutexp->mutex)) != 0)
       return (ret);
 
-    if ((ret = pthread_cond_signal(&mutexp->cond)) != 0)
+    if ((ret = pthread_cond_signal (&mutexp->cond)) != 0)
       return (ret);
-  } else {
+  }
+  else
+  {
     mutexp->locked = 0;
 
-    if ((ret = pthread_mutex_unlock(&mutexp->mutex)) != 0)
+    if ((ret = pthread_mutex_unlock (&mutexp->mutex)) != 0)
       return (ret);
   }
 

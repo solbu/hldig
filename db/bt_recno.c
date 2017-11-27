@@ -28,14 +28,15 @@ static const char sccsid[] = "@(#)bt_recno.c  11.9 (Sleepycat) 10/29/99";
 #include "lock_ext.h"
 #include "qam.h"
 
-static int CDB___ram_add __P((DBC *, db_recno_t *, DBT *, u_int32_t, u_int32_t));
-static int CDB___ram_delete __P((DB *, DB_TXN *, DBT *, u_int32_t));
-static int CDB___ram_fmap __P((DBC *, db_recno_t));
-static int CDB___ram_i_delete __P((DBC *));
-static int CDB___ram_put __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
-static int CDB___ram_source __P((DB *));
-static int CDB___ram_update __P((DBC *, db_recno_t, int));
-static int CDB___ram_vmap __P((DBC *, db_recno_t));
+static int CDB___ram_add
+__P ((DBC *, db_recno_t *, DBT *, u_int32_t, u_int32_t));
+static int CDB___ram_delete __P ((DB *, DB_TXN *, DBT *, u_int32_t));
+static int CDB___ram_fmap __P ((DBC *, db_recno_t));
+static int CDB___ram_i_delete __P ((DBC *));
+static int CDB___ram_put __P ((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+static int CDB___ram_source __P ((DB *));
+static int CDB___ram_update __P ((DBC *, db_recno_t, int));
+static int CDB___ram_vmap __P ((DBC *, db_recno_t));
 
 /*
  * In recno, there are two meanings to the on-page "deleted" flag.  If we're
@@ -72,10 +73,10 @@ static int CDB___ram_vmap __P((DBC *, db_recno_t));
  * PUBLIC: int CDB___ram_open __P((DB *, const char *, db_pgno_t));
  */
 int
-CDB___ram_open(dbp, name, base_pgno)
-  DB *dbp;
-  const char *name;
-  db_pgno_t base_pgno;
+CDB___ram_open (dbp, name, base_pgno)
+     DB *dbp;
+     const char *name;
+     db_pgno_t base_pgno;
 {
   BTREE *t;
   DBC *dbc;
@@ -89,10 +90,10 @@ CDB___ram_open(dbp, name, base_pgno)
   dbp->stat = CDB___bam_stat;
 
   /* Set the overflow page size. */
-  CDB___bam_setovflsize(dbp);
+  CDB___bam_setovflsize (dbp);
 
   /* Start up the tree. */
-  if ((ret = CDB___bam_read_root(dbp, name, base_pgno)) != 0)
+  if ((ret = CDB___bam_read_root (dbp, name, base_pgno)) != 0)
     goto err;
 
   /*
@@ -104,24 +105,25 @@ CDB___ram_open(dbp, name, base_pgno)
    * doing!
    */
   if (t->re_source == NULL)
-    F_SET(t, RECNO_EOF);
-  else
-    if ((ret = CDB___ram_source(dbp)) != 0)
-      goto err;
+    F_SET (t, RECNO_EOF);
+  else if ((ret = CDB___ram_source (dbp)) != 0)
+    goto err;
 
   /* If we're snapshotting an underlying source file, do it now. */
-  if (F_ISSET(dbp, DB_RE_SNAPSHOT)) {
+  if (F_ISSET (dbp, DB_RE_SNAPSHOT))
+  {
     /* Allocate a cursor. */
-    if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
+    if ((ret = dbp->cursor (dbp, NULL, &dbc, 0)) != 0)
       goto err;
 
     /* Do the snapshot. */
-    if ((ret = CDB___ram_update(dbc,
-        DB_MAX_RECORDS, 0)) != 0 && ret == DB_NOTFOUND)
+    if ((ret = CDB___ram_update (dbc,
+                                 DB_MAX_RECORDS, 0)) != 0
+        && ret == DB_NOTFOUND)
       ret = 0;
 
     /* Discard the cursor. */
-    if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+    if ((t_ret = dbc->c_close (dbc)) != 0 && ret == 0)
       ret = t_ret;
 
     if (ret != 0)
@@ -130,15 +132,15 @@ CDB___ram_open(dbp, name, base_pgno)
 
   return (0);
 
-err:  /* If we mmap'd a source file, discard it. */
+err:                           /* If we mmap'd a source file, discard it. */
   if (t->re_smap != NULL)
-    (void)CDB___os_unmapfile(dbp->dbenv, t->re_smap, t->re_msize);
+    (void) CDB___os_unmapfile (dbp->dbenv, t->re_smap, t->re_msize);
 
   /* If we opened a source file, discard it. */
-  if (F_ISSET(&t->re_fh, DB_FH_VALID))
-    (void)CDB___os_closehandle(&t->re_fh);
+  if (F_ISSET (&t->re_fh, DB_FH_VALID))
+    (void) CDB___os_closehandle (&t->re_fh);
   if (t->re_source != NULL)
-    CDB___os_freestr(t->re_source);
+    CDB___os_freestr (t->re_source);
 
   return (ret);
 }
@@ -148,41 +150,41 @@ err:  /* If we mmap'd a source file, discard it. */
  *  Recno db->del function.
  */
 static int
-CDB___ram_delete(dbp, txn, key, flags)
-  DB *dbp;
-  DB_TXN *txn;
-  DBT *key;
-  u_int32_t flags;
+CDB___ram_delete (dbp, txn, key, flags)
+     DB *dbp;
+     DB_TXN *txn;
+     DBT *key;
+     u_int32_t flags;
 {
   BTREE_CURSOR *cp;
   DBC *dbc;
   db_recno_t recno;
   int ret, t_ret;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
   /* Check for invalid flags. */
-  if ((ret = CDB___db_delchk(dbp,
-      key, flags, F_ISSET(dbp, DB_AM_RDONLY))) != 0)
+  if ((ret = CDB___db_delchk (dbp,
+                              key, flags, F_ISSET (dbp, DB_AM_RDONLY))) != 0)
     return (ret);
 
   /* Acquire a cursor. */
-  if ((ret = dbp->cursor(dbp, txn, &dbc, DB_WRITELOCK)) != 0)
+  if ((ret = dbp->cursor (dbp, txn, &dbc, DB_WRITELOCK)) != 0)
     return (ret);
 
-  DEBUG_LWRITE(dbc, txn, "ram_delete", key, NULL, flags);
+  DEBUG_LWRITE (dbc, txn, "ram_delete", key, NULL, flags);
 
   /* Check the user's record number and fill in as necessary. */
-  if ((ret = CDB___ram_getno(dbc, key, &recno, 0)) != 0)
+  if ((ret = CDB___ram_getno (dbc, key, &recno, 0)) != 0)
     goto err;
 
   /* Do the delete. */
   cp = dbc->internal;
   cp->recno = recno;
-  ret = CDB___ram_i_delete(dbc);
+  ret = CDB___ram_i_delete (dbc);
 
   /* Release the cursor. */
-err:  if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+err:if ((t_ret = dbc->c_close (dbc)) != 0 && ret == 0)
     ret = t_ret;
 
   return (ret);
@@ -194,8 +196,8 @@ err:  if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
  *  CDB___ram_c_del.
  */
 static int
-CDB___ram_i_delete(dbc)
-  DBC *dbc;
+CDB___ram_i_delete (dbc)
+     DBC *dbc;
 {
   BKEYDATA bk;
   BTREE *t;
@@ -216,22 +218,24 @@ CDB___ram_i_delete(dbc)
    * If it is a write cursor, but we don't yet hold the write lock, then
    * we need to upgrade to the write lock.
    */
-  if (F_ISSET(dbp->dbenv, DB_ENV_CDB)) {
+  if (F_ISSET (dbp->dbenv, DB_ENV_CDB))
+  {
     /* Make sure it's a valid update cursor. */
-    if (!F_ISSET(dbc, DBC_WRITECURSOR | DBC_WRITER))
+    if (!F_ISSET (dbc, DBC_WRITECURSOR | DBC_WRITER))
       return (EINVAL);
 
-    if (F_ISSET(dbc, DBC_WRITECURSOR) &&
-        (ret = CDB_lock_get(dbp->dbenv, dbc->locker,
-        DB_LOCK_UPGRADE, &dbc->lock_dbt, DB_LOCK_WRITE,
-        &dbc->mylock)) != 0)
+    if (F_ISSET (dbc, DBC_WRITECURSOR) &&
+        (ret = CDB_lock_get (dbp->dbenv, dbc->locker,
+                             DB_LOCK_UPGRADE, &dbc->lock_dbt, DB_LOCK_WRITE,
+                             &dbc->mylock)) != 0)
       return (ret);
   }
 
   /* Search the tree for the key; delete only deletes exact matches. */
-  if ((ret = CDB___bam_rsearch(dbc, &cp->recno, S_DELETE, 1, &exact)) != 0)
+  if ((ret = CDB___bam_rsearch (dbc, &cp->recno, S_DELETE, 1, &exact)) != 0)
     goto err;
-  if (!exact) {
+  if (!exact)
+  {
     ret = DB_NOTFOUND;
     goto err;
   }
@@ -251,52 +255,56 @@ CDB___ram_i_delete(dbc)
    * delete records they never created, the latter is an error because
    * if the record was "deleted", we could never have found it.
    */
-  if (B_DISSET(GET_BKEYDATA(h, indx)->type)) {
+  if (B_DISSET (GET_BKEYDATA (h, indx)->type))
+  {
     ret = DB_KEYEMPTY;
     goto err;
   }
 
-  if (F_ISSET(dbp, DB_RE_RENUMBER)) {
+  if (F_ISSET (dbp, DB_RE_RENUMBER))
+  {
     /* Delete the item, adjust the counts, adjust the cursors. */
-    if ((ret = CDB___bam_ditem(dbc, h, indx)) != 0)
+    if ((ret = CDB___bam_ditem (dbc, h, indx)) != 0)
       goto err;
-    CDB___bam_adjust(dbc, -1);
-    CDB___ram_ca(dbp, cp->recno, CA_DELETE);
+    CDB___bam_adjust (dbc, -1);
+    CDB___ram_ca (dbp, cp->recno, CA_DELETE);
 
     /*
      * If the page is empty, delete it.   The whole tree is locked
      * so there are no preparations to make.
      */
-    if (NUM_ENT(h) == 0 && h->pgno != t->bt_root) {
+    if (NUM_ENT (h) == 0 && h->pgno != t->bt_root)
+    {
       stack = 0;
-      ret = CDB___bam_dpages(dbc);
+      ret = CDB___bam_dpages (dbc);
     }
-  } else {
+  }
+  else
+  {
     /* Use a delete/put pair to replace the record with a marker. */
-    if ((ret = CDB___bam_ditem(dbc, h, indx)) != 0)
+    if ((ret = CDB___bam_ditem (dbc, h, indx)) != 0)
       goto err;
 
-    B_TSET(bk.type, B_KEYDATA, 1);
+    B_TSET (bk.type, B_KEYDATA, 1);
     bk.len = 0;
-    memset(&hdr, 0, sizeof(hdr));
+    memset (&hdr, 0, sizeof (hdr));
     hdr.data = &bk;
-    hdr.size = SSZA(BKEYDATA, data);
-    memset(&data, 0, sizeof(data));
-    data.data = (void *)"";
+    hdr.size = SSZA (BKEYDATA, data);
+    memset (&data, 0, sizeof (data));
+    data.data = (void *) "";
     data.size = 0;
-    if ((ret = CDB___db_pitem(dbc,
-        h, indx, BKEYDATA_SIZE(0), &hdr, &data)) != 0)
+    if ((ret = CDB___db_pitem (dbc,
+                               h, indx, BKEYDATA_SIZE (0), &hdr, &data)) != 0)
       goto err;
   }
-  F_SET(t, RECNO_MODIFIED);
+  F_SET (t, RECNO_MODIFIED);
 
-err:  if (stack)
-    CDB___bam_stkrel(dbc, 0);
+err:if (stack)
+    CDB___bam_stkrel (dbc, 0);
 
   /* If we upgraded the CDB lock upon entry; downgrade it now. */
-  if (F_ISSET(dbc, DBC_WRITECURSOR))
-    (void)CDB___lock_downgrade(dbp->dbenv,
-        &dbc->mylock, DB_LOCK_IWRITE, 0);
+  if (F_ISSET (dbc, DBC_WRITECURSOR))
+    (void) CDB___lock_downgrade (dbp->dbenv, &dbc->mylock, DB_LOCK_IWRITE, 0);
   return (ret);
 }
 
@@ -305,52 +313,55 @@ err:  if (stack)
  *  Recno db->put function.
  */
 static int
-CDB___ram_put(dbp, txn, key, data, flags)
-  DB *dbp;
-  DB_TXN *txn;
-  DBT *key, *data;
-  u_int32_t flags;
+CDB___ram_put (dbp, txn, key, data, flags)
+     DB *dbp;
+     DB_TXN *txn;
+     DBT *key, *data;
+     u_int32_t flags;
 {
   DBC *dbc;
   db_recno_t recno;
   int ret, t_ret;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
   /* Check for invalid flags. */
-  if ((ret = CDB___db_putchk(dbp,
-      key, data, flags, F_ISSET(dbp, DB_AM_RDONLY), 0)) != 0)
+  if ((ret = CDB___db_putchk (dbp,
+                              key, data, flags, F_ISSET (dbp, DB_AM_RDONLY),
+                              0)) != 0)
     return (ret);
 
   /* Allocate a cursor. */
-  if ((ret = dbp->cursor(dbp, txn, &dbc, DB_WRITELOCK)) != 0)
+  if ((ret = dbp->cursor (dbp, txn, &dbc, DB_WRITELOCK)) != 0)
     return (ret);
 
-  DEBUG_LWRITE(dbc, txn, "ram_put", key, data, flags);
+  DEBUG_LWRITE (dbc, txn, "ram_put", key, data, flags);
 
   /*
    * If we're appending to the tree, make sure we've read in all of
    * the backing source file.  Otherwise, check the user's record
    * number and fill in as necessary.
    */
-  if (flags == DB_APPEND) {
-    if ((ret = CDB___ram_update(
-        dbc, DB_MAX_RECORDS, 0)) != 0 && ret == DB_NOTFOUND)
+  if (flags == DB_APPEND)
+  {
+    if ((ret = CDB___ram_update (dbc, DB_MAX_RECORDS, 0)) != 0
+        && ret == DB_NOTFOUND)
       ret = 0;
-  } else
-    ret = CDB___ram_getno(dbc, key, &recno, 1);
+  }
+  else
+    ret = CDB___ram_getno (dbc, key, &recno, 1);
 
   /* Add the record. */
   if (ret == 0)
-    ret = CDB___ram_add(dbc, &recno, data, flags, 0);
+    ret = CDB___ram_add (dbc, &recno, data, flags, 0);
 
   /* Discard the cursor. */
-  if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+  if ((t_ret = dbc->c_close (dbc)) != 0 && ret == 0)
     ret = t_ret;
 
   /* Return the record number if we're appending to the tree. */
   if (ret == 0 && flags == DB_APPEND)
-    *(db_recno_t *)key->data = recno;
+    *(db_recno_t *) key->data = recno;
 
   return (ret);
 }
@@ -362,9 +373,9 @@ CDB___ram_put(dbp, txn, key, data, flags)
  * PUBLIC: int CDB___ram_c_del __P((DBC *, u_int32_t));
  */
 int
-CDB___ram_c_del(dbc, flags)
-  DBC *dbc;
-  u_int32_t flags;
+CDB___ram_c_del (dbc, flags)
+     DBC *dbc;
+     u_int32_t flags;
 {
   BTREE_CURSOR *cp;
   DB *dbp;
@@ -373,14 +384,15 @@ CDB___ram_c_del(dbc, flags)
   dbp = dbc->dbp;
   cp = dbc->internal;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
   /* Check for invalid flags. */
-  if ((ret = CDB___db_cdelchk(dbp, flags,
-      F_ISSET(dbp, DB_AM_RDONLY), cp->recno != RECNO_OOB)) != 0)
+  if ((ret = CDB___db_cdelchk (dbp, flags,
+                               F_ISSET (dbp, DB_AM_RDONLY),
+                               cp->recno != RECNO_OOB)) != 0)
     return (ret);
 
-  DEBUG_LWRITE(dbc, dbc->txn, "ram_c_del", NULL, NULL, flags);
+  DEBUG_LWRITE (dbc, dbc->txn, "ram_c_del", NULL, NULL, flags);
 
   /*
    * The semantics of cursors during delete are as follows: if record
@@ -394,7 +406,7 @@ CDB___ram_c_del(dbc, flags)
    * this cursor has already been deleted, we will detect that as part
    * of the delete operation, and fail.
    */
-  return (CDB___ram_i_delete(dbc));
+  return (CDB___ram_i_delete (dbc));
 }
 
 /*
@@ -404,10 +416,10 @@ CDB___ram_c_del(dbc, flags)
  * PUBLIC: int CDB___ram_c_get __P((DBC *, DBT *, DBT *, u_int32_t));
  */
 int
-CDB___ram_c_get(dbc, key, data, flags)
-  DBC *dbc;
-  DBT *key, *data;
-  u_int32_t flags;
+CDB___ram_c_get (dbc, key, data, flags)
+     DBC *dbc;
+     DBT *key, *data;
+     u_int32_t flags;
 {
   BTREE_CURSOR *cp, copy;
   DB *dbp;
@@ -418,30 +430,34 @@ CDB___ram_c_get(dbc, key, data, flags)
   dbp = dbc->dbp;
   cp = dbc->internal;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
   /* Check for invalid flags. */
-  if ((ret = CDB___db_cgetchk(dbc->dbp,
-      key, data, flags, cp->recno != RECNO_OOB)) != 0)
+  if ((ret = CDB___db_cgetchk (dbc->dbp,
+                               key, data, flags,
+                               cp->recno != RECNO_OOB)) != 0)
     return (ret);
 
   /* Clear OR'd in additional bits so we can check for flag equality. */
   tmp_rmw = 0;
-  if (LF_ISSET(DB_RMW)) {
+  if (LF_ISSET (DB_RMW))
+  {
     tmp_rmw = 1;
-    F_SET(dbc, DBC_RMW);
-    LF_CLR(DB_RMW);
+    F_SET (dbc, DBC_RMW);
+    LF_CLR (DB_RMW);
   }
 
-  DEBUG_LREAD(dbc, dbc->txn, "ram_c_get",
-      flags == DB_SET || flags == DB_SET_RANGE ? key : NULL, NULL, flags);
+  DEBUG_LREAD (dbc, dbc->txn, "ram_c_get",
+               flags == DB_SET
+               || flags == DB_SET_RANGE ? key : NULL, NULL, flags);
 
   /* Initialize the cursor for a new retrieval. */
   copy = *cp;
 
-retry:  /* Update the record number. */
+retry:                         /* Update the record number. */
   stack = 0;
-  switch (flags) {
+  switch (flags)
+  {
   case DB_CURRENT:
     /*
      * If record numbers are mutable: if we just deleted a record,
@@ -455,10 +471,11 @@ retry:  /* Update the record number. */
      * we have to avoid incrementing the record number so that we
      * return the right record by virtue of renumbering the tree.
      */
-    if (CD_ISSET(dbp, cp))
+    if (CD_ISSET (dbp, cp))
       break;
 
-    if (cp->recno != RECNO_OOB) {
+    if (cp->recno != RECNO_OOB)
+    {
       ++cp->recno;
       break;
     }
@@ -468,8 +485,10 @@ retry:  /* Update the record number. */
     cp->recno = 1;
     break;
   case DB_PREV:
-    if (cp->recno != RECNO_OOB) {
-      if (cp->recno == 1) {
+    if (cp->recno != RECNO_OOB)
+    {
+      if (cp->recno == 1)
+      {
         ret = DB_NOTFOUND;
         goto err;
       }
@@ -479,19 +498,21 @@ retry:  /* Update the record number. */
     /* FALLTHROUGH */
   case DB_LAST:
     flags = DB_PREV;
-    if (((ret = CDB___ram_update(dbc,
-        DB_MAX_RECORDS, 0)) != 0) && ret != DB_NOTFOUND)
+    if (((ret = CDB___ram_update (dbc,
+                                  DB_MAX_RECORDS, 0)) != 0)
+        && ret != DB_NOTFOUND)
       goto err;
-    if ((ret = CDB___bam_nrecs(dbc, &cp->recno)) != 0)
+    if ((ret = CDB___bam_nrecs (dbc, &cp->recno)) != 0)
       goto err;
-    if (cp->recno == 0) {
+    if (cp->recno == 0)
+    {
       ret = DB_NOTFOUND;
       goto err;
     }
     break;
   case DB_SET:
   case DB_SET_RANGE:
-    if ((ret = CDB___ram_getno(dbc, key, &cp->recno, 0)) != 0)
+    if ((ret = CDB___ram_getno (dbc, key, &cp->recno, 0)) != 0)
       goto err;
     break;
   }
@@ -504,15 +525,18 @@ retry:  /* Update the record number. */
    * backing file for a DB_CURRENT operation), DB_FIRST and DB_NEXT.
    */
   if (flags == DB_NEXT && ((ret =
-      CDB___ram_update(dbc, cp->recno, 0)) != 0) && ret != DB_NOTFOUND)
+                            CDB___ram_update (dbc, cp->recno, 0)) != 0)
+      && ret != DB_NOTFOUND)
     goto err;
 
   /* Search the tree for the record. */
-  if ((ret = CDB___bam_rsearch(dbc, &cp->recno,
-      F_ISSET(dbc, DBC_RMW) ? S_FIND_WR : S_FIND, 1, &exact)) != 0)
+  if ((ret = CDB___bam_rsearch (dbc, &cp->recno,
+                                F_ISSET (dbc, DBC_RMW) ? S_FIND_WR : S_FIND,
+                                1, &exact)) != 0)
     goto err;
   stack = 1;
-  if (!exact) {
+  if (!exact)
+  {
     ret = DB_NOTFOUND;
     goto err;
   }
@@ -527,9 +551,11 @@ retry:  /* Update the record number. */
    * cursor next/prev operations, and fail if the application requested
    * them explicitly.
    */
-  if (B_DISSET(GET_BKEYDATA(h, indx)->type)) {
-    if (flags == DB_NEXT || flags == DB_PREV) {
-      (void)CDB___bam_stkrel(dbc, 0);
+  if (B_DISSET (GET_BKEYDATA (h, indx)->type))
+  {
+    if (flags == DB_NEXT || flags == DB_PREV)
+    {
+      (void) CDB___bam_stkrel (dbc, 0);
       goto retry;
     }
     ret = DB_KEYEMPTY;
@@ -538,24 +564,25 @@ retry:  /* Update the record number. */
 
   /* Return the key if the user didn't give us one. */
   if (flags != DB_SET && flags != DB_SET_RANGE &&
-      (ret = CDB___db_retcopy(dbp, key, &cp->recno, sizeof(cp->recno),
-      &dbc->rkey.data, &dbc->rkey.ulen)) != 0)
+      (ret = CDB___db_retcopy (dbp, key, &cp->recno, sizeof (cp->recno),
+                               &dbc->rkey.data, &dbc->rkey.ulen)) != 0)
     goto err;
 
   /* Return the data item. */
-  if ((ret = CDB___db_ret(dbp,
-      h, indx, data, &dbc->rdata.data, &dbc->rdata.ulen)) != 0)
+  if ((ret = CDB___db_ret (dbp,
+                           h, indx, data, &dbc->rdata.data,
+                           &dbc->rdata.ulen)) != 0)
     goto err;
 
   /* The cursor was reset, no further delete adjustment is necessary. */
-  CD_CLR(dbp, cp);
+  CD_CLR (dbp, cp);
 
-err:  if (stack)
-    (void)CDB___bam_stkrel(dbc, 0);
+err:if (stack)
+    (void) CDB___bam_stkrel (dbc, 0);
 
   /* Release temporary lock upgrade. */
   if (tmp_rmw)
-    F_CLR(dbc, DBC_RMW);
+    F_CLR (dbc, DBC_RMW);
 
   if (ret != 0)
     *cp = copy;
@@ -570,10 +597,10 @@ err:  if (stack)
  * PUBLIC: int CDB___ram_c_put __P((DBC *, DBT *, DBT *, u_int32_t));
  */
 int
-CDB___ram_c_put(dbc, key, data, flags)
-  DBC *dbc;
-  DBT *key, *data;
-  u_int32_t flags;
+CDB___ram_c_put (dbc, key, data, flags)
+     DBC *dbc;
+     DBT *key, *data;
+     u_int32_t flags;
 {
   BTREE_CURSOR *cp, copy;
   DB *dbp;
@@ -583,13 +610,14 @@ CDB___ram_c_put(dbc, key, data, flags)
   dbp = dbc->dbp;
   cp = dbc->internal;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
-  if ((ret = CDB___db_cputchk(dbc->dbp, key, data, flags,
-      F_ISSET(dbc->dbp, DB_AM_RDONLY), cp->recno != RECNO_OOB)) != 0)
+  if ((ret = CDB___db_cputchk (dbc->dbp, key, data, flags,
+                               F_ISSET (dbc->dbp, DB_AM_RDONLY),
+                               cp->recno != RECNO_OOB)) != 0)
     return (ret);
 
-  DEBUG_LWRITE(dbc, dbc->txn, "ram_c_put", NULL, data, flags);
+  DEBUG_LWRITE (dbc, dbc->txn, "ram_c_put", NULL, data, flags);
 
   /*
    * If we are running CDB, this had better be either a write
@@ -597,13 +625,15 @@ CDB___ram_c_put(dbc, key, data, flags)
    * that means we have an IWRITE lock and we need to upgrade
    * it to a write lock.
    */
-  if (F_ISSET(dbp->dbenv, DB_ENV_CDB)) {
-    if (!F_ISSET(dbc, DBC_WRITECURSOR | DBC_WRITER))
+  if (F_ISSET (dbp->dbenv, DB_ENV_CDB))
+  {
+    if (!F_ISSET (dbc, DBC_WRITECURSOR | DBC_WRITER))
       return (EINVAL);
 
-    if (F_ISSET(dbc, DBC_WRITECURSOR) &&
-        (ret = CDB_lock_get(dbp->dbenv, dbc->locker, DB_LOCK_UPGRADE,
-        &dbc->lock_dbt, DB_LOCK_WRITE, &dbc->mylock)) != 0)
+    if (F_ISSET (dbc, DBC_WRITECURSOR) &&
+        (ret = CDB_lock_get (dbp->dbenv, dbc->locker, DB_LOCK_UPGRADE,
+                             &dbc->lock_dbt, DB_LOCK_WRITE,
+                             &dbc->mylock)) != 0)
       return (ret);
   }
 
@@ -615,38 +645,43 @@ CDB___ram_c_put(dbc, key, data, flags)
    *
    * The split code discards all short-term locks and stack pages.
    */
-  if (0) {
-split:    arg = &cp->recno;
-    if ((ret = CDB___bam_split(dbc, arg)) != 0)
+  if (0)
+  {
+  split:arg = &cp->recno;
+    if ((ret = CDB___bam_split (dbc, arg)) != 0)
       goto err;
   }
 
-  if ((ret = CDB___bam_rsearch(dbc, &cp->recno, S_INSERT, 1, &exact)) != 0)
+  if ((ret = CDB___bam_rsearch (dbc, &cp->recno, S_INSERT, 1, &exact)) != 0)
     goto err;
-  if (!exact) {
+  if (!exact)
+  {
     ret = DB_NOTFOUND;
     goto err;
   }
-  if ((ret = CDB___bam_iitem(dbc, &cp->csp->page,
-      &cp->csp->indx, key, data, flags, 0)) == DB_NEEDSPLIT) {
-    if ((ret = CDB___bam_stkrel(dbc, 0)) != 0)
+  if ((ret = CDB___bam_iitem (dbc, &cp->csp->page,
+                              &cp->csp->indx, key, data, flags,
+                              0)) == DB_NEEDSPLIT)
+  {
+    if ((ret = CDB___bam_stkrel (dbc, 0)) != 0)
       goto err;
     goto split;
   }
-  if ((ret = CDB___bam_stkrel(dbc, 0)) != 0)
+  if ((ret = CDB___bam_stkrel (dbc, 0)) != 0)
     goto err;
 
-  switch (flags) {
+  switch (flags)
+  {
   case DB_AFTER:
     /* Adjust the cursors. */
-    CDB___ram_ca(dbp, cp->recno, CA_IAFTER);
+    CDB___ram_ca (dbp, cp->recno, CA_IAFTER);
 
     /* Set this cursor to reference the new record. */
     cp->recno = copy.recno + 1;
     break;
   case DB_BEFORE:
     /* Adjust the cursors. */
-    CDB___ram_ca(dbp, cp->recno, CA_IBEFORE);
+    CDB___ram_ca (dbp, cp->recno, CA_IBEFORE);
 
     /* Set this cursor to reference the new record. */
     cp->recno = copy.recno;
@@ -655,16 +690,15 @@ split:    arg = &cp->recno;
 
   /* Return the key if we've created a new record. */
   if ((flags == DB_AFTER || flags == DB_BEFORE) &&
-      (ret = CDB___db_retcopy(dbp, key, &cp->recno, sizeof(cp->recno),
-      &dbc->rkey.data, &dbc->rkey.ulen)) != 0)
+      (ret = CDB___db_retcopy (dbp, key, &cp->recno, sizeof (cp->recno),
+                               &dbc->rkey.data, &dbc->rkey.ulen)) != 0)
     goto err;
 
   /* The cursor was reset, no further delete adjustment is necessary. */
-  CD_CLR(dbp, cp);
+  CD_CLR (dbp, cp);
 
-err:  if (F_ISSET(dbc, DBC_WRITECURSOR))
-    (void)CDB___lock_downgrade(dbp->dbenv,
-        &dbc->mylock, DB_LOCK_IWRITE, 0);
+err:if (F_ISSET (dbc, DBC_WRITECURSOR))
+    (void) CDB___lock_downgrade (dbp->dbenv, &dbc->mylock, DB_LOCK_IWRITE, 0);
 
   if (ret != 0)
     *cp = copy;
@@ -679,10 +713,10 @@ err:  if (F_ISSET(dbc, DBC_WRITECURSOR))
  * PUBLIC: void CDB___ram_ca __P((DB *, db_recno_t, ca_recno_arg));
  */
 void
-CDB___ram_ca(dbp, recno, op)
-  DB *dbp;
-  db_recno_t recno;
-  ca_recno_arg op;
+CDB___ram_ca (dbp, recno, op)
+     DB *dbp;
+     db_recno_t recno;
+     ca_recno_arg op;
 {
   BTREE_CURSOR *cp;
   DBC *dbc;
@@ -691,20 +725,22 @@ CDB___ram_ca(dbp, recno, op)
   /*
    * Adjust the cursors.  See the comment in CDB___bam_ca_delete().
    */
-  MUTEX_THREAD_LOCK(dbp->mutexp);
-  for (dbc = TAILQ_FIRST(&dbp->active_queue);
-      dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+  MUTEX_THREAD_LOCK (dbp->mutexp);
+  for (dbc = TAILQ_FIRST (&dbp->active_queue);
+       dbc != NULL; dbc = TAILQ_NEXT (dbc, links))
+  {
     cp = dbc->internal;
-    switch (op) {
+    switch (op)
+    {
     case CA_DELETE:
       if (recno < cp->recno)
         --cp->recno;
-      if (recno == cp->recno) {
-        if (CDB___bam_nrecs(
-            dbc, &nrecs) == 0 && recno > nrecs)
+      if (recno == cp->recno)
+      {
+        if (CDB___bam_nrecs (dbc, &nrecs) == 0 && recno > nrecs)
           --cp->recno;
         else
-          CD_SET(dbp, cp);
+          CD_SET (dbp, cp);
       }
       break;
     case CA_IAFTER:
@@ -717,7 +753,7 @@ CDB___ram_ca(dbp, recno, op)
       break;
     }
   }
-  MUTEX_THREAD_UNLOCK(dbp->mutexp);
+  MUTEX_THREAD_UNLOCK (dbp->mutexp);
 }
 
 /*
@@ -727,11 +763,11 @@ CDB___ram_ca(dbp, recno, op)
  * PUBLIC: int CDB___ram_getno __P((DBC *, const DBT *, db_recno_t *, int));
  */
 int
-CDB___ram_getno(dbc, key, rep, can_create)
-  DBC *dbc;
-  const DBT *key;
-  db_recno_t *rep;
-  int can_create;
+CDB___ram_getno (dbc, key, rep, can_create)
+     DBC *dbc;
+     const DBT *key;
+     db_recno_t *rep;
+     int can_create;
 {
   DB *dbp;
   db_recno_t recno;
@@ -739,8 +775,9 @@ CDB___ram_getno(dbc, key, rep, can_create)
   dbp = dbc->dbp;
 
   /* Check the user's record number. */
-  if ((recno = *(db_recno_t *)key->data) == 0) {
-    CDB___db_err(dbp->dbenv, "illegal record number of 0");
+  if ((recno = *(db_recno_t *) key->data) == 0)
+  {
+    CDB___db_err (dbp->dbenv, "illegal record number of 0");
     return (EINVAL);
   }
   if (rep != NULL)
@@ -751,7 +788,7 @@ CDB___ram_getno(dbc, key, rep, can_create)
    * do both, see if we can find the record.
    */
   return (dbp->type == DB_RECNO ?
-      CDB___ram_update(dbc, recno, can_create) : 0);
+          CDB___ram_update (dbc, recno, can_create) : 0);
 }
 
 /*
@@ -759,10 +796,10 @@ CDB___ram_getno(dbc, key, rep, can_create)
  *  Ensure the tree has records up to and including the specified one.
  */
 static int
-CDB___ram_update(dbc, recno, can_create)
-  DBC *dbc;
-  db_recno_t recno;
-  int can_create;
+CDB___ram_update (dbc, recno, can_create)
+     DBC *dbc;
+     db_recno_t recno;
+     int can_create;
 {
   BTREE *t;
   DB *dbp;
@@ -776,19 +813,20 @@ CDB___ram_update(dbc, recno, can_create)
    * If we can't create records and we've read the entire backing input
    * file, we're done.
    */
-  if (!can_create && F_ISSET(t, RECNO_EOF))
+  if (!can_create && F_ISSET (t, RECNO_EOF))
     return (0);
 
   /*
    * If we haven't seen this record yet, try to get it from the original
    * file.
    */
-  if ((ret = CDB___bam_nrecs(dbc, &nrecs)) != 0)
+  if ((ret = CDB___bam_nrecs (dbc, &nrecs)) != 0)
     return (ret);
-  if (!F_ISSET(t, RECNO_EOF) && recno > nrecs) {
-    if ((ret = t->re_irec(dbc, recno)) != 0)
+  if (!F_ISSET (t, RECNO_EOF) && recno > nrecs)
+  {
+    if ((ret = t->re_irec (dbc, recno)) != 0)
       return (ret);
-    if ((ret = CDB___bam_nrecs(dbc, &nrecs)) != 0)
+    if ((ret = CDB___bam_nrecs (dbc, &nrecs)) != 0)
       return (ret);
   }
 
@@ -802,10 +840,12 @@ CDB___ram_update(dbc, recno, can_create)
   dbc->rdata.dlen = 0;
   dbc->rdata.doff = 0;
   dbc->rdata.flags = 0;
-  if (F_ISSET(dbp, DB_RE_FIXEDLEN)) {
-    if (dbc->rdata.ulen < t->re_len) {
-      if ((ret = CDB___os_realloc(t->re_len,
-          NULL, &dbc->rdata.data)) != 0) {
+  if (F_ISSET (dbp, DB_RE_FIXEDLEN))
+  {
+    if (dbc->rdata.ulen < t->re_len)
+    {
+      if ((ret = CDB___os_realloc (t->re_len, NULL, &dbc->rdata.data)) != 0)
+      {
         dbc->rdata.ulen = 0;
         dbc->rdata.data = NULL;
         return (ret);
@@ -813,13 +853,13 @@ CDB___ram_update(dbc, recno, can_create)
       dbc->rdata.ulen = t->re_len;
     }
     dbc->rdata.size = t->re_len;
-    memset(dbc->rdata.data, t->re_pad, t->re_len);
-  } else
+    memset (dbc->rdata.data, t->re_pad, t->re_len);
+  }
+  else
     dbc->rdata.size = 0;
 
   while (recno > ++nrecs)
-    if ((ret = CDB___ram_add(dbc,
-        &nrecs, &dbc->rdata, 0, BI_DELETED)) != 0)
+    if ((ret = CDB___ram_add (dbc, &nrecs, &dbc->rdata, 0, BI_DELETED)) != 0)
       return (ret);
   return (0);
 }
@@ -829,8 +869,8 @@ CDB___ram_update(dbc, recno, can_create)
  *  Load information about the backing file.
  */
 static int
-CDB___ram_source(dbp)
-  DB *dbp;
+CDB___ram_source (dbp)
+     DB *dbp;
 {
   BTREE *t;
   size_t size;
@@ -844,8 +884,9 @@ CDB___ram_source(dbp)
    * The caller has full responsibility for cleaning up on error --
    * (it has to anyway, in case it fails after this routine succeeds).
    */
-  if ((ret = CDB___db_appname(dbp->dbenv,
-      DB_APP_DATA, NULL, t->re_source, 0, NULL, &t->re_source)) != 0)
+  if ((ret = CDB___db_appname (dbp->dbenv,
+                               DB_APP_DATA, NULL, t->re_source, 0, NULL,
+                               &t->re_source)) != 0)
     return (ret);
 
   /*
@@ -854,12 +895,14 @@ CDB___ram_source(dbp)
    * much care other than we'll complain if there are any modifications
    * when it comes time to write the database back to the source.
    */
-  ret = CDB___os_open(t->re_source,
-      F_ISSET(dbp, DB_AM_RDONLY) ? DB_OSO_RDONLY : 0, 0, &t->re_fh);
-  if (ret != 0 && !F_ISSET(dbp, DB_AM_RDONLY))
-    ret = CDB___os_open(t->re_source, DB_OSO_RDONLY, 0, &t->re_fh);
-  if (ret != 0) {
-    CDB___db_err(dbp->dbenv, "%s: %s", t->re_source, CDB_db_strerror(ret));
+  ret = CDB___os_open (t->re_source,
+                       F_ISSET (dbp, DB_AM_RDONLY) ? DB_OSO_RDONLY : 0, 0,
+                       &t->re_fh);
+  if (ret != 0 && !F_ISSET (dbp, DB_AM_RDONLY))
+    ret = CDB___os_open (t->re_source, DB_OSO_RDONLY, 0, &t->re_fh);
+  if (ret != 0)
+  {
+    CDB___db_err (dbp->dbenv, "%s: %s", t->re_source, CDB_db_strerror (ret));
     return (ret);
   }
 
@@ -871,23 +914,27 @@ CDB___ram_source(dbp)
    * compiler will perpetrate, doing the comparison in a portable way is
    * flatly impossible.  Hope that mmap fails if the file is too large.
    */
-  if ((ret = CDB___os_ioinfo(t->re_source,
-      &t->re_fh, &mbytes, &bytes, NULL)) != 0) {
-    CDB___db_err(dbp->dbenv, "%s: %s", t->re_source, CDB_db_strerror(ret));
+  if ((ret = CDB___os_ioinfo (t->re_source,
+                              &t->re_fh, &mbytes, &bytes, NULL)) != 0)
+  {
+    CDB___db_err (dbp->dbenv, "%s: %s", t->re_source, CDB_db_strerror (ret));
     return (ret);
   }
-  if (mbytes == 0 && bytes == 0) {
-    F_SET(t, RECNO_EOF);
+  if (mbytes == 0 && bytes == 0)
+  {
+    F_SET (t, RECNO_EOF);
     return (0);
   }
 
   size = mbytes * MEGABYTE + bytes;
-  if ((ret = CDB___os_mapfile(dbp->dbenv, t->re_source,
-      &t->re_fh, (size_t)size, 1, &t->re_smap)) != 0)
+  if ((ret = CDB___os_mapfile (dbp->dbenv, t->re_source,
+                               &t->re_fh, (size_t) size, 1,
+                               &t->re_smap)) != 0)
     return (ret);
   t->re_cmap = t->re_smap;
-  t->re_emap = (u_int8_t *)t->re_smap + (t->re_msize = size);
-  t->re_irec = F_ISSET(dbp, DB_RE_FIXEDLEN) ?  CDB___ram_fmap : CDB___ram_vmap;
+  t->re_emap = (u_int8_t *) t->re_smap + (t->re_msize = size);
+  t->re_irec =
+    F_ISSET (dbp, DB_RE_FIXEDLEN) ? CDB___ram_fmap : CDB___ram_vmap;
   return (0);
 }
 
@@ -898,8 +945,8 @@ CDB___ram_source(dbp)
  * PUBLIC: int CDB___ram_writeback __P((DB *));
  */
 int
-CDB___ram_writeback(dbp)
-  DB *dbp;
+CDB___ram_writeback (dbp)
+     DB *dbp;
 {
   BTREE *t;
   DBC *dbc;
@@ -913,17 +960,18 @@ CDB___ram_writeback(dbp)
   t = dbp->bt_internal;
 
   /* If the file wasn't modified, we're done. */
-  if (!F_ISSET(t, RECNO_MODIFIED))
+  if (!F_ISSET (t, RECNO_MODIFIED))
     return (0);
 
   /* If there's no backing source file, we're done. */
-  if (t->re_source == NULL) {
-    F_CLR(t, RECNO_MODIFIED);
+  if (t->re_source == NULL)
+  {
+    F_CLR (t, RECNO_MODIFIED);
     return (0);
   }
 
   /* Allocate a cursor. */
-  if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
+  if ((ret = dbp->cursor (dbp, NULL, &dbc, 0)) != 0)
     return (ret);
 
   /*
@@ -944,7 +992,7 @@ CDB___ram_writeback(dbp)
    * would have to know about it, and we don't want to go there.
    */
   if ((ret =
-      CDB___ram_update(dbc, DB_MAX_RECORDS, 0)) != 0 && ret != DB_NOTFOUND)
+       CDB___ram_update (dbc, DB_MAX_RECORDS, 0)) != 0 && ret != DB_NOTFOUND)
     return (ret);
 
   /*
@@ -953,19 +1001,21 @@ CDB___ram_writeback(dbp)
    * (4.0, Service Pack 2) -- if the file is still mapped, the following
    * open will fail.
    */
-  if (t->re_smap != NULL) {
-    (void)CDB___os_unmapfile(dbp->dbenv, t->re_smap, t->re_msize);
+  if (t->re_smap != NULL)
+  {
+    (void) CDB___os_unmapfile (dbp->dbenv, t->re_smap, t->re_msize);
     t->re_smap = NULL;
   }
 
   /* Get rid of any backing file descriptor, just on GP's. */
-  if (F_ISSET(&t->re_fh, DB_FH_VALID))
-    (void)CDB___os_closehandle(&t->re_fh);
+  if (F_ISSET (&t->re_fh, DB_FH_VALID))
+    (void) CDB___os_closehandle (&t->re_fh);
 
   /* Open the file, truncating it. */
-  if ((ret = CDB___os_open(
-      t->re_source, DB_OSO_SEQ | DB_OSO_TRUNC, 0, &fh)) != 0) {
-    CDB___db_err(dbp->dbenv, "%s: %s", t->re_source, CDB_db_strerror(ret));
+  if ((ret =
+       CDB___os_open (t->re_source, DB_OSO_SEQ | DB_OSO_TRUNC, 0, &fh)) != 0)
+  {
+    CDB___db_err (dbp->dbenv, "%s: %s", t->re_source, CDB_db_strerror (ret));
     goto err;
   }
 
@@ -974,9 +1024,9 @@ CDB___ram_writeback(dbp)
    * number and the dbp->get() function, instead of a cursor, so we find
    * and write out "deleted" or non-existent records.
    */
-  memset(&key, 0, sizeof(key));
-  memset(&data, 0, sizeof(data));
-  key.size = sizeof(db_recno_t);
+  memset (&key, 0, sizeof (key));
+  memset (&data, 0, sizeof (data));
+  key.size = sizeof (db_recno_t);
   key.data = &keyno;
 
   /*
@@ -984,29 +1034,34 @@ CDB___ram_writeback(dbp)
    * and the pad character if we're doing fixed-length records.
    */
   delim = t->re_delim;
-  if (F_ISSET(dbp, DB_RE_FIXEDLEN)) {
-    if ((ret = CDB___os_malloc(t->re_len, NULL, &pad)) != 0)
+  if (F_ISSET (dbp, DB_RE_FIXEDLEN))
+  {
+    if ((ret = CDB___os_malloc (t->re_len, NULL, &pad)) != 0)
       goto err;
-    memset(pad, t->re_pad, t->re_len);
-  } else
-    COMPQUIET(pad, NULL);
-  for (keyno = 1;; ++keyno) {
-    switch (ret = dbp->get(dbp, NULL, &key, &data, 0)) {
+    memset (pad, t->re_pad, t->re_len);
+  }
+  else
+    COMPQUIET (pad, NULL);
+  for (keyno = 1;; ++keyno)
+  {
+    switch (ret = dbp->get (dbp, NULL, &key, &data, 0))
+    {
     case 0:
-      if ((ret =
-          CDB___os_write(&fh, data.data, data.size, &nw)) != 0)
+      if ((ret = CDB___os_write (&fh, data.data, data.size, &nw)) != 0)
         goto err;
-      if (nw != (ssize_t)data.size) {
+      if (nw != (ssize_t) data.size)
+      {
         ret = EIO;
         goto err;
       }
       break;
     case DB_KEYEMPTY:
-      if (F_ISSET(dbp, DB_RE_FIXEDLEN)) {
-        if ((ret = CDB___os_write(
-            &fh, pad, t->re_len, &nw)) != 0)
+      if (F_ISSET (dbp, DB_RE_FIXEDLEN))
+      {
+        if ((ret = CDB___os_write (&fh, pad, t->re_len, &nw)) != 0)
           goto err;
-        if (nw != (ssize_t)t->re_len) {
+        if (nw != (ssize_t) t->re_len)
+        {
           ret = EIO;
           goto err;
         }
@@ -1016,10 +1071,12 @@ CDB___ram_writeback(dbp)
       ret = 0;
       goto done;
     }
-    if (!F_ISSET(dbp, DB_RE_FIXEDLEN)) {
-      if ((ret = CDB___os_write(&fh, &delim, 1, &nw)) != 0)
+    if (!F_ISSET (dbp, DB_RE_FIXEDLEN))
+    {
+      if ((ret = CDB___os_write (&fh, &delim, 1, &nw)) != 0)
         goto err;
-      if (nw != 1) {
+      if (nw != 1)
+      {
         ret = EIO;
         goto err;
       }
@@ -1027,17 +1084,17 @@ CDB___ram_writeback(dbp)
   }
 
 err:
-done:  /* Close the file descriptor. */
-  if (F_ISSET(&fh, DB_FH_VALID) &&
-      (t_ret = CDB___os_closehandle(&fh)) != 0 && ret == 0)
+done:                          /* Close the file descriptor. */
+  if (F_ISSET (&fh, DB_FH_VALID) &&
+      (t_ret = CDB___os_closehandle (&fh)) != 0 && ret == 0)
     ret = t_ret;
 
   /* Discard the cursor. */
-  if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+  if ((t_ret = dbc->c_close (dbc)) != 0 && ret == 0)
     ret = t_ret;
 
   if (ret == 0)
-    F_CLR(t, RECNO_MODIFIED);
+    F_CLR (t, RECNO_MODIFIED);
 
   return (ret);
 }
@@ -1047,9 +1104,9 @@ done:  /* Close the file descriptor. */
  *  Get fixed length records from a file.
  */
 static int
-CDB___ram_fmap(dbc, top)
-  DBC *dbc;
-  db_recno_t top;
+CDB___ram_fmap (dbc, top)
+     DBC *dbc;
+     db_recno_t top;
 {
   BTREE *t;
   DB *dbp;
@@ -1062,12 +1119,13 @@ CDB___ram_fmap(dbc, top)
   dbp = dbc->dbp;
   t = dbp->bt_internal;
 
-  if ((ret = CDB___bam_nrecs(dbc, &recno)) != 0)
+  if ((ret = CDB___bam_nrecs (dbc, &recno)) != 0)
     return (ret);
 
-  if (dbc->rdata.ulen < t->re_len) {
-    if ((ret =
-        CDB___os_realloc(t->re_len, NULL, &dbc->rdata.data)) != 0) {
+  if (dbc->rdata.ulen < t->re_len)
+  {
+    if ((ret = CDB___os_realloc (t->re_len, NULL, &dbc->rdata.data)) != 0)
+    {
       dbc->rdata.ulen = 0;
       dbc->rdata.data = NULL;
       return (ret);
@@ -1075,23 +1133,24 @@ CDB___ram_fmap(dbc, top)
     dbc->rdata.ulen = t->re_len;
   }
 
-  is_modified = F_ISSET(t, RECNO_MODIFIED);
+  is_modified = F_ISSET (t, RECNO_MODIFIED);
 
-  memset(&data, 0, sizeof(data));
+  memset (&data, 0, sizeof (data));
   data.data = dbc->rdata.data;
   data.size = t->re_len;
 
-  sp = (u_int8_t *)t->re_cmap;
-  ep = (u_int8_t *)t->re_emap;
-  while (recno < top) {
-    if (sp >= ep) {
-      F_SET(t, RECNO_EOF);
+  sp = (u_int8_t *) t->re_cmap;
+  ep = (u_int8_t *) t->re_emap;
+  while (recno < top)
+  {
+    if (sp >= ep)
+    {
+      F_SET (t, RECNO_EOF);
       ret = DB_NOTFOUND;
       goto err;
     }
     len = t->re_len;
-    for (p = dbc->rdata.data;
-        sp < ep && len > 0; *p++ = *sp++, --len)
+    for (p = dbc->rdata.data; sp < ep && len > 0; *p++ = *sp++, --len)
       ;
 
     /*
@@ -1105,20 +1164,21 @@ CDB___ram_fmap(dbc, top)
      * We should just do a seek, since the records are fixed
      * length.
      */
-    if (t->re_last >= recno) {
+    if (t->re_last >= recno)
+    {
       if (len != 0)
-        memset(p, t->re_pad, len);
+        memset (p, t->re_pad, len);
 
       ++recno;
-      if ((ret = CDB___ram_add(dbc, &recno, &data, 0, 0)) != 0)
+      if ((ret = CDB___ram_add (dbc, &recno, &data, 0, 0)) != 0)
         goto err;
     }
     ++t->re_last;
   }
   t->re_cmap = sp;
 
-err:  if (!is_modified)
-    F_CLR(t, RECNO_MODIFIED);
+err:if (!is_modified)
+    F_CLR (t, RECNO_MODIFIED);
 
   return (0);
 }
@@ -1128,9 +1188,9 @@ err:  if (!is_modified)
  *  Get variable length records from a file.
  */
 static int
-CDB___ram_vmap(dbc, top)
-  DBC *dbc;
-  db_recno_t top;
+CDB___ram_vmap (dbc, top)
+     DBC *dbc;
+     db_recno_t top;
 {
   BTREE *t;
   DBT data;
@@ -1140,19 +1200,21 @@ CDB___ram_vmap(dbc, top)
 
   t = dbc->dbp->bt_internal;
 
-  if ((ret = CDB___bam_nrecs(dbc, &recno)) != 0)
+  if ((ret = CDB___bam_nrecs (dbc, &recno)) != 0)
     return (ret);
 
   delim = t->re_delim;
-  is_modified = F_ISSET(t, RECNO_MODIFIED);
+  is_modified = F_ISSET (t, RECNO_MODIFIED);
 
-  memset(&data, 0, sizeof(data));
+  memset (&data, 0, sizeof (data));
 
-  sp = (u_int8_t *)t->re_cmap;
-  ep = (u_int8_t *)t->re_emap;
-  while (recno < top) {
-    if (sp >= ep) {
-      F_SET(t, RECNO_EOF);
+  sp = (u_int8_t *) t->re_cmap;
+  ep = (u_int8_t *) t->re_emap;
+  while (recno < top)
+  {
+    if (sp >= ep)
+    {
+      F_SET (t, RECNO_EOF);
       ret = DB_NOTFOUND;
       goto err;
     }
@@ -1166,10 +1228,11 @@ CDB___ram_vmap(dbc, top)
      * this by checking if the last record we've read is greater
      * or equal to the number of records in the database.
      */
-    if (t->re_last >= recno) {
-      data.size = sp - (u_int8_t *)data.data;
+    if (t->re_last >= recno)
+    {
+      data.size = sp - (u_int8_t *) data.data;
       ++recno;
-      if ((ret = CDB___ram_add(dbc, &recno, &data, 0, 0)) != 0)
+      if ((ret = CDB___ram_add (dbc, &recno, &data, 0, 0)) != 0)
         goto err;
     }
     ++t->re_last;
@@ -1177,8 +1240,8 @@ CDB___ram_vmap(dbc, top)
   }
   t->re_cmap = sp;
 
-err:  if (!is_modified)
-    F_CLR(t, RECNO_MODIFIED);
+err:if (!is_modified)
+    F_CLR (t, RECNO_MODIFIED);
 
   return (ret);
 }
@@ -1188,11 +1251,11 @@ err:  if (!is_modified)
  *  Add records into the tree.
  */
 static int
-CDB___ram_add(dbc, recnop, data, flags, bi_flags)
-  DBC *dbc;
-  db_recno_t *recnop;
-  DBT *data;
-  u_int32_t flags, bi_flags;
+CDB___ram_add (dbc, recnop, data, flags, bi_flags)
+     DBC *dbc;
+     db_recno_t *recnop;
+     DBT *data;
+     u_int32_t flags, bi_flags;
 {
   BKEYDATA *bk;
   BTREE_CURSOR *cp;
@@ -1202,9 +1265,11 @@ CDB___ram_add(dbc, recnop, data, flags, bi_flags)
 
   cp = dbc->internal;
 
-retry:  /* Find the slot for insertion. */
-  if ((ret = CDB___bam_rsearch(dbc, recnop,
-      S_INSERT | (flags == DB_APPEND ? S_APPEND : 0), 1, &exact)) != 0)
+retry:                         /* Find the slot for insertion. */
+  if ((ret = CDB___bam_rsearch (dbc, recnop,
+                                S_INSERT | (flags ==
+                                            DB_APPEND ? S_APPEND : 0), 1,
+                                &exact)) != 0)
     return (ret);
   h = cp->csp->page;
   indx = cp->csp->indx;
@@ -1220,9 +1285,11 @@ retry:  /* Find the slot for insertion. */
    * return an error unless the item was either marked for deletion or
    * only implicitly created.
    */
-  if (exact) {
-    bk = GET_BKEYDATA(h, indx);
-    if (!B_DISSET(bk->type) && flags == DB_NOOVERWRITE) {
+  if (exact)
+  {
+    bk = GET_BKEYDATA (h, indx);
+    if (!B_DISSET (bk->type) && flags == DB_NOOVERWRITE)
+    {
       ret = DB_KEYEXIST;
       goto err;
     }
@@ -1235,8 +1302,10 @@ retry:  /* Find the slot for insertion. */
    * match, we're inserting a new key/data pair, before the search
    * location.
    */
-  switch (ret = CDB___bam_iitem(dbc,
-      &h, &indx, NULL, data, exact ? DB_CURRENT : DB_BEFORE, bi_flags)) {
+  switch (ret = CDB___bam_iitem (dbc,
+                                 &h, &indx, NULL, data,
+                                 exact ? DB_CURRENT : DB_BEFORE, bi_flags))
+  {
   case 0:
     /*
      * Don't adjust anything.
@@ -1256,10 +1325,10 @@ retry:  /* Find the slot for insertion. */
     break;
   case DB_NEEDSPLIT:
     /* Discard the stack of pages and split the page. */
-    (void)CDB___bam_stkrel(dbc, 0);
+    (void) CDB___bam_stkrel (dbc, 0);
     stack = 0;
 
-    if ((ret = CDB___bam_split(dbc, recnop)) != 0)
+    if ((ret = CDB___bam_split (dbc, recnop)) != 0)
       goto err;
 
     goto retry;
@@ -1269,8 +1338,8 @@ retry:  /* Find the slot for insertion. */
   }
 
 
-err:  if (stack)
-    CDB___bam_stkrel(dbc, 0);
+err:if (stack)
+    CDB___bam_stkrel (dbc, 0);
 
   return (ret);
 }

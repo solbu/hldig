@@ -30,25 +30,26 @@ static const char sccsid[] = "@(#)bt_reclaim.c  11.1 (Sleepycat) 7/24/99";
  * PUBLIC: int CDB___bam_reclaim __P((DB *, DB_TXN *));
  */
 int
-CDB___bam_reclaim(dbp, txn)
-  DB *dbp;
-  DB_TXN *txn;
+CDB___bam_reclaim (dbp, txn)
+     DB *dbp;
+     DB_TXN *txn;
 {
   BTREE *t;
   DBC *dbc;
   int ret, t_ret;
 
   /* Acquire a cursor. */
-  if ((ret = dbp->cursor(dbp, txn, &dbc, 0)) != 0)
+  if ((ret = dbp->cursor (dbp, txn, &dbc, 0)) != 0)
     return (ret);
 
   /* Walk the tree, freeing pages. */
   t = dbp->bt_internal;
-  ret = CDB___bam_traverse(dbc,
-      DB_LOCK_WRITE, t->bt_root, CDB___db_reclaim_callback, dbc);
+  ret = CDB___bam_traverse (dbc,
+                            DB_LOCK_WRITE, t->bt_root,
+                            CDB___db_reclaim_callback, dbc);
 
   /* Discard the cursor. */
-  if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+  if ((t_ret = dbc->c_close (dbc)) != 0 && ret == 0)
     ret = t_ret;
 
   return (ret);

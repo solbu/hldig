@@ -27,25 +27,26 @@ static const char sccsid[] = "@(#)bt_curadj.c  11.5 (Sleepycat) 11/10/99";
  * PUBLIC: int CDB___bam_cprint __P((DB *));
  */
 int
-CDB___bam_cprint(dbp)
-  DB *dbp;
+CDB___bam_cprint (dbp)
+     DB *dbp;
 {
   DBC *dbc;
 
-  MUTEX_THREAD_LOCK(dbp->mutexp);
-  for (dbc = TAILQ_FIRST(&dbp->active_queue);
-      dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+  MUTEX_THREAD_LOCK (dbp->mutexp);
+  for (dbc = TAILQ_FIRST (&dbp->active_queue);
+       dbc != NULL; dbc = TAILQ_NEXT (dbc, links))
+  {
     BTREE_CURSOR *cp;
-    cp = (BTREE_CURSOR *)dbc->internal;
-    fprintf(stderr,
-      "%#0x->%#0x: page: %lu index: %lu dpage %lu dindex: %lu recno: %lu",
-        (u_int)dbc, (u_int)cp, (u_long)cp->pgno, (u_long)cp->indx,
-        (u_long)cp->dpgno, (u_long)cp->dindx, (u_long)cp->recno);
-    if (F_ISSET(cp, C_DELETED))
-      fprintf(stderr, " (deleted)");
-    fprintf(stderr, "\n");
+    cp = (BTREE_CURSOR *) dbc->internal;
+    fprintf (stderr,
+             "%#0x->%#0x: page: %lu index: %lu dpage %lu dindex: %lu recno: %lu",
+             (u_int) dbc, (u_int) cp, (u_long) cp->pgno, (u_long) cp->indx,
+             (u_long) cp->dpgno, (u_long) cp->dindx, (u_long) cp->recno);
+    if (F_ISSET (cp, C_DELETED))
+      fprintf (stderr, " (deleted)");
+    fprintf (stderr, "\n");
   }
-  MUTEX_THREAD_UNLOCK(dbp->mutexp);
+  MUTEX_THREAD_UNLOCK (dbp->mutexp);
 
   return (0);
 }
@@ -59,14 +60,14 @@ CDB___bam_cprint(dbp)
  * PUBLIC: int CDB___bam_ca_delete __P((DB *, db_pgno_t, u_int32_t, int));
  */
 int
-CDB___bam_ca_delete(dbp, pgno, indx, delete)
-  DB *dbp;
-  db_pgno_t pgno;
-  u_int32_t indx;
-  int delete;
+CDB___bam_ca_delete (dbp, pgno, indx, delete)
+     DB *dbp;
+     db_pgno_t pgno;
+     u_int32_t indx;
+     int delete;
 {
   DBC *dbc;
-  int count;    /* !!!: Has to contain max number of cursors. */
+  int count;                    /* !!!: Has to contain max number of cursors. */
 
   /* Recno is responsible for its own adjustments. */
   if (dbp->type == DB_RECNO)
@@ -83,22 +84,24 @@ CDB___bam_ca_delete(dbp, pgno, indx, delete)
    * locks on the same page, but, cursors within a thread must be single
    * threaded, so all we're locking here is the cursor linked list.
    */
-  MUTEX_THREAD_LOCK(dbp->mutexp);
-  for (count = 0, dbc = TAILQ_FIRST(&dbp->active_queue);
-      dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+  MUTEX_THREAD_LOCK (dbp->mutexp);
+  for (count = 0, dbc = TAILQ_FIRST (&dbp->active_queue);
+       dbc != NULL; dbc = TAILQ_NEXT (dbc, links))
+  {
     BTREE_CURSOR *cp;
-    cp = (BTREE_CURSOR *)dbc->internal;
+    cp = (BTREE_CURSOR *) dbc->internal;
 
     if ((cp->pgno == pgno && cp->indx == indx) ||
-        (cp->dpgno == pgno && cp->dindx == indx)) {
+        (cp->dpgno == pgno && cp->dindx == indx))
+    {
       if (delete)
-        F_SET(cp, C_DELETED);
+        F_SET (cp, C_DELETED);
       else
-        F_CLR(cp, C_DELETED);
+        F_CLR (cp, C_DELETED);
       ++count;
     }
   }
-  MUTEX_THREAD_UNLOCK(dbp->mutexp);
+  MUTEX_THREAD_UNLOCK (dbp->mutexp);
 
   return (count);
 }
@@ -110,11 +113,11 @@ CDB___bam_ca_delete(dbp, pgno, indx, delete)
  * PUBLIC: void CDB___bam_ca_di __P((DB *, db_pgno_t, u_int32_t, int));
  */
 void
-CDB___bam_ca_di(dbp, pgno, indx, adjust)
-  DB *dbp;
-  db_pgno_t pgno;
-  u_int32_t indx;
-  int adjust;
+CDB___bam_ca_di (dbp, pgno, indx, adjust)
+     DB *dbp;
+     db_pgno_t pgno;
+     u_int32_t indx;
+     int adjust;
 {
   DBC *dbc;
 
@@ -125,23 +128,26 @@ CDB___bam_ca_di(dbp, pgno, indx, adjust)
   /*
    * Adjust the cursors.  See the comment in CDB___bam_ca_delete().
    */
-  MUTEX_THREAD_LOCK(dbp->mutexp);
-  for (dbc = TAILQ_FIRST(&dbp->active_queue);
-      dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+  MUTEX_THREAD_LOCK (dbp->mutexp);
+  for (dbc = TAILQ_FIRST (&dbp->active_queue);
+       dbc != NULL; dbc = TAILQ_NEXT (dbc, links))
+  {
     BTREE_CURSOR *cp;
-    cp = (BTREE_CURSOR *)dbc->internal;
-    if (cp->pgno == pgno && cp->indx >= indx) {
+    cp = (BTREE_CURSOR *) dbc->internal;
+    if (cp->pgno == pgno && cp->indx >= indx)
+    {
       /* Cursor indices should never be negative. */
-      DB_ASSERT(cp->indx != 0 || adjust > 0);
+      DB_ASSERT (cp->indx != 0 || adjust > 0);
       cp->indx += adjust;
     }
-    if (cp->dpgno == pgno && cp->dindx >= indx) {
+    if (cp->dpgno == pgno && cp->dindx >= indx)
+    {
       /* Cursor indices should never be negative. */
-      DB_ASSERT(cp->dindx != 0 || adjust > 0);
+      DB_ASSERT (cp->dindx != 0 || adjust > 0);
       cp->dindx += adjust;
     }
   }
-  MUTEX_THREAD_UNLOCK(dbp->mutexp);
+  MUTEX_THREAD_UNLOCK (dbp->mutexp);
 }
 
 /*
@@ -153,10 +159,10 @@ CDB___bam_ca_di(dbp, pgno, indx, adjust)
  * PUBLIC:    db_pgno_t, u_int32_t, u_int32_t, db_pgno_t, u_int32_t));
  */
 void
-CDB___bam_ca_dup(dbp, fpgno, first, fi, tpgno, ti)
-  DB *dbp;
-  db_pgno_t fpgno, tpgno;
-  u_int32_t first, fi, ti;
+CDB___bam_ca_dup (dbp, fpgno, first, fi, tpgno, ti)
+     DB *dbp;
+     db_pgno_t fpgno, tpgno;
+     u_int32_t first, fi, ti;
 {
   DBC *dbc;
 
@@ -167,24 +173,25 @@ CDB___bam_ca_dup(dbp, fpgno, first, fi, tpgno, ti)
   /*
    * Adjust the cursors.  See the comment in CDB___bam_ca_delete().
    */
-  MUTEX_THREAD_LOCK(dbp->mutexp);
-  for (dbc = TAILQ_FIRST(&dbp->active_queue);
-      dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+  MUTEX_THREAD_LOCK (dbp->mutexp);
+  for (dbc = TAILQ_FIRST (&dbp->active_queue);
+       dbc != NULL; dbc = TAILQ_NEXT (dbc, links))
+  {
     BTREE_CURSOR *cp;
-    cp = (BTREE_CURSOR *)dbc->internal;
+    cp = (BTREE_CURSOR *) dbc->internal;
     /*
      * Ignore matching entries that have already been moved,
      * we move from the same location on the leaf page more
      * than once.
      */
-    if (cp->dpgno == PGNO_INVALID &&
-        cp->pgno == fpgno && cp->indx == fi) {
+    if (cp->dpgno == PGNO_INVALID && cp->pgno == fpgno && cp->indx == fi)
+    {
       cp->indx = first;
       cp->dpgno = tpgno;
       cp->dindx = ti;
     }
   }
-  MUTEX_THREAD_UNLOCK(dbp->mutexp);
+  MUTEX_THREAD_UNLOCK (dbp->mutexp);
 }
 
 /*
@@ -194,9 +201,9 @@ CDB___bam_ca_dup(dbp, fpgno, first, fi, tpgno, ti)
  * PUBLIC: void CDB___bam_ca_rsplit __P((DB *, db_pgno_t, db_pgno_t));
  */
 void
-CDB___bam_ca_rsplit(dbp, fpgno, tpgno)
-  DB *dbp;
-  db_pgno_t fpgno, tpgno;
+CDB___bam_ca_rsplit (dbp, fpgno, tpgno)
+     DB *dbp;
+     db_pgno_t fpgno, tpgno;
 {
   DBC *dbc;
 
@@ -207,15 +214,16 @@ CDB___bam_ca_rsplit(dbp, fpgno, tpgno)
   /*
    * Adjust the cursors.  See the comment in CDB___bam_ca_delete().
    */
-  MUTEX_THREAD_LOCK(dbp->mutexp);
-  for (dbc = TAILQ_FIRST(&dbp->active_queue);
-      dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+  MUTEX_THREAD_LOCK (dbp->mutexp);
+  for (dbc = TAILQ_FIRST (&dbp->active_queue);
+       dbc != NULL; dbc = TAILQ_NEXT (dbc, links))
+  {
     BTREE_CURSOR *cp;
-    cp = (BTREE_CURSOR *)dbc->internal;
+    cp = (BTREE_CURSOR *) dbc->internal;
     if (cp->pgno == fpgno)
       cp->pgno = tpgno;
   }
-  MUTEX_THREAD_UNLOCK(dbp->mutexp);
+  MUTEX_THREAD_UNLOCK (dbp->mutexp);
 }
 
 /*
@@ -226,11 +234,11 @@ CDB___bam_ca_rsplit(dbp, fpgno, tpgno)
  * PUBLIC:    db_pgno_t, db_pgno_t, db_pgno_t, u_int32_t, int));
  */
 void
-CDB___bam_ca_split(dbp, ppgno, lpgno, rpgno, split_indx, cleft)
-  DB *dbp;
-  db_pgno_t ppgno, lpgno, rpgno;
-  u_int32_t split_indx;
-  int cleft;
+CDB___bam_ca_split (dbp, ppgno, lpgno, rpgno, split_indx, cleft)
+     DB *dbp;
+     db_pgno_t ppgno, lpgno, rpgno;
+     u_int32_t split_indx;
+     int cleft;
 {
   DBC *dbc;
 
@@ -248,31 +256,40 @@ CDB___bam_ca_split(dbp, ppgno, lpgno, rpgno, split_indx, cleft)
    * the cursor is on the right page, it is decremented by the number of
    * records split to the left page.
    */
-  MUTEX_THREAD_LOCK(dbp->mutexp);
-  for (dbc = TAILQ_FIRST(&dbp->active_queue);
-      dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+  MUTEX_THREAD_LOCK (dbp->mutexp);
+  for (dbc = TAILQ_FIRST (&dbp->active_queue);
+       dbc != NULL; dbc = TAILQ_NEXT (dbc, links))
+  {
     BTREE_CURSOR *cp;
-    cp = (BTREE_CURSOR *)dbc->internal;
-    if (cp->pgno == ppgno) {
-      if (cp->indx < split_indx) {
+    cp = (BTREE_CURSOR *) dbc->internal;
+    if (cp->pgno == ppgno)
+    {
+      if (cp->indx < split_indx)
+      {
         if (cleft)
           cp->pgno = lpgno;
-      } else {
+      }
+      else
+      {
         cp->pgno = rpgno;
         cp->indx -= split_indx;
       }
     }
-    if (cp->dpgno == ppgno) {
-      if (cp->dindx < split_indx) {
+    if (cp->dpgno == ppgno)
+    {
+      if (cp->dindx < split_indx)
+      {
         if (cleft)
           cp->dpgno = lpgno;
-      } else {
+      }
+      else
+      {
         cp->dpgno = rpgno;
         cp->dindx -= split_indx;
       }
     }
   }
-  MUTEX_THREAD_UNLOCK(dbp->mutexp);
+  MUTEX_THREAD_UNLOCK (dbp->mutexp);
 }
 
 /*
@@ -283,22 +300,24 @@ CDB___bam_ca_split(dbp, ppgno, lpgno, rpgno, split_indx, cleft)
  * PUBLIC:    db_pgno_t, u_int32_t, db_pgno_t, u_int32_t));
  */
 void
-CDB___bam_ca_repl(dbp, dpgno, dindx, newpgno, newindx)
-  DB *dbp;
-  db_pgno_t dpgno, newpgno;
-  u_int32_t dindx, newindx;
+CDB___bam_ca_repl (dbp, dpgno, dindx, newpgno, newindx)
+     DB *dbp;
+     db_pgno_t dpgno, newpgno;
+     u_int32_t dindx, newindx;
 {
   DBC *dbc;
 
-  MUTEX_THREAD_LOCK(dbp->mutexp);
-  for (dbc = TAILQ_FIRST(&dbp->active_queue);
-      dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
+  MUTEX_THREAD_LOCK (dbp->mutexp);
+  for (dbc = TAILQ_FIRST (&dbp->active_queue);
+       dbc != NULL; dbc = TAILQ_NEXT (dbc, links))
+  {
     BTREE_CURSOR *cp;
-    cp = (BTREE_CURSOR *)dbc->internal;
-    if (cp->dpgno == dpgno && cp->dindx == dindx) {
+    cp = (BTREE_CURSOR *) dbc->internal;
+    if (cp->dpgno == dpgno && cp->dindx == dindx)
+    {
       cp->dpgno = newpgno;
       cp->dindx = newindx;
     }
   }
-  MUTEX_THREAD_UNLOCK(dbp->mutexp);
+  MUTEX_THREAD_UNLOCK (dbp->mutexp);
 }

@@ -24,7 +24,7 @@ static const char sccsid[] = "@(#)os_errno.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: int CDB___os_get_errno __P((void));
  */
 int
-CDB___os_get_errno()
+CDB___os_get_errno ()
 {
   /* This routine must be able to return the same value repeatedly. */
   return (errno);
@@ -37,8 +37,8 @@ CDB___os_get_errno()
  * PUBLIC: void CDB___os_set_errno __P((int));
  */
 void
-CDB___os_set_errno(evalue)
-  int evalue;
+CDB___os_set_errno (evalue)
+     int evalue;
 {
   errno = evalue;
 }

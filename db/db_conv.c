@@ -65,20 +65,21 @@ static const char sccsid[] = "@(#)db_conv.c  11.4 (Sleepycat) 11/10/99";
  * PUBLIC: int CDB___db_pgin __P((db_pgno_t, void *, DBT *));
  */
 int
-CDB___db_pgin(pg, pp, cookie)
-  db_pgno_t pg;
-  void *pp;
-  DBT *cookie;
+CDB___db_pgin (pg, pp, cookie)
+     db_pgno_t pg;
+     void *pp;
+     DBT *cookie;
 {
   DB_PGINFO *pginfo;
 
-  pginfo = (DB_PGINFO *)cookie->data;
+  pginfo = (DB_PGINFO *) cookie->data;
 
-  switch (((PAGE *)pp)->type) {
+  switch (((PAGE *) pp)->type)
+  {
   case P_HASH:
   case P_HASHMETA:
   case P_INVALID:
-    return (CDB___ham_pgin(pg, pp, cookie));
+    return (CDB___ham_pgin (pg, pp, cookie));
   case P_BTREEMETA:
   case P_IBTREE:
   case P_IRECNO:
@@ -86,10 +87,10 @@ CDB___db_pgin(pg, pp, cookie)
   case P_LRECNO:
   case P_DUPLICATE:
   case P_OVERFLOW:
-    return (CDB___bam_pgin(pg, pp, cookie));
+    return (CDB___bam_pgin (pg, pp, cookie));
   case P_QAMMETA:
   case P_QAMDATA:
-    return (CDB___qam_pgin_out(pg, pp, cookie));
+    return (CDB___qam_pgin_out (pg, pp, cookie));
   default:
     break;
   }
@@ -103,20 +104,21 @@ CDB___db_pgin(pg, pp, cookie)
  * PUBLIC: int CDB___db_pgout __P((db_pgno_t, void *, DBT *));
  */
 int
-CDB___db_pgout(pg, pp, cookie)
-  db_pgno_t pg;
-  void *pp;
-  DBT *cookie;
+CDB___db_pgout (pg, pp, cookie)
+     db_pgno_t pg;
+     void *pp;
+     DBT *cookie;
 {
   DB_PGINFO *pginfo;
 
-  pginfo = (DB_PGINFO *)cookie->data;
+  pginfo = (DB_PGINFO *) cookie->data;
 
-  switch (((PAGE *)pp)->type) {
+  switch (((PAGE *) pp)->type)
+  {
   case P_HASH:
   case P_HASHMETA:
   case P_INVALID:
-    return (CDB___ham_pgout(pg, pp, cookie));
+    return (CDB___ham_pgout (pg, pp, cookie));
   case P_BTREEMETA:
   case P_IBTREE:
   case P_IRECNO:
@@ -124,10 +126,10 @@ CDB___db_pgout(pg, pp, cookie)
   case P_LRECNO:
   case P_DUPLICATE:
   case P_OVERFLOW:
-    return (CDB___bam_pgout(pg, pp, cookie));
+    return (CDB___bam_pgout (pg, pp, cookie));
   case P_QAMMETA:
   case P_QAMDATA:
-    return (CDB___qam_pgin_out(pg, pp, cookie));
+    return (CDB___qam_pgin_out (pg, pp, cookie));
   default:
     break;
   }
@@ -141,23 +143,23 @@ CDB___db_pgout(pg, pp, cookie)
  * PUBLIC: void CDB___db_metaswap __P((PAGE *));
  */
 void
-CDB___db_metaswap(pg)
-  PAGE *pg;
+CDB___db_metaswap (pg)
+     PAGE *pg;
 {
   u_int8_t *p;
 
-  p = (u_int8_t *)pg;
+  p = (u_int8_t *) pg;
 
   /* Swap the meta-data information. */
-  SWAP32(p);  /* lsn.file */
-  SWAP32(p);  /* lsn.offset */
-  SWAP32(p);  /* pgno */
-  SWAP32(p);  /* magic */
-  SWAP32(p);  /* version */
-  SWAP32(p);  /* pagesize */
-  p += 4;    /* unused, page type, unused, unused */
-  SWAP32(p);  /* free */
-  SWAP32(p);  /* flags */
+  SWAP32 (p);                   /* lsn.file */
+  SWAP32 (p);                   /* lsn.offset */
+  SWAP32 (p);                   /* pgno */
+  SWAP32 (p);                   /* magic */
+  SWAP32 (p);                   /* version */
+  SWAP32 (p);                   /* pagesize */
+  p += 4;                       /* unused, page type, unused, unused */
+  SWAP32 (p);                   /* free */
+  SWAP32 (p);                   /* flags */
 }
 
 /*
@@ -167,11 +169,11 @@ CDB___db_metaswap(pg)
  * PUBLIC: int CDB___db_byteswap __P((db_pgno_t, PAGE *, size_t, int));
  */
 int
-CDB___db_byteswap(pg, h, pagesize, pgin)
-  db_pgno_t pg;
-  PAGE *h;
-  size_t pagesize;
-  int pgin;
+CDB___db_byteswap (pg, h, pagesize, pgin)
+     db_pgno_t pg;
+     PAGE *h;
+     size_t pagesize;
+     int pgin;
 {
   BINTERNAL *bi;
   BKEYDATA *bk;
@@ -180,53 +182,59 @@ CDB___db_byteswap(pg, h, pagesize, pgin)
   db_indx_t i, len, tmp;
   u_int8_t *p, *end;
 
-  COMPQUIET(pg, 0);
+  COMPQUIET (pg, 0);
 
-  if (pgin) {
-    M_32_SWAP(h->lsn.file);
-    M_32_SWAP(h->lsn.offset);
-    M_32_SWAP(h->pgno);
-    M_32_SWAP(h->prev_pgno);
-    M_32_SWAP(h->next_pgno);
-    M_16_SWAP(h->entries);
-    M_16_SWAP(h->hf_offset);
+  if (pgin)
+  {
+    M_32_SWAP (h->lsn.file);
+    M_32_SWAP (h->lsn.offset);
+    M_32_SWAP (h->pgno);
+    M_32_SWAP (h->prev_pgno);
+    M_32_SWAP (h->next_pgno);
+    M_16_SWAP (h->entries);
+    M_16_SWAP (h->hf_offset);
   }
 
-  switch (h->type) {
+  switch (h->type)
+  {
   case P_HASH:
-    for (i = 0; i < NUM_ENT(h); i++) {
+    for (i = 0; i < NUM_ENT (h); i++)
+    {
       if (pgin)
-        M_16_SWAP(h->inp[i]);
+        M_16_SWAP (h->inp[i]);
 
-      switch (HPAGE_TYPE(h, i)) {
+      switch (HPAGE_TYPE (h, i))
+      {
       case H_KEYDATA:
         break;
       case H_DUPLICATE:
-        len = LEN_HKEYDATA(h, pagesize, i);
-        p = HKEYDATA_DATA(P_ENTRY(h, i));
-        for (end = p + len; p < end;) {
-          if (pgin) {
-            P_16_SWAP(p);
-            memcpy(&tmp,
-                p, sizeof(db_indx_t));
-            p += sizeof(db_indx_t);
-          } else {
-            memcpy(&tmp,
-                p, sizeof(db_indx_t));
-            SWAP16(p);
+        len = LEN_HKEYDATA (h, pagesize, i);
+        p = HKEYDATA_DATA (P_ENTRY (h, i));
+        for (end = p + len; p < end;)
+        {
+          if (pgin)
+          {
+            P_16_SWAP (p);
+            memcpy (&tmp, p, sizeof (db_indx_t));
+            p += sizeof (db_indx_t);
+          }
+          else
+          {
+            memcpy (&tmp, p, sizeof (db_indx_t));
+            SWAP16 (p);
           }
           p += tmp;
-          SWAP16(p);
+          SWAP16 (p);
         }
         break;
       case H_OFFDUP:
-        p = HOFFPAGE_PGNO(P_ENTRY(h, i));
-        SWAP32(p);      /* pgno */
+        p = HOFFPAGE_PGNO (P_ENTRY (h, i));
+        SWAP32 (p);             /* pgno */
         break;
       case H_OFFPAGE:
-        p = HOFFPAGE_PGNO(P_ENTRY(h, i));
-        SWAP32(p);      /* pgno */
-        SWAP32(p);      /* tlen */
+        p = HOFFPAGE_PGNO (P_ENTRY (h, i));
+        SWAP32 (p);             /* pgno */
+        SWAP32 (p);             /* tlen */
         break;
       }
 
@@ -239,85 +247,94 @@ CDB___db_byteswap(pg, h, pagesize, pgin)
      * entries.
      */
     if (!pgin)
-      for (i = 0; i < NUM_ENT(h); i++)
-        M_16_SWAP(h->inp[i]);
+      for (i = 0; i < NUM_ENT (h); i++)
+        M_16_SWAP (h->inp[i]);
     break;
   case P_LBTREE:
   case P_LRECNO:
   case P_DUPLICATE:
-    for (i = 0; i < NUM_ENT(h); i++) {
+    for (i = 0; i < NUM_ENT (h); i++)
+    {
       if (pgin)
-        M_16_SWAP(h->inp[i]);
+        M_16_SWAP (h->inp[i]);
 
       /*
        * In the case of on-page duplicates, key information
        * should only be swapped once.
        */
-      if (h->type == P_LBTREE && i > 1) {
-        if (pgin) {
+      if (h->type == P_LBTREE && i > 1)
+      {
+        if (pgin)
+        {
           if (h->inp[i] == h->inp[i - 2])
             continue;
-        } else {
-          M_16_SWAP(h->inp[i]);
+        }
+        else
+        {
+          M_16_SWAP (h->inp[i]);
           if (h->inp[i] == h->inp[i - 2])
             continue;
-          M_16_SWAP(h->inp[i]);
+          M_16_SWAP (h->inp[i]);
         }
       }
 
-      bk = GET_BKEYDATA(h, i);
-      switch (B_TYPE(bk->type)) {
+      bk = GET_BKEYDATA (h, i);
+      switch (B_TYPE (bk->type))
+      {
       case B_KEYDATA:
-        M_16_SWAP(bk->len);
+        M_16_SWAP (bk->len);
         break;
       case B_DUPLICATE:
       case B_OVERFLOW:
-        bo = (BOVERFLOW *)bk;
-        M_32_SWAP(bo->pgno);
-        M_32_SWAP(bo->tlen);
+        bo = (BOVERFLOW *) bk;
+        M_32_SWAP (bo->pgno);
+        M_32_SWAP (bo->tlen);
         break;
       }
 
       if (!pgin)
-        M_16_SWAP(h->inp[i]);
+        M_16_SWAP (h->inp[i]);
     }
     break;
   case P_IBTREE:
-    for (i = 0; i < NUM_ENT(h); i++) {
+    for (i = 0; i < NUM_ENT (h); i++)
+    {
       if (pgin)
-        M_16_SWAP(h->inp[i]);
+        M_16_SWAP (h->inp[i]);
 
-      bi = GET_BINTERNAL(h, i);
-      M_16_SWAP(bi->len);
-      M_32_SWAP(bi->pgno);
-      M_32_SWAP(bi->nrecs);
+      bi = GET_BINTERNAL (h, i);
+      M_16_SWAP (bi->len);
+      M_32_SWAP (bi->pgno);
+      M_32_SWAP (bi->nrecs);
 
-      switch (B_TYPE(bi->type)) {
+      switch (B_TYPE (bi->type))
+      {
       case B_KEYDATA:
         break;
       case B_DUPLICATE:
       case B_OVERFLOW:
-        bo = (BOVERFLOW *)bi->data;
-        M_32_SWAP(bo->pgno);
-        M_32_SWAP(bo->tlen);
+        bo = (BOVERFLOW *) bi->data;
+        M_32_SWAP (bo->pgno);
+        M_32_SWAP (bo->tlen);
         break;
       }
 
       if (!pgin)
-        M_16_SWAP(h->inp[i]);
+        M_16_SWAP (h->inp[i]);
     }
     break;
   case P_IRECNO:
-    for (i = 0; i < NUM_ENT(h); i++) {
+    for (i = 0; i < NUM_ENT (h); i++)
+    {
       if (pgin)
-        M_16_SWAP(h->inp[i]);
+        M_16_SWAP (h->inp[i]);
 
-      ri = GET_RINTERNAL(h, i);
-      M_32_SWAP(ri->pgno);
-      M_32_SWAP(ri->nrecs);
+      ri = GET_RINTERNAL (h, i);
+      M_32_SWAP (ri->pgno);
+      M_32_SWAP (ri->nrecs);
 
       if (!pgin)
-        M_16_SWAP(h->inp[i]);
+        M_16_SWAP (h->inp[i]);
     }
     break;
   case P_OVERFLOW:
@@ -328,15 +345,16 @@ CDB___db_byteswap(pg, h, pagesize, pgin)
     return (EINVAL);
   }
 
-  if (!pgin) {
+  if (!pgin)
+  {
     /* Swap the header information. */
-    M_32_SWAP(h->lsn.file);
-    M_32_SWAP(h->lsn.offset);
-    M_32_SWAP(h->pgno);
-    M_32_SWAP(h->prev_pgno);
-    M_32_SWAP(h->next_pgno);
-    M_16_SWAP(h->entries);
-    M_16_SWAP(h->hf_offset);
+    M_32_SWAP (h->lsn.file);
+    M_32_SWAP (h->lsn.offset);
+    M_32_SWAP (h->pgno);
+    M_32_SWAP (h->prev_pgno);
+    M_32_SWAP (h->next_pgno);
+    M_16_SWAP (h->entries);
+    M_16_SWAP (h->hf_offset);
   }
   return (0);
 }

@@ -10,41 +10,46 @@
 /*
  * QAM data elements: a status field and the data.
  */
-typedef struct _qamdata {
-  u_int8_t  flags;  /* 00: delete bit. */
+typedef struct _qamdata
+{
+  u_int8_t flags;               /* 00: delete bit. */
 #define QAM_VALID  0x01
 #define QAM_SET    0x02
-  u_int8_t  data[1];  /* Record. */
+  u_int8_t data[1];             /* Record. */
 } QAMDATA;
 
-struct __queue;    typedef struct __queue QUEUE;
-struct __qcursor;  typedef struct __qcursor QUEUE_CURSOR;
+struct __queue;
+typedef struct __queue QUEUE;
+struct __qcursor;
+typedef struct __qcursor QUEUE_CURSOR;
 
-struct __qcursor {
+struct __qcursor
+{
   /* Per-thread information: queue private. */
-  PAGE    *page;    /* Cursor page. */
-  db_recno_t   start;    /* start record number. */
-  db_recno_t   recno;    /* Current record number. */
+  PAGE *page;                   /* Cursor page. */
+  db_recno_t start;             /* start record number. */
+  db_recno_t recno;             /* Current record number. */
 
-  db_pgno_t   pgno;    /* Page. */
-  db_indx_t   indx;    /* Page item ref'd by the cursor. */
+  db_pgno_t pgno;               /* Page. */
+  db_indx_t indx;               /* Page item ref'd by the cursor. */
 
-  DB_LOCK     lock;    /* Cursor lock. */
-  db_lockmode_t   lock_mode;  /* Lock mode. */
+  DB_LOCK lock;                 /* Cursor lock. */
+  db_lockmode_t lock_mode;      /* Lock mode. */
 
-  u_int32_t   flags;
+  u_int32_t flags;
 };
 
 /*
  * The in-memory, per-tree queue data structure.
  */
-struct __queue {
-  db_pgno_t q_meta;    /* Database meta-data page. */
-  db_pgno_t q_root;    /* Database root page. */
+struct __queue
+{
+  db_pgno_t q_meta;             /* Database meta-data page. */
+  db_pgno_t q_root;             /* Database root page. */
 
-  int    re_pad;    /* Fixed-length padding byte. */
-  u_int32_t re_len;    /* Length for fixed-length records. */
-  u_int32_t rec_page;    /* records per page */
+  int re_pad;                   /* Fixed-length padding byte. */
+  u_int32_t re_len;             /* Length for fixed-length records. */
+  u_int32_t rec_page;           /* records per page */
 };
 
 /*

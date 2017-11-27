@@ -24,11 +24,12 @@ static const char sccsid[] = "@(#)db_join.c  11.6 (Sleepycat) 10/19/99";
 #include "db_am.h"
 #include "btree.h"
 
-static int CDB___db_join_close __P((DBC *));
-static int CDB___db_join_del __P((DBC *, u_int32_t));
-static int CDB___db_join_get __P((DBC *, DBT *, DBT *, u_int32_t));
-static int CDB___db_join_getnext __P((DBC *, DBT *, DBT *, DBT *, u_int32_t));
-static int CDB___db_join_put __P((DBC *, DBT *, DBT *, u_int32_t));
+static int CDB___db_join_close __P ((DBC *));
+static int CDB___db_join_del __P ((DBC *, u_int32_t));
+static int CDB___db_join_get __P ((DBC *, DBT *, DBT *, u_int32_t));
+static int CDB___db_join_getnext
+__P ((DBC *, DBT *, DBT *, DBT *, u_int32_t));
+static int CDB___db_join_put __P ((DBC *, DBT *, DBT *, u_int32_t));
 
 /*
  * This is the duplicate-assisted join functionality.  Right now we're
@@ -65,20 +66,20 @@ static int CDB___db_join_put __P((DBC *, DBT *, DBT *, u_int32_t));
  * PUBLIC: int CDB___db_join __P((DB *, DBC **, DBC **, u_int32_t));
  */
 int
-CDB___db_join(primary, curslist, dbcp, flags)
-  DB *primary;
-  DBC **curslist, **dbcp;
-  u_int32_t flags;
+CDB___db_join (primary, curslist, dbcp, flags)
+     DB *primary;
+     DBC **curslist, **dbcp;
+     u_int32_t flags;
 {
   DBC *dbc;
   JOIN_CURSOR *jc;
   int i, ret, nslots;
 
-  COMPQUIET(nslots, 0);
+  COMPQUIET (nslots, 0);
 
-  PANIC_CHECK(primary->dbenv);
+  PANIC_CHECK (primary->dbenv);
 
-  if ((ret = CDB___db_joinchk(primary, flags)) != 0)
+  if ((ret = CDB___db_joinchk (primary, flags)) != 0)
     return (ret);
 
   if (curslist == NULL || curslist[0] == NULL)
@@ -87,19 +88,18 @@ CDB___db_join(primary, curslist, dbcp, flags)
   dbc = NULL;
   jc = NULL;
 
-  if ((ret = CDB___os_calloc(1, sizeof(DBC), &dbc)) != 0)
+  if ((ret = CDB___os_calloc (1, sizeof (DBC), &dbc)) != 0)
     goto err;
 
-  if ((ret = CDB___os_calloc(1, sizeof(JOIN_CURSOR), &jc)) != 0)
+  if ((ret = CDB___os_calloc (1, sizeof (JOIN_CURSOR), &jc)) != 0)
     goto err;
 
-  if ((ret = CDB___os_malloc(256, NULL, &jc->j_key.data)) != 0)
+  if ((ret = CDB___os_malloc (256, NULL, &jc->j_key.data)) != 0)
     goto err;
   jc->j_key.ulen = 256;
-  F_SET(&jc->j_key, DB_DBT_USERMEM);
+  F_SET (&jc->j_key, DB_DBT_USERMEM);
 
-  for (jc->j_curslist = curslist;
-      *jc->j_curslist != NULL; jc->j_curslist++)
+  for (jc->j_curslist = curslist; *jc->j_curslist != NULL; jc->j_curslist++)
     ;
 
   /*
@@ -154,19 +154,17 @@ CDB___db_join(primary, curslist, dbcp, flags)
   jc->j_fdupcurs = NULL;
   jc->j_exhausted = NULL;
 
-  if ((ret = CDB___os_calloc(nslots, sizeof(DBC *),
-      &jc->j_curslist)) != 0)
+  if ((ret = CDB___os_calloc (nslots, sizeof (DBC *), &jc->j_curslist)) != 0)
     goto err;
-  if ((ret = CDB___os_calloc(nslots, sizeof(DBC *),
-      &jc->j_workcurs)) != 0)
+  if ((ret = CDB___os_calloc (nslots, sizeof (DBC *), &jc->j_workcurs)) != 0)
     goto err;
-  if ((ret = CDB___os_calloc(nslots, sizeof(DBC *),
-      &jc->j_fdupcurs)) != 0)
+  if ((ret = CDB___os_calloc (nslots, sizeof (DBC *), &jc->j_fdupcurs)) != 0)
     goto err;
-  if ((ret = CDB___os_calloc(nslots, sizeof(u_int8_t),
-      &jc->j_exhausted)) != 0)
+  if ((ret = CDB___os_calloc (nslots, sizeof (u_int8_t),
+                              &jc->j_exhausted)) != 0)
     goto err;
-  for (i = 0; curslist[i] != NULL; i++) {
+  for (i = 0; curslist[i] != NULL; i++)
+  {
     jc->j_curslist[i] = curslist[i];
     jc->j_workcurs[i] = NULL;
     jc->j_fdupcurs[i] = NULL;
@@ -184,10 +182,10 @@ CDB___db_join(primary, curslist, dbcp, flags)
    * because this is the last thing that can fail.  Modifier of this
    * function beware!
    */
-  if ((ret = CDB___os_malloc(sizeof(DBC), NULL, jc->j_workcurs)) != 0)
+  if ((ret = CDB___os_malloc (sizeof (DBC), NULL, jc->j_workcurs)) != 0)
     goto err;
-  if ((ret = jc->j_curslist[0]->c_dup(jc->j_curslist[0], jc->j_workcurs,
-      DB_POSITIONI)) != 0)
+  if ((ret = jc->j_curslist[0]->c_dup (jc->j_curslist[0], jc->j_workcurs,
+                                       DB_POSITIONI)) != 0)
     goto err;
 
   dbc->c_close = CDB___db_join_close;
@@ -202,56 +200,58 @@ CDB___db_join(primary, curslist, dbcp, flags)
 
   return (0);
 
-err:  if (jc != NULL) {
+err:if (jc != NULL)
+  {
     if (jc->j_curslist != NULL)
-      CDB___os_free(jc->j_curslist, nslots * sizeof(DBC *));
-    if (jc->j_workcurs != NULL) {
+      CDB___os_free (jc->j_curslist, nslots * sizeof (DBC *));
+    if (jc->j_workcurs != NULL)
+    {
       if (jc->j_workcurs[0] != NULL)
-        CDB___os_free(jc->j_workcurs[0], sizeof(DBC));
-      CDB___os_free(jc->j_workcurs, nslots * sizeof(DBC *));
+        CDB___os_free (jc->j_workcurs[0], sizeof (DBC));
+      CDB___os_free (jc->j_workcurs, nslots * sizeof (DBC *));
     }
     if (jc->j_fdupcurs != NULL)
-      CDB___os_free(jc->j_fdupcurs, nslots * sizeof(DBC *));
+      CDB___os_free (jc->j_fdupcurs, nslots * sizeof (DBC *));
     if (jc->j_exhausted != NULL)
-      CDB___os_free(jc->j_exhausted, nslots * sizeof(u_int8_t));
-    CDB___os_free(jc, sizeof(JOIN_CURSOR));
+      CDB___os_free (jc->j_exhausted, nslots * sizeof (u_int8_t));
+    CDB___os_free (jc, sizeof (JOIN_CURSOR));
   }
   if (dbc != NULL)
-    CDB___os_free(dbc, sizeof(DBC));
+    CDB___os_free (dbc, sizeof (DBC));
   return (ret);
 }
 
 static int
-CDB___db_join_put(dbc, key, data, flags)
-  DBC *dbc;
-  DBT *key;
-  DBT *data;
-  u_int32_t flags;
+CDB___db_join_put (dbc, key, data, flags)
+     DBC *dbc;
+     DBT *key;
+     DBT *data;
+     u_int32_t flags;
 {
-  PANIC_CHECK(dbc->dbp->dbenv);
+  PANIC_CHECK (dbc->dbp->dbenv);
 
-  COMPQUIET(key, NULL);
-  COMPQUIET(data, NULL);
-  COMPQUIET(flags, 0);
+  COMPQUIET (key, NULL);
+  COMPQUIET (data, NULL);
+  COMPQUIET (flags, 0);
   return (EINVAL);
 }
 
 static int
-CDB___db_join_del(dbc, flags)
-  DBC *dbc;
-  u_int32_t flags;
+CDB___db_join_del (dbc, flags)
+     DBC *dbc;
+     u_int32_t flags;
 {
-  PANIC_CHECK(dbc->dbp->dbenv);
+  PANIC_CHECK (dbc->dbp->dbenv);
 
-  COMPQUIET(flags, 0);
+  COMPQUIET (flags, 0);
   return (EINVAL);
 }
 
 static int
-CDB___db_join_get(dbc, key, data, flags)
-  DBC *dbc;
-  DBT *key, *data;
-  u_int32_t flags;
+CDB___db_join_get (dbc, key, data, flags)
+     DBC *dbc;
+     DBT *key, *data;
+     u_int32_t flags;
 {
   DBT currkey;
   DB *dbp;
@@ -261,17 +261,17 @@ CDB___db_join_get(dbc, key, data, flags)
   u_int32_t operation;
 
   dbp = dbc->dbp;
-  memset(&currkey, 0, sizeof(currkey));
+  memset (&currkey, 0, sizeof (currkey));
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
-  operation = LF_ISSET(DB_OPFLAGS_MASK);
+  operation = LF_ISSET (DB_OPFLAGS_MASK);
   if (operation != 0 && operation != DB_JOIN_ITEM)
-    return (CDB___db_ferr(dbp->dbenv, "DBcursor->c_get", 0));
+    return (CDB___db_ferr (dbp->dbenv, "DBcursor->c_get", 0));
 
-  LF_CLR(DB_OPFLAGS_MASK);
+  LF_CLR (DB_OPFLAGS_MASK);
   if ((ret =
-      CDB___db_fchk(dbp->dbenv, "DBcursor->c_get", flags, DB_RMW)) != 0)
+       CDB___db_fchk (dbp->dbenv, "DBcursor->c_get", flags, DB_RMW)) != 0)
     return (ret);
 
   /*
@@ -281,19 +281,21 @@ CDB___db_join_get(dbc, key, data, flags)
    * the datum in all the secondary cursors), so we simply
    * disallow it.
    */
-  if (F_ISSET(key, DB_DBT_PARTIAL) || F_ISSET(data, DB_DBT_PARTIAL))
+  if (F_ISSET (key, DB_DBT_PARTIAL) || F_ISSET (data, DB_DBT_PARTIAL))
     return (EINVAL);
 
-  jc = (JOIN_CURSOR *)dbc->internal;
+  jc = (JOIN_CURSOR *) dbc->internal;
 
 retry:
-  ret = jc->j_workcurs[0]->c_get(jc->j_workcurs[0],
-      &jc->j_key, key, jc->j_exhausted[0] ? DB_NEXT_DUP : DB_CURRENT);
+  ret = jc->j_workcurs[0]->c_get (jc->j_workcurs[0],
+                                  &jc->j_key, key,
+                                  jc->
+                                  j_exhausted[0] ? DB_NEXT_DUP : DB_CURRENT);
 
-  if (ret == ENOMEM) {
+  if (ret == ENOMEM)
+  {
     jc->j_key.ulen <<= 1;
-    if ((ret =
-        CDB___os_realloc(jc->j_key.ulen, NULL, &jc->j_key.data)) != 0)
+    if ((ret = CDB___os_realloc (jc->j_key.ulen, NULL, &jc->j_key.data)) != 0)
       goto err;
     goto retry;
   }
@@ -312,9 +314,9 @@ retry:
    * purposes with c_gets on all the other secondary cursors.
    */
 
-  if ((ret = CDB___os_realloc(key->size, NULL, &currkey.data)) != 0)
+  if ((ret = CDB___os_realloc (key->size, NULL, &currkey.data)) != 0)
     goto err;
-  memcpy(currkey.data, key->data, key->size);
+  memcpy (currkey.data, key->data, key->size);
   currkey.size = key->size;
 
   /*
@@ -332,18 +334,20 @@ retry:
     jc->j_exhausted[0] = 0;
 
   /* We have the first element; now look for it in the other cursors. */
-  for (i = 1; jc->j_curslist[i] != NULL; i++) {
+  for (i = 1; jc->j_curslist[i] != NULL; i++)
+  {
     if (jc->j_workcurs[i] == NULL)
       /* If this is NULL, we need to dup curslist into it. */
-      if ((ret = jc->j_curslist[i]->c_dup(
-          jc->j_curslist[i], jc->j_workcurs + i,
-          DB_POSITIONI)) != 0)
+      if ((ret =
+           jc->j_curslist[i]->c_dup (jc->j_curslist[i], jc->j_workcurs + i,
+                                     DB_POSITIONI)) != 0)
         goto err;
-retry2:
+  retry2:
     cp = jc->j_workcurs[i];
 
-    if ((ret = CDB___db_join_getnext(cp, &jc->j_key, key, &currkey,
-          jc->j_exhausted[i])) == DB_NOTFOUND) {
+    if ((ret = CDB___db_join_getnext (cp, &jc->j_key, key, &currkey,
+                                      jc->j_exhausted[i])) == DB_NOTFOUND)
+    {
       /*
        * jc->j_workcurs[i] has no more of the datum we're
        * interested in.  Go back one cursor and get
@@ -358,8 +362,10 @@ retry2:
       --i;
       jc->j_exhausted[i] = 1;
 
-      if (i == 0) {
-        for (j = 1; jc->j_workcurs[j] != NULL; j++) {
+      if (i == 0)
+      {
+        for (j = 1; jc->j_workcurs[j] != NULL; j++)
+        {
           /*
            * We're moving to a new element of
            * the first secondary cursor.  If
@@ -388,14 +394,12 @@ retry2:
            * and let strange things happen--we
            * can't make rope childproof.
            */
-          if ((ret = jc->j_workcurs[j]->c_close(
-              jc->j_workcurs[j])) != 0)
+          if ((ret = jc->j_workcurs[j]->c_close (jc->j_workcurs[j])) != 0)
             goto err;
           if ((jc->j_workcurs[0]->dbp->dup_compare
-              == NULL) ||
+               == NULL) ||
               (jc->j_workcurs[j]->dbp->dup_compare
-              == NULL) ||
-              jc->j_fdupcurs[j] == NULL)
+               == NULL) || jc->j_fdupcurs[j] == NULL)
             /*
              * Unsafe conditions;
              * reset fully.
@@ -403,11 +407,10 @@ retry2:
             jc->j_workcurs[j] = NULL;
           else
             /* Partial reset suffices. */
-            if ((jc->j_fdupcurs[j]->c_dup(
-                jc->j_fdupcurs[j],
-                &jc->j_workcurs[j],
-                DB_POSITIONI)) != 0)
-              goto err;
+          if ((jc->j_fdupcurs[j]->c_dup (jc->j_fdupcurs[j],
+                                           &jc->j_workcurs[j],
+                                           DB_POSITIONI)) != 0)
+            goto err;
           jc->j_exhausted[j] = 0;
         }
         goto retry;
@@ -419,30 +422,30 @@ retry2:
        * reset all of the workcurs[j] where j>i, so that
        * we don't miss any duplicate duplicates.
        */
-      for (j = i + 1;
-          jc->j_workcurs[j] != NULL;
-          j++) {
-        if ((ret = jc->j_workcurs[j]->c_close(
-            jc->j_workcurs[j])) != 0)
+      for (j = i + 1; jc->j_workcurs[j] != NULL; j++)
+      {
+        if ((ret = jc->j_workcurs[j]->c_close (jc->j_workcurs[j])) != 0)
           goto err;
-        if (jc->j_fdupcurs[j] != NULL) {
-          if ((ret = jc->j_fdupcurs[j]->c_dup(
-              jc->j_fdupcurs[j],
-              &jc->j_workcurs[j],
-              DB_POSITIONI)) != 0)
+        if (jc->j_fdupcurs[j] != NULL)
+        {
+          if ((ret = jc->j_fdupcurs[j]->c_dup (jc->j_fdupcurs[j],
+                                               &jc->j_workcurs[j],
+                                               DB_POSITIONI)) != 0)
             goto err;
           jc->j_exhausted[j] = 0;
-        } else
+        }
+        else
           jc->j_workcurs[j] = NULL;
       }
       goto retry2;
-            /* NOTREACHED */
+      /* NOTREACHED */
     }
 
-    if (ret == ENOMEM) {
+    if (ret == ENOMEM)
+    {
       jc->j_key.ulen <<= 1;
-      if ((ret = CDB___os_realloc(jc->j_key.ulen,
-          NULL, &jc->j_key.data)) != 0)
+      if ((ret = CDB___os_realloc (jc->j_key.ulen,
+                                   NULL, &jc->j_key.data)) != 0)
         goto err;
       goto retry2;
     }
@@ -475,13 +478,12 @@ retry2:
      * we set jc->j_fdupcurs[i], which stores the first
      * duplicate duplicate of the current datum.
      */
-    if (jc->j_exhausted[0] == 1 || jc->j_fdupcurs[i] == NULL) {
+    if (jc->j_exhausted[0] == 1 || jc->j_fdupcurs[i] == NULL)
+    {
       if (jc->j_fdupcurs[i] != NULL)
-        if ((ret = jc->j_fdupcurs[i]->c_close(
-            jc->j_fdupcurs[i])) != 0)
+        if ((ret = jc->j_fdupcurs[i]->c_close (jc->j_fdupcurs[i])) != 0)
           goto err;
-      if ((ret = cp->c_dup(cp, &jc->j_fdupcurs[i],
-          DB_POSITIONI)) != 0)
+      if ((ret = cp->c_dup (cp, &jc->j_fdupcurs[i], DB_POSITIONI)) != 0)
         goto err;
     }
 
@@ -493,7 +495,7 @@ err:
    * both error and regular returns.
    */
   if (currkey.data != NULL)
-    CDB___os_free(currkey.data, 0);
+    CDB___os_free (currkey.data, 0);
 
   if (ret != 0)
     return (ret);
@@ -506,20 +508,20 @@ err:
   if (operation == DB_JOIN_ITEM)
     return (0);
   else
-    return ((jc->j_primary->get)(jc->j_primary,
-        jc->j_curslist[0]->txn, key, data, 0));
+    return ((jc->j_primary->get) (jc->j_primary,
+                                  jc->j_curslist[0]->txn, key, data, 0));
 }
 
 static int
-CDB___db_join_close(dbc)
-  DBC *dbc;
+CDB___db_join_close (dbc)
+     DBC *dbc;
 {
   JOIN_CURSOR *jc;
   int i, ret, t_ret;
 
-  PANIC_CHECK(dbc->dbp->dbenv);
+  PANIC_CHECK (dbc->dbp->dbenv);
 
-  jc = (JOIN_CURSOR *)dbc->internal;
+  jc = (JOIN_CURSOR *) dbc->internal;
   ret = t_ret = 0;
 
 
@@ -535,17 +537,17 @@ CDB___db_join_close(dbc)
    * mucking with.
    */
   for (i = 0; jc->j_workcurs[i] != NULL; i++)
-    if((t_ret = jc->j_workcurs[i]->c_close(jc->j_workcurs[i])) != 0)
+    if ((t_ret = jc->j_workcurs[i]->c_close (jc->j_workcurs[i])) != 0)
       ret = t_ret;
   for (i = 0; jc->j_fdupcurs[i] != NULL; i++)
-    if((t_ret = jc->j_fdupcurs[i]->c_close(jc->j_fdupcurs[i])) != 0)
+    if ((t_ret = jc->j_fdupcurs[i]->c_close (jc->j_fdupcurs[i])) != 0)
       ret = t_ret;
 
-  CDB___os_free(jc->j_exhausted, 0);
-  CDB___os_free(jc->j_curslist, 0);
-  CDB___os_free(jc->j_key.data, jc->j_key.ulen);
-  CDB___os_free(jc, sizeof(JOIN_CURSOR));
-  CDB___os_free(dbc, sizeof(DBC));
+  CDB___os_free (jc->j_exhausted, 0);
+  CDB___os_free (jc->j_curslist, 0);
+  CDB___os_free (jc->j_key.data, jc->j_key.ulen);
+  CDB___os_free (jc, sizeof (JOIN_CURSOR));
+  CDB___os_free (dbc, sizeof (DBC));
 
   return (ret);
 }
@@ -567,24 +569,25 @@ CDB___db_join_close(dbc)
  *   If no matching datum exists, returns DB_NOTFOUND, else 0.
  */
 static int
-CDB___db_join_getnext(dbc, key, data, matching, exhausted)
-  DBC *dbc;
-  DBT *key, *data, *matching;
-  u_int32_t exhausted;
+CDB___db_join_getnext (dbc, key, data, matching, exhausted)
+     DBC *dbc;
+     DBT *key, *data, *matching;
+     u_int32_t exhausted;
 {
   int ret, cmp;
   DB *dbp;
-  int (*func) __P((const DBT *, const DBT *));
+  int (*func) __P ((const DBT *, const DBT *));
 
   dbp = dbc->dbp;
 
   func = (dbp->dup_compare == NULL) ? CDB___bam_defcmp : dbp->dup_compare;
 
-  switch (exhausted) {
+  switch (exhausted)
+  {
   case 0:
-    if ((ret = dbc->c_get(dbc, key, data, DB_CURRENT)) != 0)
+    if ((ret = dbc->c_get (dbc, key, data, DB_CURRENT)) != 0)
       break;
-    cmp = func(matching, data);
+    cmp = func (matching, data);
     if (cmp == 0)
       return (0);
 
@@ -601,9 +604,9 @@ CDB___db_join_getnext(dbc, key, data, matching, exhausted)
 
     /* FALLTHROUGH */
   case 1:
-    F_SET(dbc, DBC_CONTINUE);
-    ret = dbc->c_get(dbc, key, data, DB_GET_BOTH);
-    F_CLR(dbc, DBC_CONTINUE);
+    F_SET (dbc, DBC_CONTINUE);
+    ret = dbc->c_get (dbc, key, data, DB_GET_BOTH);
+    F_CLR (dbc, DBC_CONTINUE);
     break;
   default:
     ret = EINVAL;

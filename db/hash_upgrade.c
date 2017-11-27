@@ -23,7 +23,7 @@ static const char sccsid[] = "@(#)hash_upgrade.c  11.7 (Sleepycat) 10/20/99";
 #include "db_swap.h"
 #include "hash.h"
 
-static int CDB___ham_upgrade5 __P((DB *, int, char *, DB_FH *));
+static int CDB___ham_upgrade5 __P ((DB *, int, char *, DB_FH *));
 
 /*
  * CDB___ham_upgrade --
@@ -32,11 +32,11 @@ static int CDB___ham_upgrade5 __P((DB *, int, char *, DB_FH *));
  * PUBLIC: int CDB___ham_upgrade __P((DB *, int, char *, DB_FH *, char *));
  */
 int
-CDB___ham_upgrade(dbp, swapped, real_name, fhp, mbuf)
-  DB *dbp;
-  int swapped;
-  char *real_name, *mbuf;
-  DB_FH *fhp;
+CDB___ham_upgrade (dbp, swapped, real_name, fhp, mbuf)
+     DB *dbp;
+     int swapped;
+     char *real_name, *mbuf;
+     DB_FH *fhp;
 {
   DB_ENV *dbenv;
   int ret;
@@ -44,17 +44,18 @@ CDB___ham_upgrade(dbp, swapped, real_name, fhp, mbuf)
   dbenv = dbp->dbenv;
 
   /* Check the version. */
-  switch (((DBMETA *)mbuf)->version) {
+  switch (((DBMETA *) mbuf)->version)
+  {
   case 4:
   case 5:
-    if ((ret = CDB___ham_upgrade5(dbp, swapped, real_name, fhp)) != 0)
+    if ((ret = CDB___ham_upgrade5 (dbp, swapped, real_name, fhp)) != 0)
       return (ret);
     /* FALLTHROUGH */
   case 6:
     break;
   default:
-    CDB___db_err(dbenv, "%s: unsupported hash version: %lu",
-        real_name, (u_long)((DBMETA *)mbuf)->version);
+    CDB___db_err (dbenv, "%s: unsupported hash version: %lu",
+                  real_name, (u_long) ((DBMETA *) mbuf)->version);
     return (DB_OLD_VERSION);
   }
   return (0);
@@ -65,11 +66,11 @@ CDB___ham_upgrade(dbp, swapped, real_name, fhp, mbuf)
  *      Upgrade the database from version 4/5 to version 6.
  */
 static int
-CDB___ham_upgrade5(dbp, swapped, real_name, fhp)
-  DB *dbp;
-  int swapped;
-  char *real_name;
-  DB_FH *fhp;
+CDB___ham_upgrade5 (dbp, swapped, real_name, fhp)
+     DB *dbp;
+     int swapped;
+     char *real_name;
+     DB_FH *fhp;
 {
   DB_ENV *dbenv;
   ssize_t n;
@@ -81,16 +82,16 @@ CDB___ham_upgrade5(dbp, swapped, real_name, fhp)
   dbenv = dbp->dbenv;
 
   if (dbp->db_feedback != NULL)
-    dbp->db_feedback(dbp, DB_UPGRADE, 0);
+    dbp->db_feedback (dbp, DB_UPGRADE, 0);
 
   /*
    * Seek to the beginning of the file and read the metadata page.  We
    * read 256 bytes, which is larger than any access method's metadata
    * page.
    */
-  if ((ret = CDB___os_seek(fhp, 0, 0, 0, 0, DB_OS_SEEK_SET)) != 0)
+  if ((ret = CDB___os_seek (fhp, 0, 0, 0, 0, DB_OS_SEEK_SET)) != 0)
     return (ret);
-  if ((ret = CDB___os_read(fhp, obuf, sizeof(obuf), &n)) != 0)
+  if ((ret = CDB___os_read (fhp, obuf, sizeof (obuf), &n)) != 0)
     return (ret);
 
   /*
@@ -121,13 +122,13 @@ CDB___ham_upgrade5(dbp, swapped, real_name, fhp)
    * The first 32 bytes are similar.  The only change is the version
    * and that we removed the ovfl_point and have the page type now.
    */
-  memcpy(nbuf, obuf, 32);
+  memcpy (nbuf, obuf, 32);
 
   /* Update the version. */
   version = 6;
   if (swapped)
-    M_32_SWAP(version);
-  memcpy(nbuf + 16, &version, sizeof(u_int32_t));
+    M_32_SWAP (version);
+  memcpy (nbuf + 16, &version, sizeof (u_int32_t));
 
   /* Assign unused and type fields. */
   new = nbuf + 24;
@@ -137,10 +138,10 @@ CDB___ham_upgrade5(dbp, swapped, real_name, fhp)
   *new = '\0';
 
   /* Move flags */
-  memcpy(nbuf + 32, obuf + 56, 4);
+  memcpy (nbuf + 32, obuf + 56, 4);
 
   /* Copy: max_bucket, high_mask, low-mask, ffactor, nelem, h_charkey */
-  memcpy(nbuf + 56, obuf + 32, 24);
+  memcpy (nbuf + 56, obuf + 32, 24);
 
   /*
    * There was a bug in 2.X versions where the nelem could go negative.
@@ -148,19 +149,21 @@ CDB___ham_upgrade5(dbp, swapped, real_name, fhp)
    * (that is, very large and positive), we'll die trying to dump and
    * load this database.  So, let's see if we can fix it here.
    */
-  memcpy(&nelem, nbuf + 72, sizeof(u_int32_t));
-  memcpy(&fillf, nbuf + 68, sizeof(u_int32_t));
-  memcpy(&maxb, nbuf + 56, sizeof(u_int32_t));
-  if (swapped) {
-    M_32_SWAP(nelem);
-    M_32_SWAP(fillf);
-    M_32_SWAP(maxb);
+  memcpy (&nelem, nbuf + 72, sizeof (u_int32_t));
+  memcpy (&fillf, nbuf + 68, sizeof (u_int32_t));
+  memcpy (&maxb, nbuf + 56, sizeof (u_int32_t));
+  if (swapped)
+  {
+    M_32_SWAP (nelem);
+    M_32_SWAP (fillf);
+    M_32_SWAP (maxb);
   }
 
   if ((fillf != 0 && fillf * maxb < 2 * nelem) ||
-      (fillf == 0 && nelem > 0x8000000)) {
+      (fillf == 0 && nelem > 0x8000000))
+  {
     nelem = 0;
-    memcpy(nbuf + 72, &nelem, sizeof(u_int32_t));
+    memcpy (nbuf + 72, &nelem, sizeof (u_int32_t));
   }
 
   /*
@@ -170,13 +173,14 @@ CDB___ham_upgrade5(dbp, swapped, real_name, fhp)
    * contains the page number of the first bucket in the next doubling
    * MINUS the bucket number of that bucket.
    */
-  o_spares = (u_int32_t *)(obuf + 60);
-  n_spares = (u_int32_t *)(nbuf + 80);
+  o_spares = (u_int32_t *) (obuf + 60);
+  n_spares = (u_int32_t *) (nbuf + 80);
   non_zero = 0;
   n_spares[0] = 1;
-  for (i = 1; i < NCACHED; i++) {
+  for (i = 1; i < NCACHED; i++)
+  {
     if (swapped)
-      M_32_SWAP(o_spares[i -1]);
+      M_32_SWAP (o_spares[i - 1]);
     non_zero = non_zero || o_spares[i - 1] != 0;
     if (o_spares[i - 1] == 0 && non_zero)
       n_spares[i] = 0;
@@ -186,21 +190,21 @@ CDB___ham_upgrade5(dbp, swapped, real_name, fhp)
 
   if (swapped)
     for (i = 0; i < NCACHED; i++)
-      M_32_SWAP(n_spares[i]);
+      M_32_SWAP (n_spares[i]);
 
-          /* Replace the unique ID. */
-  if ((ret = CDB___os_fileid(dbenv, real_name, 1, nbuf + 36)) != 0)
+  /* Replace the unique ID. */
+  if ((ret = CDB___os_fileid (dbenv, real_name, 1, nbuf + 36)) != 0)
     return (ret);
 
-  if ((ret = CDB___os_seek(fhp, 0, 0, 0, 1, DB_OS_SEEK_SET)) != 0)
+  if ((ret = CDB___os_seek (fhp, 0, 0, 0, 1, DB_OS_SEEK_SET)) != 0)
     return (ret);
-  if ((ret = CDB___os_write(fhp, nbuf, 256, &n)) != 0)
+  if ((ret = CDB___os_write (fhp, nbuf, 256, &n)) != 0)
     return (ret);
-  if ((ret = CDB___os_fsync(fhp)) != 0)
+  if ((ret = CDB___os_fsync (fhp)) != 0)
     return (ret);
 
   if (dbp->db_feedback != NULL)
-    dbp->db_feedback(dbp, DB_UPGRADE, 100);
+    dbp->db_feedback (dbp, DB_UPGRADE, 100);
 
   return (0);
 }

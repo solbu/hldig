@@ -53,8 +53,8 @@ static const char sccsid[] = "@(#)db_log2.c  11.2 (Sleepycat) 9/9/99";
  * PUBLIC: u_int32_t CDB___db_log2 __P((u_int32_t));
  */
 u_int32_t
-CDB___db_log2(num)
-  u_int32_t num;
+CDB___db_log2 (num)
+     u_int32_t num;
 {
   u_int32_t i, limit;
 

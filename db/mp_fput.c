@@ -25,10 +25,10 @@ static const char sccsid[] = "@(#)mp_fput.c  11.3 (Sleepycat) 10/29/99";
  *  Mpool file put function.
  */
 int
-CDB_memp_fput(dbmfp, pgaddr, flags)
-  DB_MPOOLFILE *dbmfp;
-  void *pgaddr;
-  u_int32_t flags;
+CDB_memp_fput (dbmfp, pgaddr, flags)
+     DB_MPOOLFILE *dbmfp;
+     void *pgaddr;
+     u_int32_t flags;
 {
   BH *bhp;
   DB_ENV *dbenv;
@@ -41,31 +41,34 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
   dbenv = dbmp->dbenv;
   mp = dbmp->reginfo.primary;
 
-  PANIC_CHECK(dbenv);
+  PANIC_CHECK (dbenv);
 
   /* Validate arguments. */
-  if (flags) {
-    if ((ret = CDB___db_fchk(dbenv, "CDB_memp_fput", flags,
-        DB_MPOOL_CLEAN | DB_MPOOL_DIRTY | DB_MPOOL_DISCARD)) != 0)
+  if (flags)
+  {
+    if ((ret = CDB___db_fchk (dbenv, "CDB_memp_fput", flags,
+                              DB_MPOOL_CLEAN | DB_MPOOL_DIRTY |
+                              DB_MPOOL_DISCARD)) != 0)
       return (ret);
-    if ((ret = CDB___db_fcchk(dbenv, "CDB_memp_fput",
-        flags, DB_MPOOL_CLEAN, DB_MPOOL_DIRTY)) != 0)
+    if ((ret = CDB___db_fcchk (dbenv, "CDB_memp_fput",
+                               flags, DB_MPOOL_CLEAN, DB_MPOOL_DIRTY)) != 0)
       return (ret);
 
-    if (LF_ISSET(DB_MPOOL_DIRTY) && F_ISSET(dbmfp, MP_READONLY)) {
-      CDB___db_err(dbenv,
-          "%s: dirty flag set for readonly file page",
-          CDB___memp_fn(dbmfp));
+    if (LF_ISSET (DB_MPOOL_DIRTY) && F_ISSET (dbmfp, MP_READONLY))
+    {
+      CDB___db_err (dbenv,
+                    "%s: dirty flag set for readonly file page",
+                    CDB___memp_fn (dbmfp));
       return (EACCES);
     }
   }
 
-  R_LOCK(dbenv, &dbmp->reginfo);
+  R_LOCK (dbenv, &dbmp->reginfo);
 
   /* Decrement the pinned reference count. */
   if (dbmfp->pinref == 0)
-    CDB___db_err(dbenv, "%s: put: more blocks returned than retrieved",
-        CDB___memp_fn(dbmfp));
+    CDB___db_err (dbenv, "%s: put: more blocks returned than retrieved",
+                  CDB___memp_fn (dbmfp));
   else
     --dbmfp->pinref;
 
@@ -76,41 +79,45 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
    * region.
    */
   if (dbmfp->addr != NULL && pgaddr >= dbmfp->addr &&
-      (u_int8_t *)pgaddr <= (u_int8_t *)dbmfp->addr + dbmfp->len) {
-    R_UNLOCK(dbenv, &dbmp->reginfo);
+      (u_int8_t *) pgaddr <= (u_int8_t *) dbmfp->addr + dbmfp->len)
+  {
+    R_UNLOCK (dbenv, &dbmp->reginfo);
     return (0);
   }
 
   /* Convert the page address to a buffer header. */
-  bhp = (BH *)((u_int8_t *)pgaddr - SSZA(BH, buf));
+  bhp = (BH *) ((u_int8_t *) pgaddr - SSZA (BH, buf));
 
   /* Convert the buffer header to a cache. */
-  mc = BH_TO_CACHE(dbmp, bhp);
+  mc = BH_TO_CACHE (dbmp, bhp);
 
 /* UNLOCK THE REGION, LOCK THE CACHE. */
 
   /* Set/clear the page bits. */
-  if (LF_ISSET(DB_MPOOL_CLEAN) && F_ISSET(bhp, BH_DIRTY)) {
+  if (LF_ISSET (DB_MPOOL_CLEAN) && F_ISSET (bhp, BH_DIRTY))
+  {
     ++mc->stat.st_page_clean;
     --mc->stat.st_page_dirty;
-    F_CLR(bhp, BH_DIRTY);
+    F_CLR (bhp, BH_DIRTY);
   }
-  if (LF_ISSET(DB_MPOOL_DIRTY) && !F_ISSET(bhp, BH_DIRTY)) {
+  if (LF_ISSET (DB_MPOOL_DIRTY) && !F_ISSET (bhp, BH_DIRTY))
+  {
     --mc->stat.st_page_clean;
     ++mc->stat.st_page_dirty;
-    F_SET(bhp, BH_DIRTY);
+    F_SET (bhp, BH_DIRTY);
   }
-  if (LF_ISSET(DB_MPOOL_DISCARD))
-    F_SET(bhp, BH_DISCARD);
+  if (LF_ISSET (DB_MPOOL_DISCARD))
+    F_SET (bhp, BH_DISCARD);
 
   /*
    * Check for a reference count going to zero.  This can happen if the
    * application returns a page twice.
    */
-  if (bhp->ref == 0) {
-    CDB___db_err(dbenv, "%s: page %lu: unpinned page returned",
-        CDB___memp_fn(dbmfp), (u_long)bhp->pgno);
-    R_UNLOCK(dbenv, &dbmp->reginfo);
+  if (bhp->ref == 0)
+  {
+    CDB___db_err (dbenv, "%s: page %lu: unpinned page returned",
+                  CDB___memp_fn (dbmfp), (u_long) bhp->pgno);
+    R_UNLOCK (dbenv, &dbmp->reginfo);
     return (EINVAL);
   }
 
@@ -119,8 +126,9 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
    * discard flags (for now) and leave it at its position in the LRU
    * chain.  The rest gets done at last reference close.
    */
-  if (--bhp->ref > 0) {
-    R_UNLOCK(dbenv, &dbmp->reginfo);
+  if (--bhp->ref > 0)
+  {
+    R_UNLOCK (dbenv, &dbmp->reginfo);
     return (0);
   }
 
@@ -131,11 +139,11 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
    * buffer.  We could keep that from happening, but there seems no
    * reason to do so.
    */
-  SH_TAILQ_REMOVE(&mc->bhq, bhp, q, __bh);
-  if (F_ISSET(bhp, BH_DISCARD))
-    SH_TAILQ_INSERT_HEAD(&mc->bhq, bhp, q, __bh);
+  SH_TAILQ_REMOVE (&mc->bhq, bhp, q, __bh);
+  if (F_ISSET (bhp, BH_DISCARD))
+    SH_TAILQ_INSERT_HEAD (&mc->bhq, bhp, q, __bh);
   else
-    SH_TAILQ_INSERT_TAIL(&mc->bhq, bhp, q);
+    SH_TAILQ_INSERT_TAIL (&mc->bhq, bhp, q);
 
   /*
    * If this buffer is scheduled for writing because of a checkpoint, we
@@ -147,19 +155,23 @@ CDB_memp_fput(dbmfp, pgaddr, flags)
    * writing it there, as the checkpoint thread of control better be able
    * to write all of the files.
    */
-  if (F_ISSET(bhp, BH_WRITE)) {
-    if (F_ISSET(bhp, BH_DIRTY)) {
-      if (CDB___memp_bhwrite(dbmp,
-          dbmfp->mfp, bhp, NULL, &wrote) != 0 || !wrote)
-        F_SET(mp, MP_LSN_RETRY);
-    } else {
-      F_CLR(bhp, BH_WRITE);
+  if (F_ISSET (bhp, BH_WRITE))
+  {
+    if (F_ISSET (bhp, BH_DIRTY))
+    {
+      if (CDB___memp_bhwrite (dbmp,
+                              dbmfp->mfp, bhp, NULL, &wrote) != 0 || !wrote)
+        F_SET (mp, MP_LSN_RETRY);
+    }
+    else
+    {
+      F_CLR (bhp, BH_WRITE);
 
       --mp->lsn_cnt;
       --dbmfp->mfp->lsn_cnt;
     }
   }
 
-  R_UNLOCK(dbenv, &dbmp->reginfo);
+  R_UNLOCK (dbenv, &dbmp->reginfo);
   return (0);
 }

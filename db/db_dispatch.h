@@ -38,30 +38,38 @@
 #ifndef _DB_DISPATCH_H
 #define _DB_DISPATCH_H
 
-struct __db_txnhead;  typedef struct __db_txnhead DB_TXNHEAD;
-struct __db_txnlist;  typedef struct __db_txnlist DB_TXNLIST;
+struct __db_txnhead;
+typedef struct __db_txnhead DB_TXNHEAD;
+struct __db_txnlist;
+typedef struct __db_txnlist DB_TXNLIST;
 
 /*
  * Declarations and typedefs for the list of transaction IDs used during
  * recovery.  This is a generic list used to pass along whatever information
  * we need during recovery.
  */
-struct __db_txnhead {
-  LIST_HEAD(__db_headlink, __db_txnlist) head;
+struct __db_txnhead
+{
+  LIST_HEAD (__db_headlink, __db_txnlist) head;
   u_int32_t maxid;
   int32_t generation;
 };
 
 #define TXNLIST_INVALID_ID  0xffffffff
-struct __db_txnlist {
-  enum { TXNLIST_DELETE, TXNLIST_TXNID } type;
-  LIST_ENTRY(__db_txnlist) links;
-  union {
-    struct {
+struct __db_txnlist
+{
+  enum
+  { TXNLIST_DELETE, TXNLIST_TXNID } type;
+    LIST_ENTRY (__db_txnlist) links;
+  union
+  {
+    struct
+    {
       u_int32_t txnid;
-      int32_t  generation;
+      int32_t generation;
     } t;
-    struct {
+    struct
+    {
 #define TXNLIST_FLAG_DELETED  0x1
 #define  TXNLIST_FLAG_CLOSED  0x2
       u_int32_t flags;

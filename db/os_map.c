@@ -11,7 +11,7 @@
 static const char sccsid[] = "@(#)os_map.c  11.10 (Sleepycat) 10/31/99";
 #endif /* not lint */
 
-#ifdef _MSC_VER /* _WIN32 */
+#ifdef _MSC_VER                 /* _WIN32 */
 #include <windows.h>
 #endif
 
@@ -34,7 +34,8 @@ static const char sccsid[] = "@(#)os_map.c  11.10 (Sleepycat) 10/31/99";
 #include "os_jump.h"
 
 #ifdef HAVE_MMAP
-static int CDB___os_map __P((DB_ENV *, char *, DB_FH *, size_t, int, int, void **));
+static int CDB___os_map
+__P ((DB_ENV *, char *, DB_FH *, size_t, int, int, void **));
 #endif
 
 /*
@@ -44,15 +45,16 @@ static int CDB___os_map __P((DB_ENV *, char *, DB_FH *, size_t, int, int, void *
  * PUBLIC: int CDB___os_r_sysattach __P((DB_ENV *, REGINFO *, REGION *));
  */
 int
-CDB___os_r_sysattach(dbenv, infop, rp)
-  DB_ENV *dbenv;
-  REGINFO *infop;
-  REGION *rp;
+CDB___os_r_sysattach (dbenv, infop, rp)
+     DB_ENV *dbenv;
+     REGINFO *infop;
+     REGION *rp;
 {
   DB_FH fh;
   int ret;
 
-  if (F_ISSET(dbenv, DB_ENV_SYSTEM_MEM)) {
+  if (F_ISSET (dbenv, DB_ENV_SYSTEM_MEM))
+  {
     /*
      * If the region is in system memory on UNIX, we use shmget(2).
      *
@@ -64,27 +66,28 @@ CDB___os_r_sysattach(dbenv, infop, rp)
      * it's an error.
      */
 #if defined(MUTEX_NO_SHMGET_LOCKS)
-    CDB___db_err(dbenv, "%s",
-    "architecture does not support locks inside system (shmget(2)) memory");
-    CDB___db_err(dbenv, "%s",
-    "application must specify DB_PRIVATE or not specify DB_SYSTEM_MEM");
-      return (EINVAL);
+    CDB___db_err (dbenv, "%s",
+                  "architecture does not support locks inside system (shmget(2)) memory");
+    CDB___db_err (dbenv, "%s",
+                  "application must specify DB_PRIVATE or not specify DB_SYSTEM_MEM");
+    return (EINVAL);
 #endif
 #if defined(HAVE_SHMGET)
-    if (F_ISSET(infop, REGION_CREATE) &&
-       (rp->segid = shmget(0, rp->size, IPC_PRIVATE | 0600)) == -1)
-      return (CDB___os_get_errno());
+    if (F_ISSET (infop, REGION_CREATE) &&
+        (rp->segid = shmget (0, rp->size, IPC_PRIVATE | 0600)) == -1)
+      return (CDB___os_get_errno ());
 
-    if ((infop->addr = shmat(rp->segid, NULL, 0)) == (void *)-1) {
+    if ((infop->addr = shmat (rp->segid, NULL, 0)) == (void *) -1)
+    {
       infop->addr = NULL;
-      return (CDB___os_get_errno());
+      return (CDB___os_get_errno ());
     }
 
     return (0);
 #else
-    CDB___db_err(dbenv,
-    "architecture lacks shmget(2), environments in system memory not possible");
-      return (CDB___db_eopnotsup(dbenv));
+    CDB___db_err (dbenv,
+                  "architecture lacks shmget(2), environments in system memory not possible");
+    return (CDB___db_eopnotsup (dbenv));
 #endif
   }
 
@@ -94,10 +97,11 @@ CDB___os_r_sysattach(dbenv, infop, rp)
    * threads/processes attempting to simultaneously create the region are
    * properly ordered, our caller has already taken care of that.
    */
-  if ((ret = CDB___os_open(infop->name,
-      F_ISSET(infop, REGION_CREATE_OK) ? DB_OSO_CREATE: 0,
-      infop->mode, &fh)) != 0)
-    CDB___db_err(dbenv, "%s: %s", infop->name, CDB_db_strerror(ret));
+  if ((ret = CDB___os_open (infop->name,
+                            F_ISSET (infop,
+                                     REGION_CREATE_OK) ? DB_OSO_CREATE : 0,
+                            infop->mode, &fh)) != 0)
+    CDB___db_err (dbenv, "%s: %s", infop->name, CDB_db_strerror (ret));
 
   /*
    * If we created the file, grow it to its full size before mapping
@@ -106,21 +110,21 @@ CDB___os_r_sysattach(dbenv, infop, rp)
    * systems without merged VM/buffer cache systems, or, more to the
    * point, *badly* merged VM/buffer cache systems.
    */
-  if (ret == 0 && F_ISSET(infop, REGION_CREATE))
-    ret = CDB___os_finit(&fh, rp->size, DB_GLOBAL(db_region_init));
+  if (ret == 0 && F_ISSET (infop, REGION_CREATE))
+    ret = CDB___os_finit (&fh, rp->size, DB_GLOBAL (db_region_init));
 
   /* Map the file in. */
   if (ret == 0)
-    ret = CDB___os_map(dbenv,
-        infop->name, &fh, rp->size, 1, 0, &infop->addr);
+    ret = CDB___os_map (dbenv,
+                        infop->name, &fh, rp->size, 1, 0, &infop->addr);
 
-   (void)CDB___os_closehandle(&fh);
+  (void) CDB___os_closehandle (&fh);
 
   return (ret);
 #else
-  CDB___db_err(dbenv,
-      "architecture lacks mmap(2), shared environments not possible");
-  return (CDB___db_eopnotsup(dbenv));
+  CDB___db_err (dbenv,
+                "architecture lacks mmap(2), shared environments not possible");
+  return (CDB___db_eopnotsup (dbenv));
 #endif
 }
 
@@ -131,17 +135,18 @@ CDB___os_r_sysattach(dbenv, infop, rp)
  * PUBLIC: int CDB___os_r_sysdetach __P((DB_ENV *, REGINFO *, int));
  */
 int
-CDB___os_r_sysdetach(dbenv, infop, destroy)
-  DB_ENV *dbenv;
-  REGINFO *infop;
-  int destroy;
+CDB___os_r_sysdetach (dbenv, infop, destroy)
+     DB_ENV *dbenv;
+     REGINFO *infop;
+     int destroy;
 {
   REGION *rp;
   int segid;
 
   rp = infop->rp;
 
-  if (F_ISSET(dbenv, DB_ENV_SYSTEM_MEM)) {
+  if (F_ISSET (dbenv, DB_ENV_SYSTEM_MEM))
+  {
 #ifdef HAVE_SHMGET
     /*
      * We may be about to remove the memory referenced by rp,
@@ -151,12 +156,12 @@ CDB___os_r_sysdetach(dbenv, infop, destroy)
     if (destroy)
       rp->segid = INVALID_REGION_SEGID;
 
-    if (shmdt(infop->addr) != 0)
-      return (CDB___os_get_errno());
+    if (shmdt (infop->addr) != 0)
+      return (CDB___os_get_errno ());
 
     if (destroy)
-      if (shmctl(segid, IPC_RMID, NULL) != 0)
-        return (CDB___os_get_errno());
+      if (shmctl (segid, IPC_RMID, NULL) != 0)
+        return (CDB___os_get_errno ());
 
     return (0);
 #else
@@ -166,14 +171,14 @@ CDB___os_r_sysdetach(dbenv, infop, destroy)
 
 #ifdef HAVE_MMAP
 #ifdef HAVE_MUNLOCK
-  if (F_ISSET(dbenv, DB_ENV_LOCKDOWN))
-    (void)munlock(infop->addr, rp->size);
+  if (F_ISSET (dbenv, DB_ENV_LOCKDOWN))
+    (void) munlock (infop->addr, rp->size);
 #endif
-  if (munmap(infop->addr, rp->size) != 0)
-    return (CDB___os_get_errno());
+  if (munmap (infop->addr, rp->size) != 0)
+    return (CDB___os_get_errno ());
 
-  if (destroy && CDB___os_unlink(infop->name) != 0)
-    return (CDB___os_get_errno());
+  if (destroy && CDB___os_unlink (infop->name) != 0)
+    return (CDB___os_get_errno ());
   return (0);
 #else
   return (EINVAL);
@@ -188,18 +193,18 @@ CDB___os_r_sysdetach(dbenv, infop, destroy)
  * PUBLIC:     char *, DB_FH *, size_t, int, void **));
  */
 int
-CDB___os_mapfile(dbenv, path, fhp, len, is_rdonly, addrp)
-  DB_ENV *dbenv;
-  char *path;
-  DB_FH *fhp;
-  int is_rdonly;
-  size_t len;
-  void **addrp;
+CDB___os_mapfile (dbenv, path, fhp, len, is_rdonly, addrp)
+     DB_ENV *dbenv;
+     char *path;
+     DB_FH *fhp;
+     int is_rdonly;
+     size_t len;
+     void **addrp;
 {
 #ifdef HAVE_MMAP
-  return (CDB___os_map(dbenv, path, fhp, len, 0, is_rdonly, addrp));
+  return (CDB___os_map (dbenv, path, fhp, len, 0, is_rdonly, addrp));
 #else
-  COMPQUIET(dbenv, NULL);
+  COMPQUIET (dbenv, NULL);
   return (EINVAL);
 #endif
 }
@@ -211,25 +216,25 @@ CDB___os_mapfile(dbenv, path, fhp, len, is_rdonly, addrp)
  * PUBLIC: int CDB___os_unmapfile __P((DB_ENV *, void *, size_t));
  */
 int
-CDB___os_unmapfile(dbenv, addr, len)
-  DB_ENV *dbenv;
-  void *addr;
-  size_t len;
+CDB___os_unmapfile (dbenv, addr, len)
+     DB_ENV *dbenv;
+     void *addr;
+     size_t len;
 {
   /* If the user replaced the map call, call through their interface. */
   if (CDB___db_jump.j_unmap != NULL)
-    return (CDB___db_jump.j_unmap(addr, len));
+    return (CDB___db_jump.j_unmap (addr, len));
 
 #ifdef HAVE_MMAP
 #ifdef HAVE_MUNLOCK
-  if (F_ISSET(dbenv, DB_ENV_LOCKDOWN))
-    (void)munlock(addr, len);
+  if (F_ISSET (dbenv, DB_ENV_LOCKDOWN))
+    (void) munlock (addr, len);
 #else
-  COMPQUIET(dbenv, NULL);
+  COMPQUIET (dbenv, NULL);
 #endif
-  return (munmap(addr, len) ? CDB___os_get_errno() : 0);
+  return (munmap (addr, len) ? CDB___os_get_errno () : 0);
 #else
-  COMPQUIET(dbenv, NULL);
+  COMPQUIET (dbenv, NULL);
 
   return (EINVAL);
 #endif
@@ -241,21 +246,20 @@ CDB___os_unmapfile(dbenv, addr, len)
  *  Call the mmap(2) function.
  */
 static int
-CDB___os_map(dbenv, path, fhp, len, is_region, is_rdonly, addrp)
-  DB_ENV *dbenv;
-  char *path;
-  DB_FH *fhp;
-  int is_region, is_rdonly;
-  size_t len;
-  void **addrp;
+CDB___os_map (dbenv, path, fhp, len, is_region, is_rdonly, addrp)
+     DB_ENV *dbenv;
+     char *path;
+     DB_FH *fhp;
+     int is_region, is_rdonly;
+     size_t len;
+     void **addrp;
 {
   void *p;
   int flags, prot;
 
   /* If the user replaced the map call, call through their interface. */
   if (CDB___db_jump.j_map != NULL)
-    return (CDB___db_jump.j_map
-        (path, len, is_region, is_rdonly, addrp));
+    return (CDB___db_jump.j_map (path, len, is_region, is_rdonly, addrp));
 
   /*
    * If it's read-only, it's private, and if it's not, it's shared.
@@ -283,7 +287,7 @@ CDB___os_map(dbenv, path, fhp, len, is_region, is_rdonly, addrp)
   if (is_region && !is_rdonly)
     flags |= MAP_HASSEMAPHORE;
 #else
-  COMPQUIET(is_region, 0);
+  COMPQUIET (is_region, 0);
 #endif
 
   prot = PROT_READ | (is_rdonly ? 0 : PROT_WRITE);
@@ -302,17 +306,18 @@ CDB___os_map(dbenv, path, fhp, len, is_region, is_rdonly, addrp)
    * responsibility for on-disk and in-memory synchronization.
    */
 #ifdef VMS
-  if (CDB___os_fsync(fhp) == -1)
-    return(CDB___os_get_errno());
+  if (CDB___os_fsync (fhp) == -1)
+    return (CDB___os_get_errno ());
 #endif
 
   /* MAP_FAILED was not defined in early mmap implementations. */
 #ifndef MAP_FAILED
 #define  MAP_FAILED  -1
 #endif
-  if ((p = mmap(NULL,
-      len, prot, flags, fhp->fd, (off_t)0)) == (void *)MAP_FAILED)
-    return (CDB___os_get_errno());
+  if ((p = mmap (NULL,
+                 len, prot, flags, fhp->fd,
+                 (off_t) 0)) == (void *) MAP_FAILED)
+    return (CDB___os_get_errno ());
 
 #ifdef HAVE_MLOCK
   /*
@@ -324,12 +329,13 @@ CDB___os_map(dbenv, path, fhp, len, is_region, is_rdonly, addrp)
    * to map read-only databases -- we don't want them paged, either, so
    * the call isn't conditional.
    */
-  if (F_ISSET(dbenv, DB_ENV_LOCKDOWN) && mlock(p, len) != 0) {
-    (void)munmap(p, len);
-    return (CDB___os_get_errno());
+  if (F_ISSET (dbenv, DB_ENV_LOCKDOWN) && mlock (p, len) != 0)
+  {
+    (void) munmap (p, len);
+    return (CDB___os_get_errno ());
   }
 #else
-  COMPQUIET(dbenv, NULL);
+  COMPQUIET (dbenv, NULL);
 #endif
 
   *addrp = p;

@@ -15,7 +15,7 @@
 
 #define  MUTEX_FIELDS              \
   pthread_mutex_t mutex;    /* Mutex. */      \
-  pthread_cond_t  cond;    /* Condition variable. */
+  pthread_cond_t  cond;         /* Condition variable. */
 #endif
 
 /*********************************************************************
@@ -40,7 +40,7 @@
 
 #define  MUTEX_FIELDS              \
   lwp_mutex_t mutex;    /* Mutex. */      \
-  lwp_cond_t cond;    /* Condition variable. */
+  lwp_cond_t cond;              /* Condition variable. */
 #endif
 
 /*********************************************************************
@@ -52,7 +52,7 @@
 
 #define  MUTEX_FIELDS              \
   mutex_t mutex;      /* Mutex. */      \
-  cond_t  cond;      /* Condition variable. */
+  cond_t  cond;                 /* Condition variable. */
 #endif
 
 /*********************************************************************
@@ -295,27 +295,28 @@ typedef unsigned char tsl_t;
 #endif
 
 #define  MUTEX_IGNORE    0x001  /* Ignore, no lock required. */
-#define  MUTEX_SELF_BLOCK  0x002  /* Must block self. */
+#define  MUTEX_SELF_BLOCK  0x002        /* Must block self. */
 #define  MUTEX_THREAD    0x004  /* Thread-only mutex. */
 
 /* Mutex. */
-struct __mutex_t {
+struct __mutex_t
+{
 #ifdef  HAVE_MUTEX_THREADS
 #ifdef  MUTEX_FIELDS
   MUTEX_FIELDS
 #else
-  tsl_t  tas;      /* Test and set. */
+  tsl_t tas;                    /* Test and set. */
 #endif
-  u_int32_t spins;    /* Spins before block. */
-  u_int32_t locked;    /* !0 if locked. */
+  u_int32_t spins;              /* Spins before block. */
+  u_int32_t locked;             /* !0 if locked. */
 #else
-  u_int32_t off;      /* Byte offset to lock. */
-  u_int32_t pid;      /* Lock holder: 0 or process pid. */
+  u_int32_t off;                /* Byte offset to lock. */
+  u_int32_t pid;                /* Lock holder: 0 or process pid. */
 #endif
-  u_int32_t mutex_set_wait;  /* Granted after wait. */
-  u_int32_t mutex_set_nowait;  /* Granted without waiting. */
+  u_int32_t mutex_set_wait;     /* Granted after wait. */
+  u_int32_t mutex_set_nowait;   /* Granted without waiting. */
 
-  u_int8_t  flags;    /* MUTEX_XXX */
+  u_int8_t flags;               /* MUTEX_XXX */
 };
 
 /* Redirect calls to the correct functions. */
@@ -367,5 +368,5 @@ struct __mutex_t {
  * region's objects.
  */
 #define  DB_FCNTL_OFF_GEN  0    /* Everything else. */
-#define  DB_FCNTL_OFF_LOCK  1    /* Lock subsystem offset. */
-#define  DB_FCNTL_OFF_MPOOL  2    /* Mpool subsystem offset. */
+#define  DB_FCNTL_OFF_LOCK  1   /* Lock subsystem offset. */
+#define  DB_FCNTL_OFF_MPOOL  2  /* Mpool subsystem offset. */

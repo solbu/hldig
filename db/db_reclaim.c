@@ -31,41 +31,45 @@ static const char sccsid[] = "@(#)db_reclaim.c  11.2 (Sleepycat) 9/10/99";
  * PUBLIC:    db_pgno_t, int (*)(DB *, PAGE *, void *, int *), void *));
  */
 int
-CDB___db_traverse_dup(dbp, pgno, callback, cookie)
-  DB *dbp;
-  db_pgno_t pgno;
-  int (*callback) __P((DB *, PAGE *, void *, int *));
-  void *cookie;
+CDB___db_traverse_dup (dbp, pgno, callback, cookie)
+     DB *dbp;
+     db_pgno_t pgno;
+     int (*callback) __P ((DB *, PAGE *, void *, int *));
+     void *cookie;
 {
   PAGE *p;
   int did_put, i, opgno, ret;
 
-  do {
+  do
+  {
     did_put = 0;
-    if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &p)) != 0)
+    if ((ret = CDB_memp_fget (dbp->mpf, &pgno, 0, &p)) != 0)
       return (ret);
-    pgno = NEXT_PGNO(p);
+    pgno = NEXT_PGNO (p);
 
-    for (i = 0; i < NUM_ENT(p); i++) {
-      if (B_TYPE(GET_BKEYDATA(p, i)->type) == B_OVERFLOW) {
-        opgno = GET_BOVERFLOW(p, i)->pgno;
-        if ((ret = CDB___db_traverse_big(dbp,
-            opgno, callback, cookie)) != 0)
+    for (i = 0; i < NUM_ENT (p); i++)
+    {
+      if (B_TYPE (GET_BKEYDATA (p, i)->type) == B_OVERFLOW)
+      {
+        opgno = GET_BOVERFLOW (p, i)->pgno;
+        if ((ret = CDB___db_traverse_big (dbp, opgno, callback, cookie)) != 0)
           goto err;
       }
     }
 
-    if ((ret = callback(dbp, p, cookie, &did_put)) != 0)
+    if ((ret = callback (dbp, p, cookie, &did_put)) != 0)
       goto err;
 
     if (!did_put)
-      if ((ret = CDB_memp_fput(dbp->mpf, p, 0)) != 0)
+      if ((ret = CDB_memp_fput (dbp->mpf, p, 0)) != 0)
         return (ret);
-  } while (pgno != PGNO_INVALID);
+  }
+  while (pgno != PGNO_INVALID);
 
-  if (0) {
-err:    if (did_put == 0)
-      (void)CDB_memp_fput(dbp->mpf, p, 0);
+  if (0)
+  {
+  err:if (did_put == 0)
+      (void) CDB_memp_fput (dbp->mpf, p, 0);
   }
   return (ret);
 }
@@ -82,24 +86,25 @@ err:    if (did_put == 0)
  * PUBLIC:     db_pgno_t, int (*)(DB *, PAGE *, void *, int *), void *));
  */
 int
-CDB___db_traverse_big(dbp, pgno, callback, cookie)
-  DB *dbp;
-  db_pgno_t pgno;
-  int (*callback) __P((DB *, PAGE *, void *, int *));
-  void *cookie;
+CDB___db_traverse_big (dbp, pgno, callback, cookie)
+     DB *dbp;
+     db_pgno_t pgno;
+     int (*callback) __P ((DB *, PAGE *, void *, int *));
+     void *cookie;
 {
   PAGE *p;
   int did_put, ret;
 
-  do {
+  do
+  {
     did_put = 0;
-    if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &p)) != 0)
+    if ((ret = CDB_memp_fget (dbp->mpf, &pgno, 0, &p)) != 0)
       return (ret);
-    pgno = NEXT_PGNO(p);
-    if ((ret = callback(dbp, p, cookie, &did_put)) == 0 &&
-        !did_put)
-      ret = CDB_memp_fput(dbp->mpf, p, 0);
-  } while (ret == 0 && pgno != PGNO_INVALID);
+    pgno = NEXT_PGNO (p);
+    if ((ret = callback (dbp, p, cookie, &did_put)) == 0 && !did_put)
+      ret = CDB_memp_fput (dbp->mpf, p, 0);
+  }
+  while (ret == 0 && pgno != PGNO_INVALID);
 
   return (ret);
 }
@@ -116,17 +121,17 @@ CDB___db_traverse_big(dbp, pgno, callback, cookie)
  * PUBLIC: int CDB___db_reclaim_callback __P((DB *, PAGE *, void *, int *));
  */
 int
-CDB___db_reclaim_callback(dbp, p, cookie, putp)
-  DB *dbp;
-  PAGE *p;
-  void *cookie;
-  int *putp;
+CDB___db_reclaim_callback (dbp, p, cookie, putp)
+     DB *dbp;
+     PAGE *p;
+     void *cookie;
+     int *putp;
 {
   int ret;
 
-  COMPQUIET(dbp, NULL);
+  COMPQUIET (dbp, NULL);
 
-  if ((ret = CDB___db_free(cookie, p)) != 0)
+  if ((ret = CDB___db_free (cookie, p)) != 0)
     return (ret);
   *putp = 1;
 

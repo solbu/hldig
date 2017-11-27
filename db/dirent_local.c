@@ -20,7 +20,7 @@
  * 
  */
 
-#ifdef _MSC_VER /* _WIN32 */
+#ifdef _MSC_VER                 /* _WIN32 */
 
 #include <windows.h>
 #include <iostream.h>
@@ -35,26 +35,28 @@
  * Open a directory handle 
  */
 DIR *
-opendir(const char *name)
+opendir (const char *name)
 {
-    DIR *dirp;
-    char dirpath[256];
+  DIR *dirp;
+  char dirpath[256];
 
-    if ((dirp=malloc(sizeof(struct DIRstruct))) == NULL) {
-        errno = ENOMEM;
-        return(NULL);
-    }
+  if ((dirp = malloc (sizeof (struct DIRstruct))) == NULL)
+  {
+    errno = ENOMEM;
+    return (NULL);
+  }
 
-    sprintf(dirpath, "%s/*", name);
-    if ((dirp->filehand = FindFirstFile(dirpath, &dirp->finddata)) ==
-        INVALID_HANDLE_VALUE) {
-        errno = ENOENT;
-        return(NULL);
-    }
+  sprintf (dirpath, "%s/*", name);
+  if ((dirp->filehand = FindFirstFile (dirpath, &dirp->finddata)) ==
+      INVALID_HANDLE_VALUE)
+  {
+    errno = ENOENT;
+    return (NULL);
+  }
 
-    dirp->priv = 1;
+  dirp->priv = 1;
 
-    return(dirp);
+  return (dirp);
 }
 
 
@@ -62,26 +64,28 @@ opendir(const char *name)
  * Return the next file for a directory handle
  */
 struct dirent *
-readdir(DIR *dirp)
+readdir (DIR * dirp)
 {
-    if (!dirp) {
-        errno = EBADF;
-        return(NULL);
-    }
+  if (!dirp)
+  {
+    errno = EBADF;
+    return (NULL);
+  }
 
-    if (dirp->priv) {
-        /* this is the first time, so return the results of FindFirstFile */
-        dirp->priv = 0;
-        strcpy(dirp->file.d_name, dirp->finddata.cFileName);
-        return(&dirp->file);
-    }
+  if (dirp->priv)
+  {
+    /* this is the first time, so return the results of FindFirstFile */
+    dirp->priv = 0;
+    strcpy (dirp->file.d_name, dirp->finddata.cFileName);
+    return (&dirp->file);
+  }
 
-    /* this is a subsequent call so get next file */
-    if (!FindNextFile(dirp->filehand, &dirp->finddata)) 
-        return(NULL);
+  /* this is a subsequent call so get next file */
+  if (!FindNextFile (dirp->filehand, &dirp->finddata))
+    return (NULL);
 
-    strcpy(dirp->file.d_name, dirp->finddata.cFileName);
-    return(&dirp->file);
+  strcpy (dirp->file.d_name, dirp->finddata.cFileName);
+  return (&dirp->file);
 }
 
 
@@ -89,18 +93,19 @@ readdir(DIR *dirp)
  * Close directory handle
  */
 int
-closedir(DIR *dirp)
+closedir (DIR * dirp)
 {
-    if (!dirp) {
-        errno = EBADF;
-        return(-1);
-    }
+  if (!dirp)
+  {
+    errno = EBADF;
+    return (-1);
+  }
 
-    FindClose(dirp->filehand);
+  FindClose (dirp->filehand);
 
-    free(dirp);
+  free (dirp);
 
-    return(0);
+  return (0);
 }
 
 #endif /* _MSC_VER (WIN32) */

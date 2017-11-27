@@ -64,23 +64,26 @@ static const char sccsid[] = "@(#)db.c  11.31 (Sleepycat) 11/12/99";
 #include "mp.h"
 #include "qam.h"
 
-static int CDB___db_dbopen __P((DB *, const char *, u_int32_t, int, db_pgno_t));
-static int CDB___db_dbenv_setup __P((DB *, const char *, u_int32_t));
-static int CDB___db_file_setup __P((DB *,
-         const char *, u_int32_t, int, db_pgno_t, int *));
-static int CDB___db_master_open __P((DB_ENV *,
-         DB_TXN *, const char *, u_int32_t, int, DB **));
-static int CDB___db_master_update __P((DB *,
-         const char *, u_int32_t, db_pgno_t *, int, u_int32_t));
-static int CDB___db_metabegin __P((DB *, DB_LOCK *));
-static int CDB___db_metaend __P((DB *,
-         DB_LOCK *, int, int (*)(DB *, void *), void *));
-static int CDB___db_refresh __P((DB *));
-static int CDB___db_remove_callback __P((DB *, void *));
-static int CDB___db_set_pgsize __P((DB *, DB_FH *, char *));
-static int CDB___db_subdb_remove __P((DB *, const char *, const char *));
+static int CDB___db_dbopen
+__P ((DB *, const char *, u_int32_t, int, db_pgno_t));
+static int CDB___db_dbenv_setup __P ((DB *, const char *, u_int32_t));
+static int CDB___db_file_setup __P ((DB *,
+                                     const char *, u_int32_t, int, db_pgno_t,
+                                     int *));
+static int CDB___db_master_open
+__P ((DB_ENV *, DB_TXN *, const char *, u_int32_t, int, DB **));
+static int CDB___db_master_update
+__P ((DB *, const char *, u_int32_t, db_pgno_t *, int, u_int32_t));
+static int CDB___db_metabegin __P ((DB *, DB_LOCK *));
+static int CDB___db_metaend __P ((DB *,
+                                  DB_LOCK *, int, int (*)(DB *, void *),
+                                  void *));
+static int CDB___db_refresh __P ((DB *));
+static int CDB___db_remove_callback __P ((DB *, void *));
+static int CDB___db_set_pgsize __P ((DB *, DB_FH *, char *));
+static int CDB___db_subdb_remove __P ((DB *, const char *, const char *));
 #if     CONFIG_TEST
-static void __db_makecopy __P((const char *, const char *));
+static void __db_makecopy __P ((const char *, const char *));
 #endif
 
 /*
@@ -91,12 +94,12 @@ static void __db_makecopy __P((const char *, const char *));
  * PUBLIC:     const char *, const char *, DBTYPE, u_int32_t, int));
  */
 int
-CDB___db_open(dbp, name, subdb, type, flags, mode)
-  DB *dbp;
-  const char *name, *subdb;
-  DBTYPE type;
-  u_int32_t flags;
-  int mode;
+CDB___db_open (dbp, name, subdb, type, flags, mode)
+     DB *dbp;
+     const char *name, *subdb;
+     DBTYPE type;
+     u_int32_t flags;
+     int mode;
 {
   DB_ENV *dbenv;
   DB_LOCK open_lock;
@@ -112,19 +115,20 @@ CDB___db_open(dbp, name, subdb, type, flags, mode)
 #define  OKFLAGS                \
     (DB_CREATE | DB_EXCL | DB_FCNTL_LOCKING |        \
     DB_NOMMAP | DB_RDONLY | DB_THREAD | DB_TRUNCATE | DB_COMPRESS)
-  if ((ret = CDB___db_fchk(dbenv, "DB->open", flags, OKFLAGS)) != 0)
+  if ((ret = CDB___db_fchk (dbenv, "DB->open", flags, OKFLAGS)) != 0)
     return (ret);
-  if (LF_ISSET(DB_EXCL) && !LF_ISSET(DB_CREATE))
-    return (CDB___db_ferr(dbenv, "DB->open", 1));
-  if (LF_ISSET(DB_RDONLY) && LF_ISSET(DB_CREATE))
-    return (CDB___db_ferr(dbenv, "DB->open", 1));
-   /*
-    * Transparent I/O compression does not work on mmap'd files.
-    */
-   if(LF_ISSET(DB_COMPRESS))
-     LF_SET(DB_NOMMAP);
+  if (LF_ISSET (DB_EXCL) && !LF_ISSET (DB_CREATE))
+    return (CDB___db_ferr (dbenv, "DB->open", 1));
+  if (LF_ISSET (DB_RDONLY) && LF_ISSET (DB_CREATE))
+    return (CDB___db_ferr (dbenv, "DB->open", 1));
+  /*
+   * Transparent I/O compression does not work on mmap'd files.
+   */
+  if (LF_ISSET (DB_COMPRESS))
+    LF_SET (DB_NOMMAP);
 
-  switch (type) {
+  switch (type)
+  {
   case DB_UNKNOWN:
     ok_flags = 0;
     break;
@@ -141,15 +145,16 @@ CDB___db_open(dbp, name, subdb, type, flags, mode)
     ok_flags = DB_OK_RECNO;
     break;
   default:
-    CDB___db_err(dbp->dbenv, "unknown type: %lu", type);
+    CDB___db_err (dbp->dbenv, "unknown type: %lu", type);
     return (EINVAL);
   }
   if (ok_flags)
-    DB_ILLEGAL_METHOD(dbp, ok_flags);
+    DB_ILLEGAL_METHOD (dbp, ok_flags);
 
   /* The environment may have been created, but never opened. */
-  if (!F_ISSET(dbenv, DB_ENV_DBLOCAL | DB_ENV_OPEN_CALLED)) {
-    CDB___db_err(dbenv, "environment not yet opened");
+  if (!F_ISSET (dbenv, DB_ENV_DBLOCAL | DB_ENV_OPEN_CALLED))
+  {
+    CDB___db_err (dbenv, "environment not yet opened");
     return (EINVAL);
   }
 
@@ -158,8 +163,9 @@ CDB___db_open(dbp, name, subdb, type, flags, mode)
    * mpool, and DB would create a private one behind the scenes.  This
    * no longer works.
    */
-  if (!F_ISSET(dbenv, DB_ENV_DBLOCAL) && dbenv->mp_handle == NULL) {
-    CDB___db_err(dbenv, "environment did not include a memory pool.");
+  if (!F_ISSET (dbenv, DB_ENV_DBLOCAL) && dbenv->mp_handle == NULL)
+  {
+    CDB___db_err (dbenv, "environment did not include a memory pool.");
     return (EINVAL);
   }
 
@@ -167,40 +173,45 @@ CDB___db_open(dbp, name, subdb, type, flags, mode)
    * You can't specify threads during DB->open if subsystems in the
    * environment weren't configured with them.
    */
-  if (LF_ISSET(DB_THREAD) &&
-      !F_ISSET(dbenv, DB_ENV_DBLOCAL | DB_ENV_THREAD)) {
-    CDB___db_err(dbenv, "environment not created using DB_THREAD");
+  if (LF_ISSET (DB_THREAD) &&
+      !F_ISSET (dbenv, DB_ENV_DBLOCAL | DB_ENV_THREAD))
+  {
+    CDB___db_err (dbenv, "environment not created using DB_THREAD");
     return (EINVAL);
   }
 
   /* DB_TRUNCATE is not transaction recoverable. */
-  if (LF_ISSET(DB_TRUNCATE) && F_ISSET(dbenv, DB_ENV_TXN)) {
-    CDB___db_err(dbenv,
-      "DB_TRUNCATE illegal in a transaction protected environment");
+  if (LF_ISSET (DB_TRUNCATE) && F_ISSET (dbenv, DB_ENV_TXN))
+  {
+    CDB___db_err (dbenv,
+                  "DB_TRUNCATE illegal in a transaction protected environment");
     return (EINVAL);
   }
 
   /* Subdatabase checks. */
-  if (subdb != NULL) {
+  if (subdb != NULL)
+  {
     /* Subdatabases must be created in named files. */
-    if (name == NULL) {
-      CDB___db_err(dbenv,
-        "subdatabases cannot be created in temporary files");
+    if (name == NULL)
+    {
+      CDB___db_err (dbenv,
+                    "subdatabases cannot be created in temporary files");
       return (EINVAL);
     }
 
     /* QAM can't be done as a subdatabase. */
-    if (type == DB_QUEUE) {
-      CDB___db_err(dbenv, "subdatabases cannot be queue files");
+    if (type == DB_QUEUE)
+    {
+      CDB___db_err (dbenv, "subdatabases cannot be queue files");
       return (EINVAL);
     }
   }
 
   /* Convert any DB->open flags. */
-  if (LF_ISSET(DB_RDONLY))
-    F_SET(dbp, DB_AM_RDONLY);
-  if (LF_ISSET(DB_COMPRESS))
-    F_SET(dbp, DB_AM_CMPR);
+  if (LF_ISSET (DB_RDONLY))
+    F_SET (dbp, DB_AM_RDONLY);
+  if (LF_ISSET (DB_COMPRESS))
+    F_SET (dbp, DB_AM_CMPR);
 
   /* Fill in the type. */
   dbp->type = type;
@@ -209,8 +220,8 @@ CDB___db_open(dbp, name, subdb, type, flags, mode)
    * If we're potentially creating a database, wrap the open inside of
    * a transaction.
    */
-  if (F_ISSET(dbenv, DB_ENV_TXN) && LF_ISSET(DB_CREATE))
-    if ((ret = CDB___db_metabegin(dbp, &open_lock)) != 0)
+  if (F_ISSET (dbenv, DB_ENV_TXN) && LF_ISSET (DB_CREATE))
+    if ((ret = CDB___db_metabegin (dbp, &open_lock)) != 0)
       return (ret);
 
   /*
@@ -221,32 +232,34 @@ CDB___db_open(dbp, name, subdb, type, flags, mode)
    */
   if (subdb == NULL)
     meta_pgno = PGNO_BASE_MD;
-  else {
+  else
+  {
     /*
      * Open the master database, optionally updating it, and
      * retrieving the metadata page number.
      */
-    if ((ret = CDB___db_master_open(dbp->dbenv, dbp->open_txn,
-        name, flags, mode, &mdbp)) != 0)
+    if ((ret = CDB___db_master_open (dbp->dbenv, dbp->open_txn,
+                                     name, flags, mode, &mdbp)) != 0)
       goto err;
 
     /* Copy the page size and file id from the master. */
     dbp->pgsize = mdbp->pgsize;
-    F_SET(dbp, DB_AM_SUBDB);
-    memcpy(dbp->fileid, mdbp->fileid, DB_FILE_ID_LEN);
+    F_SET (dbp, DB_AM_SUBDB);
+    memcpy (dbp->fileid, mdbp->fileid, DB_FILE_ID_LEN);
 
-    if ((ret = CDB___db_master_update(mdbp,
-        subdb, type, &meta_pgno, 0, flags)) != 0)
+    if ((ret = CDB___db_master_update (mdbp,
+                                       subdb, type, &meta_pgno, 0,
+                                       flags)) != 0)
       goto err;
 
     /*
      * Clear the exclusive open and truncation flags, they only
      * apply to the open of the master database.
      */
-    LF_CLR(DB_EXCL | DB_TRUNCATE);
+    LF_CLR (DB_EXCL | DB_TRUNCATE);
   }
 
-  ret = CDB___db_dbopen(dbp, name, flags, mode, meta_pgno);
+  ret = CDB___db_dbopen (dbp, name, flags, mode, meta_pgno);
 
   /*
    * You can open the database that describes the subdatabases in the
@@ -257,36 +270,39 @@ CDB___db_open(dbp, name, subdb, type, flags, mode)
    */
   if (subdb == NULL &&
       (dbenv->lg_handle == NULL ||
-      !F_ISSET((DB_LOG *)(dbenv->lg_handle), DBC_RECOVER)) &&
-      !LF_ISSET(DB_RDONLY) && F_ISSET(dbp, DB_AM_SUBDB)) {
-    CDB___db_err(dbenv,
-    "databases containing subdatabase lists may only be opened read-only");
+       !F_ISSET ((DB_LOG *) (dbenv->lg_handle), DBC_RECOVER)) &&
+      !LF_ISSET (DB_RDONLY) && F_ISSET (dbp, DB_AM_SUBDB))
+  {
+    CDB___db_err (dbenv,
+                  "databases containing subdatabase lists may only be opened read-only");
     ret = EINVAL;
     goto err;
   }
 
-err:  /*
-   * End any transaction, committing if we were successful, aborting
-   * otherwise.
-   */
-  if (F_ISSET(dbenv, DB_ENV_TXN) && LF_ISSET(DB_CREATE))
-    if ((t_ret = CDB___db_metaend(dbp,
-        &open_lock, ret == 0, NULL, NULL)) != 0 && ret == 0)
+err:                           /*
+                                 * End any transaction, committing if we were successful, aborting
+                                 * otherwise.
+                                 */
+  if (F_ISSET (dbenv, DB_ENV_TXN) && LF_ISSET (DB_CREATE))
+    if ((t_ret = CDB___db_metaend (dbp,
+                                   &open_lock, ret == 0, NULL, NULL)) != 0
+        && ret == 0)
       ret = t_ret;
 
   /* If we were successful, don't discard the file on close. */
   if (ret == 0)
-    F_CLR(dbp, DB_AM_DISCARD);
+    F_CLR (dbp, DB_AM_DISCARD);
 
   /* If we were unsuccessful, destroy the DB handle. */
   if (ret != 0)
-    CDB___db_refresh(dbp);
+    CDB___db_refresh (dbp);
 
-  if (mdbp != NULL) {
+  if (mdbp != NULL)
+  {
     /* If we were successful, don't discard the file on close. */
     if (ret == 0)
-      F_CLR(mdbp, DB_AM_DISCARD);
-    if ((t_ret = mdbp->close(mdbp, 0)) != 0 && ret == 0)
+      F_CLR (mdbp, DB_AM_DISCARD);
+    if ((t_ret = mdbp->close (mdbp, 0)) != 0 && ret == 0)
       ret = t_ret;
   }
 
@@ -298,12 +314,12 @@ err:  /*
  *  Open a database.
  */
 static int
-CDB___db_dbopen(dbp, name, flags, mode, meta_pgno)
-  DB *dbp;
-  const char *name;
-  u_int32_t flags;
-  int mode;
-  db_pgno_t meta_pgno;
+CDB___db_dbopen (dbp, name, flags, mode, meta_pgno)
+     DB *dbp;
+     const char *name;
+     u_int32_t flags;
+     int mode;
+     db_pgno_t meta_pgno;
 {
   DB_ENV *dbenv;
   int ret;
@@ -312,12 +328,13 @@ CDB___db_dbopen(dbp, name, flags, mode, meta_pgno)
   dbenv = dbp->dbenv;
 
   /* Set up the underlying file. */
-  if ((ret = CDB___db_file_setup(dbp,
-      name, flags, mode, meta_pgno, &zero_length)) != 0)
+  if ((ret = CDB___db_file_setup (dbp,
+                                  name, flags, mode, meta_pgno,
+                                  &zero_length)) != 0)
     return (ret);
 
   /* Set up the underlying environment. */
-  if ((ret = CDB___db_dbenv_setup(dbp, name, flags)) != 0)
+  if ((ret = CDB___db_dbenv_setup (dbp, name, flags)) != 0)
     return (ret);
 
   /*
@@ -328,26 +345,27 @@ CDB___db_dbopen(dbp, name, flags, mode, meta_pgno)
    * may want to do things like acquire cursors, so the open flag has
    * to be set before calling them.)
    */
-  F_SET(dbp, DB_OPEN_CALLED);
+  F_SET (dbp, DB_OPEN_CALLED);
 
   if (zero_length)
     return (0);
 
-  switch (dbp->type) {
+  switch (dbp->type)
+  {
   case DB_BTREE:
-    ret = CDB___bam_open(dbp, name, meta_pgno);
+    ret = CDB___bam_open (dbp, name, meta_pgno);
     break;
   case DB_HASH:
-    ret = CDB___ham_open(dbp, name, meta_pgno);
+    ret = CDB___ham_open (dbp, name, meta_pgno);
     break;
   case DB_RECNO:
-    ret = CDB___ram_open(dbp, name, meta_pgno);
+    ret = CDB___ram_open (dbp, name, meta_pgno);
     break;
   case DB_QUEUE:
-    ret = CDB___qam_open(dbp, name, meta_pgno);
+    ret = CDB___qam_open (dbp, name, meta_pgno);
     break;
   case DB_UNKNOWN:
-    ret = EINVAL;    /* Shouldn't be possible. */
+    ret = EINVAL;               /* Shouldn't be possible. */
     break;
   }
   return (ret);
@@ -358,13 +376,13 @@ CDB___db_dbopen(dbp, name, flags, mode, meta_pgno)
  *  Open up a handle on a master database.
  */
 static int
-CDB___db_master_open(dbenv, txn, name, flags, mode, dbpp)
-  DB_ENV *dbenv;
-  DB_TXN *txn;
-  const char *name;
-  u_int32_t flags;
-  int mode;
-  DB **dbpp;
+CDB___db_master_open (dbenv, txn, name, flags, mode, dbpp)
+     DB_ENV *dbenv;
+     DB_TXN *txn;
+     const char *name;
+     u_int32_t flags;
+     int mode;
+     DB **dbpp;
 {
   DB *dbp;
   int ret;
@@ -372,8 +390,9 @@ CDB___db_master_open(dbenv, txn, name, flags, mode, dbpp)
   /*
    * Open up a handle on the main database.
    */
-  if ((ret = CDB_db_create(
-      &dbp, F_ISSET(dbenv, DB_ENV_DBLOCAL) ? NULL : dbenv, 0)) != 0)
+  if ((ret =
+       CDB_db_create (&dbp, F_ISSET (dbenv, DB_ENV_DBLOCAL) ? NULL : dbenv,
+                      0)) != 0)
     return (ret);
   dbp->open_txn = txn;
 
@@ -382,9 +401,9 @@ CDB___db_master_open(dbenv, txn, name, flags, mode, dbpp)
    * subdatabases.
    */
   dbp->type = DB_BTREE;
-  F_SET(dbp, DB_AM_SUBDB);
+  F_SET (dbp, DB_AM_SUBDB);
 
-  ret = CDB___db_dbopen(dbp, name, flags, mode, PGNO_BASE_MD);
+  ret = CDB___db_dbopen (dbp, name, flags, mode, PGNO_BASE_MD);
 
   *dbpp = dbp;
   return (ret);
@@ -395,13 +414,13 @@ CDB___db_master_open(dbenv, txn, name, flags, mode, dbpp)
  *  Add/Remove a subdatabase from a master database.
  */
 static int
-CDB___db_master_update(mdbp, subdb, type, meta_pgnop, is_remove, flags)
-  DB *mdbp;
-  const char *subdb;
-  u_int32_t type;
-  db_pgno_t *meta_pgnop;    /* !NULL if creating/reading. */
-  int is_remove;
-  u_int32_t flags;
+CDB___db_master_update (mdbp, subdb, type, meta_pgnop, is_remove, flags)
+     DB *mdbp;
+     const char *subdb;
+     u_int32_t type;
+     db_pgno_t *meta_pgnop;     /* !NULL if creating/reading. */
+     int is_remove;
+     u_int32_t flags;
 {
   DBC *dbc;
   DBT key, data;
@@ -412,7 +431,7 @@ CDB___db_master_update(mdbp, subdb, type, meta_pgnop, is_remove, flags)
   p = NULL;
 
   /* Open up a cursor. */
-  if ((ret = mdbp->cursor(mdbp, mdbp->open_txn, &dbc, 0)) != 0)
+  if ((ret = mdbp->cursor (mdbp, mdbp->open_txn, &dbc, 0)) != 0)
     goto err;
 
   /*
@@ -424,43 +443,48 @@ CDB___db_master_update(mdbp, subdb, type, meta_pgnop, is_remove, flags)
    * !!!
    * We don't include the name's nul termination in the database.
    */
-  memset(&key, 0, sizeof(key));
-  memset(&data, 0, sizeof(data));
-  key.data = (char *)subdb;
-  key.size = strlen(subdb);
-  ret = dbc->c_get(dbc, &key, &data, DB_SET |
-      (meta_pgnop == NULL || (F_ISSET(
-      mdbp->dbenv, DB_ENV_LOCKING) && LF_ISSET(DB_CREATE)) ? DB_RMW : 0));
+  memset (&key, 0, sizeof (key));
+  memset (&data, 0, sizeof (data));
+  key.data = (char *) subdb;
+  key.size = strlen (subdb);
+  ret = dbc->c_get (dbc, &key, &data, DB_SET |
+                    (meta_pgnop == NULL
+                     || (F_ISSET (mdbp->dbenv, DB_ENV_LOCKING)
+                         && LF_ISSET (DB_CREATE)) ? DB_RMW : 0));
 
-  if (is_remove) {
+  if (is_remove)
+  {
     /* We should have found something if we're removing it. */
     if (ret != 0)
       goto err;
 
-    memcpy(meta_pgnop, data.data, sizeof(db_pgno_t));
+    memcpy (meta_pgnop, data.data, sizeof (db_pgno_t));
 
     /* Delete the subdatabase entry. */
-    if ((ret = dbc->c_del(dbc, 0)) != 0)
+    if ((ret = dbc->c_del (dbc, 0)) != 0)
       goto err;
 
-    if ((ret = CDB_memp_fget(mdbp->mpf, meta_pgnop, 0, &p)) != 0)
+    if ((ret = CDB_memp_fget (mdbp->mpf, meta_pgnop, 0, &p)) != 0)
       goto err;
 
     /* Free and put the page. */
-    if ((ret = CDB___db_free(dbc, p)) != 0)
+    if ((ret = CDB___db_free (dbc, p)) != 0)
       goto err;
     p = NULL;
-  } else {
+  }
+  else
+  {
     /*
      * Get the subdatabase information.  If it already exists,
      * copy out the page number and we're done.
      */
-    switch (ret) {
+    switch (ret)
+    {
     case 0:
-      memcpy(meta_pgnop, data.data, sizeof(db_pgno_t));
+      memcpy (meta_pgnop, data.data, sizeof (db_pgno_t));
       goto done;
     case DB_NOTFOUND:
-      if (LF_ISSET(DB_CREATE))
+      if (LF_ISSET (DB_CREATE))
         break;
       ret = ENOENT;
       goto err;
@@ -468,26 +492,28 @@ CDB___db_master_update(mdbp, subdb, type, meta_pgnop, is_remove, flags)
       goto err;
     }
 
-    if ((ret = CDB___db_new(dbc,
-        type == DB_HASH ? P_HASHMETA : P_BTREEMETA, &p)) != 0)
+    if ((ret = CDB___db_new (dbc,
+                             type == DB_HASH ? P_HASHMETA : P_BTREEMETA,
+                             &p)) != 0)
       goto err;
-    data.data = &PGNO(p);
-    data.size = sizeof(db_pgno_t);
-    if ((ret = dbc->c_put(dbc, &key, &data, DB_KEYLAST)) != 0)
+    data.data = &PGNO (p);
+    data.size = sizeof (db_pgno_t);
+    if ((ret = dbc->c_put (dbc, &key, &data, DB_KEYLAST)) != 0)
       goto err;
 
-    *meta_pgnop = PGNO(p);
+    *meta_pgnop = PGNO (p);
   }
 
 err:
-done:  /*
-   * If we allocated a page: if we're successful, mark the page dirty
-   * and return it to the cache, otherwise, discard/free it.
-   */
-  if (p != NULL) {
-    if (ret == 0) {
-      if ((t_ret =
-          CDB_memp_fput(mdbp->mpf, p, DB_MPOOL_DIRTY)) != 0)
+done:                          /*
+                                 * If we allocated a page: if we're successful, mark the page dirty
+                                 * and return it to the cache, otherwise, discard/free it.
+                                 */
+  if (p != NULL)
+  {
+    if (ret == 0)
+    {
+      if ((t_ret = CDB_memp_fput (mdbp->mpf, p, DB_MPOOL_DIRTY)) != 0)
         ret = t_ret;
       /*
        * Since we cannot close this file until after
@@ -495,14 +521,15 @@ done:  /*
        * pages, because we'll read these directly from
        * disk to open.
        */
-      if ((t_ret = mdbp->sync(mdbp, 0)) != 0 && ret == 0)
+      if ((t_ret = mdbp->sync (mdbp, 0)) != 0 && ret == 0)
         ret = t_ret;
-    } else
-      (void)CDB___db_free(dbc, p);
+    }
+    else
+      (void) CDB___db_free (dbc, p);
   }
 
   /* Discard the cursor. */
-  if (dbc != NULL && (t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+  if (dbc != NULL && (t_ret = dbc->c_close (dbc)) != 0 && ret == 0)
     ret = t_ret;
 
   return (ret);
@@ -513,10 +540,10 @@ done:  /*
  *  Set up the underlying environment during a db_open.
  */
 static int
-CDB___db_dbenv_setup(dbp, name, flags)
-  DB *dbp;
-  const char *name;
-  u_int32_t flags;
+CDB___db_dbenv_setup (dbp, name, flags)
+     DB *dbp;
+     const char *name;
+     u_int32_t flags;
 {
   DB_ENV *dbenv;
   DBT pgcookie;
@@ -527,22 +554,26 @@ CDB___db_dbenv_setup(dbp, name, flags)
   dbenv = dbp->dbenv;
 
   /* If the environment is local, it's time to create it. */
-  if (F_ISSET(dbenv, DB_ENV_DBLOCAL)) {
+  if (F_ISSET (dbenv, DB_ENV_DBLOCAL))
+  {
     /* Make sure we have at least DB_MINCACHE pages in our cache. */
     if (dbenv->mp_gbytes == 0 &&
         dbenv->mp_bytes < dbp->pgsize * DB_MINPAGECACHE &&
-        (ret = dbenv->set_cachesize(
-        dbenv, 0, dbp->pgsize * DB_MINPAGECACHE, 0)) != 0)
+        (ret =
+         dbenv->set_cachesize (dbenv, 0, dbp->pgsize * DB_MINPAGECACHE,
+                               0)) != 0)
       return (ret);
 
-    if ((ret = dbenv->open(dbenv, NULL, NULL, DB_CREATE |
-        DB_INIT_MPOOL | DB_PRIVATE | LF_ISSET(DB_THREAD), 0)) != 0)
+    if ((ret = dbenv->open (dbenv, NULL, NULL, DB_CREATE |
+                            DB_INIT_MPOOL | DB_PRIVATE | LF_ISSET (DB_THREAD),
+                            0)) != 0)
       return (ret);
   }
 
   /* Register DB's pgin/pgout functions. */
   if ((ret =
-      CDB_memp_register(dbenv, DB_FTYPE_SET, CDB___db_pgin, CDB___db_pgout)) != 0)
+       CDB_memp_register (dbenv, DB_FTYPE_SET, CDB___db_pgin,
+                          CDB___db_pgout)) != 0)
     return (ret);
 
   /*
@@ -555,12 +586,12 @@ CDB___db_dbenv_setup(dbp, name, flags)
    * need to page the file in and out.  This has to be right -- we can't
    * mmap files that are being paged in and out.
    */
-  memset(&finfo, 0, sizeof(finfo));
-  switch (dbp->type) {
+  memset (&finfo, 0, sizeof (finfo));
+  switch (dbp->type)
+  {
   case DB_BTREE:
   case DB_RECNO:
-    finfo.ftype =
-        F_ISSET(dbp, DB_AM_SWAP) ? DB_FTYPE_SET : DB_FTYPE_NOTSET;
+    finfo.ftype = F_ISSET (dbp, DB_AM_SWAP) ? DB_FTYPE_SET : DB_FTYPE_NOTSET;
     finfo.clear_len = DB_PAGE_DB_LEN;
     break;
   case DB_HASH:
@@ -568,17 +599,16 @@ CDB___db_dbenv_setup(dbp, name, flags)
     finfo.clear_len = DB_PAGE_DB_LEN;
     break;
   case DB_QUEUE:
-    finfo.ftype =
-        F_ISSET(dbp, DB_AM_SWAP) ? DB_FTYPE_SET : DB_FTYPE_NOTSET;
+    finfo.ftype = F_ISSET (dbp, DB_AM_SWAP) ? DB_FTYPE_SET : DB_FTYPE_NOTSET;
     finfo.clear_len = DB_PAGE_QUEUE_LEN;
     break;
   case DB_UNKNOWN:
-    return (EINVAL);  /* Shouldn't be possible. */
+    return (EINVAL);            /* Shouldn't be possible. */
   }
   /*
    * Better compression is achieved if the page does not contain random data.
    */
-  if(F_ISSET(dbp, DB_AM_CMPR))
+  if (F_ISSET (dbp, DB_AM_CMPR))
     finfo.clear_len = 0;
 
   finfo.pgcookie = &pgcookie;
@@ -590,36 +620,37 @@ CDB___db_dbenv_setup(dbp, name, flags)
    * Forbiding byte swap when compression is enabled
    * makes things simpler for the compression.
    */
-  if(F_ISSET(dbp, DB_AM_SWAP) && LF_ISSET(DB_COMPRESS))
+  if (F_ISSET (dbp, DB_AM_SWAP) && LF_ISSET (DB_COMPRESS))
     return (EINVAL);
-  pginfo.needswap = F_ISSET(dbp, DB_AM_SWAP);
+  pginfo.needswap = F_ISSET (dbp, DB_AM_SWAP);
   pgcookie.data = &pginfo;
-  pgcookie.size = sizeof(DB_PGINFO);
+  pgcookie.size = sizeof (DB_PGINFO);
 
-  if ((ret = CDB_memp_fopen(dbenv, name,
-      LF_ISSET(DB_RDONLY | DB_NOMMAP | DB_COMPRESS),
-      0666, dbp->pgsize, &finfo, &dbp->mpf)) != 0)
+  if ((ret = CDB_memp_fopen (dbenv, name,
+                             LF_ISSET (DB_RDONLY | DB_NOMMAP | DB_COMPRESS),
+                             0666, dbp->pgsize, &finfo, &dbp->mpf)) != 0)
     return (ret);
 
   /*
    * We may need a per-thread mutex.  Allocate it from the environment
    * region, there's supposed to be extra space there for that purpose.
    */
-  if (LF_ISSET(DB_THREAD)) {
-    if ((ret = CDB___db_mutex_alloc(
-        dbenv, dbenv->reginfo, (MUTEX **)&dbp->mutexp)) != 0)
+  if (LF_ISSET (DB_THREAD))
+  {
+    if ((ret =
+         CDB___db_mutex_alloc (dbenv, dbenv->reginfo,
+                               (MUTEX **) & dbp->mutexp)) != 0)
       return (ret);
-    if ((ret = __db_mutex_init(
-        dbenv, dbp->mutexp, 0, MUTEX_THREAD)) != 0)
+    if ((ret = __db_mutex_init (dbenv, dbp->mutexp, 0, MUTEX_THREAD)) != 0)
       return (ret);
   }
 
   /* Get a log file id. */
-  if (F_ISSET(dbenv, DB_ENV_LOGGING) &&
+  if (F_ISSET (dbenv, DB_ENV_LOGGING) &&
 #if !defined(DEBUG_ROP)
-      !F_ISSET(dbp, DB_AM_RDONLY) &&
+      !F_ISSET (dbp, DB_AM_RDONLY) &&
 #endif
-      (ret = CDB_log_register(dbenv, dbp, name, &dbp->log_fileid)) != 0)
+      (ret = CDB_log_register (dbenv, dbp, name, &dbp->log_fileid)) != 0)
     return (ret);
 
   return (0);
@@ -631,13 +662,13 @@ CDB___db_dbenv_setup(dbp, name, flags)
  *  Read the database metadata and resolve it with our arguments.
  */
 static int
-CDB___db_file_setup(dbp, name, flags, mode, meta_pgno, zerop)
-  DB *dbp;
-  const char *name;
-  u_int32_t flags;
-  int mode;
-  db_pgno_t meta_pgno;
-  int *zerop;
+CDB___db_file_setup (dbp, name, flags, mode, meta_pgno, zerop)
+     DB *dbp;
+     const char *name;
+     u_int32_t flags;
+     int mode;
+     db_pgno_t meta_pgno;
+     int *zerop;
 {
   DBT namedbt;
   DB_ENV *dbenv;
@@ -660,12 +691,14 @@ CDB___db_file_setup(dbp, name, flags, mode, meta_pgno, zerop)
    * we can't close it because that would discard the caller's lock.
    * Save it until we close the DB handle.
    */
-  if (LF_ISSET(DB_FCNTL_LOCKING)) {
-    if ((ret = CDB___os_malloc(sizeof(*fhp), NULL, &fhp)) != 0)
+  if (LF_ISSET (DB_FCNTL_LOCKING))
+  {
+    if ((ret = CDB___os_malloc (sizeof (*fhp), NULL, &fhp)) != 0)
       return (ret);
-  } else
+  }
+  else
     fhp = &fh;
-  F_CLR(fhp, DB_FH_VALID);
+  F_CLR (fhp, DB_FH_VALID);
 
   /*
    * If the file is in-memory, set up is simple.  Otherwise, do the
@@ -701,12 +734,13 @@ CDB___db_file_setup(dbp, name, flags, mode, meta_pgno, zerop)
    *
    * Get the real file name.
    */
-  if (name == NULL) {
-    F_SET(dbp, DB_AM_INMEM);
+  if (name == NULL)
+  {
+    F_SET (dbp, DB_AM_INMEM);
 
-    if (dbp->type == DB_UNKNOWN) {
-      CDB___db_err(dbenv,
-          "DBTYPE of unknown without existing file");
+    if (dbp->type == DB_UNKNOWN)
+    {
+      CDB___db_err (dbenv, "DBTYPE of unknown without existing file");
       return (EINVAL);
     }
     real_name = NULL;
@@ -726,16 +760,17 @@ CDB___db_file_setup(dbp, name, flags, mode, meta_pgno, zerop)
      * Store the locker in the file id structure -- we can get it
      * from there as necessary, and it saves having two copies.
      */
-    if (F_ISSET(dbenv, DB_ENV_LOCKING | DB_ENV_CDB) &&
-        (ret = CDB_lock_id(dbenv, (u_int32_t *)dbp->fileid)) != 0)
+    if (F_ISSET (dbenv, DB_ENV_LOCKING | DB_ENV_CDB) &&
+        (ret = CDB_lock_id (dbenv, (u_int32_t *) dbp->fileid)) != 0)
       return (ret);
 
     return (0);
   }
 
   /* Get the real backing file name. */
-  if ((ret = CDB___db_appname(dbenv,
-      DB_APP_DATA, NULL, name, 0, NULL, &real_name)) != 0)
+  if ((ret = CDB___db_appname (dbenv,
+                               DB_APP_DATA, NULL, name, 0, NULL,
+                               &real_name)) != 0)
     return (ret);
 
   /*
@@ -750,43 +785,48 @@ CDB___db_file_setup(dbp, name, flags, mode, meta_pgno, zerop)
 
   /* Fill in the default file mode. */
   if (mode == 0)
-    mode = CDB___db_omode("rwrw--");
+    mode = CDB___db_omode ("rwrw--");
 
   oflags = 0;
-  if (LF_ISSET(DB_RDONLY))
+  if (LF_ISSET (DB_RDONLY))
     oflags |= DB_OSO_RDONLY;
-  if (LF_ISSET(DB_TRUNCATE))
+  if (LF_ISSET (DB_TRUNCATE))
     oflags |= DB_OSO_TRUNC;
 
   retry_cnt = 0;
 open_retry:
   *zerop = 0;
   ret = 0;
-  if (LF_ISSET(DB_CREATE)) {
-    if (dbp->open_txn != NULL) {
+  if (LF_ISSET (DB_CREATE))
+  {
+    if (dbp->open_txn != NULL)
+    {
       /*
        * Start a child transaction to wrap this individual
        * create.
        */
-      if ((ret =
-          CDB_txn_begin(dbenv, dbp->open_txn, &txn, 0)) != 0)
+      if ((ret = CDB_txn_begin (dbenv, dbp->open_txn, &txn, 0)) != 0)
         goto err_msg;
 
-      memset(&namedbt, 0, sizeof(namedbt));
-      namedbt.data = (char *)name;
-      namedbt.size = strlen(name) + 1;
-      if ((ret = CDB___crdel_fileopen_log(dbenv, txn,
-          &lsn, DB_FLUSH, &namedbt, mode)) != 0)
+      memset (&namedbt, 0, sizeof (namedbt));
+      namedbt.data = (char *) name;
+      namedbt.size = strlen (name) + 1;
+      if ((ret = CDB___crdel_fileopen_log (dbenv, txn,
+                                           &lsn, DB_FLUSH, &namedbt,
+                                           mode)) != 0)
         goto err_msg;
     }
-    DB_TEST_RECOVERY(dbp, DB_TEST_PREOPEN, ret, name);
-    if ((ret = CDB___os_open(real_name,
-        oflags | DB_OSO_CREATE | DB_OSO_EXCL, mode, fhp)) == 0) {
-      DB_TEST_RECOVERY(dbp, DB_TEST_POSTOPEN, ret, name);
+    DB_TEST_RECOVERY (dbp, DB_TEST_PREOPEN, ret, name);
+    if ((ret = CDB___os_open (real_name,
+                              oflags | DB_OSO_CREATE | DB_OSO_EXCL, mode,
+                              fhp)) == 0)
+    {
+      DB_TEST_RECOVERY (dbp, DB_TEST_POSTOPEN, ret, name);
 
       /* Commit the file create. */
-      if (dbp->open_txn != NULL) {
-        if ((ret = CDB_txn_commit(txn, DB_TXN_SYNC)) != 0)
+      if (dbp->open_txn != NULL)
+      {
+        if ((ret = CDB_txn_commit (txn, DB_TXN_SYNC)) != 0)
           goto err_msg;
         txn = NULL;
       }
@@ -799,15 +839,19 @@ open_retry:
        * created the file, we're going to set the flag here
        * and clear it later if we commit successfully.
        */
-      F_SET(dbp, DB_AM_DISCARD);
-    } else {
+      F_SET (dbp, DB_AM_DISCARD);
+    }
+    else
+    {
       /*
        * Abort the file create.  If the abort fails, report
        * the error returned by CDB_txn_abort(), rather than the
        * open error, for no particular reason.
        */
-      if (dbp->open_txn != NULL) {
-        if ((t_ret = CDB_txn_abort(txn)) != 0) {
+      if (dbp->open_txn != NULL)
+      {
+        if ((t_ret = CDB_txn_abort (txn)) != 0)
+        {
           ret = t_ret;
           goto err_msg;
         }
@@ -818,22 +862,24 @@ open_retry:
        * If we were not doing an exclusive open, try again
        * without the create flag.
        */
-      if (ret == EEXIST && !LF_ISSET(DB_EXCL)) {
-        LF_CLR(DB_CREATE);
-        DB_TEST_RECOVERY(dbp,
-            DB_TEST_POSTOPEN, ret, name);
+      if (ret == EEXIST && !LF_ISSET (DB_EXCL))
+      {
+        LF_CLR (DB_CREATE);
+        DB_TEST_RECOVERY (dbp, DB_TEST_POSTOPEN, ret, name);
         goto open_retry;
       }
     }
-  } else
-    ret = CDB___os_open(real_name, oflags, mode, fhp);
+  }
+  else
+    ret = CDB___os_open (real_name, oflags, mode, fhp);
 
   /*
    * Be quiet if we couldn't open the file because it didn't exist,
    * the customers don't like those messages appearing in the logs.
    * Otherwise, complain loudly.
    */
-  if (ret != 0) {
+  if (ret != 0)
+  {
     if (ret == ENOENT)
       goto err;
     goto err_msg;
@@ -841,25 +887,27 @@ open_retry:
 
   /* Set the page size if we don't have one yet. */
   if (dbp->pgsize == 0 &&
-      (ret = CDB___db_set_pgsize(dbp, fhp, real_name)) != 0)
+      (ret = CDB___db_set_pgsize (dbp, fhp, real_name)) != 0)
     goto err;
 
   /*
    * Seek to the metadata offset; if it's a master database open or a
    * database without subdatabases, we're seeking to 0, but that's OK.
    */
-  if ((ret = CDB___os_seek(fhp,
-      dbp->pgsize, meta_pgno, 0, 0, DB_OS_SEEK_SET)) != 0)
+  if ((ret = CDB___os_seek (fhp,
+                            dbp->pgsize, meta_pgno, 0, 0,
+                            DB_OS_SEEK_SET)) != 0)
     goto err_msg;
 
   /*
    * Read the metadata page.  We read 256 bytes, which is larger than
    * any access method's metadata page and smaller than any disk sector.
    */
-  if ((ret = CDB___os_read(fhp, mbuf, sizeof(mbuf), &nr)) != 0)
+  if ((ret = CDB___os_read (fhp, mbuf, sizeof (mbuf), &nr)) != 0)
     goto err_msg;
 
-  if (nr == sizeof(mbuf)) {
+  if (nr == sizeof (mbuf))
+  {
     /*
      * Figure out what access method we're dealing with, and then
      * call access method specific code to check error conditions
@@ -868,23 +916,21 @@ open_retry:
      * we don't consider it an error, for example, if the user set
      * an expected byte order and the found file doesn't match it.
      */
-    F_CLR(dbp, DB_AM_SWAP);
-    magic = ((DBMETA *)mbuf)->magic;
+    F_CLR (dbp, DB_AM_SWAP);
+    magic = ((DBMETA *) mbuf)->magic;
 
-swap_retry:  switch (magic) {
+  swap_retry:switch (magic)
+    {
     case DB_BTREEMAGIC:
-      if ((ret =
-          CDB___bam_metachk(dbp, name, (BTMETA *)mbuf)) != 0)
+      if ((ret = CDB___bam_metachk (dbp, name, (BTMETA *) mbuf)) != 0)
         goto err;
       break;
     case DB_HASHMAGIC:
-      if ((ret =
-          CDB___ham_metachk(dbp, name, (HMETA *)mbuf)) != 0)
+      if ((ret = CDB___ham_metachk (dbp, name, (HMETA *) mbuf)) != 0)
         goto err;
       break;
     case DB_QAMMAGIC:
-      if ((ret =
-          CDB___qam_metachk(dbp, name, (QMETA *)mbuf)) != 0)
+      if ((ret = CDB___qam_metachk (dbp, name, (QMETA *) mbuf)) != 0)
         goto err;
       break;
     case 0:
@@ -902,23 +948,26 @@ swap_retry:  switch (magic) {
        * where pages must be created explicitly to avoid
        * holes in files) but is still 0.
        */
-      if (IS_SUBDB_SETUP)    /* Case 1 */
+      if (IS_SUBDB_SETUP)       /* Case 1 */
         goto empty;
 
-      if (!LF_ISSET(DB_CREATE | DB_TRUNCATE)) { /* Case 2 */
+      if (!LF_ISSET (DB_CREATE | DB_TRUNCATE))
+      {                         /* Case 2 */
         *zerop = 1;
         goto empty;
       }
       goto bad_format;
     default:
-      if (F_ISSET(dbp, DB_AM_SWAP))
+      if (F_ISSET (dbp, DB_AM_SWAP))
         goto bad_format;
 
-      M_32_SWAP(magic);
-      F_SET(dbp, DB_AM_SWAP);
+      M_32_SWAP (magic);
+      F_SET (dbp, DB_AM_SWAP);
       goto swap_retry;
     }
-  } else {
+  }
+  else
+  {
     /*
      * Only newly created files are permitted to fail magic
      * number tests.
@@ -928,7 +977,7 @@ swap_retry:  switch (magic) {
 
 
     /* Let the caller know that we had a 0-length file. */
-    if (!LF_ISSET(DB_CREATE | DB_TRUNCATE))
+    if (!LF_ISSET (DB_CREATE | DB_TRUNCATE))
       *zerop = 1;
 
     /*
@@ -946,67 +995,71 @@ swap_retry:  switch (magic) {
      * they could theoretically hurt each other.  Sure hope that's
      * unlikely.
      */
-    if (!LF_ISSET(DB_CREATE | DB_TRUNCATE) &&
+    if (!LF_ISSET (DB_CREATE | DB_TRUNCATE) &&
         (dbenv->lg_handle == NULL ||
-        !F_ISSET((DB_LOG *)dbenv->lg_handle, DBC_RECOVER))) {
-      if (retry_cnt++ < 3) {
-        CDB___os_sleep(1, 0);
+         !F_ISSET ((DB_LOG *) dbenv->lg_handle, DBC_RECOVER)))
+    {
+      if (retry_cnt++ < 3)
+      {
+        CDB___os_sleep (1, 0);
         goto open_retry;
       }
-bad_format:    CDB___db_err(dbenv,
-          "%s: unexpected file type or format", name);
+    bad_format:CDB___db_err (dbenv,
+                    "%s: unexpected file type or format",
+                    name);
       ret = EINVAL;
       goto err;
     }
-    if (dbp->type == DB_UNKNOWN) {
-      CDB___db_err(dbenv,
-          "%s: DB_UNKNOWN type specified with empty file",
-          name);
+    if (dbp->type == DB_UNKNOWN)
+    {
+      CDB___db_err (dbenv,
+                    "%s: DB_UNKNOWN type specified with empty file", name);
       ret = EINVAL;
       goto err;
     }
 
-empty:    /*
-     * The file is empty, and that's OK.  If it's not a subdatabase,
-     * though, we do need to generate a unique file ID for it.  The
-     * unique file ID includes a timestampe so that we can't collide
-     * with any other files, even when the file IDs (dev/inode pair)
-     * are reused.
-     */
+  empty:                       /*
+                                 * The file is empty, and that's OK.  If it's not a subdatabase,
+                                 * though, we do need to generate a unique file ID for it.  The
+                                 * unique file ID includes a timestampe so that we can't collide
+                                 * with any other files, even when the file IDs (dev/inode pair)
+                                 * are reused.
+                                 */
     if (*zerop == 1)
-      memset(dbp->fileid, 0, DB_FILE_ID_LEN);
+      memset (dbp->fileid, 0, DB_FILE_ID_LEN);
     else if (!IS_SUBDB_SETUP &&
-        (ret = CDB___os_fileid(dbenv, real_name, 1, dbp->fileid)) != 0)
+             (ret = CDB___os_fileid (dbenv, real_name, 1, dbp->fileid)) != 0)
       goto err_msg;
   }
 
-  if (0) {
-err_msg:  CDB___db_err(dbenv, "%s: %s", name, CDB_db_strerror(ret));
+  if (0)
+  {
+  err_msg:CDB___db_err (dbenv, "%s: %s", name, CDB_db_strerror (ret));
   }
 
   /*
    * Abort any running transaction -- it can only exist if something
    * went wrong.
    */
-err:  if (txn != NULL)
-    (void)CDB_txn_abort(txn);
+err:if (txn != NULL)
+    (void) CDB_txn_abort (txn);
 
-DB_TEST_RECOVERY_LABEL
-  /*
-   * If we opened a file handle and our caller is doing fcntl(2) locking,
-   * then we can't close it because that would discard the caller's lock.
-   * Otherwise, close the handle.
-   */
-  if (F_ISSET(fhp, DB_FH_VALID)) {
-    if (ret == 0 && LF_ISSET(DB_FCNTL_LOCKING))
+  DB_TEST_RECOVERY_LABEL
+    /*
+     * If we opened a file handle and our caller is doing fcntl(2) locking,
+     * then we can't close it because that would discard the caller's lock.
+     * Otherwise, close the handle.
+     */
+    if (F_ISSET (fhp, DB_FH_VALID))
+  {
+    if (ret == 0 && LF_ISSET (DB_FCNTL_LOCKING))
       dbp->saved_open_fhp = fhp;
-    else
-      if ((t_ret = CDB___os_closehandle(fhp)) != 0 && ret == 0)
-        ret = t_ret;
+    else if ((t_ret = CDB___os_closehandle (fhp)) != 0 && ret == 0)
+      ret = t_ret;
   }
 
   if (real_name != NULL)
-    CDB___os_freestr(real_name);
+    CDB___os_freestr (real_name);
 
   return (ret);
 }
@@ -1016,10 +1069,10 @@ DB_TEST_RECOVERY_LABEL
  *  Set the page size based on file information.
  */
 static int
-CDB___db_set_pgsize(dbp, fhp, name)
-  DB *dbp;
-  DB_FH *fhp;
-  char *name;
+CDB___db_set_pgsize (dbp, fhp, name)
+     DB *dbp;
+     DB_FH *fhp;
+     char *name;
 {
   DB_ENV *dbenv;
   u_int32_t iopsize;
@@ -1033,8 +1086,9 @@ CDB___db_set_pgsize(dbp, fhp, name)
    * but as that results in fairly large default caches, we limit the
    * default pagesize to 16K.
    */
-  if ((ret = CDB___os_ioinfo(name, fhp, NULL, NULL, &iopsize)) != 0) {
-    CDB___db_err(dbenv, "%s: %s", name, CDB_db_strerror(ret));
+  if ((ret = CDB___os_ioinfo (name, fhp, NULL, NULL, &iopsize)) != 0)
+  {
+    CDB___db_err (dbenv, "%s: %s", name, CDB_db_strerror (ret));
     return (ret);
   }
   if (iopsize < 512)
@@ -1047,9 +1101,10 @@ CDB___db_set_pgsize(dbp, fhp, name)
    * by the compression factor.
    */
 #ifdef HAVE_LIBZ
-  if(F_ISSET(dbp, DB_AM_CMPR)) {
-    if(iopsize < DB_CMPR_MULTIPLY(dbenv, DB_MIN_PGSIZE))
-      iopsize = DB_CMPR_MULTIPLY(dbenv, DB_MIN_PGSIZE);
+  if (F_ISSET (dbp, DB_AM_CMPR))
+  {
+    if (iopsize < DB_CMPR_MULTIPLY (dbenv, DB_MIN_PGSIZE))
+      iopsize = DB_CMPR_MULTIPLY (dbenv, DB_MIN_PGSIZE);
   }
 #endif /* HAVE_LIBZ */
 
@@ -1058,10 +1113,10 @@ CDB___db_set_pgsize(dbp, fhp, name)
    * (we rely on that for alignment of various types on the pages), and
    * we want a multiple of the sector size as well.
    */
-  OS_ROUNDOFF(iopsize, 512);
+  OS_ROUNDOFF (iopsize, 512);
 
   dbp->pgsize = iopsize;
-  F_SET(dbp, DB_AM_PGDEF);
+  F_SET (dbp, DB_AM_PGDEF);
 
   return (0);
 }
@@ -1073,9 +1128,9 @@ CDB___db_set_pgsize(dbp, fhp, name)
  * PUBLIC: int CDB___db_close __P((DB *, u_int32_t));
  */
 int
-CDB___db_close(dbp, flags)
-  DB *dbp;
-  u_int32_t flags;
+CDB___db_close (dbp, flags)
+     DB *dbp;
+     u_int32_t flags;
 {
   DB_ENV *dbenv;
   DBC *dbc;
@@ -1083,19 +1138,19 @@ CDB___db_close(dbp, flags)
 
   ret = 0;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
   /* Validate arguments. */
-  if ((ret = CDB___db_closechk(dbp, flags)) != 0)
+  if ((ret = CDB___db_closechk (dbp, flags)) != 0)
     return (ret);
 
   /* If never opened, or not currently open, it's easy. */
-  if (!F_ISSET((dbp), DB_OPEN_CALLED))
+  if (!F_ISSET ((dbp), DB_OPEN_CALLED))
     goto never_opened;
 
   /* Sync the underlying access method. */
-  if (!LF_ISSET(DB_NOSYNC) && !F_ISSET(dbp, DB_AM_DISCARD) &&
-      (t_ret = dbp->sync(dbp, 0)) != 0 && ret == 0)
+  if (!LF_ISSET (DB_NOSYNC) && !F_ISSET (dbp, DB_AM_DISCARD) &&
+      (t_ret = dbp->sync (dbp, 0)) != 0 && ret == 0)
     ret = t_ret;
 
   /*
@@ -1104,23 +1159,23 @@ CDB___db_close(dbp, flags)
    * free list.  Then, walk the free list and call the cursor destroy
    * routine.
    */
-  while ((dbc = TAILQ_FIRST(&dbp->active_queue)) != NULL)
-    if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+  while ((dbc = TAILQ_FIRST (&dbp->active_queue)) != NULL)
+    if ((t_ret = dbc->c_close (dbc)) != 0 && ret == 0)
       ret = t_ret;
-  while ((dbc = TAILQ_FIRST(&dbp->free_queue)) != NULL)
-    if ((t_ret = CDB___db_c_destroy(dbc)) != 0 && ret == 0)
+  while ((dbc = TAILQ_FIRST (&dbp->free_queue)) != NULL)
+    if ((t_ret = CDB___db_c_destroy (dbc)) != 0 && ret == 0)
       ret = t_ret;
 
   /* Sync the memory pool. */
-  if (!LF_ISSET(DB_NOSYNC) && !F_ISSET(dbp, DB_AM_DISCARD) &&
-      (t_ret = CDB_memp_fsync(dbp->mpf)) != 0 &&
+  if (!LF_ISSET (DB_NOSYNC) && !F_ISSET (dbp, DB_AM_DISCARD) &&
+      (t_ret = CDB_memp_fsync (dbp->mpf)) != 0 &&
       t_ret != DB_INCOMPLETE && ret == 0)
     ret = t_ret;
 
   /* Close any handle we've been holding since the open.  */
   if (dbp->saved_open_fhp != NULL &&
-      F_ISSET(dbp->saved_open_fhp, DB_FH_VALID) &&
-      (t_ret = CDB___os_closehandle(dbp->saved_open_fhp)) != 0 && ret == 0)
+      F_ISSET (dbp->saved_open_fhp, DB_FH_VALID) &&
+      (t_ret = CDB___os_closehandle (dbp->saved_open_fhp)) != 0 && ret == 0)
     ret = t_ret;
 
 never_opened:
@@ -1132,23 +1187,23 @@ never_opened:
    * these routines can't do anything that would dirty pages or
    * otherwise affect closing down the database.
    */
-  if ((t_ret = CDB___ham_db_close(dbp)) != 0 && ret == 0)
+  if ((t_ret = CDB___ham_db_close (dbp)) != 0 && ret == 0)
     ret = t_ret;
-  if ((t_ret = CDB___bam_db_close(dbp)) != 0 && ret == 0)
+  if ((t_ret = CDB___bam_db_close (dbp)) != 0 && ret == 0)
     ret = t_ret;
-  if ((t_ret = CDB___qam_db_close(dbp)) != 0 && ret == 0)
+  if ((t_ret = CDB___qam_db_close (dbp)) != 0 && ret == 0)
     ret = t_ret;
 
   /* Refresh the structure and close any local environment. */
   dbenv = dbp->dbenv;
-  if ((t_ret = CDB___db_refresh(dbp)) != 0 && ret == 0)
+  if ((t_ret = CDB___db_refresh (dbp)) != 0 && ret == 0)
     ret = t_ret;
-  if (F_ISSET(dbenv, DB_ENV_DBLOCAL) &&
-      (t_ret = dbenv->close(dbenv, 0)) != 0 && ret == 0)
+  if (F_ISSET (dbenv, DB_ENV_DBLOCAL) &&
+      (t_ret = dbenv->close (dbenv, 0)) != 0 && ret == 0)
     ret = t_ret;
 
-  memset(dbp, CLEAR_BYTE, sizeof(*dbp));
-  CDB___os_free(dbp, sizeof(*dbp));
+  memset (dbp, CLEAR_BYTE, sizeof (*dbp));
+  CDB___os_free (dbp, sizeof (*dbp));
 
   return (ret);
 }
@@ -1158,8 +1213,8 @@ never_opened:
  *  Refresh the DB structure, releasing any allocated resources.
  */
 static int
-CDB___db_refresh(dbp)
-  DB *dbp;
+CDB___db_refresh (dbp)
+     DB *dbp;
 {
   DB_ENV *dbenv;
   int ret, t_ret;
@@ -1171,35 +1226,38 @@ CDB___db_refresh(dbp)
   dbp->type = 0;
 
   /* Close the memory pool file handle. */
-  if (dbp->mpf != NULL) {
-    if (F_ISSET(dbp, DB_AM_DISCARD))
-      (void)CDB___memp_fremove(dbp->mpf);
-    if ((t_ret = CDB_memp_fclose(dbp->mpf)) != 0 && ret == 0)
+  if (dbp->mpf != NULL)
+  {
+    if (F_ISSET (dbp, DB_AM_DISCARD))
+      (void) CDB___memp_fremove (dbp->mpf);
+    if ((t_ret = CDB_memp_fclose (dbp->mpf)) != 0 && ret == 0)
       ret = t_ret;
     dbp->mpf = NULL;
   }
 
   /* Discard the thread mutex. */
-  if (dbp->mutexp != NULL) {
-    CDB___db_mutex_free(dbenv, dbenv->reginfo, dbp->mutexp);
+  if (dbp->mutexp != NULL)
+  {
+    CDB___db_mutex_free (dbenv, dbenv->reginfo, dbp->mutexp);
     dbp->mutexp = NULL;
   }
 
   /* Discard the log file id. */
-  if (dbp->log_fileid != DB_LOGFILEID_INVALID) {
-    (void)CDB_log_unregister(dbenv, dbp->log_fileid);
+  if (dbp->log_fileid != DB_LOGFILEID_INVALID)
+  {
+    (void) CDB_log_unregister (dbenv, dbp->log_fileid);
     dbp->log_fileid = DB_LOGFILEID_INVALID;
   }
 
-  TAILQ_INIT(&dbp->free_queue);
-  TAILQ_INIT(&dbp->active_queue);
+  TAILQ_INIT (&dbp->free_queue);
+  TAILQ_INIT (&dbp->active_queue);
 
-  F_CLR(dbp, DB_AM_DISCARD);
-  F_CLR(dbp, DB_AM_INMEM);
-  F_CLR(dbp, DB_AM_RDONLY);
-  F_CLR(dbp, DB_AM_SWAP);
-  F_CLR(dbp, DB_DBM_ERROR);
-  F_CLR(dbp, DB_OPEN_CALLED);
+  F_CLR (dbp, DB_AM_DISCARD);
+  F_CLR (dbp, DB_AM_INMEM);
+  F_CLR (dbp, DB_AM_RDONLY);
+  F_CLR (dbp, DB_AM_SWAP);
+  F_CLR (dbp, DB_DBM_ERROR);
+  F_CLR (dbp, DB_OPEN_CALLED);
 
   return (ret);
 }
@@ -1211,10 +1269,10 @@ CDB___db_refresh(dbp)
  * PUBLIC: int CDB___db_remove __P((DB *, const char *, const char *, u_int32_t));
  */
 int
-CDB___db_remove(dbp, name, subdb, flags)
-  DB *dbp;
-  const char *name, *subdb;
-  u_int32_t flags;
+CDB___db_remove (dbp, name, subdb, flags)
+     DB *dbp;
+     const char *name, *subdb;
+     u_int32_t flags;
 {
   DBT namedbt;
   DB_ENV *dbenv;
@@ -1227,39 +1285,43 @@ CDB___db_remove(dbp, name, subdb, flags)
   ret = 0;
   backup = real_back = real_name = NULL;
 
-  PANIC_CHECK(dbenv);
-  DB_ILLEGAL_AFTER_OPEN(dbp, "remove");
+  PANIC_CHECK (dbenv);
+  DB_ILLEGAL_AFTER_OPEN (dbp, "remove");
 
   /* Validate arguments. */
-  if ((ret = CDB___db_removechk(dbp, flags)) != 0)
+  if ((ret = CDB___db_removechk (dbp, flags)) != 0)
     return (ret);
 
   /*
    * Subdatabases.
    */
-  if (subdb != NULL) {
+  if (subdb != NULL)
+  {
     /* Subdatabases must be created in named files. */
-    if (name == NULL) {
-      CDB___db_err(dbenv,
-        "subdatabases cannot be created in temporary files");
+    if (name == NULL)
+    {
+      CDB___db_err (dbenv,
+                    "subdatabases cannot be created in temporary files");
       return (EINVAL);
     }
-    return (CDB___db_subdb_remove(dbp, name, subdb));
+    return (CDB___db_subdb_remove (dbp, name, subdb));
   }
 
   /* Start the transaction and log the delete. */
-  if (F_ISSET(dbenv, DB_ENV_TXN)) {
-    if ((ret = CDB___db_metabegin(dbp, &remove_lock)) != 0)
+  if (F_ISSET (dbenv, DB_ENV_TXN))
+  {
+    if ((ret = CDB___db_metabegin (dbp, &remove_lock)) != 0)
       return (ret);
 
-    memset(&namedbt, 0, sizeof(namedbt));
-    namedbt.data = (char *)name;
-    namedbt.size = strlen(name) + 1;
+    memset (&namedbt, 0, sizeof (namedbt));
+    namedbt.data = (char *) name;
+    namedbt.size = strlen (name) + 1;
 
-    if ((ret = CDB___crdel_delete_log(dbenv,
-        dbp->open_txn, &newlsn, DB_FLUSH, &namedbt)) != 0) {
-      CDB___db_err(dbenv,
-          "%s: %s", name, CDB_db_strerror(ret));
+    if ((ret = CDB___crdel_delete_log (dbenv,
+                                       dbp->open_txn, &newlsn, DB_FLUSH,
+                                       &namedbt)) != 0)
+    {
+      CDB___db_err (dbenv, "%s: %s", name, CDB_db_strerror (ret));
       goto err;
     }
   }
@@ -1273,35 +1335,40 @@ CDB___db_remove(dbp, name, subdb, flags)
    */
 
   /* Find the real name of the file. */
-  if ((ret = CDB___db_appname(dbenv,
-      DB_APP_DATA, NULL, name, 0, NULL, &real_name)) != 0)
+  if ((ret = CDB___db_appname (dbenv,
+                               DB_APP_DATA, NULL, name, 0, NULL,
+                               &real_name)) != 0)
     goto err;
 
   /* Create name for backup file. */
-  if ((ret =  CDB___db_backup_name(name, &backup, &newlsn)) != 0)
+  if ((ret = CDB___db_backup_name (name, &backup, &newlsn)) != 0)
     goto err;
-  if ((ret = CDB___db_appname(dbenv,
-      DB_APP_DATA, NULL, backup, 0, NULL, &real_back)) != 0)
+  if ((ret = CDB___db_appname (dbenv,
+                               DB_APP_DATA, NULL, backup, 0, NULL,
+                               &real_back)) != 0)
     goto err;
 
-  DB_TEST_RECOVERY(dbp, DB_TEST_PRERENAME, ret, name);
-  ret = CDB___os_rename(real_name, real_back);
-  DB_TEST_RECOVERY(dbp, DB_TEST_POSTRENAME, ret, name);
+  DB_TEST_RECOVERY (dbp, DB_TEST_PRERENAME, ret, name);
+  ret = CDB___os_rename (real_name, real_back);
+  DB_TEST_RECOVERY (dbp, DB_TEST_POSTRENAME, ret, name);
 
 err:
-DB_TEST_RECOVERY_LABEL
-  /*
-   * End the transaction, committing the transaction if we were
-   * successful, aborting otherwise.
-   */
-  if (dbp->open_txn != NULL && (t_ret = CDB___db_metaend(dbp, &remove_lock,
-     ret == 0, CDB___db_remove_callback, real_back)) != 0 && ret == 0)
+  DB_TEST_RECOVERY_LABEL
+    /*
+     * End the transaction, committing the transaction if we were
+     * successful, aborting otherwise.
+     */
+    if (dbp->open_txn != NULL && (t_ret = CDB___db_metaend (dbp, &remove_lock,
+                                                            ret == 0,
+                                                            CDB___db_remove_callback,
+                                                            real_back)) != 0
+        && ret == 0)
     ret = t_ret;
 
   if (real_name != NULL)
-    CDB___os_freestr(real_name);
+    CDB___os_freestr (real_name);
   if (backup != NULL)
-    CDB___os_freestr(backup);
+    CDB___os_freestr (backup);
 
   return (ret);
 }
@@ -1311,9 +1378,9 @@ DB_TEST_RECOVERY_LABEL
  *  Remove a subdatabase.
  */
 static int
-CDB___db_subdb_remove(dbp, name, subdb)
-  DB *dbp;
-  const char *name, *subdb;
+CDB___db_subdb_remove (dbp, name, subdb)
+     DB *dbp;
+     const char *name, *subdb;
 {
   DB *mdbp;
   DBC *dbc;
@@ -1327,62 +1394,67 @@ CDB___db_subdb_remove(dbp, name, subdb)
   dbenv = dbp->dbenv;
 
   /* Start the transaction. */
-  if (F_ISSET(dbenv, DB_ENV_TXN) &&
-      (ret = CDB___db_metabegin(dbp, &remove_lock)) != 0)
+  if (F_ISSET (dbenv, DB_ENV_TXN) &&
+      (ret = CDB___db_metabegin (dbp, &remove_lock)) != 0)
     return (ret);
 
   /*
    * Open the subdatabase.  We can use the user's DB handle for this
    * purpose, I think.
    */
-  if ((ret = CDB___db_open(dbp, name, subdb, DB_UNKNOWN, 0, 0)) != 0)
+  if ((ret = CDB___db_open (dbp, name, subdb, DB_UNKNOWN, 0, 0)) != 0)
     goto err;
 
   /* Free up the pages in the subdatabase. */
-  switch (dbp->type) {
-    case DB_BTREE:
-    case DB_RECNO:
-      if ((ret = CDB___bam_reclaim(dbp, dbp->open_txn)) != 0)
-        goto err;
-      break;
-    case DB_HASH:
-      if ((ret = CDB___ham_reclaim(dbp, dbp->open_txn)) != 0)
-        goto err;
-      break;
-    default:
-      ret = EINVAL;    /* Shouldn't be possible. */
+  switch (dbp->type)
+  {
+  case DB_BTREE:
+  case DB_RECNO:
+    if ((ret = CDB___bam_reclaim (dbp, dbp->open_txn)) != 0)
       goto err;
+    break;
+  case DB_HASH:
+    if ((ret = CDB___ham_reclaim (dbp, dbp->open_txn)) != 0)
+      goto err;
+    break;
+  default:
+    ret = EINVAL;               /* Shouldn't be possible. */
+    goto err;
   }
 
   /*
    * Remove the entry from the main database and free the subdatabase
    * metadata page.
    */
-  if ((ret = CDB___db_master_open(dbp->dbenv,
-      dbp->open_txn, name, 0, 0, &mdbp)) != 0)
+  if ((ret = CDB___db_master_open (dbp->dbenv,
+                                   dbp->open_txn, name, 0, 0, &mdbp)) != 0)
     goto err;
 
-  if ((ret = CDB___db_master_update(mdbp,
-        subdb, dbp->type, &meta_pgno, 1, 0)) != 0)
-      goto err;
+  if ((ret = CDB___db_master_update (mdbp,
+                                     subdb, dbp->type, &meta_pgno, 1,
+                                     0)) != 0)
+    goto err;
 
 
-err:  /*
-   * End the transaction, committing the transaction if we were
-   * successful, aborting otherwise.
-   */
-  if (dbp->open_txn != NULL && (t_ret = CDB___db_metaend(dbp,
-      &remove_lock, ret == 0, NULL, NULL)) != 0 && ret == 0)
+err:                           /*
+                                 * End the transaction, committing the transaction if we were
+                                 * successful, aborting otherwise.
+                                 */
+  if (dbp->open_txn != NULL && (t_ret = CDB___db_metaend (dbp,
+                                                          &remove_lock,
+                                                          ret == 0, NULL,
+                                                          NULL)) != 0
+      && ret == 0)
     ret = t_ret;
 
   /*
    * Close the user's DB handle -- do this LAST to avoid smashing the
    * the transaction information.
    */
-  if ((t_ret = dbp->close(dbp, 0)) != 0 && ret == 0)
+  if ((t_ret = dbp->close (dbp, 0)) != 0 && ret == 0)
     ret = t_ret;
 
-  if (mdbp != NULL && (t_ret = mdbp->close(mdbp, 0)) != 0 && ret == 0)
+  if (mdbp != NULL && (t_ret = mdbp->close (mdbp, 0)) != 0 && ret == 0)
     ret = t_ret;
 
   return (ret);
@@ -1400,9 +1472,9 @@ err:  /*
  * we don't need to do any of this).
  */
 static int
-CDB___db_metabegin(dbp, lockp)
-  DB *dbp;
-  DB_LOCK *lockp;
+CDB___db_metabegin (dbp, lockp)
+     DB *dbp;
+     DB_LOCK *lockp;
 {
   DB_ENV *dbenv;
   DBT dbplock;
@@ -1427,18 +1499,19 @@ CDB___db_metabegin(dbp, lockp)
    * generate a unique locker id and use a handcrafted DBT as the object
    * on which we are locking.
    */
-  if (F_ISSET(dbenv, DB_ENV_LOCKING | DB_ENV_CDB)) {
-    if ((ret = CDB_lock_id(dbenv, &locker)) != 0)
+  if (F_ISSET (dbenv, DB_ENV_LOCKING | DB_ENV_CDB))
+  {
+    if ((ret = CDB_lock_id (dbenv, &locker)) != 0)
       return (ret);
     lockval = 0;
     dbplock.data = &lockval;
-    dbplock.size = sizeof(lockval);
-    if ((ret = CDB_lock_get(dbenv,
-        locker, 0, &dbplock, DB_LOCK_WRITE, lockp)) != 0)
-      return(ret);
+    dbplock.size = sizeof (lockval);
+    if ((ret = CDB_lock_get (dbenv,
+                             locker, 0, &dbplock, DB_LOCK_WRITE, lockp)) != 0)
+      return (ret);
   }
 
-  return (CDB_txn_begin(dbenv, NULL, &dbp->open_txn, 0));
+  return (CDB_txn_begin (dbenv, NULL, &dbp->open_txn, 0));
 }
 
 /*
@@ -1446,11 +1519,11 @@ CDB___db_metabegin(dbp, lockp)
  *   End a meta-data operation.
  */
 static int
-CDB___db_metaend(dbp, lockp, commit, callback, cookie)
-  DB *dbp;
-  DB_LOCK *lockp;
-  int commit, (*callback) __P((DB *, void *));
-  void *cookie;
+CDB___db_metaend (dbp, lockp, commit, callback, cookie)
+     DB *dbp;
+     DB_LOCK *lockp;
+     int commit, (*callback) __P ((DB *, void *));
+     void *cookie;
 {
   DB_ENV *dbenv;
   int ret, t_ret;
@@ -1458,21 +1531,24 @@ CDB___db_metaend(dbp, lockp, commit, callback, cookie)
   dbenv = dbp->dbenv;
 
   /* End the transaction. */
-  if (commit) {
-    if ((ret = CDB_txn_commit(dbp->open_txn, DB_TXN_SYNC)) == 0) {
+  if (commit)
+  {
+    if ((ret = CDB_txn_commit (dbp->open_txn, DB_TXN_SYNC)) == 0)
+    {
       /*
        * Unlink any underlying file, we've committed the
        * transaction.
        */
       if (callback != NULL)
-        ret = callback(dbp, cookie);
+        ret = callback (dbp, cookie);
     }
-  } else
-    ret = CDB_txn_abort(dbp->open_txn);
+  }
+  else
+    ret = CDB_txn_abort (dbp->open_txn);
 
   /* Release our lock. */
   if (lockp->off != LOCK_INVALID &&
-      (t_ret = CDB_lock_put(dbenv, lockp)) != 0 && ret == 0)
+      (t_ret = CDB_lock_put (dbenv, lockp)) != 0 && ret == 0)
     ret = t_ret;
 
   return (ret);
@@ -1490,18 +1566,18 @@ CDB___db_metaend(dbp, lockp, commit, callback, cookie)
 #undef  MAX_LSN_TO_TEXT
 #define  MAX_LSN_TO_TEXT  21
 int
-CDB___db_backup_name(name, backup, lsn)
-  const char *name;
-  char **backup;
-  DB_LSN *lsn;
+CDB___db_backup_name (name, backup, lsn)
+     const char *name;
+     char **backup;
+     DB_LSN *lsn;
 {
   size_t len;
   int ret;
   char *retp;
 
-  len = strlen(name) + strlen(BACKUP_PREFIX) + MAX_LSN_TO_TEXT + 1;
+  len = strlen (name) + strlen (BACKUP_PREFIX) + MAX_LSN_TO_TEXT + 1;
 
-  if ((ret = CDB___os_malloc(len, NULL, &retp)) != 0)
+  if ((ret = CDB___os_malloc (len, NULL, &retp)) != 0)
     return (ret);
 
   /*
@@ -1511,8 +1587,8 @@ CDB___db_backup_name(name, backup, lsn)
    *
    * which guarantees uniqueness.
    */
-  snprintf(retp, len,
-      "%s%s.0x%x0x%x", BACKUP_PREFIX, name, lsn->file, lsn->offset);
+  snprintf (retp, len,
+            "%s%s.0x%x0x%x", BACKUP_PREFIX, name, lsn->file, lsn->offset);
 
   *backup = retp;
   return (0);
@@ -1524,13 +1600,13 @@ CDB___db_backup_name(name, backup, lsn)
  *  file.
  */
 static int
-CDB___db_remove_callback(dbp, cookie)
-  DB *dbp;
-  void *cookie;
+CDB___db_remove_callback (dbp, cookie)
+     DB *dbp;
+     void *cookie;
 {
-  COMPQUIET(dbp, NULL);
+  COMPQUIET (dbp, NULL);
 
-  return (CDB___os_unlink(cookie));
+  return (CDB___os_unlink (cookie));
 }
 
 #if  CONFIG_TEST
@@ -1541,9 +1617,9 @@ CDB___db_remove_callback(dbp, cookie)
  * PUBLIC: int __db_testcopy __P((DB *, const char *));
  */
 int
-__db_testcopy(dbp, name)
-  DB *dbp;
-  const char *name;
+__db_testcopy (dbp, name)
+     DB *dbp;
+     const char *name;
 {
   size_t len;
   int dircnt, i, ret;
@@ -1551,30 +1627,31 @@ __db_testcopy(dbp, name)
 
   real_name = NULL;
   /* Get the real backing file name. */
-  if ((ret = CDB___db_appname(dbp->dbenv,
-      DB_APP_DATA, NULL, name, 0, NULL, &real_name)) != 0)
+  if ((ret = CDB___db_appname (dbp->dbenv,
+                               DB_APP_DATA, NULL, name, 0, NULL,
+                               &real_name)) != 0)
     return (ret);
 
   /*
    * Maximum size of file, including adding a ".afterop".
    */
-  len = strlen(real_name) + strlen(BACKUP_PREFIX) + MAX_LSN_TO_TEXT + 9;
+  len = strlen (real_name) + strlen (BACKUP_PREFIX) + MAX_LSN_TO_TEXT + 9;
 
-  if ((ret = CDB___os_malloc(len, NULL, &copy)) != 0)
+  if ((ret = CDB___os_malloc (len, NULL, &copy)) != 0)
     goto out;
 
-  if ((ret = CDB___os_malloc(len, NULL, &backup)) != 0)
+  if ((ret = CDB___os_malloc (len, NULL, &backup)) != 0)
     goto out;
 
   /*
    * First copy the file itself.
    */
-  snprintf(copy, len, "%s.afterop", real_name);
-  __db_makecopy(real_name, copy);
+  snprintf (copy, len, "%s.afterop", real_name);
+  __db_makecopy (real_name, copy);
 
-  if ((ret = CDB___os_strdup(real_name, &dir)) != 0)
+  if ((ret = CDB___os_strdup (real_name, &dir)) != 0)
     goto out;
-  CDB___os_freestr(real_name);
+  CDB___os_freestr (real_name);
   real_name = NULL;
   /*
    * Create the name.  Backup file names are of the form:
@@ -1586,15 +1663,15 @@ __db_testcopy(dbp, name)
    * files named, say, 'a' and 'abc' we won't match 'abc' when
    * looking for 'a'.
    */
-  snprintf(backup, len, "%s%s.0x", BACKUP_PREFIX, name);
+  snprintf (backup, len, "%s%s.0x", BACKUP_PREFIX, name);
 
   /*
    * We need the directory path to do the CDB___os_dirlist.
    */
-  p = CDB___db_rpath(dir);
+  p = CDB___db_rpath (dir);
   if (p != NULL)
     *p = '\0';
-  ret = CDB___os_dirlist(dir, &namesp, &dircnt);
+  ret = CDB___os_dirlist (dir, &namesp, &dircnt);
 #if DIAGNOSTIC
   /*
    * XXX
@@ -1607,10 +1684,11 @@ __db_testcopy(dbp, name)
    */
   *p = '/';
 #endif
-  CDB___os_freestr(dir);
+  CDB___os_freestr (dir);
   if (ret != 0)
     goto out;
-  for (i = 0; i < dircnt; i++) {
+  for (i = 0; i < dircnt; i++)
+  {
     /*
      * Need to check if it is a backup file for this.
      * No idea what namesp[i] may be or how long, so
@@ -1619,9 +1697,11 @@ __db_testcopy(dbp, name)
      * the first part of the real file's name.  We don't
      * know its LSN's.
      */
-    if (strncmp(namesp[i], backup, strlen(backup)) == 0) {
-      if ((ret = CDB___db_appname(dbp->dbenv, DB_APP_DATA,
-          NULL, namesp[i], 0, NULL, &real_name)) != 0)
+    if (strncmp (namesp[i], backup, strlen (backup)) == 0)
+    {
+      if ((ret = CDB___db_appname (dbp->dbenv, DB_APP_DATA,
+                                   NULL, namesp[i], 0, NULL,
+                                   &real_name)) != 0)
         goto out;
 
       /*
@@ -1629,52 +1709,55 @@ __db_testcopy(dbp, name)
        * .afterop files aren't around.
        * If so, just move on.
        */
-      if (strstr(real_name, ".afterop") != NULL) {
-        CDB___os_freestr(real_name);
+      if (strstr (real_name, ".afterop") != NULL)
+      {
+        CDB___os_freestr (real_name);
         real_name = NULL;
         continue;
       }
-      snprintf(copy, len, "%s.afterop", real_name);
-      __db_makecopy(real_name, copy);
-      CDB___os_freestr(real_name);
+      snprintf (copy, len, "%s.afterop", real_name);
+      __db_makecopy (real_name, copy);
+      CDB___os_freestr (real_name);
       real_name = NULL;
     }
   }
 out:
   if (real_name)
-    CDB___os_freestr(real_name);
+    CDB___os_freestr (real_name);
   return (ret);
 }
 
 static void
-__db_makecopy(src, dest)
-  const char *src, *dest;
+__db_makecopy (src, dest)
+     const char *src, *dest;
 {
   DB_FH rfh, wfh;
   ssize_t rcnt, wcnt;
   char *buf;
 
-  memset(&rfh, 0, sizeof(rfh));
-  memset(&wfh, 0, sizeof(wfh));
+  memset (&rfh, 0, sizeof (rfh));
+  memset (&wfh, 0, sizeof (wfh));
 
-  if (CDB___os_malloc(1024, NULL, &buf) != 0)
+  if (CDB___os_malloc (1024, NULL, &buf) != 0)
     return;
 
-  if (CDB___os_open(src, DB_OSO_RDONLY, CDB___db_omode("rw----"), &rfh) != 0)
+  if (CDB___os_open (src, DB_OSO_RDONLY, CDB___db_omode ("rw----"), &rfh) !=
+      0)
     goto err;
-  if (CDB___os_open(dest,
-      DB_OSO_CREATE | DB_OSO_TRUNC, CDB___db_omode("rw----"), &wfh) != 0)
+  if (CDB___os_open (dest,
+                     DB_OSO_CREATE | DB_OSO_TRUNC, CDB___db_omode ("rw----"),
+                     &wfh) != 0)
     goto err;
 
   for (;;)
-    if (CDB___os_read(&rfh, buf, 1024, &rcnt) < 0 || rcnt == 0 ||
-        CDB___os_write(&wfh, buf, rcnt, &wcnt) < 0 || wcnt != rcnt)
+    if (CDB___os_read (&rfh, buf, 1024, &rcnt) < 0 || rcnt == 0 ||
+        CDB___os_write (&wfh, buf, rcnt, &wcnt) < 0 || wcnt != rcnt)
       break;
 
-err:  CDB___os_free(buf, 1024);
-  if (F_ISSET(&rfh, DB_FH_VALID))
-    CDB___os_closehandle(&rfh);
-  if (F_ISSET(&wfh, DB_FH_VALID))
-    CDB___os_closehandle(&wfh);
+err:CDB___os_free (buf, 1024);
+  if (F_ISSET (&rfh, DB_FH_VALID))
+    CDB___os_closehandle (&rfh);
+  if (F_ISSET (&wfh, DB_FH_VALID))
+    CDB___os_closehandle (&wfh);
 }
 #endif

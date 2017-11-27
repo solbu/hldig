@@ -91,17 +91,17 @@
  *  msemaphore structure contains any value copied from an msemaphore
  *  structure at a different address, the result is undefined.
  */
-#define  DB_REGION_FMT  "__db.%03d"  /* Region file name format. */
+#define  DB_REGION_FMT  "__db.%03d"     /* Region file name format. */
 #define  DB_REGION_NAME_NUM  5  /* First digit offset in file names. */
-#define  DB_REGION_NAME_LENGTH  8  /* Length of file names. */
+#define  DB_REGION_NAME_LENGTH  8       /* Length of file names. */
 
-#define  DB_REGION_ENV  "__db.001"  /* Primary environment name. */
+#define  DB_REGION_ENV  "__db.001"      /* Primary environment name. */
 
-#define  INVALID_REGION_SEGID  -1  /* Segment IDs are either shmget(2) or
-           * Win16 segment identifiers.  They are
-           * both stored in an "int", and we need
-           * an out-of-band value.
-           */
+#define  INVALID_REGION_SEGID  -1       /* Segment IDs are either shmget(2) or
+                                         * Win16 segment identifiers.  They are
+                                         * both stored in an "int", and we need
+                                         * an out-of-band value.
+                                         */
 /*
  * Currently, region offsets are limited to 32-bits.  I expect that's going
  * to have to be fixed in the not-too-distant future, since we won't want to
@@ -118,19 +118,21 @@ typedef u_int32_t roff_t;
 #define  INVALID_ROFF    0
 
 /* Reference describing system memory version of REGENV. */
-typedef struct __db_reg_env_ref {
-  roff_t     size;    /* Region size. */
-  int     segid;    /* shmget(2) ID. */
+typedef struct __db_reg_env_ref
+{
+  roff_t size;                  /* Region size. */
+  int segid;                    /* shmget(2) ID. */
 } REGENV_REF;
 
 /* Per-environment region information. */
-typedef struct __db_reg_env {
+typedef struct __db_reg_env
+{
   /*
    * !!!
    * The mutex must be the first entry in the structure to guarantee
    * correct alignment.
    */
-  MUTEX      mutex;    /* Environment mutex. */
+  MUTEX mutex;                  /* Environment mutex. */
 
   /*
    * !!!
@@ -156,34 +158,35 @@ typedef struct __db_reg_env {
    * it to determine if the memory has been zeroed since it was last used.
    */
 #define  DB_REGION_MAGIC  0x120897
-  u_int32_t  magic;    /* Valid region magic number. */
+  u_int32_t magic;              /* Valid region magic number. */
 
-  int     panic;    /* Environment is dead. */
+  int panic;                    /* Environment is dead. */
 
-  int     majver;    /* Major DB version number. */
-  int     minver;    /* Minor DB version number. */
-  int     patch;    /* Patch DB version number. */
+  int majver;                   /* Major DB version number. */
+  int minver;                   /* Minor DB version number. */
+  int patch;                    /* Patch DB version number. */
 
-          /* List of regions. */
-  SH_LIST_HEAD(__db_regionh) regionq;
+  /* List of regions. */
+    SH_LIST_HEAD (__db_regionh) regionq;
 
-  u_int32_t  refcnt;    /* References to the environment. */
+  u_int32_t refcnt;             /* References to the environment. */
 
-  size_t     pad;      /* Guarantee that following memory is
-           * size_t aligned.  This is necessary
-           * because we're going to store the
-           * allocation region information there.
-           */
+  size_t pad;                   /* Guarantee that following memory is
+                                 * size_t aligned.  This is necessary
+                                 * because we're going to store the
+                                 * allocation region information there.
+                                 */
 } REGENV;
 
 /* Per-region shared region information. */
-typedef struct __db_region {
+typedef struct __db_region
+{
   /*
    * !!!
    * The mutex must be the first entry in the structure to guarantee
    * correct alignment.
    */
-  MUTEX     mutex;    /* Region mutex. */
+  MUTEX mutex;                  /* Region mutex. */
 
   /*
    * !!!
@@ -191,49 +194,50 @@ typedef struct __db_region {
    * in both the environment and each shared region, as Windows/95 uses
    * it to determine if the memory has been zeroed since it was last used.
    */
-  u_int32_t  magic;
+  u_int32_t magic;
 
-  SH_LIST_ENTRY q;    /* Linked list of REGIONs. */
+  SH_LIST_ENTRY q;              /* Linked list of REGIONs. */
 
-  roff_t     size;    /* Region size in bytes. */
+  roff_t size;                  /* Region size in bytes. */
 
-  roff_t     primary;    /* Primary data structure offset. */
+  roff_t primary;               /* Primary data structure offset. */
 
-  int     segid;    /* UNIX shmget(2), Win16 segment ID. */
+  int segid;                    /* UNIX shmget(2), Win16 segment ID. */
 
-#define  REG_ID_INVALID  0    /* Invalid. */
-#define  REG_ID_ENV  1    /* Environment. */
-#define  REG_ID_LOCK  2    /* Lock region. */
-#define  REG_ID_LOG  3    /* Log region. */
-#define  REG_ID_MPOOL  4    /* Mpool region. */
-#define  REG_ID_TXN  5    /* Txn region. */
-#define  REG_ID_ASSIGN  (REG_ID_TXN + 1)/* First assignable region number. */
-  int     id;      /* Region id. */
+#define  REG_ID_INVALID  0      /* Invalid. */
+#define  REG_ID_ENV  1          /* Environment. */
+#define  REG_ID_LOCK  2         /* Lock region. */
+#define  REG_ID_LOG  3          /* Log region. */
+#define  REG_ID_MPOOL  4        /* Mpool region. */
+#define  REG_ID_TXN  5          /* Txn region. */
+#define  REG_ID_ASSIGN  (REG_ID_TXN + 1)        /* First assignable region number. */
+  int id;                       /* Region id. */
 
-#define  REG_DEAD  0x01    /* Region may be corrupted. */
-  u_int32_t  flags;
+#define  REG_DEAD  0x01         /* Region may be corrupted. */
+  u_int32_t flags;
 } REGION;
 
 /*
  * Per-process/per-attachment information about a single region.
  */
-struct __db_reginfo_t {    /* CDB___db_r_attach IN parameters. */
-  int      id;      /* Region id: used for naming. */
-  int      mode;    /* File creation mode. */
+struct __db_reginfo_t
+{                               /* CDB___db_r_attach IN parameters. */
+  int id;                       /* Region id: used for naming. */
+  int mode;                     /* File creation mode. */
 
-        /* CDB___db_r_attach OUT parameters. */
-  REGION     *rp;      /* Shared region. */
+  /* CDB___db_r_attach OUT parameters. */
+  REGION *rp;                   /* Shared region. */
 
-  char     *name;    /* Region file name. */
+  char *name;                   /* Region file name. */
 
-  void     *addr;    /* Region allocation address. */
-  void     *primary;    /* Primary data structure address. */
+  void *addr;                   /* Region allocation address. */
+  void *primary;                /* Primary data structure address. */
 
-  void     *wnt_handle;    /* Win/NT HANDLE. */
+  void *wnt_handle;             /* Win/NT HANDLE. */
 
 #define  REGION_CREATE    0x01  /* Caller created region. */
-#define  REGION_CREATE_OK  0x02  /* Caller willing to create region. */
-  u_int32_t   flags;
+#define  REGION_CREATE_OK  0x02 /* Caller willing to create region. */
+  u_int32_t flags;
 };
 
 /*

@@ -38,11 +38,11 @@ static const char sccsid[] = "@(#)os_fid.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: int CDB___os_fileid __P((DB_ENV *, const char *, int, u_int8_t *));
  */
 int
-CDB___os_fileid(dbenv, fname, timestamp, fidp)
-  DB_ENV *dbenv;
-  const char *fname;
-  int timestamp;
-  u_int8_t *fidp;
+CDB___os_fileid (dbenv, fname, timestamp, fidp)
+     DB_ENV *dbenv;
+     const char *fname;
+     int timestamp;
+     u_int8_t *fidp;
 {
   struct stat sb;
   size_t i;
@@ -50,12 +50,13 @@ CDB___os_fileid(dbenv, fname, timestamp, fidp)
   u_int8_t *p;
 
   /* Clear the buffer. */
-  memset(fidp, 0, DB_FILE_ID_LEN);
+  memset (fidp, 0, DB_FILE_ID_LEN);
 
   /* On POSIX/UNIX, use a dev/inode pair. */
-  if (stat(fname, &sb)) {
-    CDB___db_err(dbenv, "%s: %s", fname, strerror(CDB___os_get_errno()));
-    return (CDB___os_get_errno());
+  if (stat (fname, &sb))
+  {
+    CDB___db_err (dbenv, "%s: %s", fname, strerror (CDB___os_get_errno ()));
+    return (CDB___os_get_errno ());
   }
 
   /*
@@ -81,22 +82,23 @@ CDB___os_fileid(dbenv, fname, timestamp, fidp)
    * get the same 32-bit values if we truncate any returned 64-bit value
    * to a 32-bit value.
    */
-  tmp = (u_int32_t)sb.st_ino;
-  for (p = (u_int8_t *)&tmp, i = sizeof(u_int32_t); i > 0; --i)
+  tmp = (u_int32_t) sb.st_ino;
+  for (p = (u_int8_t *) & tmp, i = sizeof (u_int32_t); i > 0; --i)
     *fidp++ = *p++;
 
-  tmp = (u_int32_t)sb.st_dev;
-  for (p = (u_int8_t *)&tmp, i = sizeof(u_int32_t); i > 0; --i)
+  tmp = (u_int32_t) sb.st_dev;
+  for (p = (u_int8_t *) & tmp, i = sizeof (u_int32_t); i > 0; --i)
     *fidp++ = *p++;
 
-  if (timestamp) {
+  if (timestamp)
+  {
     /*
      * We want the number of seconds, not the high-order 0 bits,
      * so convert the returned time_t to a (potentially) smaller
      * fixed-size type.
      */
-    tmp = (u_int32_t)time(NULL);
-    for (p = (u_int8_t *)&tmp, i = sizeof(u_int32_t); i > 0; --i)
+    tmp = (u_int32_t) time (NULL);
+    for (p = (u_int8_t *) & tmp, i = sizeof (u_int32_t); i > 0; --i)
       *fidp++ = *p++;
   }
 

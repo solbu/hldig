@@ -21,18 +21,18 @@ static const char sccsid[] = "@(#)mp_sync.c  11.10 (Sleepycat) 10/29/99";
 #include "db_shash.h"
 #include "mp.h"
 
-static int CDB___bhcmp __P((const void *, const void *));
-static int CDB___memp_fsync __P((DB_MPOOLFILE *));
-static int CDB___memp_sballoc __P((DB_ENV *, BH ***, u_int32_t *));
+static int CDB___bhcmp __P ((const void *, const void *));
+static int CDB___memp_fsync __P ((DB_MPOOLFILE *));
+static int CDB___memp_sballoc __P ((DB_ENV *, BH ***, u_int32_t *));
 
 /*
  * CDB_memp_sync --
  *  Mpool sync function.
  */
 int
-CDB_memp_sync(dbenv, lsnp)
-  DB_ENV *dbenv;
-  DB_LSN *lsnp;
+CDB_memp_sync (dbenv, lsnp)
+     DB_ENV *dbenv;
+     DB_LSN *lsnp;
 {
   BH *bhp, **bharray;
   DB_MPOOL *dbmp;
@@ -43,14 +43,15 @@ CDB_memp_sync(dbenv, lsnp)
   u_int32_t ar_cnt, i, ndirty;
   int ret, retry_done, retry_need, wrote;
 
-  PANIC_CHECK(dbenv);
-  ENV_REQUIRES_CONFIG(dbenv, dbenv->mp_handle, DB_INIT_MPOOL);
+  PANIC_CHECK (dbenv);
+  ENV_REQUIRES_CONFIG (dbenv, dbenv->mp_handle, DB_INIT_MPOOL);
 
   dbmp = dbenv->mp_handle;
   mp = dbmp->reginfo.primary;
 
-  if (!F_ISSET(dbenv, DB_ENV_LOGGING)) {
-    CDB___db_err(dbenv, "CDB_memp_sync: requires logging");
+  if (!F_ISSET (dbenv, DB_ENV_LOGGING))
+  {
+    CDB___db_err (dbenv, "CDB_memp_sync: requires logging");
     return (EINVAL);
   }
 
@@ -62,10 +63,11 @@ CDB_memp_sync(dbenv, lsnp)
    * nothing special we have to do here other than deal with NULL
    * pointers.
    */
-  if (lsnp == NULL) {
-    ZERO_LSN(tlsn);
+  if (lsnp == NULL)
+  {
+    ZERO_LSN (tlsn);
     lsnp = &tlsn;
-    F_SET(mp, MP_LSN_RETRY);
+    F_SET (mp, MP_LSN_RETRY);
   }
 
   /*
@@ -76,7 +78,7 @@ CDB_memp_sync(dbenv, lsnp)
    * any application that has multiple checkpoint threads isn't what
    * I'd call trustworthy.
    */
-  MUTEX_LOCK(&mp->sync_mutex, dbenv->lockfhp);
+  MUTEX_LOCK (&mp->sync_mutex, dbenv->lockfhp);
 
   /*
    * If the application is asking about a previous call to CDB_memp_sync(),
@@ -86,17 +88,20 @@ CDB_memp_sync(dbenv, lsnp)
    * we've already handled or are currently handling, then we return a
    * result based on the count for the larger LSN.
    */
-  R_LOCK(dbenv, &dbmp->reginfo);
-  if (!IS_ZERO_LSN(*lsnp) &&
-      !F_ISSET(mp, MP_LSN_RETRY) && CDB_log_compare(lsnp, &mp->lsn) <= 0) {
-    if (mp->lsn_cnt == 0) {
+  R_LOCK (dbenv, &dbmp->reginfo);
+  if (!IS_ZERO_LSN (*lsnp) &&
+      !F_ISSET (mp, MP_LSN_RETRY) && CDB_log_compare (lsnp, &mp->lsn) <= 0)
+  {
+    if (mp->lsn_cnt == 0)
+    {
       *lsnp = mp->lsn;
       ret = 0;
-    } else
+    }
+    else
       ret = DB_INCOMPLETE;
 
-    R_UNLOCK(dbenv, &dbmp->reginfo);
-    MUTEX_UNLOCK(&mp->sync_mutex);
+    R_UNLOCK (dbenv, &dbmp->reginfo);
+    MUTEX_UNLOCK (&mp->sync_mutex);
     return (ret);
   }
 
@@ -109,13 +114,14 @@ CDB_memp_sync(dbenv, lsnp)
    * continuing forward.
    */
   if ((ret =
-      CDB___memp_sballoc(dbenv, &bharray, &ndirty)) != 0 || ndirty == 0) {
-    MUTEX_UNLOCK(&mp->sync_mutex);
+       CDB___memp_sballoc (dbenv, &bharray, &ndirty)) != 0 || ndirty == 0)
+  {
+    MUTEX_UNLOCK (&mp->sync_mutex);
     return (ret);
   }
 
   retry_done = 0;
-retry:  retry_need = 0;
+retry:retry_need = 0;
   /*
    * Start a new checkpoint.
    *
@@ -141,10 +147,10 @@ retry:  retry_need = 0;
    * Clear the retry flag.
    */
   mp->lsn_cnt = 0;
-  for (mfp = SH_TAILQ_FIRST(&mp->mpfq, __mpoolfile);
-      mfp != NULL; mfp = SH_TAILQ_NEXT(mfp, q, __mpoolfile))
+  for (mfp = SH_TAILQ_FIRST (&mp->mpfq, __mpoolfile);
+       mfp != NULL; mfp = SH_TAILQ_NEXT (mfp, q, __mpoolfile))
     mfp->lsn_cnt = 0;
-  F_CLR(mp, MP_LSN_RETRY);
+  F_CLR (mp, MP_LSN_RETRY);
 
   /*
    * Walk each cache's list of buffers and mark all dirty buffers to be
@@ -159,17 +165,20 @@ retry:  retry_need = 0;
    * Keep a count of the total number of buffers we need to write in
    * MPOOL->lsn_cnt, and for each file, in MPOOLFILE->lsn_count.
    */
-  for (ar_cnt = 0, i = 0; i < mp->nc_reg; ++i) {
+  for (ar_cnt = 0, i = 0; i < mp->nc_reg; ++i)
+  {
     mc = dbmp->c_reginfo[i].primary;
 
-    for (bhp = SH_TAILQ_FIRST(&mc->bhq, __bh);
-        bhp != NULL; bhp = SH_TAILQ_NEXT(bhp, q, __bh)) {
-      if (F_ISSET(bhp, BH_DIRTY) || bhp->ref != 0) {
-        F_SET(bhp, BH_WRITE);
+    for (bhp = SH_TAILQ_FIRST (&mc->bhq, __bh);
+         bhp != NULL; bhp = SH_TAILQ_NEXT (bhp, q, __bh))
+    {
+      if (F_ISSET (bhp, BH_DIRTY) || bhp->ref != 0)
+      {
+        F_SET (bhp, BH_WRITE);
 
         ++mp->lsn_cnt;
 
-        mfp = R_ADDR(&dbmp->reginfo, bhp->mf_offset);
+        mfp = R_ADDR (&dbmp->reginfo, bhp->mf_offset);
         ++mfp->lsn_cnt;
 
         /*
@@ -183,30 +192,33 @@ retry:  retry_need = 0;
          * array while holding a region lock, so we set
          * a flag and deal with it later.
          */
-        if (bhp->ref == 0) {
+        if (bhp->ref == 0)
+        {
           ++bhp->ref;
           bharray[ar_cnt] = bhp;
 
-          if (++ar_cnt >= ndirty) {
+          if (++ar_cnt >= ndirty)
+          {
             retry_need = 1;
             break;
           }
         }
-      } else
-        if (F_ISSET(bhp, BH_WRITE))
-          F_CLR(bhp, BH_WRITE);
+      }
+      else if (F_ISSET (bhp, BH_WRITE))
+        F_CLR (bhp, BH_WRITE);
     }
     if (ar_cnt >= ndirty)
       break;
   }
 
   /* If there no buffers we can write immediately, we're done. */
-  if (ar_cnt == 0) {
+  if (ar_cnt == 0)
+  {
     ret = mp->lsn_cnt ? DB_INCOMPLETE : 0;
     goto done;
   }
 
-  R_UNLOCK(dbenv, &dbmp->reginfo);
+  R_UNLOCK (dbenv, &dbmp->reginfo);
 
   /*
    * Sort the buffers we're going to write immediately.
@@ -216,12 +228,13 @@ retry:  retry_need = 0;
    * number of writes.
    */
   if (ar_cnt > 1)
-    qsort(bharray, ar_cnt, sizeof(BH *), CDB___bhcmp);
+    qsort (bharray, ar_cnt, sizeof (BH *), CDB___bhcmp);
 
-  R_LOCK(dbenv, &dbmp->reginfo);
+  R_LOCK (dbenv, &dbmp->reginfo);
 
   /* Walk the array, writing buffers. */
-  for (i = 0; i < ar_cnt; ++i) {
+  for (i = 0; i < ar_cnt; ++i)
+  {
     /*
      * It's possible for a thread to have gotten the buffer since
      * we listed it for writing.  If the reference count is still
@@ -229,14 +242,15 @@ retry:  retry_need = 0;
      * If it's >1, then skip the buffer and assume that it will be
      * written when it's returned to the cache.
      */
-    if (bharray[i]->ref > 1) {
+    if (bharray[i]->ref > 1)
+    {
       --bharray[i]->ref;
       continue;
     }
 
     /* Write the buffer. */
-    mfp = R_ADDR(&dbmp->reginfo, bharray[i]->mf_offset);
-    ret = CDB___memp_bhwrite(dbmp, mfp, bharray[i], NULL, &wrote);
+    mfp = R_ADDR (&dbmp->reginfo, bharray[i]->mf_offset);
+    ret = CDB___memp_bhwrite (dbmp, mfp, bharray[i], NULL, &wrote);
 
     /* Release the buffer. */
     --bharray[i]->ref;
@@ -249,9 +263,10 @@ retry:  retry_need = 0;
      * be able to write to any underlying file. Be understanding,
      * but firm, on this point.
      */
-    if (ret == 0) {
-      CDB___db_err(dbenv, "%s: unable to flush page: %lu",
-          CDB___memp_fns(dbmp, mfp), (u_long)bharray[i]->pgno);
+    if (ret == 0)
+    {
+      CDB___db_err (dbenv, "%s: unable to flush page: %lu",
+                    CDB___memp_fns (dbmp, mfp), (u_long) bharray[i]->pgno);
       ret = EPERM;
     }
 
@@ -266,8 +281,8 @@ retry:  retry_need = 0;
      *
      * they don't make any difference.
      */
-    ZERO_LSN(mp->lsn);
-    F_SET(mp, MP_LSN_RETRY);
+    ZERO_LSN (mp->lsn);
+    F_SET (mp, MP_LSN_RETRY);
 
     /* Release any buffers we're still pinning down. */
     while (++i < ar_cnt)
@@ -287,20 +302,24 @@ retry:  retry_need = 0;
    * the global retry flag, we'll have to start from scratch on the next
    * checkpoint.
    */
-  if (retry_need) {
-    if (retry_done) {
+  if (retry_need)
+  {
+    if (retry_done)
+    {
       ret = DB_INCOMPLETE;
-      F_SET(mp, MP_LSN_RETRY);
-    } else {
+      F_SET (mp, MP_LSN_RETRY);
+    }
+    else
+    {
       retry_done = 1;
       goto retry;
     }
   }
 
-done:  R_UNLOCK(dbenv, &dbmp->reginfo);
-  MUTEX_UNLOCK(&mp->sync_mutex);
+done:R_UNLOCK (dbenv, &dbmp->reginfo);
+  MUTEX_UNLOCK (&mp->sync_mutex);
 
-  CDB___os_free(bharray, ndirty * sizeof(BH *));
+  CDB___os_free (bharray, ndirty * sizeof (BH *));
 
   return (ret);
 }
@@ -310,8 +329,8 @@ done:  R_UNLOCK(dbenv, &dbmp->reginfo);
  *  Mpool file sync function.
  */
 int
-CDB_memp_fsync(dbmfp)
-  DB_MPOOLFILE *dbmfp;
+CDB_memp_fsync (dbmfp)
+     DB_MPOOLFILE *dbmfp;
 {
   DB_ENV *dbenv;
   DB_MPOOL *dbmp;
@@ -320,23 +339,23 @@ CDB_memp_fsync(dbmfp)
   dbmp = dbmfp->dbmp;
   dbenv = dbmp->dbenv;
 
-  PANIC_CHECK(dbenv);
+  PANIC_CHECK (dbenv);
 
   /*
    * If this handle doesn't have a file descriptor that's open for
    * writing, or if the file is a temporary, there's no reason to
    * proceed further.
    */
-  if (F_ISSET(dbmfp, MP_READONLY))
+  if (F_ISSET (dbmfp, MP_READONLY))
     return (0);
 
-  R_LOCK(dbenv, &dbmp->reginfo);
-  is_tmp = F_ISSET(dbmfp->mfp, MP_TEMP);
-  R_UNLOCK(dbenv, &dbmp->reginfo);
+  R_LOCK (dbenv, &dbmp->reginfo);
+  is_tmp = F_ISSET (dbmfp->mfp, MP_TEMP);
+  R_UNLOCK (dbenv, &dbmp->reginfo);
   if (is_tmp)
     return (0);
 
-  return (CDB___memp_fsync(dbmfp));
+  return (CDB___memp_fsync (dbmfp));
 }
 
 /*
@@ -346,9 +365,9 @@ CDB_memp_fsync(dbmfp)
  * PUBLIC: int CDB___mp_xxx_fh __P((DB_MPOOLFILE *, DB_FH **));
  */
 int
-CDB___mp_xxx_fh(dbmfp, fhp)
-  DB_MPOOLFILE *dbmfp;
-  DB_FH **fhp;
+CDB___mp_xxx_fh (dbmfp, fhp)
+     DB_MPOOLFILE *dbmfp;
+     DB_FH **fhp;
 {
   /*
    * This is a truly spectacular layering violation, intended ONLY to
@@ -365,7 +384,7 @@ CDB___mp_xxx_fh(dbmfp, fhp)
    * we get a file descriptor to return.
    */
   *fhp = &dbmfp->fh;
-  return (F_ISSET(&dbmfp->fh, DB_FH_VALID) ? 0 : CDB___memp_fsync(dbmfp));
+  return (F_ISSET (&dbmfp->fh, DB_FH_VALID) ? 0 : CDB___memp_fsync (dbmfp));
 }
 
 /*
@@ -373,8 +392,8 @@ CDB___mp_xxx_fh(dbmfp, fhp)
  *  Mpool file internal sync function.
  */
 static int
-CDB___memp_fsync(dbmfp)
-  DB_MPOOLFILE *dbmfp;
+CDB___memp_fsync (dbmfp)
+     DB_MPOOLFILE *dbmfp;
 {
   BH *bhp, **bharray;
   DB_ENV *dbenv;
@@ -389,7 +408,7 @@ CDB___memp_fsync(dbmfp)
   dbenv = dbmp->dbenv;
   mp = dbmp->reginfo.primary;
 
-  R_LOCK(dbenv, &dbmp->reginfo);
+  R_LOCK (dbenv, &dbmp->reginfo);
 
   /*
    * Allocate room for a list of buffers, and decide how many buffers
@@ -400,11 +419,11 @@ CDB___memp_fsync(dbmfp)
    * continuing forward.
    */
   if ((ret =
-      CDB___memp_sballoc(dbenv, &bharray, &ndirty)) != 0 || ndirty == 0)
+       CDB___memp_sballoc (dbenv, &bharray, &ndirty)) != 0 || ndirty == 0)
     return (ret);
 
   retry_done = 0;
-retry:  retry_need = 0;
+retry:retry_need = 0;
   /*
    * Walk each cache's list of buffers and mark all dirty buffers to be
    * written and all pinned buffers to be potentially written (we can't
@@ -413,16 +432,18 @@ retry:  retry_need = 0;
    * so that processes can't make new buffers dirty, causing us to never
    * finish.
    */
-  mf_offset = R_OFFSET(&dbmp->reginfo, dbmfp->mfp);
-  for (ar_cnt = 0, incomplete = 0, i = 0; i < mp->nc_reg; ++i) {
+  mf_offset = R_OFFSET (&dbmp->reginfo, dbmfp->mfp);
+  for (ar_cnt = 0, incomplete = 0, i = 0; i < mp->nc_reg; ++i)
+  {
     mc = dbmp->c_reginfo[i].primary;
 
-    for (bhp = SH_TAILQ_FIRST(&mc->bhq, __bh);
-        bhp != NULL; bhp = SH_TAILQ_NEXT(bhp, q, __bh)) {
-      if (!F_ISSET(bhp, BH_DIRTY) ||
-          bhp->mf_offset != mf_offset)
+    for (bhp = SH_TAILQ_FIRST (&mc->bhq, __bh);
+         bhp != NULL; bhp = SH_TAILQ_NEXT (bhp, q, __bh))
+    {
+      if (!F_ISSET (bhp, BH_DIRTY) || bhp->mf_offset != mf_offset)
         continue;
-      if (bhp->ref != 0 || F_ISSET(bhp, BH_LOCKED)) {
+      if (bhp->ref != 0 || F_ISSET (bhp, BH_LOCKED))
+      {
         incomplete = 1;
         continue;
       }
@@ -440,7 +461,8 @@ retry:  retry_need = 0;
        */
       ++bhp->ref;
       bharray[ar_cnt] = bhp;
-      if (++ar_cnt >= ndirty) {
+      if (++ar_cnt >= ndirty)
+      {
         retry_need = 1;
         break;
       }
@@ -450,21 +472,23 @@ retry:  retry_need = 0;
   }
 
   /* If there no buffers we can write immediately, we're done. */
-  if (ar_cnt == 0) {
+  if (ar_cnt == 0)
+  {
     ret = 0;
     goto done;
   }
 
-  R_UNLOCK(dbenv, &dbmp->reginfo);
+  R_UNLOCK (dbenv, &dbmp->reginfo);
 
   /* Sort the buffers we're going to write. */
   if (ar_cnt > 1)
-    qsort(bharray, ar_cnt, sizeof(BH *), CDB___bhcmp);
+    qsort (bharray, ar_cnt, sizeof (BH *), CDB___bhcmp);
 
-  R_LOCK(dbenv, &dbmp->reginfo);
+  R_LOCK (dbenv, &dbmp->reginfo);
 
   /* Walk the array, writing buffers. */
-  for (i = 0; i < ar_cnt;) {
+  for (i = 0; i < ar_cnt;)
+  {
     /*
      * It's possible for a thread to have gotten the buffer since
      * we listed it for writing.  If the reference count is still
@@ -472,19 +496,21 @@ retry:  retry_need = 0;
      * If it's >1, then skip the buffer and assume that it will be
      * written when it's returned to the cache.
      */
-    if (bharray[i]->ref > 1) {
+    if (bharray[i]->ref > 1)
+    {
       incomplete = 1;
       --bharray[i++]->ref;
       continue;
     }
 
     /* Write the buffer. */
-    ret = CDB___memp_pgwrite(dbmp, dbmfp, bharray[i], NULL, &wrote);
+    ret = CDB___memp_pgwrite (dbmp, dbmfp, bharray[i], NULL, &wrote);
 
     /* Release the buffer. */
     --bharray[i++]->ref;
 
-    if (ret == 0) {
+    if (ret == 0)
+    {
       if (!wrote)
         incomplete = 1;
       continue;
@@ -507,18 +533,20 @@ retry:  retry_need = 0;
    * other thread of control is dirtying buffers as fast as we're writing
    * them, and we might as well give up.
    */
-  if (retry_need) {
+  if (retry_need)
+  {
     if (retry_done)
       incomplete = 1;
-    else {
+    else
+    {
       retry_done = 1;
       goto retry;
     }
   }
 
-done:  R_UNLOCK(dbenv, &dbmp->reginfo);
+done:R_UNLOCK (dbenv, &dbmp->reginfo);
 
-  CDB___os_free(bharray, ndirty * sizeof(BH *));
+  CDB___os_free (bharray, ndirty * sizeof (BH *));
 
   /*
    * Sync the underlying file as the last thing we do, so that the OS
@@ -529,7 +557,7 @@ done:  R_UNLOCK(dbenv, &dbmp->reginfo);
    * issues.
    */
   if (ret == 0)
-    ret = incomplete ? DB_INCOMPLETE : CDB___os_fsync(&dbmfp->fh);
+    ret = incomplete ? DB_INCOMPLETE : CDB___os_fsync (&dbmfp->fh);
 
   return (ret);
 }
@@ -539,10 +567,10 @@ done:  R_UNLOCK(dbenv, &dbmp->reginfo);
  *  Allocate room for a list of buffers.
  */
 static int
-CDB___memp_sballoc(dbenv, bharrayp, ndirtyp)
-  DB_ENV *dbenv;
-  BH ***bharrayp;
-  u_int32_t *ndirtyp;
+CDB___memp_sballoc (dbenv, bharrayp, ndirtyp)
+     DB_ENV *dbenv;
+     BH ***bharrayp;
+     u_int32_t *ndirtyp;
 {
   DB_MPOOL *dbmp;
   MCACHE *mc;
@@ -563,13 +591,15 @@ CDB___memp_sballoc(dbenv, bharrayp, ndirtyp)
    * Make a point of not holding the region lock across the library
    * allocation call.
    */
-  for (nclean = ndirty = 0, i = 0; i < mp->nc_reg; ++i) {
+  for (nclean = ndirty = 0, i = 0; i < mp->nc_reg; ++i)
+  {
     mc = dbmp->c_reginfo[i].primary;
     ndirty += mc->stat.st_page_dirty;
     nclean += mc->stat.st_page_clean;
   }
-  R_UNLOCK(dbenv, &dbmp->reginfo);
-  if (ndirty == 0) {
+  R_UNLOCK (dbenv, &dbmp->reginfo);
+  if (ndirty == 0)
+  {
     *ndirtyp = 0;
     return (0);
   }
@@ -592,24 +622,24 @@ CDB___memp_sballoc(dbenv, bharrayp, ndirtyp)
   ndirty += ndirty / 2 + 10;
   if (ndirty > maxpin)
     ndirty = maxpin;
-  if ((ret = CDB___os_malloc(ndirty * sizeof(BH *), NULL, bharrayp)) != 0)
+  if ((ret = CDB___os_malloc (ndirty * sizeof (BH *), NULL, bharrayp)) != 0)
     return (ret);
 
   *ndirtyp = ndirty;
 
-  R_LOCK(dbenv, &dbmp->reginfo);
+  R_LOCK (dbenv, &dbmp->reginfo);
 
   return (0);
 }
 
 static int
-CDB___bhcmp(p1, p2)
-  const void *p1, *p2;
+CDB___bhcmp (p1, p2)
+     const void *p1, *p2;
 {
   BH *bhp1, *bhp2;
 
-  bhp1 = *(BH * const *)p1;
-  bhp2 = *(BH * const *)p2;
+  bhp1 = *(BH * const *) p1;
+  bhp2 = *(BH * const *) p2;
 
   /* Sort by file (shared memory pool offset). */
   if (bhp1->mf_offset < bhp2->mf_offset)

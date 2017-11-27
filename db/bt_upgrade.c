@@ -24,7 +24,7 @@ static const char sccsid[] = "@(#)bt_upgrade.c  11.5 (Sleepycat) 10/20/99";
 #include "btree.h"
 #include "db_am.h"
 
-static int CDB___bam_upgrade6 __P((DB *, int, char *, DB_FH *));
+static int CDB___bam_upgrade6 __P ((DB *, int, char *, DB_FH *));
 
 /*
  * CDB___bam_upgrade --
@@ -33,11 +33,11 @@ static int CDB___bam_upgrade6 __P((DB *, int, char *, DB_FH *));
  * PUBLIC: int CDB___bam_upgrade __P((DB *, int, char *, DB_FH *, char *));
  */
 int
-CDB___bam_upgrade(dbp, swapped, real_name, fhp, mbuf)
-  DB *dbp;
-  int swapped;
-  char *real_name, *mbuf;
-  DB_FH *fhp;
+CDB___bam_upgrade (dbp, swapped, real_name, fhp, mbuf)
+     DB *dbp;
+     int swapped;
+     char *real_name, *mbuf;
+     DB_FH *fhp;
 {
   DB_ENV *dbenv;
   int ret;
@@ -45,16 +45,17 @@ CDB___bam_upgrade(dbp, swapped, real_name, fhp, mbuf)
   dbenv = dbp->dbenv;
 
   /* Check the version. */
-  switch (((DBMETA *)mbuf)->version) {
+  switch (((DBMETA *) mbuf)->version)
+  {
   case 6:
-    if ((ret = CDB___bam_upgrade6(dbp, swapped, real_name, fhp)) != 0)
+    if ((ret = CDB___bam_upgrade6 (dbp, swapped, real_name, fhp)) != 0)
       return (ret);
     /* FALLTHROUGH */
   case 7:
     break;
   default:
-    CDB___db_err(dbenv, "%s: unsupported btree version: %lu",
-        real_name, (u_long)((DBMETA *)mbuf)->version);
+    CDB___db_err (dbenv, "%s: unsupported btree version: %lu",
+                  real_name, (u_long) ((DBMETA *) mbuf)->version);
     return (DB_OLD_VERSION);
   }
   return (0);
@@ -65,11 +66,11 @@ CDB___bam_upgrade(dbp, swapped, real_name, fhp, mbuf)
  *  Upgrade the database from version 6 to version 7.
  */
 static int
-CDB___bam_upgrade6(dbp, swapped, real_name, fhp)
-  DB *dbp;
-  int swapped;
-  char *real_name;
-  DB_FH *fhp;
+CDB___bam_upgrade6 (dbp, swapped, real_name, fhp)
+     DB *dbp;
+     int swapped;
+     char *real_name;
+     DB_FH *fhp;
 {
   DB_ENV *dbenv;
   ssize_t n;
@@ -80,16 +81,16 @@ CDB___bam_upgrade6(dbp, swapped, real_name, fhp)
   dbenv = dbp->dbenv;
 
   if (dbp->db_feedback != NULL)
-    dbp->db_feedback(dbp, DB_UPGRADE, 0);
+    dbp->db_feedback (dbp, DB_UPGRADE, 0);
 
   /*
    * Seek to the beginning of the file and read the metadata page.  We
    * read 256 bytes, which is larger than any access method's metadata
    * page.
    */
-  if ((ret = CDB___os_seek(fhp, 0, 0, 0, 0, DB_OS_SEEK_SET)) != 0)
+  if ((ret = CDB___os_seek (fhp, 0, 0, 0, 0, DB_OS_SEEK_SET)) != 0)
     return (ret);
-  if ((ret = CDB___os_read(fhp, buf, sizeof(buf), &n)) != 0)
+  if ((ret = CDB___os_read (fhp, buf, sizeof (buf), &n)) != 0)
     return (ret);
 
   /*
@@ -119,16 +120,16 @@ CDB___bam_upgrade6(dbp, swapped, real_name, fhp)
    */
 
   /* 64-71 done: Move re_len and re_pad */
-  memmove(buf + 64, buf + 40, 8);
+  memmove (buf + 64, buf + 40, 8);
 
   /* 56-63 done: Move maxkey and minkey */
-  memmove(buf + 56, buf + 24, 8);
+  memmove (buf + 56, buf + 24, 8);
 
   /* 16-19 done: Update the version. */
   tmp = 7;
   if (swapped)
-    M_32_SWAP(tmp);
-  memcpy(buf + 16, &tmp, sizeof(u_int32_t));
+    M_32_SWAP (tmp);
+  memcpy (buf + 16, &tmp, sizeof (u_int32_t));
 
   /*  0-23 done: Bytes 0-24 are unchanged. */
   p = buf + 24;
@@ -140,28 +141,28 @@ CDB___bam_upgrade6(dbp, swapped, real_name, fhp)
   *p = '\0';
 
   /* 28-35 done: Move free and flags */
-  memmove(buf + 28, buf + 32, 8);
+  memmove (buf + 28, buf + 32, 8);
 
   /* 36-55 done: Replace the unique ID. */
-  if ((ret = CDB___os_fileid(dbenv, real_name, 1, buf + 36)) != 0)
+  if ((ret = CDB___os_fileid (dbenv, real_name, 1, buf + 36)) != 0)
     return (ret);
 
   /* 72-75 done: Set the root page. */
   tmp = 1;
   if (swapped)
-    M_32_SWAP(tmp);
-  memcpy(buf + 72, &tmp, sizeof(u_int32_t));
+    M_32_SWAP (tmp);
+  memcpy (buf + 72, &tmp, sizeof (u_int32_t));
 
-          /* Write the metadata page out. */
-  if ((ret = CDB___os_seek(fhp, 0, 0, 0, 1, DB_OS_SEEK_SET)) != 0)
+  /* Write the metadata page out. */
+  if ((ret = CDB___os_seek (fhp, 0, 0, 0, 1, DB_OS_SEEK_SET)) != 0)
     return (ret);
-  if ((ret = CDB___os_write(fhp, buf, 128, &n)) != 0)
+  if ((ret = CDB___os_write (fhp, buf, 128, &n)) != 0)
     return (ret);
-  if ((ret = CDB___os_fsync(fhp)) != 0)
+  if ((ret = CDB___os_fsync (fhp)) != 0)
     return (ret);
 
   if (dbp->db_feedback != NULL)
-    dbp->db_feedback(dbp, DB_UPGRADE, 100);
+    dbp->db_feedback (dbp, DB_UPGRADE, 100);
 
   return (0);
 }

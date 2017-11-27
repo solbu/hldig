@@ -331,4 +331,4 @@ struct {                \
     SH_CIRCLEQ_PREVP(elm, field, type)->field.scqe_next +=  \
         (elm)->field.scqe_next;        \
 } while (0)
-#endif  /* !_SYS_SHQUEUE_H_ */
+#endif /* !_SYS_SHQUEUE_H_ */

@@ -35,11 +35,12 @@ static const char sccsid[] = "@(#)db_byteorder.c  11.1 (Sleepycat) 7/24/99";
  * PUBLIC: int CDB___db_byteorder __P((DB_ENV *, int));
  */
 int
-CDB___db_byteorder(dbenv, lorder)
-  DB_ENV *dbenv;
-  int lorder;
+CDB___db_byteorder (dbenv, lorder)
+     DB_ENV *dbenv;
+     int lorder;
 {
-  switch (lorder) {
+  switch (lorder)
+  {
   case 0:
     break;
   case 1234:
@@ -55,8 +56,8 @@ CDB___db_byteorder(dbenv, lorder)
     return (DB_SWAPBYTES);
 #endif
   default:
-    CDB___db_err(dbenv,
-      "unsupported byte order, only big and little-endian supported");
+    CDB___db_err (dbenv,
+                  "unsupported byte order, only big and little-endian supported");
     return (EINVAL);
   }
   return (0);

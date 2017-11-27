@@ -15,25 +15,25 @@ static const char sccsid[] = "@(#)os_dir.c  11.1 (Sleepycat) 7/25/99";
 #include <sys/types.h>
 
 #if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
+#include <dirent.h>
+#define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# endif
+#define dirent direct
+#define NAMLEN(dirent) (dirent)->d_namlen
+#if HAVE_SYS_NDIR_H
+#include <sys/ndir.h>
+#endif
+#if HAVE_SYS_DIR_H
+#include <sys/dir.h>
+#endif
+#if HAVE_NDIR_H
+#include <ndir.h>
+#endif
 #endif
 
 #endif
 
-#ifdef _MSC_VER /* _WIN32 */
+#ifdef _MSC_VER                 /* _WIN32 */
 #include "dirent_local.h"
 #endif
 
@@ -47,10 +47,10 @@ static const char sccsid[] = "@(#)os_dir.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: int CDB___os_dirlist __P((const char *, char ***, int *));
  */
 int
-CDB___os_dirlist(dir, namesp, cntp)
-  const char *dir;
-  char ***namesp;
-  int *cntp;
+CDB___os_dirlist (dir, namesp, cntp)
+     const char *dir;
+     char ***namesp;
+     int *cntp;
 {
   struct dirent *dp;
   DIR *dirp;
@@ -58,29 +58,31 @@ CDB___os_dirlist(dir, namesp, cntp)
   char **names;
 
   if (CDB___db_jump.j_dirlist != NULL)
-    return (CDB___db_jump.j_dirlist(dir, namesp, cntp));
+    return (CDB___db_jump.j_dirlist (dir, namesp, cntp));
 
-  if ((dirp = opendir(dir)) == NULL)
-    return (CDB___os_get_errno());
+  if ((dirp = opendir (dir)) == NULL)
+    return (CDB___os_get_errno ());
   names = NULL;
-  for (arraysz = cnt = 0; (dp = readdir(dirp)) != NULL; ++cnt) {
-    if (cnt >= arraysz) {
+  for (arraysz = cnt = 0; (dp = readdir (dirp)) != NULL; ++cnt)
+  {
+    if (cnt >= arraysz)
+    {
       arraysz += 100;
-      if ((ret = CDB___os_realloc(
-          arraysz * sizeof(names[0]), NULL, &names)) != 0)
+      if ((ret =
+           CDB___os_realloc (arraysz * sizeof (names[0]), NULL, &names)) != 0)
         goto nomem;
     }
-    if ((ret = CDB___os_strdup(dp->d_name, &names[cnt])) != 0)
+    if ((ret = CDB___os_strdup (dp->d_name, &names[cnt])) != 0)
       goto nomem;
   }
-  (void)closedir(dirp);
+  (void) closedir (dirp);
 
   *namesp = names;
   *cntp = cnt;
   return (0);
 
-nomem:  if (names != NULL)
-    CDB___os_dirfree(names, cnt);
+nomem:if (names != NULL)
+    CDB___os_dirfree (names, cnt);
   return (ret);
 }
 
@@ -91,14 +93,14 @@ nomem:  if (names != NULL)
  * PUBLIC: void CDB___os_dirfree __P((char **, int));
  */
 void
-CDB___os_dirfree(names, cnt)
-  char **names;
-  int cnt;
+CDB___os_dirfree (names, cnt)
+     char **names;
+     int cnt;
 {
   if (CDB___db_jump.j_dirfree != NULL)
-    CDB___db_jump.j_dirfree(names, cnt);
+    CDB___db_jump.j_dirfree (names, cnt);
 
   while (cnt > 0)
-    CDB___os_free(names[--cnt], 0);
-  CDB___os_free(names, 0);
+    CDB___os_free (names[--cnt], 0);
+  CDB___os_free (names, 0);
 }

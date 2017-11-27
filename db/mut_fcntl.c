@@ -32,19 +32,20 @@ static const char sccsid[] = "@(#)mut_fcntl.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: int CDB___db_fcntl_mutex_init __P((DB_ENV *, MUTEX *, u_int32_t));
  */
 int
-CDB___db_fcntl_mutex_init(dbenv, mutexp, offset)
-  DB_ENV *dbenv;
-  MUTEX *mutexp;
-  u_int32_t offset;
+CDB___db_fcntl_mutex_init (dbenv, mutexp, offset)
+     DB_ENV *dbenv;
+     MUTEX *mutexp;
+     u_int32_t offset;
 {
-  memset(mutexp, 0, sizeof(*mutexp));
+  memset (mutexp, 0, sizeof (*mutexp));
 
   /*
    * This is where we decide to ignore locks we don't need to set -- if
    * the application is private, we don't need any locks.
    */
-  if (F_ISSET(dbenv, DB_ENV_PRIVATE)) {
-    F_SET(mutexp, MUTEX_IGNORE);
+  if (F_ISSET (dbenv, DB_ENV_PRIVATE))
+  {
+    F_SET (mutexp, MUTEX_IGNORE);
     return (0);
   }
 
@@ -60,14 +61,14 @@ CDB___db_fcntl_mutex_init(dbenv, mutexp, offset)
  * PUBLIC: int CDB___db_fcntl_mutex_lock __P((MUTEX *, DB_FH *));
  */
 int
-CDB___db_fcntl_mutex_lock(mutexp, fhp)
-  MUTEX *mutexp;
-  DB_FH *fhp;
+CDB___db_fcntl_mutex_lock (mutexp, fhp)
+     MUTEX *mutexp;
+     DB_FH *fhp;
 {
   struct flock k_lock;
   int locked, ms, waited;
 
-  if (!DB_GLOBAL(db_mutexlocks))
+  if (!DB_GLOBAL (db_mutexlocks))
     return (0);
 
   /* Initialize the lock. */
@@ -75,33 +76,36 @@ CDB___db_fcntl_mutex_lock(mutexp, fhp)
   k_lock.l_start = mutexp->off;
   k_lock.l_len = 1;
 
-  for (locked = waited = 0;;) {
+  for (locked = waited = 0;;)
+  {
     /*
      * Wait for the lock to become available; wait 1ms initially,
      * up to 1 second.
      */
-    for (ms = 1; mutexp->pid != 0;) {
+    for (ms = 1; mutexp->pid != 0;)
+    {
       waited = 1;
-      CDB___os_yield(ms * USEC_PER_MS);
+      CDB___os_yield (ms * USEC_PER_MS);
       if ((ms <<= 1) > MS_PER_SEC)
         ms = MS_PER_SEC;
     }
 
     /* Acquire an exclusive kernel lock. */
     k_lock.l_type = F_WRLCK;
-    if (fcntl(fhp->fd, F_SETLKW, &k_lock))
-      return (CDB___os_get_errno());
+    if (fcntl (fhp->fd, F_SETLKW, &k_lock))
+      return (CDB___os_get_errno ());
 
     /* If the resource is still available, it's ours. */
-    if (mutexp->pid == 0) {
+    if (mutexp->pid == 0)
+    {
       locked = 1;
-      mutexp->pid = (u_int32_t)getpid();
+      mutexp->pid = (u_int32_t) getpid ();
     }
 
     /* Release the kernel lock. */
     k_lock.l_type = F_UNLCK;
-    if (fcntl(fhp->fd, F_SETLK, &k_lock))
-      return (CDB___os_get_errno());
+    if (fcntl (fhp->fd, F_SETLK, &k_lock))
+      return (CDB___os_get_errno ());
 
     /*
      * If we got the resource lock we're done.
@@ -130,10 +134,10 @@ CDB___db_fcntl_mutex_lock(mutexp, fhp)
  * PUBLIC: int CDB___db_fcntl_mutex_unlock __P((MUTEX *));
  */
 int
-CDB___db_fcntl_mutex_unlock(mutexp)
-  MUTEX *mutexp;
+CDB___db_fcntl_mutex_unlock (mutexp)
+     MUTEX *mutexp;
 {
-  if (!DB_GLOBAL(db_mutexlocks))
+  if (!DB_GLOBAL (db_mutexlocks))
     return (0);
 
 #ifdef DIAGNOSTIC
@@ -142,7 +146,7 @@ CDB___db_fcntl_mutex_unlock(mutexp)
 #define  STDERR_FILENO  2
 #endif
   if (mutexp->pid == 0)
-    write(STDERR_FILENO, MSG, sizeof(MSG) - 1);
+    write (STDERR_FILENO, MSG, sizeof (MSG) - 1);
 #endif
 
   /*

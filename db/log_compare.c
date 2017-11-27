@@ -7,7 +7,8 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)CDB_log_compare.c  11.1 (Sleepycat) 7/24/99";
+static const char sccsid[] =
+  "@(#)CDB_log_compare.c  11.1 (Sleepycat) 7/24/99";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,8 +22,8 @@ static const char sccsid[] = "@(#)CDB_log_compare.c  11.1 (Sleepycat) 7/24/99";
  *  Compare two LSN's; return 1, 0, -1 if first is >, == or < second.
  */
 int
-CDB_log_compare(lsn0, lsn1)
-  const DB_LSN *lsn0, *lsn1;
+CDB_log_compare (lsn0, lsn1)
+     const DB_LSN *lsn0, *lsn1;
 {
   if (lsn0->file != lsn1->file)
     return (lsn0->file < lsn1->file ? -1 : 1);

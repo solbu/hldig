@@ -66,12 +66,12 @@ static const char sccsid[] = "@(#)bt_compare.c  11.2 (Sleepycat) 9/9/99";
  * PUBLIC:    PAGE *, u_int32_t, int (*)(const DBT *, const DBT *)));
  */
 int
-CDB___bam_cmp(dbp, dbt, h, indx, func)
-  DB *dbp;
-  const DBT *dbt;
-  PAGE *h;
-  u_int32_t indx;
-  int (*func)__P((const DBT *, const DBT *));
+CDB___bam_cmp (dbp, dbt, h, indx, func)
+     DB *dbp;
+     const DBT *dbt;
+     PAGE *h;
+     u_int32_t indx;
+     int (*func) __P ((const DBT *, const DBT *));
 {
   BINTERNAL *bi;
   BKEYDATA *bk;
@@ -80,7 +80,7 @@ CDB___bam_cmp(dbp, dbt, h, indx, func)
   int ret;
 
 #ifdef DEBUG
-  word_monitor_add(WORD_MONITOR_CMP, 1);
+  word_monitor_add (WORD_MONITOR_CMP, 1);
 #endif /* DEBUG */
   /*
    * Returns:
@@ -95,16 +95,20 @@ CDB___bam_cmp(dbp, dbt, h, indx, func)
    * We don't clear it because we go through this path a lot and it's
    * expensive.
    */
-  if (TYPE(h) == P_LBTREE || TYPE(h) == P_DUPLICATE) {
-    bk = GET_BKEYDATA(h, indx);
-    if (B_TYPE(bk->type) == B_OVERFLOW)
-      bo = (BOVERFLOW *)bk;
-    else {
+  if (TYPE (h) == P_LBTREE || TYPE (h) == P_DUPLICATE)
+  {
+    bk = GET_BKEYDATA (h, indx);
+    if (B_TYPE (bk->type) == B_OVERFLOW)
+      bo = (BOVERFLOW *) bk;
+    else
+    {
       pg_dbt.data = bk->data;
       pg_dbt.size = bk->len;
-      return (func(dbt, &pg_dbt));
+      return (func (dbt, &pg_dbt));
     }
-  } else {
+  }
+  else
+  {
     /*
      * The following code guarantees that the left-most key on an
      * internal page at any level of the btree is less than any
@@ -115,13 +119,14 @@ CDB___bam_cmp(dbp, dbt, h, indx, func)
     if (indx == 0 && h->prev_pgno == PGNO_INVALID)
       return (1);
 
-    bi = GET_BINTERNAL(h, indx);
-    if (B_TYPE(bi->type) == B_OVERFLOW)
-      bo = (BOVERFLOW *)(bi->data);
-    else {
+    bi = GET_BINTERNAL (h, indx);
+    if (B_TYPE (bi->type) == B_OVERFLOW)
+      bo = (BOVERFLOW *) (bi->data);
+    else
+    {
       pg_dbt.data = bi->data;
       pg_dbt.size = bi->len;
-      return (func(dbt, &pg_dbt));
+      return (func (dbt, &pg_dbt));
     }
   }
 
@@ -132,8 +137,9 @@ CDB___bam_cmp(dbp, dbt, h, indx, func)
    * We ignore CDB___db_moff() errors, because we have no way of returning
    * them.
    */
-  (void)CDB___db_moff(dbp,
-      dbt, bo->pgno, bo->tlen, func == CDB___bam_defcmp ? NULL : func, &ret);
+  (void) CDB___db_moff (dbp,
+                        dbt, bo->pgno, bo->tlen,
+                        func == CDB___bam_defcmp ? NULL : func, &ret);
   return (ret);
 }
 
@@ -144,8 +150,8 @@ CDB___bam_cmp(dbp, dbt, h, indx, func)
  * PUBLIC: int CDB___bam_defcmp __P((const DBT *, const DBT *));
  */
 int
-CDB___bam_defcmp(a, b)
-  const DBT *a, *b;
+CDB___bam_defcmp (a, b)
+     const DBT *a, *b;
 {
   size_t len;
   u_int8_t *p1, *p2;
@@ -165,8 +171,8 @@ CDB___bam_defcmp(a, b)
   len = a->size > b->size ? b->size : a->size;
   for (p1 = a->data, p2 = b->data; len--; ++p1, ++p2)
     if (*p1 != *p2)
-      return ((long)*p1 - (long)*p2);
-  return ((long)a->size - (long)b->size);
+      return ((long) *p1 - (long) *p2);
+  return ((long) a->size - (long) b->size);
 }
 
 /*
@@ -176,8 +182,8 @@ CDB___bam_defcmp(a, b)
  * PUBLIC: size_t CDB___bam_defpfx __P((const DBT *, const DBT *));
  */
 size_t
-CDB___bam_defpfx(a, b)
-  const DBT *a, *b;
+CDB___bam_defpfx (a, b)
+     const DBT *a, *b;
 {
   size_t cnt, len;
   u_int8_t *p1, *p2;

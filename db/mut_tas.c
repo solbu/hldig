@@ -20,7 +20,7 @@ static const char sccsid[] = "@(#)mut_tas.c  11.4 (Sleepycat) 10/1/99";
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -64,12 +64,12 @@ static const char sccsid[] = "@(#)mut_tas.c  11.4 (Sleepycat) 10/1/99";
  * PUBLIC: int CDB___db_tas_mutex_init __P((DB_ENV *, MUTEX *, u_int32_t));
  */
 int
-CDB___db_tas_mutex_init(dbenv, mutexp, flags)
-  DB_ENV *dbenv;
-  MUTEX *mutexp;
-  u_int32_t flags;
+CDB___db_tas_mutex_init (dbenv, mutexp, flags)
+     DB_ENV *dbenv;
+     MUTEX *mutexp;
+     u_int32_t flags;
 {
-  memset(mutexp, 0, sizeof(*mutexp));
+  memset (mutexp, 0, sizeof (*mutexp));
 
   /*
    * If this is a thread lock or the process has told us that there are
@@ -79,19 +79,21 @@ CDB___db_tas_mutex_init(dbenv, mutexp, flags)
    * This is where we decide to ignore locks we don't need to set -- if
    * the application isn't threaded, there aren't any threads to block.
    */
-  if (LF_ISSET(MUTEX_THREAD) || F_ISSET(dbenv, DB_ENV_PRIVATE)) {
-    if (!F_ISSET(dbenv, DB_ENV_THREAD)) {
-      F_SET(mutexp, MUTEX_IGNORE);
+  if (LF_ISSET (MUTEX_THREAD) || F_ISSET (dbenv, DB_ENV_PRIVATE))
+  {
+    if (!F_ISSET (dbenv, DB_ENV_THREAD))
+    {
+      F_SET (mutexp, MUTEX_IGNORE);
       return (0);
     }
-    F_SET(mutexp, MUTEX_THREAD);
+    F_SET (mutexp, MUTEX_THREAD);
   }
 
   /* Initialize the lock. */
-  if (MUTEX_INIT(&mutexp->tas))
-    return (CDB___os_get_errno());
+  if (MUTEX_INIT (&mutexp->tas))
+    return (CDB___os_get_errno ());
 
-  mutexp->spins = CDB___os_spin();
+  mutexp->spins = CDB___os_spin ();
 
   return (0);
 }
@@ -103,29 +105,31 @@ CDB___db_tas_mutex_init(dbenv, mutexp, flags)
  * PUBLIC: int CDB___db_tas_mutex_lock __P((MUTEX *));
  */
 int
-CDB___db_tas_mutex_lock(mutexp)
-  MUTEX *mutexp;
+CDB___db_tas_mutex_lock (mutexp)
+     MUTEX *mutexp;
 {
   u_long ms;
   int nspins;
 
-  if (!DB_GLOBAL(db_mutexlocks) || F_ISSET(mutexp, MUTEX_IGNORE))
+  if (!DB_GLOBAL (db_mutexlocks) || F_ISSET (mutexp, MUTEX_IGNORE))
     return (0);
 
   ms = 1;
 
-loop:  /* Attempt to acquire the resource for N spins. */
-  for (nspins = mutexp->spins; nspins > 0; --nspins) {
-    if (!MUTEX_SET(&mutexp->tas))
+loop:                          /* Attempt to acquire the resource for N spins. */
+  for (nspins = mutexp->spins; nspins > 0; --nspins)
+  {
+    if (!MUTEX_SET (&mutexp->tas))
       continue;
 #ifdef DIAGNOSTIC
-    if (mutexp->locked != 0) {
+    if (mutexp->locked != 0)
+    {
       char msgbuf[128];
-      (void)snprintf(msgbuf,
-          sizeof(msgbuf), MSG1, (u_long)mutexp->locked);
-      (void)write(STDERR_FILENO, msgbuf, strlen(msgbuf));
+      (void) snprintf (msgbuf,
+                       sizeof (msgbuf), MSG1, (u_long) mutexp->locked);
+      (void) write (STDERR_FILENO, msgbuf, strlen (msgbuf));
     }
-    mutexp->locked = (u_int32_t)getpid();
+    mutexp->locked = (u_int32_t) getpid ();
 #endif
     if (ms == 1)
       ++mutexp->mutex_set_nowait;
@@ -135,7 +139,7 @@ loop:  /* Attempt to acquire the resource for N spins. */
   }
 
   /* Yield the processor; wait 1ms initially, up to 1 second. */
-  CDB___os_yield(ms * USEC_PER_MS);
+  CDB___os_yield (ms * USEC_PER_MS);
   if ((ms <<= 1) > MS_PER_SEC)
     ms = MS_PER_SEC;
 
@@ -149,19 +153,19 @@ loop:  /* Attempt to acquire the resource for N spins. */
  * PUBLIC: int CDB___db_tas_mutex_unlock __P((MUTEX *));
  */
 int
-CDB___db_tas_mutex_unlock(mutexp)
-  MUTEX *mutexp;
+CDB___db_tas_mutex_unlock (mutexp)
+     MUTEX *mutexp;
 {
-  if (!DB_GLOBAL(db_mutexlocks) || F_ISSET(mutexp, MUTEX_IGNORE))
+  if (!DB_GLOBAL (db_mutexlocks) || F_ISSET (mutexp, MUTEX_IGNORE))
     return (0);
 
 #ifdef DIAGNOSTIC
   if (!mutexp->locked)
-    (void)write(STDERR_FILENO, MSG2, sizeof(MSG2) - 1);
+    (void) write (STDERR_FILENO, MSG2, sizeof (MSG2) - 1);
   mutexp->locked = 0;
 #endif
 
-  MUTEX_UNSET(&mutexp->tas);
+  MUTEX_UNSET (&mutexp->tas);
 
   return (0);
 }

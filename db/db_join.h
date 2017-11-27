@@ -15,13 +15,14 @@
  * that it only supports c_get and c_close functionality.  Also, it does
  * not support the full range of flags for get.
  */
-typedef struct __join_cursor {
-  u_int8_t *j_exhausted;  /* Array of flags; is cursor i exhausted? */
-  DBC   **j_curslist;  /* Array of cursors in the join: constant. */
-  DBC  **j_fdupcurs;  /* Cursors w/ first intances of current dup. */
-  DBC  **j_workcurs;  /* Scratch cursor copies to muck with. */
-  DB   *j_primary;  /* Primary dbp. */
-  DBT    j_key;  /* Used to do lookups. */
+typedef struct __join_cursor
+{
+  u_int8_t *j_exhausted;        /* Array of flags; is cursor i exhausted? */
+  DBC **j_curslist;             /* Array of cursors in the join: constant. */
+  DBC **j_fdupcurs;             /* Cursors w/ first intances of current dup. */
+  DBC **j_workcurs;             /* Scratch cursor copies to muck with. */
+  DB *j_primary;                /* Primary dbp. */
+  DBT j_key;                    /* Used to do lookups. */
 } JOIN_CURSOR;
 
 #endif

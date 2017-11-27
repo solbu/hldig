@@ -29,7 +29,7 @@ static const char sccsid[] = "@(#)os_sleep.c  11.1 (Sleepycat) 7/25/99";
 #endif
 #endif
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 #endif
@@ -44,8 +44,8 @@ static const char sccsid[] = "@(#)os_sleep.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: int CDB___os_sleep __P((u_long, u_long));
  */
 int
-CDB___os_sleep(secs, usecs)
-  u_long secs, usecs;    /* Seconds and microseconds. */
+CDB___os_sleep (secs, usecs)
+     u_long secs, usecs;        /* Seconds and microseconds. */
 {
   struct timeval t;
 
@@ -54,7 +54,7 @@ CDB___os_sleep(secs, usecs)
     ++secs;
 
   if (CDB___db_jump.j_sleep != NULL)
-    return (CDB___db_jump.j_sleep(secs, usecs));
+    return (CDB___db_jump.j_sleep (secs, usecs));
 
   /*
    * It's important that we yield the processor here so that other
@@ -62,5 +62,5 @@ CDB___os_sleep(secs, usecs)
    */
   t.tv_sec = secs;
   t.tv_usec = usecs;
-  return (select(0, NULL, NULL, NULL, &t) == -1 ? CDB___os_get_errno() : 0);
+  return (select (0, NULL, NULL, NULL, &t) == -1 ? CDB___os_get_errno () : 0);
 }

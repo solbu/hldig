@@ -24,11 +24,11 @@ static const char sccsid[] = "@(#)os_abs.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: int CDB___os_abspath __P((const char *));
  */
 int
-CDB___os_abspath(path)
-  const char *path;
+CDB___os_abspath (path)
+     const char *path;
 {
 #if defined (_WIN32) || defined (__MSDOS__) || defined (__DJGPP__) || defined (__CYGWIN__)
-  return (path[0] == '/' || path[0] == '\\' || path [1] == ':');
+  return (path[0] == '/' || path[0] == '\\' || path[1] == ':');
 #else
   return (path[0] == '/');
 #endif

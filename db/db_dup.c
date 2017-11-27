@@ -25,8 +25,8 @@ static const char sccsid[] = "@(#)db_dup.c  11.11 (Sleepycat) 11/3/99";
 #include "lock.h"
 #include "db_am.h"
 
-static int CDB___db_addpage __P((DBC *, PAGE **, db_indx_t *));
-static int CDB___db_dsplit __P((DBC *, PAGE **, db_indx_t *, u_int32_t));
+static int CDB___db_addpage __P ((DBC *, PAGE **, db_indx_t *));
+static int CDB___db_dsplit __P ((DBC *, PAGE **, db_indx_t *, u_int32_t));
 
 /*
  * CDB___db_dput --
@@ -35,11 +35,11 @@ static int CDB___db_dsplit __P((DBC *, PAGE **, db_indx_t *, u_int32_t));
  * PUBLIC: int CDB___db_dput __P((DBC *, DBT *, PAGE **, db_indx_t *));
  */
 int
-CDB___db_dput(dbc, dbt, pp, indxp)
-  DBC *dbc;
-  DBT *dbt;
-  PAGE **pp;
-  db_indx_t *indxp;
+CDB___db_dput (dbc, dbt, pp, indxp)
+     DBC *dbc;
+     DBT *dbt;
+     PAGE **pp;
+     db_indx_t *indxp;
 {
   BOVERFLOW bo;
   DBT *data_dbtp, hdr_dbt, *hdr_dbtp;
@@ -52,12 +52,13 @@ CDB___db_dput(dbc, dbt, pp, indxp)
    * We need some access method independent threshold for when we put
    * a duplicate item onto an overflow page.
    */
-  if (dbt->size > 0.25 * dbc->dbp->pgsize) {
-    if ((ret = CDB___db_poff(dbc, dbt, &pgno)) != 0)
+  if (dbt->size > 0.25 * dbc->dbp->pgsize)
+  {
+    if ((ret = CDB___db_poff (dbc, dbt, &pgno)) != 0)
       return (ret);
-    UMRW(bo.unused1);
-    B_TSET(bo.type, B_OVERFLOW, 0);
-    UMRW(bo.unused2);
+    UMRW (bo.unused1);
+    B_TSET (bo.type, B_OVERFLOW, 0);
+    UMRW (bo.unused2);
     bo.tlen = dbt->size;
     bo.pgno = pgno;
     hdr_dbt.data = &bo;
@@ -65,19 +66,22 @@ CDB___db_dput(dbc, dbt, pp, indxp)
     hdr_dbtp = &hdr_dbt;
     size = BOVERFLOW_PSIZE;
     data_dbtp = NULL;
-  } else {
-    size = BKEYDATA_PSIZE(dbt->size);
-    isize = BKEYDATA_SIZE(dbt->size);
+  }
+  else
+  {
+    size = BKEYDATA_PSIZE (dbt->size);
+    isize = BKEYDATA_SIZE (dbt->size);
     hdr_dbtp = NULL;
     data_dbtp = dbt;
   }
 
   pagep = *pp;
-  if (size > P_FREESPACE(pagep)) {
-    if (*indxp == NUM_ENT(*pp) && NEXT_PGNO(*pp) == PGNO_INVALID)
-      ret = CDB___db_addpage(dbc, pp, indxp);
+  if (size > P_FREESPACE (pagep))
+  {
+    if (*indxp == NUM_ENT (*pp) && NEXT_PGNO (*pp) == PGNO_INVALID)
+      ret = CDB___db_addpage (dbc, pp, indxp);
     else
-      ret = CDB___db_dsplit(dbc, pp, indxp, isize);
+      ret = CDB___db_dsplit (dbc, pp, indxp, isize);
     if (ret != 0)
       /*
        * XXX
@@ -91,11 +95,12 @@ CDB___db_dput(dbc, dbt, pp, indxp)
    * Now, pagep references the page on which to insert and indx is the
    * the location to insert.
    */
-  if ((ret = CDB___db_pitem(dbc,
-      pagep, (u_int32_t)*indxp, isize, hdr_dbtp, data_dbtp)) != 0)
+  if ((ret = CDB___db_pitem (dbc,
+                             pagep, (u_int32_t) * indxp, isize, hdr_dbtp,
+                             data_dbtp)) != 0)
     return (ret);
 
-  (void)CDB_memp_fset(dbc->dbp->mpf, pagep, DB_MPOOL_DIRTY);
+  (void) CDB_memp_fset (dbc->dbp->mpf, pagep, DB_MPOOL_DIRTY);
   return (0);
 }
 
@@ -106,10 +111,10 @@ CDB___db_dput(dbc, dbt, pp, indxp)
  * PUBLIC: int CDB___db_drem __P((DBC *, PAGE **, u_int32_t));
  */
 int
-CDB___db_drem(dbc, pp, indx)
-  DBC *dbc;
-  PAGE **pp;
-  u_int32_t indx;
+CDB___db_drem (dbc, pp, indx)
+     DBC *dbc;
+     PAGE **pp;
+     u_int32_t indx;
 {
   PAGE *pagep;
   int ret;
@@ -117,18 +122,20 @@ CDB___db_drem(dbc, pp, indx)
   pagep = *pp;
 
   /* Check if we are freeing a big item. */
-  if (B_TYPE(GET_BKEYDATA(pagep, indx)->type) == B_OVERFLOW) {
-    if ((ret = CDB___db_doff(dbc,
-        GET_BOVERFLOW(pagep, indx)->pgno)) != 0)
+  if (B_TYPE (GET_BKEYDATA (pagep, indx)->type) == B_OVERFLOW)
+  {
+    if ((ret = CDB___db_doff (dbc, GET_BOVERFLOW (pagep, indx)->pgno)) != 0)
       return (ret);
-    ret = CDB___db_ditem(dbc, pagep, indx, BOVERFLOW_SIZE);
-  } else
-    ret = CDB___db_ditem(dbc, pagep, indx,
-        BKEYDATA_SIZE(GET_BKEYDATA(pagep, indx)->len));
+    ret = CDB___db_ditem (dbc, pagep, indx, BOVERFLOW_SIZE);
+  }
+  else
+    ret = CDB___db_ditem (dbc, pagep, indx,
+                          BKEYDATA_SIZE (GET_BKEYDATA (pagep, indx)->len));
   if (ret != 0)
     return (ret);
 
-  if (NUM_ENT(pagep) == 0) {
+  if (NUM_ENT (pagep) == 0)
+  {
     /*
      * If the page is emptied, then the page is freed and the pp
      * parameter is set to reference the next, locked page in the
@@ -138,12 +145,13 @@ CDB___db_drem(dbc, pp, indx)
      * !!!
      * CDB___db_relink will set the dirty bit for us.
      */
-    if ((ret = CDB___db_relink(dbc, DB_REM_PAGE, pagep, pp, 0)) != 0)
+    if ((ret = CDB___db_relink (dbc, DB_REM_PAGE, pagep, pp, 0)) != 0)
       return (ret);
-    if ((ret = CDB___db_free(dbc, pagep)) != 0)
+    if ((ret = CDB___db_free (dbc, pagep)) != 0)
       return (ret);
-  } else
-    (void)CDB_memp_fset(dbc->dbp->mpf, pagep, DB_MPOOL_DIRTY);
+  }
+  else
+    (void) CDB_memp_fset (dbc->dbp->mpf, pagep, DB_MPOOL_DIRTY);
 
   return (0);
 }
@@ -155,10 +163,10 @@ CDB___db_drem(dbc, pp, indx)
  * PUBLIC: int CDB___db_dend __P((DBC *, db_pgno_t, PAGE **));
  */
 int
-CDB___db_dend(dbc, pgno, pp)
-  DBC *dbc;
-  db_pgno_t pgno;
-  PAGE **pp;
+CDB___db_dend (dbc, pgno, pp)
+     DBC *dbc;
+     db_pgno_t pgno;
+     PAGE **pp;
 {
   DB *dbp;
   PAGE *h;
@@ -174,17 +182,19 @@ CDB___db_dend(dbc, pgno, pp)
    */
   if (*pp != NULL)
     goto started;
-  for (;;) {
-    if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, pp)) != 0) {
-      (void)CDB___db_pgerr(dbp, pgno);
+  for (;;)
+  {
+    if ((ret = CDB_memp_fget (dbp->mpf, &pgno, 0, pp)) != 0)
+    {
+      (void) CDB___db_pgerr (dbp, pgno);
       return (ret);
     }
-started:  h = *pp;
+  started:h = *pp;
 
-    if ((pgno = NEXT_PGNO(h)) == PGNO_INVALID)
+    if ((pgno = NEXT_PGNO (h)) == PGNO_INVALID)
       break;
 
-    if ((ret = CDB_memp_fput(dbp->mpf, h, 0)) != 0)
+    if ((ret = CDB_memp_fput (dbp->mpf, h, 0)) != 0)
       return (ret);
   }
   return (0);
@@ -201,11 +211,11 @@ started:  h = *pp;
  *  the page on which the insert should happen, not yet put.
  */
 static int
-CDB___db_dsplit(dbc, hp, indxp, size)
-  DBC *dbc;
-  PAGE **hp;
-  db_indx_t *indxp;
-  u_int32_t size;
+CDB___db_dsplit (dbc, hp, indxp, size)
+     DBC *dbc;
+     PAGE **hp;
+     db_indx_t *indxp;
+     u_int32_t size;
 {
   PAGE *h, *np, *tp;
   BKEYDATA *bk;
@@ -222,47 +232,52 @@ CDB___db_dsplit(dbc, hp, indxp, size)
   pgsize = dbp->pgsize;
 
   /* Create a temporary page to do compaction onto. */
-  if ((ret = CDB___os_malloc(pgsize, NULL, &tp)) != 0)
+  if ((ret = CDB___os_malloc (pgsize, NULL, &tp)) != 0)
     return (ret);
 
   /* Create new page for the split. */
-  if ((ret = CDB___db_new(dbc, P_DUPLICATE, &np)) != 0) {
-    CDB___os_free(tp, pgsize);
+  if ((ret = CDB___db_new (dbc, P_DUPLICATE, &np)) != 0)
+  {
+    CDB___os_free (tp, pgsize);
     return (ret);
   }
 
-  P_INIT(np, pgsize, PGNO(np), PGNO(h), NEXT_PGNO(h), 0, P_DUPLICATE);
-  P_INIT(tp, pgsize, PGNO(h), PREV_PGNO(h), PGNO(np), 0, P_DUPLICATE);
+  P_INIT (np, pgsize, PGNO (np), PGNO (h), NEXT_PGNO (h), 0, P_DUPLICATE);
+  P_INIT (tp, pgsize, PGNO (h), PREV_PGNO (h), PGNO (np), 0, P_DUPLICATE);
 
   /* Figure out the split point */
-  halfbytes = (pgsize - HOFFSET(h)) / 2;
+  halfbytes = (pgsize - HOFFSET (h)) / 2;
   did_indx = 0;
-  for (sum = 0, lastsum = 0, i = 0; i < NUM_ENT(h); i++) {
-    if (i == indx) {
+  for (sum = 0, lastsum = 0, i = 0; i < NUM_ENT (h); i++)
+  {
+    if (i == indx)
+    {
       sum += size;
       did_indx = 1;
-      if (lastsum < halfbytes && sum >= halfbytes) {
+      if (lastsum < halfbytes && sum >= halfbytes)
+      {
         /* We've crossed the halfway point. */
-        if ((db_indx_t)(halfbytes - lastsum) <
-            (db_indx_t)(sum - halfbytes)) {
+        if ((db_indx_t) (halfbytes - lastsum) < (db_indx_t) (sum - halfbytes))
+        {
           *hp = np;
           *indxp = 0;
-        } else
+        }
+        else
           *indxp = i;
         break;
       }
       *indxp = i;
       lastsum = sum;
     }
-    if (B_TYPE(GET_BKEYDATA(h, i)->type) == B_KEYDATA)
-      sum += BKEYDATA_SIZE(GET_BKEYDATA(h, i)->len);
+    if (B_TYPE (GET_BKEYDATA (h, i)->type) == B_KEYDATA)
+      sum += BKEYDATA_SIZE (GET_BKEYDATA (h, i)->len);
     else
       sum += BOVERFLOW_SIZE;
 
-    if (lastsum < halfbytes && sum >= halfbytes) {
+    if (lastsum < halfbytes && sum >= halfbytes)
+    {
       /* We've crossed the halfway point. */
-      if ((db_indx_t)(sum - halfbytes) <
-          (db_indx_t)(halfbytes - lastsum))
+      if ((db_indx_t) (sum - halfbytes) < (db_indx_t) (halfbytes - lastsum))
         i++;
       break;
     }
@@ -271,21 +286,25 @@ CDB___db_dsplit(dbc, hp, indxp, size)
    * Check if we have set the return values of the index pointer and
    * page pointer.
    */
-  if (!did_indx) {
+  if (!did_indx)
+  {
     *hp = np;
     *indxp = indx - i;
   }
 
-  if (DB_LOGGING(dbc)) {
+  if (DB_LOGGING (dbc))
+  {
     page_dbt.size = dbp->pgsize;
     page_dbt.data = h;
-    if ((ret = CDB___db_split_log(dbp->dbenv,
-        dbc->txn, &LSN(h), 0, DB_SPLITOLD, dbp->log_fileid,
-        PGNO(h), &page_dbt, &LSN(h))) != 0) {
-      CDB___os_free(tp, pgsize);
+    if ((ret = CDB___db_split_log (dbp->dbenv,
+                                   dbc->txn, &LSN (h), 0, DB_SPLITOLD,
+                                   dbp->log_fileid, PGNO (h), &page_dbt,
+                                   &LSN (h))) != 0)
+    {
+      CDB___os_free (tp, pgsize);
       return (ret);
     }
-    LSN(tp) = LSN(h);
+    LSN (tp) = LSN (h);
   }
 
   /*
@@ -294,36 +313,38 @@ CDB___db_dsplit(dbc, hp, indxp, size)
    * i is the index of the first element to move onto the new page.
    */
   if (dbp->type == DB_BTREE)
-    CDB___bam_ca_split(dbp, PGNO(h), PGNO(h), PGNO(np), i, 0);
+    CDB___bam_ca_split (dbp, PGNO (h), PGNO (h), PGNO (np), i, 0);
   if (dbp->type == DB_HASH)
-    CDB___ham_ca_split(dbp, PGNO(h), PGNO(h), PGNO(np), i, 0);
+    CDB___ham_ca_split (dbp, PGNO (h), PGNO (h), PGNO (np), i, 0);
 
-  for (nindex = 0, oindex = i; oindex < NUM_ENT(h); oindex++) {
-    bk = GET_BKEYDATA(h, oindex);
-    if (B_TYPE(bk->type) == B_KEYDATA)
-      s = BKEYDATA_SIZE(bk->len);
+  for (nindex = 0, oindex = i; oindex < NUM_ENT (h); oindex++)
+  {
+    bk = GET_BKEYDATA (h, oindex);
+    if (B_TYPE (bk->type) == B_KEYDATA)
+      s = BKEYDATA_SIZE (bk->len);
     else
       s = BOVERFLOW_SIZE;
 
-    np->inp[nindex++] = HOFFSET(np) -= s;
-    memcpy((u_int8_t *)np + HOFFSET(np), bk, s);
-    NUM_ENT(np)++;
+    np->inp[nindex++] = HOFFSET (np) -= s;
+    memcpy ((u_int8_t *) np + HOFFSET (np), bk, s);
+    NUM_ENT (np)++;
   }
 
   /*
    * Now do data compaction by copying the remaining stuff onto the
    * temporary page and then copying it back to the real page.
    */
-  for (nindex = 0, oindex = 0; oindex < i; oindex++) {
-    bk = GET_BKEYDATA(h, oindex);
-    if (B_TYPE(bk->type) == B_KEYDATA)
-      s = BKEYDATA_SIZE(bk->len);
+  for (nindex = 0, oindex = 0; oindex < i; oindex++)
+  {
+    bk = GET_BKEYDATA (h, oindex);
+    if (B_TYPE (bk->type) == B_KEYDATA)
+      s = BKEYDATA_SIZE (bk->len);
     else
       s = BOVERFLOW_SIZE;
 
-    tp->inp[nindex++] = HOFFSET(tp) -= s;
-    memcpy((u_int8_t *)tp + HOFFSET(tp), bk, s);
-    NUM_ENT(tp)++;
+    tp->inp[nindex++] = HOFFSET (tp) -= s;
+    memcpy ((u_int8_t *) tp + HOFFSET (tp), bk, s);
+    NUM_ENT (tp)++;
   }
 
   /*
@@ -332,12 +353,13 @@ CDB___db_dsplit(dbc, hp, indxp, size)
    * the page.  This way we avoid copying the middle which should be
    * about half a page.
    */
-  memcpy(h, tp, LOFFSET(tp));
-  memcpy((u_int8_t *)h + HOFFSET(tp),
-      (u_int8_t *)tp + HOFFSET(tp), pgsize - HOFFSET(tp));
-  CDB___os_free(tp, pgsize);
+  memcpy (h, tp, LOFFSET (tp));
+  memcpy ((u_int8_t *) h + HOFFSET (tp),
+          (u_int8_t *) tp + HOFFSET (tp), pgsize - HOFFSET (tp));
+  CDB___os_free (tp, pgsize);
 
-  if (DB_LOGGING(dbc)) {
+  if (DB_LOGGING (dbc))
+  {
     /*
      * XXX
      * If either of these fails, are we leaving pages pinned?
@@ -345,16 +367,18 @@ CDB___db_dsplit(dbc, hp, indxp, size)
      */
     page_dbt.size = pgsize;
     page_dbt.data = h;
-    if ((ret = CDB___db_split_log(dbp->dbenv,
-        dbc->txn, &LSN(h), 0, DB_SPLITNEW, dbp->log_fileid,
-        PGNO(h), &page_dbt, &LSN(h))) != 0)
+    if ((ret = CDB___db_split_log (dbp->dbenv,
+                                   dbc->txn, &LSN (h), 0, DB_SPLITNEW,
+                                   dbp->log_fileid, PGNO (h), &page_dbt,
+                                   &LSN (h))) != 0)
       return (ret);
 
     page_dbt.size = pgsize;
     page_dbt.data = np;
-    if ((ret = CDB___db_split_log(dbp->dbenv,
-        dbc->txn, &LSN(np), 0, DB_SPLITNEW, dbp->log_fileid,
-        PGNO(np),  &page_dbt, &LSN(np))) != 0)
+    if ((ret = CDB___db_split_log (dbp->dbenv,
+                                   dbc->txn, &LSN (np), 0, DB_SPLITNEW,
+                                   dbp->log_fileid, PGNO (np), &page_dbt,
+                                   &LSN (np))) != 0)
       return (ret);
   }
 
@@ -363,7 +387,7 @@ CDB___db_dsplit(dbc, hp, indxp, size)
    * split, fix its prev pointer.
    */
   if (np->next_pgno != PGNO_INVALID)
-      ret = CDB___db_relink(dbc, DB_ADD_PAGE, np, NULL, 1);
+    ret = CDB___db_relink (dbc, DB_ADD_PAGE, np, NULL, 1);
 
   /*
    * Figure out if the location we're interested in is on the new
@@ -371,9 +395,9 @@ CDB___db_dsplit(dbc, hp, indxp, size)
    * page back to the store.
    */
   if (*hp == h)
-    t_ret = CDB_memp_fput(dbp->mpf, np, DB_MPOOL_DIRTY);
+    t_ret = CDB_memp_fput (dbp->mpf, np, DB_MPOOL_DIRTY);
   else
-    t_ret = CDB_memp_fput(dbp->mpf, h, DB_MPOOL_DIRTY);
+    t_ret = CDB_memp_fput (dbp->mpf, h, DB_MPOOL_DIRTY);
 
   return (ret != 0 ? ret : t_ret);
 }
@@ -385,10 +409,10 @@ CDB___db_dsplit(dbc, hp, indxp, size)
  * PUBLIC:  int CDB___db_ditem __P((DBC *, PAGE *, u_int32_t, u_int32_t));
  */
 int
-CDB___db_ditem(dbc, pagep, indx, nbytes)
-  DBC *dbc;
-  PAGE *pagep;
-  u_int32_t indx, nbytes;
+CDB___db_ditem (dbc, pagep, indx, nbytes)
+     DBC *dbc;
+     PAGE *pagep;
+     u_int32_t indx, nbytes;
 {
   DB *dbp;
   DBT ldbt;
@@ -397,12 +421,15 @@ CDB___db_ditem(dbc, pagep, indx, nbytes)
   u_int8_t *from;
 
   dbp = dbc->dbp;
-  if (DB_LOGGING(dbc)) {
-    ldbt.data = P_ENTRY(pagep, indx);
+  if (DB_LOGGING (dbc))
+  {
+    ldbt.data = P_ENTRY (pagep, indx);
     ldbt.size = nbytes;
-    if ((ret = CDB___db_addrem_log(dbp->dbenv, dbc->txn,
-        &LSN(pagep), 0, DB_REM_DUP, dbp->log_fileid, PGNO(pagep),
-        (u_int32_t)indx, nbytes, &ldbt, NULL, &LSN(pagep))) != 0)
+    if ((ret = CDB___db_addrem_log (dbp->dbenv, dbc->txn,
+                                    &LSN (pagep), 0, DB_REM_DUP,
+                                    dbp->log_fileid, PGNO (pagep),
+                                    (u_int32_t) indx, nbytes, &ldbt, NULL,
+                                    &LSN (pagep))) != 0)
       return (ret);
   }
 
@@ -410,9 +437,10 @@ CDB___db_ditem(dbc, pagep, indx, nbytes)
    * If there's only a single item on the page, we don't have to
    * work hard.
    */
-  if (NUM_ENT(pagep) == 1) {
-    NUM_ENT(pagep) = 0;
-    HOFFSET(pagep) = dbp->pgsize;
+  if (NUM_ENT (pagep) == 1)
+  {
+    NUM_ENT (pagep) = 0;
+    HOFFSET (pagep) = dbp->pgsize;
     return (0);
   }
 
@@ -420,21 +448,21 @@ CDB___db_ditem(dbc, pagep, indx, nbytes)
    * Pack the remaining key/data items at the end of the page.  Use
    * memmove(3), the regions may overlap.
    */
-  from = (u_int8_t *)pagep + HOFFSET(pagep);
-  memmove(from + nbytes, from, pagep->inp[indx] - HOFFSET(pagep));
-  HOFFSET(pagep) += nbytes;
+  from = (u_int8_t *) pagep + HOFFSET (pagep);
+  memmove (from + nbytes, from, pagep->inp[indx] - HOFFSET (pagep));
+  HOFFSET (pagep) += nbytes;
 
   /* Adjust the indices' offsets. */
   offset = pagep->inp[indx];
-  for (cnt = 0; cnt < NUM_ENT(pagep); ++cnt)
+  for (cnt = 0; cnt < NUM_ENT (pagep); ++cnt)
     if (pagep->inp[cnt] < offset)
       pagep->inp[cnt] += nbytes;
 
   /* Shift the indices down. */
-  --NUM_ENT(pagep);
-  if (indx != NUM_ENT(pagep))
-    memmove(&pagep->inp[indx], &pagep->inp[indx + 1],
-        sizeof(db_indx_t) * (NUM_ENT(pagep) - indx));
+  --NUM_ENT (pagep);
+  if (indx != NUM_ENT (pagep))
+    memmove (&pagep->inp[indx], &pagep->inp[indx + 1],
+             sizeof (db_indx_t) * (NUM_ENT (pagep) - indx));
 
   return (0);
 }
@@ -447,12 +475,12 @@ CDB___db_ditem(dbc, pagep, indx, nbytes)
  * PUBLIC:     __P((DBC *, PAGE *, u_int32_t, u_int32_t, DBT *, DBT *));
  */
 int
-CDB___db_pitem(dbc, pagep, indx, nbytes, hdr, data)
-  DBC *dbc;
-  PAGE *pagep;
-  u_int32_t indx;
-  u_int32_t nbytes;
-  DBT *hdr, *data;
+CDB___db_pitem (dbc, pagep, indx, nbytes, hdr, data)
+     DBC *dbc;
+     PAGE *pagep;
+     u_int32_t indx;
+     u_int32_t nbytes;
+     DBT *hdr, *data;
 {
   DB *dbp;
   BKEYDATA bk;
@@ -478,33 +506,36 @@ CDB___db_pitem(dbc, pagep, indx, nbytes, hdr, data)
    * placeholder for the trailing variable-length data field.
    */
   dbp = dbc->dbp;
-  if (DB_LOGGING(dbc))
-    if ((ret = CDB___db_addrem_log(dbp->dbenv, dbc->txn,
-        &LSN(pagep), 0, DB_ADD_DUP, dbp->log_fileid, PGNO(pagep),
-        (u_int32_t)indx, nbytes, hdr, data, &LSN(pagep))) != 0)
+  if (DB_LOGGING (dbc))
+    if ((ret = CDB___db_addrem_log (dbp->dbenv, dbc->txn,
+                                    &LSN (pagep), 0, DB_ADD_DUP,
+                                    dbp->log_fileid, PGNO (pagep),
+                                    (u_int32_t) indx, nbytes, hdr, data,
+                                    &LSN (pagep))) != 0)
       return (ret);
 
-  if (hdr == NULL) {
-    B_TSET(bk.type, B_KEYDATA, 0);
+  if (hdr == NULL)
+  {
+    B_TSET (bk.type, B_KEYDATA, 0);
     bk.len = data == NULL ? 0 : data->size;
 
     thdr.data = &bk;
-    thdr.size = SSZA(BKEYDATA, data);
+    thdr.size = SSZA (BKEYDATA, data);
     hdr = &thdr;
   }
 
   /* Adjust the index table, then put the item on the page. */
-  if (indx != NUM_ENT(pagep))
-    memmove(&pagep->inp[indx + 1], &pagep->inp[indx],
-        sizeof(db_indx_t) * (NUM_ENT(pagep) - indx));
-  HOFFSET(pagep) -= nbytes;
-  pagep->inp[indx] = HOFFSET(pagep);
-  ++NUM_ENT(pagep);
+  if (indx != NUM_ENT (pagep))
+    memmove (&pagep->inp[indx + 1], &pagep->inp[indx],
+             sizeof (db_indx_t) * (NUM_ENT (pagep) - indx));
+  HOFFSET (pagep) -= nbytes;
+  pagep->inp[indx] = HOFFSET (pagep);
+  ++NUM_ENT (pagep);
 
-  p = P_ENTRY(pagep, indx);
-  memcpy(p, hdr->data, hdr->size);
+  p = P_ENTRY (pagep, indx);
+  memcpy (p, hdr->data, hdr->size);
   if (data != NULL)
-    memcpy(p + hdr->size, data->data, data->size);
+    memcpy (p + hdr->size, data->data, data->size);
 
   return (0);
 }
@@ -516,11 +547,11 @@ CDB___db_pitem(dbc, pagep, indx, nbytes, hdr, data)
  * PUBLIC: int CDB___db_relink __P((DBC *, u_int32_t, PAGE *, PAGE **, int));
  */
 int
-CDB___db_relink(dbc, add_rem, pagep, new_next, needlock)
-  DBC *dbc;
-  u_int32_t add_rem;
-  PAGE *pagep, **new_next;
-  int needlock;
+CDB___db_relink (dbc, add_rem, pagep, new_next, needlock)
+     DBC *dbc;
+     u_int32_t add_rem;
+     PAGE *pagep, **new_next;
+     int needlock;
 {
   DB *dbp;
   PAGE *np, *pp;
@@ -539,35 +570,41 @@ CDB___db_relink(dbc, add_rem, pagep, new_next, needlock)
    * two pages (the before and after).  For an add, we only need one
    * because, the split took care of the prev.
    */
-  if (pagep->next_pgno != PGNO_INVALID) {
-    if (needlock && (ret = CDB___db_lget(dbc,
-        0, pagep->next_pgno, DB_LOCK_WRITE, 0, &npl)) != 0)
+  if (pagep->next_pgno != PGNO_INVALID)
+  {
+    if (needlock && (ret = CDB___db_lget (dbc,
+                                          0, pagep->next_pgno, DB_LOCK_WRITE,
+                                          0, &npl)) != 0)
       goto err;
-    if ((ret = CDB_memp_fget(dbp->mpf,
-        &pagep->next_pgno, 0, &np)) != 0) {
-      (void)CDB___db_pgerr(dbp, pagep->next_pgno);
+    if ((ret = CDB_memp_fget (dbp->mpf, &pagep->next_pgno, 0, &np)) != 0)
+    {
+      (void) CDB___db_pgerr (dbp, pagep->next_pgno);
       goto err;
     }
     nlsnp = &np->lsn;
   }
-  if (add_rem == DB_REM_PAGE && pagep->prev_pgno != PGNO_INVALID) {
-    if (needlock && (ret = CDB___db_lget(dbc,
-        0, pagep->prev_pgno, DB_LOCK_WRITE, 0, &ppl)) != 0)
+  if (add_rem == DB_REM_PAGE && pagep->prev_pgno != PGNO_INVALID)
+  {
+    if (needlock && (ret = CDB___db_lget (dbc,
+                                          0, pagep->prev_pgno, DB_LOCK_WRITE,
+                                          0, &ppl)) != 0)
       goto err;
-    if ((ret = CDB_memp_fget(dbp->mpf,
-        &pagep->prev_pgno, 0, &pp)) != 0) {
-      (void)CDB___db_pgerr(dbp, pagep->next_pgno);
+    if ((ret = CDB_memp_fget (dbp->mpf, &pagep->prev_pgno, 0, &pp)) != 0)
+    {
+      (void) CDB___db_pgerr (dbp, pagep->next_pgno);
       goto err;
     }
     plsnp = &pp->lsn;
   }
 
   /* Log the change. */
-  if (DB_LOGGING(dbc)) {
-    if ((ret = CDB___db_relink_log(dbp->dbenv, dbc->txn,
-        &pagep->lsn, 0, add_rem, dbp->log_fileid,
-        pagep->pgno, &pagep->lsn,
-        pagep->prev_pgno, plsnp, pagep->next_pgno, nlsnp)) != 0)
+  if (DB_LOGGING (dbc))
+  {
+    if ((ret = CDB___db_relink_log (dbp->dbenv, dbc->txn,
+                                    &pagep->lsn, 0, add_rem, dbp->log_fileid,
+                                    pagep->pgno, &pagep->lsn,
+                                    pagep->prev_pgno, plsnp, pagep->next_pgno,
+                                    nlsnp)) != 0)
       goto err;
     if (np != NULL)
       np->lsn = pagep->lsn;
@@ -583,41 +620,45 @@ CDB___db_relink(dbc, add_rem, pagep, new_next, needlock)
    * are removing.  If there is no following page, then new_next gets
    * set to NULL.
    */
-  if (np != NULL) {
+  if (np != NULL)
+  {
     if (add_rem == DB_ADD_PAGE)
       np->prev_pgno = pagep->pgno;
     else
       np->prev_pgno = pagep->prev_pgno;
     if (new_next == NULL)
-      ret = CDB_memp_fput(dbp->mpf, np, DB_MPOOL_DIRTY);
-    else {
+      ret = CDB_memp_fput (dbp->mpf, np, DB_MPOOL_DIRTY);
+    else
+    {
       *new_next = np;
-      ret = CDB_memp_fset(dbp->mpf, np, DB_MPOOL_DIRTY);
+      ret = CDB_memp_fset (dbp->mpf, np, DB_MPOOL_DIRTY);
     }
     if (ret != 0)
       goto err;
     if (needlock)
-      (void)__TLPUT(dbc, npl);
-  } else if (new_next != NULL)
+      (void) __TLPUT (dbc, npl);
+  }
+  else if (new_next != NULL)
     *new_next = NULL;
 
-  if (pp != NULL) {
+  if (pp != NULL)
+  {
     pp->next_pgno = pagep->next_pgno;
-    if ((ret = CDB_memp_fput(dbp->mpf, pp, DB_MPOOL_DIRTY)) != 0)
+    if ((ret = CDB_memp_fput (dbp->mpf, pp, DB_MPOOL_DIRTY)) != 0)
       goto err;
     if (needlock)
-      (void)__TLPUT(dbc, ppl);
+      (void) __TLPUT (dbc, ppl);
   }
   return (0);
 
-err:  if (np != NULL)
-    (void)CDB_memp_fput(dbp->mpf, np, 0);
+err:if (np != NULL)
+    (void) CDB_memp_fput (dbp->mpf, np, 0);
   if (needlock && npl.off != LOCK_INVALID)
-    (void)__TLPUT(dbc, npl);
+    (void) __TLPUT (dbc, npl);
   if (pp != NULL)
-    (void)CDB_memp_fput(dbp->mpf, pp, 0);
+    (void) CDB_memp_fput (dbp->mpf, pp, 0);
   if (needlock && ppl.off != LOCK_INVALID)
-    (void)__TLPUT(dbc, ppl);
+    (void) __TLPUT (dbc, ppl);
   return (ret);
 }
 
@@ -628,9 +669,9 @@ err:  if (np != NULL)
  * PUBLIC: int CDB___db_ddup __P((DBC *, db_pgno_t));
  */
 int
-CDB___db_ddup(dbc, pgno)
-  DBC *dbc;
-  db_pgno_t pgno;
+CDB___db_ddup (dbc, pgno)
+     DBC *dbc;
+     db_pgno_t pgno;
 {
   DB *dbp;
   PAGE *pagep;
@@ -638,25 +679,29 @@ CDB___db_ddup(dbc, pgno)
   int ret;
 
   dbp = dbc->dbp;
-  do {
-    if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, &pagep)) != 0) {
-      (void)CDB___db_pgerr(dbp, pgno);
+  do
+  {
+    if ((ret = CDB_memp_fget (dbp->mpf, &pgno, 0, &pagep)) != 0)
+    {
+      (void) CDB___db_pgerr (dbp, pgno);
       return (ret);
     }
 
-    if (DB_LOGGING(dbc)) {
+    if (DB_LOGGING (dbc))
+    {
       tmp_dbt.data = pagep;
       tmp_dbt.size = dbp->pgsize;
-      if ((ret = CDB___db_split_log(dbp->dbenv,
-          dbc->txn, &LSN(pagep), 0, DB_SPLITOLD,
-          dbp->log_fileid, PGNO(pagep), &tmp_dbt,
-          &LSN(pagep))) != 0)
+      if ((ret = CDB___db_split_log (dbp->dbenv,
+                                     dbc->txn, &LSN (pagep), 0, DB_SPLITOLD,
+                                     dbp->log_fileid, PGNO (pagep), &tmp_dbt,
+                                     &LSN (pagep))) != 0)
         return (ret);
     }
     pgno = pagep->next_pgno;
-    if ((ret = CDB___db_free(dbc, pagep)) != 0)
+    if ((ret = CDB___db_free (dbc, pagep)) != 0)
       return (ret);
-  } while (pgno != PGNO_INVALID);
+  }
+  while (pgno != PGNO_INVALID);
 
   return (0);
 }
@@ -667,32 +712,35 @@ CDB___db_ddup(dbc, pgno)
  *  current page.
  */
 static int
-CDB___db_addpage(dbc, hp, indxp)
-  DBC *dbc;
-  PAGE **hp;
-  db_indx_t *indxp;
+CDB___db_addpage (dbc, hp, indxp)
+     DBC *dbc;
+     PAGE **hp;
+     db_indx_t *indxp;
 {
   DB *dbp;
   PAGE *newpage;
   int ret;
 
   dbp = dbc->dbp;
-  if ((ret = CDB___db_new(dbc, P_DUPLICATE, &newpage)) != 0)
+  if ((ret = CDB___db_new (dbc, P_DUPLICATE, &newpage)) != 0)
     return (ret);
 
-  if (DB_LOGGING(dbc)) {
-    if ((ret = CDB___db_addpage_log(dbp->dbenv,
-        dbc->txn, &LSN(*hp), 0, dbp->log_fileid,
-        PGNO(*hp), &LSN(*hp), PGNO(newpage), &LSN(newpage))) != 0) {
+  if (DB_LOGGING (dbc))
+  {
+    if ((ret = CDB___db_addpage_log (dbp->dbenv,
+                                     dbc->txn, &LSN (*hp), 0, dbp->log_fileid,
+                                     PGNO (*hp), &LSN (*hp), PGNO (newpage),
+                                     &LSN (newpage))) != 0)
+    {
       return (ret);
     }
-    LSN(newpage) = LSN(*hp);
+    LSN (newpage) = LSN (*hp);
   }
 
-  PREV_PGNO(newpage) = PGNO(*hp);
-  NEXT_PGNO(*hp) = PGNO(newpage);
+  PREV_PGNO (newpage) = PGNO (*hp);
+  NEXT_PGNO (*hp) = PGNO (newpage);
 
-  if ((ret = CDB_memp_fput(dbp->mpf, *hp, DB_MPOOL_DIRTY)) != 0)
+  if ((ret = CDB_memp_fput (dbp->mpf, *hp, DB_MPOOL_DIRTY)) != 0)
     return (ret);
   *hp = newpage;
   *indxp = 0;
@@ -727,13 +775,13 @@ CDB___db_addpage(dbc, hp, indxp)
  * PUBLIC:     int, DBT *, db_pgno_t, db_indx_t *, PAGE **, int *));
  */
 int
-CDB___db_dsearch(dbc, is_insert, dbt, pgno, indxp, pp, cmpp)
-  DBC *dbc;
-  int is_insert, *cmpp;
-  DBT *dbt;
-  db_pgno_t pgno;
-  db_indx_t *indxp;
-  PAGE **pp;
+CDB___db_dsearch (dbc, is_insert, dbt, pgno, indxp, pp, cmpp)
+     DBC *dbc;
+     int is_insert, *cmpp;
+     DBT *dbt;
+     db_pgno_t pgno;
+     db_indx_t *indxp;
+     PAGE **pp;
 {
   DB *dbp;
   PAGE *h;
@@ -743,7 +791,8 @@ CDB___db_dsearch(dbc, is_insert, dbt, pgno, indxp, pp, cmpp)
 
   dbp = dbc->dbp;
 
-  if (dbp->dup_compare == NULL) {
+  if (dbp->dup_compare == NULL)
+  {
     /*
      * We may have been given a valid page, but we may not be
      * able to use it.  The problem is that the application is
@@ -752,8 +801,9 @@ CDB___db_dsearch(dbc, is_insert, dbt, pgno, indxp, pp, cmpp)
      * the page if it's not the one we're going to start with
      * anyway.
      */
-    if (*pp != NULL && (*pp)->pgno != pgno) {
-      if ((ret = CDB_memp_fput(dbp->mpf, *pp, 0)) != 0)
+    if (*pp != NULL && (*pp)->pgno != pgno)
+    {
+      if ((ret = CDB_memp_fput (dbp->mpf, *pp, 0)) != 0)
         return (ret);
       *pp = NULL;
     }
@@ -762,10 +812,11 @@ CDB___db_dsearch(dbc, is_insert, dbt, pgno, indxp, pp, cmpp)
      * If no duplicate function is specified, just go to the end
      * of the duplicate set.
      */
-    if (is_insert) {
-      if ((ret = CDB___db_dend(dbc, pgno, pp)) != 0)
+    if (is_insert)
+    {
+      if ((ret = CDB___db_dend (dbc, pgno, pp)) != 0)
         return (ret);
-      *indxp = NUM_ENT(*pp);
+      *indxp = NUM_ENT (*pp);
       return (0);
     }
 
@@ -773,18 +824,19 @@ CDB___db_dsearch(dbc, is_insert, dbt, pgno, indxp, pp, cmpp)
      * We are looking for a specific duplicate, so do a linear
      * search.
      */
-    firstpg = 1;   /* Is this the first page we're searching? */
+    firstpg = 1;                /* Is this the first page we're searching? */
     if (*pp != NULL)
       goto nocmp_started;
-    for (;;) {
-      if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, pp)) != 0)
+    for (;;)
+    {
+      if ((ret = CDB_memp_fget (dbp->mpf, &pgno, 0, pp)) != 0)
         goto pg_err;
-nocmp_started:    h = *pp;
-      base = (F_ISSET(dbc, DBC_CONTINUE) && (firstpg == 1)) ?
-          *indxp : 0;
-      for (*indxp = base; *indxp < NUM_ENT(h); ++*indxp) {
-        if ((*cmpp = CDB___bam_cmp(dbp,
-            dbt, h, *indxp, CDB___bam_defcmp)) != 0)
+    nocmp_started:h = *pp;
+      base = (F_ISSET (dbc, DBC_CONTINUE) && (firstpg == 1)) ? *indxp : 0;
+      for (*indxp = base; *indxp < NUM_ENT (h); ++*indxp)
+      {
+        if ((*cmpp = CDB___bam_cmp (dbp,
+                                    dbt, h, *indxp, CDB___bam_defcmp)) != 0)
           continue;
         /*
          * The duplicate may have already been deleted,
@@ -792,7 +844,7 @@ nocmp_started:    h = *pp;
          * it.
          */
         if (dbp->type == DB_BTREE &&
-            B_DISSET(GET_BKEYDATA(h, *indxp)->type))
+            B_DISSET (GET_BKEYDATA (h, *indxp)->type))
           continue;
 
         return (0);
@@ -807,10 +859,10 @@ nocmp_started:    h = *pp;
        */
       firstpg = 0;
 
-      if ((ret = CDB_memp_fput(dbp->mpf, h, 0)) != 0)
+      if ((ret = CDB_memp_fput (dbp->mpf, h, 0)) != 0)
         return (ret);
     }
-    *cmpp = 1;      /* We didn't succeed... */
+    *cmpp = 1;                  /* We didn't succeed... */
     return (0);
   }
 
@@ -824,13 +876,19 @@ nocmp_started:    h = *pp;
    */
   if (*pp != NULL)
     goto cmp_started;
-  for (;;) {
-    if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, pp)) != 0)
+  for (;;)
+  {
+    if ((ret = CDB_memp_fget (dbp->mpf, &pgno, 0, pp)) != 0)
       goto pg_err;
-cmp_started:  h = *pp;
+  cmp_started:h = *pp;
 
-    if ((pgno = h->next_pgno) == PGNO_INVALID || CDB___bam_cmp(dbp,
-        dbt, h, h->entries - 1, dbp->dup_compare) <= 0)
+    if ((pgno = h->next_pgno) == PGNO_INVALID || CDB___bam_cmp (dbp,
+                                                                dbt, h,
+                                                                h->entries -
+                                                                1,
+                                                                dbp->
+                                                                dup_compare)
+        <= 0)
       break;
     /*
      * Even when continuing a search, make sure we don't skip
@@ -838,16 +896,17 @@ cmp_started:  h = *pp;
      */
     *indxp = 0;
 
-    if ((ret = CDB_memp_fput(dbp->mpf, h, 0)) != 0)
+    if ((ret = CDB_memp_fput (dbp->mpf, h, 0)) != 0)
       return (ret);
   }
 
   /* Next, do a binary search on the page. */
-  base = F_ISSET(dbc, DBC_CONTINUE) ? *indxp : 0;
-  for (lim = NUM_ENT(h) - base; lim != 0; lim >>= 1) {
+  base = F_ISSET (dbc, DBC_CONTINUE) ? *indxp : 0;
+  for (lim = NUM_ENT (h) - base; lim != 0; lim >>= 1)
+  {
     indx = base + (lim >> 1);
-    if ((*cmpp = CDB___bam_cmp(dbp,
-        dbt, h, indx, dbp->dup_compare)) == 0) {
+    if ((*cmpp = CDB___bam_cmp (dbp, dbt, h, indx, dbp->dup_compare)) == 0)
+    {
       /*
        * If DBC_CONTINUE is set, we want to make sure
        * we return the first duplicate duplicate
@@ -860,11 +919,13 @@ cmp_started:  h = *pp;
        * should ponder this, and perhaps remove the
        * following check and/or add different ones.
        */
-      if (F_ISSET(dbc, DBC_CONTINUE)) {
-        if (indx != 0) {
-          for (indx--; indx >= *indxp; indx--) {
-            if (CDB___bam_cmp(dbp, dbt, h, indx,
-                dbp->dup_compare) != 0)
+      if (F_ISSET (dbc, DBC_CONTINUE))
+      {
+        if (indx != 0)
+        {
+          for (indx--; indx >= *indxp; indx--)
+          {
+            if (CDB___bam_cmp (dbp, dbt, h, indx, dbp->dup_compare) != 0)
               break;
             /*
              * Check for exit; if indx
@@ -886,14 +947,14 @@ cmp_started:  h = *pp;
           indx++;
         }
       }
-postinc:
+    postinc:
       *indxp = indx;
-      if (dbp->type != DB_BTREE ||
-          !B_DISSET(GET_BKEYDATA(h, *indxp)->type))
+      if (dbp->type != DB_BTREE || !B_DISSET (GET_BKEYDATA (h, *indxp)->type))
         return (0);
       goto check_delete;
     }
-    if (*cmpp > 0) {
+    if (*cmpp > 0)
+    {
       base = indx + 1;
       lim--;
     }
@@ -913,22 +974,24 @@ check_delete:
    * been deleted.  First, wander in a forwardly direction.
    */
   save_pgno = (*pp)->pgno;
-  for (++*indxp;;) {
-    for (; *indxp < NUM_ENT(h); ++*indxp) {
-      if ((*cmpp = CDB___bam_cmp(dbp,
-          dbt, h, *indxp, dbp->dup_compare)) != 0)
+  for (++*indxp;;)
+  {
+    for (; *indxp < NUM_ENT (h); ++*indxp)
+    {
+      if ((*cmpp = CDB___bam_cmp (dbp,
+                                  dbt, h, *indxp, dbp->dup_compare)) != 0)
         goto check_delete_rev;
 
-      if (!B_DISSET(GET_BKEYDATA(h, *indxp)->type))
+      if (!B_DISSET (GET_BKEYDATA (h, *indxp)->type))
         return (0);
     }
     if ((pgno = h->next_pgno) == PGNO_INVALID)
       break;
 
-    if ((ret = CDB_memp_fput(dbp->mpf, h, 0)) != 0)
+    if ((ret = CDB_memp_fput (dbp->mpf, h, 0)) != 0)
       return (ret);
 
-    if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, pp)) != 0)
+    if ((ret = CDB_memp_fget (dbp->mpf, &pgno, 0, pp)) != 0)
       goto pg_err;
     h = *pp;
 
@@ -937,41 +1000,44 @@ check_delete:
 
 check_delete_rev:
   /* Go back to where we started, and wander in a backwardly direction. */
-  if (h->pgno != save_pgno) {
-    if ((ret = CDB_memp_fput(dbp->mpf, h, 0)) != 0)
+  if (h->pgno != save_pgno)
+  {
+    if ((ret = CDB_memp_fput (dbp->mpf, h, 0)) != 0)
       return (ret);
-    if ((ret = CDB_memp_fget(dbp->mpf, &save_pgno, 0, pp)) != 0)
+    if ((ret = CDB_memp_fget (dbp->mpf, &save_pgno, 0, pp)) != 0)
       goto pg_err;
     h = *pp;
   }
 
-  for (;;) {
-    while (*indxp > 0) {
+  for (;;)
+  {
+    while (*indxp > 0)
+    {
       --*indxp;
-      if ((*cmpp = CDB___bam_cmp(dbp,
-          dbt, h, *indxp, dbp->dup_compare)) != 0)
+      if ((*cmpp = CDB___bam_cmp (dbp,
+                                  dbt, h, *indxp, dbp->dup_compare)) != 0)
         goto check_delete_fail;
 
-      if (!B_DISSET(GET_BKEYDATA(h, *indxp)->type))
+      if (!B_DISSET (GET_BKEYDATA (h, *indxp)->type))
         return (0);
     }
     if ((pgno = h->prev_pgno) == PGNO_INVALID)
       break;
 
-    if ((ret = CDB_memp_fput(dbp->mpf, h, 0)) != 0)
+    if ((ret = CDB_memp_fput (dbp->mpf, h, 0)) != 0)
       return (ret);
 
-    if ((ret = CDB_memp_fget(dbp->mpf, &pgno, 0, pp)) != 0)
+    if ((ret = CDB_memp_fget (dbp->mpf, &pgno, 0, pp)) != 0)
       goto pg_err;
     h = *pp;
 
-    *indxp = NUM_ENT(h);
+    *indxp = NUM_ENT (h);
   }
 
 check_delete_fail:
-  *cmpp = 1;      /* We didn't succeed... */
+  *cmpp = 1;                    /* We didn't succeed... */
   return (0);
 
-pg_err:  CDB___db_pgerr(dbp, pgno);
+pg_err:CDB___db_pgerr (dbp, pgno);
   return (ret);
 }

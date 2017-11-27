@@ -57,34 +57,33 @@ static const char sccsid[] = "@(#)txn_rec.c  11.2 (Sleepycat) 9/9/99";
  * These records are only ever written for commits.
  */
 int
-CDB___txn_regop_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___txn_regop_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __txn_regop_args *argp;
   int ret;
 
 #ifdef DEBUG_RECOVER
-  (void)CDB___txn_regop_print(dbenv, dbtp, lsnp, redo, info);
+  (void) CDB___txn_regop_print (dbenv, dbtp, lsnp, redo, info);
 #endif
-  COMPQUIET(redo, 0);
-  COMPQUIET(dbenv, NULL);
+  COMPQUIET (redo, 0);
+  COMPQUIET (dbenv, NULL);
 
-  if ((ret = CDB___txn_regop_read(dbtp->data, &argp)) != 0)
+  if ((ret = CDB___txn_regop_read (dbtp->data, &argp)) != 0)
     return (ret);
 
   if (argp->opcode != TXN_COMMIT)
     ret = EINVAL;
-  else
-    if (CDB___db_txnlist_find(info, argp->txnid->txnid) == DB_NOTFOUND)
-      ret = CDB___db_txnlist_add(info, argp->txnid->txnid);
+  else if (CDB___db_txnlist_find (info, argp->txnid->txnid) == DB_NOTFOUND)
+    ret = CDB___db_txnlist_add (info, argp->txnid->txnid);
 
   if (ret == 0)
     *lsnp = argp->prev_lsn;
-  CDB___os_free(argp, 0);
+  CDB___os_free (argp, 0);
 
   return (ret);
 }
@@ -96,34 +95,34 @@ CDB___txn_regop_recover(dbenv, dbtp, lsnp, redo, info)
  * These records are only ever written for prepares.
  */
 int
-CDB___txn_xa_regop_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___txn_xa_regop_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __txn_xa_regop_args *argp;
   int ret;
 
 #ifdef DEBUG_RECOVER
-  (void)CDB___txn_xa_regop_print(dbenv, dbtp, lsnp, redo, info);
+  (void) CDB___txn_xa_regop_print (dbenv, dbtp, lsnp, redo, info);
 #endif
-  COMPQUIET(redo, 0);
-  COMPQUIET(dbenv, NULL);
+  COMPQUIET (redo, 0);
+  COMPQUIET (dbenv, NULL);
 
-  if ((ret = CDB___txn_xa_regop_read(dbtp->data, &argp)) != 0)
+  if ((ret = CDB___txn_xa_regop_read (dbtp->data, &argp)) != 0)
     return (ret);
 
   if (argp->opcode != TXN_PREPARE)
     ret = EINVAL;
   else
     /* Call CDB___db_txnlist_find so that we update the maxid. */
-    (void)CDB___db_txnlist_find(info, argp->txnid->txnid);
+    (void) CDB___db_txnlist_find (info, argp->txnid->txnid);
 
   if (ret == 0)
     *lsnp = argp->prev_lsn;
-  CDB___os_free(argp, 0);
+  CDB___os_free (argp, 0);
 
   return (ret);
 }
@@ -132,22 +131,22 @@ CDB___txn_xa_regop_recover(dbenv, dbtp, lsnp, redo, info)
  * PUBLIC: int CDB___txn_ckp_recover __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___txn_ckp_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___txn_ckp_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __txn_ckp_args *argp;
   int ret;
 
 #ifdef DEBUG_RECOVER
-  CDB___txn_ckp_print(dbenv, dbtp, lsnp, redo, info);
+  CDB___txn_ckp_print (dbenv, dbtp, lsnp, redo, info);
 #endif
-  COMPQUIET(dbenv, NULL);
+  COMPQUIET (dbenv, NULL);
 
-  if ((ret = CDB___txn_ckp_read(dbtp->data, &argp)) != 0)
+  if ((ret = CDB___txn_ckp_read (dbtp->data, &argp)) != 0)
     return (ret);
 
   /*
@@ -158,10 +157,10 @@ CDB___txn_ckp_recover(dbenv, dbtp, lsnp, redo, info)
    */
   if (argp->ckp_lsn.file == lsnp->file &&
       argp->ckp_lsn.offset == lsnp->offset)
-    CDB___db_txnlist_gen(info, redo ? -1 : 1);
+    CDB___db_txnlist_gen (info, redo ? -1 : 1);
 
   *lsnp = argp->last_ckp;
-  CDB___os_free(argp, 0);
+  CDB___os_free (argp, 0);
   return (DB_TXN_CKP);
 }
 
@@ -173,23 +172,23 @@ CDB___txn_ckp_recover(dbenv, dbtp, lsnp, redo, info)
  * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___txn_child_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___txn_child_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __txn_child_args *argp;
   int ret;
 
 #ifdef DEBUG_RECOVER
-  (void)CDB___txn_child_print(dbenv, dbtp, lsnp, redo, info);
+  (void) CDB___txn_child_print (dbenv, dbtp, lsnp, redo, info);
 #endif
-  COMPQUIET(redo, 0);
-  COMPQUIET(dbenv, NULL);
+  COMPQUIET (redo, 0);
+  COMPQUIET (dbenv, NULL);
 
-  if ((ret = CDB___txn_child_read(dbtp->data, &argp)) != 0)
+  if ((ret = CDB___txn_child_read (dbtp->data, &argp)) != 0)
     return (ret);
 
   /*
@@ -200,13 +199,13 @@ CDB___txn_child_recover(dbenv, dbtp, lsnp, redo, info)
   if (argp->opcode != TXN_COMMIT)
     ret = EINVAL;
   else
-    if (CDB___db_txnlist_find(info, argp->parent) == 0 &&
-        CDB___db_txnlist_find(info, argp->txnid->txnid) == DB_NOTFOUND)
-      ret = CDB___db_txnlist_add(info, argp->txnid->txnid);
+    if (CDB___db_txnlist_find (info, argp->parent) == 0 &&
+        CDB___db_txnlist_find (info, argp->txnid->txnid) == DB_NOTFOUND)
+    ret = CDB___db_txnlist_add (info, argp->txnid->txnid);
 
   if (ret == 0)
     *lsnp = argp->prev_lsn;
-  CDB___os_free(argp, 0);
+  CDB___os_free (argp, 0);
 
   return (ret);
 }

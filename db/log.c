@@ -17,7 +17,7 @@ static const char sccsid[] = "@(#)log.c  11.8 (Sleepycat) 9/20/99";
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -29,8 +29,8 @@ static const char sccsid[] = "@(#)log.c  11.8 (Sleepycat) 9/20/99";
 #include "txn.h"
 #include "txn_auto.h"
 
-static int CDB___log_init __P((DB_ENV *, DB_LOG *));
-static int CDB___log_recover __P((DB_LOG *));
+static int CDB___log_init __P ((DB_ENV *, DB_LOG *));
+static int CDB___log_recover __P ((DB_LOG *));
 
 /*
  * CDB___log_open --
@@ -39,64 +39,66 @@ static int CDB___log_recover __P((DB_LOG *));
  * PUBLIC: int CDB___log_open __P((DB_ENV *));
  */
 int
-CDB___log_open(dbenv)
-  DB_ENV *dbenv;
+CDB___log_open (dbenv)
+     DB_ENV *dbenv;
 {
   DB_LOG *dblp;
   LOG *lp;
   int ret;
 
   /* Create/initialize the DB_LOG structure. */
-  if ((ret = CDB___os_calloc(1, sizeof(DB_LOG), &dblp)) != 0)
+  if ((ret = CDB___os_calloc (1, sizeof (DB_LOG), &dblp)) != 0)
     return (ret);
-  ZERO_LSN(dblp->c_lsn);
+  ZERO_LSN (dblp->c_lsn);
   dblp->dbenv = dbenv;
 
   /* Join/create the log region. */
   dblp->reginfo.id = REG_ID_LOG;
   dblp->reginfo.mode = dbenv->db_mode;
-  if (F_ISSET(dbenv, DB_ENV_CREATE))
-    F_SET(&dblp->reginfo, REGION_CREATE_OK);
-  if ((ret = CDB___db_r_attach(
-      dbenv, &dblp->reginfo, LG_BASE_REGION_SIZE + dbenv->lg_bsize)) != 0)
+  if (F_ISSET (dbenv, DB_ENV_CREATE))
+    F_SET (&dblp->reginfo, REGION_CREATE_OK);
+  if ((ret =
+       CDB___db_r_attach (dbenv, &dblp->reginfo,
+                          LG_BASE_REGION_SIZE + dbenv->lg_bsize)) != 0)
     goto err;
 
   /* If we created the region, initialize it. */
-  if (F_ISSET(&dblp->reginfo, REGION_CREATE))
-    if ((ret = CDB___log_init(dbenv, dblp)) != 0)
+  if (F_ISSET (&dblp->reginfo, REGION_CREATE))
+    if ((ret = CDB___log_init (dbenv, dblp)) != 0)
       goto err;
 
   /* Set the local addresses. */
   lp = dblp->reginfo.primary =
-      R_ADDR(&dblp->reginfo, dblp->reginfo.rp->primary);
-  dblp->bufp = R_ADDR(&dblp->reginfo, lp->buffer_off);
+    R_ADDR (&dblp->reginfo, dblp->reginfo.rp->primary);
+  dblp->bufp = R_ADDR (&dblp->reginfo, lp->buffer_off);
 
-  R_UNLOCK(dbenv, &dblp->reginfo);
+  R_UNLOCK (dbenv, &dblp->reginfo);
 
   /*
    * If the region is threaded, then we have to lock both the handles
    * and the region, and we need to allocate a mutex for that purpose.
    */
-  if (F_ISSET(dbenv, DB_ENV_THREAD)) {
-    if ((ret = CDB___db_mutex_alloc(
-        dbenv, &dblp->reginfo, &dblp->mutexp)) != 0)
+  if (F_ISSET (dbenv, DB_ENV_THREAD))
+  {
+    if ((ret =
+         CDB___db_mutex_alloc (dbenv, &dblp->reginfo, &dblp->mutexp)) != 0)
       goto detach;
-    if ((ret = __db_mutex_init(
-        dbenv, dblp->mutexp, 0, MUTEX_THREAD)) != 0)
+    if ((ret = __db_mutex_init (dbenv, dblp->mutexp, 0, MUTEX_THREAD)) != 0)
       goto detach;
   }
 
   dbenv->lg_handle = dblp;
   return (0);
 
-err:  if (dblp->reginfo.addr != NULL) {
-    if (F_ISSET(&dblp->reginfo, REGION_CREATE))
-      F_SET(dblp->reginfo.rp, REG_DEAD);
-    R_UNLOCK(dbenv, &dblp->reginfo);
+err:if (dblp->reginfo.addr != NULL)
+  {
+    if (F_ISSET (&dblp->reginfo, REGION_CREATE))
+      F_SET (dblp->reginfo.rp, REG_DEAD);
+    R_UNLOCK (dbenv, &dblp->reginfo);
 
-detach:    (void)CDB___db_r_detach(dbenv, &dblp->reginfo, 0);
+  detach:(void) CDB___db_r_detach (dbenv, &dblp->reginfo, 0);
   }
-  CDB___os_free(dblp, sizeof(*dblp));
+  CDB___os_free (dblp, sizeof (*dblp));
   return (ret);
 }
 
@@ -105,27 +107,28 @@ detach:    (void)CDB___db_r_detach(dbenv, &dblp->reginfo, 0);
  *  Initialize a log region in shared memory.
  */
 static int
-CDB___log_init(dbenv, dblp)
-  DB_ENV *dbenv;
-  DB_LOG *dblp;
+CDB___log_init (dbenv, dblp)
+     DB_ENV *dbenv;
+     DB_LOG *dblp;
 {
   LOG *region;
   int ret;
   void *p;
 
-  if ((ret = CDB___db_shalloc(dblp->reginfo.addr,
-      sizeof(*region), 0, &dblp->reginfo.primary)) != 0)
+  if ((ret = CDB___db_shalloc (dblp->reginfo.addr,
+                               sizeof (*region), 0,
+                               &dblp->reginfo.primary)) != 0)
     return (ret);
   dblp->reginfo.rp->primary =
-      R_OFFSET(&dblp->reginfo, dblp->reginfo.primary);
+    R_OFFSET (&dblp->reginfo, dblp->reginfo.primary);
   region = dblp->reginfo.primary;
-  memset(region, 0, sizeof(*region));
+  memset (region, 0, sizeof (*region));
 
   region->persist.lg_max = dbenv->lg_max;
   region->persist.magic = DB_LOGMAGIC;
   region->persist.version = DB_LOGVERSION;
   region->persist.mode = dbenv->db_mode;
-  SH_TAILQ_INIT(&region->fq);
+  SH_TAILQ_INIT (&region->fq);
 
   /* Initialize LOG LSNs. */
   region->lsn.file = 1;
@@ -133,10 +136,10 @@ CDB___log_init(dbenv, dblp)
 
   /* Initialize the buffer. */
   if ((ret =
-      CDB___db_shalloc(dblp->reginfo.addr, dbenv->lg_bsize, 0, &p)) != 0)
+       CDB___db_shalloc (dblp->reginfo.addr, dbenv->lg_bsize, 0, &p)) != 0)
     return (ret);
   region->buffer_size = dbenv->lg_bsize;
-  region->buffer_off = R_OFFSET(&dblp->reginfo, p);
+  region->buffer_off = R_OFFSET (&dblp->reginfo, p);
 
   /*
    * XXX:
@@ -147,7 +150,7 @@ CDB___log_init(dbenv, dblp)
   dblp->lfh.log_size = dbenv->lg_max;
 
   /* Try and recover any previous log files before releasing the lock. */
-  return (CDB___log_recover(dblp));
+  return (CDB___log_recover (dblp));
 }
 
 /*
@@ -155,8 +158,8 @@ CDB___log_init(dbenv, dblp)
  *  Recover a log.
  */
 static int
-CDB___log_recover(dblp)
-  DB_LOG *dblp;
+CDB___log_recover (dblp)
+     DB_LOG *dblp;
 {
   DBT dbt;
   DB_LSN lsn;
@@ -170,7 +173,7 @@ CDB___log_recover(dblp)
    * Find a log file.  If none exist, we simply return, leaving
    * everything initialized to a new log.
    */
-  if ((ret = CDB___log_find(dblp, 0, &cnt)) != 0)
+  if ((ret = CDB___log_find (dblp, 0, &cnt)) != 0)
     return (ret);
   if (cnt == 0)
     return (0);
@@ -187,8 +190,8 @@ CDB___log_recover(dblp)
   lsn.offset = 0;
 
   /* Set the cursor.  Shouldn't fail, leave error messages on. */
-  memset(&dbt, 0, sizeof(dbt));
-  if ((ret = CDB___log_get(dblp, &lsn, &dbt, DB_SET, 0)) != 0)
+  memset (&dbt, 0, sizeof (dbt));
+  if ((ret = CDB___log_get (dblp, &lsn, &dbt, DB_SET, 0)) != 0)
     return (ret);
 
   /*
@@ -196,11 +199,13 @@ CDB___log_recover(dblp)
    * at some point, so turn off error messages.
    */
   found_checkpoint = 0;
-  while (CDB___log_get(dblp, &lsn, &dbt, DB_NEXT, 1) == 0) {
-    if (dbt.size < sizeof(u_int32_t))
+  while (CDB___log_get (dblp, &lsn, &dbt, DB_NEXT, 1) == 0)
+  {
+    if (dbt.size < sizeof (u_int32_t))
       continue;
-    memcpy(&chk, dbt.data, sizeof(u_int32_t));
-    if (chk == DB_txn_ckp) {
+    memcpy (&chk, dbt.data, sizeof (u_int32_t));
+    if (chk == DB_txn_ckp)
+    {
       lp->chkpt_lsn = lsn;
       found_checkpoint = 1;
     }
@@ -223,12 +228,13 @@ CDB___log_recover(dblp)
    * It's possible that we didn't find a checkpoint because there wasn't
    * one in the last log file.  Start searching.
    */
-  while (!found_checkpoint && cnt > 1) {
+  while (!found_checkpoint && cnt > 1)
+  {
     lsn.file = --cnt;
     lsn.offset = 0;
 
     /* Set the cursor.  Shouldn't fail, leave error messages on. */
-    if ((ret = CDB___log_get(dblp, &lsn, &dbt, DB_SET, 0)) != 0)
+    if ((ret = CDB___log_get (dblp, &lsn, &dbt, DB_SET, 0)) != 0)
       return (ret);
 
     /*
@@ -236,11 +242,13 @@ CDB___log_recover(dblp)
      * this can fail if there are no checkpoints in any log file,
      * so turn error messages off.
      */
-    while (CDB___log_get(dblp, &lsn, &dbt, DB_NEXT, 1) == 0) {
-      if (dbt.size < sizeof(u_int32_t))
+    while (CDB___log_get (dblp, &lsn, &dbt, DB_NEXT, 1) == 0)
+    {
+      if (dbt.size < sizeof (u_int32_t))
         continue;
-      memcpy(&chk, dbt.data, sizeof(u_int32_t));
-      if (chk == DB_txn_ckp) {
+      memcpy (&chk, dbt.data, sizeof (u_int32_t));
+      if (chk == DB_txn_ckp)
+      {
         lp->chkpt_lsn = lsn;
         found_checkpoint = 1;
       }
@@ -249,18 +257,18 @@ CDB___log_recover(dblp)
 
   /* If we never find a checkpoint, that's okay, just 0 it out. */
   if (!found_checkpoint)
-    ZERO_LSN(lp->chkpt_lsn);
+    ZERO_LSN (lp->chkpt_lsn);
 
   /*
    * Reset the cursor lsn to the beginning of the log, so that an
    * initial call to DB_NEXT does the right thing.
    */
-  ZERO_LSN(dblp->c_lsn);
+  ZERO_LSN (dblp->c_lsn);
 
-  if (FLD_ISSET(dblp->dbenv->verbose, DB_VERB_RECOVERY))
-    CDB___db_err(dblp->dbenv,
-        "Finding last valid log LSN: file: %lu offset %lu",
-        (u_long)lp->lsn.file, (u_long)lp->lsn.offset);
+  if (FLD_ISSET (dblp->dbenv->verbose, DB_VERB_RECOVERY))
+    CDB___db_err (dblp->dbenv,
+                  "Finding last valid log LSN: file: %lu offset %lu",
+                  (u_long) lp->lsn.file, (u_long) lp->lsn.offset);
 
   return (0);
 }
@@ -274,9 +282,9 @@ CDB___log_recover(dblp)
  * PUBLIC: int CDB___log_find __P((DB_LOG *, int, int *));
  */
 int
-CDB___log_find(dblp, find_first, valp)
-  DB_LOG *dblp;
-  int find_first, *valp;
+CDB___log_find (dblp, find_first, valp)
+     DB_LOG *dblp;
+     int find_first, *valp;
 {
   u_int32_t clv, logval;
   int cnt, fcnt, ret;
@@ -286,17 +294,18 @@ CDB___log_find(dblp, find_first, valp)
   *valp = 0;
 
   /* Find the directory name. */
-  if ((ret = CDB___log_name(dblp, 1, &p, NULL, 0)) != 0)
+  if ((ret = CDB___log_name (dblp, 1, &p, NULL, 0)) != 0)
     return (ret);
-  if ((q = CDB___db_rpath(p)) == NULL)
+  if ((q = CDB___db_rpath (p)) == NULL)
     dir = PATH_DOT;
-  else {
+  else
+  {
     *q = '\0';
     dir = p;
   }
 
   /* Get the list of file names. */
-  ret = CDB___os_dirlist(dir, &names, &fcnt);
+  ret = CDB___os_dirlist (dir, &names, &fcnt);
 
   /*
    * !!!
@@ -306,10 +315,11 @@ CDB___log_find(dblp, find_first, valp)
    */
   if (q != NULL)
     *q = 'a';
-  CDB___os_freestr(p);
+  CDB___os_freestr (p);
 
-  if (ret != 0) {
-    CDB___db_err(dblp->dbenv, "%s: %s", dir, CDB_db_strerror(ret));
+  if (ret != 0)
+  {
+    CDB___db_err (dblp->dbenv, "%s: %s", dir, CDB_db_strerror (ret));
     return (ret);
   }
 
@@ -320,26 +330,28 @@ CDB___log_find(dblp, find_first, valp)
    * XXX
    * Assumes that atoi(3) returns a 32-bit number.
    */
-  for (cnt = fcnt, clv = logval = 0; --cnt >= 0;) {
-    if (strncmp(names[cnt], LFPREFIX, sizeof(LFPREFIX) - 1) != 0)
+  for (cnt = fcnt, clv = logval = 0; --cnt >= 0;)
+  {
+    if (strncmp (names[cnt], LFPREFIX, sizeof (LFPREFIX) - 1) != 0)
       continue;
 
-    clv = atoi(names[cnt] + (sizeof(LFPREFIX) - 1));
-    if (find_first) {
+    clv = atoi (names[cnt] + (sizeof (LFPREFIX) - 1));
+    if (find_first)
+    {
       if (logval != 0 && clv > logval)
         continue;
-    } else
-      if (logval != 0 && clv < logval)
-        continue;
+    }
+    else if (logval != 0 && clv < logval)
+      continue;
 
-    if (CDB___log_valid(dblp, clv, 1) == 0)
+    if (CDB___log_valid (dblp, clv, 1) == 0)
       logval = clv;
   }
 
   *valp = logval;
 
   /* Discard the list. */
-  CDB___os_dirfree(names, fcnt);
+  CDB___os_dirfree (names, fcnt);
 
   return (0);
 }
@@ -351,10 +363,10 @@ CDB___log_find(dblp, find_first, valp)
  * PUBLIC: int CDB___log_valid __P((DB_LOG *, u_int32_t, int));
  */
 int
-CDB___log_valid(dblp, number, set_persist)
-  DB_LOG *dblp;
-  u_int32_t number;
-  int set_persist;
+CDB___log_valid (dblp, number, set_persist)
+     DB_LOG *dblp;
+     u_int32_t number;
+     int set_persist;
 {
   DB_FH fh;
   LOG *region;
@@ -364,39 +376,44 @@ CDB___log_valid(dblp, number, set_persist)
   char *fname;
 
   /* Try to open the log file. */
-  if ((ret = CDB___log_name(dblp,
-      number, &fname, &fh, DB_OSO_RDONLY | DB_OSO_SEQ)) != 0) {
-    CDB___os_freestr(fname);
+  if ((ret = CDB___log_name (dblp,
+                             number, &fname, &fh,
+                             DB_OSO_RDONLY | DB_OSO_SEQ)) != 0)
+  {
+    CDB___os_freestr (fname);
     return (ret);
   }
 
   /* Try to read the header. */
-  if ((ret = CDB___os_seek(&fh, 0, 0, sizeof(HDR), 0, DB_OS_SEEK_SET)) != 0 ||
-      (ret = CDB___os_read(&fh, &persist, sizeof(LOGP), &nw)) != 0 ||
-      nw != sizeof(LOGP)) {
+  if ((ret = CDB___os_seek (&fh, 0, 0, sizeof (HDR), 0, DB_OS_SEEK_SET)) != 0
+      || (ret = CDB___os_read (&fh, &persist, sizeof (LOGP), &nw)) != 0
+      || nw != sizeof (LOGP))
+  {
     if (ret == 0)
       ret = EIO;
 
-    (void)CDB___os_closehandle(&fh);
+    (void) CDB___os_closehandle (&fh);
 
-    CDB___db_err(dblp->dbenv,
-        "Ignoring log file: %s: %s", fname, CDB_db_strerror(ret));
+    CDB___db_err (dblp->dbenv,
+                  "Ignoring log file: %s: %s", fname, CDB_db_strerror (ret));
     goto err;
   }
-  (void)CDB___os_closehandle(&fh);
+  (void) CDB___os_closehandle (&fh);
 
   /* Validate the header. */
-  if (persist.magic != DB_LOGMAGIC) {
-    CDB___db_err(dblp->dbenv,
-        "Ignoring log file: %s: magic number %lx, not %lx",
-        fname, (u_long)persist.magic, (u_long)DB_LOGMAGIC);
+  if (persist.magic != DB_LOGMAGIC)
+  {
+    CDB___db_err (dblp->dbenv,
+                  "Ignoring log file: %s: magic number %lx, not %lx",
+                  fname, (u_long) persist.magic, (u_long) DB_LOGMAGIC);
     ret = EINVAL;
     goto err;
   }
-  if (persist.version < DB_LOGOLDVER || persist.version > DB_LOGVERSION) {
-    CDB___db_err(dblp->dbenv,
-        "Ignoring log file: %s: unsupported log version %lu",
-        fname, (u_long)persist.version);
+  if (persist.version < DB_LOGOLDVER || persist.version > DB_LOGVERSION)
+  {
+    CDB___db_err (dblp->dbenv,
+                  "Ignoring log file: %s: unsupported log version %lu",
+                  fname, (u_long) persist.version);
     ret = EINVAL;
     goto err;
   }
@@ -405,14 +422,15 @@ CDB___log_valid(dblp, number, set_persist)
    * If we're going to use this log file, set the region's persistent
    * information based on the headers.
    */
-  if (set_persist) {
+  if (set_persist)
+  {
     region = dblp->reginfo.primary;
     region->persist.lg_max = persist.lg_max;
     region->persist.mode = persist.mode;
   }
   ret = 0;
 
-err:  CDB___os_freestr(fname);
+err:CDB___os_freestr (fname);
   return (ret);
 }
 
@@ -423,8 +441,8 @@ err:  CDB___os_freestr(fname);
  * PUBLIC: int CDB___log_close __P((DB_ENV *));
  */
 int
-CDB___log_close(dbenv)
-  DB_ENV *dbenv;
+CDB___log_close (dbenv)
+     DB_ENV *dbenv;
 {
   DB_LOG *dblp;
   int ret, t_ret;
@@ -433,29 +451,28 @@ CDB___log_close(dbenv)
   dblp = dbenv->lg_handle;
 
   /* We may have opened files as part of XA; if so, close them. */
-  CDB___log_close_files(dbenv);
+  CDB___log_close_files (dbenv);
 
   /* Discard the per-thread lock. */
   if (dblp->mutexp != NULL)
-    CDB___db_mutex_free(dbenv, &dblp->reginfo, dblp->mutexp);
+    CDB___db_mutex_free (dbenv, &dblp->reginfo, dblp->mutexp);
 
   /* Detach from the region. */
-  ret = CDB___db_r_detach(dbenv, &dblp->reginfo, 0);
+  ret = CDB___db_r_detach (dbenv, &dblp->reginfo, 0);
 
   /* Close open files, release allocated memory. */
-  if (F_ISSET(&dblp->lfh, DB_FH_VALID) &&
-      (t_ret = CDB___os_closehandle(&dblp->lfh)) != 0 && ret == 0)
+  if (F_ISSET (&dblp->lfh, DB_FH_VALID) &&
+      (t_ret = CDB___os_closehandle (&dblp->lfh)) != 0 && ret == 0)
     ret = t_ret;
   if (dblp->c_dbt.data != NULL)
-    CDB___os_free(dblp->c_dbt.data, dblp->c_dbt.ulen);
-  if (F_ISSET(&dblp->c_fh, DB_FH_VALID) &&
-      (t_ret = CDB___os_closehandle(&dblp->c_fh)) != 0 && ret == 0)
+    CDB___os_free (dblp->c_dbt.data, dblp->c_dbt.ulen);
+  if (F_ISSET (&dblp->c_fh, DB_FH_VALID) &&
+      (t_ret = CDB___os_closehandle (&dblp->c_fh)) != 0 && ret == 0)
     ret = t_ret;
   if (dblp->dbentry != NULL)
-    CDB___os_free(dblp->dbentry,
-        (dblp->dbentry_cnt * sizeof(DB_ENTRY)));
+    CDB___os_free (dblp->dbentry, (dblp->dbentry_cnt * sizeof (DB_ENTRY)));
 
-  CDB___os_free(dblp, sizeof(*dblp));
+  CDB___os_free (dblp, sizeof (*dblp));
   return (ret);
 }
 
@@ -464,29 +481,29 @@ CDB___log_close(dbenv)
  *  Return LOG statistics.
  */
 int
-CDB_log_stat(dbenv, statp, db_malloc)
-  DB_ENV *dbenv;
-  DB_LOG_STAT **statp;
-  void *(*db_malloc) __P((size_t));
+CDB_log_stat (dbenv, statp, db_malloc)
+     DB_ENV *dbenv;
+     DB_LOG_STAT **statp;
+     void *(*db_malloc) __P ((size_t));
 {
   DB_LOG *dblp;
   DB_LOG_STAT *stats;
   LOG *region;
   int ret;
 
-  PANIC_CHECK(dbenv);
-  ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
+  PANIC_CHECK (dbenv);
+  ENV_REQUIRES_CONFIG (dbenv, dbenv->lg_handle, DB_INIT_LOG);
 
   *statp = NULL;
 
   dblp = dbenv->lg_handle;
   region = dblp->reginfo.primary;
 
-  if ((ret = CDB___os_malloc(sizeof(DB_LOG_STAT), db_malloc, &stats)) != 0)
+  if ((ret = CDB___os_malloc (sizeof (DB_LOG_STAT), db_malloc, &stats)) != 0)
     return (ret);
 
   /* Copy out the global statistics. */
-  R_LOCK(dbenv, &dblp->reginfo);
+  R_LOCK (dbenv, &dblp->reginfo);
   *stats = region->stat;
 
   stats->st_magic = region->persist.magic;
@@ -502,7 +519,7 @@ CDB_log_stat(dbenv, statp, db_malloc)
   stats->st_cur_file = region->lsn.file;
   stats->st_cur_offset = region->lsn.offset;
 
-  R_UNLOCK(dbenv, &dblp->reginfo);
+  R_UNLOCK (dbenv, &dblp->reginfo);
 
   *statp = stats;
   return (0);

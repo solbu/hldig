@@ -26,13 +26,13 @@ static const char sccsid[] = "@(#)mp_alloc.c  11.3 (Sleepycat) 9/29/99";
  * PUBLIC:     REGINFO *, MPOOLFILE *, size_t, roff_t *, void *));
  */
 int
-CDB___memp_alloc(dbmp, memreg, mfp, len, offsetp, retp)
-  DB_MPOOL *dbmp;
-  REGINFO *memreg;
-  MPOOLFILE *mfp;
-  size_t len;
-  roff_t *offsetp;
-  void *retp;
+CDB___memp_alloc (dbmp, memreg, mfp, len, offsetp, retp)
+     DB_MPOOL *dbmp;
+     REGINFO *memreg;
+     MPOOLFILE *mfp;
+     size_t len;
+     roff_t *offsetp;
+     void *retp;
 {
   BH *bhp, *nbhp;
   MCACHE *mc;
@@ -53,40 +53,44 @@ CDB___memp_alloc(dbmp, memreg, mfp, len, offsetp, retp)
    * before free-ing and re-allocating buffers.
    */
   if (mfp != NULL)
-    len = (sizeof(BH) - sizeof(u_int8_t)) + mfp->stat.st_pagesize;
+    len = (sizeof (BH) - sizeof (u_int8_t)) + mfp->stat.st_pagesize;
 
   nomore = 0;
-alloc:  if ((ret = CDB___db_shalloc(memreg->addr, len, MUTEX_ALIGN, &p)) == 0) {
+alloc:if ((ret =
+       CDB___db_shalloc (memreg->addr, len, MUTEX_ALIGN, &p)) == 0)
+  {
     if (offsetp != NULL)
-      *offsetp = R_OFFSET(memreg, p);
-    *(void **)retp = p;
+      *offsetp = R_OFFSET (memreg, p);
+    *(void **) retp = p;
     return (0);
   }
-  if (nomore) {
-    CDB___db_err(dbmp->dbenv,
-      "Unable to allocate %lu bytes from mpool shared region: %s\n",
-        (u_long)len, CDB_db_strerror(ret));
+  if (nomore)
+  {
+    CDB___db_err (dbmp->dbenv,
+                  "Unable to allocate %lu bytes from mpool shared region: %s\n",
+                  (u_long) len, CDB_db_strerror (ret));
     return (ret);
   }
 
-retry:  /* Find a buffer we can flush; pure LRU. */
+retry:                         /* Find a buffer we can flush; pure LRU. */
   restart = total = 0;
-  for (bhp =
-      SH_TAILQ_FIRST(&mc->bhq, __bh); bhp != NULL; bhp = nbhp) {
-    nbhp = SH_TAILQ_NEXT(bhp, q, __bh);
+  for (bhp = SH_TAILQ_FIRST (&mc->bhq, __bh); bhp != NULL; bhp = nbhp)
+  {
+    nbhp = SH_TAILQ_NEXT (bhp, q, __bh);
 
     /* Ignore pinned or locked (I/O in progress) buffers. */
-    if (bhp->ref != 0 || F_ISSET(bhp, BH_LOCKED))
+    if (bhp->ref != 0 || F_ISSET (bhp, BH_LOCKED))
       continue;
 
     /* Find the associated MPOOLFILE. */
-    bh_mfp = R_ADDR(&dbmp->reginfo, bhp->mf_offset);
+    bh_mfp = R_ADDR (&dbmp->reginfo, bhp->mf_offset);
 
     /* Write the page if it's dirty. */
-    if (F_ISSET(bhp, BH_DIRTY)) {
+    if (F_ISSET (bhp, BH_DIRTY))
+    {
       ++bhp->ref;
-      if ((ret = CDB___memp_bhwrite(dbmp,
-          bh_mfp, bhp, &restart, &wrote)) != 0)
+      if ((ret = CDB___memp_bhwrite (dbmp,
+                                     bh_mfp, bhp, &restart, &wrote)) != 0)
         return (ret);
       --bhp->ref;
 
@@ -111,31 +115,33 @@ retry:  /* Find a buffer we can flush; pure LRU. */
        */
       if (wrote)
         ++mc->stat.st_rw_evict;
-      else {
+      else
+      {
         if (restart)
           goto retry;
         continue;
       }
-    } else
+    }
+    else
       ++mc->stat.st_ro_evict;
 
     /*
      * Check to see if the buffer is the size we're looking for.
      * If it is, simply reuse it.
      */
-    if (mfp != NULL &&
-        mfp->stat.st_pagesize == bh_mfp->stat.st_pagesize) {
-      CDB___memp_bhfree(dbmp, bhp, 0);
+    if (mfp != NULL && mfp->stat.st_pagesize == bh_mfp->stat.st_pagesize)
+    {
+      CDB___memp_bhfree (dbmp, bhp, 0);
 
       if (offsetp != NULL)
-        *offsetp = R_OFFSET(memreg, bhp);
-      *(void **)retp = bhp;
+        *offsetp = R_OFFSET (memreg, bhp);
+      *(void **) retp = bhp;
       return (0);
     }
 
     /* Note how much space we've freed, and free the buffer. */
-    total += CDB___db_shsizeof(bhp);
-    CDB___memp_bhfree(dbmp, bhp, 1);
+    total += CDB___db_shsizeof (bhp);
+    CDB___memp_bhfree (dbmp, bhp, 1);
 
     /*
      * Retry as soon as we've freed up sufficient space.  If we

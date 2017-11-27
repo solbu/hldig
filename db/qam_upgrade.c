@@ -7,7 +7,8 @@
 #include "htconfig.h"
 
 #ifndef lint
-static const char revid[] = "$Id: qam_upgrade.c,v 1.2 2002/02/02 18:18:05 ghutchis Exp $";
+static const char revid[] =
+  "$Id: qam_upgrade.c,v 1.2 2002/02/02 18:18:05 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -32,19 +33,19 @@ static const char revid[] = "$Id: qam_upgrade.c,v 1.2 2002/02/02 18:18:05 ghutch
  * PUBLIC: int CDB___qam_31_qammeta __P((DB *, char *, u_int8_t *));
  */
 int
-CDB___qam_31_qammeta(dbp, real_name, buf)
-  DB *dbp;
-  char *real_name;
-  u_int8_t *buf;
+CDB___qam_31_qammeta (dbp, real_name, buf)
+     DB *dbp;
+     char *real_name;
+     u_int8_t *buf;
 {
   QMETA31 *newmeta;
   QMETA30 *oldmeta;
 
-  COMPQUIET(dbp, NULL);
-  COMPQUIET(real_name, NULL);
+  COMPQUIET (dbp, NULL);
+  COMPQUIET (real_name, NULL);
 
-  newmeta = (QMETA31 *)buf;
-  oldmeta = (QMETA30 *)buf;
+  newmeta = (QMETA31 *) buf;
+  oldmeta = (QMETA30 *) buf;
 
   /*
    * Copy the fields to their new locations.
@@ -56,12 +57,12 @@ CDB___qam_31_qammeta(dbp, real_name, buf)
   newmeta->cur_recno = oldmeta->cur_recno;
   newmeta->first_recno = oldmeta->first_recno;
   newmeta->start = oldmeta->start;
-  memmove(newmeta->dbmeta.uid,
-      oldmeta->dbmeta.uid, sizeof(oldmeta->dbmeta.uid));
+  memmove (newmeta->dbmeta.uid,
+           oldmeta->dbmeta.uid, sizeof (oldmeta->dbmeta.uid));
   newmeta->dbmeta.flags = oldmeta->dbmeta.flags;
   newmeta->dbmeta.record_count = 0;
   newmeta->dbmeta.key_count = 0;
-  ZERO_LSN(newmeta->dbmeta.alloc_lsn);
+  ZERO_LSN (newmeta->dbmeta.alloc_lsn);
 
   /* Update the version. */
   newmeta->dbmeta.version = 2;

@@ -7,14 +7,22 @@
  *  @(#)mp.h  11.3 (Sleepycat) 10/6/99
  */
 
-struct __bh;    typedef struct __bh BH;
-struct __db_mpool;  typedef struct __db_mpool DB_MPOOL;
-struct __db_mpreg;  typedef struct __db_mpreg DB_MPREG;
-struct __mcache;  typedef struct __mcache MCACHE;
-struct __mpool;    typedef struct __mpool MPOOL;
-struct __mpoolfile;  typedef struct __mpoolfile MPOOLFILE;
-struct __cmpr;    typedef struct __cmpr CMPR;
-struct __cmpr_context;  typedef struct __cmpr_context CMPR_CONTEXT;
+struct __bh;
+typedef struct __bh BH;
+struct __db_mpool;
+typedef struct __db_mpool DB_MPOOL;
+struct __db_mpreg;
+typedef struct __db_mpreg DB_MPREG;
+struct __mcache;
+typedef struct __mcache MCACHE;
+struct __mpool;
+typedef struct __mpool MPOOL;
+struct __mpoolfile;
+typedef struct __mpoolfile MPOOLFILE;
+struct __cmpr;
+typedef struct __cmpr CMPR;
+struct __cmpr_context;
+typedef struct __cmpr_context CMPR_CONTEXT;
 
 /* We require at least 20K of cache. */
 #define  DB_CACHESIZE_MIN  ( 20 * 1024)
@@ -28,26 +36,27 @@ struct __cmpr_context;  typedef struct __cmpr_context CMPR_CONTEXT;
  * DB_MPOOL --
  *  Per-process memory pool structure.
  */
-struct __db_mpool {
+struct __db_mpool
+{
   /* These fields need to be protected for multi-threaded support. */
-  MUTEX     *mutexp;    /* Structure thread lock. */
+  MUTEX *mutexp;                /* Structure thread lock. */
 
-          /* List of pgin/pgout routines. */
-  LIST_HEAD(__db_mpregh, __db_mpreg) dbregq;
+  /* List of pgin/pgout routines. */
+    LIST_HEAD (__db_mpregh, __db_mpreg) dbregq;
 
-          /* List of DB_MPOOLFILE's. */
-  TAILQ_HEAD(__db_mpoolfileh, __db_mpoolfile) dbmfq;
+  /* List of DB_MPOOLFILE's. */
+    TAILQ_HEAD (__db_mpoolfileh, __db_mpoolfile) dbmfq;
 
   /* These fields are not thread-protected. */
-  DB_ENV     *dbenv;    /* Reference to error information. */
+  DB_ENV *dbenv;                /* Reference to error information. */
 
-  REGINFO      reginfo;    /* Main shared region. */
+  REGINFO reginfo;              /* Main shared region. */
 
-  int      nc_reg;    /* N underlying cache regions. */
-  REGINFO     *c_reginfo;    /* Underlying cache regions. */
+  int nc_reg;                   /* N underlying cache regions. */
+  REGINFO *c_reginfo;           /* Underlying cache regions. */
 
   /* I'm not sure if these need to be thread-protected... */
-  int         recursion_level;  /* limit recur'n from weak compr'n */
+  int recursion_level;          /* limit recur'n from weak compr'n */
 
 };
 
@@ -55,35 +64,38 @@ struct __db_mpool {
  * DB_MPREG --
  *  DB_MPOOL registry of pgin/pgout functions.
  */
-struct __db_mpreg {
-  LIST_ENTRY(__db_mpreg) q;  /* Linked list. */
+struct __db_mpreg
+{
+  LIST_ENTRY (__db_mpreg) q;    /* Linked list. */
 
-  int ftype;      /* File type. */
-          /* Pgin, pgout routines. */
-  int (*pgin) __P((db_pgno_t, void *, DBT *));
-  int (*pgout) __P((db_pgno_t, void *, DBT *));
+  int ftype;                    /* File type. */
+  /* Pgin, pgout routines. */
+  int (*pgin) __P ((db_pgno_t, void *, DBT *));
+  int (*pgout) __P ((db_pgno_t, void *, DBT *));
 };
 
 /*
  * CMPR_CONTEXT --
  *  Shared compresssion information.
  */
-struct __cmpr_context {
+struct __cmpr_context
+{
 #define DB_CMPR_SUFFIX  "_weakcmpr"
-  DB        *weakcmpr;    /* Free weakcmpr pages pool. */
+  DB *weakcmpr;                 /* Free weakcmpr pages pool. */
 };
 
 /*
  * DB_MPOOLFILE --
  *  Per-process DB_MPOOLFILE information.
  */
-struct __db_mpoolfile {
+struct __db_mpoolfile
+{
   /* These fields need to be protected for multi-threaded support. */
-  MUTEX    *mutexp;    /* Structure thread lock. */
+  MUTEX *mutexp;                /* Structure thread lock. */
 
-  DB_FH     fh;      /* Underlying file handle. */
+  DB_FH fh;                     /* Underlying file handle. */
 
-  u_int32_t ref;      /* Reference count. */
+  u_int32_t ref;                /* Reference count. */
 
   /*
    * !!!
@@ -95,30 +107,30 @@ struct __db_mpoolfile {
    * the race between the seek and write of the file descriptor) will
    * block any other put/get calls using this DB_MPOOLFILE structure.
    */
-  u_int32_t pinref;    /* Pinned block reference count. */
+  u_int32_t pinref;             /* Pinned block reference count. */
 
   /*
    * !!!
    * This field is a special case -- it's protected by the region lock
    * since it's manipulated only when new files are added to the list.
    */
-  TAILQ_ENTRY(__db_mpoolfile) q;  /* Linked list of DB_MPOOLFILE's. */
+    TAILQ_ENTRY (__db_mpoolfile) q;     /* Linked list of DB_MPOOLFILE's. */
 
   /* These fields are not thread-protected. */
-  DB_MPOOL  *dbmp;    /* Overlying DB_MPOOL. */
-  MPOOLFILE *mfp;      /* Underlying MPOOLFILE. */
+  DB_MPOOL *dbmp;               /* Overlying DB_MPOOL. */
+  MPOOLFILE *mfp;               /* Underlying MPOOLFILE. */
 
-  void    *addr;    /* Address of mmap'd region. */
-  size_t     len;      /* Length of mmap'd region. */
+  void *addr;                   /* Address of mmap'd region. */
+  size_t len;                   /* Length of mmap'd region. */
 
   /* These fields need to be protected for multi-threaded support. */
-#define  MP_READONLY  0x01    /* File is readonly. */
-#define  MP_UPGRADE  0x02    /* File descriptor is readwrite. */
-#define  MP_UPGRADE_FAIL  0x04    /* Upgrade wasn't possible. */
-#define  MP_CMPR    0x08    /* Transparent I/O compression. */
-  u_int32_t  flags;
+#define  MP_READONLY  0x01      /* File is readonly. */
+#define  MP_UPGRADE  0x02       /* File descriptor is readwrite. */
+#define  MP_UPGRADE_FAIL  0x04  /* Upgrade wasn't possible. */
+#define  MP_CMPR    0x08        /* Transparent I/O compression. */
+  u_int32_t flags;
 
-        CMPR_CONTEXT   cmpr_context;    /* Shared compression information */
+  CMPR_CONTEXT cmpr_context;    /* Shared compression information */
 
 };
 
@@ -152,8 +164,9 @@ struct __db_mpoolfile {
  *  Shared memory pool region.  One of these is allocated in shared
  *  memory, and describes the entire pool.
  */
-struct __mpool {
-  SH_TAILQ_HEAD(__mpfq) mpfq;  /* List of MPOOLFILEs. */
+struct __mpool
+{
+  SH_TAILQ_HEAD (__mpfq) mpfq;  /* List of MPOOLFILEs. */
 
   /*
    * We single-thread CDB_memp_sync and CDB_memp_fsync calls.
@@ -162,21 +175,21 @@ struct __mpool {
    * it is not used to protect the lsn and lsn_cnt fields, the region
    * lock is used to protect them.
    */
-  MUTEX    sync_mutex;    /* Checkpoint lock. */
-  DB_LSN    lsn;      /* Maximum checkpoint LSN. */
-  u_int32_t lsn_cnt;    /* Checkpoint buffers left to write. */
+  MUTEX sync_mutex;             /* Checkpoint lock. */
+  DB_LSN lsn;                   /* Maximum checkpoint LSN. */
+  u_int32_t lsn_cnt;            /* Checkpoint buffers left to write. */
 
-  u_int32_t nc_reg;    /* Number of underlying REGIONS. */
-  roff_t    c_regids;    /* Array of underlying REGION Ids. */
+  u_int32_t nc_reg;             /* Number of underlying REGIONS. */
+  roff_t c_regids;              /* Array of underlying REGION Ids. */
 
-#define  MP_LSN_RETRY  0x01    /* Retry all BH_WRITE buffers. */
-  u_int32_t  flags;
+#define  MP_LSN_RETRY  0x01     /* Retry all BH_WRITE buffers. */
+  u_int32_t flags;
 
   /* HACK!! */
   /* a pointers allocated for this structure is (erroneously?) used */
   /* in CDB___memp_alloc() to refer to a MCACHE structure.  Make sure */
   /* the allocation is big enough. */
-  int      dummy [100];
+  int dummy[100];
 
 };
 
@@ -188,44 +201,46 @@ struct __mpool {
  *  expect to see more systems with similar issues.  An MCACHE structure
  *  describes a backing piece of memory used as a cache.
  */
-struct __mcache {
-  SH_TAILQ_HEAD(__bhq) bhq;  /* LRU list of buffer headers. */
+struct __mcache
+{
+  SH_TAILQ_HEAD (__bhq) bhq;    /* LRU list of buffer headers. */
 
-  int      htab_buckets;  /* Number of hash table entries. */
-  roff_t      htab;    /* Hash table offset. */
+  int htab_buckets;             /* Number of hash table entries. */
+  roff_t htab;                  /* Hash table offset. */
 
-  DB_MPOOL_STAT stat;    /* Per-cache mpool statistics. */
+  DB_MPOOL_STAT stat;           /* Per-cache mpool statistics. */
 };
 
 /*
  * MPOOLFILE --
  *  Shared DB_MPOOLFILE information.
  */
-struct __mpoolfile {
-  SH_TAILQ_ENTRY  q;    /* List of MPOOLFILEs */
+struct __mpoolfile
+{
+  SH_TAILQ_ENTRY q;             /* List of MPOOLFILEs */
 
-  int    ftype;    /* File type. */
+  int ftype;                    /* File type. */
 
-  int32_t    lsn_off;    /* Page's LSN offset. */
-  u_int32_t clear_len;    /* Bytes to clear on page create. */
+  int32_t lsn_off;              /* Page's LSN offset. */
+  u_int32_t clear_len;          /* Bytes to clear on page create. */
 
-  roff_t    path_off;    /* File name location. */
-  roff_t    fileid_off;    /* File identification location. */
+  roff_t path_off;              /* File name location. */
+  roff_t fileid_off;            /* File identification location. */
 
-  roff_t    pgcookie_len;    /* Pgin/pgout cookie length. */
-  roff_t    pgcookie_off;    /* Pgin/pgout cookie location. */
+  roff_t pgcookie_len;          /* Pgin/pgout cookie length. */
+  roff_t pgcookie_off;          /* Pgin/pgout cookie location. */
 
-  u_int32_t lsn_cnt;    /* Checkpoint buffers left to write. */
+  u_int32_t lsn_cnt;            /* Checkpoint buffers left to write. */
 
-  db_pgno_t last_pgno;    /* Last page in the file. */
-  db_pgno_t orig_last_pgno;  /* Original last page in the file. */
+  db_pgno_t last_pgno;          /* Last page in the file. */
+  db_pgno_t orig_last_pgno;     /* Original last page in the file. */
 
-#define  MP_CAN_MMAP  0x01    /* If the file can be mmap'd. */
-#define  MP_REMOVED  0x02    /* Backing file has been removed. */
-#define  MP_TEMP    0x04    /* Backing file is a temporary. */
-  u_int32_t  flags;
+#define  MP_CAN_MMAP  0x01      /* If the file can be mmap'd. */
+#define  MP_REMOVED  0x02       /* Backing file has been removed. */
+#define  MP_TEMP    0x04        /* Backing file is a temporary. */
+  u_int32_t flags;
 
-  DB_MPOOL_FSTAT stat;    /* Per-file mpool statistics. */
+  DB_MPOOL_FSTAT stat;          /* Per-file mpool statistics. */
 };
 
 /*
@@ -252,13 +267,14 @@ struct __mpoolfile {
 #define DB_CMPR_MULTIPLY(dbenv, size) ((size) << CDB___memp_cmpr_coefficient(dbenv) )
 
 
-struct __cmpr {
-#define DB_CMPR_FIRST     0x01 /* Head of chain. */
-#define DB_CMPR_INTERNAL  0x02 /* Weak compression data. */
-#define DB_CMPR_CHAIN     0x04 /* More data in next page. */
-#define DB_CMPR_FREE    0x08 /* Not in use. */
+struct __cmpr
+{
+#define DB_CMPR_FIRST     0x01  /* Head of chain. */
+#define DB_CMPR_INTERNAL  0x02  /* Weak compression data. */
+#define DB_CMPR_CHAIN     0x04  /* More data in next page. */
+#define DB_CMPR_FREE    0x08    /* Not in use. */
 
-  u_int16_t flags; 
+  u_int16_t flags;
 
   /* 
    * Filled if DB_CMPR_CHAIN set
@@ -283,29 +299,30 @@ struct __cmpr {
  * BH --
  *  Buffer header.
  */
-struct __bh {
-  MUTEX          mutex;    /* Buffer thread/process lock. */
+struct __bh
+{
+  MUTEX mutex;                  /* Buffer thread/process lock. */
 
-  u_int16_t  ref;    /* Reference count. */
+  u_int16_t ref;                /* Reference count. */
 
-#define  BH_CALLPGIN  0x001    /* Page needs to be reworked... */
-#define  BH_DIRTY  0x002    /* Page was modified. */
-#define  BH_DISCARD  0x004    /* Page is useless. */
-#define  BH_LOCKED  0x008    /* Page is locked (I/O in progress). */
-#define  BH_TRASH  0x010    /* Page is garbage. */
-#define  BH_WRITE  0x020    /* Page scheduled for writing. */
-#define  BH_CMPR    0x040    /* Chain contains valid data. */
+#define  BH_CALLPGIN  0x001     /* Page needs to be reworked... */
+#define  BH_DIRTY  0x002        /* Page was modified. */
+#define  BH_DISCARD  0x004      /* Page is useless. */
+#define  BH_LOCKED  0x008       /* Page is locked (I/O in progress). */
+#define  BH_TRASH  0x010        /* Page is garbage. */
+#define  BH_WRITE  0x020        /* Page scheduled for writing. */
+#define  BH_CMPR    0x040       /* Chain contains valid data. */
 #define  BH_CMPR_POOL  0x080    /* Chain allocated in pool. */
-#define  BH_CMPR_OS  0x100    /* Chain allocate with malloc. */
-  u_int16_t  flags;
+#define  BH_CMPR_OS  0x100      /* Chain allocate with malloc. */
+  u_int16_t flags;
 
-        db_pgno_t *chain;           /* Compression chain. */
+  db_pgno_t *chain;             /* Compression chain. */
 
-  SH_TAILQ_ENTRY  q;    /* LRU queue. */
-  SH_TAILQ_ENTRY  hq;    /* MPOOL hash bucket queue. */
+  SH_TAILQ_ENTRY q;             /* LRU queue. */
+  SH_TAILQ_ENTRY hq;            /* MPOOL hash bucket queue. */
 
-  db_pgno_t pgno;      /* Underlying MPOOLFILE page number. */
-  roff_t    mf_offset;    /* Associated MPOOLFILE offset. */
+  db_pgno_t pgno;               /* Underlying MPOOLFILE page number. */
+  roff_t mf_offset;             /* Associated MPOOLFILE offset. */
 
   /*
    * !!!
@@ -313,8 +330,7 @@ struct __bh {
    * and other structures into it, and expect to be able to access them
    * directly.  (We guarantee size_t alignment in the documentation too.)
    */
-  u_int8_t   buf[1];    /* Variable length data. */
+  u_int8_t buf[1];              /* Variable length data. */
 };
 
 #include "mp_ext.h"
-

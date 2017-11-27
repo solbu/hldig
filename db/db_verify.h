@@ -49,10 +49,10 @@
 #define  ST_DUPOK  0x00010000
 #define  ST_DUPSORT  0x00020000
 #define  ST_IS_RECNO  0x00040000
-#define  ST_OVFL_LEAF  0x00080000  /* Overflow reffed from leaf page. */
+#define  ST_OVFL_LEAF  0x00080000       /* Overflow reffed from leaf page. */
 #define  ST_RECNUM  0x00100000
 #define  ST_RELEN  0x00200000
-#define  ST_TOPLEVEL  0x00400000  /* subtree == entire tree */
+#define  ST_TOPLEVEL  0x00400000        /* subtree == entire tree */
 
 /*
  * Flags understood by CDB___bam_salvage and CDB___db_salvage.  These need not share
@@ -68,12 +68,13 @@
  * VRFY_DBINFO is the fundamental structure;  it either represents the database
  * of subdatabases, or the sole database if there are no subdatabases.
  */
-struct __vrfy_dbinfo {
+struct __vrfy_dbinfo
+{
   /* Info about this database in particular. */
-  DBTYPE    type;
+  DBTYPE type;
 
   /* List of subdatabase meta pages, if any. */
-  LIST_HEAD(__subdbs, __vrfy_childinfo) subdbs;
+    LIST_HEAD (__subdbs, __vrfy_childinfo) subdbs;
 
   /* File-global info--stores VRFY_PAGEINFOs for each page. */
   DB *pgdbp;
@@ -82,7 +83,7 @@ struct __vrfy_dbinfo {
   DB *cdbp;
 
   /* Page info structures currently in use. */
-  LIST_HEAD(__activepips, __vrfy_pageinfo) activepips;
+    LIST_HEAD (__activepips, __vrfy_pageinfo) activepips;
 
   /*
    * DB we use to keep track of which pages are linked somehow
@@ -109,16 +110,16 @@ struct __vrfy_dbinfo {
 #define  SALVAGE_LRECNO    7
   DB *salvage_pages;
 
-  db_pgno_t  last_pgno;
+  db_pgno_t last_pgno;
 
   /* Queue needs these to verify data pages in the first pass. */
-  u_int32_t  re_len;
-  u_int32_t  rec_page;
+  u_int32_t re_len;
+  u_int32_t rec_page;
 
 #define  SALVAGE_PRINTHEADER  0x01
 #define  SALVAGE_PRINTFOOTER  0x02
-  u_int32_t  flags;
-}; /* VRFY_DBINFO */
+  u_int32_t flags;
+};                              /* VRFY_DBINFO */
 
 /*
  * The amount of state information we need per-page is small enough that
@@ -128,64 +129,66 @@ struct __vrfy_dbinfo {
  * unexpected type anyway.  So we define one structure here with all the
  * info we need for inter-page verification.
  */
-struct __vrfy_pageinfo {
-  u_int8_t  type;
-  u_int8_t  bt_level;
-  u_int8_t  unused1;
-  u_int8_t  unused2;
-  db_pgno_t  pgno;
-  db_pgno_t  prev_pgno;
-  db_pgno_t  next_pgno;
+struct __vrfy_pageinfo
+{
+  u_int8_t type;
+  u_int8_t bt_level;
+  u_int8_t unused1;
+  u_int8_t unused2;
+  db_pgno_t pgno;
+  db_pgno_t prev_pgno;
+  db_pgno_t next_pgno;
 
   /* meta pages */
-  db_pgno_t  root;
-  db_pgno_t  free;    /* Free list head. */
+  db_pgno_t root;
+  db_pgno_t free;               /* Free list head. */
 
-  db_indx_t  entries;  /* Actual number of entries. */
-  u_int16_t  unused;
-  db_recno_t  rec_cnt;  /* Record count. */
-  u_int32_t  re_len;    /* Record length. */
-  u_int32_t  bt_minkey;
-  u_int32_t  bt_maxkey;
-  u_int32_t  h_ffactor;
-  u_int32_t  h_nelem;
+  db_indx_t entries;            /* Actual number of entries. */
+  u_int16_t unused;
+  db_recno_t rec_cnt;           /* Record count. */
+  u_int32_t re_len;             /* Record length. */
+  u_int32_t bt_minkey;
+  u_int32_t bt_maxkey;
+  u_int32_t h_ffactor;
+  u_int32_t h_nelem;
 
   /* overflow pages */
   /*
    * Note that refcount is the refcount for an overflow page; pi_refcount
    * is this structure's own refcount!
    */
-  u_int32_t  refcount;
-  u_int32_t  olen;
+  u_int32_t refcount;
+  u_int32_t olen;
 
-#define  VRFY_DUPS_UNSORTED  0x0001  /* Have to flag the negative! */
+#define  VRFY_DUPS_UNSORTED  0x0001     /* Have to flag the negative! */
 #define  VRFY_HAS_DUPS    0x0002
-#define  VRFY_HAS_DUPSORT  0x0004  /* Has the flag set. */
+#define  VRFY_HAS_DUPSORT  0x0004       /* Has the flag set. */
 #define  VRFY_HAS_SUBDBS    0x0008
 #define  VRFY_HAS_RECNUMS  0x0010
-#define  VRFY_INCOMPLETE    0x0020  /* Meta or item order checks incomp. */
-#define  VRFY_IS_ALLZEROES  0x0040  /* Hash page we haven't touched? */
+#define  VRFY_INCOMPLETE    0x0020      /* Meta or item order checks incomp. */
+#define  VRFY_IS_ALLZEROES  0x0040      /* Hash page we haven't touched? */
 #define  VRFY_IS_FIXEDLEN  0x0080
 #define  VRFY_IS_RECNO    0x0100
 #define  VRFY_IS_RRECNO    0x0200
 #define  VRFY_OVFL_LEAFSEEN  0x0400
-  u_int32_t  flags;
+  u_int32_t flags;
 
-  LIST_ENTRY(__vrfy_pageinfo) links;
-  u_int32_t  pi_refcount;
-}; /* VRFY_PAGEINFO */
+    LIST_ENTRY (__vrfy_pageinfo) links;
+  u_int32_t pi_refcount;
+};                              /* VRFY_PAGEINFO */
 
-struct __vrfy_childinfo {
-  db_pgno_t  pgno;
+struct __vrfy_childinfo
+{
+  db_pgno_t pgno;
 
-#define  V_DUPLICATE  1    /* off-page dup metadata */
-#define  V_OVERFLOW  2    /* overflow page */
-#define  V_RECNO    3    /* btree internal or leaf page */
-  u_int32_t  type;
-  db_recno_t  nrecs;    /* record count on a btree subtree */
-  u_int32_t  tlen;    /* ovfl. item total size */
+#define  V_DUPLICATE  1         /* off-page dup metadata */
+#define  V_OVERFLOW  2          /* overflow page */
+#define  V_RECNO    3           /* btree internal or leaf page */
+  u_int32_t type;
+  db_recno_t nrecs;             /* record count on a btree subtree */
+  u_int32_t tlen;               /* ovfl. item total size */
 
-  LIST_ENTRY(__vrfy_childinfo) links;
-}; /* VRFY_CHILDINFO */
+    LIST_ENTRY (__vrfy_childinfo) links;
+};                              /* VRFY_CHILDINFO */
 
 #endif /* _DB_VERIFY_H_ */

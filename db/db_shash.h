@@ -8,7 +8,9 @@
  */
 
 /* Hash Headers */
-typedef  SH_TAILQ_HEAD(__hash_head) DB_HASHTAB;
+typedef
+SH_TAILQ_HEAD (__hash_head)
+  DB_HASHTAB;
 
 /*
  * HASHACCESS --

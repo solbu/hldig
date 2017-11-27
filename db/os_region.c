@@ -27,19 +27,20 @@ static const char sccsid[] = "@(#)os_region.c  11.2 (Sleepycat) 9/23/99";
  * PUBLIC: int CDB___os_r_attach __P((DB_ENV *, REGINFO *, REGION *));
  */
 int
-CDB___os_r_attach(dbenv, infop, rp)
-  DB_ENV *dbenv;
-  REGINFO *infop;
-  REGION *rp;
+CDB___os_r_attach (dbenv, infop, rp)
+     DB_ENV *dbenv;
+     REGINFO *infop;
+     REGION *rp;
 {
   /* Round off the requested size for the underlying VM. */
-  OS_VMROUNDOFF(rp->size);
+  OS_VMROUNDOFF (rp->size);
 
 #ifdef DB_REGIONSIZE_MAX
   /* Some architectures have hard limits on the maximum region size. */
-  if (rp->size > DB_REGIONSIZE_MAX) {
-    CDB___db_err(dbenv, "region size %lu is too large; maximum is %lu",
-        (u_long)rp->size, (u_long)DB_REGIONSIZE_MAX);
+  if (rp->size > DB_REGIONSIZE_MAX)
+  {
+    CDB___db_err (dbenv, "region size %lu is too large; maximum is %lu",
+                  (u_long) rp->size, (u_long) DB_REGIONSIZE_MAX);
     return (EINVAL);
   }
 #endif
@@ -52,7 +53,8 @@ CDB___os_r_attach(dbenv, infop, rp)
    * using the MAP_ANON or MAP_ANONYMOUS flags would be an alternative.
    * I don't know of any architectures (yet!) where malloc is a problem.
    */
-  if (F_ISSET(dbenv, DB_ENV_PRIVATE)) {
+  if (F_ISSET (dbenv, DB_ENV_PRIVATE))
+  {
 #if defined(MUTEX_NO_MALLOC_LOCKS)
     /*
      * !!!
@@ -61,23 +63,23 @@ CDB___os_r_attach(dbenv, infop, rp)
      * will work in malloc memory, we better not be private or not
      * be threaded.
      */
-    if (F_ISSET(dbenv, DB_ENV_THREAD)) {
-      CDB___db_err(dbenv, "%s",
-    "architecture does not support locks inside process-local (malloc) memory");
-      CDB___db_err(dbenv, "%s",
-    "application may not specify both DB_PRIVATE and DB_THREAD");
+    if (F_ISSET (dbenv, DB_ENV_THREAD))
+    {
+      CDB___db_err (dbenv, "%s",
+                    "architecture does not support locks inside process-local (malloc) memory");
+      CDB___db_err (dbenv, "%s",
+                    "application may not specify both DB_PRIVATE and DB_THREAD");
       return (EINVAL);
     }
 #endif
-    return (CDB___os_malloc(rp->size, NULL, &infop->addr));
+    return (CDB___os_malloc (rp->size, NULL, &infop->addr));
   }
 
   /* If the user replaced the map call, call through their interface. */
   if (CDB___db_jump.j_map != NULL)
-    return (CDB___db_jump.j_map(infop->name,
-        rp->size, 1, 0, &infop->addr));
+    return (CDB___db_jump.j_map (infop->name, rp->size, 1, 0, &infop->addr));
 
-  return (CDB___os_r_sysattach(dbenv, infop, rp));
+  return (CDB___os_r_sysattach (dbenv, infop, rp));
 }
 
 /*
@@ -87,24 +89,25 @@ CDB___os_r_attach(dbenv, infop, rp)
  * PUBLIC: int CDB___os_r_detach __P((DB_ENV *, REGINFO *, int));
  */
 int
-CDB___os_r_detach(dbenv, infop, destroy)
-  DB_ENV *dbenv;
-  REGINFO *infop;
-  int destroy;
+CDB___os_r_detach (dbenv, infop, destroy)
+     DB_ENV *dbenv;
+     REGINFO *infop;
+     int destroy;
 {
   REGION *rp;
 
   rp = infop->rp;
 
   /* If a region is private, free the memory. */
-  if (F_ISSET(dbenv, DB_ENV_PRIVATE)) {
-    CDB___os_free(infop->addr, rp->size);
+  if (F_ISSET (dbenv, DB_ENV_PRIVATE))
+  {
+    CDB___os_free (infop->addr, rp->size);
     return (0);
   }
 
   /* If the user replaced the map call, call through their interface. */
   if (CDB___db_jump.j_unmap != NULL)
-    return (CDB___db_jump.j_unmap(infop->addr, rp->size));
+    return (CDB___db_jump.j_unmap (infop->addr, rp->size));
 
-  return (CDB___os_r_sysdetach(dbenv, infop, destroy));
+  return (CDB___os_r_sysdetach (dbenv, infop, destroy));
 }

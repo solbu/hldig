@@ -14,7 +14,7 @@ static const char sccsid[] = "@(#)os_rename.c  11.1 (Sleepycat) 7/25/99";
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -30,12 +30,12 @@ static const char sccsid[] = "@(#)os_rename.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: int CDB___os_rename __P((const char *, const char *));
  */
 int
-CDB___os_rename(old, new)
-  const char *old, *new;
+CDB___os_rename (old, new)
+     const char *old, *new;
 {
   int ret;
 
   ret = CDB___db_jump.j_rename != NULL ?
-      CDB___db_jump.j_rename(old, new) : rename(old, new);
-  return (ret == -1 ? CDB___os_get_errno() : 0);
+    CDB___db_jump.j_rename (old, new) : rename (old, new);
+  return (ret == -1 ? CDB___os_get_errno () : 0);
 }

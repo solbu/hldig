@@ -24,19 +24,21 @@ static const char sccsid[] = "@(#)os_rpath.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: char *CDB___db_rpath __P((const char *));
  */
 char *
-CDB___db_rpath(path)
-  const char *path;
+CDB___db_rpath (path)
+     const char *path;
 {
   const char *s, *last;
 
   last = NULL;
-  if (PATH_SEPARATOR[1] != '\0') {
+  if (PATH_SEPARATOR[1] != '\0')
+  {
     for (s = path; s[0] != '\0'; ++s)
-      if (strchr(PATH_SEPARATOR, s[0]) != NULL)
+      if (strchr (PATH_SEPARATOR, s[0]) != NULL)
         last = s;
-  } else
+  }
+  else
     for (s = path; s[0] != '\0'; ++s)
       if (s[0] == PATH_SEPARATOR[0])
         last = s;
-  return ((char *)last);
+  return ((char *) last);
 }

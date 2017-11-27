@@ -30,55 +30,59 @@ static const char sccsid[] = "@(#)db_getlong.c  11.3 (Sleepycat) 10/29/99";
  * PUBLIC:     __P((DB *, const char *, char *, long, long, long *));
  */
 int
-CDB___db_getlong(dbp, progname, p, min, max, storep)
-  DB *dbp;
-  const char *progname;
-  char *p;
-  long min, max, *storep;
+CDB___db_getlong (dbp, progname, p, min, max, storep)
+     DB *dbp;
+     const char *progname;
+     char *p;
+     long min, max, *storep;
 {
   long val;
   char *end;
 
-  CDB___os_set_errno(0);
-  val = strtol(p, &end, 10);
-  if ((val == LONG_MIN || val == LONG_MAX) &&
-      CDB___os_get_errno() == ERANGE) {
-    if (dbp == NULL) {
-      fprintf(stderr,
-          "%s: %s: %s\n", progname, p, strerror(ERANGE));
-      exit(1);
+  CDB___os_set_errno (0);
+  val = strtol (p, &end, 10);
+  if ((val == LONG_MIN || val == LONG_MAX) && CDB___os_get_errno () == ERANGE)
+  {
+    if (dbp == NULL)
+    {
+      fprintf (stderr, "%s: %s: %s\n", progname, p, strerror (ERANGE));
+      exit (1);
     }
-    dbp->err(dbp, ERANGE, "%s", p);
+    dbp->err (dbp, ERANGE, "%s", p);
     return (1);
   }
-  if (p[0] == '\0' || end[0] != '\0') {
-    if (dbp == NULL) {
-      fprintf(stderr,
-          "%s: %s: Invalid numeric argument\n", progname, p);
-      exit(1);
+  if (p[0] == '\0' || end[0] != '\0')
+  {
+    if (dbp == NULL)
+    {
+      fprintf (stderr, "%s: %s: Invalid numeric argument\n", progname, p);
+      exit (1);
     }
-    dbp->errx(dbp, "%s: Invalid numeric argument", p);
+    dbp->errx (dbp, "%s: Invalid numeric argument", p);
     return (1);
   }
-  if (val < min) {
-    if (dbp == NULL) {
-      fprintf(stderr,
-          "%s: %s: Less than minimum value (%ld)\n",
-          progname, p, min);
-      exit(1);
+  if (val < min)
+  {
+    if (dbp == NULL)
+    {
+      fprintf (stderr,
+               "%s: %s: Less than minimum value (%ld)\n", progname, p, min);
+      exit (1);
     }
-    dbp->errx(dbp, "%s: Less than minimum value (%ld)", p, min);
+    dbp->errx (dbp, "%s: Less than minimum value (%ld)", p, min);
     return (1);
   }
-  if (val > max) {
-    if (dbp == NULL) {
-      fprintf(stderr,
-          "%s: %s: Greater than maximum value (%ld)\n",
-          progname, p, max);
-      exit(1);
+  if (val > max)
+  {
+    if (dbp == NULL)
+    {
+      fprintf (stderr,
+               "%s: %s: Greater than maximum value (%ld)\n",
+               progname, p, max);
+      exit (1);
     }
-    dbp->errx(dbp, "%s: Greater than maximum value (%ld)", p, max);
-    exit(1);
+    dbp->errx (dbp, "%s: Greater than maximum value (%ld)", p, max);
+    exit (1);
   }
   *storep = val;
   return (0);

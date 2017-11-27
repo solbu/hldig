@@ -17,7 +17,7 @@ static const char sccsid[] = "@(#)mp_stat.c  11.4 (Sleepycat) 9/18/99";
 #include <stdio.h>
 #include <string.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -30,19 +30,19 @@ static const char sccsid[] = "@(#)mp_stat.c  11.4 (Sleepycat) 9/18/99";
 #include "mp.h"
 
 static void CDB___memp_dumpcache
-          __P((DB_MPOOL *, REGINFO *, size_t *, FILE *, u_int32_t));
-static void CDB___memp_pbh __P((DB_MPOOL *, BH *, size_t *, FILE *));
+__P ((DB_MPOOL *, REGINFO *, size_t *, FILE *, u_int32_t));
+static void CDB___memp_pbh __P ((DB_MPOOL *, BH *, size_t *, FILE *));
 
 /*
  * CDB_memp_stat --
  *  Display MPOOL statistics.
  */
 int
-CDB_memp_stat(dbenv, gspp, fspp, db_malloc)
-  DB_ENV *dbenv;
-  DB_MPOOL_STAT **gspp;
-  DB_MPOOL_FSTAT ***fspp;
-  void *(*db_malloc) __P((size_t));
+CDB_memp_stat (dbenv, gspp, fspp, db_malloc)
+     DB_ENV *dbenv;
+     DB_MPOOL_STAT **gspp;
+     DB_MPOOL_FSTAT ***fspp;
+     void *(*db_malloc) __P ((size_t));
 {
   DB_MPOOL *dbmp;
   DB_MPOOL_FSTAT **tfsp;
@@ -55,18 +55,19 @@ CDB_memp_stat(dbenv, gspp, fspp, db_malloc)
   int ret;
   char *name;
 
-  PANIC_CHECK(dbenv);
-  ENV_REQUIRES_CONFIG(dbenv, dbenv->mp_handle, DB_INIT_MPOOL);
+  PANIC_CHECK (dbenv);
+  ENV_REQUIRES_CONFIG (dbenv, dbenv->mp_handle, DB_INIT_MPOOL);
 
   dbmp = dbenv->mp_handle;
   sp = NULL;
 
   /* Global statistics. */
   mp = dbmp->reginfo.primary;
-  if (gspp != NULL) {
+  if (gspp != NULL)
+  {
     *gspp = NULL;
 
-    if ((ret = CDB___os_calloc(1, sizeof(**gspp), gspp)) != 0)
+    if ((ret = CDB___os_calloc (1, sizeof (**gspp), gspp)) != 0)
       return (ret);
     sp = *gspp;
 
@@ -81,10 +82,11 @@ CDB_memp_stat(dbenv, gspp, fspp, db_malloc)
     sp->st_gbytes = dbenv->mp_gbytes;
     sp->st_bytes = dbenv->mp_bytes;
 
-    R_LOCK(dbenv, &dbmp->reginfo);
+    R_LOCK (dbenv, &dbmp->reginfo);
 
     /* Walk the cache list and accumulate the global information. */
-    for (i = 0; i < mp->nc_reg; ++i) {
+    for (i = 0; i < mp->nc_reg; ++i)
+    {
       mc = dbmp->c_reginfo[i].primary;
       sp->st_cache_hit += mc->stat.st_cache_hit;
       sp->st_cache_miss += mc->stat.st_cache_miss;
@@ -106,48 +108,48 @@ CDB_memp_stat(dbenv, gspp, fspp, db_malloc)
       sp->st_region_nowait += mc->stat.st_region_nowait;
     }
 
-    R_UNLOCK(dbenv, &dbmp->reginfo);
+    R_UNLOCK (dbenv, &dbmp->reginfo);
   }
 
   /* Per-file statistics. */
-  if (fspp != NULL) {
+  if (fspp != NULL)
+  {
     *fspp = NULL;
 
-    R_LOCK(dbenv, &dbmp->reginfo);
+    R_LOCK (dbenv, &dbmp->reginfo);
 
     /* Count the MPOOLFILE structures. */
     for (len = 0,
-        mfp = SH_TAILQ_FIRST(&mp->mpfq, __mpoolfile);
-        mfp != NULL;
-        ++len, mfp = SH_TAILQ_NEXT(mfp, q, __mpoolfile))
+         mfp = SH_TAILQ_FIRST (&mp->mpfq, __mpoolfile);
+         mfp != NULL; ++len, mfp = SH_TAILQ_NEXT (mfp, q, __mpoolfile))
       ;
 
-    R_UNLOCK(dbenv, &dbmp->reginfo);
+    R_UNLOCK (dbenv, &dbmp->reginfo);
 
     if (len == 0)
       return (0);
 
     /* Allocate space for the pointers. */
-    len = (len + 1) * sizeof(DB_MPOOL_FSTAT *);
-    if ((ret = CDB___os_malloc(len, db_malloc, fspp)) != 0)
+    len = (len + 1) * sizeof (DB_MPOOL_FSTAT *);
+    if ((ret = CDB___os_malloc (len, db_malloc, fspp)) != 0)
       return (ret);
 
-    R_LOCK(dbenv, &dbmp->reginfo);
+    R_LOCK (dbenv, &dbmp->reginfo);
 
     /* Build each individual entry. */
     for (tfsp = *fspp,
-        mfp = SH_TAILQ_FIRST(&mp->mpfq, __mpoolfile);
-        mfp != NULL;
-        ++tfsp, mfp = SH_TAILQ_NEXT(mfp, q, __mpoolfile)) {
-      name = CDB___memp_fns(dbmp, mfp);
-      nlen = strlen(name);
-      len = sizeof(DB_MPOOL_FSTAT) + nlen + 1;
-      if ((ret = CDB___os_malloc(len, db_malloc, tfsp)) != 0)
+         mfp = SH_TAILQ_FIRST (&mp->mpfq, __mpoolfile);
+         mfp != NULL; ++tfsp, mfp = SH_TAILQ_NEXT (mfp, q, __mpoolfile))
+    {
+      name = CDB___memp_fns (dbmp, mfp);
+      nlen = strlen (name);
+      len = sizeof (DB_MPOOL_FSTAT) + nlen + 1;
+      if ((ret = CDB___os_malloc (len, db_malloc, tfsp)) != 0)
         return (ret);
       **tfsp = mfp->stat;
       (*tfsp)->file_name = (char *)
-          (u_int8_t *)*tfsp + sizeof(DB_MPOOL_FSTAT);
-      memcpy((*tfsp)->file_name, name, nlen + 1);
+        (u_int8_t *) * tfsp + sizeof (DB_MPOOL_FSTAT);
+      memcpy ((*tfsp)->file_name, name, nlen + 1);
 
       /*
        * We have duplicate statistics fields in the cache
@@ -157,7 +159,8 @@ CDB_memp_stat(dbenv, gspp, fspp, db_malloc)
        * the pool we can save their last known totals in
        * the cache structure.
        */
-      if (sp != NULL) {
+      if (sp != NULL)
+      {
         sp->st_cache_hit += mfp->stat.st_cache_hit;
         sp->st_cache_miss += mfp->stat.st_cache_miss;
         sp->st_map += mfp->stat.st_map;
@@ -168,17 +171,17 @@ CDB_memp_stat(dbenv, gspp, fspp, db_malloc)
     }
     *tfsp = NULL;
 
-    R_UNLOCK(dbenv, &dbmp->reginfo);
+    R_UNLOCK (dbenv, &dbmp->reginfo);
   }
   return (0);
 }
 
 #define  FMAP_ENTRIES  200      /* Files we map. */
 
-#define  MPOOL_DUMP_HASH  0x01      /* Debug hash chains. */
-#define  MPOOL_DUMP_LRU  0x02      /* Debug LRU chains. */
-#define  MPOOL_DUMP_MEM  0x04      /* Debug region memory. */
-#define  MPOOL_DUMP_ALL  0x07      /* Debug all. */
+#define  MPOOL_DUMP_HASH  0x01  /* Debug hash chains. */
+#define  MPOOL_DUMP_LRU  0x02   /* Debug LRU chains. */
+#define  MPOOL_DUMP_MEM  0x04   /* Debug region memory. */
+#define  MPOOL_DUMP_ALL  0x07   /* Debug all. */
 
 /*
  * CDB___memp_dump_region --
@@ -187,10 +190,10 @@ CDB_memp_stat(dbenv, gspp, fspp, db_malloc)
  * PUBLIC: void CDB___memp_dump_region __P((DB_ENV *, char *, FILE *));
  */
 void
-CDB___memp_dump_region(dbenv, area, fp)
-  DB_ENV *dbenv;
-  char *area;
-  FILE *fp;
+CDB___memp_dump_region (dbenv, area, fp)
+     DB_ENV *dbenv;
+     char *area;
+     FILE *fp;
 {
   DB_MPOOL *dbmp;
   DB_MPOOLFILE *dbmfp;
@@ -208,54 +211,58 @@ CDB___memp_dump_region(dbenv, area, fp)
     fp = stderr;
 
   for (flags = 0; *area != '\0'; ++area)
-    switch (*area) {
+    switch (*area)
+    {
     case 'A':
-      LF_SET(MPOOL_DUMP_ALL);
+      LF_SET (MPOOL_DUMP_ALL);
       break;
     case 'h':
-      LF_SET(MPOOL_DUMP_HASH);
+      LF_SET (MPOOL_DUMP_HASH);
       break;
     case 'l':
-      LF_SET(MPOOL_DUMP_LRU);
+      LF_SET (MPOOL_DUMP_LRU);
       break;
     case 'm':
-      LF_SET(MPOOL_DUMP_MEM);
+      LF_SET (MPOOL_DUMP_MEM);
       break;
     }
 
-  R_LOCK(dbenv, &dbmp->reginfo);
+  R_LOCK (dbenv, &dbmp->reginfo);
 
   mp = dbmp->reginfo.primary;
 
   /* Display MPOOL structures. */
-  (void)fprintf(fp, "%s\nPool (region addr 0x%lx)\n",
-      DB_LINE, (u_long)dbmp->reginfo.addr);
+  (void) fprintf (fp, "%s\nPool (region addr 0x%lx)\n",
+                  DB_LINE, (u_long) dbmp->reginfo.addr);
 
   /* Display the MPOOLFILE structures. */
   cnt = 0;
-  for (mfp = SH_TAILQ_FIRST(&mp->mpfq, __mpoolfile);
-      mfp != NULL; mfp = SH_TAILQ_NEXT(mfp, q, __mpoolfile), ++cnt) {
-    (void)fprintf(fp, "File #%d: %s: type %ld, %s\n\t [UID: ",
-        cnt + 1, CDB___memp_fns(dbmp, mfp), (long)mfp->ftype,
-        F_ISSET(mfp, MP_CAN_MMAP) ? "mmap" : "read/write");
-    p = R_ADDR(&dbmp->reginfo, mfp->fileid_off);
-    for (i = 0; i < DB_FILE_ID_LEN; ++i) {
-      (void)fprintf(fp, "%x", *p++);
+  for (mfp = SH_TAILQ_FIRST (&mp->mpfq, __mpoolfile);
+       mfp != NULL; mfp = SH_TAILQ_NEXT (mfp, q, __mpoolfile), ++cnt)
+  {
+    (void) fprintf (fp, "File #%d: %s: type %ld, %s\n\t [UID: ",
+                    cnt + 1, CDB___memp_fns (dbmp, mfp), (long) mfp->ftype,
+                    F_ISSET (mfp, MP_CAN_MMAP) ? "mmap" : "read/write");
+    p = R_ADDR (&dbmp->reginfo, mfp->fileid_off);
+    for (i = 0; i < DB_FILE_ID_LEN; ++i)
+    {
+      (void) fprintf (fp, "%x", *p++);
       if (i < DB_FILE_ID_LEN - 1)
-        (void)fprintf(fp, " ");
+        (void) fprintf (fp, " ");
     }
-    (void)fprintf(fp, "]\n");
+    (void) fprintf (fp, "]\n");
     if (cnt < FMAP_ENTRIES)
-      fmap[cnt] = R_OFFSET(&dbmp->reginfo, mfp);
+      fmap[cnt] = R_OFFSET (&dbmp->reginfo, mfp);
   }
 
-  for (dbmfp = TAILQ_FIRST(&dbmp->dbmfq);
-      dbmfp != NULL; dbmfp = TAILQ_NEXT(dbmfp, q), ++cnt) {
-    (void)fprintf(fp, "File #%d: %s: per-process, %s\n",
-        cnt + 1, CDB___memp_fn(dbmfp),
-        F_ISSET(dbmfp, MP_READONLY) ? "readonly" : "read/write");
-        if (cnt < FMAP_ENTRIES)
-      fmap[cnt] = R_OFFSET(&dbmp->reginfo, mfp);
+  for (dbmfp = TAILQ_FIRST (&dbmp->dbmfq);
+       dbmfp != NULL; dbmfp = TAILQ_NEXT (dbmfp, q), ++cnt)
+  {
+    (void) fprintf (fp, "File #%d: %s: per-process, %s\n",
+                    cnt + 1, CDB___memp_fn (dbmfp),
+                    F_ISSET (dbmfp, MP_READONLY) ? "readonly" : "read/write");
+    if (cnt < FMAP_ENTRIES)
+      fmap[cnt] = R_OFFSET (&dbmp->reginfo, mfp);
   }
   if (cnt < FMAP_ENTRIES)
     fmap[cnt] = INVALID_ROFF;
@@ -263,18 +270,19 @@ CDB___memp_dump_region(dbenv, area, fp)
     fmap[FMAP_ENTRIES] = INVALID_ROFF;
 
   /* Dump each cache. */
-  for (i = 0; i < mp->nc_reg; ++i) {
-    (void)fprintf(fp, "%s\nCache #%d:\n", DB_LINE, i + 1);
-    CDB___memp_dumpcache(dbmp, &dbmp->c_reginfo[i], fmap, fp, flags);
+  for (i = 0; i < mp->nc_reg; ++i)
+  {
+    (void) fprintf (fp, "%s\nCache #%d:\n", DB_LINE, i + 1);
+    CDB___memp_dumpcache (dbmp, &dbmp->c_reginfo[i], fmap, fp, flags);
   }
 
-  if (LF_ISSET(MPOOL_DUMP_MEM))
-    CDB___db_shalloc_dump(dbmp->reginfo.addr, fp);
+  if (LF_ISSET (MPOOL_DUMP_MEM))
+    CDB___db_shalloc_dump (dbmp->reginfo.addr, fp);
 
-  R_UNLOCK(dbenv, &dbmp->reginfo);
+  R_UNLOCK (dbenv, &dbmp->reginfo);
 
   /* Flush in case we're debugging. */
-  (void)fflush(fp);
+  (void) fflush (fp);
 }
 
 /*
@@ -282,12 +290,12 @@ CDB___memp_dump_region(dbenv, area, fp)
  *  Display statistics for a cache.
  */
 static void
-CDB___memp_dumpcache(dbmp, reginfo, fmap, fp, flags)
-  DB_MPOOL *dbmp;
-  REGINFO *reginfo;
-  size_t *fmap;
-  FILE *fp;
-  u_int32_t flags;
+CDB___memp_dumpcache (dbmp, reginfo, fmap, fp, flags)
+     DB_MPOOL *dbmp;
+     REGINFO *reginfo;
+     size_t *fmap;
+     FILE *fp;
+     u_int32_t flags;
 {
   BH *bhp;
   DB_HASHTAB *dbht;
@@ -297,27 +305,30 @@ CDB___memp_dumpcache(dbmp, reginfo, fmap, fp, flags)
   mc = reginfo->primary;
 
   /* Display the hash table list of BH's. */
-  if (LF_ISSET(MPOOL_DUMP_HASH)) {
-    (void)fprintf(fp,
-      "%s\nBH hash table (%lu hash slots)\npageno, file, ref, address\n",
-        DB_LINE, (u_long)mc->htab_buckets);
-    for (dbht = R_ADDR(reginfo, mc->htab),
-        bucket = 0; bucket < mc->htab_buckets; ++dbht, ++bucket) {
-      if (SH_TAILQ_FIRST(dbht, __bh) != NULL)
-        (void)fprintf(fp, "%lu:\n", (u_long)bucket);
-      for (bhp = SH_TAILQ_FIRST(dbht, __bh);
-          bhp != NULL; bhp = SH_TAILQ_NEXT(bhp, hq, __bh))
-        CDB___memp_pbh(dbmp, bhp, fmap, fp);
+  if (LF_ISSET (MPOOL_DUMP_HASH))
+  {
+    (void) fprintf (fp,
+                    "%s\nBH hash table (%lu hash slots)\npageno, file, ref, address\n",
+                    DB_LINE, (u_long) mc->htab_buckets);
+    for (dbht = R_ADDR (reginfo, mc->htab),
+         bucket = 0; bucket < mc->htab_buckets; ++dbht, ++bucket)
+    {
+      if (SH_TAILQ_FIRST (dbht, __bh) != NULL)
+        (void) fprintf (fp, "%lu:\n", (u_long) bucket);
+      for (bhp = SH_TAILQ_FIRST (dbht, __bh);
+           bhp != NULL; bhp = SH_TAILQ_NEXT (bhp, hq, __bh))
+        CDB___memp_pbh (dbmp, bhp, fmap, fp);
     }
   }
 
   /* Display the LRU list of BH's. */
-  if (LF_ISSET(MPOOL_DUMP_LRU)) {
-    (void)fprintf(fp, "%s\nBH LRU list\n", DB_LINE);
-    (void)fprintf(fp, "pageno, file, ref, address\n");
-    for (bhp = SH_TAILQ_FIRST(&mc->bhq, __bh);
-        bhp != NULL; bhp = SH_TAILQ_NEXT(bhp, q, __bh))
-      CDB___memp_pbh(dbmp, bhp, fmap, fp);
+  if (LF_ISSET (MPOOL_DUMP_LRU))
+  {
+    (void) fprintf (fp, "%s\nBH LRU list\n", DB_LINE);
+    (void) fprintf (fp, "pageno, file, ref, address\n");
+    for (bhp = SH_TAILQ_FIRST (&mc->bhq, __bh);
+         bhp != NULL; bhp = SH_TAILQ_NEXT (bhp, q, __bh))
+      CDB___memp_pbh (dbmp, bhp, fmap, fp);
   }
 }
 
@@ -326,20 +337,20 @@ CDB___memp_dumpcache(dbmp, reginfo, fmap, fp, flags)
  *  Display a BH structure.
  */
 static void
-CDB___memp_pbh(dbmp, bhp, fmap, fp)
-  DB_MPOOL *dbmp;
-  BH *bhp;
-  size_t *fmap;
-  FILE *fp;
+CDB___memp_pbh (dbmp, bhp, fmap, fp)
+     DB_MPOOL *dbmp;
+     BH *bhp;
+     size_t *fmap;
+     FILE *fp;
 {
   static const FN fn[] = {
-    { BH_CALLPGIN,  "callpgin" },
-    { BH_DIRTY,  "dirty" },
-    { BH_DISCARD,  "discard" },
-    { BH_LOCKED,  "locked" },
-    { BH_TRASH,  "trash" },
-    { BH_WRITE,  "write" },
-    { 0,    NULL }
+    {BH_CALLPGIN, "callpgin"},
+    {BH_DIRTY, "dirty"},
+    {BH_DISCARD, "discard"},
+    {BH_LOCKED, "locked"},
+    {BH_TRASH, "trash"},
+    {BH_WRITE, "write"},
+    {0, NULL}
   };
   int i;
 
@@ -348,15 +359,17 @@ CDB___memp_pbh(dbmp, bhp, fmap, fp)
       break;
 
   if (fmap[i] == INVALID_ROFF)
-    (void)fprintf(fp, "  %4lu, %lu, %2lu, %lu",
-        (u_long)bhp->pgno, (u_long)bhp->mf_offset,
-        (u_long)bhp->ref, (u_long)R_OFFSET(&dbmp->reginfo, bhp));
+    (void) fprintf (fp, "  %4lu, %lu, %2lu, %lu",
+                    (u_long) bhp->pgno, (u_long) bhp->mf_offset,
+                    (u_long) bhp->ref, (u_long) R_OFFSET (&dbmp->reginfo,
+                                                          bhp));
   else
-    (void)fprintf(fp, "  %4lu,   #%d,  %2lu, %lu",
-        (u_long)bhp->pgno, i + 1,
-        (u_long)bhp->ref, (u_long)R_OFFSET(&dbmp->reginfo, bhp));
+    (void) fprintf (fp, "  %4lu,   #%d,  %2lu, %lu",
+                    (u_long) bhp->pgno, i + 1,
+                    (u_long) bhp->ref, (u_long) R_OFFSET (&dbmp->reginfo,
+                                                          bhp));
 
-  CDB___db_prflags(bhp->flags, fn, fp);
+  CDB___db_prflags (bhp->flags, fn, fp);
 
-  (void)fprintf(fp, "\n");
+  (void) fprintf (fp, "\n");
 }

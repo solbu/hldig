@@ -31,10 +31,10 @@ static const char sccsid[] = "@(#)db_upgrade.c  11.3 (Sleepycat) 10/20/99";
  * PUBLIC: int CDB___db_upgrade __P((DB *, const char *, u_int32_t));
  */
 int
-CDB___db_upgrade(dbp, fname, flags)
-  DB *dbp;
-  const char *fname;
-  u_int32_t flags;
+CDB___db_upgrade (dbp, fname, flags)
+     DB *dbp;
+     const char *fname;
+     u_int32_t flags;
 {
   DB_ENV *dbenv;
   DB_FH fh;
@@ -45,17 +45,19 @@ CDB___db_upgrade(dbp, fname, flags)
   dbenv = dbp->dbenv;
 
   /* Validate arguments. */
-  if ((ret = CDB___db_fchk(dbenv, "DB->upgrade", flags, 0)) != 0)
+  if ((ret = CDB___db_fchk (dbenv, "DB->upgrade", flags, 0)) != 0)
     return (ret);
 
   /* Get the real backing file name. */
-  if ((ret = CDB___db_appname(dbenv,
-      DB_APP_DATA, NULL, fname, 0, NULL, &real_name)) != 0)
+  if ((ret = CDB___db_appname (dbenv,
+                               DB_APP_DATA, NULL, fname, 0, NULL,
+                               &real_name)) != 0)
     return (ret);
 
   /* Open the file. */
-  if ((ret = CDB___os_open(real_name, 0, 0, &fh)) != 0) {
-    CDB___db_err(dbenv, "%s: %s", fname, CDB_db_strerror(ret));
+  if ((ret = CDB___os_open (real_name, 0, 0, &fh)) != 0)
+  {
+    CDB___db_err (dbenv, "%s: %s", fname, CDB_db_strerror (ret));
     return (ret);
   }
 
@@ -63,38 +65,38 @@ CDB___db_upgrade(dbp, fname, flags)
    * Read the metadata page.  We read 256 bytes, which is larger than
    * any access method's metadata page and smaller than any disk sector.
    */
-  if ((ret = CDB___os_read(&fh, mbuf, sizeof(mbuf), &nr)) != 0)
+  if ((ret = CDB___os_read (&fh, mbuf, sizeof (mbuf), &nr)) != 0)
     goto err;
 
   swapped = 0;
-retry:  switch (((DBMETA *)mbuf)->magic) {
+retry:switch (((DBMETA *) mbuf)->magic)
+  {
   case DB_BTREEMAGIC:
-    if ((ret =
-        CDB___bam_upgrade(dbp, swapped, real_name, &fh, mbuf)) != 0)
+    if ((ret = CDB___bam_upgrade (dbp, swapped, real_name, &fh, mbuf)) != 0)
       goto err;
     break;
   case DB_HASHMAGIC:
-    if ((ret =
-        CDB___ham_upgrade(dbp, swapped, real_name, &fh, mbuf)) != 0)
+    if ((ret = CDB___ham_upgrade (dbp, swapped, real_name, &fh, mbuf)) != 0)
       goto err;
     break;
   case DB_QAMMAGIC:
     break;
   default:
-    if (swapped++) {
-      CDB___db_err(dbenv, "%s: unrecognized file type", fname);
+    if (swapped++)
+    {
+      CDB___db_err (dbenv, "%s: unrecognized file type", fname);
       ret = EINVAL;
       goto err;
     }
 
-    M_32_SWAP(((DBMETA *)mbuf)->magic);
-    M_32_SWAP(((DBMETA *)mbuf)->version);
+    M_32_SWAP (((DBMETA *) mbuf)->magic);
+    M_32_SWAP (((DBMETA *) mbuf)->version);
     goto retry;
   }
 
-err:  if ((t_ret = CDB___os_closehandle(&fh)) != 0 && ret == 0)
+err:if ((t_ret = CDB___os_closehandle (&fh)) != 0 && ret == 0)
     ret = t_ret;
-  CDB___os_freestr(real_name);
+  CDB___os_freestr (real_name);
 
   return (ret);
 }

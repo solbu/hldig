@@ -34,24 +34,24 @@ static const char sccsid[] = "@(#)lock_util.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: int CDB___lock_cmp __P((const DBT *, DB_LOCKOBJ *));
  */
 int
-CDB___lock_cmp(dbt, lock_obj)
-  const DBT *dbt;
-  DB_LOCKOBJ *lock_obj;
+CDB___lock_cmp (dbt, lock_obj)
+     const DBT *dbt;
+     DB_LOCKOBJ *lock_obj;
 {
   void *obj_data;
 
-  obj_data = SH_DBT_PTR(&lock_obj->lockobj);
+  obj_data = SH_DBT_PTR (&lock_obj->lockobj);
   return (dbt->size == lock_obj->lockobj.size &&
-    memcmp(dbt->data, obj_data, dbt->size) == 0);
+          memcmp (dbt->data, obj_data, dbt->size) == 0);
 }
 
 /*
  * PUBLIC: int CDB___lock_locker_cmp __P((u_int32_t, DB_LOCKER *));
  */
 int
-CDB___lock_locker_cmp(locker, sh_locker)
-  u_int32_t locker;
-  DB_LOCKER *sh_locker;
+CDB___lock_locker_cmp (locker, sh_locker)
+     u_int32_t locker;
+     DB_LOCKER *sh_locker;
 {
   return (locker == sh_locker->id);
 }
@@ -94,13 +94,13 @@ CDB___lock_locker_cmp(locker, sh_locker)
  * PUBLIC: u_int32_t CDB___lock_ohash __P((const DBT *));
  */
 u_int32_t
-CDB___lock_ohash(dbt)
-  const DBT *dbt;
+CDB___lock_ohash (dbt)
+     const DBT *dbt;
 {
-  if (dbt->size == sizeof(DB_LOCK_ILOCK))
-    FAST_HASH(dbt->data);
+  if (dbt->size == sizeof (DB_LOCK_ILOCK))
+    FAST_HASH (dbt->data);
 
-  return (CDB___ham_func5(dbt->data, dbt->size));
+  return (CDB___ham_func5 (dbt->data, dbt->size));
 }
 
 /*
@@ -109,17 +109,17 @@ CDB___lock_ohash(dbt)
  * PUBLIC: u_int32_t CDB___lock_lhash __P((DB_LOCKOBJ *));
  */
 u_int32_t
-CDB___lock_lhash(lock_obj)
-  DB_LOCKOBJ *lock_obj;
+CDB___lock_lhash (lock_obj)
+     DB_LOCKOBJ *lock_obj;
 {
   void *obj_data;
 
-  obj_data = SH_DBT_PTR(&lock_obj->lockobj);
+  obj_data = SH_DBT_PTR (&lock_obj->lockobj);
 
-  if (lock_obj->lockobj.size == sizeof(DB_LOCK_ILOCK))
-    FAST_HASH(obj_data);
+  if (lock_obj->lockobj.size == sizeof (DB_LOCK_ILOCK))
+    FAST_HASH (obj_data);
 
-  return (CDB___ham_func5(obj_data, lock_obj->lockobj.size));
+  return (CDB___ham_func5 (obj_data, lock_obj->lockobj.size));
 }
 
 /*
@@ -131,8 +131,8 @@ CDB___lock_lhash(lock_obj)
  * PUBLIC: u_int32_t CDB___lock_locker_hash __P((u_int32_t));
  */
 u_int32_t
-CDB___lock_locker_hash(locker)
-  u_int32_t locker;
+CDB___lock_locker_hash (locker)
+     u_int32_t locker;
 {
   return (locker);
 }

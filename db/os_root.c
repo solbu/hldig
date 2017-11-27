@@ -14,7 +14,7 @@ static const char sccsid[] = "@(#)os_root.c  11.2 (Sleepycat) 9/13/99";
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 #endif
@@ -28,10 +28,10 @@ static const char sccsid[] = "@(#)os_root.c  11.2 (Sleepycat) 9/13/99";
  * PUBLIC: int CDB___os_isroot __P((void));
  */
 int
-CDB___os_isroot()
+CDB___os_isroot ()
 {
 #ifdef HAVE_GETUID
-  return (getuid() == 0);
+  return (getuid () == 0);
 #else
   return (0);
 #endif

@@ -24,10 +24,10 @@ static const char sccsid[] = "@(#)mutex.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: int CDB___db_mutex_alloc __P((DB_ENV *, REGINFO *, MUTEX **));
  */
 int
-CDB___db_mutex_alloc(dbenv, infop, storep)
-  DB_ENV *dbenv;
-  REGINFO *infop;
-  MUTEX **storep;
+CDB___db_mutex_alloc (dbenv, infop, storep)
+     DB_ENV *dbenv;
+     REGINFO *infop;
+     MUTEX **storep;
 {
   int ret;
 
@@ -37,13 +37,13 @@ CDB___db_mutex_alloc(dbenv, infop, storep)
    * in the region.
    */
 #ifdef MUTEX_NO_MALLOC_LOCKS
-  R_LOCK(dbenv, infop);
-  ret = CDB___db_shalloc(infop->addr, sizeof(MUTEX), MUTEX_ALIGN, storep);
-  R_UNLOCK(dbenv, infop);
+  R_LOCK (dbenv, infop);
+  ret = CDB___db_shalloc (infop->addr, sizeof (MUTEX), MUTEX_ALIGN, storep);
+  R_UNLOCK (dbenv, infop);
 #else
-  COMPQUIET(dbenv, NULL);
-  COMPQUIET(infop, NULL);
-  ret = CDB___os_calloc(1, sizeof(MUTEX), storep);
+  COMPQUIET (dbenv, NULL);
+  COMPQUIET (infop, NULL);
+  ret = CDB___os_calloc (1, sizeof (MUTEX), storep);
 #endif
   return (ret);
 }
@@ -55,18 +55,18 @@ CDB___db_mutex_alloc(dbenv, infop, storep)
  * PUBLIC: void CDB___db_mutex_free __P((DB_ENV *, REGINFO *, MUTEX *));
  */
 void
-CDB___db_mutex_free(dbenv, infop, mutexp)
-  DB_ENV *dbenv;
-  REGINFO *infop;
-  MUTEX *mutexp;
+CDB___db_mutex_free (dbenv, infop, mutexp)
+     DB_ENV *dbenv;
+     REGINFO *infop;
+     MUTEX *mutexp;
 {
 #ifdef MUTEX_NO_MALLOC_LOCKS
-  R_LOCK(dbenv, infop);
-  CDB___db_shalloc_free(infop->addr, mutexp);
-  R_UNLOCK(dbenv, infop);
+  R_LOCK (dbenv, infop);
+  CDB___db_shalloc_free (infop->addr, mutexp);
+  R_UNLOCK (dbenv, infop);
 #else
-  COMPQUIET(dbenv, NULL);
-  COMPQUIET(infop, NULL);
-  CDB___os_free(mutexp, sizeof(*mutexp));
+  COMPQUIET (dbenv, NULL);
+  COMPQUIET (infop, NULL);
+  CDB___os_free (mutexp, sizeof (*mutexp));
 #endif
 }

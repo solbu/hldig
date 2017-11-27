@@ -14,7 +14,7 @@ static const char sccsid[] = "@(#)os_unlink.c  11.1 (Sleepycat) 7/25/99";
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 #endif
@@ -29,12 +29,12 @@ static const char sccsid[] = "@(#)os_unlink.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: int CDB___os_unlink __P((const char *));
  */
 int
-CDB___os_unlink(path)
-  const char *path;
+CDB___os_unlink (path)
+     const char *path;
 {
   int ret;
 
   ret = CDB___db_jump.j_unlink != NULL ?
-      CDB___db_jump.j_unlink(path) : unlink(path);
-  return (ret == -1 ? CDB___os_get_errno() : 0);
+    CDB___db_jump.j_unlink (path) : unlink (path);
+  return (ret == -1 ? CDB___os_get_errno () : 0);
 }

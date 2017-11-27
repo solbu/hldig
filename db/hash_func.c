@@ -63,9 +63,9 @@ static const char sccsid[] = "@(#)hash_func.c  11.2 (Sleepycat) 9/9/99";
 #define  DCHARHASH(h, c)  ((h) = 0x63c63cd9*(h) + 0x9c39c33d + (c))
 
 u_int32_t
-CDB___ham_func2(key, len)
-  const void *key;
-  u_int32_t len;
+CDB___ham_func2 (key, len)
+     const void *key;
+     u_int32_t len;
 {
   const u_int8_t *e, *k;
   u_int32_t h;
@@ -73,11 +73,12 @@ CDB___ham_func2(key, len)
 
   k = key;
   e = k + len;
-  for (h = 0; k != e;) {
+  for (h = 0; k != e;)
+  {
     c = *k++;
     if (!c && k > e)
       break;
-    DCHARHASH(h, c);
+    DCHARHASH (h, c);
   }
   return (h);
 }
@@ -94,9 +95,9 @@ CDB___ham_func2(key, len)
  * PUBLIC: u_int32_t CDB___ham_func3 __P((const void *, u_int32_t));
  */
 u_int32_t
-CDB___ham_func3(key, len)
-  const void *key;
-  u_int32_t len;
+CDB___ham_func3 (key, len)
+     const void *key;
+     u_int32_t len;
 {
   const u_int8_t *k;
   u_int32_t n, loop;
@@ -109,9 +110,11 @@ CDB___ham_func3(key, len)
   k = key;
 
   loop = (len + 8 - 1) >> 3;
-  switch (len & (8 - 1)) {
+  switch (len & (8 - 1))
+  {
   case 0:
-    do {
+    do
+    {
       HASHC;
   case 7:
       HASHC;
@@ -127,7 +130,8 @@ CDB___ham_func3(key, len)
       HASHC;
   case 1:
       HASHC;
-    } while (--loop);
+    }
+    while (--loop);
   }
   return (n);
 }
@@ -141,9 +145,9 @@ CDB___ham_func3(key, len)
  * PUBLIC: u_int32_t CDB___ham_func4 __P((const void *, u_int32_t));
  */
 u_int32_t
-CDB___ham_func4(key, len)
-  const void *key;
-  u_int32_t len;
+CDB___ham_func4 (key, len)
+     const void *key;
+     u_int32_t len;
 {
   const u_int8_t *k;
   u_int32_t h, loop;
@@ -158,9 +162,11 @@ CDB___ham_func4(key, len)
   k = key;
 
   loop = (len + 8 - 1) >> 3;
-  switch (len & (8 - 1)) {
+  switch (len & (8 - 1))
+  {
   case 0:
-    do {
+    do
+    {
       HASH4;
   case 7:
       HASH4;
@@ -176,7 +182,8 @@ CDB___ham_func4(key, len)
       HASH4;
   case 1:
       HASH4;
-    } while (--loop);
+    }
+    while (--loop);
   }
   return (h);
 }
@@ -198,18 +205,19 @@ CDB___ham_func4(key, len)
  * PUBLIC: u_int32_t CDB___ham_func5 __P((const void *, u_int32_t));
  */
 u_int32_t
-CDB___ham_func5(key, len)
-  const void *key;
-  u_int32_t len;
+CDB___ham_func5 (key, len)
+     const void *key;
+     u_int32_t len;
 {
   const u_int8_t *k, *e;
-        u_int32_t h;
+  u_int32_t h;
 
   k = key;
   e = k + len;
-        for (h = 0; k < e; ++k) {
-                h *= 16777619;
-                h ^= *k;
-        }
-        return (h);
+  for (h = 0; k < e; ++k)
+  {
+    h *= 16777619;
+    h ^= *k;
+  }
+  return (h);
 }

@@ -30,12 +30,12 @@ static const char sccsid[] = "@(#)db_rec.c  11.4 (Sleepycat) 9/22/99";
  * to/from a duplicate page.  On recover, we just do the opposite.
  */
 int
-CDB___db_addrem_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___db_addrem_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __db_addrem_args *argp;
   DB *file_dbp;
@@ -45,12 +45,14 @@ CDB___db_addrem_recover(dbenv, dbtp, lsnp, redo, info)
   u_int32_t change;
   int cmp_n, cmp_p, ret;
 
-  COMPQUIET(info, NULL);
-  REC_PRINT(CDB___db_addrem_print);
-  REC_INTRO(CDB___db_addrem_read, 1);
+  COMPQUIET (info, NULL);
+  REC_PRINT (CDB___db_addrem_print);
+  REC_INTRO (CDB___db_addrem_read, 1);
 
-  if ((ret = CDB_memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
-    if (!redo) {
+  if ((ret = CDB_memp_fget (mpf, &argp->pgno, 0, &pagep)) != 0)
+  {
+    if (!redo)
+    {
       /*
        * We are undoing and the page doesn't exist.  That
        * is equivalent to having a pagelsn of 0, so we
@@ -58,61 +60,65 @@ CDB___db_addrem_recover(dbenv, dbtp, lsnp, redo, info)
        * don't bother creating a page.
        */
       goto done;
-    } else
-      if ((ret = CDB_memp_fget(mpf,
-          &argp->pgno, DB_MPOOL_CREATE, &pagep)) != 0)
-        goto out;
+    }
+    else
+      if ((ret = CDB_memp_fget (mpf,
+                                &argp->pgno, DB_MPOOL_CREATE, &pagep)) != 0)
+      goto out;
   }
 
-  cmp_n = CDB_log_compare(lsnp, &LSN(pagep));
-  cmp_p = CDB_log_compare(&LSN(pagep), &argp->pagelsn);
+  cmp_n = CDB_log_compare (lsnp, &LSN (pagep));
+  cmp_p = CDB_log_compare (&LSN (pagep), &argp->pagelsn);
   change = 0;
   if ((cmp_p == 0 && redo && argp->opcode == DB_ADD_DUP) ||
-      (cmp_n == 0 && !redo && argp->opcode == DB_REM_DUP)) {
+      (cmp_n == 0 && !redo && argp->opcode == DB_REM_DUP))
+  {
 
     /* Need to redo an add, or undo a delete. */
-    if ((ret = CDB___db_pitem(dbc, pagep, argp->indx, argp->nbytes,
-        argp->hdr.size == 0 ? NULL : &argp->hdr,
-        argp->dbt.size == 0 ? NULL : &argp->dbt)) != 0)
+    if ((ret = CDB___db_pitem (dbc, pagep, argp->indx, argp->nbytes,
+                               argp->hdr.size == 0 ? NULL : &argp->hdr,
+                               argp->dbt.size == 0 ? NULL : &argp->dbt)) != 0)
       goto out;
 
     change = DB_MPOOL_DIRTY;
 
-  } else if ((cmp_n == 0 && !redo && argp->opcode == DB_ADD_DUP) ||
-      (cmp_p == 0 && redo && argp->opcode == DB_REM_DUP)) {
+  }
+  else if ((cmp_n == 0 && !redo && argp->opcode == DB_ADD_DUP) ||
+           (cmp_p == 0 && redo && argp->opcode == DB_REM_DUP))
+  {
     /* Need to undo an add, or redo a delete. */
-    if ((ret = CDB___db_ditem(dbc,
-        pagep, argp->indx, argp->nbytes)) != 0)
+    if ((ret = CDB___db_ditem (dbc, pagep, argp->indx, argp->nbytes)) != 0)
       goto out;
     change = DB_MPOOL_DIRTY;
   }
 
-  if (change) {
+  if (change)
+  {
     if (redo)
-      LSN(pagep) = *lsnp;
+      LSN (pagep) = *lsnp;
     else
-      LSN(pagep) = argp->pagelsn;
+      LSN (pagep) = argp->pagelsn;
   }
 
-  if ((ret = CDB_memp_fput(mpf, pagep, change)) != 0)
+  if ((ret = CDB_memp_fput (mpf, pagep, change)) != 0)
     goto out;
 
-done:  *lsnp = argp->prev_lsn;
+done:*lsnp = argp->prev_lsn;
   ret = 0;
 
-out:  REC_CLOSE;
+out:REC_CLOSE;
 }
 
 /*
  * PUBLIC: int CDB___db_split_recover __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___db_split_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___db_split_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __db_split_args *argp;
   DB *file_dbp;
@@ -121,12 +127,14 @@ CDB___db_split_recover(dbenv, dbtp, lsnp, redo, info)
   PAGE *pagep;
   int change, cmp_n, cmp_p, ret;
 
-  COMPQUIET(info, NULL);
-  REC_PRINT(CDB___db_split_print);
-  REC_INTRO(CDB___db_split_read, 1);
+  COMPQUIET (info, NULL);
+  REC_PRINT (CDB___db_split_print);
+  REC_INTRO (CDB___db_split_read, 1);
 
-  if ((ret = CDB_memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
-    if (!redo) {
+  if ((ret = CDB_memp_fget (mpf, &argp->pgno, 0, &pagep)) != 0)
+  {
+    if (!redo)
+    {
       /*
        * We are undoing and the page doesn't exist.  That
        * is equivalent to having a pagelsn of 0, so we
@@ -134,10 +142,11 @@ CDB___db_split_recover(dbenv, dbtp, lsnp, redo, info)
        * don't bother creating a page.
        */
       goto done;
-    } else
-      if ((ret = CDB_memp_fget(mpf,
-          &argp->pgno, DB_MPOOL_CREATE, &pagep)) != 0)
-        goto out;
+    }
+    else
+      if ((ret = CDB_memp_fget (mpf,
+                                &argp->pgno, DB_MPOOL_CREATE, &pagep)) != 0)
+      goto out;
   }
 
   /*
@@ -151,44 +160,47 @@ CDB___db_split_recover(dbenv, dbtp, lsnp, redo, info)
    */
 
   change = 0;
-  cmp_n = CDB_log_compare(lsnp, &LSN(pagep));
-  cmp_p = CDB_log_compare(&LSN(pagep), &argp->pagelsn);
-  if (cmp_p == 0 && redo) {
-    if (argp->opcode == DB_SPLITNEW) {
+  cmp_n = CDB_log_compare (lsnp, &LSN (pagep));
+  cmp_p = CDB_log_compare (&LSN (pagep), &argp->pagelsn);
+  if (cmp_p == 0 && redo)
+  {
+    if (argp->opcode == DB_SPLITNEW)
+    {
       /* Need to redo the split described. */
-      memcpy(pagep,
-          argp->pageimage.data, argp->pageimage.size);
+      memcpy (pagep, argp->pageimage.data, argp->pageimage.size);
     }
-    LSN(pagep) = *lsnp;
-    change = DB_MPOOL_DIRTY;
-  } else if (cmp_n == 0 && !redo) {
-    if (argp->opcode == DB_SPLITOLD) {
-      /* Put back the old image. */
-      memcpy(pagep,
-          argp->pageimage.data, argp->pageimage.size);
-    }
-    LSN(pagep) = argp->pagelsn;
+    LSN (pagep) = *lsnp;
     change = DB_MPOOL_DIRTY;
   }
-  if ((ret = CDB_memp_fput(mpf, pagep, change)) != 0)
+  else if (cmp_n == 0 && !redo)
+  {
+    if (argp->opcode == DB_SPLITOLD)
+    {
+      /* Put back the old image. */
+      memcpy (pagep, argp->pageimage.data, argp->pageimage.size);
+    }
+    LSN (pagep) = argp->pagelsn;
+    change = DB_MPOOL_DIRTY;
+  }
+  if ((ret = CDB_memp_fput (mpf, pagep, change)) != 0)
     goto out;
 
-done:  *lsnp = argp->prev_lsn;
+done:*lsnp = argp->prev_lsn;
   ret = 0;
 
-out:  REC_CLOSE;
+out:REC_CLOSE;
 }
 
 /*
  * PUBLIC: int CDB___db_big_recover __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___db_big_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___db_big_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __db_big_args *argp;
   DB *file_dbp;
@@ -198,12 +210,14 @@ CDB___db_big_recover(dbenv, dbtp, lsnp, redo, info)
   u_int32_t change;
   int cmp_n, cmp_p, ret;
 
-  COMPQUIET(info, NULL);
-  REC_PRINT(CDB___db_big_print);
-  REC_INTRO(CDB___db_big_read, 1);
+  COMPQUIET (info, NULL);
+  REC_PRINT (CDB___db_big_print);
+  REC_INTRO (CDB___db_big_read, 1);
 
-  if ((ret = CDB_memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
-    if (!redo) {
+  if ((ret = CDB_memp_fget (mpf, &argp->pgno, 0, &pagep)) != 0)
+  {
+    if (!redo)
+    {
       /*
        * We are undoing and the page doesn't exist.  That
        * is equivalent to having a pagelsn of 0, so we
@@ -212,10 +226,11 @@ CDB___db_big_recover(dbenv, dbtp, lsnp, redo, info)
        */
       ret = 0;
       goto ppage;
-    } else
-      if ((ret = CDB_memp_fget(mpf,
-          &argp->pgno, DB_MPOOL_CREATE, &pagep)) != 0)
-        goto out;
+    }
+    else
+      if ((ret = CDB_memp_fget (mpf,
+                                &argp->pgno, DB_MPOOL_CREATE, &pagep)) != 0)
+      goto out;
   }
 
   /*
@@ -224,22 +239,24 @@ CDB___db_big_recover(dbenv, dbtp, lsnp, redo, info)
    * been updated, and the next one whose prev_pointer may have
    * been updated.
    */
-  cmp_n = CDB_log_compare(lsnp, &LSN(pagep));
-  cmp_p = CDB_log_compare(&LSN(pagep), &argp->pagelsn);
+  cmp_n = CDB_log_compare (lsnp, &LSN (pagep));
+  cmp_p = CDB_log_compare (&LSN (pagep), &argp->pagelsn);
   change = 0;
   if ((cmp_p == 0 && redo && argp->opcode == DB_ADD_BIG) ||
-      (cmp_n == 0 && !redo && argp->opcode == DB_REM_BIG)) {
+      (cmp_n == 0 && !redo && argp->opcode == DB_REM_BIG))
+  {
     /* We are either redo-ing an add, or undoing a delete. */
-    P_INIT(pagep, file_dbp->pgsize, argp->pgno, argp->prev_pgno,
-      argp->next_pgno, 0, P_OVERFLOW);
-    OV_LEN(pagep) = argp->dbt.size;
-    OV_REF(pagep) = 1;
-    memcpy((u_int8_t *)pagep + P_OVERHEAD, argp->dbt.data,
-        argp->dbt.size);
-    PREV_PGNO(pagep) = argp->prev_pgno;
+    P_INIT (pagep, file_dbp->pgsize, argp->pgno, argp->prev_pgno,
+            argp->next_pgno, 0, P_OVERFLOW);
+    OV_LEN (pagep) = argp->dbt.size;
+    OV_REF (pagep) = 1;
+    memcpy ((u_int8_t *) pagep + P_OVERHEAD, argp->dbt.data, argp->dbt.size);
+    PREV_PGNO (pagep) = argp->prev_pgno;
     change = DB_MPOOL_DIRTY;
-  } else if ((cmp_n == 0 && !redo && argp->opcode == DB_ADD_BIG) ||
-      (cmp_p == 0 && redo && argp->opcode == DB_REM_BIG)) {
+  }
+  else if ((cmp_n == 0 && !redo && argp->opcode == DB_ADD_BIG) ||
+           (cmp_p == 0 && redo && argp->opcode == DB_REM_BIG))
+  {
     /*
      * We are either undo-ing an add or redo-ing a delete.
      * The page is about to be reclaimed in either case, so
@@ -248,16 +265,19 @@ CDB___db_big_recover(dbenv, dbtp, lsnp, redo, info)
     change = DB_MPOOL_DIRTY;
   }
   if (change)
-    LSN(pagep) = redo ? *lsnp : argp->pagelsn;
+    LSN (pagep) = redo ? *lsnp : argp->pagelsn;
 
-  if ((ret = CDB_memp_fput(mpf, pagep, change)) != 0)
+  if ((ret = CDB_memp_fput (mpf, pagep, change)) != 0)
     goto out;
 
   /* Now check the previous page. */
-ppage:  if (argp->prev_pgno != PGNO_INVALID) {
+ppage:if (argp->prev_pgno != PGNO_INVALID)
+  {
     change = 0;
-    if ((ret = CDB_memp_fget(mpf, &argp->prev_pgno, 0, &pagep)) != 0) {
-      if (!redo) {
+    if ((ret = CDB_memp_fget (mpf, &argp->prev_pgno, 0, &pagep)) != 0)
+    {
+      if (!redo)
+      {
         /*
          * We are undoing and the page doesn't exist.
          * That is equivalent to having a pagelsn of 0,
@@ -267,38 +287,45 @@ ppage:  if (argp->prev_pgno != PGNO_INVALID) {
         *lsnp = argp->prev_lsn;
         ret = 0;
         goto npage;
-      } else
-        if ((ret = CDB_memp_fget(mpf, &argp->prev_pgno,
-            DB_MPOOL_CREATE, &pagep)) != 0)
-          goto out;
+      }
+      else
+        if ((ret = CDB_memp_fget (mpf, &argp->prev_pgno,
+                                  DB_MPOOL_CREATE, &pagep)) != 0)
+        goto out;
     }
 
-    cmp_n = CDB_log_compare(lsnp, &LSN(pagep));
-    cmp_p = CDB_log_compare(&LSN(pagep), &argp->prevlsn);
+    cmp_n = CDB_log_compare (lsnp, &LSN (pagep));
+    cmp_p = CDB_log_compare (&LSN (pagep), &argp->prevlsn);
 
     if ((cmp_p == 0 && redo && argp->opcode == DB_ADD_BIG) ||
-        (cmp_n == 0 && !redo && argp->opcode == DB_REM_BIG)) {
+        (cmp_n == 0 && !redo && argp->opcode == DB_REM_BIG))
+    {
       /* Redo add, undo delete. */
-      NEXT_PGNO(pagep) = argp->pgno;
+      NEXT_PGNO (pagep) = argp->pgno;
       change = DB_MPOOL_DIRTY;
-    } else if ((cmp_n == 0 &&
-        !redo && argp->opcode == DB_ADD_BIG) ||
-        (cmp_p == 0 && redo && argp->opcode == DB_REM_BIG)) {
+    }
+    else if ((cmp_n == 0 &&
+              !redo && argp->opcode == DB_ADD_BIG) ||
+             (cmp_p == 0 && redo && argp->opcode == DB_REM_BIG))
+    {
       /* Redo delete, undo add. */
-      NEXT_PGNO(pagep) = argp->next_pgno;
+      NEXT_PGNO (pagep) = argp->next_pgno;
       change = DB_MPOOL_DIRTY;
     }
     if (change)
-      LSN(pagep) = redo ? *lsnp : argp->prevlsn;
-    if ((ret = CDB_memp_fput(mpf, pagep, change)) != 0)
+      LSN (pagep) = redo ? *lsnp : argp->prevlsn;
+    if ((ret = CDB_memp_fput (mpf, pagep, change)) != 0)
       goto out;
   }
 
   /* Now check the next page.  Can only be set on a delete. */
-npage:  if (argp->next_pgno != PGNO_INVALID) {
+npage:if (argp->next_pgno != PGNO_INVALID)
+  {
     change = 0;
-    if ((ret = CDB_memp_fget(mpf, &argp->next_pgno, 0, &pagep)) != 0) {
-      if (!redo) {
+    if ((ret = CDB_memp_fget (mpf, &argp->next_pgno, 0, &pagep)) != 0)
+    {
+      if (!redo)
+      {
         /*
          * We are undoing and the page doesn't exist.
          * That is equivalent to having a pagelsn of 0,
@@ -306,31 +333,35 @@ npage:  if (argp->next_pgno != PGNO_INVALID) {
          * this case, don't bother creating a page.
          */
         goto done;
-      } else
-        if ((ret = CDB_memp_fget(mpf, &argp->next_pgno,
-            DB_MPOOL_CREATE, &pagep)) != 0)
-          goto out;
+      }
+      else
+        if ((ret = CDB_memp_fget (mpf, &argp->next_pgno,
+                                  DB_MPOOL_CREATE, &pagep)) != 0)
+        goto out;
     }
 
-    cmp_n = CDB_log_compare(lsnp, &LSN(pagep));
-    cmp_p = CDB_log_compare(&LSN(pagep), &argp->nextlsn);
-    if (cmp_p == 0 && redo) {
-      PREV_PGNO(pagep) = PGNO_INVALID;
+    cmp_n = CDB_log_compare (lsnp, &LSN (pagep));
+    cmp_p = CDB_log_compare (&LSN (pagep), &argp->nextlsn);
+    if (cmp_p == 0 && redo)
+    {
+      PREV_PGNO (pagep) = PGNO_INVALID;
       change = DB_MPOOL_DIRTY;
-    } else if (cmp_n == 0 && !redo) {
-      PREV_PGNO(pagep) = argp->pgno;
+    }
+    else if (cmp_n == 0 && !redo)
+    {
+      PREV_PGNO (pagep) = argp->pgno;
       change = DB_MPOOL_DIRTY;
     }
     if (change)
-      LSN(pagep) = redo ? *lsnp : argp->nextlsn;
-    if ((ret = CDB_memp_fput(mpf, pagep, change)) != 0)
+      LSN (pagep) = redo ? *lsnp : argp->nextlsn;
+    if ((ret = CDB_memp_fput (mpf, pagep, change)) != 0)
       goto out;
   }
 
-done:  *lsnp = argp->prev_lsn;
+done:*lsnp = argp->prev_lsn;
   ret = 0;
 
-out:  REC_CLOSE;
+out:REC_CLOSE;
 }
 
 /*
@@ -340,12 +371,12 @@ out:  REC_CLOSE;
  * PUBLIC: int CDB___db_ovref_recover __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___db_ovref_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___db_ovref_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __db_ovref_args *argp;
   DB *file_dbp;
@@ -354,36 +385,40 @@ CDB___db_ovref_recover(dbenv, dbtp, lsnp, redo, info)
   PAGE *pagep;
   int modified, ret;
 
-  COMPQUIET(info, NULL);
-  REC_PRINT(CDB___db_ovref_print);
-  REC_INTRO(CDB___db_ovref_read, 1);
+  COMPQUIET (info, NULL);
+  REC_PRINT (CDB___db_ovref_print);
+  REC_INTRO (CDB___db_ovref_read, 1);
 
-  if ((ret = CDB_memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
-    (void)CDB___db_pgerr(file_dbp, argp->pgno);
+  if ((ret = CDB_memp_fget (mpf, &argp->pgno, 0, &pagep)) != 0)
+  {
+    (void) CDB___db_pgerr (file_dbp, argp->pgno);
     goto out;
   }
 
   modified = 0;
-  if (CDB_log_compare(&LSN(pagep), &argp->lsn) == 0 && redo) {
+  if (CDB_log_compare (&LSN (pagep), &argp->lsn) == 0 && redo)
+  {
     /* Need to redo update described. */
-    OV_REF(pagep) += argp->adjust;
+    OV_REF (pagep) += argp->adjust;
 
     pagep->lsn = *lsnp;
     modified = 1;
-  } else if (CDB_log_compare(lsnp, &LSN(pagep)) == 0 && !redo) {
+  }
+  else if (CDB_log_compare (lsnp, &LSN (pagep)) == 0 && !redo)
+  {
     /* Need to undo update described. */
-    OV_REF(pagep) -= argp->adjust;
+    OV_REF (pagep) -= argp->adjust;
 
     pagep->lsn = argp->lsn;
     modified = 1;
   }
-  if ((ret = CDB_memp_fput(mpf, pagep, modified ? DB_MPOOL_DIRTY : 0)) != 0)
+  if ((ret = CDB_memp_fput (mpf, pagep, modified ? DB_MPOOL_DIRTY : 0)) != 0)
     goto out;
 
-done:  *lsnp = argp->prev_lsn;
+done:*lsnp = argp->prev_lsn;
   ret = 0;
 
-out:  REC_CLOSE;
+out:REC_CLOSE;
 }
 
 /*
@@ -394,12 +429,12 @@ out:  REC_CLOSE;
  * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___db_relink_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___db_relink_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __db_relink_args *argp;
   DB *file_dbp;
@@ -408,9 +443,9 @@ CDB___db_relink_recover(dbenv, dbtp, lsnp, redo, info)
   PAGE *pagep;
   int cmp_n, cmp_p, modified, ret;
 
-  COMPQUIET(info, NULL);
-  REC_PRINT(CDB___db_relink_print);
-  REC_INTRO(CDB___db_relink_read, 1);
+  COMPQUIET (info, NULL);
+  REC_PRINT (CDB___db_relink_print);
+  REC_INTRO (CDB___db_relink_read, 1);
 
   /*
    * There are up to three pages we need to check -- the page, and the
@@ -418,9 +453,11 @@ CDB___db_relink_recover(dbenv, dbtp, lsnp, redo, info)
    * the current page is the result of a split and is being recovered
    * elsewhere, so all we need do is recover the next page.
    */
-  if ((ret = CDB_memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
-    if (redo) {
-      (void)CDB___db_pgerr(file_dbp, argp->pgno);
+  if ((ret = CDB_memp_fget (mpf, &argp->pgno, 0, &pagep)) != 0)
+  {
+    if (redo)
+    {
+      (void) CDB___db_pgerr (file_dbp, argp->pgno);
       goto out;
     }
     goto next2;
@@ -429,11 +466,14 @@ CDB___db_relink_recover(dbenv, dbtp, lsnp, redo, info)
   if (argp->opcode == DB_ADD_PAGE)
     goto next1;
 
-  if (CDB_log_compare(&LSN(pagep), &argp->lsn) == 0 && redo) {
+  if (CDB_log_compare (&LSN (pagep), &argp->lsn) == 0 && redo)
+  {
     /* Redo the relink. */
     pagep->lsn = *lsnp;
     modified = 1;
-  } else if (CDB_log_compare(lsnp, &LSN(pagep)) == 0 && !redo) {
+  }
+  else if (CDB_log_compare (lsnp, &LSN (pagep)) == 0 && !redo)
+  {
     /* Undo the relink. */
     pagep->next_pgno = argp->next;
     pagep->prev_pgno = argp->prev;
@@ -441,67 +481,78 @@ CDB___db_relink_recover(dbenv, dbtp, lsnp, redo, info)
     pagep->lsn = argp->lsn;
     modified = 1;
   }
-next1:  if ((ret = CDB_memp_fput(mpf, pagep, modified ? DB_MPOOL_DIRTY : 0)) != 0)
+next1:if ((ret =
+       CDB_memp_fput (mpf, pagep, modified ? DB_MPOOL_DIRTY : 0)) != 0)
     goto out;
 
-next2:  if ((ret = CDB_memp_fget(mpf, &argp->next, 0, &pagep)) != 0) {
-    if (redo) {
-      (void)CDB___db_pgerr(file_dbp, argp->next);
+next2:if ((ret = CDB_memp_fget (mpf, &argp->next, 0, &pagep)) != 0)
+  {
+    if (redo)
+    {
+      (void) CDB___db_pgerr (file_dbp, argp->next);
       goto out;
     }
     goto prev;
   }
   modified = 0;
-  cmp_n = CDB_log_compare(lsnp, &LSN(pagep));
-  cmp_p = CDB_log_compare(&LSN(pagep), &argp->lsn_next);
+  cmp_n = CDB_log_compare (lsnp, &LSN (pagep));
+  cmp_p = CDB_log_compare (&LSN (pagep), &argp->lsn_next);
   if ((argp->opcode == DB_REM_PAGE && cmp_p == 0 && redo) ||
-      (argp->opcode == DB_ADD_PAGE && cmp_n == 0 && !redo)) {
+      (argp->opcode == DB_ADD_PAGE && cmp_n == 0 && !redo))
+  {
     /* Redo the remove or undo the add. */
     pagep->prev_pgno = argp->prev;
 
     pagep->lsn = *lsnp;
     modified = 1;
-  } else if ((argp->opcode == DB_REM_PAGE && cmp_n == 0 && !redo) ||
-      (argp->opcode == DB_ADD_PAGE && cmp_p == 0 && redo)) {
+  }
+  else if ((argp->opcode == DB_REM_PAGE && cmp_n == 0 && !redo) ||
+           (argp->opcode == DB_ADD_PAGE && cmp_p == 0 && redo))
+  {
     /* Undo the remove or redo the add. */
     pagep->prev_pgno = argp->pgno;
 
     pagep->lsn = argp->lsn_next;
     modified = 1;
   }
-  if ((ret = CDB_memp_fput(mpf, pagep, modified ? DB_MPOOL_DIRTY : 0)) != 0)
+  if ((ret = CDB_memp_fput (mpf, pagep, modified ? DB_MPOOL_DIRTY : 0)) != 0)
     goto out;
   if (argp->opcode == DB_ADD_PAGE)
     goto done;
 
-prev:  if ((ret = CDB_memp_fget(mpf, &argp->prev, 0, &pagep)) != 0) {
-    if (redo) {
-      (void)CDB___db_pgerr(file_dbp, argp->prev);
+prev:if ((ret = CDB_memp_fget (mpf, &argp->prev, 0, &pagep)) != 0)
+  {
+    if (redo)
+    {
+      (void) CDB___db_pgerr (file_dbp, argp->prev);
       goto out;
     }
     goto done;
   }
   modified = 0;
-  if (CDB_log_compare(&LSN(pagep), &argp->lsn_prev) == 0 && redo) {
+  if (CDB_log_compare (&LSN (pagep), &argp->lsn_prev) == 0 && redo)
+  {
     /* Redo the relink. */
     pagep->next_pgno = argp->next;
 
     pagep->lsn = *lsnp;
     modified = 1;
-  } else if (CDB_log_compare(lsnp, &LSN(pagep)) == 0 && !redo) {
+  }
+  else if (CDB_log_compare (lsnp, &LSN (pagep)) == 0 && !redo)
+  {
     /* Undo the relink. */
     pagep->next_pgno = argp->pgno;
 
     pagep->lsn = argp->lsn_prev;
     modified = 1;
   }
-  if ((ret = CDB_memp_fput(mpf, pagep, modified ? DB_MPOOL_DIRTY : 0)) != 0)
+  if ((ret = CDB_memp_fput (mpf, pagep, modified ? DB_MPOOL_DIRTY : 0)) != 0)
     goto out;
 
-done:  *lsnp = argp->prev_lsn;
+done:*lsnp = argp->prev_lsn;
   ret = 0;
 
-out:  REC_CLOSE;
+out:REC_CLOSE;
 }
 
 /*
@@ -509,12 +560,12 @@ out:  REC_CLOSE;
  * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___db_addpage_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___db_addpage_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __db_addpage_args *argp;
   DB *file_dbp;
@@ -524,36 +575,41 @@ CDB___db_addpage_recover(dbenv, dbtp, lsnp, redo, info)
   u_int32_t change;
   int cmp_n, cmp_p, ret;
 
-  COMPQUIET(info, NULL);
-  REC_PRINT(CDB___db_addpage_print);
-  REC_INTRO(CDB___db_addpage_read, 1);
+  COMPQUIET (info, NULL);
+  REC_PRINT (CDB___db_addpage_print);
+  REC_INTRO (CDB___db_addpage_read, 1);
 
   /*
    * We need to check two pages: the old one and the new one onto
    * which we're going to add duplicates.  Do the old one first.
    */
-  if ((ret = CDB_memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0)
+  if ((ret = CDB_memp_fget (mpf, &argp->pgno, 0, &pagep)) != 0)
     goto out;
 
   change = 0;
-  cmp_n = CDB_log_compare(lsnp, &LSN(pagep));
-  cmp_p = CDB_log_compare(&LSN(pagep), &argp->lsn);
-  if (cmp_p == 0 && redo) {
-    NEXT_PGNO(pagep) = argp->nextpgno;
+  cmp_n = CDB_log_compare (lsnp, &LSN (pagep));
+  cmp_p = CDB_log_compare (&LSN (pagep), &argp->lsn);
+  if (cmp_p == 0 && redo)
+  {
+    NEXT_PGNO (pagep) = argp->nextpgno;
 
-    LSN(pagep) = *lsnp;
-    change = DB_MPOOL_DIRTY;
-  } else if (cmp_n == 0 && !redo) {
-    NEXT_PGNO(pagep) = PGNO_INVALID;
-
-    LSN(pagep) = argp->lsn;
+    LSN (pagep) = *lsnp;
     change = DB_MPOOL_DIRTY;
   }
-  if ((ret = CDB_memp_fput(mpf, pagep, change)) != 0)
+  else if (cmp_n == 0 && !redo)
+  {
+    NEXT_PGNO (pagep) = PGNO_INVALID;
+
+    LSN (pagep) = argp->lsn;
+    change = DB_MPOOL_DIRTY;
+  }
+  if ((ret = CDB_memp_fput (mpf, pagep, change)) != 0)
     goto out;
 
-  if ((ret = CDB_memp_fget(mpf, &argp->nextpgno, 0, &pagep)) != 0) {
-    if (!redo) {
+  if ((ret = CDB_memp_fget (mpf, &argp->nextpgno, 0, &pagep)) != 0)
+  {
+    if (!redo)
+    {
       /*
        * We are undoing and the page doesn't exist.  That
        * is equivalent to having a pagelsn of 0, so we
@@ -561,33 +617,38 @@ CDB___db_addpage_recover(dbenv, dbtp, lsnp, redo, info)
        * don't bother creating a page.
        */
       goto done;
-    } else
-      if ((ret = CDB_memp_fget(mpf,
-          &argp->nextpgno, DB_MPOOL_CREATE, &pagep)) != 0)
-        goto out;
+    }
+    else
+      if ((ret = CDB_memp_fget (mpf,
+                                &argp->nextpgno, DB_MPOOL_CREATE,
+                                &pagep)) != 0)
+      goto out;
   }
 
   change = 0;
-  cmp_n = CDB_log_compare(lsnp, &LSN(pagep));
-  cmp_p = CDB_log_compare(&LSN(pagep), &argp->nextlsn);
-  if (cmp_p == 0 && redo) {
-    PREV_PGNO(pagep) = argp->pgno;
+  cmp_n = CDB_log_compare (lsnp, &LSN (pagep));
+  cmp_p = CDB_log_compare (&LSN (pagep), &argp->nextlsn);
+  if (cmp_p == 0 && redo)
+  {
+    PREV_PGNO (pagep) = argp->pgno;
 
-    LSN(pagep) = *lsnp;
-    change = DB_MPOOL_DIRTY;
-  } else if (cmp_n == 0 && !redo) {
-    PREV_PGNO(pagep) = PGNO_INVALID;
-
-    LSN(pagep) = argp->nextlsn;
+    LSN (pagep) = *lsnp;
     change = DB_MPOOL_DIRTY;
   }
-  if ((ret = CDB_memp_fput(mpf, pagep, change)) != 0)
+  else if (cmp_n == 0 && !redo)
+  {
+    PREV_PGNO (pagep) = PGNO_INVALID;
+
+    LSN (pagep) = argp->nextlsn;
+    change = DB_MPOOL_DIRTY;
+  }
+  if ((ret = CDB_memp_fput (mpf, pagep, change)) != 0)
     goto out;
 
-done:  *lsnp = argp->prev_lsn;
+done:*lsnp = argp->prev_lsn;
   ret = 0;
 
-out:  REC_CLOSE;
+out:REC_CLOSE;
 }
 
 /*
@@ -597,22 +658,22 @@ out:  REC_CLOSE;
  * PUBLIC: int CDB___db_debug_recover __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___db_debug_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___db_debug_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __db_debug_args *argp;
   int ret;
 
-  COMPQUIET(redo, 0);
-  COMPQUIET(dbenv, NULL);
-  COMPQUIET(info, NULL);
+  COMPQUIET (redo, 0);
+  COMPQUIET (dbenv, NULL);
+  COMPQUIET (info, NULL);
 
-  REC_PRINT(CDB___db_debug_print);
-  REC_NOOP_INTRO(CDB___db_debug_read);
+  REC_PRINT (CDB___db_debug_print);
+  REC_NOOP_INTRO (CDB___db_debug_read);
 
   *lsnp = argp->prev_lsn;
   ret = 0;
@@ -627,12 +688,12 @@ CDB___db_debug_recover(dbenv, dbtp, lsnp, redo, info)
  * PUBLIC: int CDB___db_noop_recover __P((DB_ENV *, DBT *, DB_LSN *, int, void *));
  */
 int
-CDB___db_noop_recover(dbenv, dbtp, lsnp, redo, info)
-  DB_ENV *dbenv;
-  DBT *dbtp;
-  DB_LSN *lsnp;
-  int redo;
-  void *info;
+CDB___db_noop_recover (dbenv, dbtp, lsnp, redo, info)
+     DB_ENV *dbenv;
+     DBT *dbtp;
+     DB_LSN *lsnp;
+     int redo;
+     void *info;
 {
   __db_noop_args *argp;
   DB *file_dbp;
@@ -642,25 +703,28 @@ CDB___db_noop_recover(dbenv, dbtp, lsnp, redo, info)
   u_int32_t change;
   int cmp_n, cmp_p, ret;
 
-  COMPQUIET(info, NULL);
-  REC_PRINT(CDB___db_noop_print);
-  REC_INTRO(CDB___db_noop_read, 0);
+  COMPQUIET (info, NULL);
+  REC_PRINT (CDB___db_noop_print);
+  REC_INTRO (CDB___db_noop_read, 0);
 
-  if ((ret = CDB_memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0)
+  if ((ret = CDB_memp_fget (mpf, &argp->pgno, 0, &pagep)) != 0)
     goto out;
 
-  cmp_n = CDB_log_compare(lsnp, &LSN(pagep));
-  cmp_p = CDB_log_compare(&LSN(pagep), &argp->prevlsn);
+  cmp_n = CDB_log_compare (lsnp, &LSN (pagep));
+  cmp_p = CDB_log_compare (&LSN (pagep), &argp->prevlsn);
   change = 0;
-  if (cmp_p == 0 && redo) {
-    LSN(pagep) = *lsnp;
-    change = DB_MPOOL_DIRTY;
-  } else if (cmp_n == 0 && !redo) {
-    LSN(pagep) = argp->prevlsn;
+  if (cmp_p == 0 && redo)
+  {
+    LSN (pagep) = *lsnp;
     change = DB_MPOOL_DIRTY;
   }
-  ret = CDB_memp_fput(mpf, pagep, change);
+  else if (cmp_n == 0 && !redo)
+  {
+    LSN (pagep) = argp->prevlsn;
+    change = DB_MPOOL_DIRTY;
+  }
+  ret = CDB_memp_fput (mpf, pagep, change);
 
-done:  *lsnp = argp->prev_lsn;
-out:  REC_CLOSE;
+done:*lsnp = argp->prev_lsn;
+out:REC_CLOSE;
 }

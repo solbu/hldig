@@ -14,16 +14,17 @@
 /*
  * Filehandle.
  */
-struct __fh_t {
-#if defined(_MSC_VER) /* _WIN32 */
-  HANDLE    handle;    /* Windows/32 file handle. */
+struct __fh_t
+{
+#if defined(_MSC_VER)           /* _WIN32 */
+  HANDLE handle;                /* Windows/32 file handle. */
 #endif
-  int    fd;      /* POSIX file descriptor. */
+  int fd;                       /* POSIX file descriptor. */
 
-  u_int32_t log_size;    /* XXX: Log file size. */
+  u_int32_t log_size;           /* XXX: Log file size. */
 
-#define  DB_FH_NOSYNC  0x01    /* Handle doesn't need to be sync'd. */
-#define  DB_FH_VALID  0x02    /* Handle is valid. */
+#define  DB_FH_NOSYNC  0x01     /* Handle doesn't need to be sync'd. */
+#define  DB_FH_VALID  0x02      /* Handle is valid. */
   u_int8_t flags;
 };
 
@@ -33,11 +34,12 @@ struct __fh_t {
  */
 #define  DB_IO_READ  1
 #define  DB_IO_WRITE  2
-typedef struct __io_t {
-  DB_FH    *fhp;      /* I/O file handle. */
-  MUTEX    *mutexp;    /* Mutex to lock. */
-  size_t     pagesize;    /* Page size. */
-  db_pgno_t  pgno;    /* Page number. */
-  u_int8_t  *buf;      /* Buffer. */
-  size_t     bytes;    /* Bytes read/written. */
+typedef struct __io_t
+{
+  DB_FH *fhp;                   /* I/O file handle. */
+  MUTEX *mutexp;                /* Mutex to lock. */
+  size_t pagesize;              /* Page size. */
+  db_pgno_t pgno;               /* Page number. */
+  u_int8_t *buf;                /* Buffer. */
+  size_t bytes;                 /* Bytes read/written. */
 } DB_IO;

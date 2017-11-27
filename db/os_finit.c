@@ -27,10 +27,10 @@ static const char sccsid[] = "@(#)os_finit.c  11.3 (Sleepycat) 9/22/99";
  * PUBLIC: int CDB___os_finit __P((DB_FH *, size_t, int));
  */
 int
-CDB___os_finit(fhp, size, zerofill)
-  DB_FH *fhp;
-  size_t size;
-  int zerofill;
+CDB___os_finit (fhp, size, zerofill)
+     DB_FH *fhp;
+     size_t size;
+     int zerofill;
 {
   db_pgno_t pages;
   size_t i;
@@ -40,7 +40,7 @@ CDB___os_finit(fhp, size, zerofill)
   char buf[OS_VMPAGESIZE];
 
   /* Write nuls to the new bytes. */
-  memset(buf, 0, sizeof(buf));
+  memset (buf, 0, sizeof (buf));
 
   /*
    * Extend the region by writing the last page.  If the region is >4Gb,
@@ -49,16 +49,17 @@ CDB___os_finit(fhp, size, zerofill)
    * pages of 1MB each so that we don't overflow (2^20 + 2^32 is bigger
    * than any memory I expect to see for awhile).
    */
-  if ((ret = CDB___os_seek(fhp, 0, 0, 0, 0, DB_OS_SEEK_END)) != 0)
+  if ((ret = CDB___os_seek (fhp, 0, 0, 0, 0, DB_OS_SEEK_END)) != 0)
     return (ret);
   pages = (size - OS_VMPAGESIZE) / MEGABYTE;
   relative = (size - OS_VMPAGESIZE) % MEGABYTE;
   if ((ret =
-      CDB___os_seek(fhp, MEGABYTE, pages, relative, 0, DB_OS_SEEK_CUR)) != 0)
+       CDB___os_seek (fhp, MEGABYTE, pages, relative, 0,
+                      DB_OS_SEEK_CUR)) != 0)
     return (ret);
-  if ((ret = CDB___os_write(fhp, buf, sizeof(buf), &nw)) != 0)
+  if ((ret = CDB___os_write (fhp, buf, sizeof (buf), &nw)) != 0)
     return (ret);
-  if (nw != sizeof(buf))
+  if (nw != sizeof (buf))
     return (EIO);
 
   /*
@@ -67,21 +68,25 @@ CDB___os_finit(fhp, size, zerofill)
    * because reading it is insufficient on systems smart enough not to
    * instantiate disk pages to satisfy a read (e.g., Solaris).
    */
-  if (zerofill) {
+  if (zerofill)
+  {
     pages = size / MEGABYTE;
     relative = size % MEGABYTE;
-    if ((ret = CDB___os_seek(fhp,
-        MEGABYTE, pages, relative, 1, DB_OS_SEEK_END)) != 0)
+    if ((ret = CDB___os_seek (fhp,
+                              MEGABYTE, pages, relative, 1,
+                              DB_OS_SEEK_END)) != 0)
       return (ret);
 
     /* Write a byte to each page. */
-    for (i = 0; i < size; i += OS_VMPAGESIZE) {
-      if ((ret = CDB___os_write(fhp, buf, 1, &nw)) != 0)
+    for (i = 0; i < size; i += OS_VMPAGESIZE)
+    {
+      if ((ret = CDB___os_write (fhp, buf, 1, &nw)) != 0)
         return (ret);
       if (nw != 1)
         return (EIO);
-      if ((ret = CDB___os_seek(fhp,
-          0, 0, OS_VMPAGESIZE - 1, 0, DB_OS_SEEK_CUR)) != 0)
+      if ((ret = CDB___os_seek (fhp,
+                                0, 0, OS_VMPAGESIZE - 1, 0,
+                                DB_OS_SEEK_CUR)) != 0)
         return (ret);
     }
   }
@@ -95,15 +100,15 @@ CDB___os_finit(fhp, size, zerofill)
  * PUBLIC: int CDB___os_fpinit __P((DB_FH *, db_pgno_t, int, int));
  */
 int
-CDB___os_fpinit(fhp, pgno, pagecount, pagesize)
-  DB_FH *fhp;
-  db_pgno_t pgno;
-  int pagecount, pagesize;
+CDB___os_fpinit (fhp, pgno, pagecount, pagesize)
+     DB_FH *fhp;
+     db_pgno_t pgno;
+     int pagecount, pagesize;
 {
-  COMPQUIET(fhp, NULL);
-  COMPQUIET(pgno, 0);
-  COMPQUIET(pagecount, 0);
-  COMPQUIET(pagesize, 0);
+  COMPQUIET (fhp, NULL);
+  COMPQUIET (pgno, 0);
+  COMPQUIET (pagecount, 0);
+  COMPQUIET (pagesize, 0);
 
   return (0);
 }

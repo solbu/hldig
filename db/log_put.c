@@ -28,7 +28,7 @@ static const char sccsid[] = "@(#)CDB_log_put.c  11.4 (Sleepycat) 11/10/99";
 #include <stdio.h>
 #include <string.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -39,38 +39,38 @@ static const char sccsid[] = "@(#)CDB_log_put.c  11.4 (Sleepycat) 11/10/99";
 #include "log.h"
 #include "hash.h"
 
-static int CDB___log_fill __P((DB_LOG *, DB_LSN *, void *, u_int32_t));
-static int CDB___log_flush __P((DB_LOG *, const DB_LSN *));
-static int CDB___log_newfh __P((DB_LOG *));
-static int CDB___log_putr __P((DB_LOG *, DB_LSN *, const DBT *, u_int32_t));
-static int CDB___log_write __P((DB_LOG *, void *, u_int32_t));
+static int CDB___log_fill __P ((DB_LOG *, DB_LSN *, void *, u_int32_t));
+static int CDB___log_flush __P ((DB_LOG *, const DB_LSN *));
+static int CDB___log_newfh __P ((DB_LOG *));
+static int CDB___log_putr __P ((DB_LOG *, DB_LSN *, const DBT *, u_int32_t));
+static int CDB___log_write __P ((DB_LOG *, void *, u_int32_t));
 
 /*
  * CDB_log_put --
  *  Write a log record.
  */
 int
-CDB_log_put(dbenv, lsn, dbt, flags)
-  DB_ENV *dbenv;
-  DB_LSN *lsn;
-  const DBT *dbt;
-  u_int32_t flags;
+CDB_log_put (dbenv, lsn, dbt, flags)
+     DB_ENV *dbenv;
+     DB_LSN *lsn;
+     const DBT *dbt;
+     u_int32_t flags;
 {
   DB_LOG *dblp;
   int ret;
 
-  PANIC_CHECK(dbenv);
-  ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
+  PANIC_CHECK (dbenv);
+  ENV_REQUIRES_CONFIG (dbenv, dbenv->lg_handle, DB_INIT_LOG);
 
   /* Validate arguments. */
   if (flags != 0 && flags != DB_CHECKPOINT &&
       flags != DB_CURLSN && flags != DB_FLUSH)
-    return (CDB___db_ferr(dbenv, "CDB_log_put", 0));
+    return (CDB___db_ferr (dbenv, "CDB_log_put", 0));
 
   dblp = dbenv->lg_handle;
-  R_LOCK(dbenv, &dblp->reginfo);
-  ret = CDB___log_put(dbenv, lsn, dbt, flags);
-  R_UNLOCK(dbenv, &dblp->reginfo);
+  R_LOCK (dbenv, &dblp->reginfo);
+  ret = CDB___log_put (dbenv, lsn, dbt, flags);
+  R_UNLOCK (dbenv, &dblp->reginfo);
   return (ret);
 }
 
@@ -81,11 +81,11 @@ CDB_log_put(dbenv, lsn, dbt, flags)
  * PUBLIC: int CDB___log_put __P((DB_ENV *, DB_LSN *, const DBT *, u_int32_t));
  */
 int
-CDB___log_put(dbenv, lsn, dbt, flags)
-  DB_ENV *dbenv;
-  DB_LSN *lsn;
-  const DBT *dbt;
-  u_int32_t flags;
+CDB___log_put (dbenv, lsn, dbt, flags)
+     DB_ENV *dbenv;
+     DB_LSN *lsn;
+     const DBT *dbt;
+     u_int32_t flags;
 {
   DBT fid_dbt, t;
   DB_LOG *dblp;
@@ -103,23 +103,25 @@ CDB___log_put(dbenv, lsn, dbt, flags)
    * the information.  Currently used by the transaction manager
    * to avoid writing TXN_begin records.
    */
-  if (flags == DB_CURLSN) {
+  if (flags == DB_CURLSN)
+  {
     lsn->file = lp->lsn.file;
     lsn->offset = lp->lsn.offset;
     return (0);
   }
 
   /* If this information won't fit in the file, swap files. */
-  if (lp->lsn.offset + sizeof(HDR) + dbt->size > lp->persist.lg_max) {
-    if (sizeof(HDR) +
-        sizeof(LOGP) + dbt->size > lp->persist.lg_max) {
-      CDB___db_err(dbenv,
-          "CDB_log_put: record larger than maximum file size");
+  if (lp->lsn.offset + sizeof (HDR) + dbt->size > lp->persist.lg_max)
+  {
+    if (sizeof (HDR) + sizeof (LOGP) + dbt->size > lp->persist.lg_max)
+    {
+      CDB___db_err (dbenv,
+                    "CDB_log_put: record larger than maximum file size");
       return (EINVAL);
     }
 
     /* Flush the log. */
-    if ((ret = CDB___log_flush(dblp, NULL)) != 0)
+    if ((ret = CDB___log_flush (dblp, NULL)) != 0)
       return (ret);
 
     /*
@@ -134,7 +136,8 @@ CDB___log_put(dbenv, lsn, dbt, flags)
 
     /* Reset the file write offset. */
     lp->w_off = 0;
-  } else
+  }
+  else
     lastoff = 0;
 
   /* Initialize the LSN information returned to the user. */
@@ -146,11 +149,13 @@ CDB___log_put(dbenv, lsn, dbt, flags)
    * Note that the previous length is wrong for the very first record
    * of the log, but that's okay, we check for it during retrieval.
    */
-  if (lp->lsn.offset == 0) {
+  if (lp->lsn.offset == 0)
+  {
     t.data = &lp->persist;
-    t.size = sizeof(LOGP);
-    if ((ret = CDB___log_putr(dblp, lsn,
-        &t, lastoff == 0 ? 0 : lastoff - lp->len)) != 0)
+    t.size = sizeof (LOGP);
+    if ((ret = CDB___log_putr (dblp, lsn,
+                               &t,
+                               lastoff == 0 ? 0 : lastoff - lp->len)) != 0)
       return (ret);
 
     /* Update the LSN information returned to the user. */
@@ -159,7 +164,7 @@ CDB___log_put(dbenv, lsn, dbt, flags)
   }
 
   /* Write the application's log record. */
-  if ((ret = CDB___log_putr(dblp, lsn, dbt, lp->lsn.offset - lp->len)) != 0)
+  if ((ret = CDB___log_putr (dblp, lsn, dbt, lp->lsn.offset - lp->len)) != 0)
     return (ret);
 
   /*
@@ -168,22 +173,24 @@ CDB___log_put(dbenv, lsn, dbt, flags)
    *  Save the LSN of the checkpoint in the shared region.
    *  Append the set of file name information into the log.
    */
-  if (flags == DB_CHECKPOINT) {
+  if (flags == DB_CHECKPOINT)
+  {
     lp->chkpt_lsn = *lsn;
 
-    for (fnp = SH_TAILQ_FIRST(&lp->fq, __fname);
-        fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
-      if (fnp->ref == 0)  /* Entry not in use. */
+    for (fnp = SH_TAILQ_FIRST (&lp->fq, __fname);
+         fnp != NULL; fnp = SH_TAILQ_NEXT (fnp, q, __fname))
+    {
+      if (fnp->ref == 0)        /* Entry not in use. */
         continue;
-      memset(&t, 0, sizeof(t));
-      t.data = R_ADDR(&dblp->reginfo, fnp->name_off);
-      t.size = strlen(t.data) + 1;
-      memset(&fid_dbt, 0, sizeof(fid_dbt));
+      memset (&t, 0, sizeof (t));
+      t.data = R_ADDR (&dblp->reginfo, fnp->name_off);
+      t.size = strlen (t.data) + 1;
+      memset (&fid_dbt, 0, sizeof (fid_dbt));
       fid_dbt.data = fnp->ufid;
       fid_dbt.size = DB_FILE_ID_LEN;
-      if ((ret = CDB___log_register_log(dbenv, NULL, &r_unused, 0,
-          LOG_CHECKPOINT, &t, &fid_dbt, fnp->id, fnp->s_type))
-          != 0)
+      if ((ret = CDB___log_register_log (dbenv, NULL, &r_unused, 0,
+                                         LOG_CHECKPOINT, &t, &fid_dbt,
+                                         fnp->id, fnp->s_type)) != 0)
         return (ret);
     }
   }
@@ -194,7 +201,7 @@ CDB___log_put(dbenv, lsn, dbt, flags)
    *  Sync the log to disk.
    */
   if (flags == DB_FLUSH || flags == DB_CHECKPOINT)
-    if ((ret = CDB___log_flush(dblp, NULL)) != 0)
+    if ((ret = CDB___log_flush (dblp, NULL)) != 0)
       return (ret);
 
   /*
@@ -202,8 +209,9 @@ CDB___log_put(dbenv, lsn, dbt, flags)
    *  Save the time the checkpoint was written.
    *  Reset the bytes written since the last checkpoint.
    */
-  if (flags == DB_CHECKPOINT) {
-    (void)time(&lp->chkpt);
+  if (flags == DB_CHECKPOINT)
+  {
+    (void) time (&lp->chkpt);
     lp->stat.st_wc_bytes = lp->stat.st_wc_mbytes = 0;
   }
   return (0);
@@ -214,11 +222,11 @@ CDB___log_put(dbenv, lsn, dbt, flags)
  *  Actually put a record into the log.
  */
 static int
-CDB___log_putr(dblp, lsn, dbt, prev)
-  DB_LOG *dblp;
-  DB_LSN *lsn;
-  const DBT *dbt;
-  u_int32_t prev;
+CDB___log_putr (dblp, lsn, dbt, prev)
+     DB_LOG *dblp;
+     DB_LSN *lsn;
+     const DBT *dbt;
+     u_int32_t prev;
 {
   HDR hdr;
   LOG *lp;
@@ -232,15 +240,15 @@ CDB___log_putr(dblp, lsn, dbt, prev)
    * in the previous file.  Fortunately, prev holds the value we want.
    */
   hdr.prev = prev;
-  hdr.len = sizeof(HDR) + dbt->size;
-  hdr.cksum = CDB___ham_func4(dbt->data, dbt->size);
+  hdr.len = sizeof (HDR) + dbt->size;
+  hdr.cksum = CDB___ham_func4 (dbt->data, dbt->size);
 
-  if ((ret = CDB___log_fill(dblp, lsn, &hdr, sizeof(HDR))) != 0)
+  if ((ret = CDB___log_fill (dblp, lsn, &hdr, sizeof (HDR))) != 0)
     return (ret);
-  lp->len = sizeof(HDR);
-  lp->lsn.offset += sizeof(HDR);
+  lp->len = sizeof (HDR);
+  lp->lsn.offset += sizeof (HDR);
 
-  if ((ret = CDB___log_fill(dblp, lsn, dbt->data, dbt->size)) != 0)
+  if ((ret = CDB___log_fill (dblp, lsn, dbt->data, dbt->size)) != 0)
     return (ret);
   lp->len += dbt->size;
   lp->lsn.offset += dbt->size;
@@ -252,20 +260,20 @@ CDB___log_putr(dblp, lsn, dbt, prev)
  *  Write all records less than or equal to the specified LSN.
  */
 int
-CDB_log_flush(dbenv, lsn)
-  DB_ENV *dbenv;
-  const DB_LSN *lsn;
+CDB_log_flush (dbenv, lsn)
+     DB_ENV *dbenv;
+     const DB_LSN *lsn;
 {
   DB_LOG *dblp;
   int ret;
 
-  PANIC_CHECK(dbenv);
-  ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
+  PANIC_CHECK (dbenv);
+  ENV_REQUIRES_CONFIG (dbenv, dbenv->lg_handle, DB_INIT_LOG);
 
   dblp = dbenv->lg_handle;
-  R_LOCK(dbenv, &dblp->reginfo);
-  ret = CDB___log_flush(dblp, lsn);
-  R_UNLOCK(dbenv, &dblp->reginfo);
+  R_LOCK (dbenv, &dblp->reginfo);
+  ret = CDB___log_flush (dblp, lsn);
+  R_UNLOCK (dbenv, &dblp->reginfo);
   return (ret);
 }
 
@@ -275,9 +283,9 @@ CDB_log_flush(dbenv, lsn)
  *  version.
  */
 static int
-CDB___log_flush(dblp, lsn)
-  DB_LOG *dblp;
-  const DB_LSN *lsn;
+CDB___log_flush (dblp, lsn)
+     DB_LOG *dblp;
+     const DB_LSN *lsn;
 {
   DB_LSN t_lsn;
   LOG *lp;
@@ -291,18 +299,19 @@ CDB___log_flush(dblp, lsn)
    * to the last LSN written in the log.  Otherwise, check that the LSN
    * isn't a non-existent record for the log.
    */
-  if (lsn == NULL) {
+  if (lsn == NULL)
+  {
     t_lsn.file = lp->lsn.file;
     t_lsn.offset = lp->lsn.offset - lp->len;
     lsn = &t_lsn;
-  } else
+  }
+  else
     if (lsn->file > lp->lsn.file ||
-        (lsn->file == lp->lsn.file &&
-        lsn->offset > lp->lsn.offset - lp->len)) {
-      CDB___db_err(dblp->dbenv,
-          "CDB_log_flush: LSN past current end-of-log");
-      return (EINVAL);
-    }
+        (lsn->file == lp->lsn.file && lsn->offset > lp->lsn.offset - lp->len))
+  {
+    CDB___db_err (dblp->dbenv, "CDB_log_flush: LSN past current end-of-log");
+    return (EINVAL);
+  }
 
   /*
    * If the LSN is less than or equal to the last-sync'd LSN, we're
@@ -320,8 +329,9 @@ CDB___log_flush(dblp, lsn)
    * buffer's starting LSN.
    */
   current = 0;
-  if (lp->b_off != 0 && CDB_log_compare(lsn, &lp->f_lsn) >= 0) {
-    if ((ret = CDB___log_write(dblp, dblp->bufp, lp->b_off)) != 0)
+  if (lp->b_off != 0 && CDB_log_compare (lsn, &lp->f_lsn) >= 0)
+  {
+    if ((ret = CDB___log_write (dblp, dblp->bufp, lp->b_off)) != 0)
       return (ret);
 
     lp->b_off = 0;
@@ -335,16 +345,18 @@ CDB___log_flush(dblp, lsn)
    * buffer, don't bother.  We have nothing to write and nothing to
    * sync.
    */
-  if (dblp->lfname != lp->lsn.file) {
+  if (dblp->lfname != lp->lsn.file)
+  {
     if (!current)
       return (0);
-    if ((ret = CDB___log_newfh(dblp)) != 0)
+    if ((ret = CDB___log_newfh (dblp)) != 0)
       return (ret);
   }
 
   /* Sync all writes to disk. */
-  if ((ret = CDB___os_fsync(&dblp->lfh)) != 0) {
-    CDB___db_panic(dblp->dbenv, ret);
+  if ((ret = CDB___os_fsync (&dblp->lfh)) != 0)
+  {
+    CDB___db_panic (dblp->dbenv, ret);
     return (ret);
   }
   ++lp->stat.st_scount;
@@ -361,11 +373,14 @@ CDB___log_flush(dblp, lsn)
    * decrementing s_lsn.file or s_lsn.offset will cause much sadness.
    */
   lp->s_lsn = lp->f_lsn;
-  if (!current && lp->s_lsn.file != 0) {
-    if (lp->s_lsn.offset == 0) {
+  if (!current && lp->s_lsn.file != 0)
+  {
+    if (lp->s_lsn.offset == 0)
+    {
       --lp->s_lsn.file;
       lp->s_lsn.offset = lp->persist.lg_max;
-    } else
+    }
+    else
       --lp->s_lsn.offset;
   }
 
@@ -377,11 +392,11 @@ CDB___log_flush(dblp, lsn)
  *  Write information into the log.
  */
 static int
-CDB___log_fill(dblp, lsn, addr, len)
-  DB_LOG *dblp;
-  DB_LSN *lsn;
-  void *addr;
-  u_int32_t len;
+CDB___log_fill (dblp, lsn, addr, len)
+     DB_LOG *dblp;
+     DB_LSN *lsn;
+     void *addr;
+     u_int32_t len;
 {
   LOG *lp;
   u_int32_t bsize, nrec;
@@ -391,7 +406,8 @@ CDB___log_fill(dblp, lsn, addr, len)
   lp = dblp->reginfo.primary;
   bsize = lp->buffer_size;
 
-  while (len > 0) {      /* Copy out the data. */
+  while (len > 0)
+  {                             /* Copy out the data. */
     /*
      * If we're beginning a new buffer, note the user LSN to which
      * the first byte of the buffer belongs.  We have to know this
@@ -405,11 +421,12 @@ CDB___log_fill(dblp, lsn, addr, len)
      * If we're on a buffer boundary and the data is big enough,
      * copy as many records as we can directly from the data.
      */
-    if (lp->b_off == 0 && len >= bsize) {
+    if (lp->b_off == 0 && len >= bsize)
+    {
       nrec = len / bsize;
-      if ((ret = CDB___log_write(dblp, addr, nrec * bsize)) != 0)
+      if ((ret = CDB___log_write (dblp, addr, nrec * bsize)) != 0)
         return (ret);
-      addr = (u_int8_t *)addr + nrec * bsize;
+      addr = (u_int8_t *) addr + nrec * bsize;
       len -= nrec * bsize;
       ++lp->stat.st_wcount_fill;
       continue;
@@ -418,14 +435,15 @@ CDB___log_fill(dblp, lsn, addr, len)
     /* Figure out how many bytes we can copy this time. */
     remain = bsize - lp->b_off;
     nw = remain > len ? len : remain;
-    memcpy(dblp->bufp + lp->b_off, addr, nw);
-    addr = (u_int8_t *)addr + nw;
+    memcpy (dblp->bufp + lp->b_off, addr, nw);
+    addr = (u_int8_t *) addr + nw;
     len -= nw;
     lp->b_off += nw;
 
     /* If we fill the buffer, flush it. */
-    if (lp->b_off == bsize) {
-      if ((ret = CDB___log_write(dblp, dblp->bufp, bsize)) != 0)
+    if (lp->b_off == bsize)
+    {
+      if ((ret = CDB___log_write (dblp, dblp->bufp, bsize)) != 0)
         return (ret);
       lp->b_off = 0;
       ++lp->stat.st_wcount_fill;
@@ -439,10 +457,10 @@ CDB___log_fill(dblp, lsn, addr, len)
  *  Write the log buffer to disk.
  */
 static int
-CDB___log_write(dblp, addr, len)
-  DB_LOG *dblp;
-  void *addr;
-  u_int32_t len;
+CDB___log_write (dblp, addr, len)
+     DB_LOG *dblp;
+     void *addr;
+     u_int32_t len;
 {
   LOG *lp;
   ssize_t nw;
@@ -453,8 +471,8 @@ CDB___log_write(dblp, addr, len)
    * has changed, acquire a new log file.
    */
   lp = dblp->reginfo.primary;
-  if (!F_ISSET(&dblp->lfh, DB_FH_VALID) || dblp->lfname != lp->lsn.file)
-    if ((ret = CDB___log_newfh(dblp)) != 0)
+  if (!F_ISSET (&dblp->lfh, DB_FH_VALID) || dblp->lfname != lp->lsn.file)
+    if ((ret = CDB___log_newfh (dblp)) != 0)
       return (ret);
 
   /*
@@ -462,23 +480,26 @@ CDB___log_write(dblp, addr, len)
    * since we last did).
    */
   if ((ret =
-      CDB___os_seek(&dblp->lfh, 0, 0, lp->w_off, 0, DB_OS_SEEK_SET)) != 0 ||
-      (ret = CDB___os_write(&dblp->lfh, addr, len, &nw)) != 0) {
-    CDB___db_panic(dblp->dbenv, ret);
+       CDB___os_seek (&dblp->lfh, 0, 0, lp->w_off, 0, DB_OS_SEEK_SET)) != 0 ||
+      (ret = CDB___os_write (&dblp->lfh, addr, len, &nw)) != 0)
+  {
+    CDB___db_panic (dblp->dbenv, ret);
     return (ret);
   }
-  if (nw != (int32_t)len)
+  if (nw != (int32_t) len)
     return (EIO);
 
   /* Reset the buffer offset and update the seek offset. */
   lp->w_off += len;
 
   /* Update written statistics. */
-  if ((lp->stat.st_w_bytes += len) >= MEGABYTE) {
+  if ((lp->stat.st_w_bytes += len) >= MEGABYTE)
+  {
     lp->stat.st_w_bytes -= MEGABYTE;
     ++lp->stat.st_w_mbytes;
   }
-  if ((lp->stat.st_wc_bytes += len) >= MEGABYTE) {
+  if ((lp->stat.st_wc_bytes += len) >= MEGABYTE)
+  {
     lp->stat.st_wc_bytes -= MEGABYTE;
     ++lp->stat.st_wc_mbytes;
   }
@@ -492,33 +513,34 @@ CDB___log_write(dblp, addr, len)
  *  Map a DB_LSN to a file name.
  */
 int
-CDB_log_file(dbenv, lsn, namep, len)
-  DB_ENV *dbenv;
-  const DB_LSN *lsn;
-  char *namep;
-  size_t len;
+CDB_log_file (dbenv, lsn, namep, len)
+     DB_ENV *dbenv;
+     const DB_LSN *lsn;
+     char *namep;
+     size_t len;
 {
   DB_LOG *dblp;
   int ret;
   char *name;
 
-  PANIC_CHECK(dbenv);
-  ENV_REQUIRES_CONFIG(dbenv, dbenv->lg_handle, DB_INIT_LOG);
+  PANIC_CHECK (dbenv);
+  ENV_REQUIRES_CONFIG (dbenv, dbenv->lg_handle, DB_INIT_LOG);
 
   dblp = dbenv->lg_handle;
-  R_LOCK(dbenv, &dblp->reginfo);
-  ret = CDB___log_name(dblp, lsn->file, &name, NULL, 0);
-  R_UNLOCK(dbenv, &dblp->reginfo);
+  R_LOCK (dbenv, &dblp->reginfo);
+  ret = CDB___log_name (dblp, lsn->file, &name, NULL, 0);
+  R_UNLOCK (dbenv, &dblp->reginfo);
   if (ret != 0)
     return (ret);
 
   /* Check to make sure there's enough room and copy the name. */
-  if (len < strlen(name) + 1) {
+  if (len < strlen (name) + 1)
+  {
     *namep = '\0';
     return (ENOMEM);
   }
-  (void)strcpy(namep, name);
-  CDB___os_freestr(name);
+  (void) strcpy (namep, name);
+  CDB___os_freestr (name);
 
   return (0);
 }
@@ -528,26 +550,27 @@ CDB_log_file(dbenv, lsn, namep, len)
  *  Acquire a file handle for the current log file.
  */
 static int
-CDB___log_newfh(dblp)
-  DB_LOG *dblp;
+CDB___log_newfh (dblp)
+     DB_LOG *dblp;
 {
   LOG *lp;
   int ret;
   char *name;
 
   /* Close any previous file descriptor. */
-  if (F_ISSET(&dblp->lfh, DB_FH_VALID))
-    (void)CDB___os_closehandle(&dblp->lfh);
+  if (F_ISSET (&dblp->lfh, DB_FH_VALID))
+    (void) CDB___os_closehandle (&dblp->lfh);
 
   /* Get the path of the new file and open it. */
   lp = dblp->reginfo.primary;
   dblp->lfname = lp->lsn.file;
-  if ((ret = CDB___log_name(dblp, dblp->lfname,
-      &name, &dblp->lfh, DB_OSO_CREATE | DB_OSO_LOG | DB_OSO_SEQ)) != 0)
-    CDB___db_err(dblp->dbenv,
-        "CDB_log_put: %s: %s", name, CDB_db_strerror(ret));
+  if ((ret = CDB___log_name (dblp, dblp->lfname,
+                             &name, &dblp->lfh,
+                             DB_OSO_CREATE | DB_OSO_LOG | DB_OSO_SEQ)) != 0)
+    CDB___db_err (dblp->dbenv, "CDB_log_put: %s: %s", name,
+                  CDB_db_strerror (ret));
 
-  CDB___os_freestr(name);
+  CDB___os_freestr (name);
   return (ret);
 }
 
@@ -559,16 +582,16 @@ CDB___log_newfh(dblp)
  * PUBLIC:     u_int32_t, char **, DB_FH *, u_int32_t));
  */
 int
-CDB___log_name(dblp, filenumber, namep, fhp, flags)
-  DB_LOG *dblp;
-  u_int32_t filenumber, flags;
-  char **namep;
-  DB_FH *fhp;
+CDB___log_name (dblp, filenumber, namep, fhp, flags)
+     DB_LOG *dblp;
+     u_int32_t filenumber, flags;
+     char **namep;
+     DB_FH *fhp;
 {
   LOG *lp;
   int ret;
   char *oname;
-  char old[sizeof(LFPREFIX) + 5 + 20], new[sizeof(LFPREFIX) + 10 + 20];
+  char old[sizeof (LFPREFIX) + 5 + 20], new[sizeof (LFPREFIX) + 10 + 20];
 
   lp = dblp->reginfo.primary;
 
@@ -590,30 +613,33 @@ CDB___log_name(dblp, filenumber, namep, fhp, flags)
    * Create a new-style file name, and if we're not going to open the
    * file, return regardless.
    */
-  (void)snprintf(new, sizeof(new), LFNAME, filenumber);
-  if ((ret = CDB___db_appname(dblp->dbenv,
-      DB_APP_LOG, NULL, new, 0, NULL, namep)) != 0 || fhp == NULL)
+  (void) snprintf (new, sizeof (new), LFNAME, filenumber);
+  if ((ret = CDB___db_appname (dblp->dbenv,
+                               DB_APP_LOG, NULL, new, 0, NULL, namep)) != 0
+      || fhp == NULL)
     return (ret);
 
   /* Open the new-style file -- if we succeed, we're done. */
-  if ((ret = CDB___os_open(*namep, flags, lp->persist.mode, fhp)) == 0)
+  if ((ret = CDB___os_open (*namep, flags, lp->persist.mode, fhp)) == 0)
     return (0);
 
   /*
    * The open failed... if the DB_RDONLY flag isn't set, we're done,
    * the caller isn't interested in old-style files.
    */
-  if (!LF_ISSET(DB_OSO_RDONLY)) {
-    CDB___db_err(dblp->dbenv,
-        "%s: log file open failed: %s", *namep, CDB_db_strerror(ret));
-    CDB___db_panic(dblp->dbenv, ret);
+  if (!LF_ISSET (DB_OSO_RDONLY))
+  {
+    CDB___db_err (dblp->dbenv,
+                  "%s: log file open failed: %s", *namep,
+                  CDB_db_strerror (ret));
+    CDB___db_panic (dblp->dbenv, ret);
     return (ret);
   }
 
   /* Create an old-style file name. */
-  (void)snprintf(old, sizeof(old), LFNAME_V1, filenumber);
-  if ((ret = CDB___db_appname(dblp->dbenv,
-      DB_APP_LOG, NULL, old, 0, NULL, &oname)) != 0)
+  (void) snprintf (old, sizeof (old), LFNAME_V1, filenumber);
+  if ((ret = CDB___db_appname (dblp->dbenv,
+                               DB_APP_LOG, NULL, old, 0, NULL, &oname)) != 0)
     goto err;
 
   /*
@@ -621,8 +647,9 @@ CDB___log_name(dblp, filenumber, namep, fhp, flags)
    * space allocated for the new-style name and return the old-style
    * name to the caller.
    */
-  if ((ret = CDB___os_open(oname, flags, lp->persist.mode, fhp)) == 0) {
-    CDB___os_freestr(*namep);
+  if ((ret = CDB___os_open (oname, flags, lp->persist.mode, fhp)) == 0)
+  {
+    CDB___os_freestr (*namep);
     *namep = oname;
     return (0);
   }
@@ -635,6 +662,6 @@ CDB___log_name(dblp, filenumber, namep, fhp, flags)
    * old-style name, but we expected it to exist and we weren't just
    * looking for any log file.  That's not a likely error.
    */
-err:  CDB___os_freestr(oname);
+err:CDB___os_freestr (oname);
   return (ret);
 }

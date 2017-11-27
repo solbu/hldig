@@ -15,7 +15,7 @@
  *******************************************************/
 #include "db.h"
 
-#ifndef _MSC_VER /* WIN32 */
+#ifndef _MSC_VER                /* WIN32 */
 #ifndef NO_SYSTEM_INCLUDES
 #ifdef __STDC__
 #include <stdarg.h>
@@ -31,19 +31,19 @@
 /*******************************************************
  * General purpose constants and macros.
  *******************************************************/
-#define  UINT16_T_MAX      0xffff  /* Maximum 16 bit unsigned. */
-#define  UINT32_T_MAX  0xffffffff  /* Maximum 32 bit unsigned. */
+#define  UINT16_T_MAX      0xffff       /* Maximum 16 bit unsigned. */
+#define  UINT32_T_MAX  0xffffffff       /* Maximum 32 bit unsigned. */
 
 #define  MEGABYTE  1048576
 #define  GIGABYTE  1073741824
 
-#define  MS_PER_SEC  1000    /* Milliseconds in a second. */
-#define  USEC_PER_MS  1000    /* Microseconds in a millisecond. */
+#define  MS_PER_SEC  1000       /* Milliseconds in a second. */
+#define  USEC_PER_MS  1000      /* Microseconds in a millisecond. */
 
-#define  DB_MIN_PGSIZE  0x000200  /* Minimum page size (512). */
-#define  DB_MAX_PGSIZE  0x010000  /* Maximum page size (65536). */
+#define  DB_MIN_PGSIZE  0x000200        /* Minimum page size (512). */
+#define  DB_MAX_PGSIZE  0x010000        /* Maximum page size (65536). */
 
-#define  RECNO_OOB  0    /* Illegal record number. */
+#define  RECNO_OOB  0           /* Illegal record number. */
 
 /*
  * If we are unable to determine the underlying filesystem block size, use
@@ -91,9 +91,10 @@
 #define SSZA(name, field)  ((int)&(((name *)0)->field[0]))
 
 /* Structure used to print flag values. */
-typedef struct __fn {
-  u_int32_t mask;      /* Flag value. */
-  const char *name;    /* Flag name. */
+typedef struct __fn
+{
+  u_int32_t mask;               /* Flag value. */
+  const char *name;             /* Flag name. */
 } FN;
 
 /* Set, clear and test flags. */
@@ -131,38 +132,40 @@ typedef struct __fn {
 #undef  MAXPATHLEN
 #define  MAXPATHLEN  1024
 
-#define  PATH_DOT  "."  /* Current working directory. */
-#define  PATH_SEPARATOR  "/"  /* Path separator character. */
+#define  PATH_DOT  "."          /* Current working directory. */
+#define  PATH_SEPARATOR  "/"    /* Path separator character. */
 
 /*
  * Flags understood by CDB___os_open.
  */
-#define  DB_OSO_CREATE  0x001    /* POSIX: O_CREAT */
-#define  DB_OSO_EXCL  0x002    /* POSIX: O_EXCL */
-#define  DB_OSO_LOG  0x004    /* Opening a log file. */
-#define  DB_OSO_RDONLY  0x008    /* POSIX: O_RDONLY */
-#define  DB_OSO_SEQ  0x010    /* Expected sequential access. */
-#define  DB_OSO_TEMP  0x020    /* Remove after last close. */
+#define  DB_OSO_CREATE  0x001   /* POSIX: O_CREAT */
+#define  DB_OSO_EXCL  0x002     /* POSIX: O_EXCL */
+#define  DB_OSO_LOG  0x004      /* Opening a log file. */
+#define  DB_OSO_RDONLY  0x008   /* POSIX: O_RDONLY */
+#define  DB_OSO_SEQ  0x010      /* Expected sequential access. */
+#define  DB_OSO_TEMP  0x020     /* Remove after last close. */
 #define  DB_OSO_TRUNC  0x040    /* POSIX: O_TRUNC */
 
 /*
  * Seek options understood by CDB___os_seek.
  */
-typedef enum {
-  DB_OS_SEEK_CUR,      /* POSIX: SEEK_CUR */
-  DB_OS_SEEK_END,      /* POSIX: SEEK_END */
-  DB_OS_SEEK_SET      /* POSIX: SEEK_SET */
+typedef enum
+{
+  DB_OS_SEEK_CUR,               /* POSIX: SEEK_CUR */
+  DB_OS_SEEK_END,               /* POSIX: SEEK_END */
+  DB_OS_SEEK_SET                /* POSIX: SEEK_SET */
 } DB_OS_SEEK;
 
 /*******************************************************
  * Environment.
  *******************************************************/
 /* Type passed to CDB___db_appname(). */
-typedef enum {
-  DB_APP_NONE=0,      /* No type (region). */
-  DB_APP_DATA,      /* Data file. */
-  DB_APP_LOG,      /* Log file. */
-  DB_APP_TMP      /* Temporary file. */
+typedef enum
+{
+  DB_APP_NONE = 0,              /* No type (region). */
+  DB_APP_DATA,                  /* Data file. */
+  DB_APP_LOG,                   /* Log file. */
+  DB_APP_TMP                    /* Temporary file. */
 } APPNAME;
 
 /* Most initialization methods cannot be called after open is called. */
@@ -201,13 +204,14 @@ typedef enum {
 /*
  * File types for DB access methods.  Negative numbers are reserved to DB.
  */
-#define  DB_FTYPE_SET    -1  /* Call pgin/pgout functions. */
+#define  DB_FTYPE_SET    -1     /* Call pgin/pgout functions. */
 #define  DB_FTYPE_NOTSET     0  /* Don't call... */
 
 /* Structure used as the DB pgin/pgout pgcookie. */
-typedef struct __dbpginfo {
-  size_t  db_pagesize;    /* Underlying page size. */
-  int  needswap;    /* If swapping required. */
+typedef struct __dbpginfo
+{
+  size_t db_pagesize;           /* Underlying page size. */
+  int needswap;                 /* If swapping required. */
 } DB_PGINFO;
 
 /*******************************************************
@@ -239,22 +243,25 @@ typedef struct __dbpginfo {
  * !!!
  * Initialized in env/env_method.c, don't change this without changing that.
  */
-typedef struct __db_globals {
-  u_int32_t db_mutexlocks;  /* db_set_mutexlocks */
-  u_int32_t db_pageyield;    /* db_set_pageyield */
-  u_int32_t db_panic;    /* db_set_panic */
-  u_int32_t db_region_init;  /* db_set_region_init */
-  u_int32_t db_tas_spins;    /* db_set_tas_spins */
-          /* XA: list of opened environments. */
-  TAILQ_HEAD(__db_envq, __db_env) db_envq;
+typedef struct __db_globals
+{
+  u_int32_t db_mutexlocks;      /* db_set_mutexlocks */
+  u_int32_t db_pageyield;       /* db_set_pageyield */
+  u_int32_t db_panic;           /* db_set_panic */
+  u_int32_t db_region_init;     /* db_set_region_init */
+  u_int32_t db_tas_spins;       /* db_set_tas_spins */
+  /* XA: list of opened environments. */
+    TAILQ_HEAD (__db_envq, __db_env) db_envq;
 } DB_GLOBALS;
 
-extern  DB_GLOBALS  CDB___db_global_values;
+extern DB_GLOBALS CDB___db_global_values;
 #define  DB_GLOBAL(v)  CDB___db_global_values.v
 
 /* Forward structure declarations. */
-struct __db_reginfo_t;  typedef struct __db_reginfo_t REGINFO;
-struct __mutex_t;  typedef struct __mutex_t MUTEX;
+struct __db_reginfo_t;
+typedef struct __db_reginfo_t REGINFO;
+struct __mutex_t;
+typedef struct __mutex_t MUTEX;
 
 /*******************************************************
  * More general includes.
@@ -272,7 +279,7 @@ struct __mutex_t;  typedef struct __mutex_t MUTEX;
 /*******************************************************
  * Stuff not defined in native WIN32 Env.
  *******************************************************/
-#ifdef _MSC_VER /* _WIN32 */
+#ifdef _MSC_VER                 /* _WIN32 */
 
 #include <windows.h>
 
@@ -285,19 +292,19 @@ struct __mutex_t;  typedef struct __mutex_t MUTEX;
 #ifdef _MSC_VER
 #ifndef  S_IRUSR
 #if defined(_WIN32) || defined(WIN16)
-#define  S_IRUSR  S_IREAD    /* R for owner */
-#define  S_IWUSR  S_IWRITE  /* W for owner */
-#define  S_IRGRP  0    /* R for group */
-#define  S_IWGRP  0    /* W for group */
-#define  S_IROTH  0    /* R for other */
-#define  S_IWOTH  0    /* W for other */
+#define  S_IRUSR  S_IREAD       /* R for owner */
+#define  S_IWUSR  S_IWRITE      /* W for owner */
+#define  S_IRGRP  0             /* R for group */
+#define  S_IWGRP  0             /* W for group */
+#define  S_IROTH  0             /* R for other */
+#define  S_IWOTH  0             /* W for other */
 #else
-#define  S_IRUSR  0000400    /* R for owner */
-#define  S_IWUSR  0000200    /* W for owner */
-#define  S_IRGRP  0000040    /* R for group */
-#define  S_IWGRP  0000020    /* W for group */
-#define  S_IROTH  0000004    /* R for other */
-#define  S_IWOTH  0000002    /* W for other */
+#define  S_IRUSR  0000400       /* R for owner */
+#define  S_IWUSR  0000200       /* W for owner */
+#define  S_IRGRP  0000040       /* R for group */
+#define  S_IWGRP  0000020       /* W for group */
+#define  S_IROTH  0000004       /* R for other */
+#define  S_IWOTH  0000002       /* W for other */
 #endif /* _WIN32 || WIN16 */
 #endif
 #endif

@@ -37,33 +37,34 @@ static const char sccsid[] = "@(#)hash_reclaim.c  11.1 (Sleepycat) 7/24/99";
  * PUBLIC: int CDB___ham_reclaim __P((DB *, DB_TXN *txn));
  */
 int
-CDB___ham_reclaim(dbp, txn)
-  DB *dbp;
-  DB_TXN *txn;
+CDB___ham_reclaim (dbp, txn)
+     DB *dbp;
+     DB_TXN *txn;
 {
   DBC *dbc;
   HASH_CURSOR *hcp;
   int ret;
 
   /* Open up a cursor that we'll use for traversing. */
-  if ((ret = dbp->cursor(dbp, txn, &dbc, 0)) != 0)
+  if ((ret = dbp->cursor (dbp, txn, &dbc, 0)) != 0)
     return (ret);
-  hcp = (HASH_CURSOR *)dbc->internal;
+  hcp = (HASH_CURSOR *) dbc->internal;
 
-  if ((ret = CDB___ham_get_meta(dbc)) != 0)
+  if ((ret = CDB___ham_get_meta (dbc)) != 0)
     goto err;
 
-  if ((ret = CDB___ham_traverse(dbp,
-      dbc, DB_LOCK_WRITE, CDB___db_reclaim_callback, dbc)) != 0)
+  if ((ret = CDB___ham_traverse (dbp,
+                                 dbc, DB_LOCK_WRITE,
+                                 CDB___db_reclaim_callback, dbc)) != 0)
     goto err;
-  if ((ret = dbc->c_close(dbc)) != 0)
+  if ((ret = dbc->c_close (dbc)) != 0)
     goto err;
-  if ((ret = CDB___ham_release_meta(dbc)) != 0)
+  if ((ret = CDB___ham_release_meta (dbc)) != 0)
     goto err;
   return (0);
 
-err:  if (hcp->hdr != NULL)
-    (void)CDB___ham_release_meta(dbc);
-  (void)dbc->c_close(dbc);
+err:if (hcp->hdr != NULL)
+    (void) CDB___ham_release_meta (dbc);
+  (void) dbc->c_close (dbc);
   return (ret);
 }

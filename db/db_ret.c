@@ -31,13 +31,13 @@ static const char sccsid[] = "@(#)db_ret.c  11.1 (Sleepycat) 7/24/99";
  * PUBLIC:    PAGE *, u_int32_t, DBT *, void **, u_int32_t *));
  */
 int
-CDB___db_ret(dbp, h, indx, dbt, memp, memsize)
-  DB *dbp;
-  PAGE *h;
-  u_int32_t indx;
-  DBT *dbt;
-  void **memp;
-  u_int32_t *memsize;
+CDB___db_ret (dbp, h, indx, dbt, memp, memsize)
+     DB *dbp;
+     PAGE *h;
+     u_int32_t indx;
+     DBT *dbt;
+     void **memp;
+     u_int32_t *memsize;
 {
   BKEYDATA *bk;
   HOFFPAGE ho;
@@ -46,35 +46,37 @@ CDB___db_ret(dbp, h, indx, dbt, memp, memsize)
   u_int8_t *hk;
   void *data;
 
-  switch (TYPE(h)) {
+  switch (TYPE (h))
+  {
   case P_HASH:
-    hk = P_ENTRY(h, indx);
-    if (HPAGE_PTYPE(hk) == H_OFFPAGE) {
-      memcpy(&ho, hk, sizeof(HOFFPAGE));
-      return (CDB___db_goff(dbp, dbt,
-          ho.tlen, ho.pgno, memp, memsize));
+    hk = P_ENTRY (h, indx);
+    if (HPAGE_PTYPE (hk) == H_OFFPAGE)
+    {
+      memcpy (&ho, hk, sizeof (HOFFPAGE));
+      return (CDB___db_goff (dbp, dbt, ho.tlen, ho.pgno, memp, memsize));
     }
-    len = LEN_HKEYDATA(h, dbp->pgsize, indx);
-    data = HKEYDATA_DATA(hk);
+    len = LEN_HKEYDATA (h, dbp->pgsize, indx);
+    data = HKEYDATA_DATA (hk);
     break;
   case P_DUPLICATE:
   case P_LBTREE:
   case P_LRECNO:
-    bk = GET_BKEYDATA(h, indx);
-    if (B_TYPE(bk->type) == B_OVERFLOW) {
-      bo = (BOVERFLOW *)bk;
-      return (CDB___db_goff(dbp, dbt,
-          bo->tlen, bo->pgno, memp, memsize));
+    bk = GET_BKEYDATA (h, indx);
+    if (B_TYPE (bk->type) == B_OVERFLOW)
+    {
+      bo = (BOVERFLOW *) bk;
+      return (CDB___db_goff (dbp, dbt, bo->tlen, bo->pgno, memp, memsize));
     }
     len = bk->len;
     data = bk->data;
     break;
   default:
-    return (CDB___db_pgfmt(dbp, h->pgno));
+    return (CDB___db_pgfmt (dbp, h->pgno));
   }
 
-  return (CDB___db_retcopy(F_ISSET(dbt,
-      DB_DBT_INTERNAL) ? NULL : dbp, dbt, data, len, memp, memsize));
+  return (CDB___db_retcopy (F_ISSET (dbt,
+                                     DB_DBT_INTERNAL) ? NULL : dbp, dbt, data,
+                            len, memp, memsize));
 }
 
 /*
@@ -85,24 +87,27 @@ CDB___db_ret(dbp, h, indx, dbt, memp, memsize)
  * PUBLIC:    void *, u_int32_t, void **, u_int32_t *));
  */
 int
-CDB___db_retcopy(dbp, dbt, data, len, memp, memsize)
-  DB *dbp;
-  DBT *dbt;
-  void *data;
-  u_int32_t len;
-  void **memp;
-  u_int32_t *memsize;
+CDB___db_retcopy (dbp, dbt, data, len, memp, memsize)
+     DB *dbp;
+     DBT *dbt;
+     void *data;
+     u_int32_t len;
+     void **memp;
+     u_int32_t *memsize;
 {
   int ret;
 
   /* If returning a partial record, reset the length. */
-  if (F_ISSET(dbt, DB_DBT_PARTIAL)) {
-    data = (u_int8_t *)data + dbt->doff;
-    if (len > dbt->doff) {
+  if (F_ISSET (dbt, DB_DBT_PARTIAL))
+  {
+    data = (u_int8_t *) data + dbt->doff;
+    if (len > dbt->doff)
+    {
       len -= dbt->doff;
       if (len > dbt->dlen)
         len = dbt->dlen;
-    } else
+    }
+    else
       len = 0;
   }
 
@@ -129,22 +134,35 @@ CDB___db_retcopy(dbp, dbt, data, len, memp, memsize)
    * If the length we're going to copy is 0, the application-supplied
    * memory pointer is allowed to be NULL.
    */
-  if (F_ISSET(dbt, DB_DBT_MALLOC)) {
-    if ((ret = CDB___os_malloc(len,
-        dbp == NULL ? NULL : dbp->db_malloc, &dbt->data)) != 0)
+  if (F_ISSET (dbt, DB_DBT_MALLOC))
+  {
+    if ((ret = CDB___os_malloc (len,
+                                dbp == NULL ? NULL : dbp->db_malloc,
+                                &dbt->data)) != 0)
       return (ret);
-  } else if (F_ISSET(dbt, DB_DBT_REALLOC)) {
-    if ((ret = CDB___os_realloc(len,
-        dbp == NULL ? NULL : dbp->db_realloc, &dbt->data)) != 0)
+  }
+  else if (F_ISSET (dbt, DB_DBT_REALLOC))
+  {
+    if ((ret = CDB___os_realloc (len,
+                                 dbp == NULL ? NULL : dbp->db_realloc,
+                                 &dbt->data)) != 0)
       return (ret);
-  } else if (F_ISSET(dbt, DB_DBT_USERMEM)) {
+  }
+  else if (F_ISSET (dbt, DB_DBT_USERMEM))
+  {
     if (len != 0 && (dbt->data == NULL || dbt->ulen < len))
       return (ENOMEM);
-  } else if (memp == NULL || memsize == NULL) {
+  }
+  else if (memp == NULL || memsize == NULL)
+  {
     return (EINVAL);
-  } else {
-    if (len != 0 && (*memsize == 0 || *memsize < len)) {
-      if ((ret = CDB___os_realloc(len, NULL, memp)) != 0) {
+  }
+  else
+  {
+    if (len != 0 && (*memsize == 0 || *memsize < len))
+    {
+      if ((ret = CDB___os_realloc (len, NULL, memp)) != 0)
+      {
         *memsize = 0;
         return (ret);
       }
@@ -154,6 +172,6 @@ CDB___db_retcopy(dbp, dbt, data, len, memp, memsize)
   }
 
   if (len != 0)
-    memcpy(dbt->data, data, len);
+    memcpy (dbt->data, data, len);
   return (0);
 }

@@ -33,14 +33,15 @@ static const char sccsid[] = "@(#)xa_map.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: int CDB___db_rmid_to_env __P((int rmid, DB_ENV **envp));
  */
 int
-CDB___db_rmid_to_env(rmid, envp)
-  int rmid;
-  DB_ENV **envp;
+CDB___db_rmid_to_env (rmid, envp)
+     int rmid;
+     DB_ENV **envp;
 {
   DB_ENV *env;
 
-  env = TAILQ_FIRST(&DB_GLOBAL(db_envq));
-  if (env != NULL && env->xa_rmid == rmid) {
+  env = TAILQ_FIRST (&DB_GLOBAL (db_envq));
+  if (env != NULL && env->xa_rmid == rmid)
+  {
     *envp = env;
     return (0);
   }
@@ -50,10 +51,11 @@ CDB___db_rmid_to_env(rmid, envp)
    * the list of environments, so we acquire the correct environment
    * in DB->open.
    */
-  for (; env != NULL; env = TAILQ_NEXT(env, links))
-    if (env->xa_rmid == rmid) {
-      TAILQ_REMOVE(&DB_GLOBAL(db_envq), env, links);
-      TAILQ_INSERT_HEAD(&DB_GLOBAL(db_envq), env, links);
+  for (; env != NULL; env = TAILQ_NEXT (env, links))
+    if (env->xa_rmid == rmid)
+    {
+      TAILQ_REMOVE (&DB_GLOBAL (db_envq), env, links);
+      TAILQ_INSERT_HEAD (&DB_GLOBAL (db_envq), env, links);
       *envp = env;
       return (0);
     }
@@ -68,10 +70,10 @@ CDB___db_rmid_to_env(rmid, envp)
  * PUBLIC: int CDB___db_xid_to_txn __P((DB_ENV *, XID *, size_t *));
  */
 int
-CDB___db_xid_to_txn(dbenv, xid, offp)
-  DB_ENV *dbenv;
-  XID *xid;
-  size_t *offp;
+CDB___db_xid_to_txn (dbenv, xid, offp)
+     DB_ENV *dbenv;
+     XID *xid;
+     size_t *offp;
 {
   DB_TXNMGR *mgr;
   DB_TXNREGION *tmr;
@@ -85,18 +87,17 @@ CDB___db_xid_to_txn(dbenv, xid, offp)
    * matching xid.  If this is a performance hit, then we
    * can create a hash table, but I doubt it's worth it.
    */
-  R_LOCK(dbenv, &mgr->reginfo);
-  for (td = SH_TAILQ_FIRST(&tmr->active_txn, __txn_detail);
-      td != NULL;
-      td = SH_TAILQ_NEXT(td, links, __txn_detail))
-    if (memcmp(xid->data, td->xid, XIDDATASIZE) == 0)
+  R_LOCK (dbenv, &mgr->reginfo);
+  for (td = SH_TAILQ_FIRST (&tmr->active_txn, __txn_detail);
+       td != NULL; td = SH_TAILQ_NEXT (td, links, __txn_detail))
+    if (memcmp (xid->data, td->xid, XIDDATASIZE) == 0)
       break;
-  R_UNLOCK(dbenv, &mgr->reginfo);
+  R_UNLOCK (dbenv, &mgr->reginfo);
 
   if (td == NULL)
     return (EINVAL);
 
-  *offp = R_OFFSET(&mgr->reginfo, td);
+  *offp = R_OFFSET (&mgr->reginfo, td);
   return (0);
 }
 
@@ -107,12 +108,12 @@ CDB___db_xid_to_txn(dbenv, xid, offp)
  * PUBLIC: int CDB___db_map_rmid __P((int, DB_ENV *));
  */
 int
-CDB___db_map_rmid(rmid, env)
-  int rmid;
-  DB_ENV *env;
+CDB___db_map_rmid (rmid, env)
+     int rmid;
+     DB_ENV *env;
 {
   env->xa_rmid = rmid;
-  TAILQ_INSERT_TAIL(&DB_GLOBAL(db_envq), env, links);
+  TAILQ_INSERT_TAIL (&DB_GLOBAL (db_envq), env, links);
   return (0);
 }
 
@@ -123,19 +124,18 @@ CDB___db_map_rmid(rmid, env)
  * PUBLIC: int CDB___db_unmap_rmid __P((int));
  */
 int
-CDB___db_unmap_rmid(rmid)
-  int rmid;
+CDB___db_unmap_rmid (rmid)
+     int rmid;
 {
   DB_ENV *e;
 
-  for (e = TAILQ_FIRST(&DB_GLOBAL(db_envq));
-      e->xa_rmid != rmid;
-      e = TAILQ_NEXT(e, links));
+  for (e = TAILQ_FIRST (&DB_GLOBAL (db_envq));
+       e->xa_rmid != rmid; e = TAILQ_NEXT (e, links));
 
   if (e == NULL)
     return (EINVAL);
 
-  TAILQ_REMOVE(&DB_GLOBAL(db_envq), e, links);
+  TAILQ_REMOVE (&DB_GLOBAL (db_envq), e, links);
   return (0);
 }
 
@@ -147,20 +147,20 @@ CDB___db_unmap_rmid(rmid)
  * PUBLIC: int CDB___db_map_xid __P((DB_ENV *, XID *, size_t));
  */
 int
-CDB___db_map_xid(env, xid, off)
-  DB_ENV *env;
-  XID *xid;
-  size_t off;
+CDB___db_map_xid (env, xid, off)
+     DB_ENV *env;
+     XID *xid;
+     size_t off;
 {
   REGINFO *infop;
   TXN_DETAIL *td;
 
-  infop = &((DB_TXNMGR *)env->tx_handle)->reginfo;
-  td = (TXN_DETAIL *)R_ADDR(infop, off);
+  infop = &((DB_TXNMGR *) env->tx_handle)->reginfo;
+  td = (TXN_DETAIL *) R_ADDR (infop, off);
 
-  R_LOCK(env, infop);
-  memcpy(td->xid, xid->data, XIDDATASIZE);
-  R_UNLOCK(env, infop);
+  R_LOCK (env, infop);
+  memcpy (td->xid, xid->data, XIDDATASIZE);
+  R_UNLOCK (env, infop);
 
   return (0);
 }
@@ -173,15 +173,15 @@ CDB___db_map_xid(env, xid, off)
  */
 
 void
-CDB___db_unmap_xid(env, xid, off)
-  DB_ENV *env;
-  XID *xid;
-  size_t off;
+CDB___db_unmap_xid (env, xid, off)
+     DB_ENV *env;
+     XID *xid;
+     size_t off;
 {
   TXN_DETAIL *td;
 
-  COMPQUIET(xid, NULL);
+  COMPQUIET (xid, NULL);
 
-  td = (TXN_DETAIL *)R_ADDR(&((DB_TXNMGR *)env->tx_handle)->reginfo, off);
-  memset(td->xid, 0, sizeof(td->xid));
+  td = (TXN_DETAIL *) R_ADDR (&((DB_TXNMGR *) env->tx_handle)->reginfo, off);
+  memset (td->xid, 0, sizeof (td->xid));
 }

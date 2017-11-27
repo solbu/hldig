@@ -8,7 +8,8 @@
 #include "htconfig.h"
 
 #ifndef lint
-static const char revid[] = "$Id: db_cam.c,v 1.2 2002/02/02 18:18:05 ghutchis Exp $";
+static const char revid[] =
+  "$Id: db_cam.c,v 1.2 2002/02/02 18:18:05 ghutchis Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,9 +27,9 @@ static const char revid[] = "$Id: db_cam.c,v 1.2 2002/02/02 18:18:05 ghutchis Ex
 #include "qam.h"
 #include "db_ext.h"
 
-static int __db_c_cleanup __P((DBC *, DBC *, int));
-static int __db_c_idup __P((DBC *, DBC **, u_int32_t));
-static int __db_wrlock_err __P((DB_ENV *));
+static int __db_c_cleanup __P ((DBC *, DBC *, int));
+static int __db_c_idup __P ((DBC *, DBC **, u_int32_t));
+static int __db_wrlock_err __P ((DB_ENV *));
 
 #define  LOCKING_INIT(dbp, dbc)          \
   /*                \
@@ -62,8 +63,8 @@ static int __db_wrlock_err __P((DB_ENV *));
  * PUBLIC: int CDB___db_c_close __P((DBC *));
  */
 int
-CDB___db_c_close(dbc)
-  DBC *dbc;
+CDB___db_c_close (dbc)
+     DBC *dbc;
 {
   DB *dbp;
   DBC *opd;
@@ -73,17 +74,18 @@ CDB___db_c_close(dbc)
   dbp = dbc->dbp;
   ret = 0;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
   /*
    * If the cursor is already closed we have a serious problem, and we
    * assume that the cursor isn't on the active queue.  Don't do any of
    * the remaining cursor close processing.
    */
-  if (!F_ISSET(dbc, DBC_ACTIVE)) {
+  if (!F_ISSET (dbc, DBC_ACTIVE))
+  {
     if (dbp && dbp->dbenv)
-      CDB___db_err(dbp->dbenv, "Closing closed cursor");
-    DB_ASSERT(0);
+      CDB___db_err (dbp->dbenv, "Closing closed cursor");
+    DB_ASSERT (0);
     return (EINVAL);
   }
 
@@ -103,52 +105,54 @@ CDB___db_c_close(dbc)
    * can fail and cause CDB___db_c_close to return an error, or else calls
    * here from CDB___db_close may loop indefinitely.
    */
-  MUTEX_THREAD_LOCK(dbp->mutexp);
+  MUTEX_THREAD_LOCK (dbp->mutexp);
 
-  if (opd != NULL) {
-    F_CLR(opd, DBC_ACTIVE);
-    TAILQ_REMOVE(&dbp->active_queue, opd, links);
+  if (opd != NULL)
+  {
+    F_CLR (opd, DBC_ACTIVE);
+    TAILQ_REMOVE (&dbp->active_queue, opd, links);
   }
-  F_CLR(dbc, DBC_ACTIVE);
-  TAILQ_REMOVE(&dbp->active_queue, dbc, links);
+  F_CLR (dbc, DBC_ACTIVE);
+  TAILQ_REMOVE (&dbp->active_queue, dbc, links);
 
-  MUTEX_THREAD_UNLOCK(dbp->mutexp);
+  MUTEX_THREAD_UNLOCK (dbp->mutexp);
 
   /* Call the access specific cursor close routine. */
-  if ((t_ret =
-      dbc->c_am_close(dbc, PGNO_INVALID, NULL)) != 0 && ret == 0)
+  if ((t_ret = dbc->c_am_close (dbc, PGNO_INVALID, NULL)) != 0 && ret == 0)
     ret = t_ret;
 
   /*
    * Release the lock after calling the access method specific close
    * routine, a Btree cursor may have had pending deletes.
    */
-  if (LOCKING(dbc->dbp->dbenv)) {
+  if (LOCKING (dbc->dbp->dbenv))
+  {
     /*
      * If DBC_WRITEDUP is set, the cursor is an internally
      * duplicated write cursor and the lock isn't ours to put.
      */
-    if (!F_ISSET(dbc, DBC_WRITEDUP) &&
-        dbc->mylock.off != LOCK_INVALID) {
-      if ((t_ret = CDB_lock_put(dbc->dbp->dbenv,
-          &dbc->mylock)) != 0 && ret == 0)
+    if (!F_ISSET (dbc, DBC_WRITEDUP) && dbc->mylock.off != LOCK_INVALID)
+    {
+      if ((t_ret = CDB_lock_put (dbc->dbp->dbenv,
+                                 &dbc->mylock)) != 0 && ret == 0)
         ret = t_ret;
       dbc->mylock.off = LOCK_INVALID;
     }
 
     /* For safety's sake, since this is going on the free queue. */
-    memset(&dbc->mylock, 0, sizeof(dbc->mylock));
-    F_CLR(dbc, DBC_WRITEDUP);
+    memset (&dbc->mylock, 0, sizeof (dbc->mylock));
+    F_CLR (dbc, DBC_WRITEDUP);
   }
 
   /* Move the cursor(s) to the free queue. */
-  MUTEX_THREAD_LOCK(dbp->mutexp);
-  if (opd != NULL) {
-    TAILQ_INSERT_TAIL(&dbp->free_queue, opd, links);
+  MUTEX_THREAD_LOCK (dbp->mutexp);
+  if (opd != NULL)
+  {
+    TAILQ_INSERT_TAIL (&dbp->free_queue, opd, links);
     opd = NULL;
   }
-  TAILQ_INSERT_TAIL(&dbp->free_queue, dbc, links);
-  MUTEX_THREAD_UNLOCK(dbp->mutexp);
+  TAILQ_INSERT_TAIL (&dbp->free_queue, dbc, links);
+  MUTEX_THREAD_UNLOCK (dbp->mutexp);
 
   return (ret);
 }
@@ -160,31 +164,31 @@ CDB___db_c_close(dbc)
  * PUBLIC: int CDB___db_c_destroy __P((DBC *));
  */
 int
-CDB___db_c_destroy(dbc)
-  DBC *dbc;
+CDB___db_c_destroy (dbc)
+     DBC *dbc;
 {
   DB *dbp;
   DBC_INTERNAL *cp;
   int ret;
 
   dbp = dbc->dbp;
-  cp =  dbc->internal;
+  cp = dbc->internal;
 
   /* Remove the cursor from the free queue. */
-  MUTEX_THREAD_LOCK(dbp->mutexp);
-  TAILQ_REMOVE(&dbp->free_queue, dbc, links);
-  MUTEX_THREAD_UNLOCK(dbp->mutexp);
+  MUTEX_THREAD_LOCK (dbp->mutexp);
+  TAILQ_REMOVE (&dbp->free_queue, dbc, links);
+  MUTEX_THREAD_UNLOCK (dbp->mutexp);
 
   /* Free up allocated memory. */
   if (dbc->rkey.data != NULL)
-    CDB___os_free(dbc->rkey.data, dbc->rkey.ulen);
+    CDB___os_free (dbc->rkey.data, dbc->rkey.ulen);
   if (dbc->rdata.data != NULL)
-    CDB___os_free(dbc->rdata.data, dbc->rdata.ulen);
+    CDB___os_free (dbc->rdata.data, dbc->rdata.ulen);
 
   /* Call the access specific cursor destroy routine. */
-  ret = dbc->c_am_destroy == NULL ? 0 : dbc->c_am_destroy(dbc);
+  ret = dbc->c_am_destroy == NULL ? 0 : dbc->c_am_destroy (dbc);
 
-  CDB___os_free(dbc, sizeof(*dbc));
+  CDB___os_free (dbc, sizeof (*dbc));
 
   return (ret);
 }
@@ -196,10 +200,10 @@ CDB___db_c_destroy(dbc)
  * PUBLIC: int CDB___db_c_count __P((DBC *, db_recno_t *, u_int32_t));
  */
 int
-CDB___db_c_count(dbc, recnop, flags)
-  DBC *dbc;
-  db_recno_t *recnop;
-  u_int32_t flags;
+CDB___db_c_count (dbc, recnop, flags)
+     DBC *dbc;
+     db_recno_t *recnop;
+     u_int32_t flags;
 {
   DB *dbp;
   int ret;
@@ -213,31 +217,33 @@ CDB___db_c_count(dbc, recnop, flags)
    */
   dbp = dbc->dbp;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
   /* Check for invalid flags. */
-  if ((ret = CDB___db_ccountchk(dbp, flags, IS_INITIALIZED(dbc))) != 0)
+  if ((ret = CDB___db_ccountchk (dbp, flags, IS_INITIALIZED (dbc))) != 0)
     return (ret);
 
-  switch (dbc->dbtype) {
+  switch (dbc->dbtype)
+  {
   case DB_QUEUE:
   case DB_RECNO:
     *recnop = 1;
     break;
   case DB_HASH:
-    if (dbc->internal->opd == NULL) {
-      if ((ret = CDB___ham_c_count(dbc, recnop)) != 0)
+    if (dbc->internal->opd == NULL)
+    {
+      if ((ret = CDB___ham_c_count (dbc, recnop)) != 0)
         return (ret);
       break;
     }
     /* FALLTHROUGH */
   case DB_BTREE:
-    if ((ret = CDB___bam_c_count(dbc, recnop)) != 0)
+    if ((ret = CDB___bam_c_count (dbc, recnop)) != 0)
       return (ret);
     break;
   default:
-    return (CDB___db_unknown_type(dbp->dbenv,
-         "CDB___db_c_count", dbp->type));
+    return (CDB___db_unknown_type (dbp->dbenv,
+                                   "CDB___db_c_count", dbp->type));
   }
   return (0);
 }
@@ -249,9 +255,9 @@ CDB___db_c_count(dbc, recnop, flags)
  * PUBLIC: int CDB___db_c_del __P((DBC *, u_int32_t));
  */
 int
-CDB___db_c_del(dbc, flags)
-  DBC *dbc;
-  u_int32_t flags;
+CDB___db_c_del (dbc, flags)
+     DBC *dbc;
+     u_int32_t flags;
 {
   DB *dbp;
   DBC *opd;
@@ -266,16 +272,17 @@ CDB___db_c_del(dbc, flags)
    */
   dbp = dbc->dbp;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
   /* Check for invalid flags. */
-  if ((ret = CDB___db_cdelchk(dbp, flags,
-      F_ISSET(dbp, DB_AM_RDONLY), IS_INITIALIZED(dbc))) != 0)
+  if ((ret = CDB___db_cdelchk (dbp, flags,
+                               F_ISSET (dbp, DB_AM_RDONLY),
+                               IS_INITIALIZED (dbc))) != 0)
     return (ret);
 
-  DEBUG_LWRITE(dbc, dbc->txn, "db_c_del", NULL, NULL, flags);
+  DEBUG_LWRITE (dbc, dbc->txn, "db_c_del", NULL, NULL, flags);
 
-  LOCKING_INIT(dbp, dbc);
+  LOCKING_INIT (dbp, dbc);
 
   /*
    * Off-page duplicate trees are locked in the primary tree, that is,
@@ -285,12 +292,11 @@ CDB___db_c_del(dbc, flags)
    */
   opd = dbc->internal->opd;
   if (opd == NULL)
-    ret = dbc->c_am_del(dbc);
-  else
-    if ((ret = dbc->c_am_writelock(dbc)) == 0)
-      ret = opd->c_am_del(opd);
+    ret = dbc->c_am_del (dbc);
+  else if ((ret = dbc->c_am_writelock (dbc)) == 0)
+    ret = opd->c_am_del (opd);
 
-  LOCKING_DONE(dbp, dbc);
+  LOCKING_DONE (dbp, dbc);
 
   return (ret);
 }
@@ -302,10 +308,10 @@ CDB___db_c_del(dbc, flags)
  * PUBLIC: int CDB___db_c_dup __P((DBC *, DBC **, u_int32_t));
  */
 int
-CDB___db_c_dup(dbc_orig, dbcp, flags)
-  DBC *dbc_orig;
-  DBC **dbcp;
-  u_int32_t flags;
+CDB___db_c_dup (dbc_orig, dbcp, flags)
+     DBC *dbc_orig;
+     DBC **dbcp;
+     u_int32_t flags;
 {
   DB_ENV *dbenv;
   DB *dbp;
@@ -316,20 +322,21 @@ CDB___db_c_dup(dbc_orig, dbcp, flags)
   dbenv = dbp->dbenv;
   dbc_n = dbc_nopd = NULL;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
   /*
    * We can never have two write cursors open in CDB, so do not
    * allow duplication of a write cursor.
    */
   if (flags != DB_POSITIONI &&
-      F_ISSET(dbc_orig, DBC_WRITER | DBC_WRITECURSOR)) {
-    CDB___db_err(dbenv, "Cannot duplicate writeable cursor");
+      F_ISSET (dbc_orig, DBC_WRITER | DBC_WRITECURSOR))
+  {
+    CDB___db_err (dbenv, "Cannot duplicate writeable cursor");
     return (EINVAL);
   }
 
   /* Allocate a new cursor and initialize it. */
-  if ((ret = __db_c_idup(dbc_orig, &dbc_n, flags)) != 0)
+  if ((ret = __db_c_idup (dbc_orig, &dbc_n, flags)) != 0)
     goto err;
   *dbcp = dbc_n;
 
@@ -339,12 +346,15 @@ CDB___db_c_dup(dbc_orig, dbcp, flags)
    * cursor needs its own read lock.  (We know it's not a write cursor
    * because we wouldn't have made it this far;  you can't dup them.)
    */
-  if (LOCKING(dbenv) && flags != DB_POSITIONI) {
-    DB_ASSERT(!F_ISSET(dbc_orig, DBC_WRITER | DBC_WRITECURSOR));
+  if (LOCKING (dbenv) && flags != DB_POSITIONI)
+  {
+    DB_ASSERT (!F_ISSET (dbc_orig, DBC_WRITER | DBC_WRITECURSOR));
 
-    if ((ret = CDB_lock_get(dbenv, dbc_n->locker, 0,
-        &dbc_n->lock_dbt, DB_LOCK_READ, &dbc_n->mylock)) != 0) {
-      (void)CDB___db_c_close(dbc_n);
+    if ((ret = CDB_lock_get (dbenv, dbc_n->locker, 0,
+                             &dbc_n->lock_dbt, DB_LOCK_READ,
+                             &dbc_n->mylock)) != 0)
+    {
+      (void) CDB___db_c_close (dbc_n);
       return (ret);
     }
   }
@@ -353,19 +363,19 @@ CDB___db_c_dup(dbc_orig, dbcp, flags)
    * If the cursor references an off-page duplicate tree, allocate a
    * new cursor for that tree and initialize it.
    */
-  if (dbc_orig->internal->opd != NULL) {
-    if ((ret =
-       __db_c_idup(dbc_orig->internal->opd, &dbc_nopd, flags)) != 0)
+  if (dbc_orig->internal->opd != NULL)
+  {
+    if ((ret = __db_c_idup (dbc_orig->internal->opd, &dbc_nopd, flags)) != 0)
       goto err;
     dbc_n->internal->opd = dbc_nopd;
   }
 
   return (0);
 
-err:  if (dbc_n != NULL)
-    (void)dbc_n->c_close(dbc_n);
+err:if (dbc_n != NULL)
+    (void) dbc_n->c_close (dbc_n);
   if (dbc_nopd != NULL)
-    (void)dbc_nopd->c_close(dbc_nopd);
+    (void) dbc_nopd->c_close (dbc_nopd);
 
   return (ret);
 }
@@ -375,9 +385,9 @@ err:  if (dbc_n != NULL)
  *  Internal version of CDB___db_c_dup.
  */
 static int
-__db_c_idup(dbc_orig, dbcp, flags)
-  DBC *dbc_orig, **dbcp;
-  u_int32_t flags;
+__db_c_idup (dbc_orig, dbcp, flags)
+     DBC *dbc_orig, **dbcp;
+     u_int32_t flags;
 {
   DB *dbp;
   DBC *dbc_n;
@@ -387,14 +397,17 @@ __db_c_idup(dbc_orig, dbcp, flags)
   dbp = dbc_orig->dbp;
   dbc_n = *dbcp;
 
-  if ((ret = CDB___db_icursor(dbp, dbc_orig->txn, dbc_orig->dbtype,
-      dbc_orig->internal->root, F_ISSET(dbc_orig, DBC_OPD), &dbc_n)) != 0)
+  if ((ret = CDB___db_icursor (dbp, dbc_orig->txn, dbc_orig->dbtype,
+                               dbc_orig->internal->root, F_ISSET (dbc_orig,
+                                                                  DBC_OPD),
+                               &dbc_n)) != 0)
     return (ret);
 
   dbc_n->locker = dbc_orig->locker;
 
   /* If the user wants the cursor positioned, do it here.  */
-  if (flags == DB_POSITION || flags == DB_POSITIONI) {
+  if (flags == DB_POSITION || flags == DB_POSITIONI)
+  {
     int_n = dbc_n->internal;
     int_orig = dbc_orig->internal;
 
@@ -404,23 +417,24 @@ __db_c_idup(dbc_orig, dbcp, flags)
     int_n->pgno = int_orig->pgno;
     int_n->root = int_orig->root;
 
-    switch (dbc_orig->dbtype) {
+    switch (dbc_orig->dbtype)
+    {
     case DB_QUEUE:
-      if ((ret = CDB___qam_c_dup(dbc_orig, dbc_n)) != 0)
+      if ((ret = CDB___qam_c_dup (dbc_orig, dbc_n)) != 0)
         goto err;
       break;
     case DB_BTREE:
     case DB_RECNO:
-      if ((ret = CDB___bam_c_dup(dbc_orig, dbc_n)) != 0)
+      if ((ret = CDB___bam_c_dup (dbc_orig, dbc_n)) != 0)
         goto err;
       break;
     case DB_HASH:
-      if ((ret = CDB___ham_c_dup(dbc_orig, dbc_n)) != 0)
+      if ((ret = CDB___ham_c_dup (dbc_orig, dbc_n)) != 0)
         goto err;
       break;
     default:
-      ret = CDB___db_unknown_type(dbp->dbenv,
-          "__db_c_idup", dbc_orig->dbtype);
+      ret = CDB___db_unknown_type (dbp->dbenv,
+                                   "__db_c_idup", dbc_orig->dbtype);
       goto err;
     }
   }
@@ -428,7 +442,7 @@ __db_c_idup(dbc_orig, dbcp, flags)
   *dbcp = dbc_n;
   return (0);
 
-err:  (void)dbc_n->c_close(dbc_n);
+err:(void) dbc_n->c_close (dbc_n);
   return (ret);
 }
 
@@ -439,10 +453,10 @@ err:  (void)dbc_n->c_close(dbc_n);
  * PUBLIC: int CDB___db_c_get __P((DBC *, DBT *, DBT *, u_int32_t));
  */
 int
-CDB___db_c_get(dbc_arg, key, data, flags)
-  DBC *dbc_arg;
-  DBT *key, *data;
-  u_int32_t flags;
+CDB___db_c_get (dbc_arg, key, data, flags)
+     DBC *dbc_arg;
+     DBT *key, *data;
+     u_int32_t flags;
 {
   DB *dbp;
   DBC *dbc, *dbc_n, *opd;
@@ -465,26 +479,28 @@ CDB___db_c_get(dbc_arg, key, data, flags)
   dbc_n = NULL;
   opd = NULL;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
   /* Check for invalid flags. */
   if ((ret =
-      CDB___db_cgetchk(dbp, key, data, flags, IS_INITIALIZED(dbc_arg))) != 0)
+       CDB___db_cgetchk (dbp, key, data, flags,
+                         IS_INITIALIZED (dbc_arg))) != 0)
     return (ret);
 
   /* Clear OR'd in additional bits so we can check for flag equality. */
-  tmp_rmw = LF_ISSET(DB_RMW);
-  LF_CLR(DB_RMW);
+  tmp_rmw = LF_ISSET (DB_RMW);
+  LF_CLR (DB_RMW);
 
-  DEBUG_LREAD(dbc_arg, dbc_arg->txn, "db_c_get",
-      flags == DB_SET || flags == DB_SET_RANGE ? key : NULL, NULL, flags);
+  DEBUG_LREAD (dbc_arg, dbc_arg->txn, "db_c_get",
+               flags == DB_SET
+               || flags == DB_SET_RANGE ? key : NULL, NULL, flags);
 
   /*
    * Return a cursor's record number.  It has nothing to do with the
    * cursor get code except that it was put into the interface.
    */
   if (flags == DB_GET_RECNO)
-    return (CDB___bam_c_rget(dbc_arg, data, flags | tmp_rmw));
+    return (CDB___bam_c_rget (dbc_arg, data, flags | tmp_rmw));
 
   /*
    * If we have an off-page duplicates cursor, and the operation applies
@@ -500,21 +516,22 @@ CDB___db_c_get(dbc_arg, key, data, flags)
   cp = dbc_arg->internal;
   if (cp->opd != NULL &&
       (flags == DB_CURRENT || flags == DB_GET_BOTHC ||
-      flags == DB_NEXT || flags == DB_NEXT_DUP || flags == DB_PREV)) {
-    if (tmp_rmw && (ret = dbc_arg->c_am_writelock(dbc_arg)) != 0)
+       flags == DB_NEXT || flags == DB_NEXT_DUP || flags == DB_PREV))
+  {
+    if (tmp_rmw && (ret = dbc_arg->c_am_writelock (dbc_arg)) != 0)
       return (ret);
-    if ((ret = __db_c_idup(cp->opd, &opd, DB_POSITIONI)) != 0)
+    if ((ret = __db_c_idup (cp->opd, &opd, DB_POSITIONI)) != 0)
       return (ret);
 
     /*
      * If we're in CDB, the newly dup'ed off-page dup cursor
      * may need the original outer cursor's locking info.
      */
-    if (LOCKING(dbp->dbenv))
-      (void)CDB___db_cdb_cdup(dbc_arg, opd);
+    if (LOCKING (dbp->dbenv))
+      (void) CDB___db_cdb_cdup (dbc_arg, opd);
 
-    switch (ret = opd->c_am_get(
-        opd, key, data, flags, NULL)) {
+    switch (ret = opd->c_am_get (opd, key, data, flags, NULL))
+    {
     case 0:
       goto done;
     case DB_NOTFOUND:
@@ -523,8 +540,9 @@ CDB___db_c_get(dbc_arg, key, data, flags)
        * DB_PREV operations into a subsequent operation on
        * the parent cursor.
        */
-      if (flags == DB_NEXT || flags == DB_PREV) {
-        if ((ret = opd->c_close(opd)) != 0)
+      if (flags == DB_NEXT || flags == DB_PREV)
+      {
+        if ((ret = opd->c_close (opd)) != 0)
           goto err;
         opd = NULL;
         break;
@@ -539,7 +557,8 @@ CDB___db_c_get(dbc_arg, key, data, flags)
    * Perform an operation on the CDB_main cursor.  Duplicate the cursor,
    * upgrade the lock as required, and call the underlying function.
    */
-  switch (flags) {
+  switch (flags)
+  {
   case DB_CURRENT:
   case DB_GET_BOTHC:
   case DB_NEXT:
@@ -553,22 +572,22 @@ CDB___db_c_get(dbc_arg, key, data, flags)
     tmp_flags = 0;
     break;
   }
-  if ((ret = __db_c_idup(dbc_arg, &dbc_n, tmp_flags)) != 0)
+  if ((ret = __db_c_idup (dbc_arg, &dbc_n, tmp_flags)) != 0)
     goto err;
 
   /*
    * If we're in CDB, the new cursor may need the old cursor's locking
    * info.
    */
-  if (LOCKING(dbp->dbenv))
-    (void)CDB___db_cdb_cdup(dbc_arg, dbc_n);
+  if (LOCKING (dbp->dbenv))
+    (void) CDB___db_cdb_cdup (dbc_arg, dbc_n);
 
   if (tmp_rmw)
-    F_SET(dbc_n, DBC_RMW);
+    F_SET (dbc_n, DBC_RMW);
   pgno = PGNO_INVALID;
-  ret = dbc_n->c_am_get(dbc_n, key, data, flags, &pgno);
+  ret = dbc_n->c_am_get (dbc_n, key, data, flags, &pgno);
   if (tmp_rmw)
-    F_CLR(dbc_n, DBC_RMW);
+    F_CLR (dbc_n, DBC_RMW);
   if (ret != 0)
     goto err;
 
@@ -578,13 +597,16 @@ CDB___db_c_get(dbc_arg, key, data, flags)
    * We may be referencing a new off-page duplicates tree.  Acquire
    * a new cursor and call the underlying function.
    */
-  if (pgno != PGNO_INVALID) {
-    if ((ret = CDB___db_icursor(dbp, dbc_arg->txn,
-        dbp->dup_compare == NULL ? DB_RECNO : DB_BTREE,
-        pgno, 1, &cp_n->opd)) != 0)
+  if (pgno != PGNO_INVALID)
+  {
+    if ((ret = CDB___db_icursor (dbp, dbc_arg->txn,
+                                 dbp->dup_compare ==
+                                 NULL ? DB_RECNO : DB_BTREE, pgno, 1,
+                                 &cp_n->opd)) != 0)
       goto err;
 
-    switch (flags) {
+    switch (flags)
+    {
     case DB_FIRST:
     case DB_NEXT:
     case DB_NEXT_NODUP:
@@ -605,61 +627,64 @@ CDB___db_c_get(dbc_arg, key, data, flags)
       tmp_flags = DB_GET_BOTHC;
       break;
     default:
-      ret =
-          CDB___db_unknown_flag(dbp->dbenv, "CDB___db_c_get", flags);
+      ret = CDB___db_unknown_flag (dbp->dbenv, "CDB___db_c_get", flags);
       goto err;
     }
-    if ((ret = cp_n->opd->c_am_get(
-        cp_n->opd, key, data, tmp_flags, NULL)) != 0)
+    if ((ret =
+         cp_n->opd->c_am_get (cp_n->opd, key, data, tmp_flags, NULL)) != 0)
       goto err;
   }
 
-done:  /*
-   * Return a key/data item.  The only exception is that we don't return
-   * a key if the user already gave us one, that is, if the DB_SET flag
-   * was set.  The DB_SET flag is necessary.  In a Btree, the user's key
-   * doesn't have to be the same as the key stored the tree, depending on
-   * the magic performed by the comparison function.  As we may not have
-   * done any key-oriented operation here, the page reference may not be
-   * valid.  Fill it in as necessary.  We don't have to worry about any
-   * locks, the cursor must already be holding appropriate locks.
-   *
-   * XXX
-   * If not a Btree and DB_SET_RANGE is set, we shouldn't return a key
-   * either, should we?
-   */
+done:                          /*
+                                 * Return a key/data item.  The only exception is that we don't return
+                                 * a key if the user already gave us one, that is, if the DB_SET flag
+                                 * was set.  The DB_SET flag is necessary.  In a Btree, the user's key
+                                 * doesn't have to be the same as the key stored the tree, depending on
+                                 * the magic performed by the comparison function.  As we may not have
+                                 * done any key-oriented operation here, the page reference may not be
+                                 * valid.  Fill it in as necessary.  We don't have to worry about any
+                                 * locks, the cursor must already be holding appropriate locks.
+                                 *
+                                 * XXX
+                                 * If not a Btree and DB_SET_RANGE is set, we shouldn't return a key
+                                 * either, should we?
+                                 */
   cp_n = dbc_n == NULL ? dbc_arg->internal : dbc_n->internal;
-  if (!F_ISSET(key, DB_DBT_ISSET)) {
+  if (!F_ISSET (key, DB_DBT_ISSET))
+  {
     if (cp_n->page == NULL && (ret =
-        CDB_memp_fget(dbp->mpf, &cp_n->pgno, 0, &cp_n->page)) != 0)
+                               CDB_memp_fget (dbp->mpf, &cp_n->pgno, 0,
+                                              &cp_n->page)) != 0)
       goto err;
 
-    if ((ret = CDB___db_ret(dbp, cp_n->page, cp_n->indx,
-        key, &dbc_arg->rkey.data, &dbc_arg->rkey.ulen)) != 0)
+    if ((ret = CDB___db_ret (dbp, cp_n->page, cp_n->indx,
+                             key, &dbc_arg->rkey.data,
+                             &dbc_arg->rkey.ulen)) != 0)
       goto err;
   }
   dbc = opd != NULL ? opd : cp_n->opd != NULL ? cp_n->opd : dbc_n;
-  if (!F_ISSET(data, DB_DBT_ISSET)) {
-    type = TYPE(dbc->internal->page);
-    ret = CDB___db_ret(dbp, dbc->internal->page, dbc->internal->indx +
-        (type == P_LBTREE || type == P_HASH ? O_INDX : 0),
-        data, &dbc_arg->rdata.data, &dbc_arg->rdata.ulen);
+  if (!F_ISSET (data, DB_DBT_ISSET))
+  {
+    type = TYPE (dbc->internal->page);
+    ret = CDB___db_ret (dbp, dbc->internal->page, dbc->internal->indx +
+                        (type == P_LBTREE || type == P_HASH ? O_INDX : 0),
+                        data, &dbc_arg->rdata.data, &dbc_arg->rdata.ulen);
   }
 
-err:  /* Don't pass DB_DBT_ISSET back to application level, error or no. */
-  F_CLR(key, DB_DBT_ISSET);
-  F_CLR(data, DB_DBT_ISSET);
+err:                           /* Don't pass DB_DBT_ISSET back to application level, error or no. */
+  F_CLR (key, DB_DBT_ISSET);
+  F_CLR (data, DB_DBT_ISSET);
 
   /* Cleanup and cursor resolution. */
-  if (opd != NULL) {
+  if (opd != NULL)
+  {
     if ((t_ret =
-         __db_c_cleanup(dbc_arg->internal->opd,
-         opd, ret)) != 0 && ret == 0)
+         __db_c_cleanup (dbc_arg->internal->opd, opd, ret)) != 0 && ret == 0)
       ret = t_ret;
 
   }
 
-  if ((t_ret = __db_c_cleanup(dbc_arg, dbc_n, ret)) != 0 && ret == 0)
+  if ((t_ret = __db_c_cleanup (dbc_arg, dbc_n, ret)) != 0 && ret == 0)
     ret = t_ret;
 
   return (ret);
@@ -672,10 +697,10 @@ err:  /* Don't pass DB_DBT_ISSET back to application level, error or no. */
  * PUBLIC: int CDB___db_c_put __P((DBC *, DBT *, DBT *, u_int32_t));
  */
 int
-CDB___db_c_put(dbc_arg, key, data, flags)
-  DBC *dbc_arg;
-  DBT *key, *data;
-  u_int32_t flags;
+CDB___db_c_put (dbc_arg, key, data, flags)
+     DBC *dbc_arg;
+     DBT *key, *data;
+     u_int32_t flags;
 {
   DB *dbp;
   DBC *dbc_n, *opd;
@@ -695,18 +720,19 @@ CDB___db_c_put(dbc_arg, key, data, flags)
   dbp = dbc_arg->dbp;
   dbc_n = NULL;
 
-  PANIC_CHECK(dbp->dbenv);
+  PANIC_CHECK (dbp->dbenv);
 
   /* Check for invalid flags. */
-  if ((ret = CDB___db_cputchk(dbp, key, data, flags,
-      F_ISSET(dbp, DB_AM_RDONLY), IS_INITIALIZED(dbc_arg))) != 0)
+  if ((ret = CDB___db_cputchk (dbp, key, data, flags,
+                               F_ISSET (dbp, DB_AM_RDONLY),
+                               IS_INITIALIZED (dbc_arg))) != 0)
     return (ret);
 
-  DEBUG_LWRITE(dbc_arg, dbc_arg->txn, "db_c_put",
-      flags == DB_KEYFIRST || flags == DB_KEYLAST ||
-      flags == DB_NODUPDATA ? key : NULL, data, flags);
+  DEBUG_LWRITE (dbc_arg, dbc_arg->txn, "db_c_put",
+                flags == DB_KEYFIRST || flags == DB_KEYLAST ||
+                flags == DB_NODUPDATA ? key : NULL, data, flags);
 
-  LOCKING_INIT(dbp, dbc_arg);
+  LOCKING_INIT (dbp, dbc_arg);
 
   /*
    * If we have an off-page duplicates cursor, and the operation applies
@@ -719,14 +745,14 @@ CDB___db_c_put(dbc_arg, key, data, flags)
    * duplicate tree, call the primary cursor's upgrade routine first.
    */
   if (dbc_arg->internal->opd != NULL &&
-      (flags == DB_AFTER || flags == DB_BEFORE || flags == DB_CURRENT)) {
-    if ((ret = dbc_arg->c_am_writelock(dbc_arg)) != 0)
+      (flags == DB_AFTER || flags == DB_BEFORE || flags == DB_CURRENT))
+  {
+    if ((ret = dbc_arg->c_am_writelock (dbc_arg)) != 0)
       return (ret);
-    if ((ret = CDB___db_c_dup(dbc_arg, &dbc_n, DB_POSITIONI)) != 0)
+    if ((ret = CDB___db_c_dup (dbc_arg, &dbc_n, DB_POSITIONI)) != 0)
       goto err;
     opd = dbc_n->internal->opd;
-    if ((ret = opd->c_am_put(
-        opd, key, data, flags, NULL)) != 0)
+    if ((ret = opd->c_am_put (opd, key, data, flags, NULL)) != 0)
       goto err;
     goto done;
   }
@@ -737,39 +763,40 @@ CDB___db_c_put(dbc_arg, key, data, flags)
    *
    * XXX: MARGO
    *
-  tmp_flags = flags == DB_AFTER ||
-      flags == DB_BEFORE || flags == DB_CURRENT ? DB_POSITIONI : 0;
+   tmp_flags = flags == DB_AFTER ||
+   flags == DB_BEFORE || flags == DB_CURRENT ? DB_POSITIONI : 0;
    */
   tmp_flags = DB_POSITIONI;
 
-  if ((ret = __db_c_idup(dbc_arg, &dbc_n, tmp_flags)) != 0)
+  if ((ret = __db_c_idup (dbc_arg, &dbc_n, tmp_flags)) != 0)
     goto err;
   pgno = PGNO_INVALID;
-  if ((ret = dbc_n->c_am_put(dbc_n, key, data, flags, &pgno)) != 0)
+  if ((ret = dbc_n->c_am_put (dbc_n, key, data, flags, &pgno)) != 0)
     goto err;
 
   /*
    * We may be referencing a new off-page duplicates tree.  Acquire
    * a new cursor and call the underlying function.
    */
-  if (pgno != PGNO_INVALID) {
-    if ((ret = CDB___db_icursor(dbp, dbc_arg->txn,
-        dbp->dup_compare == NULL ? DB_RECNO : DB_BTREE,
-        pgno, 1, &dbc_n->internal->opd)) != 0)
+  if (pgno != PGNO_INVALID)
+  {
+    if ((ret = CDB___db_icursor (dbp, dbc_arg->txn,
+                                 dbp->dup_compare ==
+                                 NULL ? DB_RECNO : DB_BTREE, pgno, 1,
+                                 &dbc_n->internal->opd)) != 0)
       goto err;
 
     opd = dbc_n->internal->opd;
-    if ((ret = opd->c_am_put(
-        opd, key, data, flags, NULL)) != 0)
+    if ((ret = opd->c_am_put (opd, key, data, flags, NULL)) != 0)
       goto err;
   }
 
 done:
-err:  /* Cleanup and cursor resolution. */
-  if ((t_ret = __db_c_cleanup(dbc_arg, dbc_n, ret)) != 0 && ret == 0)
+err:                           /* Cleanup and cursor resolution. */
+  if ((t_ret = __db_c_cleanup (dbc_arg, dbc_n, ret)) != 0 && ret == 0)
     ret = t_ret;
 
-  LOCKING_DONE(dbp, dbc_arg);
+  LOCKING_DONE (dbp, dbc_arg);
 
   return (ret);
 }
@@ -780,13 +807,13 @@ err:  /* Cleanup and cursor resolution. */
  * PUBLIC: int CDB___db_duperr __P((DB *, u_int32_t));
  */
 int
-CDB___db_duperr(dbp, flags)
-  DB *dbp;
-  u_int32_t flags;
+CDB___db_duperr (dbp, flags)
+     DB *dbp;
+     u_int32_t flags;
 {
   if (flags != DB_NODUPDATA)
-    CDB___db_err(dbp->dbenv,
-        "Duplicate data items are not supported with sorted data");
+    CDB___db_err (dbp->dbenv,
+                  "Duplicate data items are not supported with sorted data");
   return (DB_KEYEXIST);
 }
 
@@ -795,9 +822,9 @@ CDB___db_duperr(dbp, flags)
  *  Clean up duplicate cursors.
  */
 static int
-__db_c_cleanup(dbc, dbc_n, failed)
-  DBC *dbc, *dbc_n;
-  int failed;
+__db_c_cleanup (dbc, dbc_n, failed)
+     DBC *dbc, *dbc_n;
+     int failed;
 {
   DB *dbp;
   DBC *opd;
@@ -809,33 +836,37 @@ __db_c_cleanup(dbc, dbc_n, failed)
   ret = 0;
 
   /* Discard any pages we're holding. */
-  if (internal->page != NULL) {
+  if (internal->page != NULL)
+  {
     if ((t_ret =
-        CDB_memp_fput(dbp->mpf, internal->page, 0)) != 0 && ret == 0)
+         CDB_memp_fput (dbp->mpf, internal->page, 0)) != 0 && ret == 0)
       ret = t_ret;
     internal->page = NULL;
   }
   opd = internal->opd;
-  if (opd != NULL && opd->internal->page != NULL) {
-    if ((t_ret = CDB_memp_fput(dbp->mpf,
-         opd->internal->page, 0)) != 0 && ret == 0)
+  if (opd != NULL && opd->internal->page != NULL)
+  {
+    if ((t_ret = CDB_memp_fput (dbp->mpf,
+                                opd->internal->page, 0)) != 0 && ret == 0)
       ret = t_ret;
-     opd->internal->page = NULL;
+    opd->internal->page = NULL;
   }
 
   if (dbc_n == NULL)
     return (ret);
 
-  if (dbc_n->internal->page != NULL) {
-    if ((t_ret = CDB_memp_fput(dbp->mpf,
-        dbc_n->internal->page, 0)) != 0 && ret == 0)
+  if (dbc_n->internal->page != NULL)
+  {
+    if ((t_ret = CDB_memp_fput (dbp->mpf,
+                                dbc_n->internal->page, 0)) != 0 && ret == 0)
       ret = t_ret;
     dbc_n->internal->page = NULL;
   }
   opd = dbc_n->internal->opd;
-  if (opd != NULL && opd->internal->page != NULL) {
-    if ((t_ret = CDB_memp_fput(dbp->mpf,
-         opd->internal->page, 0)) != 0 && ret == 0)
+  if (opd != NULL && opd->internal->page != NULL)
+  {
+    if ((t_ret = CDB_memp_fput (dbp->mpf,
+                                opd->internal->page, 0)) != 0 && ret == 0)
       ret = t_ret;
     opd->internal->page = NULL;
   }
@@ -845,7 +876,8 @@ __db_c_cleanup(dbc, dbc_n, failed)
    * freeing pages, swap the interesting contents of the old and new
    * cursors.
    */
-  if (!failed && ret == 0) {
+  if (!failed && ret == 0)
+  {
     dbc->internal = dbc_n->internal;
     dbc_n->internal = internal;
   }
@@ -865,7 +897,7 @@ __db_c_cleanup(dbc, dbc_n, failed)
    * We might want to consider adding a flag to the cursor, so that any
    * subsequent operations other than close just return an error?
    */
-  if ((t_ret = dbc_n->c_close(dbc_n)) != 0 && ret == 0)
+  if ((t_ret = dbc_n->c_close (dbc_n)) != 0 && ret == 0)
     ret = t_ret;
 
   return (ret);
@@ -895,12 +927,12 @@ __db_c_cleanup(dbc, dbc_n, failed)
  * PUBLIC: int CDB___db_cdb_cdup __P((DBC *, DBC *));
  */
 int
-CDB___db_cdb_cdup(dbc_orig, dbc_n)
-  DBC *dbc_orig, *dbc_n;
+CDB___db_cdb_cdup (dbc_orig, dbc_n)
+     DBC *dbc_orig, *dbc_n;
 {
-  if (F_ISSET(dbc_orig, DBC_WRITECURSOR | DBC_WRITEDUP)) {
-    memcpy(&dbc_n->mylock, &dbc_orig->mylock,
-        sizeof(dbc_orig->mylock));
+  if (F_ISSET (dbc_orig, DBC_WRITECURSOR | DBC_WRITEDUP))
+  {
+    memcpy (&dbc_n->mylock, &dbc_orig->mylock, sizeof (dbc_orig->mylock));
 
     /*
      * dbc_n's locker may be different, since if it's an off-page
@@ -914,7 +946,7 @@ CDB___db_cdb_cdup(dbc_orig, dbc_n)
      * Flag that this lock isn't ours to put;  just discard it
      * in c_close.
      */
-    F_SET(dbc_n, DBC_WRITEDUP);
+    F_SET (dbc_n, DBC_WRITEDUP);
   }
 
   return (0);
@@ -924,9 +956,9 @@ CDB___db_cdb_cdup(dbc_orig, dbc_n)
  * __db_wrlock_err -- do not have a write lock.
  */
 static int
-__db_wrlock_err(dbenv)
-  DB_ENV *dbenv;
+__db_wrlock_err (dbenv)
+     DB_ENV *dbenv;
 {
-  CDB___db_err(dbenv, "Write attempted on read-only cursor");
+  CDB___db_err (dbenv, "Write attempted on read-only cursor");
   return (EPERM);
 }

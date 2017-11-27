@@ -27,8 +27,8 @@ static const char sccsid[] = "@(#)os_oflags.c  11.1 (Sleepycat) 7/25/99";
  * PUBLIC: u_int32_t CDB___db_oflags __P((int));
  */
 u_int32_t
-CDB___db_oflags(oflags)
-  int oflags;
+CDB___db_oflags (oflags)
+     int oflags;
 {
   u_int32_t dbflags;
 
@@ -55,12 +55,12 @@ CDB___db_oflags(oflags)
  * PUBLIC: int CDB___db_omode __P((const char *));
  */
 int
-CDB___db_omode(perm)
-  const char *perm;
+CDB___db_omode (perm)
+     const char *perm;
 {
   int mode;
 
-    mode = 0;
+  mode = 0;
   if (perm[0] == 'r')
     mode |= S_IRUSR;
   if (perm[1] == 'w')

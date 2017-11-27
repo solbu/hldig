@@ -28,21 +28,22 @@ static const char sccsid[] = "@(#)bt_conv.c  11.2 (Sleepycat) 11/8/99";
  * PUBLIC: int CDB___bam_pgin __P((db_pgno_t, void *, DBT *));
  */
 int
-CDB___bam_pgin(pg, pp, cookie)
-  db_pgno_t pg;
-  void *pp;
-  DBT *cookie;
+CDB___bam_pgin (pg, pp, cookie)
+     db_pgno_t pg;
+     void *pp;
+     DBT *cookie;
 {
   DB_PGINFO *pginfo;
   PAGE *h;
 
-  pginfo = (DB_PGINFO *)cookie->data;
+  pginfo = (DB_PGINFO *) cookie->data;
   if (!pginfo->needswap)
     return (0);
 
   h = pp;
   return (h->type == P_BTREEMETA ?
-      CDB___bam_mswap(pp) : CDB___db_byteswap(pg, pp, pginfo->db_pagesize, 1));
+          CDB___bam_mswap (pp) : CDB___db_byteswap (pg, pp,
+                                                    pginfo->db_pagesize, 1));
 }
 
 /*
@@ -53,21 +54,22 @@ CDB___bam_pgin(pg, pp, cookie)
  * PUBLIC: int CDB___bam_pgout __P((db_pgno_t, void *, DBT *));
  */
 int
-CDB___bam_pgout(pg, pp, cookie)
-  db_pgno_t pg;
-  void *pp;
-  DBT *cookie;
+CDB___bam_pgout (pg, pp, cookie)
+     db_pgno_t pg;
+     void *pp;
+     DBT *cookie;
 {
   DB_PGINFO *pginfo;
   PAGE *h;
 
-  pginfo = (DB_PGINFO *)cookie->data;
+  pginfo = (DB_PGINFO *) cookie->data;
   if (!pginfo->needswap)
     return (0);
 
   h = pp;
   return (h->type == P_BTREEMETA ?
-      CDB___bam_mswap(pp) : CDB___db_byteswap(pg, pp, pginfo->db_pagesize, 0));
+          CDB___bam_mswap (pp) : CDB___db_byteswap (pg, pp,
+                                                    pginfo->db_pagesize, 0));
 }
 
 /*
@@ -77,20 +79,20 @@ CDB___bam_pgout(pg, pp, cookie)
  * PUBLIC: int CDB___bam_mswap __P((PAGE *));
  */
 int
-CDB___bam_mswap(pg)
-  PAGE *pg;
+CDB___bam_mswap (pg)
+     PAGE *pg;
 {
   u_int8_t *p;
 
-  CDB___db_metaswap(pg);
+  CDB___db_metaswap (pg);
 
-  p = (u_int8_t *)pg + sizeof(DBMETA);
+  p = (u_int8_t *) pg + sizeof (DBMETA);
 
-  SWAP32(p);    /* maxkey */
-  SWAP32(p);    /* minkey */
-  SWAP32(p);    /* re_len */
-  SWAP32(p);    /* re_pad */
-  SWAP32(p);    /* root */
+  SWAP32 (p);                   /* maxkey */
+  SWAP32 (p);                   /* minkey */
+  SWAP32 (p);                   /* re_len */
+  SWAP32 (p);                   /* re_pad */
+  SWAP32 (p);                   /* root */
 
   return (0);
 }

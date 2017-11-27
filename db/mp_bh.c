@@ -16,7 +16,7 @@ static const char sccsid[] = "@(#)mp_bh.c  11.5 (Sleepycat) 9/21/99";
 #include <errno.h>
 #include <string.h>
 
-#ifndef _MSC_VER /* _WIN32 */
+#ifndef _MSC_VER                /* _WIN32 */
 #include <unistd.h>
 #endif
 
@@ -31,7 +31,7 @@ static const char sccsid[] = "@(#)mp_bh.c  11.5 (Sleepycat) 9/21/99";
 #include "db_page.h"
 #endif /* DEBUG */
 
-static int CDB___memp_upgrade __P((DB_MPOOL *, DB_MPOOLFILE *, MPOOLFILE *));
+static int CDB___memp_upgrade __P ((DB_MPOOL *, DB_MPOOLFILE *, MPOOLFILE *));
 
 /*
  * CDB___memp_bhwrite --
@@ -41,11 +41,11 @@ static int CDB___memp_upgrade __P((DB_MPOOL *, DB_MPOOLFILE *, MPOOLFILE *));
  * PUBLIC:     __P((DB_MPOOL *, MPOOLFILE *, BH *, int *, int *));
  */
 int
-CDB___memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
-  DB_MPOOL *dbmp;
-  MPOOLFILE *mfp;
-  BH *bhp;
-  int *restartp, *wrotep;
+CDB___memp_bhwrite (dbmp, mfp, bhp, restartp, wrotep)
+     DB_MPOOL *dbmp;
+     MPOOLFILE *mfp;
+     BH *bhp;
+     int *restartp, *wrotep;
 {
   DB_MPOOLFILE *dbmfp;
   DB_MPREG *mpreg;
@@ -63,13 +63,15 @@ CDB___memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
    * If we find a descriptor on the file that's not open for writing, we
    * try and upgrade it to make it writeable.  If that fails, we're done.
    */
-  MUTEX_THREAD_LOCK(dbmp->mutexp);
-  for (dbmfp = TAILQ_FIRST(&dbmp->dbmfq);
-      dbmfp != NULL; dbmfp = TAILQ_NEXT(dbmfp, q))
-    if (dbmfp->mfp == mfp) {
-      if (F_ISSET(dbmfp, MP_READONLY) &&
-          CDB___memp_upgrade(dbmp, dbmfp, mfp)) {
-        MUTEX_THREAD_UNLOCK(dbmp->mutexp);
+  MUTEX_THREAD_LOCK (dbmp->mutexp);
+  for (dbmfp = TAILQ_FIRST (&dbmp->dbmfq);
+       dbmfp != NULL; dbmfp = TAILQ_NEXT (dbmfp, q))
+    if (dbmfp->mfp == mfp)
+    {
+      if (F_ISSET (dbmfp, MP_READONLY) &&
+          CDB___memp_upgrade (dbmp, dbmfp, mfp))
+      {
+        MUTEX_THREAD_UNLOCK (dbmp->mutexp);
         return (0);
       }
 
@@ -81,7 +83,7 @@ CDB___memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
       incremented = 1;
       break;
     }
-  MUTEX_THREAD_UNLOCK(dbmp->mutexp);
+  MUTEX_THREAD_UNLOCK (dbmp->mutexp);
   if (dbmfp != NULL)
     goto found;
 
@@ -101,7 +103,7 @@ CDB___memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
    * with resource starvation, and the CDB_memp_trickle() thread couldn't do
    * anything about it.  That's a pretty unlikely scenario, though.
    */
-  if (F_ISSET(mfp, MP_TEMP))
+  if (F_ISSET (mfp, MP_TEMP))
     return (0);
 
   /*
@@ -109,7 +111,8 @@ CDB___memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
    * function, which has to handle the fact that we don't have any real
    * file descriptor information.
    */
-  if (F_ISSET(mfp, MP_REMOVED)) {
+  if (F_ISSET (mfp, MP_REMOVED))
+  {
     dbmfp = NULL;
     goto found;
   }
@@ -120,13 +123,14 @@ CDB___memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
    * information as to how to write this type of file.  If not, there's
    * nothing we can do.
    */
-  if (mfp->ftype != 0) {
-    MUTEX_THREAD_LOCK(dbmp->mutexp);
-    for (mpreg = LIST_FIRST(&dbmp->dbregq);
-        mpreg != NULL; mpreg = LIST_NEXT(mpreg, q))
+  if (mfp->ftype != 0)
+  {
+    MUTEX_THREAD_LOCK (dbmp->mutexp);
+    for (mpreg = LIST_FIRST (&dbmp->dbregq);
+         mpreg != NULL; mpreg = LIST_NEXT (mpreg, q))
       if (mpreg->ftype == mfp->ftype)
         break;
-    MUTEX_THREAD_UNLOCK(dbmp->mutexp);
+    MUTEX_THREAD_UNLOCK (dbmp->mutexp);
     if (mpreg == NULL)
       return (0);
   }
@@ -139,16 +143,17 @@ CDB___memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
    * There's no negative cache, so we may repeatedly try and open files
    * that we have previously tried (and failed) to open.
    */
-  if (CDB___memp_fopen(dbmp, mfp, R_ADDR(&dbmp->reginfo, mfp->path_off),
-      0, 0, mfp->stat.st_pagesize, 0, NULL, &dbmfp) != 0)
+  if (CDB___memp_fopen (dbmp, mfp, R_ADDR (&dbmp->reginfo, mfp->path_off),
+                        0, 0, mfp->stat.st_pagesize, 0, NULL, &dbmfp) != 0)
     return (0);
 
-found:  ret = CDB___memp_pgwrite(dbmp, dbmfp, bhp, restartp, wrotep);
+found:ret = CDB___memp_pgwrite (dbmp, dbmfp, bhp, restartp, wrotep);
 
-  if (incremented) {
-    MUTEX_THREAD_LOCK(dbmp->mutexp);
+  if (incremented)
+  {
+    MUTEX_THREAD_LOCK (dbmp->mutexp);
     --dbmfp->ref;
-    MUTEX_THREAD_UNLOCK(dbmp->mutexp);
+    MUTEX_THREAD_UNLOCK (dbmp->mutexp);
   }
 
   return (ret);
@@ -161,10 +166,10 @@ found:  ret = CDB___memp_pgwrite(dbmp, dbmfp, bhp, restartp, wrotep);
  * PUBLIC: int CDB___memp_pgread __P((DB_MPOOLFILE *, BH *, int));
  */
 int
-CDB___memp_pgread(dbmfp, bhp, can_create)
-  DB_MPOOLFILE *dbmfp;
-  BH *bhp;
-  int can_create;
+CDB___memp_pgread (dbmfp, bhp, can_create)
+     DB_MPOOLFILE *dbmfp;
+     BH *bhp;
+     int can_create;
 {
   DB_IO db_io;
   DB_ENV *dbenv;
@@ -179,16 +184,17 @@ CDB___memp_pgread(dbmfp, bhp, can_create)
   mfp = dbmfp->mfp;
   pagesize = mfp->stat.st_pagesize;
 
-  F_SET(bhp, BH_LOCKED | BH_TRASH);
-  MUTEX_LOCK(&bhp->mutex, dbenv->lockfhp);
-  R_UNLOCK(dbenv, &dbmp->reginfo);
+  F_SET (bhp, BH_LOCKED | BH_TRASH);
+  MUTEX_LOCK (&bhp->mutex, dbenv->lockfhp);
+  R_UNLOCK (dbenv, &dbmp->reginfo);
 
   /*
    * Temporary files may not yet have been created.  We don't create
    * them now, we create them when the pages have to be flushed.
    */
   nr = 0;
-  if (F_ISSET(&dbmfp->fh, DB_FH_VALID)) {
+  if (F_ISSET (&dbmfp->fh, DB_FH_VALID))
+  {
     /*
      * Ignore read errors if we have permission to create the page.
      * Assume that the page doesn't exist, and that we'll create it
@@ -210,38 +216,46 @@ CDB___memp_pgread(dbmfp, bhp, can_create)
     /*
      * Prevent signal to occur during IO
      */
-    word_monitor_click();
+    word_monitor_click ();
 #endif /* DEBUG */
-    if(F_ISSET(dbmfp, MP_CMPR)) {
-      ret = CDB___memp_cmpr(dbmfp, bhp, &db_io, DB_IO_READ, &nr);
-    } else {
-      ret = CDB___os_io(&db_io, DB_IO_READ, &nr);
+    if (F_ISSET (dbmfp, MP_CMPR))
+    {
+      ret = CDB___memp_cmpr (dbmfp, bhp, &db_io, DB_IO_READ, &nr);
+    }
+    else
+    {
+      ret = CDB___os_io (&db_io, DB_IO_READ, &nr);
     }
 #ifdef DEBUG
-    if(ret == 0) {
-      PAGE* pp = (PAGE*)db_io.buf;
-      word_monitor_add(WORD_MONITOR_READ, 1);
-      switch(TYPE(pp)) {
+    if (ret == 0)
+    {
+      PAGE *pp = (PAGE *) db_io.buf;
+      word_monitor_add (WORD_MONITOR_READ, 1);
+      switch (TYPE (pp))
+      {
       case P_IBTREE:
-        word_monitor_add(WORD_MONITOR_PAGE_IBTREE, 1);
+        word_monitor_add (WORD_MONITOR_PAGE_IBTREE, 1);
         break;
       case P_LBTREE:
-        word_monitor_add(WORD_MONITOR_PAGE_LBTREE, 1);
+        word_monitor_add (WORD_MONITOR_PAGE_LBTREE, 1);
         break;
       default:
-        word_monitor_add(WORD_MONITOR_PAGE_UNKNOWN, 1);
+        word_monitor_add (WORD_MONITOR_PAGE_UNKNOWN, 1);
         break;
       }
     }
 #endif /* DEBUG */
-  } else
+  }
+  else
     ret = 0;
 
   created = 0;
-  if (nr < (ssize_t)pagesize) {
+  if (nr < (ssize_t) pagesize)
+  {
     if (can_create)
       created = 1;
-    else {
+    else
+    {
       /*
        * If we had a short read, ret may be 0.  This may not
        * be an error -- in particular DB recovery processing
@@ -260,32 +274,34 @@ CDB___memp_pgread(dbmfp, bhp, can_create)
    * running in diagnostic mode, smash any bytes on the page that are
    * unknown quantities for the caller.
    */
-  if (nr != (ssize_t)pagesize) {
+  if (nr != (ssize_t) pagesize)
+  {
     len = mfp->clear_len == 0 ? pagesize : mfp->clear_len;
-    if (nr < (ssize_t)len)
-      memset(bhp->buf + nr, 0, len - nr);
+    if (nr < (ssize_t) len)
+      memset (bhp->buf + nr, 0, len - nr);
 #ifdef DIAGNOSTIC
-    if (nr > (ssize_t)len)
+    if (nr > (ssize_t) len)
       len = nr;
     if (len < pagesize)
-      memset(bhp->buf + len, CLEAR_BYTE, pagesize - len);
+      memset (bhp->buf + len, CLEAR_BYTE, pagesize - len);
 #endif
   }
 
   /* Call any pgin function. */
-  ret = mfp->ftype == 0 ? 0 : CDB___memp_pg(dbmfp, bhp, 1);
+  ret = mfp->ftype == 0 ? 0 : CDB___memp_pg (dbmfp, bhp, 1);
 
   /* Unlock the buffer and reacquire the region lock. */
-err:  MUTEX_UNLOCK(&bhp->mutex);
-  R_LOCK(dbenv, &dbmp->reginfo);
+err:MUTEX_UNLOCK (&bhp->mutex);
+  R_LOCK (dbenv, &dbmp->reginfo);
 
   /*
    * If no errors occurred, the data is now valid, clear the BH_TRASH
    * flag; regardless, clear the lock bit and let other threads proceed.
    */
-  F_CLR(bhp, BH_LOCKED);
-  if (ret == 0) {
-    F_CLR(bhp, BH_TRASH);
+  F_CLR (bhp, BH_LOCKED);
+  if (ret == 0)
+  {
+    F_CLR (bhp, BH_TRASH);
 
     /* Update the statistics. */
     if (created)
@@ -305,11 +321,11 @@ err:  MUTEX_UNLOCK(&bhp->mutex);
  * PUBLIC:     __P((DB_MPOOL *, DB_MPOOLFILE *, BH *, int *, int *));
  */
 int
-CDB___memp_pgwrite(dbmp, dbmfp, bhp, restartp, wrotep)
-  DB_MPOOL *dbmp;
-  DB_MPOOLFILE *dbmfp;
-  BH *bhp;
-  int *restartp, *wrotep;
+CDB___memp_pgwrite (dbmp, dbmfp, bhp, restartp, wrotep)
+     DB_MPOOL *dbmp;
+     DB_MPOOLFILE *dbmfp;
+     BH *bhp;
+     int *restartp, *wrotep;
 {
   DB_ENV *dbenv;
   DB_IO db_io;
@@ -335,29 +351,31 @@ CDB___memp_pgwrite(dbmp, dbmfp, bhp, restartp, wrotep)
    * Check the dirty bit -- this buffer may have been written since we
    * decided to write it.
    */
-  if (!F_ISSET(bhp, BH_DIRTY)) {
+  if (!F_ISSET (bhp, BH_DIRTY))
+  {
     if (wrotep != NULL)
       *wrotep = 1;
     return (0);
   }
 
-  MUTEX_LOCK(&bhp->mutex, dbenv->lockfhp);
+  MUTEX_LOCK (&bhp->mutex, dbenv->lockfhp);
 
   /*
    * If there were two writers, we may have just been waiting while the
    * other writer completed I/O on this buffer.  Check the dirty bit one
    * more time.
    */
-  if (!F_ISSET(bhp, BH_DIRTY)) {
-    MUTEX_UNLOCK(&bhp->mutex);
+  if (!F_ISSET (bhp, BH_DIRTY))
+  {
+    MUTEX_UNLOCK (&bhp->mutex);
 
     if (wrotep != NULL)
       *wrotep = 1;
     return (0);
   }
 
-  F_SET(bhp, BH_LOCKED);
-  R_UNLOCK(dbenv, &dbmp->reginfo);
+  F_SET (bhp, BH_LOCKED);
+  R_UNLOCK (dbenv, &dbmp->reginfo);
 
   if (restartp != NULL)
     *restartp = 1;
@@ -371,16 +389,16 @@ CDB___memp_pgwrite(dbmp, dbmfp, bhp, restartp, wrotep)
    * Once we pass this point, we know that dbmfp and mfp aren't NULL,
    * and that we have a valid file reference.
    */
-  if (mfp == NULL || F_ISSET(mfp, MP_REMOVED))
+  if (mfp == NULL || F_ISSET (mfp, MP_REMOVED))
     goto file_removed;
 
   /* Copy the LSN off the page if we're going to need it. */
-  if (F_ISSET(dbenv, DB_ENV_LOGGING) || F_ISSET(bhp, BH_WRITE))
-    memcpy(&lsn, bhp->buf + mfp->lsn_off, sizeof(DB_LSN));
+  if (F_ISSET (dbenv, DB_ENV_LOGGING) || F_ISSET (bhp, BH_WRITE))
+    memcpy (&lsn, bhp->buf + mfp->lsn_off, sizeof (DB_LSN));
 
   /* Ensure the appropriate log records are on disk. */
-  if (F_ISSET(dbenv, DB_ENV_LOGGING) &&
-      (ret = CDB_log_flush(dbenv, &lsn)) != 0)
+  if (F_ISSET (dbenv, DB_ENV_LOGGING) &&
+      (ret = CDB_log_flush (dbenv, &lsn)) != 0)
     goto err;
 
   /*
@@ -390,26 +408,28 @@ CDB___memp_pgwrite(dbmp, dbmfp, bhp, restartp, wrotep)
    */
   if (mfp->ftype == 0)
     ret = 0;
-  else {
+  else
+  {
     callpgin = 1;
-    if ((ret = CDB___memp_pg(dbmfp, bhp, 0)) != 0)
+    if ((ret = CDB___memp_pg (dbmfp, bhp, 0)) != 0)
       goto err;
   }
 
   /* Temporary files may not yet have been created. */
-  if (!F_ISSET(&dbmfp->fh, DB_FH_VALID)) {
-    MUTEX_THREAD_LOCK(dbmp->mutexp);
-    if (!F_ISSET(&dbmfp->fh, DB_FH_VALID) &&
-        ((ret = CDB___db_appname(dbenv, DB_APP_TMP, NULL, NULL,
-        DB_OSO_CREATE | DB_OSO_EXCL | DB_OSO_TEMP,
-        &dbmfp->fh, NULL)) != 0 ||
-        !F_ISSET(&dbmfp->fh, DB_FH_VALID))) {
-      MUTEX_THREAD_UNLOCK(dbmp->mutexp);
-      CDB___db_err(dbenv,
-          "unable to create temporary backing file");
+  if (!F_ISSET (&dbmfp->fh, DB_FH_VALID))
+  {
+    MUTEX_THREAD_LOCK (dbmp->mutexp);
+    if (!F_ISSET (&dbmfp->fh, DB_FH_VALID) &&
+        ((ret = CDB___db_appname (dbenv, DB_APP_TMP, NULL, NULL,
+                                  DB_OSO_CREATE | DB_OSO_EXCL | DB_OSO_TEMP,
+                                  &dbmfp->fh, NULL)) != 0 ||
+         !F_ISSET (&dbmfp->fh, DB_FH_VALID)))
+    {
+      MUTEX_THREAD_UNLOCK (dbmp->mutexp);
+      CDB___db_err (dbenv, "unable to create temporary backing file");
       goto err;
     }
-    MUTEX_THREAD_UNLOCK(dbmp->mutexp);
+    MUTEX_THREAD_UNLOCK (dbmp->mutexp);
   }
 
   /* Write the page. */
@@ -420,36 +440,42 @@ CDB___memp_pgwrite(dbmp, dbmfp, bhp, restartp, wrotep)
   db_io.buf = bhp->buf;
 #ifdef DEBUG
   {
-    PAGE* pp = (PAGE*)db_io.buf;
-    word_monitor_add(WORD_MONITOR_WRITE, 1);
-    switch(TYPE(pp)) {
+    PAGE *pp = (PAGE *) db_io.buf;
+    word_monitor_add (WORD_MONITOR_WRITE, 1);
+    switch (TYPE (pp))
+    {
     case P_IBTREE:
-      word_monitor_add(WORD_MONITOR_PAGE_IBTREE, 1);
+      word_monitor_add (WORD_MONITOR_PAGE_IBTREE, 1);
       break;
     case P_LBTREE:
-      word_monitor_add(WORD_MONITOR_PAGE_LBTREE, 1);
+      word_monitor_add (WORD_MONITOR_PAGE_LBTREE, 1);
       break;
     default:
-      word_monitor_add(WORD_MONITOR_PAGE_UNKNOWN, 1);
+      word_monitor_add (WORD_MONITOR_PAGE_UNKNOWN, 1);
       break;
     }
   }
   /*
    * Prevent signal to occur during IO
    */
-  word_monitor_click();
+  word_monitor_click ();
 #endif /* DEBUG */
-  if(F_ISSET(dbmfp, MP_CMPR)) {
-    ret = CDB___memp_cmpr(dbmfp, bhp, &db_io, DB_IO_WRITE, &nw);
-  } else {
-    ret = CDB___os_io(&db_io, DB_IO_WRITE, &nw);
+  if (F_ISSET (dbmfp, MP_CMPR))
+  {
+    ret = CDB___memp_cmpr (dbmfp, bhp, &db_io, DB_IO_WRITE, &nw);
   }
-  if (ret != 0) {
-    CDB___db_panic(dbenv, ret);
+  else
+  {
+    ret = CDB___os_io (&db_io, DB_IO_WRITE, &nw);
+  }
+  if (ret != 0)
+  {
+    CDB___db_panic (dbenv, ret);
     fail = "write";
     goto syserr;
   }
-  if (nw != (ssize_t)mfp->stat.st_pagesize) {
+  if (nw != (ssize_t) mfp->stat.st_pagesize)
+  {
     ret = EIO;
     fail = "write";
     goto syserr;
@@ -463,8 +489,8 @@ file_removed:
    *
    * Unlock the buffer and reacquire the region lock.
    */
-  MUTEX_UNLOCK(&bhp->mutex);
-  R_LOCK(dbenv, &dbmp->reginfo);
+  MUTEX_UNLOCK (&bhp->mutex);
+  R_LOCK (dbenv, &dbmp->reginfo);
 
   /*
    * Clean up the flags based on a successful write.
@@ -473,8 +499,8 @@ file_removed:
    * routine before reuse.
    */
   if (callpgin)
-    F_SET(bhp, BH_CALLPGIN);
-  F_CLR(bhp, BH_DIRTY | BH_LOCKED);
+    F_SET (bhp, BH_CALLPGIN);
+  F_CLR (bhp, BH_DIRTY | BH_LOCKED);
 
   /*
    * If we write a buffer for which a checkpoint is waiting, update
@@ -483,8 +509,9 @@ file_removed:
    * flag so we flush the writes.
    */
   dosync = 0;
-  if (F_ISSET(bhp, BH_WRITE)) {
-    F_CLR(bhp, BH_WRITE);
+  if (F_ISSET (bhp, BH_WRITE))
+  {
+    F_CLR (bhp, BH_WRITE);
 
     --mp->lsn_cnt;
     if (mfp != NULL)
@@ -492,7 +519,7 @@ file_removed:
   }
 
   /* Update the page clean/dirty statistics. */
-  mc = BH_TO_CACHE(dbmp, bhp);
+  mc = BH_TO_CACHE (dbmp, bhp);
   ++mc->stat.st_page_clean;
   --mc->stat.st_page_dirty;
 
@@ -515,12 +542,13 @@ file_removed:
    * subsequent checkpoint was started and that we're going to force it
    * to fail.  That should be unlikely, and fixing it would be difficult.
    */
-  if (dosync) {
-    R_UNLOCK(dbenv, &dbmp->reginfo);
-    syncfail = CDB___os_fsync(&dbmfp->fh) != 0;
-    R_LOCK(dbenv, &dbmp->reginfo);
+  if (dosync)
+  {
+    R_UNLOCK (dbenv, &dbmp->reginfo);
+    syncfail = CDB___os_fsync (&dbmfp->fh) != 0;
+    R_LOCK (dbenv, &dbmp->reginfo);
     if (syncfail)
-      F_SET(mp, MP_LSN_RETRY);
+      F_SET (mp, MP_LSN_RETRY);
   }
 
   if (wrotep != NULL)
@@ -528,12 +556,12 @@ file_removed:
 
   return (0);
 
-syserr:  CDB___db_err(dbenv, "%s: %s failed for page %lu",
-      CDB___memp_fn(dbmfp), fail, (u_long)bhp->pgno);
+syserr:CDB___db_err (dbenv, "%s: %s failed for page %lu",
+                CDB___memp_fn (dbmfp), fail, (u_long) bhp->pgno);
 
-err:  /* Unlock the buffer and reacquire the region lock. */
-  MUTEX_UNLOCK(&bhp->mutex);
-  R_LOCK(dbenv, &dbmp->reginfo);
+err:                           /* Unlock the buffer and reacquire the region lock. */
+  MUTEX_UNLOCK (&bhp->mutex);
+  R_LOCK (dbenv, &dbmp->reginfo);
 
   /*
    * Clean up the flags based on a failure.
@@ -542,8 +570,8 @@ err:  /* Unlock the buffer and reacquire the region lock. */
    * page, it will need processing by the pgin routine before reuse.
    */
   if (callpgin)
-    F_SET(bhp, BH_CALLPGIN);
-  F_CLR(bhp, BH_LOCKED);
+    F_SET (bhp, BH_CALLPGIN);
+  F_CLR (bhp, BH_LOCKED);
 
   return (ret);
 }
@@ -555,10 +583,10 @@ err:  /* Unlock the buffer and reacquire the region lock. */
  * PUBLIC: int CDB___memp_pg __P((DB_MPOOLFILE *, BH *, int));
  */
 int
-CDB___memp_pg(dbmfp, bhp, is_pgin)
-  DB_MPOOLFILE *dbmfp;
-  BH *bhp;
-  int is_pgin;
+CDB___memp_pg (dbmfp, bhp, is_pgin)
+     DB_MPOOLFILE *dbmfp;
+     BH *bhp;
+     int is_pgin;
 {
   DBT dbt, *dbtp;
   DB_MPOOL *dbmp;
@@ -569,41 +597,48 @@ CDB___memp_pg(dbmfp, bhp, is_pgin)
   dbmp = dbmfp->dbmp;
   mfp = dbmfp->mfp;
 
-  MUTEX_THREAD_LOCK(dbmp->mutexp);
+  MUTEX_THREAD_LOCK (dbmp->mutexp);
 
   ftype = mfp->ftype;
-  for (mpreg = LIST_FIRST(&dbmp->dbregq);
-      mpreg != NULL; mpreg = LIST_NEXT(mpreg, q)) {
+  for (mpreg = LIST_FIRST (&dbmp->dbregq);
+       mpreg != NULL; mpreg = LIST_NEXT (mpreg, q))
+  {
     if (ftype != mpreg->ftype)
       continue;
     if (mfp->pgcookie_len == 0)
       dbtp = NULL;
-    else {
+    else
+    {
       dbt.size = mfp->pgcookie_len;
-      dbt.data = R_ADDR(&dbmp->reginfo, mfp->pgcookie_off);
+      dbt.data = R_ADDR (&dbmp->reginfo, mfp->pgcookie_off);
       dbtp = &dbt;
     }
-    MUTEX_THREAD_UNLOCK(dbmp->mutexp);
+    MUTEX_THREAD_UNLOCK (dbmp->mutexp);
 
-    if (is_pgin) {
+    if (is_pgin)
+    {
       if (mpreg->pgin != NULL && (ret =
-          mpreg->pgin(bhp->pgno, bhp->buf, dbtp)) != 0)
+                                  mpreg->pgin (bhp->pgno, bhp->buf,
+                                               dbtp)) != 0)
         goto err;
-    } else
+    }
+    else
       if (mpreg->pgout != NULL && (ret =
-          mpreg->pgout(bhp->pgno, bhp->buf, dbtp)) != 0)
-        goto err;
+                                   mpreg->pgout (bhp->pgno, bhp->buf,
+                                                 dbtp)) != 0)
+      goto err;
     break;
   }
 
   if (mpreg == NULL)
-    MUTEX_THREAD_UNLOCK(dbmp->mutexp);
+    MUTEX_THREAD_UNLOCK (dbmp->mutexp);
 
   return (0);
 
-err:  MUTEX_THREAD_UNLOCK(dbmp->mutexp);
-  CDB___db_err(dbmp->dbenv, "%s: %s failed for page %lu",
-      CDB___memp_fn(dbmfp), is_pgin ? "pgin" : "pgout", (u_long)bhp->pgno);
+err:MUTEX_THREAD_UNLOCK (dbmp->mutexp);
+  CDB___db_err (dbmp->dbenv, "%s: %s failed for page %lu",
+                CDB___memp_fn (dbmfp), is_pgin ? "pgin" : "pgout",
+                (u_long) bhp->pgno);
   return (ret);
 }
 
@@ -614,10 +649,10 @@ err:  MUTEX_THREAD_UNLOCK(dbmp->mutexp);
  * PUBLIC: void CDB___memp_bhfree __P((DB_MPOOL *, BH *, int));
  */
 void
-CDB___memp_bhfree(dbmp, bhp, free_mem)
-  DB_MPOOL *dbmp;
-  BH *bhp;
-  int free_mem;
+CDB___memp_bhfree (dbmp, bhp, free_mem)
+     DB_MPOOL *dbmp;
+     BH *bhp;
+     int free_mem;
 {
   DB_HASHTAB *dbht;
   MCACHE *mc;
@@ -625,27 +660,28 @@ CDB___memp_bhfree(dbmp, bhp, free_mem)
   int n_bucket, n_cache;
 
   mp = dbmp->reginfo.primary;
-  mc = BH_TO_CACHE(dbmp, bhp);
-  n_cache = NCACHE(mp, bhp->pgno);
-  n_bucket = NBUCKET(mc, bhp->mf_offset, bhp->pgno);
-  dbht = R_ADDR(&dbmp->c_reginfo[n_cache], mc->htab);
+  mc = BH_TO_CACHE (dbmp, bhp);
+  n_cache = NCACHE (mp, bhp->pgno);
+  n_bucket = NBUCKET (mc, bhp->mf_offset, bhp->pgno);
+  dbht = R_ADDR (&dbmp->c_reginfo[n_cache], mc->htab);
 
   /* Delete the buffer header from the hash bucket queue. */
-  SH_TAILQ_REMOVE(&dbht[n_bucket], bhp, hq, __bh);
+  SH_TAILQ_REMOVE (&dbht[n_bucket], bhp, hq, __bh);
 
   /* Delete the buffer header from the LRU queue. */
-  SH_TAILQ_REMOVE(&mc->bhq, bhp, q, __bh);
+  SH_TAILQ_REMOVE (&mc->bhq, bhp, q, __bh);
 
-  DB_ASSERT(mc->stat.st_page_clean != 0);
+  DB_ASSERT (mc->stat.st_page_clean != 0);
   --mc->stat.st_page_clean;
 
   /*
    * If we're not reusing it immediately, free the buffer header
    * and data for real.
    */
-         CDB___memp_cmpr_free_chain(dbmp, bhp);
-  if (free_mem) {
-         CDB___db_shalloc_free(dbmp->c_reginfo[n_cache].addr, bhp);
+  CDB___memp_cmpr_free_chain (dbmp, bhp);
+  if (free_mem)
+  {
+    CDB___db_shalloc_free (dbmp->c_reginfo[n_cache].addr, bhp);
   }
 }
 
@@ -654,10 +690,10 @@ CDB___memp_bhfree(dbmp, bhp, free_mem)
  *  Upgrade a file descriptor from readonly to readwrite.
  */
 static int
-CDB___memp_upgrade(dbmp, dbmfp, mfp)
-  DB_MPOOL *dbmp;
-  DB_MPOOLFILE *dbmfp;
-  MPOOLFILE *mfp;
+CDB___memp_upgrade (dbmp, dbmfp, mfp)
+     DB_MPOOL *dbmp;
+     DB_MPOOLFILE *dbmfp;
+     MPOOLFILE *mfp;
 {
   DB_FH fh;
   int ret;
@@ -669,11 +705,11 @@ CDB___memp_upgrade(dbmp, dbmfp, mfp)
    */
 
   /* Check to see if we've already upgraded. */
-  if (F_ISSET(dbmfp, MP_UPGRADE))
+  if (F_ISSET (dbmfp, MP_UPGRADE))
     return (0);
 
   /* Check to see if we've already failed. */
-  if (F_ISSET(dbmfp, MP_UPGRADE_FAIL))
+  if (F_ISSET (dbmfp, MP_UPGRADE_FAIL))
     return (1);
 
   /*
@@ -681,19 +717,23 @@ CDB___memp_upgrade(dbmp, dbmfp, mfp)
    * We know we have a valid pathname for the file because it's the only
    * way we could have gotten a file descriptor of any kind.
    */
-  if ((ret = CDB___db_appname(dbmp->dbenv, DB_APP_DATA,
-      NULL, R_ADDR(&dbmp->reginfo, mfp->path_off), 0, NULL, &rpath)) != 0)
+  if ((ret = CDB___db_appname (dbmp->dbenv, DB_APP_DATA,
+                               NULL, R_ADDR (&dbmp->reginfo, mfp->path_off),
+                               0, NULL, &rpath)) != 0)
     return (ret);
-  if (CDB___os_open(rpath, 0, 0, &fh) != 0) {
-    F_SET(dbmfp, MP_UPGRADE_FAIL);
+  if (CDB___os_open (rpath, 0, 0, &fh) != 0)
+  {
+    F_SET (dbmfp, MP_UPGRADE_FAIL);
     ret = 1;
-  } else {
+  }
+  else
+  {
     /* Swap the descriptors and set the upgrade flag. */
-    (void)CDB___os_closehandle(&dbmfp->fh);
+    (void) CDB___os_closehandle (&dbmfp->fh);
     dbmfp->fh = fh;
-    F_SET(dbmfp, MP_UPGRADE);
+    F_SET (dbmfp, MP_UPGRADE);
     ret = 0;
   }
-  CDB___os_freestr(rpath);
+  CDB___os_freestr (rpath);
   return (ret);
 }

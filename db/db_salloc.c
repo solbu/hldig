@@ -31,8 +31,9 @@ static const char sccsid[] = "@(#)db_salloc.c  11.4 (Sleepycat) 10/19/99";
  * by the caller to find this length, which allows us to free a chunk without
  * requiring that the caller pass in the length of the chunk they're freeing.
  */
-SH_LIST_HEAD(__head);
-struct __data {
+SH_LIST_HEAD (__head);
+struct __data
+{
   size_t len;
   SH_LIST_ENTRY links;
 };
@@ -44,19 +45,19 @@ struct __data {
  * PUBLIC: void CDB___db_shalloc_init __P((void *, size_t));
  */
 void
-CDB___db_shalloc_init(area, size)
-  void *area;
-  size_t size;
+CDB___db_shalloc_init (area, size)
+     void *area;
+     size_t size;
 {
   struct __data *elp;
   struct __head *hp;
 
   hp = area;
-  SH_LIST_INIT(hp);
+  SH_LIST_INIT (hp);
 
-  elp = (struct __data *)(hp + 1);
-  elp->len = size - sizeof(struct __head) - sizeof(elp->len);
-  SH_LIST_INSERT_HEAD(hp, elp, links, __data);
+  elp = (struct __data *) (hp + 1);
+  elp->len = size - sizeof (struct __head) - sizeof (elp->len);
+  SH_LIST_INSERT_HEAD (hp, elp, links, __data);
 }
 
 /*
@@ -66,9 +67,9 @@ CDB___db_shalloc_init(area, size)
  * PUBLIC: int CDB___db_shalloc __P((void *, size_t, size_t, void *));
  */
 int
-CDB___db_shalloc(p, len, align, retp)
-  void *p, *retp;
-  size_t len, align;
+CDB___db_shalloc (p, len, align, retp)
+     void *p, *retp;
+     size_t len, align;
 {
   struct __data *elp;
   size_t *sp;
@@ -79,27 +80,27 @@ CDB___db_shalloc(p, len, align, retp)
    * to less than a size_t boundary, or align to something that's not
    * a multiple of a size_t.
    */
-  if (len < sizeof(struct __data))
-    len = sizeof(struct __data);
+  if (len < sizeof (struct __data))
+    len = sizeof (struct __data);
 
 #ifdef DIAGNOSTIC
-        /*
-         * XXX:
-         * Do we want to do this when len has already been tweaked, as above?
-         *
-         * At worst, it costs us an extra alignment-worth of memory; it's
-         * certainly not fatal, because we always base the location of the
-         * guard byte upon the true end of the chunk, not upon the end as
-         * perceived by the caller.
-         */
-        ++len;
+  /*
+   * XXX:
+   * Do we want to do this when len has already been tweaked, as above?
+   *
+   * At worst, it costs us an extra alignment-worth of memory; it's
+   * certainly not fatal, because we always base the location of the
+   * guard byte upon the true end of the chunk, not upon the end as
+   * perceived by the caller.
+   */
+  ++len;
 #endif
   align = 8;
 
   /* Walk the list, looking for a slot. */
-  for (elp = SH_LIST_FIRST((struct __head *)p, __data);
-      elp != NULL;
-      elp = SH_LIST_NEXT(elp, links, __data)) {
+  for (elp = SH_LIST_FIRST ((struct __head *) p, __data);
+       elp != NULL; elp = SH_LIST_NEXT (elp, links, __data))
+  {
     /*
      * Calculate the value of the returned pointer if we were to
      * use this chunk.
@@ -107,27 +108,27 @@ CDB___db_shalloc(p, len, align, retp)
      *  + Subtract the memory the user wants.
      *  + Find the closest previous correctly-aligned address.
      */
-    rp = (u_int8_t *)elp + sizeof(size_t) + elp->len;
-    rp = (u_int8_t *)rp - len;
-    rp = (u_int8_t *)((ALIGNTYPE)rp & ~(align - 1));
+    rp = (u_int8_t *) elp + sizeof (size_t) + elp->len;
+    rp = (u_int8_t *) rp - len;
+    rp = (u_int8_t *) ((ALIGNTYPE) rp & ~(align - 1));
 
     /*
      * Rp may now point before elp->links, in which case the chunk
      * was too small, and we have to try again.
      */
-    if ((u_int8_t *)rp < (u_int8_t *)&elp->links)
+    if ((u_int8_t *) rp < (u_int8_t *) & elp->links)
       continue;
 
-    *(void **)retp = rp;
+    *(void **) retp = rp;
 #ifdef DIAGNOSTIC
-                /*
-                 * At this point, whether or not we still need to split up a
-                 * chunk, retp is the address of the region we are returning,
-                 * and (u_int8_t *)elp + sizeof(size_t) + elp->len gives us
-                 * the address of the first byte after the end of the chunk.
-                 * Make the byte immediately before that the guard byte.
-                 */
-                *((u_int8_t *)elp + sizeof(size_t) + elp->len - 1) = GUARD_BYTE;
+    /*
+     * At this point, whether or not we still need to split up a
+     * chunk, retp is the address of the region we are returning,
+     * and (u_int8_t *)elp + sizeof(size_t) + elp->len gives us
+     * the address of the first byte after the end of the chunk.
+     * Make the byte immediately before that the guard byte.
+     */
+    *((u_int8_t *) elp + sizeof (size_t) + elp->len - 1) = GUARD_BYTE;
 #endif
 
 #define  SHALLOC_FRAGMENT  32
@@ -135,12 +136,11 @@ CDB___db_shalloc(p, len, align, retp)
      * If there are at least SHALLOC_FRAGMENT additional bytes of
      * memory, divide the chunk into two chunks.
      */
-    if ((u_int8_t *)rp >=
-        (u_int8_t *)&elp->links + SHALLOC_FRAGMENT) {
+    if ((u_int8_t *) rp >= (u_int8_t *) & elp->links + SHALLOC_FRAGMENT)
+    {
       sp = rp;
-      *--sp = elp->len -
-          ((u_int8_t *)rp - (u_int8_t *)&elp->links);
-      elp->len -= *sp + sizeof(size_t);
+      *--sp = elp->len - ((u_int8_t *) rp - (u_int8_t *) & elp->links);
+      elp->len -= *sp + sizeof (size_t);
       return (0);
     }
 
@@ -153,8 +153,8 @@ CDB___db_shalloc(p, len, align, retp)
      * flag value, so that we can find the real length during free.
      */
 #define  ILLEGAL_SIZE  1
-    SH_LIST_REMOVE(elp, links, __data);
-    for (sp = rp; (u_int8_t *)--sp >= (u_int8_t *)&elp->links;)
+    SH_LIST_REMOVE (elp, links, __data);
+    for (sp = rp; (u_int8_t *)-- sp >= (u_int8_t *) & elp->links;)
       *sp = ILLEGAL_SIZE;
     return (0);
   }
@@ -169,8 +169,8 @@ CDB___db_shalloc(p, len, align, retp)
  * PUBLIC: void CDB___db_shalloc_free __P((void *, void *));
  */
 void
-CDB___db_shalloc_free(regionp, ptr)
-  void *regionp, *ptr;
+CDB___db_shalloc_free (regionp, ptr)
+     void *regionp, *ptr;
 {
   struct __data *elp, *lastp, *newp;
   struct __head *hp;
@@ -181,33 +181,33 @@ CDB___db_shalloc_free(regionp, ptr)
    * Step back over flagged length fields to find the beginning of
    * the object and its real size.
    */
-  for (sp = (size_t *)ptr; sp[-1] == ILLEGAL_SIZE; --sp)
+  for (sp = (size_t *) ptr; sp[-1] == ILLEGAL_SIZE; --sp)
     ;
   ptr = sp;
 
-  newp = (struct __data *)((u_int8_t *)ptr - sizeof(size_t));
+  newp = (struct __data *) ((u_int8_t *) ptr - sizeof (size_t));
   free_size = newp->len;
 
 #ifdef DIAGNOSTIC
-        /*
-         * The "real size" includes the guard byte;  it's just the last
-         * byte in the chunk, and the caller never knew it existed.
-         *
-         * Check it to make sure it hasn't been stomped.
-         */
-        if (*((u_int8_t *)ptr + free_size - 1) != GUARD_BYTE) {
+  /*
+   * The "real size" includes the guard byte;  it's just the last
+   * byte in the chunk, and the caller never knew it existed.
+   *
+   * Check it to make sure it hasn't been stomped.
+   */
+  if (*((u_int8_t *) ptr + free_size - 1) != GUARD_BYTE)
+  {
     /*
      * Eventually, once we push a DB_ENV handle down to these
      * routines, we should use the standard output channels.
      */
-    fprintf(stderr,
-        "Guard byte incorrect during shared memory free.\n");
-    abort();
+    fprintf (stderr, "Guard byte incorrect during shared memory free.\n");
+    abort ();
     /* NOTREACHED */
   }
 
   /* Trash the returned memory (including guard byte). */
-  memset(ptr, CLEAR_BYTE, free_size);
+  memset (ptr, CLEAR_BYTE, free_size);
 #endif
 
   /*
@@ -219,10 +219,10 @@ CDB___db_shalloc_free(regionp, ptr)
    * XXX
    * Probably worth profiling this to see how expensive it is.
    */
-  hp = (struct __head *)regionp;
-  for (elp = SH_LIST_FIRST(hp, __data), lastp = NULL;
-      elp != NULL && (void *)elp < (void *)ptr;
-      lastp = elp, elp = SH_LIST_NEXT(elp, links, __data))
+  hp = (struct __head *) regionp;
+  for (elp = SH_LIST_FIRST (hp, __data), lastp = NULL;
+       elp != NULL && (void *) elp < (void *) ptr;
+       lastp = elp, elp = SH_LIST_NEXT (elp, links, __data))
     ;
 
   /*
@@ -234,20 +234,22 @@ CDB___db_shalloc_free(regionp, ptr)
    * Check for coalescing with the next element.
    */
   merged = 0;
-  if ((u_int8_t *)ptr + free_size == (u_int8_t *)elp) {
-    newp->len += elp->len + sizeof(size_t);
-    SH_LIST_REMOVE(elp, links, __data);
+  if ((u_int8_t *) ptr + free_size == (u_int8_t *) elp)
+  {
+    newp->len += elp->len + sizeof (size_t);
+    SH_LIST_REMOVE (elp, links, __data);
     if (lastp != NULL)
-      SH_LIST_INSERT_AFTER(lastp, newp, links, __data);
+      SH_LIST_INSERT_AFTER (lastp, newp, links, __data);
     else
-      SH_LIST_INSERT_HEAD(hp, newp, links, __data);
+      SH_LIST_INSERT_HEAD (hp, newp, links, __data);
     merged = 1;
   }
 
   /* Check for coalescing with the previous element. */
-  if (lastp != NULL && (u_int8_t *)lastp +
-      lastp->len + sizeof(size_t) == (u_int8_t *)newp) {
-    lastp->len += newp->len + sizeof(size_t);
+  if (lastp != NULL && (u_int8_t *) lastp +
+      lastp->len + sizeof (size_t) == (u_int8_t *) newp)
+  {
+    lastp->len += newp->len + sizeof (size_t);
 
     /*
      * If we have already put the new element into the list take
@@ -255,15 +257,16 @@ CDB___db_shalloc_free(regionp, ptr)
      * previous element.
      */
     if (merged)
-      SH_LIST_REMOVE(newp, links, __data);
+      SH_LIST_REMOVE (newp, links, __data);
     merged = 1;
   }
 
-  if (!merged) {
+  if (!merged)
+  {
     if (lastp == NULL)
-      SH_LIST_INSERT_HEAD(hp, newp, links, __data);
+      SH_LIST_INSERT_HEAD (hp, newp, links, __data);
     else
-      SH_LIST_INSERT_AFTER(lastp, newp, links, __data);
+      SH_LIST_INSERT_AFTER (lastp, newp, links, __data);
   }
 }
 
@@ -274,16 +277,15 @@ CDB___db_shalloc_free(regionp, ptr)
  * PUBLIC: size_t CDB___db_shalloc_count __P((void *));
  */
 size_t
-CDB___db_shalloc_count(addr)
-  void *addr;
+CDB___db_shalloc_count (addr)
+     void *addr;
 {
   struct __data *elp;
   size_t count;
 
   count = 0;
-  for (elp = SH_LIST_FIRST((struct __head *)addr, __data);
-      elp != NULL;
-      elp = SH_LIST_NEXT(elp, links, __data))
+  for (elp = SH_LIST_FIRST ((struct __head *) addr, __data);
+       elp != NULL; elp = SH_LIST_NEXT (elp, links, __data))
     count += elp->len;
 
   return (count);
@@ -301,8 +303,8 @@ CDB___db_shalloc_count(addr)
  * PUBLIC: size_t CDB___db_shsizeof __P((void *));
  */
 size_t
-CDB___db_shsizeof(ptr)
-  void *ptr;
+CDB___db_shsizeof (ptr)
+     void *ptr;
 {
   struct __data *elp;
   size_t *sp;
@@ -311,10 +313,10 @@ CDB___db_shsizeof(ptr)
    * Step back over flagged length fields to find the beginning of
    * the object and its real size.
    */
-  for (sp = (size_t *)ptr; sp[-1] == ILLEGAL_SIZE; --sp)
+  for (sp = (size_t *) ptr; sp[-1] == ILLEGAL_SIZE; --sp)
     ;
 
-  elp = (struct __data *)((u_int8_t *)sp - sizeof(size_t));
+  elp = (struct __data *) ((u_int8_t *) sp - sizeof (size_t));
   return (elp->len);
 }
 
@@ -324,9 +326,9 @@ CDB___db_shsizeof(ptr)
  * PUBLIC: void CDB___db_shalloc_dump __P((void *, FILE *));
  */
 void
-CDB___db_shalloc_dump(addr, fp)
-  void *addr;
-  FILE *fp;
+CDB___db_shalloc_dump (addr, fp)
+     void *addr;
+     FILE *fp;
 {
   struct __data *elp;
 
@@ -334,11 +336,10 @@ CDB___db_shalloc_dump(addr, fp)
   if (fp == NULL)
     fp = stderr;
 
-  fprintf(fp, "%s\nMemory free list\n", DB_LINE);
+  fprintf (fp, "%s\nMemory free list\n", DB_LINE);
 
-  for (elp = SH_LIST_FIRST((struct __head *)addr, __data);
-      elp != NULL;
-      elp = SH_LIST_NEXT(elp, links, __data))
-    fprintf(fp, "%#lx: %lu\t", (u_long)elp, (u_long)elp->len);
-  fprintf(fp, "\n");
+  for (elp = SH_LIST_FIRST ((struct __head *) addr, __data);
+       elp != NULL; elp = SH_LIST_NEXT (elp, links, __data))
+    fprintf (fp, "%#lx: %lu\t", (u_long) elp, (u_long) elp->len);
+  fprintf (fp, "\n");
 }
