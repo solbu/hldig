@@ -591,7 +591,7 @@ Display::setVariables (int pageNumber, List * matches)
 
   // Handle user-defined select lists.
   // Uses octuples containing these values:
-  // <tempvar> <inparm> <namelistattr> <ntuple> <ivalue> <ilabel> 
+  // <tempvar> <inparm> <namelistattr> <ntuple> <ivalue> <ilabel>
   //          <defattr> <deflabel>
   // e.g.:
   // METHOD_LIST method method_names 2 1 2 match_method ""
@@ -1542,7 +1542,7 @@ Display::buildMatchList ()
       //
       // Assign the incomplete score to this match.  This score was
       // computed from the word database only, no excerpt context was
-      // known at that time, or info about the document itself, 
+      // known at that time, or info about the document itself,
       // so this still needs to be done.
       //
 
@@ -1658,7 +1658,7 @@ Display::excerpt (ResultMatch * match, DocumentRef * ref, String urlanchor,
   if (config->Boolean ("use_meta_description", 0)
       && strlen (ref->DocMetaDsc ()) != 0)
   {
-    // Set the head to point to description 
+    // Set the head to point to description
     head = ref->DocMetaDsc ();
     use_meta_description = 1;
   }
