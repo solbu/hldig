@@ -70,7 +70,8 @@ cd to $srcdir/samplesite and make a symbolic link to your testing/cgi-bin direct
 
     ln -s ../testing/cgi-bin/
 
-Copy `htsearch.sh` from your $srcdir/scripts directory to the cgi-bin directory.
+Copy `htsearch.sh` from your $srcdir/scripts directory to your server root
+(not the cgi-bin directory).
 
 Change back to the top level of your htdig source directory.
 Start the lighttpd server
