@@ -2,7 +2,7 @@
 // Exact.cc
 //
 // Exact: The exact-match "fuzzy" matching. Simply returns the word (minus punctuation)
-//           
+//
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
@@ -29,7 +29,8 @@
 Exact::Exact (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  name = "exact";
+  strcpy (name, "exact");
+  // name = "exact";
 }
 
 

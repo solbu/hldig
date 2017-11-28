@@ -31,6 +31,8 @@
 #include "HtWordType.h"
 #include "HtWordList.h"
 
+#define NAME_LEN_MAX 24
+
 class HtConfiguration;
 class Dictionary;
 class List;
@@ -109,7 +111,7 @@ protected:
   //
   virtual void generateKey (char *word, String & key);
 
-  char *name;
+  char name[NAME_LEN_MAX + 1];
   Database *index;
   Dictionary *dict;
   double weight;

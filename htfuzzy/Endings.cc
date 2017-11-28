@@ -33,9 +33,7 @@ Fuzzy (config_arg)
 {
   root2word = 0;
   word2root = 0;
-  name = "endings";
-  /* Replacing the line above with the line below will cause a segfault */
-  /*   strcpy (name, "endings"); */
+  strcpy (name, "endings");
 }
 
 

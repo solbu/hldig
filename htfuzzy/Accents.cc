@@ -85,7 +85,7 @@ static unsigned char MinusculeISOLAT1[256] = {
 Accents::Accents (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  name = "accents";
+  strcpy (name, "accents");
 }
 
 

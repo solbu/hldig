@@ -8,7 +8,7 @@
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License (LGPL) version 2 or later 
+// or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
 // $Id: Prefix.cc,v 1.17 2004/05/28 13:15:20 lha Exp $
@@ -33,7 +33,7 @@
 Prefix::Prefix (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  name = "prefix";
+  strcpy (name, "prefix");
 }
 
 
@@ -71,8 +71,8 @@ Prefix::getWords (char *w, List & words)
   if ((int) strlen (w) < minimum_prefix_length + prefix_suffix_length)
     return;
 
-  //  A null prefix character means that prefix matching should be 
-  //  applied to every search word; otherwise return if the word does 
+  //  A null prefix character means that prefix matching should be
+  //  applied to every search word; otherwise return if the word does
   //  not end in the prefix character(s).
   //
   if (prefix_suffix_length > 0

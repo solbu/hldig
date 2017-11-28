@@ -2,7 +2,7 @@
 // Metaphone.cc
 //
 // Metaphone: A fuzzy matching algorithm used to match words that
-//            sound alike in the English language. Probably not so 
+//            sound alike in the English language. Probably not so
 //            good for foreign languages.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
@@ -32,7 +32,7 @@
 Metaphone::Metaphone (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  name = "metaphone";
+  strcpy, (name, "metaphone");
 }
 
 

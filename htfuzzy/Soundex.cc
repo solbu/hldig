@@ -1,7 +1,7 @@
 //
 // Soundex.cc
 //
-// Soundex: A fuzzy matching algorithm on the principal of the 
+// Soundex: A fuzzy matching algorithm on the principal of the
 //          Soundex method for last names used by the U.S. INS
 //          and described by Knuth and others.
 //
@@ -31,7 +31,7 @@
 Soundex::Soundex (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  name = "soundex";
+  strcpy (name, "soundex");
 }
 
 
