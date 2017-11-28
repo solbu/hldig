@@ -265,9 +265,11 @@ String::get () const
 char *
 String::get ()
 {
-  static char *null = "";
   if (!Allocated)
+  {
+    static char null[] = { "" };
     return null;
+  }
   Data[Length] = '\0';          // We always leave room for this.
   return Data;
 }
