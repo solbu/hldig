@@ -131,7 +131,7 @@ HtCookieJar::GetDomainMinNumberOfPeriods (const String & domain) const
 {
   // Well ... if a domain has been specified, we need some check-ups
   // as the standard says.
-  static char *TopLevelDomains[] = { "com", "edu", "net", "org",
+  static const char *TopLevelDomains[] = { "com", "edu", "net", "org",
     "gov", "mil", "int", 0
   };
 
@@ -143,7 +143,7 @@ HtCookieJar::GetDomainMinNumberOfPeriods (const String & domain) const
   if (!*(++s))                  // nothing after the dot. Not Valid
     return 0;
 
-  for (char **p = TopLevelDomains; *p; ++p)
+  for (const char **p = TopLevelDomains; *p; ++p)
   {
     if (!strncmp (*p, s, strlen (*p)))
       return 2;
