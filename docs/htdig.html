@@ -1,0 +1,256 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+  <head>
+	<title>
+	  ht://Dig: htdig
+	</title>
+  </head>
+  <body bgcolor="#eef7ff">
+	<h1>
+	  htdig
+	</h1>
+	<p>
+	  ht://Dig Copyright &copy; 1995-2004 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  Please see the file <a href="COPYING">COPYING</a> for
+	  license information.
+	</p>
+	<hr size="4" noshade>
+	<dl>
+	  <dd>
+		<h2>
+		  Synopsis
+		</h2>
+	  </dd>
+	  <dd>
+		htdig [<em>options</em>] [<em>start_url_file</em>]
+	  </dd>
+	</dl>
+	<dl>
+	  <dd>
+		<h2>
+		  Description
+		</h2>
+	  </dd>
+	  <dd>
+		Htdig retrieves HTML documents using the HTTP protocol and
+		gathers information from these documents which can later be
+		used to search these documents. This program can be
+		referred to as the search robot.
+	  </dd>
+	</dl>
+	<dl>
+	  <dd>
+		<h2>
+		  Options
+		</h2>
+	  </dd>
+	  <dd>
+		<dl compact>
+		  <dt>
+			-a
+		  </dt>
+		  <dd>
+			Use alternate work files. Tells htdig to append <em>
+			.work</em> to database files, causing a second copy of
+			the database to be built. This allows the original
+			files to be used by htsearch during the indexing run. When
+			used without the "-i" flag for an update dig, htdig will
+			use any existing .work files for the databases to update.
+		  </dd>
+		  <dt>
+			-c <em>configfile</em>
+		  </dt>
+		  <dd>
+			Use the specified <em>configfile</em> file instead of the
+			default.
+		  </dd>
+		  <dt>
+			-h <em>maxhops</em>
+		  </dt>
+		  <dd>
+			Restrict the dig to documents that are at most <em>
+			maxhops</em> links away from the starting document.
+		  </dd>
+		  <dt>
+			-i
+		  </dt>
+		  <dd>
+			Initial. Do not use any old databases. This is
+			accomplished by first erasing the databases.
+		  </dd>
+		  <dt>
+		      -m <em>url_file</em>
+		  </dt>
+		  <dd>
+		         Minimal. Index only the URLs listed in
+			 <em>url_file</em> and no others.
+			 A file name of "-" reads from STDIN.
+			 See also the <em>start_url_file</em> argument.
+		  </dd>
+		  <dt>
+			-s
+		  </dt>
+		  <dd>
+			Print statistics about the dig after completion.
+		  </dd>
+		  <dt>
+			-t
+		  </dt>
+		  <dd>
+			Create an ASCII version of the document database. This
+			database is easy to parse with other programs so that
+			information can be extracted from it for purposes other
+			than searching. One could gather some interesting
+			statistics from this database.
+			<p>Each line in the file starts with the document id 
+			followed by a list of
+			<strong>\t<em>fieldname</em>:<em>value</em></strong>.
+			The fields always appear in the order listed below:
+			</p>
+			<table border=0>
+			<tr> <th>fieldname</th><th>value</th></tr>
+			<tr> <td>u</td><td>URL</td></tr>
+			<tr> <td>t</td><td>Title</td></tr>
+			<tr> <td>a</td><td>State (0 = normal, 1 = not found, 2
+			= not indexed, 3 = obsolete)</td></tr>
+			<tr> <td>m</td><td>Last modification time as reported
+			by the server</td></tr> 
+			<tr> <td>s</td><td>Size in bytes</td></tr>
+			<tr> <td>H</td><td>Excerpt</td></tr>
+			<tr> <td>h</td><td>Meta description</td></tr>
+			<tr> <td>l</td><td>Time of last retrieval</td></tr>
+			<tr> <td>L</td><td>Count of the links in the document
+			(outgoing links)</td></tr>
+			<tr> <td>b</td><td>Count of the links to the document
+			(incoming links or backlinks)</td></tr>
+			<tr> <td>c</td><td>HopCount of this document</td></tr>
+			<tr> <td>g</td><td>Signature of the document used for
+			duplicate-detection</td></tr>
+			<tr> <td>e</td><td>E-mail address to use for a
+			notification message from htnotify</td></tr>
+			<tr> <td>n</td><td>Date to send out a notification
+			e-mail message</td></tr>
+			<tr> <td>S</td><td>Subject for a notification e-mail
+			message</td></tr>
+			<tr> <td>d</td><td>The text of links pointing to this
+			document. (e.g. &lt;a
+			href=&quot;docURL&quot;&gt;description&lt;/a&gt;)</td></tr>
+			<tr> <td>A</td><td>Anchors in the document (i.e. &lt;A
+			NAME=...)</td></tr>
+			</table>
+		  </dd>
+		  <dt>
+			-u <em>username:password</em>
+		  </dt>
+		  <dd>
+			Tells htdig to send the supplied username and password
+			with each HTTP request. The credentials will be encoded
+			using the 'Basic' authentication scheme. There <strong>
+			HAS</strong> to be a colon (:) between the username and
+			password.
+		  </dd>
+		  <dt>
+			-v
+		  </dt>
+		  <dd>
+			Verbose mode. This increases the verbosity of the
+			program. Using more than 2 is probably only useful for
+			debugging purposes. The default verbose mode (using
+			only one -v) gives a nice progress report while
+			digging. This progress report can be a bit
+			cryptic, so here is a brief explanation. A line
+			is shown for each URL, with 3 numbers before the
+			URL and some symbols after the URL. The first
+			number is the number of documents parsed so
+			far, the second is the DocID for this document,
+			and the third is the hop count of the document
+			(number of hops from one of the start_url
+			documents). After the URL, it shows a "*" for
+			a link in the document that it already visited,
+			a "+" for a new link it just queued, and a "-"
+			for a link it rejected for any of a number of
+			reasons. To find out what those reasons are,
+			you need to run htdig with at least 3 -v options,
+			i.e. -vvv. If there are no "*", "+" or "-" symbols
+			after the URL, it doesn't mean the document was
+			not parsed or was empty, but only that no links
+			to other documents were found within it. With
+			more verbose output, these symbols will get
+			interspersed in several lines of debugging output.
+		  </dd>
+	          <dt>
+		        <em>start_url_file</em>
+		  </dt>
+		  <dd>
+		         A file containing a list of URLs to start indexing
+			 from, or "-" for STDIN.  This will augment the default
+			 <a href="attrs.html#start_url">start_url</a>
+			 and override the file supplied to
+			 [-m <em>url_file</em>].
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<dl>
+	  <dd>
+		<h2>
+		  Files
+		</h2>
+	  </dd>
+	  <dd>
+		<dl>
+		  <dt>
+			<a href="attrs.html#config_dir">CONFIG_DIR</a>/htdig.conf
+		  </dt>
+		  <dd>
+			The default configuration file.
+		  </dd>
+		</dl>
+		<dl>
+		  <dt>
+			<a href="attrs.html#database_dir">DATABASE_DIR</a>/db.docdb
+		  </dt>
+		  <dd>
+			Stores data about each document (title, url, etc.).
+		  </dd>
+		</dl>
+		<dl>
+		  <dt>
+			<a href="attrs.html#database_dir">DATABASE_DIR</a>/db.words.db,
+			<a href="attrs.html#database_dir">DATABASE_DIR</a>/db.words.db_weakcmpr
+		  </dt>
+		  <dd>
+			Record which documents each word occurs in.
+		  </dd>
+		</dl>
+		<dl>
+		  <dt>
+			<a href="attrs.html#database_dir">DATABASE_DIR</a>/db.excerpts
+		  </dt>
+		  <dd>
+			Stores start of each document to show context of
+			matches.
+		  </dd>
+		</dl>
+	  </dd>
+	</dl>
+	<dl>
+	  <dd>
+		<h2>
+		  See Also
+		</h2>
+	  </dd>
+	  <dd>
+		<a href="htmerge.html">htmerge</a>,
+		<a href="htsearch.html" target="_top">htsearch</a>,
+		<a href="attrs.html">Configuration file format</a>, and
+		<a href="http://www.robotstxt.org/wc/norobots.html">
+		A Standard for Robot Exclusion</a>.
+	  </dd>
+	</dl>
+	<hr size="4" noshade>
+
+	Last modified: $Date: 2004/06/12 13:39:13 $
+
+  </body>
+</html>

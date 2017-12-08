@@ -374,7 +374,9 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
                  htsearch/Makefile
                  httools/Makefile
                  htword/Makefile
-                 include/Makefile installdir/Makefile
+                 include/Makefile
+                 installdir/Makefile
+                 docs/Makefile
                  test/Makefile
                  test/test_functions])
 AC_OUTPUT

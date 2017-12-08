@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+  <head>
+	<title>
+	  ht://Dig: htsearch
+	</title>
+  </head>
+  <body bgcolor="#eef7ff">
+	<h1>
+	  htsearch
+	</h1>
+	<p>
+	  ht://Dig Copyright &copy; 1995-2004 <a href="THANKS.html">The ht://Dig Group</a><br>
+	  Please see the file <a href="COPYING">COPYING</a> for
+	  license information.
+	</p>
+	<hr size="4" noshade>
+	<h2>
+	  HTML Form
+	</h2>
+	<p>
+	  The primary interface to htsearch is through an HTML form.
+	  When the form is submitted, the htsearch program will take
+	  values from the form and perform the actual search. The
+	  search can be modified in many ways with either hidden input
+	  fields or other HTML form tags. Study the examples to get a
+	  feel of what things are possible.
+	</p>
+	<p>
+	  The HTML form is expected to contain at least an input text
+	  field named <strong>words</strong>. This is where the user will enter
+	  the search words. Other values are also recognized but have
+	  appropriate defaults in case they are not used:
+	</p>
+	<dl>
+	  <dt>
+	  </a>
+		<strong><a name="config">config</a></strong>
+	  </dt>
+	  <dd>
+		Specifies the name of the configuration file. The name here
+		is the name without the path and without the <em>.conf</em>
+		at the end. This file is assumed to be located in the
+		CONFIG_DIR directory. Periods are <strong>not</strong> allowed in this
+		field for security reasons (to prevent HTML authors from
+		pointing all around at your files).<br>
+		The default is <em>htdig</em>
+	  </dd>
+	  <dt>
+		<strong><a name="exclude">exclude</a></strong>
+	  </dt>
+	  <dd>
+		This value is a pattern that specifies which URLs are to be
+		excluded from the search results. If a URL matches one of
+		these patterns it is discarded. Multiple patterns can be
+		given, separated by a bar ("|"), or multiple definitions
+		of the exclude input parameter can be given. This pattern
+		may include regular expressions when enclosed within [ and ]
+		characters.<br>
+		 The default is specified by the <a href="attrs.html#exclude">exclude</a>
+		attribute in the configuration file.
+
+	  </dd>
+	  <dt>
+		<strong><a name="format">format</a></strong>
+	  </dt>
+	  <dd>
+		This specifies the name of the template to display the
+		search results in. There are two builtin templates named
+		<em>builtin-long</em> and <i>builtin-short</i> which can be
+		used, but any number of custom templates can also be
+		defined. Find out more about the templates in the
+		<a href="hts_templates.html">Output Templates</a> section.<br>
+		 The <em>format</em> value can be specified as either a
+		hidden input field or a drop down menu.<br>
+		 The default is specified by the <a href="attrs.html#template_name">template_name</a>
+		attribute in the configuration file, and the template variable
+		is <a href="hts_template.html#SELECTED_FORMAT">SELECTED_FORMAT</a>.
+	  </dd>
+	  <dt>
+		<strong><a name="keywords">keywords</a></strong>
+	  </dt>
+	  <dd>
+		Used to specify a list of required words that have to be in
+		the documents. This list of words is added to the normal
+		<em>words</em> value using logical "and"s, or logical "or"s
+		if the <a href="attrs.html#any_keywords">any_keywords</a>
+		attribute is set to true in the configuration file.<br>
+		 An example use for this value is to make it a drop down
+		menu with a limited set of predetermined categories or
+		keywords to restrict the search. This can be very useful
+		for very structured pages.
+		<br>Note that the words may appear anywhere in the document.
+		The scope of these required words is <strong>not</strong> limited to
+		words in META tags with the "keywords" or "htdig-keywords"
+		property, despite what the parameter name may suggest.<br>
+		 The default is specified by the <a href="attrs.html#keywords">keywords</a>
+		attribute in the configuration file.
+	  </dd>
+	  <dt>
+		<strong><a name="matchesperpage">matchesperpage</a></strong>
+	  </dt>
+	  <dd>
+		Specifies how many matches will be displayed on each page
+		of results.<br>
+		 The default is specified by the <a href="attrs.html#matches_per_page">matches_per_page</a>
+		attribute in the configuration file, and the template variable
+		is <a href="hts_templates.html#MATCHES_PER_PAGE">MATCHES_PER_PAGE</a>. Since this value has
+		to be a number, it either needs to be set using a hidden
+		input field or a with a drop down menu.
+	  </dd>
+	  <dt>
+		<strong><a name="method">method</a></strong>
+	  </dt>
+	  <dd>
+		This can be one of <em>and</em>, <i>or</i>, or <em>
+		boolean</em>. It determines what type of search will be
+		performed.<br>
+		 The default is specified by the
+		<a href="attrs.html#match_method">match_method</a> attribute in
+		the configuration file and the template variable is
+		<a href="hts_templates.html#SELECTED_METHOD">SELECTED_METHOD</a>.
+		It is quite useful to make this item a drop down menu so the
+		user can select the type of search at search time.
+	  </dd>
+	  <dt>
+		<strong><a name="page">page</a></strong>
+	  </dt>
+	  <dd>
+		This should normally not be used. It is generated by the
+		paged results display.
+	  </dd>
+	  <dt>
+		<strong><a name="restrict">restrict</a></strong>
+	  </dt>
+	  <dd>
+		This value is a pattern that all URLs of the search results
+		will have to match. This can be used to restrict the search
+		to a particular subtree or subsection of a bigger database.
+		Multiple patterns can be given, separated by a bar ("|"), or
+		multiple definitions of the restrict input parameter can be
+		given. Any URL in the search results will have to match at
+		least one of these patterns. The pattern may include regular
+		expressions when the expression is enclosed by [ and ]
+		characters.<br>
+		Note that the restrict list does not take precedence over the
+		exclude list - if a URL matches patterns in both lists it is
+		still excluded from the search results.<br>
+		 The default is specified by the <a href="attrs.html#restrict">restrict</a>
+		attribute in the configuration file.
+	  </dd>
+	  <dt>
+		<strong><a name="sort">sort</a></strong>
+	  </dt>
+	  <dd>
+		This can be one of <em>score</em>, <i>time</i>, <i>date</i>,
+		<em>title</em>, <i>revscore</i>, <i>revtime</i>, <i>revdate</i>,
+		or <em>revtitle</em>. It determines what type of sort will be
+		performed on the search results. The types <em>time</em> and
+		<em>date</em> are synonymous, as are <i>revtime</i> and
+		<em>revdate</em>, as all four sort on the time that the
+		documents were last modified, if this information is given
+		by the server.
+		The sort methods that begin with <em>rev</em> simply reverse
+		the order of the sort.<br>
+		 The default is specified by the
+		<a href="attrs.html#sort">sort</a> attribute in the
+		configuration file, and the template variable is
+		<a href="hts_templates.html#SELECTED_SORT">SELECTED_SORT</a>.
+		It is quite useful to make this item a drop down menu so the
+		user can select the type of sort at search time.
+	  </dd>
+	  <dt>
+		<strong><a name="startyear">startyear</a></strong>, <strong>startmonth</strong>, <strong>startday</strong>,
+		<strong>endyear</strong>, <strong>endmonth</strong>, <strong>endday</strong>
+	  </dt>
+	  <dd>
+		These values specify the allowed range of document
+		modification dates allowed in the search results.
+		They can be used to restrict the search
+		to particular "ages" of documents, new or old.<br>
+		 If the year is specified by two digits (e.g. 02), then it
+		is assumed to be in the 1900s if it is in the range 70-99, and
+		in the 2000s if it is in the range 00-69.  If the year is not
+		specified, the search does <strong>not</strong> exclude
+		documents outside the range of dates within the year.  Thus
+		it is impossible, for example, to restrict a search to
+		documents dated "December".<br>
+		Incompletely specified end dates are interpreted as follows:<br>
+		<table>
+		    <tr><th>Date</th>   <th>Becomes</th></tr>
+		    <tr><td>04-31</td>  <td>04-31- end of time</td></tr>
+		    <tr><td>05-1999</td><td>05-31-1999</td></tr>
+		    <tr><td>1999</td>   <td>12-31-1999</td></tr>
+		</table><br>
+		The default is the full range of documents in the database.
+		These values can also be specified by configuration attributes
+		of the same names in the
+		<a href="attr.html#startyear">configuration file</a>.
+		If a negative number is given for any of these, it is taken
+		as relative to the current year, month or day.
+	  </dd>
+	</dl>
+	<hr size="4" noshade>
+
+	Last modified: $Date: 2004/05/28 13:15:18 $
+
+  </body>
+</html>

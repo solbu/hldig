@@ -10,7 +10,7 @@ if TESTS
 TESTDIR = test
 endif
 
-SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include $(TESTDIR) po
+SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include docs $(TESTDIR) po
 
 EXTRA_DIST = config.rpath m4/ChangeLog  .version Makefile.config contrib ABOUT-NLS
 
