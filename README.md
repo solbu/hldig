@@ -5,24 +5,31 @@ htdig is a world-wide-web search system for an intranet or small internet.
 [htdig project page](https://github.com/andy5995/htdig/)
 
 This is a continuation of htdig, not maintained by the original developers.
-If you're in search of information or downloads from the original project,
-please visit
 
-[http://www.htdig.org/](http://www.htdig.org/)
+The original site is currently expired, but a version of it can be found at
+
+[htdig](https://andy5995.github.io/htdig/)
+
+Some of the documentation from that site still applies to htdig, but many
+links on that site are dead or no longer relevant.
+
+Recently, I wrote a quick-guide to [building and testing htdig](TESTING.md),
+but it doesn't cover all the programs in the htdig package.
+
+I've [opened a ticket](https://github.com/andy5995/htdig/issues/50)
+to discuss how to proceed with documentation and what type of web site to put
+in place.
 
 ## Try it out
 At the following link you can try a search. The form calls `htsearch` which searches
 a database created by `htdig` crawling [http://www.read.gov/aesop/](http://www.read.gov/aesop/)
 (try using keywords such as "frogs", "fox", or "Hercules").<br />
-[htdig Testing Ground](http://htdig.dreamhosters.com/) (try `htsearch`)
+[htdig Testing Ground](http://htdig.dreamhosters.com/)
 
 Project maintainer: Andy Alt
 Email: andy400-dev [at] yahoo.com
 
 [Contributors](https://github.com/andy5995/htdig/graphs/contributors)
-
-See the
-[notes on building and testing](TESTING.md)
 
 [How to make a pull request and sync your repo with the main fork](CONTRIBUTING.md)
 
