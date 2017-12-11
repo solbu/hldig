@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/andy5995/hldig.svg?branch=master)](https://travis-ci.org/andy5995/hldig)
 
-hl://Dig is a fork of ht://Dig, a world-wide-web search system for an intranet
-or small internet.
+hl://Dig is a fork of [ht://Dig](https://sourceforge.net/projects/htdig/),
+a world-wide-web search system for an intranet or small internet.
 
 We are in the process of updating the
 [web site](https://andy5995.github.io/hldig/)
@@ -15,8 +15,8 @@ to discuss how to proceed with documentation and what type of web site to put
 in place.
 
 ## Try it out
-At the following link you can try a search. This form calls htsearch to search
-the hl://Dig web site at [https://andy5995.github.io/hldig](https://andy5995.github.io/hldig)<br />
+At the following link you can try a search. This form calls htsearch<br />
+to search the hl://Dig web site at [https://andy5995.github.io/hldig](https://andy5995.github.io/hldig)<br />
 [hl://Dig Testing Ground](http://htdig.dreamhosters.com/)
 
 Project maintainer: Andy Alt
