@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <libgen.h>
 #include "template_functions.h"
 
 #define LINE_LEN_MAX 80
@@ -42,7 +43,7 @@ int main(int argc, char **argv)
   // char *input_file = argv[1];
   char input_file[FILENAME_LEN_MAX + 1];
   strcpy (input_file, argv[1]);
-  printf ("%s\n", input_file);
+
   FILE *fp = fopen (input_file, "r");
   if (fp == NULL)
   {
@@ -83,14 +84,12 @@ int main(int argc, char **argv)
   char *body;
   body = strchr (contents, '-');
 
-  free (contents);
-
   static int pos = 0;
 
   while (body[pos] == '-' || body[pos] == '\n')
     del_char_shift_left (body, body[pos]);
 
-  len = strlen (body);
+  len = strlen (body) - 1;
 
   /* truncate anything, especially newlines */
   while (body[len] != '>')
@@ -104,19 +103,22 @@ int main(int argc, char **argv)
     "body", body
   };
 
-/*   int pos = 0;
-  while (body != '\0'); */
+  static char *output;
+  output = render_template_file ("../templates/default.html", 2, data);
 
-  // printf ("%s\n", body);
+  output [strlen (output) + 1] = '\0';
+  output [strlen (output)] = '\n';
 
-  // static char *output;
-  render_template_file ("../templates/default.html", 2, data);
+  char dest_file[FILENAME_LEN_MAX + 1];
+  sprintf (dest_file, "%s.html", basename (input_file));
 
-  /* char *dest_file;
+  fopen (dest_file, "w");
 
-  dest_file = strrchr (input_file, '.');
+  fwrite (output, strlen (output), sizeof (char), fp);
 
-  printf ("%s\n", dest_file); */
+  fclose (fp);
+
+  free (contents);
 
   return 0;
 }
