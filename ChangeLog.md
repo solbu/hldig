@@ -1,7 +1,8 @@
 # ChangeLog
 
-Looking for the ChangeLog by the original development team?
-http://www.htdig.org/
+### Sun Dec 10
+
+This project fork was renamed to hl://Dig
 
 ### Sun Nov 19 2017
 
