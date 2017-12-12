@@ -12,7 +12,7 @@ AC_SUBST(MINOR_VERSION)
 MICRO_VERSION=[`expr $VERSION : '[0-9][0-9]*\.[0-9][0-9]*\.\([0-9][0-9]*\)'`]
 AC_SUBST(MICRO_VERSION)
 
-AC_INIT([htdig_db], 3.2.0b7)
+AC_INIT([htdig_db], 0.1.01)
 AC_CONFIG_SRCDIR([db_byteorder.c])
 AM_INIT_AUTOMAKE
 

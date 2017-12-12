@@ -1,5 +1,5 @@
-# Main Makefile for ht://Dig
-# Copyright (c) 1995-2017 The ht://Dig Group
+# Main Makefile for hl://Dig
+# Copyright (c) 2017 The hl://Dig Group
 # For copyright details, see the file COPYING in your distribution
 # or the GNU Library General Public License version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
@@ -10,7 +10,7 @@ if TESTS
 TESTDIR = test
 endif
 
-SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include docs $(TESTDIR) po
+SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include $(TESTDIR) po
 
 EXTRA_DIST = config.rpath m4/ChangeLog  .version Makefile.config contrib ABOUT-NLS
 

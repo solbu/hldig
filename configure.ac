@@ -1,7 +1,6 @@
-# Configuration for ht://Dig 3.x
 #
-# Part of the ht://Dig package   <http://www.htdig.org/>
-# Copyright (c) 1999-2017 The ht://Dig Group
+# Part of the hl://Dig package   <https://andy5995.github.io/hldig/>
+# Copyright (c) 1999-2017 The hl://Dig Group
 # For copyright details, see the file COPYING in your distribution
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
@@ -10,7 +9,7 @@ AC_PREREQ(2.57)
 #AC_INIT
 
 #
-# ht://Dig's version
+# hl://Dig's version
 #
 VERSION=`cat ${srcdir}/.version`
 HTDIG_MAJOR_VERSION=[`expr $VERSION : '\([0-9][0-9]*\)'`]
@@ -20,7 +19,7 @@ AC_SUBST(HTDIG_MINOR_VERSION)
 HTDIG_MICRO_VERSION=[`expr $VERSION : '[0-9][0-9]*\.[0-9][0-9]*\.\([0-9][0-9]*\)'`]
 AC_SUBST(HTDIG_MICRO_VERSION)
 
-AC_INIT([htdig], 3.2.0b7)
+AC_INIT([htdig], 0.1.01)
 AC_CONFIG_SRCDIR([htdig/htdig.cc])
 AM_INIT_AUTOMAKE
 
@@ -76,7 +75,7 @@ AC_ARG_WITH(search-form, [AC_HELP_STRING([--with-search-form=FILE],
 AC_SUBST(SEARCH_FORM)
 
 AC_ARG_WITH(image-dir, [AC_HELP_STRING([--with-image-dir=DIR],
-	[where the ht://Dig images are installed
+	[where the hl://Dig images are installed
 	@<:@PREFIX/htdocs/htdig@:>@])],
  IMAGE_DIR="$withval", IMAGE_DIR='${prefix}/htdocs/htdig')
 AC_SUBST(IMAGE_DIR)
@@ -320,7 +319,7 @@ then
     AC_PROG_APACHE(1.3.1)
 fi
 
-echo configuring ht://Dig version $VERSION
+echo configuring hl://Dig version $VERSION
 
 AC_CONFIG_SUBDIRS(db)
 
@@ -352,7 +351,7 @@ while echo $VERSION | grep '\$' >/dev/null ; do
   eval "VERSION=$VERSION"
 done
 
-AC_CONFIG_FILES([Makefile po/Makefile.in
+AC_CONFIG_FILES([Makefile
                  htcommon/Makefile
                  htdb/Makefile
                  htdig/Makefile
@@ -376,8 +375,8 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
                  htword/Makefile
                  include/Makefile
                  installdir/Makefile
-                 docs/Makefile
                  test/Makefile
+                  po/Makefile.in
                  test/test_functions])
 AC_OUTPUT
 
