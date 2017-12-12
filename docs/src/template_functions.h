@@ -33,6 +33,7 @@
 struct RenderOptions {
 	const char* placeholder_open;    // == "{{"
 	const char* placeholder_close;   // == "}}"
+	const char* data_open;
 
 	/* const char* condition_delimeter; // == " " */
 	/* const char* section_open;        // == "#" */
