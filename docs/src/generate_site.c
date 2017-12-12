@@ -27,6 +27,7 @@
 #include <string.h>
 #include <errno.h>
 #include <libgen.h>
+#include <dirent.h>
 #include "template_functions.h"
 
 #define LINE_LEN_MAX 80
@@ -40,85 +41,112 @@ trim (char *str);
 
 int main(int argc, char **argv)
 {
-  // char *input_file = argv[1];
-  char input_file[FILENAME_LEN_MAX + 1];
-  strcpy (input_file, argv[1]);
-
-  FILE *fp = fopen (input_file, "r");
-  if (fp == NULL)
+  struct dirent *dir_entry;
+  DIR *infiles_dir;
+  if ((infiles_dir = opendir ("../infiles")) == NULL)
   {
-    perror ("Error opening");
+    perror ("Error opening directory");
     return errno;
   }
 
-  char line[LINE_LEN_MAX + 1];
-  if (fgets (line, LINE_LEN_MAX, fp) == NULL)
+  while ((dir_entry = readdir (infiles_dir)) != NULL)
   {
-    perror ("Error getting line");
+    /* Only read .md files */
+    if (strstr (dir_entry->d_name, ".sct") == NULL)
+      continue;
+
+    char input_file[FILENAME_LEN_MAX + 1];
+    sprintf (input_file, "../infiles/%s", dir_entry->d_name);
+    printf ("%s\n", input_file);
+    // continue;
+
+    FILE *fp = fopen (input_file, "r");
+    if (fp == NULL)
+    {
+      perror ("Error opening");
+      return errno;
+    }
+
+    char line[LINE_LEN_MAX + 1];
+    if (fgets (line, LINE_LEN_MAX, fp) == NULL)
+    {
+      perror ("Error getting line");
+      fclose (fp);
+      return 1;
+    }
+
+    char *title;
+
+    title = strchr (line, ':');
+
+    del_char_shift_left (title, ':');
+
+    trim (title);
+
+    fseek (fp, 0, SEEK_END);
+    int len = ftell (fp);
+    char *contents = (char *)malloc (len + 1);
+    rewind (fp);
+
+    fread (contents, len, 1, fp);
+
+    if (fclose (fp) != 0)
+    {
+      perror ("Error  closing");
+      free (contents);
+      return errno;
+    }
+
+    char *body;
+
+    body = strchr (contents, '-');
+
+    if (body == NULL)
+    {
+      printf ("%s has the wrong format\n", input_file);
+      return 1;
+    }
+
+    while (body[0] == '-' || body[0] == '\n')
+      del_char_shift_left (body, body[0]);
+
+    len = strlen (body) - 1;
+
+    /* truncate anything, especially newlines */
+    while (body[len] != '>')
+    {
+      body[len] = '\0';
+      len--;
+    }
+
+    const char *data[] = {
+      "title", title,
+      "body", body
+    };
+
+    static char *output;
+    output = render_template_file ("../templates/default.html", 2, data);
+
+    len = strlen (output);
+    output [len + 1] = '\0';
+    output [len] = '\n';
+    // output [len] = EOF;
+
+    /* truncate the .sct extension */
+    input_file[strlen (input_file) - 4] = '\0';
+
+    char dest_file[FILENAME_LEN_MAX + 1];
+    sprintf (dest_file, "%s.html", basename (input_file));
+
+    fopen (dest_file, "w");
+
+    fwrite (output, strlen (output), sizeof (char), fp);
+
     fclose (fp);
-    return 1;
-  }
 
-  char *title;
-
-  title = strchr (line, ':');
-
-  del_char_shift_left (title, ':');
-
-  trim (title);
-
-  fseek (fp, 0, SEEK_END);
-  int len = ftell (fp);
-  char *contents = (char *)malloc (len + 1);
-  rewind (fp);
-
-  fread (contents, len, 1, fp);
-
-  if (fclose (fp) != 0)
-  {
-    perror ("Error  closing");
     free (contents);
-    return errno;
+
   }
-
-  char *body;
-  body = strchr (contents, '-');
-
-  static int pos = 0;
-
-  while (body[pos] == '-' || body[pos] == '\n')
-    del_char_shift_left (body, body[pos]);
-
-  len = strlen (body) - 1;
-
-  /* truncate anything, especially newlines */
-  while (body[len] != '>')
-  {
-    body[len] = '\0';
-    len--;
-  }
-
-  const char *data[] = {
-    "title", title,
-    "body", body
-  };
-
-  static char *output;
-  output = render_template_file ("../templates/default.html", 2, data);
-
-  output [strlen (output) + 1] = '\0';
-  output [strlen (output)] = '\n';
-
-  char dest_file[FILENAME_LEN_MAX + 1];
-  sprintf (dest_file, "%s.html", basename (input_file));
-
-  fopen (dest_file, "w");
-
-  fwrite (output, strlen (output), sizeof (char), fp);
-
-  fclose (fp);
-
-  free (contents);
 
   return 0;
 }
