@@ -104,6 +104,8 @@ int main(int argc, char **argv)
     if (body == NULL)
     {
       printf ("%s has the wrong format\n", input_file);
+      fclose (fp);
+      free (contents);
       return 1;
     }
 
@@ -138,7 +140,12 @@ int main(int argc, char **argv)
     char dest_file[FILENAME_LEN_MAX + 1];
     sprintf (dest_file, "%s.html", basename (input_file));
 
-    fopen (dest_file, "w");
+    if ((fp = fopen (dest_file, "w")) == NULL)
+    {
+      perror ("Error opening");
+      free (contents);
+      return errno;
+    }
 
     fwrite (output, strlen (output), sizeof (char), fp);
 
