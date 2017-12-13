@@ -1,0 +1,7 @@
+
+simplecgen will read from the docs/infiles directory and create html files
+in the docs folder using templates/default.html
+
+To run simplecgen, from the docs directory, type in
+
+    src/simplecgen
