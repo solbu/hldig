@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 
   while ((dir_entry = readdir (infiles_dir)) != NULL)
   {
-    /* Only read .md files */
+    /* Only read .sct files */
     if (strstr (dir_entry->d_name, ".sct") == NULL)
       continue;
 
@@ -105,11 +105,22 @@ int main(int argc, char **argv)
 
     trim (title);
 
-    fseek (fp, 0, SEEK_END);
-    int len = ftell (fp);
-    char *contents = (char *)malloc (len + 1);
-    rewind (fp);
+    if (fseek (fp, 0, SEEK_END) != 0)
+    {
+      perror ("Error while seeking file");
+      return errno;
+    }
 
+    size_t len = ftell (fp);
+
+    char *contents;
+    if ((contents = calloc (len, 1)) == NULL)
+    {
+      printf ("Unable to allocate memory\n");
+      return 1;
+    }
+
+    rewind (fp);
     fread (contents, len, 1, fp);
 
     if (fclose (fp) == EOF)
@@ -120,7 +131,6 @@ int main(int argc, char **argv)
     }
 
     char *body;
-
     body = strchr (contents, '-');
 
     if (body == NULL)
@@ -155,9 +165,8 @@ int main(int argc, char **argv)
     output = render_template_file ("templates/default.html", 2, data);
 
     len = strlen (output);
-    output [len + 1] = '\0';
     output [len] = '\n';
-    // output [len] = EOF;
+    output [len + 1] = '\0';
 
     /* truncate the .sct extension */
     input_file[strlen (input_file) - 4] = '\0';
@@ -172,7 +181,9 @@ int main(int argc, char **argv)
       return errno;
     }
 
-    fwrite (output, strlen (output), sizeof (char), fp);
+    // printf ("%s\n", output);
+
+    fwrite (output, strlen (output), 1, fp);
 
     if (fclose (fp) == EOF)
     {
