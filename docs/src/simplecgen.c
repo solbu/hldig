@@ -1,27 +1,24 @@
 /*
- * generate_site.c
+ * simplecgen.c: generates html files using the simplectemplate library
  *
- * Copyright 2017 Andy <andy@oceanus>
+ * Copyright 2017 Andy <andy400-004@yahoo.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- *
- *
- */
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+*/
 
-
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,6 +26,10 @@
 #include <libgen.h>
 #include <dirent.h>
 #include "template_functions.h"
+
+#ifndef VERSION
+  #define VERSION "unversioned"
+#endif
 
 #define LINE_LEN_MAX 80
 #define FILENAME_LEN_MAX 248
@@ -41,9 +42,26 @@ trim (char *str);
 
 int main(int argc, char **argv)
 {
+  if (argc > 1)
+  {
+    if (strcmp (argv[1], "--version") == 0)
+    {
+      printf ("%s\n", VERSION);
+      return 0;
+    }
+    else
+    {
+      printf ("unsupported command line arguments given\n");
+      return 1;
+    }
+  }
+
   struct dirent *dir_entry;
   DIR *infiles_dir;
-  if ((infiles_dir = opendir ("../infiles")) == NULL)
+  /* FIXME: need a check to make sure the directory and file exists
+   * add more flexibility so the user can change this (hint: config file)
+   */
+  if ((infiles_dir = opendir ("infiles")) == NULL)
   {
     perror ("Error opening directory");
     return errno;
@@ -56,9 +74,8 @@ int main(int argc, char **argv)
       continue;
 
     char input_file[FILENAME_LEN_MAX + 1];
-    sprintf (input_file, "../infiles/%s", dir_entry->d_name);
-    printf ("%s\n", input_file);
-    // continue;
+    sprintf (input_file, "infiles/%s", dir_entry->d_name);
+    printf ("processing %s\n", input_file);
 
     FILE *fp = fopen (input_file, "r");
     if (fp == NULL)
@@ -78,6 +95,11 @@ int main(int argc, char **argv)
     char *title;
 
     title = strchr (line, ':');
+    if (title == NULL)
+    {
+      printf ("%s has the wrong format\n", input_file);
+      return 1;
+    }
 
     del_char_shift_left (title, ':');
 
@@ -90,7 +112,7 @@ int main(int argc, char **argv)
 
     fread (contents, len, 1, fp);
 
-    if (fclose (fp) != 0)
+    if (fclose (fp) == EOF)
     {
       perror ("Error  closing");
       free (contents);
@@ -127,7 +149,10 @@ int main(int argc, char **argv)
     };
 
     static char *output;
-    output = render_template_file ("../templates/default.html", 2, data);
+    /* FIXME: need a check to make sure the directory and file exists
+     * add more flexibility so the user can change this (hint: config file)
+     */
+    output = render_template_file ("templates/default.html", 2, data);
 
     len = strlen (output);
     output [len + 1] = '\0';
@@ -149,7 +174,10 @@ int main(int argc, char **argv)
 
     fwrite (output, strlen (output), sizeof (char), fp);
 
-    fclose (fp);
+    if (fclose (fp) == EOF)
+    {
+      perror ("Error while closing file\n");
+    }
 
     free (contents);
 
@@ -209,14 +237,6 @@ trim (char *str)
 
   n--;
   c = str[n];
-  // n = 0;
-  /* while (str[n] != '\0')
-  {
-    printf ("%d\n", c);
-    n++;
-  }
-  return 0; */
-
 
   while (c == ' ' || c == '\t' || c == '\n' || c == EOF)
   {
