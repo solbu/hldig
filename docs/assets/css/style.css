@@ -1,0 +1,38 @@
+.plaintext {
+  font-size: 18px;
+  font-family: arial;
+}
+
+.plaintext a:link {
+  color: #232c47;
+  border-style: solid;
+  border-color: #aeaeae;
+  border-width: 0px 0px 4px 0px;
+}
+
+.plaintext a:link:hover {
+  color: #232c47;
+  border-style: solid;
+  border-color: #aeaeae;
+  border-width: 4px 0px 4px 0px;
+  text-decoration: none;
+}
+
+.footer-left-col {
+  width: 35%;
+  vertical-align: text-top;
+}
+
+.footer-right-col {
+  width: 65%;
+  text-align: left;
+  vertical-align: text-top;
+}
+
+.sct_footer {
+  text-align: right;
+}
+
+h1 {
+text-align: center;
+}
