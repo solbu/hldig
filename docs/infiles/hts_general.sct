@@ -1,0 +1,52 @@
+title:hl://Dig: htsearch | General
+layout:htsearch
+---
+  <p>
+    Htsearch is the actual search engine of the ht://Dig search
+    system. It is a CGI program that is expected to be invoked by
+    an HTML form. It will accept both the GET and POST methods of
+    passing data to the CGI program.
+  </p>
+  <h2>
+    Files used by htsearch
+  </h2>
+  <dl>
+    <dt>
+    <a href="attrs.html#config_dir">CONFIG_DIR</a>/htdig.conf
+    </dt>
+    <dd>
+    The default configuration file.
+    </dd>
+    <dt>
+    <a href="attrs.html#common_dir">COMMON_DIR</a>/header.html
+    </dt>
+    <dd>
+    The default search results header file
+    </dd>
+    <dt>
+    <a href="attrs.html#common_dir">COMMON_DIR</a>/footer.html
+    </dt>
+    <dd>
+    The default search results footer file
+    </dd>
+    <dt>
+    <a href="attrs.html#common_dir">COMMON_DIR</a>/wrapper.html
+    </dt>
+    <dd>
+    The default search results wrapper file, that contains the
+    header and footer together in one file
+    </dd>
+    <dt>
+    <a href="attrs.html#common_dir">COMMON_DIR</a>/nomatch.html
+    </dt>
+    <dd>
+    The default 'no matches found' HTML file
+    </dd>
+    <dt>
+    <a href="attrs.html#common_dir">COMMON_DIR</a>/syntax.html
+    </dt>
+    <dd>
+    The default file that explains boolean expression syntax
+    errors
+    </dd>
+  </dl>
