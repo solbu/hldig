@@ -204,9 +204,8 @@ int main(int argc, char **argv)
      * add more flexibility so the user can change this (hint: config file)
      */
     output_head = render_template_file ("templates/head.html", 1, title_data);
-    trim (output_head);
+
     output_layout = render_template_file (layout_template, 1, body_data);
-    trim (output_layout);
 
     /* FIXME: because there is no data being passed to the tail, fread
      * could be used to get the output.
