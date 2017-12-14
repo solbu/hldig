@@ -84,17 +84,17 @@ int main(int argc, char **argv)
       return errno;
     }
 
-    char line[LINE_LEN_MAX + 1];
-    if (fgets (line, LINE_LEN_MAX, fp) == NULL)
+    /* get the title line */
+    char title_line[LINE_LEN_MAX + 1];
+    if (fgets (title_line, LINE_LEN_MAX, fp) == NULL)
     {
       perror ("Error getting line");
       fclose (fp);
       return 1;
     }
 
-    char *title;
+    char *title = strchr (title_line, ':');
 
-    title = strchr (line, ':');
     if (title == NULL)
     {
       printf ("%s has the wrong format\n", input_file);
@@ -105,6 +105,28 @@ int main(int argc, char **argv)
 
     trim (title);
 
+    /* get the layout line */
+    char layout_line[LINE_LEN_MAX + 1];
+
+    if (fgets (layout_line, LINE_LEN_MAX, fp) == NULL)
+    {
+      perror ("Error getting line");
+      fclose (fp);
+      return 1;
+    }
+
+    char *layout = strchr (layout_line, ':');
+
+    if (layout == NULL)
+    {
+      printf ("%s has the wrong format\n", input_file);
+      return 1;
+    }
+
+    del_char_shift_left (layout, ':');
+    trim (layout);
+
+    /* Go back to the beginning of the file */
     if (fseek (fp, 0, SEEK_END) != 0)
     {
       perror ("Error while seeking file");
@@ -130,6 +152,7 @@ int main(int argc, char **argv)
       return errno;
     }
 
+    /* find the first ocurrence of "-" */
     char *body;
     body = strchr (contents, '-');
 
@@ -153,16 +176,46 @@ int main(int argc, char **argv)
       len--;
     }
 
+    /* Because the head and layout templates are split now, this is not used
+     *
     const char *data[] = {
       "title", title,
       "body", body
     };
+    *
+    */
 
-    static char *output;
+    const char *title_data[] = {
+      "title", title
+    };
+
+    const char *body_data[] = {
+      "body", body
+    };
+
+    char layout_template[FILENAME_LEN_MAX];
+    sprintf (layout_template, "templates/%s.html", layout);
+
+    static char *output_head;
+    static char *output_layout;
+    static char *output_tail;
+
     /* FIXME: need a check to make sure the directory and file exists
      * add more flexibility so the user can change this (hint: config file)
      */
-    output = render_template_file ("templates/default.html", 2, data);
+    output_head = render_template_file ("templates/head.html", 1, title_data);
+    trim (output_head);
+    output_layout = render_template_file (layout_template, 1, body_data);
+    trim (output_layout);
+
+    /* FIXME: because there is no data being passed to the tail, fread
+     * could be used to get the output.
+     */
+    output_tail = render_template_file ("templates/tail.html", 0, "");
+
+    char output[strlen (output_head) + strlen (output_layout) +
+        strlen (output_tail) + 1];
+    sprintf (output, "%s%s%s", output_head, output_layout, output_tail);
 
     len = strlen (output);
     output [len] = '\n';
@@ -191,6 +244,7 @@ int main(int argc, char **argv)
     }
 
     free (contents);
+
 
   }
 
