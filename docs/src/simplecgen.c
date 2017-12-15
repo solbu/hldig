@@ -40,6 +40,9 @@ del_char_shift_left (char *str, char c);
 int
 trim (char *str);
 
+void
+add_newline (char *str);
+
 int main(int argc, char **argv)
 {
   if (argc > 1)
@@ -54,6 +57,32 @@ int main(int argc, char **argv)
       printf ("unsupported command line arguments given\n");
       return 1;
     }
+  }
+
+  FILE *tail_fp;
+  if ((tail_fp = fopen ("templates/tail.html", "r")) == NULL)
+  {
+    perror ("Error opening file");
+    return errno;
+  }
+
+  fseek (tail_fp, 0, SEEK_END);
+  size_t tail_size = ftell (tail_fp);
+  rewind (tail_fp);
+
+  char *output_tail;
+  if ((output_tail = calloc (tail_size + 1, 1)) == NULL)
+  {
+    printf ("Unable to allocate memory\n");
+    return 1;
+  }
+
+  fread (output_tail, tail_size, 1, tail_fp);
+
+  if (fclose (tail_fp) == EOF)
+  {
+    perror ("Error closing file");
+    return errno;
   }
 
   struct dirent *dir_entry;
@@ -136,7 +165,7 @@ int main(int argc, char **argv)
     size_t len = ftell (fp);
 
     char *contents;
-    if ((contents = calloc (len, 1)) == NULL)
+    if ((contents = calloc (len + 1, 1)) == NULL)
     {
       printf ("Unable to allocate memory\n");
       return 1;
@@ -196,29 +225,21 @@ int main(int argc, char **argv)
     char layout_template[FILENAME_LEN_MAX];
     sprintf (layout_template, "templates/%s.html", layout);
 
-    static char *output_head;
-    static char *output_layout;
-    static char *output_tail;
+    char *output_head;
+    char *output_layout;
 
     /* FIXME: need a check to make sure the directory and file exists
      * add more flexibility so the user can change this (hint: config file)
      */
     output_head = render_template_file ("templates/head.html", 1, title_data);
+    add_newline (output_head);
 
     output_layout = render_template_file (layout_template, 1, body_data);
-
-    /* FIXME: because there is no data being passed to the tail, fread
-     * could be used to get the output.
-     */
-    output_tail = render_template_file ("templates/tail.html", 0, "");
+    add_newline (output_layout);
 
     char output[strlen (output_head) + strlen (output_layout) +
-        strlen (output_tail) + 1];
+        tail_size + 1];
     sprintf (output, "%s%s%s", output_head, output_layout, output_tail);
-
-    len = strlen (output);
-    output [len] = '\n';
-    output [len + 1] = '\0';
 
     /* truncate the .sct extension */
     input_file[strlen (input_file) - 4] = '\0';
@@ -233,8 +254,6 @@ int main(int argc, char **argv)
       return errno;
     }
 
-    // printf ("%s\n", output);
-
     fwrite (output, strlen (output), 1, fp);
 
     if (fclose (fp) == EOF)
@@ -246,7 +265,7 @@ int main(int argc, char **argv)
 
 
   }
-
+  free (output_tail);
   return 0;
 }
 
@@ -310,4 +329,13 @@ trim (char *str)
   }
 
   return n;
+}
+
+void
+add_newline (char *str)
+{
+  static int len;
+  len = strlen (str);
+  str[len + 1] = '\0';
+  str[len] = '\n';
 }
