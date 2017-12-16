@@ -262,10 +262,18 @@ int main(int argc, char **argv)
     }
 
     free (contents);
-
+    free (output_head);
+    free (output_layout);
 
   }
   free (output_tail);
+
+  if (closedir (infiles_dir) != 0)
+  {
+    perror ("Error closing directory:");
+    return errno;
+  }
+
   return 0;
 }
 
@@ -334,8 +342,9 @@ trim (char *str)
 void
 add_newline (char *str)
 {
-  static int len;
+  static size_t len;
   len = strlen (str);
-  str[len + 1] = '\0';
+  str = realloc (str, len + 2);
   str[len] = '\n';
+  str[len + 1] = '\0';
 }
