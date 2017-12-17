@@ -1,69 +1,85 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!DOCTYPE html>
 <html>
   <head>
-	<title>
-	  ht://Dig: Configuration file format -- Variable Expansion
-	</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>hl://Dig: Configuration file format | Variable Expansion</title>
+    <link rel="alternate" type="application/rss+xml" title="Recent commits to hldig:master" href="https://github.com/andy5995/hldig/commits/master.atom">
+    <link rel="stylesheet" href="assets/css/style.css">
   </head>
-  <body bgcolor="#eef7ff">
-	<h1>
-	  Configuration file format -- Variable Expansion
-	</h1>
-	<p>
-	  ht://Dig Copyright &copy; 1995-2004 <a href="THANKS.html">The ht://Dig Group</a><br>
-	  Please see the file <a href="COPYING">COPYING</a> for
-	  license information.
-	</p>
-	<hr size="4" noshade>
-	<p>
-	  Attribute values can contain
-	  references to other attributes. This is done similarly to how
-	  Perl, Bourne shell, and Makefiles use variables. The variables
-	  that are referenced will be expanded when the variable is used,
-	  not when it is defined. This means that attributes don't have
-	  to be defined in the order that they are used. 
-	</p>
-	<p>
-	  Example attribute reference in an attribute value:
-	</p>
-	<blockquote>
-	  database_base: ${database_dir}/htdig
-	</blockquote>
-	<p>
-	  or 
-	</p>
-	<blockquote>
-	  database_base: $database_dir/htdig
-	</blockquote>
-	<p>
-	  Many default values use the attribute expansion mechanism to
-	  make configuration easier and more generic.
-	</p>
-	<p>
-	  In addition to variable expansion, it is also possible to
-	  include the contents of a file as the value of an attribute.
-	  This is done by putting the filename in backquotes (`).
-	  Within the backquotes, variable expansion will still work so
-	  that files can be specified relative to some path. The
-	  backquotes and the filename will be replaced by the contents
-	  of the file if it exists. All whitespace (spaces, tabs,
-	  newlines, etc) in the file are condensed to one space before
-	  the substitution takes place. The following are some examples
-	  of the use of the backquoting scheme:
-	</p>
-	<blockquote>
-	<table>
-	  <tr>
-		<td nowrap>
-		  start_url: `${common_dir}/starting_points`<br>
-		  limit_urls_to: `${common_dir}/limit_list`
-		</td>
-	  </tr>
-	</table>
-	</blockquote>
-	<hr size="4" noshade>
-  
-	Last modified: $Date: 2004/05/28 13:15:18 $
-
+  <body>
+    <h1>hl://Dig: Configuration file format | Variable Expansion</h1>
+    <table>
+      <tr>
+        <td class = "footer-left-col">
+          <img src="up.gif" alt="^" width=9 height=9> <a href="index.html" target="_top">hl://Dig</a> <br>
+            <br>
+    <strong>File format</strong> <font face="helvetica,arial" size="2"><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_general.html" target="body">General</a><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_blocks.html" target="body">Block restrictions</a><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_types.html" target="body">Attribute types</a><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_variables.html" target="body">Variable expansion</a><br>
+  </font><br>
+  <strong>Attributes</strong> <font face="helvetica,arial" size="2"><br>
+    <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="cf_byprog.html" target="contents">By program</a><br>
+    <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="cf_byname.html" target="contents">Alphabetical</a><br>
+  </font>
+          </td>
+        <td class = "footer-right-col">
+            <p>
+    Attribute values can contain
+    references to other attributes. This is done similarly to how
+    Perl, Bourne shell, and Makefiles use variables. The variables
+    that are referenced will be expanded when the variable is used,
+    not when it is defined. This means that attributes don't have
+    to be defined in the order that they are used.
+  </p>
+  <p>
+    Example attribute reference in an attribute value:
+  </p>
+  <blockquote>
+    database_base: ${database_dir}/htdig
+  </blockquote>
+  <p>
+    or
+  </p>
+  <blockquote>
+    database_base: $database_dir/htdig
+  </blockquote>
+  <p>
+    Many default values use the attribute expansion mechanism to
+    make configuration easier and more generic.
+  </p>
+  <p>
+    In addition to variable expansion, it is also possible to
+    include the contents of a file as the value of an attribute.
+    This is done by putting the filename in backquotes (`).
+    Within the backquotes, variable expansion will still work so
+    that files can be specified relative to some path. The
+    backquotes and the filename will be replaced by the contents
+    of the file if it exists. All whitespace (spaces, tabs,
+    newlines, etc) in the file are condensed to one space before
+    the substitution takes place. The following are some examples
+    of the use of the backquoting scheme:
+  </p>
+  <blockquote>
+  <table>
+    <tr>
+    <td nowrap>
+      start_url: `${common_dir}/starting_points`<br>
+      limit_urls_to: `${common_dir}/limit_list`
+    </td>
+    </tr>
+  </table>
+  </blockquote>
+        </td>
+      </tr>
+    </table>
+    <p><a href="https://github.com/andy5995/hldig/commits/master.atom">
+    <img src="assets/images/rss_23x23.jpeg" alt="rss" height="23" width="23"></p>
+    </a>
+    <p class="sct_footer">
+      Powered by <a href="https://github.com/dafky2000/simplectemplate">simplectemplate</a>
+    </p>
   </body>
 </html>

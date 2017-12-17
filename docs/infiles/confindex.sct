@@ -1,0 +1,13 @@
+title:Configuration File Overview
+layout:default
+---
+  <strong>File format</strong> <font face="helvetica,arial" size="2"><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_general.html" target="body">General</a><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_blocks.html" target="body">Block restrictions</a><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_types.html" target="body">Attribute types</a><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_variables.html" target="body">Variable expansion</a><br>
+  </font><br>
+  <strong>Attributes</strong> <font face="helvetica,arial" size="2"><br>
+    <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="cf_byprog.html" target="contents">By program</a><br>
+    <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="cf_byname.html" target="contents">Alphabetical</a><br>
+  </font>

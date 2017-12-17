@@ -1,32 +1,7 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>General</title>
-    <link rel="alternate" type="application/rss+xml" title="Recent commits to hldig:master" href="https://github.com/andy5995/hldig/commits/master.atom">
-    <link rel="stylesheet" href="assets/css/style.css">
-  </head>
-  <body>
-    <h1>General</h1>
-    <table>
-      <tr>
-        <td class = "footer-left-col">
-          <img src="up.gif" alt="^" width=9 height=9> <a href="index.html" target="_top">hl://Dig</a> <br>
-            <br>
-    <strong>File format</strong> <font face="helvetica,arial" size="2"><br>
-    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_general.html" target="body">General</a><br>
-    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_blocks.html" target="body">Block restrictions</a><br>
-    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_types.html" target="body">Attribute types</a><br>
-    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_variables.html" target="body">Variable expansion</a><br>
-  </font><br>
-  <strong>Attributes</strong> <font face="helvetica,arial" size="2"><br>
-    <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="cf_byprog.html" target="contents">By program</a><br>
-    <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="cf_byname.html" target="contents">Alphabetical</a><br>
-  </font>
-          </td>
-        <td class = "footer-right-col">
-              All programs in the ht://Dig system use a flexible configuration
+title:General
+layout:confindex
+---
+    All programs in the ht://Dig system use a flexible configuration
     file. This configuration file is a plain ASCII text file. Each line in
     the file is either a comment or contains an attribute.
     Comment lines are blank lines or lines that start with a '#'.
@@ -82,14 +57,3 @@
     <code>include: common.conf</code>
     </dd>
   </dl>
-        </td>
-      </tr>
-    </table>
-    <p><a href="https://github.com/andy5995/hldig/commits/master.atom">
-    <img src="assets/images/rss_23x23.jpeg" alt="rss" height="23" width="23"></p>
-    </a>
-    <p class="sct_footer">
-      Powered by <a href="https://github.com/dafky2000/simplectemplate">simplectemplate</a>
-    </p>
-  </body>
-</html>

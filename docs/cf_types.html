@@ -1,103 +1,119 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!DOCTYPE html>
 <html>
   <head>
-	<title>
-	  ht://Dig: Configuration file format -- Attribute Types
-	</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>hl://Dig: Configuration file format | Attribute Types</title>
+    <link rel="alternate" type="application/rss+xml" title="Recent commits to hldig:master" href="https://github.com/andy5995/hldig/commits/master.atom">
+    <link rel="stylesheet" href="assets/css/style.css">
   </head>
-  <body bgcolor="#eef7ff">
-	<h1>
-	  Configuration file format -- Attribute Types
-	</h1>
-	<p>
-	  ht://Dig Copyright &copy; 1995-2004 <a href="THANKS.html">The ht://Dig Group</a><br>
-	  Please see the file <a href="COPYING">COPYING</a> for
-	  license information.
-	</p>
-	<hr size="4" noshade>
-	<p>
-	  The meaning of the attribute
-	  value depends on the attribute itself. In general, the values
-	  can be of several types:
-	</p>
-	<dl>
-	  <dt>
-		<strong>String</strong>
-	  </dt>
-	  <dd>
-		Any string of characters except newline.
-	  </dd>
-	  <dt>
-		<strong>String List</strong>
-	  </dt>
-	  <dd>
-		A sequence of strings separated by whitespace. Individual
-		strings within the list cannot be quoted and therefore
-		cannot contain whitespace.
-	  </dd>
-	  <dt>
-		<strong>Quoted String List</strong>
-	  </dt>
-	  <dd>
-		A sequence of strings separated by whitespace. Individual
-		strings within the list may be quoted using single or double
-		quotes. The quotes are needed when the individual strings
-		contain whitespace. If you want a quote mark or a backslash
-		to be inserted as-is into a string, you must preceed it with
-		a backslash.
-	  </dd>
-	  <dt>
-	        <strong>Pattern List</strong>
-	  </dt>
-	  <dd>
-	        A sequence of patterns separated by whitespace. Normal
-	        strings are considered patterns to be matched
-	        exactly. Strings surrounded by [ and ] are considered
-	        regular expressions (ignoring the outer [] characters).
-	  </dd>
-	  <dt>
-		<strong>Number</strong>
-	  </dt>
-	  <dd>
-		A string that represents a number. The attribute determines
-		if the number has to be a pure integer or if it can be a
-		floating point number.
-	  </dd>
-	  <dt>
-		<strong>Boolean</strong>
-	  </dt>
-	  <dd>
-		A string that represents a truth value. Acceptable truth
-		values are given below.<br>
-		 For <em>true</em>:
-		<ul>
-		  <li>
-			yes
-		  </li>
-		  <li>
-			true
-		  </li>
-		  <li>
-			1
-		  </li>
-		</ul>
-		For <em>false</em>:
-		<ul>
-		  <li>
-			no
-		  </li>
-		  <li>
-			false
-		  </li>
-		  <li>
-			0
-		  </li>
-		</ul>
-	  </dd>
-	</dl>
-	<hr size="4" noshade>
-
-	Last modified: $Date: 2004/05/28 13:15:18 $
-
+  <body>
+    <h1>hl://Dig: Configuration file format | Attribute Types</h1>
+    <table>
+      <tr>
+        <td class = "footer-left-col">
+          <img src="up.gif" alt="^" width=9 height=9> <a href="index.html" target="_top">hl://Dig</a> <br>
+            <br>
+    <strong>File format</strong> <font face="helvetica,arial" size="2"><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_general.html" target="body">General</a><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_blocks.html" target="body">Block restrictions</a><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_types.html" target="body">Attribute types</a><br>
+    <img src="dot.gif" alt="*" width=9 height=9> <a href="cf_variables.html" target="body">Variable expansion</a><br>
+  </font><br>
+  <strong>Attributes</strong> <font face="helvetica,arial" size="2"><br>
+    <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="cf_byprog.html" target="contents">By program</a><br>
+    <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="cf_byname.html" target="contents">Alphabetical</a><br>
+  </font>
+          </td>
+        <td class = "footer-right-col">
+            <p>
+    The meaning of the attribute
+    value depends on the attribute itself. In general, the values
+    can be of several types:
+  </p>
+  <dl>
+    <dt>
+    <strong>String</strong>
+    </dt>
+    <dd>
+    Any string of characters except newline.
+    </dd>
+    <dt>
+    <strong>String List</strong>
+    </dt>
+    <dd>
+    A sequence of strings separated by whitespace. Individual
+    strings within the list cannot be quoted and therefore
+    cannot contain whitespace.
+    </dd>
+    <dt>
+    <strong>Quoted String List</strong>
+    </dt>
+    <dd>
+    A sequence of strings separated by whitespace. Individual
+    strings within the list may be quoted using single or double
+    quotes. The quotes are needed when the individual strings
+    contain whitespace. If you want a quote mark or a backslash
+    to be inserted as-is into a string, you must preceed it with
+    a backslash.
+    </dd>
+    <dt>
+          <strong>Pattern List</strong>
+    </dt>
+    <dd>
+          A sequence of patterns separated by whitespace. Normal
+          strings are considered patterns to be matched
+          exactly. Strings surrounded by [ and ] are considered
+          regular expressions (ignoring the outer [] characters).
+    </dd>
+    <dt>
+    <strong>Number</strong>
+    </dt>
+    <dd>
+    A string that represents a number. The attribute determines
+    if the number has to be a pure integer or if it can be a
+    floating point number.
+    </dd>
+    <dt>
+    <strong>Boolean</strong>
+    </dt>
+    <dd>
+    A string that represents a truth value. Acceptable truth
+    values are given below.<br>
+     For <em>true</em>:
+    <ul>
+      <li>
+      yes
+      </li>
+      <li>
+      true
+      </li>
+      <li>
+      1
+      </li>
+    </ul>
+    For <em>false</em>:
+    <ul>
+      <li>
+      no
+      </li>
+      <li>
+      false
+      </li>
+      <li>
+      0
+      </li>
+    </ul>
+    </dd>
+  </dl>
+        </td>
+      </tr>
+    </table>
+    <p><a href="https://github.com/andy5995/hldig/commits/master.atom">
+    <img src="assets/images/rss_23x23.jpeg" alt="rss" height="23" width="23"></p>
+    </a>
+    <p class="sct_footer">
+      Powered by <a href="https://github.com/dafky2000/simplectemplate">simplectemplate</a>
+    </p>
   </body>
 </html>
