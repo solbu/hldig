@@ -225,6 +225,13 @@ int main(int argc, char **argv)
     char layout_template[FILENAME_LEN_MAX];
     sprintf (layout_template, "templates/%s.html", layout);
 
+    FILE *fp_layout;
+    if ((fp_layout = fopen (layout_template, "r")) == NULL)
+    {
+      printf ("  :Error: layout: %s not found\n", layout_template);
+      return 1;
+    }
+
     char *output_head;
     char *output_layout;
 
