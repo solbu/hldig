@@ -52,7 +52,7 @@
 //
 // Add convenience methods taking WordReference instead of String
 //
-// The error model is *not* to use exceptions. 
+// The error model is *not* to use exceptions.
 //
 // To get a cursor use the Open method of WordDBCursor. I find this
 // more convinient than getting a cursor from WordDB.
@@ -221,19 +221,19 @@ public:
     String key;
 
     if (wordRef.Key ().Pack (key) != OK)
-        return DB_RUNRECOVERY;
+      return DB_RUNRECOVERY;
 
     int ret;
     if ((ret = Get (0, key, data, 0)) != 0)
       return ret;
 
-      return wordRef.Unpack (key, data) == OK ? 0 : DB_RUNRECOVERY;
+    return wordRef.Unpack (key, data) == OK ? 0 : DB_RUNRECOVERY;
   }
 
   //
   // Returns 0 of the key of wordRef matches an entry in the database.
   // Could be implemented with Get but is not because we don't
-  // need to build a wordRef with the entry found in the base. 
+  // need to build a wordRef with the entry found in the base.
   //
   inline int Exists (const WordReference & wordRef) const
   {
@@ -244,9 +244,9 @@ public:
     String data;
 
     if (wordRef.Key ().Pack (key) != OK)
-        return DB_RUNRECOVERY;
+      return DB_RUNRECOVERY;
 
-      return Get (0, key, data, 0);
+    return Get (0, key, data, 0);
   }
 
   //

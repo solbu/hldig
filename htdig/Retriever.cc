@@ -107,7 +107,7 @@ words (*(HtConfiguration::config ())), words_to_add (100, 0.75)
     urls_parsed = fopen ((char *) filelog, "r");
     if (urls_parsed != 0)
     {
-      // read all url discovered but not fetched before 
+      // read all url discovered but not fetched before
       while (fgets (buffer, sizeof (buffer), urls_parsed))
       {
         l = strlen (buffer);
@@ -165,9 +165,9 @@ Retriever::setUsernamePassword (const char *credentials)
 //   the correct server to add the URL's path to.
 //
 //   from == 0 urls in db.docs and no db.log
-//   from == 1 urls in start_url add url only if not already in the list 
-//   from == 2 add url from db.log 
-//   from == 3 urls in db.docs and there was a db.log 
+//   from == 1 urls in start_url add url only if not already in the list
+//   from == 2 add url from db.log
+//   from == 3 urls in db.docs and there was a db.log
 //
 void
 Retriever::Initial (const String & list, int from)
@@ -234,8 +234,8 @@ Retriever::Initial (List & list, int from)
   String *str;
 
   // from == 0 is an optimisation for pushing url in update mode
-  //  assuming that 
-  // 1) there's many more urls in docdb 
+  //  assuming that
+  // 1) there's many more urls in docdb
   // 2) they're pushed first
   // 3) there's no duplicate url in docdb
   // then they don't need to be check against already pushed urls
@@ -246,7 +246,7 @@ Retriever::Initial (List & list, int from)
   // db.log? For this it's using a side effect with 'visited' and that
   // urls in db.docs are only pushed via this method, and that db.log are pushed
   // first, db.docs second, start_urls third!
-  //  
+  //
   if (!from && visited.Count ())
   {
     from = 3;
@@ -384,9 +384,9 @@ Retriever::Start ()
 
   HtConfiguration *config = HtConfiguration::config ();
 
-  //  
+  //
   // Always sig . The delay bother me but a bad db is worst
-  // 
+  //
   if (Retriever_noLog != log)
   {
     sig_handlers ();
@@ -547,7 +547,7 @@ Retriever::Start ()
 #endif
 
 
-  // if we exited on signal 
+  // if we exited on signal
   if (Retriever_noLog != log && !noSignal)
   {
     FILE *urls_parsed;
@@ -1027,7 +1027,7 @@ Retriever::IsValidURL (const String & u)
   }
 
   //
-  // Valid extensions are performed similarly 
+  // Valid extensions are performed similarly
   //
   // A list of valid extensions, separated by spaces or tabs
 
@@ -1321,7 +1321,7 @@ Retriever::GetLocalUser (const String & url, StringList * defaultdocs)
   //
   // Initialize prefix/path list if this is the first time.
   // The list is given in format "prefix1=path1,dir1 ..."
-  // If path is zero-length, user's home directory is looked up. 
+  // If path is zero-length, user's home directory is looked up.
   //
   if (!prefixes)
   {
@@ -1724,7 +1724,7 @@ Retriever::got_href (URL & url, const char *description, int hops)
       ref->AddDescription (description, words);
 
       //
-      // If the dig is restricting by hop count, perform the check here 
+      // If the dig is restricting by hop count, perform the check here
       // too
       if (currenthopcount + hops > max_hop_count)
       {
@@ -1986,7 +1986,7 @@ void
 Retriever::recordNotFound (const String & url, const String & referer,
                            int reason)
 {
-  char *message = "";
+  String message = "";
 
   switch (reason)
   {

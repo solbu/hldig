@@ -3,8 +3,8 @@
 //
 // ExternalParser: Implementation of ExternalParser
 //                 Allows external programs to parse unknown document formats.
-//                 The parser is expected to return the document in a 
-//                 specific format. The format is documented 
+//                 The parser is expected to return the document in a
+//                 specific format. The format is documented
 //                 in http://www.htdig.org/attrs.html#external_parser
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
@@ -438,7 +438,7 @@ ExternalParser::parse (Retriever & retriever, URL & base)
               ("date|dc.date|dc.date.created|dc.date.modified");
           }
 
-          // <URL:http://www.w3.org/MarkUp/html-spec/html-spec_5.html#SEC5.2.5> 
+          // <URL:http://www.w3.org/MarkUp/html-spec/html-spec_5.html#SEC5.2.5>
           // says that the "name" attribute defaults to
           // the http-equiv attribute if empty.
           if (*name == '\0')
