@@ -1,4 +1,4 @@
-server.document-root = "$srcdir/htdig/samplesite/"
+server.document-root = "$srcdir/hldig/samplesite/"
 
 server.modules = (
 "mod_cgi",
