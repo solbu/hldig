@@ -73,6 +73,8 @@ cd to $srcdir/samplesite and make a symbolic link to your testing/cgi-bin direct
 Copy `htsearch.sh` from your $srcdir/scripts directory to your server root
 (not the cgi-bin directory).
 
+_Note: htsearch.sh is a wrapper script that calls htsearch._
+
 Change back to the top level of your htdig source directory.
 Start the lighttpd server
 
@@ -89,7 +91,7 @@ Now switch to another terminal window.
 
 Change to the `testing` directory and you should see the following directory structure:
 ```
-andy@oceanus:~/src/htdig/testing$ ls
+andy@oceanus:~/src/hldig/testing$ ls
 bin  cgi-bin  conf  htdocs  include  lib  man  share  var
 ```
 
@@ -134,13 +136,13 @@ purpose is to be run through a form on a web site.
 
 Here is an example of where it's used through a web site form:
 
-[htdig Testing Ground](http://htdig.dreamhosters.com/)
+[hldig Testing Ground](http://htdig.dreamhosters.com/)
 
 The is (old) html code used to display a form on a web site and request
 input from a user. You can see how `htsearch` is called:
 
 ```
-<form action="http://www.htdig.org/cgi-bin/htsearch" target=body>
+<form action="http://localhost:3002/htsearch.sh" target=body>
   <b>Quick Search:</b><br>
   <font size="-1">
     <input type=text name=words size=15>
