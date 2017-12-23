@@ -181,7 +181,7 @@ DIST_SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig \
 	htsearch httools installdir include test po
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/Makefile.config \
 	ABOUT-NLS COPYING compile config.guess config.rpath config.sub \
-	install-sh ltmain.sh missing mkinstalldirs ylwrap
+	depcomp install-sh ltmain.sh missing mkinstalldirs ylwrap
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 top_distdir = $(distdir)
 am__remove_distdir = \
@@ -396,7 +396,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign no-dependencies
-AM_CPPFLAGS = -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
+AM_CPPFLAGS = -std=c++11 -pedantic										\
+		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
 		-I$(top_srcdir)/htword \
