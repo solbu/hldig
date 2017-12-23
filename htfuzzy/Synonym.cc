@@ -44,7 +44,7 @@ using namespace std;
 Synonym::Synonym (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  strcpy (name, "synonyms");
+  name = "synonyms";
   db = 0;
 }
 

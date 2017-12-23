@@ -31,7 +31,7 @@
 Soundex::Soundex (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  strcpy (name, "soundex");
+  name = "soundex";
 }
 
 

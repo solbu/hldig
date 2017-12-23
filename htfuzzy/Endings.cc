@@ -33,7 +33,7 @@ Fuzzy (config_arg)
 {
   root2word = 0;
   word2root = 0;
-  strcpy (name, "endings");
+  name = "endings";
 }
 
 

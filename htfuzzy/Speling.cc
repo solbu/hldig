@@ -41,7 +41,7 @@ using namespace std;
 Speling::Speling (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  strcpy (name, "speling");
+  name = "speling";
 }
 
 
