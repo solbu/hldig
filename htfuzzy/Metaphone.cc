@@ -32,7 +32,7 @@
 Metaphone::Metaphone (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  strcpy, (name, "metaphone");
+  name = "metaphone";
 }
 
 

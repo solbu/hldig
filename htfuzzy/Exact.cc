@@ -29,8 +29,7 @@
 Exact::Exact (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  strcpy (name, "exact");
-  // name = "exact";
+  name = "exact";
 }
 
 

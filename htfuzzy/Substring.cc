@@ -32,7 +32,7 @@
 Substring::Substring (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  strcpy (name, "substring");
+  name = "substring";
 }
 
 

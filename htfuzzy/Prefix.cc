@@ -33,7 +33,7 @@
 Prefix::Prefix (const HtConfiguration & config_arg):
 Fuzzy (config_arg)
 {
-  strcpy (name, "prefix");
+  name = "prefix";
 }
 
 
