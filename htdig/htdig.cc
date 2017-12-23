@@ -68,7 +68,7 @@ HtDateTime StartTime;
 HtDateTime EndTime;
 
 void usage ();
-void reportError (char *msg);
+void reportError (String msg);
 
 
 //
@@ -162,14 +162,14 @@ main (int ac, char **av)
   // Warn user if any obsolete options are found in config file
   // For efficiency, check all fields here.  If different config
   // files are used for searching, obsolete options may remain
-  char *deprecatedOptions[] = {
+  const char *deprecatedOptions[] = {
     "heading_factor_1", "heading_factor_2", "heading_factor_3",
     "heading_factor_4", "heading_factor_5", "heading_factor_6",
     "modification_time_is_now", "pdf_parser", "translate_amp",
     "translate_lt_gt", "translate_quot", "uncoded_db_compatible",
     ""                          // empty terminator
   };
-  char **option;
+  const char **option;
   for (option = deprecatedOptions; **option; option++)
   {
     if (!config->Find (*option).empty ())
@@ -535,7 +535,7 @@ Options:\n"), VERSION);
 // Report an error and die
 //
 void
-reportError (char *msg)
+reportError (String msg)
 {
   cout << "htdig: " << msg << "\n\n";
   exit (1);
