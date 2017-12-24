@@ -1,59 +1,7 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Frequently Asked Questions</title>
-    <link rel="alternate" type="application/rss+xml" title="Recent commits to hldig:master" href="https://github.com/andy5995/hldig/commits/master.atom">
-    <link rel="stylesheet" href="assets/css/style.css">
-  </head>
-  <body>
-    <h1>Frequently Asked Questions</h1>
-    <table>
-      <tr>
-        <td class = "footer-left-col">
-          <strong>General</strong> <font face="helvetica,arial" size="2"><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="index.html">hl://Dig</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="require.html">Features and Requirements</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="where.html">Where to get it</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="install.html">Installation</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="config.html">Configuration</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="running.html">Running ht://Dig</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="FAQ.html">FAQ</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="https://github.com/andy5995/hldig/blob/master/COPYING">License information</a><br>
-        </font> <br>
-          <strong>Reference</strong> <font face="helvetica,arial" size="2"><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="all.html">Overview</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="rundig.html">rundig</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htdig.html">htdig</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htmerge.html">htmerge</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htnotify.html">htnotify</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htdump.html">htdump</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htload.html">htload</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htpurge.html">htpurge</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htstat.html">htstat</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htfuzzy.html">htfuzzy</a><br>
-          <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="htsearch.html">htsearch</a><br>
-          <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="confindex.html" target="_top">Configuration file</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="meta.html">META tags</a><br>
-          </font> <br>
-          <strong>Other</strong> <font face="helvetica,arial" size="2"><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="https://github.com/andy5995/hldig/graphs/contributors">Contributors</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="RELEASE.html">Release notes</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="https://github.com/andy5995/hldig/blob/master/ChangeLog.md">ChangeLog</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="TODO.html">TODO</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="https://github.com/andy5995/hldig/issues">Bug Reporting</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="https://github.com/andy5995/hldig" target="_top">Developer Site</a><br>
-          </font><br>
-          <form action="http://htdig.dreamhosters.com/cgi-bin/htsearch.cgi" target=body>
-              <b>Quick Search:</b><br>
-              <font size="-1">
-                <input type=text name=words size=15>
-              </font>
-            </form>
-          </td>
-        <td class = "footer-right-col">
-            <p class="main">This FAQ is compiled by the ht://Dig developers and the
+title:Frequently Asked Questions
+layout:default
+---
+    <p class="main">This FAQ is compiled by the ht://Dig developers and the
     most recent version is available at &lt;<a
     href="http://www.htdig.org/FAQ.html">http://www.htdig.org/FAQ.html</a>&gt;.
     Questions (and answers!) are greatly appreciated.
@@ -2611,14 +2559,3 @@ find /path/to/your/document/root -type f -name \*.html -print | \
       PDFs are nothing but scanned images of pages, so it looks like
       text but it's just images with no computer-readable text.
     </ol>
-        </td>
-      </tr>
-    </table>
-    <p><a href="https://github.com/andy5995/hldig/commits/master.atom">
-    <img src="assets/images/rss_23x23.jpeg" alt="rss" height="23" width="23"></p>
-    </a>
-    <p class="sct_footer">
-      Powered by <a href="https://github.com/dafky2000/simplectemplate">simplectemplate</a>
-    </p>
-  </body>
-</html>
