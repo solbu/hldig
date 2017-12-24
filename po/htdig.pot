@@ -1,87 +1,92 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR Andy Alt
+# This file is distributed under the same license as the htdig package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: htdig.cc:80 htdig.cc:170
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: htdig 3.2.0b7\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-19 15:52-0600\n"
-"PO-Revision-Date: 2017-11-20 18:42-0600\n"
-"Last-Translator: Andy <andy@oceanus>\n"
-"Language-Team: LANGUAGE <andy400-dev@yahoo.com)>\n"
+"Project-Id-Version: htdig 0.1.01\n"
+"Report-Msgid-Bugs-To: andy400-dev@yahoo.com\n"
+"POT-Creation-Date: 2017-12-23 22:15-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: htdig.cc:147
+#: htdig/htdig.cc:147
 msgid "htdig Start Time: "
 msgstr ""
 
-#: htdig.cc:157
+#: htdig/htdig.cc:157
 #, c-format
 msgid "Unable to find configuration file '%s'"
 msgstr ""
 
-#: htdig.cc:176
+#: htdig/htdig.cc:176
 msgid "Warning: Configuration option "
 msgstr ""
 
-#: htdig.cc:177
+#: htdig/htdig.cc:177
 msgid " is no longer supported\n"
 msgstr ""
 
-#: htdig.cc:180
+#: htdig/htdig.cc:180
 msgid "locale"
 msgstr ""
 
-#: htdig.cc:181
+#: htdig/htdig.cc:181
 msgid "Warning: unknown locale!\n"
 msgstr ""
 
-#: Only the words "invalid" and "or" need translating here
-#: htdig.cc:198
+#: htdig/htdig.cc:185
+msgid "max_hop_count"
+msgstr ""
+
+#: htdig/htdig.cc:190
+msgid "authorization"
+msgstr ""
+
+#: htdig/htdig.cc:198
 #, c-format
 msgid "Invalid url_part_aliases or common_url_parts: %s"
 msgstr ""
 
-#: Only the word "invalid" need translating here
-#: htdig.cc:206
+#: htdig/htdig.cc:206
 #, c-format
 msgid "Invalid url_rewrite_rules: %s"
 msgstr ""
 
-#: htdig.cc:257
+#: htdig/htdig.cc:257
 msgid "Importing Cookies input file "
 msgstr ""
 
-#: htdig.cc:273
+#: htdig/htdig.cc:273
 msgid "Warning: Import failed! ("
 msgstr ""
 
-#: htdig.cc:277
+#: htdig/htdig.cc:277
 #, c-format
 msgid "Unable to load cookies file '%s' in memory"
 msgstr ""
 
-#: htdig.cc:469
+#: htdig/htdig.cc:469
 msgid "htdig End Time: "
 msgstr ""
 
-#: htdig.cc:483
+#: htdig/htdig.cc:483
 #, c-format
 msgid ""
 "usage: htdig [-v][-i][-c configfile][-t][-m minimalfile]\n"
-"  This program is part of htdig %s\n"
+"This program is part of htdig %s\n"
 "\n"
-"  Options:\n"
+"Options:\n"
 msgstr ""
 
-#: htdig.cc:487
+#: htdig/htdig.cc:487
 #, c-format
 msgid ""
 "\t-v\tVerbose mode.  This increases the verbosity of the\n"
@@ -91,7 +96,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig.cc:492
+#: htdig/htdig.cc:492
 #, c-format
 msgid ""
 "\t-i\tInitial.  Do not use any old databases.  This is\n"
@@ -99,7 +104,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig.cc:495
+#: htdig/htdig.cc:495
 #, c-format
 msgid ""
 "\t-c configfile\n"
@@ -108,7 +113,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig.cc:499
+#: htdig/htdig.cc:499
 #, c-format
 msgid ""
 "\t-t\tCreate an ASCII version of the document database.\n"
@@ -117,7 +122,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig.cc:503
+#: htdig/htdig.cc:503
 #, c-format
 msgid ""
 "\t-h hop count\n"
@@ -126,14 +131,14 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig.cc:507
+#: htdig/htdig.cc:507
 #, c-format
 msgid ""
 "\t-s\tReport statistics after completion.\n"
 "\n"
 msgstr ""
 
-#: htdig.cc:509
+#: htdig/htdig.cc:509
 #, c-format
 msgid ""
 "\t-u username:password\n"
@@ -145,7 +150,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig.cc:516
+#: htdig/htdig.cc:516
 #, c-format
 msgid ""
 "\t-a\tUse alternate work files.\n"
@@ -156,7 +161,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig.cc:522
+#: htdig/htdig.cc:522
 #, c-format
 msgid ""
 "\t-m minimalfile  (or just a file name at end of arguments)\n"
