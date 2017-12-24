@@ -1,160 +1,203 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!DOCTYPE html>
 <html>
   <head>
-	<title>
-	  ht://Dig: htmerge
-	</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>htmerge</title>
+    <link rel="alternate" type="application/rss+xml" title="Recent commits to hldig:master" href="https://github.com/andy5995/hldig/commits/master.atom">
+    <link rel="stylesheet" href="assets/css/style.css">
   </head>
-  <body bgcolor="#eef7ff">
-	<h1>
-	  htmerge
-	</h1>
-	<p>
-	  ht://Dig Copyright &copy; 1995-2004 <a href="THANKS.html">The ht://Dig Group</a><br>
-	  Please see the file <a href="COPYING">COPYING</a> for
-	  license information.
-	</p>
-	<hr size="4" noshade>
-	<dl>
-	  <dd>
-		<h2>
-		  Synopsis
-		</h2>
-	  </dd>
-	  <dd>
-		htmerge [<em>options</em>]
-	  </dd>
-	</dl>
-	<dl>
-	  <dd>
-		<h2>
-		  Description
-		</h2>
-	  </dd>
-	  <dd>
-		Htmerge is used to create a document index and word
-		database from the files that were created by
-		<a href="htdig.html">htdig</a>. These databases are then used by
-		<a href="htsearch.html" target="_top">htsearch</a> to perform
-		the actual searched.
-	  </dd>
-	</dl>
-	<dl>
-	  <dd>
-		<h2>
-		  Options
-		</h2>
-	  </dd>
-	  <dd>
-		<dl compact>
-		  <dt>
-			-a
-		  </dt>
-		  <dd>
-			Use alternate work files. Tells htdig to append <em>
-			.work</em> to database files, causing a second copy of
-			the database to be built. This allows the original
-			files to be used by htsearch during the indexing run.
-		  </dd>
-		  <dt>
-			-c <em>configfile</em>
-		  </dt>
-		  <dd>
-			Use the specified configuration file instead of the
-			default.
-		  </dd>
-		  <dt>
-			-d
-		  </dt>
-		  <dd>
-			Prevent the document index from being created.
-		  </dd>
-		  <dt>
-			-m <em>merge_configfile</em>
-		  </dt>
-		  <dd>
-		        Merge the databases specified by merge_configfile
-		        into the databases specified by -c or the default.
-			You will need a separate config file for each of
-			the two databases. Then each file will set the
-			<a href="attrs.html#database_dir">database_dir</a> or
-			<a href="attrs.html#database_base">database_base</a>
-			attribute to change the name of the databases, so
-			they are in different directories or files.<br>
-			<strong>Note:</strong> You <em>must</em> run htmerge
-			separately on each of the databases created by
-			<a href="htdig.html">htdig</a> before merging them
-			together with this option. This is because merging
-			the two wordlists together requires wordlists that
-			have already been cleaned up by htmerge.
-			Because the -m option allows you to specify only
-			one database to be merged into the other, and only
-			one -m option may be specified, if you need to merge
-			three or more databases together you must run htmerge
-			multiple times with the -m option.
-		  </dd>
-		  <dt>
-			-s
-		  </dt>
-		  <dd>
-			Print statistics about the document and word databases
-			after htmerge has finished.
-		  </dd>
-		  <dt>
-			-v
-		  </dt>
-		  <dd>
-			Run in verbose mode. This will provide some hints as to
-			the progress of the merge. This can be useful when
-			running htmerge interactively since some parts
-			(especially the word database creation) can take a very
-			long time.
-		  </dd>
-		  <dt>
-			-w
-		  </dt>
-		  <dd>
-			Prevent the word database from being created.
-		  </dd>
-		</dl>
-		In addition to the command line options, the environment
-		variable <strong>TMPDIR</strong> will be used to designate the
-		directory where intermediate files are stored during the
-		sorting process.
-	  </dd>
-	</dl>
-	<dl>
-	  <dd>
-		<h2>
-		  Files
-		</h2>
-	  </dd>
-	  <dd>
-		<dl>
-		  <dt>
-			<a href="attrs.html#config_dir">CONFIG_DIR</a>/htdig.conf
-		  </dt>
-		  <dd>
-			The default configuration file.
-		  </dd>
-		</dl>
-	  </dd>
-	</dl>
-	<dl>
-	  <dd>
-		<h2>
-		  See Also
-		</h2>
-	  </dd>
-	  <dd>
-		<a href="htdig.html">htdig</a>,
-		<a href="htsearch.html" target="_top">htsearch</a> and
-		<a href="attrs.html">Configuration file format</a>.
-	  </dd>
-	</dl>
-	<hr size="4" noshade>
-
-	Last modified: $Date: 2004/06/12 13:39:13 $
-
+  <body>
+    <h1>htmerge</h1>
+    <table>
+      <tr>
+        <td class = "footer-left-col">
+          <strong>General</strong> <font face="helvetica,arial" size="2"><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="index.html">hl://Dig</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="require.html">Features and Requirements</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="where.html">Where to get it</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="install.html">Installation</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="config.html">Configuration</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="running.html">Running ht://Dig</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="FAQ.html">FAQ</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="https://github.com/andy5995/hldig/blob/master/COPYING">License information</a><br>
+        </font> <br>
+          <strong>Reference</strong> <font face="helvetica,arial" size="2"><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="all.html">Overview</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="rundig.html">rundig</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="htdig.html">htdig</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="htmerge.html">htmerge</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="htnotify.html">htnotify</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="htdump.html">htdump</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="htload.html">htload</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="htpurge.html">htpurge</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="htstat.html">htstat</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="htfuzzy.html">htfuzzy</a><br>
+          <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="htsearch.html">htsearch</a><br>
+          <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="confindex.html" target="_top">Configuration file</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="meta.html">META tags</a><br>
+          </font> <br>
+          <strong>Other</strong> <font face="helvetica,arial" size="2"><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="https://github.com/andy5995/hldig/graphs/contributors">Contributors</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="RELEASE.html">Release notes</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="https://github.com/andy5995/hldig/blob/master/ChangeLog.md">ChangeLog</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="TODO.html">TODO</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="https://github.com/andy5995/hldig/issues">Bug Reporting</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="https://github.com/andy5995/hldig" target="_top">Developer Site</a><br>
+          </font><br>
+          <form action="http://htdig.dreamhosters.com/cgi-bin/htsearch.cgi" target=body>
+              <b>Quick Search:</b><br>
+              <font size="-1">
+                <input type=text name=words size=15>
+              </font>
+            </form>
+          </td>
+        <td class = "footer-right-col">
+          <dl>
+    <dd>
+    <h2>
+      Synopsis
+    </h2>
+    </dd>
+    <dd>
+    htmerge [<em>options</em>]
+    </dd>
+  </dl>
+  <dl>
+    <dd>
+    <h2>
+      Description
+    </h2>
+    </dd>
+    <dd>
+    Htmerge is used to create a document index and word
+    database from the files that were created by
+    <a href="htdig.html">htdig</a>. These databases are then used by
+    <a href="htsearch.html" target="_top">htsearch</a> to perform
+    the actual searched.
+    </dd>
+  </dl>
+  <dl>
+    <dd>
+    <h2>
+      Options
+    </h2>
+    </dd>
+    <dd>
+    <dl compact>
+      <dt>
+      -a
+      </dt>
+      <dd>
+      Use alternate work files. Tells htdig to append <em>
+      .work</em> to database files, causing a second copy of
+      the database to be built. This allows the original
+      files to be used by htsearch during the indexing run.
+      </dd>
+      <dt>
+      -c <em>configfile</em>
+      </dt>
+      <dd>
+      Use the specified configuration file instead of the
+      default.
+      </dd>
+      <dt>
+      -d
+      </dt>
+      <dd>
+      Prevent the document index from being created.
+      </dd>
+      <dt>
+      -m <em>merge_configfile</em>
+      </dt>
+      <dd>
+            Merge the databases specified by merge_configfile
+            into the databases specified by -c or the default.
+      You will need a separate config file for each of
+      the two databases. Then each file will set the
+      <a href="attrs.html#database_dir">database_dir</a> or
+      <a href="attrs.html#database_base">database_base</a>
+      attribute to change the name of the databases, so
+      they are in different directories or files.<br>
+      <strong>Note:</strong> You <em>must</em> run htmerge
+      separately on each of the databases created by
+      <a href="htdig.html">htdig</a> before merging them
+      together with this option. This is because merging
+      the two wordlists together requires wordlists that
+      have already been cleaned up by htmerge.
+      Because the -m option allows you to specify only
+      one database to be merged into the other, and only
+      one -m option may be specified, if you need to merge
+      three or more databases together you must run htmerge
+      multiple times with the -m option.
+      </dd>
+      <dt>
+      -s
+      </dt>
+      <dd>
+      Print statistics about the document and word databases
+      after htmerge has finished.
+      </dd>
+      <dt>
+      -v
+      </dt>
+      <dd>
+      Run in verbose mode. This will provide some hints as to
+      the progress of the merge. This can be useful when
+      running htmerge interactively since some parts
+      (especially the word database creation) can take a very
+      long time.
+      </dd>
+      <dt>
+      -w
+      </dt>
+      <dd>
+      Prevent the word database from being created.
+      </dd>
+    </dl>
+    In addition to the command line options, the environment
+    variable <strong>TMPDIR</strong> will be used to designate the
+    directory where intermediate files are stored during the
+    sorting process.
+    </dd>
+  </dl>
+  <dl>
+    <dd>
+    <h2>
+      Files
+    </h2>
+    </dd>
+    <dd>
+    <dl>
+      <dt>
+      <a href="attrs.html#config_dir">CONFIG_DIR</a>/htdig.conf
+      </dt>
+      <dd>
+      The default configuration file.
+      </dd>
+    </dl>
+    </dd>
+  </dl>
+  <dl>
+    <dd>
+    <h2>
+      See Also
+    </h2>
+    </dd>
+    <dd>
+    <a href="htdig.html">htdig</a>,
+    <a href="htsearch.html" target="_top">htsearch</a> and
+    <a href="attrs.html">Configuration file format</a>.
+    </dd>
+  </dl>
+        </td>
+      </tr>
+    </table>
+    <p><a href="https://github.com/andy5995/hldig/commits/master.atom">
+    <img src="assets/images/rss_23x23.jpeg" alt="rss" height="23" width="23"></p>
+    </a>
+    <p class="sct_footer">
+      Powered by <a href="https://github.com/dafky2000/simplectemplate">simplectemplate</a>
+    </p>
   </body>
 </html>
