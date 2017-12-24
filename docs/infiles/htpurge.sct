@@ -1,0 +1,105 @@
+title:htpurge
+layout:default
+---
+  <dl>
+    <dd>
+    <h2>
+      Synopsis
+    </h2>
+    </dd>
+    <dd>
+    htpurge [<em>options</em>]
+    </dd>
+  </dl>
+  <dl>
+    <dd>
+    <h2>
+      Description
+    </h2>
+    </dd>
+    <dd>
+    Htpurge functions to remove specified URLs from the
+    databases as well as bad URLs, unretrieved URLs,
+    obsolete documents, etc. It is recommended that
+    htpurge be run after htdig to clean out any documents
+    of this sort.
+    </dd>
+  </dl>
+  <dl>
+    <dd>
+    <h2>
+      Options
+    </h2>
+    </dd>
+    <dd>
+    <dl compact>
+      <dt>
+           -
+      </dt>
+      <dd>
+            URL input. Read in a list of URLs to remove
+            from the standard input, one per line.
+      </dd>
+            <dt>
+      -a
+      </dt>
+      <dd>
+      Use alternate work files. Tells htpurge to
+      append .work to the database files allowing it
+      to operate on a second set of databases.
+      </dd>
+      <dt>
+      -c <em>configfile</em>
+      </dt>
+      <dd>
+      Use the specified <em>configfile</em> file instead of the
+      default.
+      </dd>
+      <dt>
+           -u
+      </dt>
+      <dd>
+            URL input. Add this URL to the list of URLs to remove.
+            This can be specified multiple times.
+      </dd>
+      <dt>
+      -v
+      </dt>
+      <dd>
+      Verbose mode. This increases the verbosity of the
+      program. Using more than 2 is probably only useful
+      for debugging purposes. The default verbose mode
+      gives a progress on what it is doing and where it is.
+      </dd>
+    </dl>
+    </dd>
+  </dl>
+  <dl>
+    <dd>
+    <h2>
+      Files
+    </h2>
+    </dd>
+    <dd>
+    <dl>
+      <dt>
+      <a href="attrs.html#config_dir">CONFIG_DIR</a>/htdig.conf
+      </dt>
+      <dd>
+      The default configuration file.
+      </dd>
+    </dl>
+    </dd>
+  </dl>
+  <dl>
+    <dd>
+    <h2>
+      See Also
+    </h2>
+    </dd>
+    <dd>
+      <a href="htdig.html">htdig</a>,
+    <a href="htmerge.html">htmerge</a>, and
+    <a href="attrs.html">Configuration file format</a>
+    </dd>
+  </dl>
