@@ -7,10 +7,15 @@
 #
 # This is a sample script to create a search database for ht://Dig.
 #
-DBDIR=/var/lib/htdig
-COMMONDIR=/etc/htdig
-BINDIR=/usr/bin
-conffile=/etc/htdig/htdig.conf
+
+DIRECTORY=`dirname $0`
+cd $DIRECTORY
+
+PREFIX=..
+DBDIR=$PREFIX/var/htdig
+COMMONDIR=$PREFIX/conf
+BINDIR=.
+conffile=$PREFIX/conf/htdig.conf
 
 # To help debug problems, try running rundig -vvv
 # This will add lots of debugging output to all of the programs
@@ -45,7 +50,7 @@ else
 fi
 
 #
-# Set the TMPDIR variable if you want htdig and other programs to put 
+# Set the TMPDIR variable if you want htdig and other programs to put
 # files in a location other than the default.  This is important if
 # you are running this script as root, since /tmp is usually not
 # secure.  Also, be aware that on some systems, /tmp is a memory
