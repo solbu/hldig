@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 # Main Makefile for hl://Dig
-# Copyright (c) 2017 The hl://Dig Group
+# Copyright (c) 2017 The hl://Dig Group <https://andy5995.github.io/hldig/>
 # For copyright details, see the file COPYING in your distribution
 # or the GNU Library General Public License version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
@@ -177,7 +177,7 @@ am__define_uniq_tagged_files = \
 ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
-DIST_SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig \
+DIST_SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb hldig \
 	htsearch httools installdir include test po
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/Makefile.config \
 	ABOUT-NLS COPYING compile config.guess config.rpath config.sub \
@@ -267,9 +267,9 @@ GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
 GUNZIP = @GUNZIP@
 HAVE_SSL = @HAVE_SSL@
-HTDIG_MAJOR_VERSION = @HTDIG_MAJOR_VERSION@
-HTDIG_MICRO_VERSION = @HTDIG_MICRO_VERSION@
-HTDIG_MINOR_VERSION = @HTDIG_MINOR_VERSION@
+HLDIG_MAJOR_VERSION = @HLDIG_MAJOR_VERSION@
+HLDIG_MICRO_VERSION = @HLDIG_MICRO_VERSION@
+HLDIG_MINOR_VERSION = @HLDIG_MINOR_VERSION@
 IMAGE_DIR = @IMAGE_DIR@
 IMAGE_URL_PREFIX = @IMAGE_URL_PREFIX@
 INSTALL = @INSTALL@
@@ -411,7 +411,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/db/libhtdb.la
 
 @TESTS_TRUE@TESTDIR = test
-SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb htdig htsearch httools installdir include $(TESTDIR) po
+SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb hldig htsearch httools installdir include $(TESTDIR) po
 EXTRA_DIST = config.rpath m4/ChangeLog  .version Makefile.config contrib ABOUT-NLS
 ACLOCAL_AMFLAGS = -I m4
 distdir = $(PACKAGE)-$(VERSION)

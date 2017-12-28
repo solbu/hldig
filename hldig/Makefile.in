@@ -95,7 +95,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = htdig$(EXEEXT)
+bin_PROGRAMS = hldig$(EXEEXT)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
@@ -116,18 +116,18 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_htdig_OBJECTS = Document.$(OBJEXT) HTML.$(OBJEXT) \
+am_hldig_OBJECTS = Document.$(OBJEXT) HTML.$(OBJEXT) \
 	Parsable.$(OBJEXT) Plaintext.$(OBJEXT) Retriever.$(OBJEXT) \
 	Server.$(OBJEXT) ExternalTransport.$(OBJEXT) URLRef.$(OBJEXT) \
-	htdig.$(OBJEXT) ExternalParser.$(OBJEXT)
-htdig_OBJECTS = $(am_htdig_OBJECTS)
+	hldig.$(OBJEXT) ExternalParser.$(OBJEXT)
+hldig_OBJECTS = $(am_hldig_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-htdig_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+hldig_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htdig_LDFLAGS) $(LDFLAGS) -o $@
+	$(CXXFLAGS) $(hldig_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -161,8 +161,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(htdig_SOURCES)
-DIST_SOURCES = $(htdig_SOURCES)
+SOURCES = $(hldig_SOURCES)
+DIST_SOURCES = $(hldig_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -235,9 +235,9 @@ GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
 GUNZIP = @GUNZIP@
 HAVE_SSL = @HAVE_SSL@
-HTDIG_MAJOR_VERSION = @HTDIG_MAJOR_VERSION@
-HTDIG_MICRO_VERSION = @HTDIG_MICRO_VERSION@
-HTDIG_MINOR_VERSION = @HTDIG_MINOR_VERSION@
+HLDIG_MAJOR_VERSION = @HLDIG_MAJOR_VERSION@
+HLDIG_MICRO_VERSION = @HLDIG_MICRO_VERSION@
+HLDIG_MINOR_VERSION = @HLDIG_MINOR_VERSION@
 IMAGE_DIR = @IMAGE_DIR@
 IMAGE_URL_PREFIX = @IMAGE_URL_PREFIX@
 INSTALL = @INSTALL@
@@ -378,21 +378,20 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htlib/libht.la \
 		$(top_builddir)/db/libhtdb.la
 
-htdig_SOURCES = Document.cc HTML.cc \
+hldig_SOURCES = Document.cc HTML.cc \
 	Parsable.cc Plaintext.cc \
 	Retriever.cc Server.cc ExternalTransport.cc \
-	URLRef.cc htdig.cc ExternalParser.cc
+	URLRef.cc hldig.cc ExternalParser.cc
 
 noinst_HEADERS = Document.h ExternalParser.h HTML.h \
-	Parsable.h Plaintext.h Retriever.h Server.h  URLRef.h htdig.h \
+	Parsable.h Plaintext.h Retriever.h Server.h  URLRef.h hldig.h \
 	ExternalTransport.h
 
 ACLOCAL_AMFLAGS = -I m4
 subdir = @top_srcdir@
-htdig_DEPENDENCIES = $(HTLIBS)
-htdig_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htdig_LDADD = $(HTLIBS) @LIBINTL@
-distdir = ../$(PACKAGE)-$(VERSION)/$(subdir)
+hldig_DEPENDENCIES = $(HTLIBS)
+hldig_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hldig_LDADD = $(HTLIBS) @LIBINTL@
 all: all-am
 
 .SUFFIXES:
@@ -406,9 +405,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign htdig/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign hldig/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign htdig/Makefile
+	  $(AUTOMAKE) --foreign hldig/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -477,9 +476,9 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
-htdig$(EXEEXT): $(htdig_OBJECTS) $(htdig_DEPENDENCIES) $(EXTRA_htdig_DEPENDENCIES) 
-	@rm -f htdig$(EXEEXT)
-	$(AM_V_CXXLD)$(htdig_LINK) $(htdig_OBJECTS) $(htdig_LDADD) $(LIBS)
+hldig$(EXEEXT): $(hldig_OBJECTS) $(hldig_DEPENDENCIES) $(EXTRA_hldig_DEPENDENCIES) 
+	@rm -f hldig$(EXEEXT)
+	$(AM_V_CXXLD)$(hldig_LINK) $(hldig_OBJECTS) $(hldig_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -707,10 +706,6 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
-dist: Makefile $(DISTFILES)
-	for file in $(DISTFILES); do \
-	  ln $$file $(distdir) 2>/dev/null || cp -p $$file $(distdir) || exit 1; \
-	done
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -5,9 +5,9 @@
 //           The actual contents of the document may or may not be present at
 //           all times for memory conservation reasons.
 //           The document can be told to retrieve its contents.  This is done
-//           with the Retrieve call.  In case the retrieval causes a 
-//           redirect, the link is followed, but this process is done 
-//           only once (to prevent loops.) If the redirect didn't 
+//           with the Retrieve call.  In case the retrieval causes a
+//           redirect, the link is followed, but this process is done
+//           only once (to prevent loops.) If the redirect didn't
 //           work, Document_not_found is returned.
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
@@ -30,7 +30,7 @@
 
 #include "Document.h"
 #include "StringList.h"
-#include "htdig.h"
+#include "hldig.h"
 #include "HTML.h"
 #include "Plaintext.h"
 #include "ExternalParser.h"
@@ -380,7 +380,7 @@ Transport::DocStatus Document::Retrieve (Server * server, HtDateTime date)
       if (referer)
         HTTPConnect->SetRefererURL (*referer);
 
-      // Let's disable the cookies if we decided that in the config file 
+      // Let's disable the cookies if we decided that in the config file
       if (server->DisableCookies ())
         HTTPConnect->DisableCookies ();
       else
@@ -448,7 +448,7 @@ Transport::DocStatus Document::Retrieve (Server * server, HtDateTime date)
   }
   else if (mystrncasecmp (url->service (), "ftp", 3) == 0)
   {
-    // the following FTP handling is modeled very closely on 
+    // the following FTP handling is modeled very closely on
     // the prior 'file'-protocol handling, so beware of bugs
 
     if (!FTPConnect)
@@ -466,9 +466,9 @@ Transport::DocStatus Document::Retrieve (Server * server, HtDateTime date)
       // Here we must set only thing for a FTP request
 
       FTPConnect->SetRequestURL (*url);
-      ////////////////////////////////////////////////////    
+      ////////////////////////////////////////////////////
       ///
-      /// stuff may be missing here or in need of change             
+      /// stuff may be missing here or in need of change
       ///
       ///////////////////////////////////////////////////
 

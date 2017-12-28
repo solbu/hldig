@@ -1,20 +1,18 @@
 //
-// htdig.h
+// hldig.h
 //
-// htdig: Indexes the web sites specified in the config file
+// hldig: Indexes the web sites specified in the config file
 //        generating several databases to be used by htmerge
 //
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2004 The ht://Dig Group
+// Part of the ht://Dig package   <https://andy5995.github.io/hldig/>
+// Copyright (c) 2017 The hl://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htdig.h,v 1.16 2004/05/28 13:15:16 lha Exp $
-//
 
-#ifndef _htdig_h_
-#define _htdig_h_
+#ifndef _hldig_h_
+#define _hldig_h_
 
 #include "HtConfiguration.h"
 #include "List.h"

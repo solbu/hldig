@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Andy Alt
-# This file is distributed under the same license as the htdig package.
+# This file is distributed under the same license as the hldig package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: htdig 0.1.01\n"
+"Project-Id-Version: hldig 0.1.01\n"
 "Report-Msgid-Bugs-To: andy400-dev@yahoo.com\n"
-"POT-Creation-Date: 2017-12-27 05:58-0600\n"
+"POT-Creation-Date: 2017-12-28 05:00-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: htdig/htdig.cc:516
+#: hldig/hldig.cc:514
 #, c-format
 msgid ""
 "\t-a\tUse alternate work files.\n"
-"\t\tTells htdig to append .work to database files, causing\n"
+"\t\tTells hldig to append .work to database files, causing\n"
 "\t\ta second copy of the database to be built.  This allows\n"
 "\t\tthe original files to be used by htsearch during the\n"
 "\t\tindexing run.\n"
 "\n"
 msgstr ""
 
-#: htdig/htdig.cc:495
+#: hldig/hldig.cc:493
 #, c-format
 msgid ""
 "\t-c configfile\n"
@@ -37,7 +37,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig/htdig.cc:503
+#: hldig/hldig.cc:501
 #, c-format
 msgid ""
 "\t-h hop count\n"
@@ -46,7 +46,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig/htdig.cc:492
+#: hldig/hldig.cc:490
 #, c-format
 msgid ""
 "\t-i\tInitial.  Do not use any old databases.  This is\n"
@@ -54,11 +54,11 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig/htdig.cc:522
+#: hldig/hldig.cc:520
 #, c-format
 msgid ""
 "\t-m minimalfile  (or just a file name at end of arguments)\n"
-"\t\tTells htdig to read URLs from the supplied file and index\n"
+"\t\tTells hldig to read URLs from the supplied file and index\n"
 "\t\tthem in place of (or in addition to) the existing URLs in\n"
 "\t\tthe database and the start_url.  With the -m, only the\n"
 "\t\tURLs specified are added to the database.  A file name of\n"
@@ -66,14 +66,14 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig/htdig.cc:507
+#: hldig/hldig.cc:505
 #, c-format
 msgid ""
 "\t-s\tReport statistics after completion.\n"
 "\n"
 msgstr ""
 
-#: htdig/htdig.cc:499
+#: hldig/hldig.cc:497
 #, c-format
 msgid ""
 "\t-t\tCreate an ASCII version of the document database.\n"
@@ -82,11 +82,11 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig/htdig.cc:509
+#: hldig/hldig.cc:507
 #, c-format
 msgid ""
 "\t-u username:password\n"
-"\t\tTells htdig to send the supplied username and\n"
+"\t\tTells hldig to send the supplied username and\n"
 "\t\tpassword with each HTTP request.  The credentials\n"
 "\t\twill be encoded using the 'Basic' authentication scheme.\n"
 "\t\tThere *HAS* to be a colon (:) between the username\n"
@@ -94,7 +94,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig/htdig.cc:487
+#: hldig/hldig.cc:485
 #, c-format
 msgid ""
 "\t-v\tVerbose mode.  This increases the verbosity of the\n"
@@ -104,71 +104,71 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htdig/htdig.cc:177
+#: hldig/hldig.cc:175
 msgid " is no longer supported\n"
 msgstr ""
 
-#: htdig/htdig.cc:257
+#: hldig/hldig.cc:255
 msgid "Importing Cookies input file "
 msgstr ""
 
-#: htdig/htdig.cc:198
+#: hldig/hldig.cc:196
 #, c-format
 msgid "Invalid url_part_aliases or common_url_parts: %s"
 msgstr ""
 
-#: htdig/htdig.cc:206
+#: hldig/hldig.cc:204
 #, c-format
 msgid "Invalid url_rewrite_rules: %s"
 msgstr ""
 
-#: htdig/htdig.cc:157
+#: hldig/hldig.cc:155
 #, c-format
 msgid "Unable to find configuration file '%s'"
 msgstr ""
 
-#: htdig/htdig.cc:277
+#: hldig/hldig.cc:275
 #, c-format
 msgid "Unable to load cookies file '%s' in memory"
 msgstr ""
 
-#: htdig/htdig.cc:176
+#: hldig/hldig.cc:174
 msgid "Warning: Configuration option "
 msgstr ""
 
-#: htdig/htdig.cc:273
+#: hldig/hldig.cc:271
 msgid "Warning: Import failed! ("
 msgstr ""
 
-#: htdig/htdig.cc:181
+#: hldig/hldig.cc:179
 msgid "Warning: unknown locale!\n"
 msgstr ""
 
-#: htdig/htdig.cc:190
+#: hldig/hldig.cc:188
 msgid "authorization"
 msgstr ""
 
-#: htdig/htdig.cc:469
-msgid "htdig End Time: "
+#: hldig/hldig.cc:467
+msgid "hldig End Time: "
 msgstr ""
 
-#: htdig/htdig.cc:147
-msgid "htdig Start Time: "
+#: hldig/hldig.cc:145
+msgid "hldig Start Time: "
 msgstr ""
 
-#: htdig/htdig.cc:180
+#: hldig/hldig.cc:178
 msgid "locale"
 msgstr ""
 
-#: htdig/htdig.cc:185
+#: hldig/hldig.cc:183
 msgid "max_hop_count"
 msgstr ""
 
-#: htdig/htdig.cc:483
+#: hldig/hldig.cc:481
 #, c-format
 msgid ""
-"usage: htdig [-v][-i][-c configfile][-t][-m minimalfile]\n"
-"This program is part of htdig %s\n"
+"usage: hldig [-v][-i][-c configfile][-t][-m minimalfile]\n"
+"This program is part of hldig %s\n"
 "\n"
 "Options:\n"
 msgstr ""

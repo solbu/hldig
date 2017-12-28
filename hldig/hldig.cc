@@ -1,16 +1,14 @@
 //
-// htdig.cc
+// hldig.cc
 //
-// htdig: Indexes the web sites specified in the config file
+// hldig: Indexes the web sites specified in the config file
 //        generating several databases to be used by htmerge
 //
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2004 The ht://Dig Group
+// Part of the ht://Dig package   <https://andy5995.github.io/hldig/>
+// Copyright (c) 2017 The hl://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
-//
-// $Id: htdig.cc,v 1.42 2004/05/28 13:15:16 lha Exp $
 //
 
 #ifdef HAVE_CONFIG_H
@@ -20,7 +18,7 @@
 #include "Document.h"
 #include "Retriever.h"
 #include "StringList.h"
-#include "htdig.h"
+#include "hldig.h"
 #include "defaults.h"
 #include "HtURLCodec.h"
 #include "WordContext.h"
@@ -144,7 +142,7 @@ main (int ac, char **av)
 
   // Shows Start Time
   if (debug > 0)
-    cout << _("htdig Start Time: ") << StartTime.GetAscTime () << endl;
+    cout << _("hldig Start Time: ") << StartTime.GetAscTime () << endl;
 
   //
   // First set all the defaults and then read the specified config
@@ -459,14 +457,14 @@ main (int ac, char **av)
   //
   if (report_statistics)
   {
-    retriever.ReportStatistics ("htdig");
+    retriever.ReportStatistics ("hldig");
   }
 
   // Shows End Time
   if (debug > 0)
   {
     EndTime.SettoNow ();
-    cout << _("htdig End Time: ") << EndTime.GetAscTime () << endl;
+    cout << _("hldig End Time: ") << EndTime.GetAscTime () << endl;
   }
 
   if (_cookie_jar)
@@ -475,13 +473,13 @@ main (int ac, char **av)
 
 
 //
-// Display usage information for the htdig program
+// Display usage information for the hldig program
 //
 void
 usage ()
 {
-  printf (_("usage: htdig [-v][-i][-c configfile][-t][-m minimalfile]\n\
-This program is part of htdig %s\n\n\
+  printf (_("usage: hldig [-v][-i][-c configfile][-t][-m minimalfile]\n\
+This program is part of hldig %s\n\n\
 Options:\n"), VERSION);
 
   printf (_("\t-v\tVerbose mode.  This increases the verbosity of the\n\
@@ -507,20 +505,20 @@ Options:\n"), VERSION);
   printf (_("\t-s\tReport statistics after completion.\n\n"));
 
   printf (_("\t-u username:password\n\
-\t\tTells htdig to send the supplied username and\n\
+\t\tTells hldig to send the supplied username and\n\
 \t\tpassword with each HTTP request.  The credentials\n\
 \t\twill be encoded using the 'Basic' authentication scheme.\n\
 \t\tThere *HAS* to be a colon (:) between the username\n\
 \t\tand password.\n\n"));
 
   printf (_("\t-a\tUse alternate work files.\n\
-\t\tTells htdig to append .work to database files, causing\n\
+\t\tTells hldig to append .work to database files, causing\n\
 \t\ta second copy of the database to be built.  This allows\n\
 \t\tthe original files to be used by htsearch during the\n\
 \t\tindexing run.\n\n"));
 
   printf (_("\t-m minimalfile  (or just a file name at end of arguments)\n\
-\t\tTells htdig to read URLs from the supplied file and index\n\
+\t\tTells hldig to read URLs from the supplied file and index\n\
 \t\tthem in place of (or in addition to) the existing URLs in\n\
 \t\tthe database and the start_url.  With the -m, only the\n\
 \t\tURLs specified are added to the database.  A file name of\n\
@@ -537,6 +535,6 @@ Options:\n"), VERSION);
 void
 reportError (String msg)
 {
-  cout << "htdig: " << msg << "\n\n";
+  cout << "hldig: " << msg << "\n\n";
   exit (1);
 }

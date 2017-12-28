@@ -5,7 +5,7 @@
 #
 # $Id: rundig,v 1.9 2003/12/29 08:49:05 lha Exp $
 #
-# This is a sample script to create a search database for ht://Dig.
+# This is a sample script to create a search database for hl://Dig.
 #
 
 DIRECTORY=`dirname $0`
@@ -50,7 +50,7 @@ else
 fi
 
 #
-# Set the TMPDIR variable if you want htdig and other programs to put
+# Set the TMPDIR variable if you want hldig and other programs to put
 # files in a location other than the default.  This is important if
 # you are running this script as root, since /tmp is usually not
 # secure.  Also, be aware that on some systems, /tmp is a memory
@@ -59,7 +59,7 @@ fi
 TMPDIR=$DBDIR
 export TMPDIR
 
-$BINDIR/htdig -i $opts $stats $alt
+$BINDIR/hldig -i $opts $stats $alt
 $BINDIR/htpurge $opts $alt
 case "$alt" in
 -a)

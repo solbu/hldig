@@ -18,7 +18,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "ExternalTransport.h"
-#include "htdig.h"
+#include "hldig.h"
 #include "QuotedStringList.h"
 #include "URL.h"
 #include "Dictionary.h"

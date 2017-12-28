@@ -16,7 +16,7 @@
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "htdig.h"
+#include "hldig.h"
 #include "Server.h"
 #include "good_strtok.h"
 #include "htString.h"

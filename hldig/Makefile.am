@@ -1,15 +1,15 @@
 
 include $(top_srcdir)/Makefile.config
 
-bin_PROGRAMS = htdig
+bin_PROGRAMS = hldig
 
-htdig_SOURCES = Document.cc HTML.cc \
+hldig_SOURCES = Document.cc HTML.cc \
 	Parsable.cc Plaintext.cc \
 	Retriever.cc Server.cc ExternalTransport.cc \
-	URLRef.cc htdig.cc ExternalParser.cc
+	URLRef.cc hldig.cc ExternalParser.cc
 
 noinst_HEADERS = Document.h ExternalParser.h HTML.h \
-	Parsable.h Plaintext.h Retriever.h Server.h  URLRef.h htdig.h \
+	Parsable.h Plaintext.h Retriever.h Server.h  URLRef.h hldig.h \
 	ExternalTransport.h
 
 PACKAGE = @PACKAGE@
@@ -25,12 +25,6 @@ datarootdir= @datarootdir@
 localedir = @localedir@
 LIBS = @LIBINTL@ @LIBS@
 
-htdig_DEPENDENCIES = $(HTLIBS)
-htdig_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htdig_LDADD = $(HTLIBS) @LIBINTL@
-
-distdir = ../$(PACKAGE)-$(VERSION)/$(subdir)
-dist: Makefile $(DISTFILES)
-	for file in $(DISTFILES); do \
-	  ln $$file $(distdir) 2>/dev/null || cp -p $$file $(distdir) || exit 1; \
-	done
+hldig_DEPENDENCIES = $(HTLIBS)
+hldig_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hldig_LDADD = $(HTLIBS) @LIBINTL@
