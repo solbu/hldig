@@ -51,6 +51,6 @@ extern HtRegexList badquerystr;
 extern FILE *urls_seen;
 extern FILE *images_seen;
 
-extern void reportError (String msg);
+extern void reportError (const String& msg);
 
 #endif

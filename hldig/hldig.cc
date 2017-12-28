@@ -66,7 +66,7 @@ HtDateTime StartTime;
 HtDateTime EndTime;
 
 void usage ();
-void reportError (String msg);
+void reportError (const String& msg);
 
 
 //
@@ -533,7 +533,7 @@ Options:\n"), VERSION);
 // Report an error and die
 //
 void
-reportError (String msg)
+reportError (const String& msg)
 {
   cout << "hldig: " << msg << "\n\n";
   exit (1);
