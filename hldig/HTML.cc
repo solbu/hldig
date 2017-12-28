@@ -1,7 +1,7 @@
 //
 // HTML.cc
 //
-// HTML: Class to parse HTML documents and return useful information 
+// HTML: Class to parse HTML documents and return useful information
 //       to the Retriever
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
@@ -17,7 +17,7 @@
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "htdig.h"
+#include "hldig.h"
 #include "HTML.h"
 #include "HtSGMLCodec.h"
 #include "HtConfiguration.h"
@@ -247,8 +247,8 @@ HTML::parse (Retriever & retriever, URL & baseURL)
   {
 
     //
-    // Filter out section marked to be ignored for indexing. 
-    // This can contain any HTML. 
+    // Filter out section marked to be ignored for indexing.
+    // This can contain any HTML.
     // On finding a  noindex_start,  skip to first occurrence of matching
     // noindex_end.  Any  noindex_start  within will be ignored.
     //
@@ -530,7 +530,7 @@ HTML::parse (Retriever & retriever, URL & baseURL)
         //
         if (head.length () < max_head_length && !noindex && !in_title)
         {
-          // We don't want to add random chars to the 
+          // We don't want to add random chars to the
           // excerpt if we're in the title.
           head << *position;
         }

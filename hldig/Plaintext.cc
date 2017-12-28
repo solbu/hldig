@@ -17,7 +17,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "Plaintext.h"
-#include "htdig.h"
+#include "hldig.h"
 #include "htString.h"
 #include "WordType.h"
 

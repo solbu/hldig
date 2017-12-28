@@ -12,15 +12,15 @@ AC_PREREQ(2.57)
 # hl://Dig's version
 #
 VERSION=`cat ${srcdir}/.version`
-HTDIG_MAJOR_VERSION=[`expr $VERSION : '\([0-9][0-9]*\)'`]
-AC_SUBST(HTDIG_MAJOR_VERSION)
-HTDIG_MINOR_VERSION=[`expr $VERSION : '[0-9][0-9]*\.\([0-9][0-9]*\)'`]
-AC_SUBST(HTDIG_MINOR_VERSION)
-HTDIG_MICRO_VERSION=[`expr $VERSION : '[0-9][0-9]*\.[0-9][0-9]*\.\([0-9][0-9]*\)'`]
-AC_SUBST(HTDIG_MICRO_VERSION)
+HLDIG_MAJOR_VERSION=[`expr $VERSION : '\([0-9][0-9]*\)'`]
+AC_SUBST(HLDIG_MAJOR_VERSION)
+HLDIG_MINOR_VERSION=[`expr $VERSION : '[0-9][0-9]*\.\([0-9][0-9]*\)'`]
+AC_SUBST(HLDIG_MINOR_VERSION)
+HLDIG_MICRO_VERSION=[`expr $VERSION : '[0-9][0-9]*\.[0-9][0-9]*\.\([0-9][0-9]*\)'`]
+AC_SUBST(HLDIG_MICRO_VERSION)
 
-AC_INIT([htdig], 0.1.01)
-AC_CONFIG_SRCDIR([htdig/htdig.cc])
+AC_INIT([hldig], 0.1.01)
+AC_CONFIG_SRCDIR([hldig/hldig.cc])
 AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER([include/config.h:include/config.in])
@@ -94,8 +94,8 @@ AC_ARG_WITH(rx, [AC_HELP_STRING([--with-rx],
 AC_ARG_ENABLE(tests,
 	[AC_HELP_STRING([--enable-tests],
 		[do build a version with run-time tests.])],
-	[htdig_cv_tests="$enable_tests"], [htdig_cv_tests="no"])
-AM_CONDITIONAL(TESTS, test x$htdig_cv_tests = xyes)
+	[hldig_cv_tests="$enable_tests"], [hldig_cv_tests="no"])
+AM_CONDITIONAL(TESTS, test x$hldig_cv_tests = xyes)
 
 # Checks for programs.
 AC_PROG_CXX
@@ -313,7 +313,7 @@ if test ! -d "./db"; then
     mkdir db
 fi
 
-if test x$htdig_cv_tests = xyes
+if test x$hldig_cv_tests = xyes
 then
     CHECK_USER
     AC_PROG_APACHE(1.3.1)
@@ -354,7 +354,7 @@ done
 AC_CONFIG_FILES([Makefile
                  htcommon/Makefile
                  htdb/Makefile
-                 htdig/Makefile
+                 hldig/Makefile
                  installdir/htdig.1
                  installdir/htdig-pdfparser.1
                  installdir/htfuzzy.1

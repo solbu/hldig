@@ -26,7 +26,7 @@
 
 
 #include "Retriever.h"
-#include "htdig.h"
+#include "hldig.h"
 #include "HtWordList.h"
 #include "WordRecord.h"
 #include "URLRef.h"

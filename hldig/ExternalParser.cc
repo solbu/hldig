@@ -23,7 +23,7 @@
 #include "ExternalParser.h"
 #include "HTML.h"
 #include "Plaintext.h"
-#include "htdig.h"
+#include "hldig.h"
 #include "htString.h"
 #include "QuotedStringList.h"
 #include "URL.h"

@@ -17,7 +17,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "Parsable.h"
-#include "htdig.h"
+#include "hldig.h"
 #include "defaults.h"
 
 
