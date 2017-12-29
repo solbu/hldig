@@ -1,0 +1,263 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Andy Alt
+# This file is distributed under the same license as the hldig package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hldig 0.1.01\n"
+"Report-Msgid-Bugs-To: andy400-dev@yahoo.com\n"
+"POT-Creation-Date: 2017-12-29 03:32-0600\n"
+"PO-Revision-Date: 2017-12-29 11:13+0100\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.5\n"
+"Last-Translator: Martijn de Boer <translations@sexybiggetje.nl>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: nl\n"
+
+#: hldig/hldig.cc:513
+#, c-format
+msgid ""
+"\t-a\tUse alternate work files.\n"
+"\t\tTells hldig to append .work to database files, causing\n"
+"\t\ta second copy of the database to be built.  This allows\n"
+"\t\tthe original files to be used by htsearch during the\n"
+"\t\tindexing run.\n"
+"\n"
+msgstr ""
+"\t-a\tGebruik alternatieve werkbestanden.\n"
+"\t\tZorgt dat htdig .work aan de naam van database bestanden\n"
+"\t\ttoevoegt zodat een tweede kopie van de database word gemaakt.\n"
+"\t\tdit zorgt er voor dat je de originele bestanden kunt doorzoeken\n"
+"\t\tterwijl de indexeringstaak werkt.\n"
+"\n"
+
+#: htcommon/messages.cc:31
+#, c-format
+msgid ""
+"\t-c configfile\n"
+"\t\tUse the specified configuration file instead of the\n"
+"\t\tdefault.\n"
+"\n"
+msgstr ""
+"\t-c configuratiebestand\n"
+"\t\tGebruik het opgegeven configuratie bestand in\n"
+"\t\tplaats van de standaard.\n"
+"\n"
+
+#: hldig/hldig.cc:500
+#, c-format
+msgid ""
+"\t-h hop count\n"
+"\t\tLimit the stored documents to those which are at\n"
+"\t\tmost hopcount links away from the start URL.\n"
+"\n"
+msgstr ""
+"\t-h aantal stappen\n"
+"\t\tLimiteer het aantal opgeslagen documenten tot het aantal dat\n"
+"\t\teen maximaal aantal stappen verwijderd is van de start URL.\n"
+"\n"
+
+#: hldig/hldig.cc:491
+#, c-format
+msgid ""
+"\t-i\tInitial.  Do not use any old databases.  This is\n"
+"\t\taccomplished by first erasing the databases.\n"
+"\n"
+msgstr ""
+"\t-i\tInitieel.  Gebruik geen oude databases.  Dit word\n"
+"\t\tbereikt door eerst de oude database te verwijderen.\n"
+"\n"
+
+#: hldig/hldig.cc:519
+#, c-format
+msgid ""
+"\t-m minimalfile  (or just a file name at end of arguments)\n"
+"\t\tTells hldig to read URLs from the supplied file and index\n"
+"\t\tthem in place of (or in addition to) the existing URLs in\n"
+"\t\tthe database and the start_url.  With the -m, only the\n"
+"\t\tURLs specified are added to the database.  A file name of\n"
+"\t\t'-' indicates the standard input.\n"
+"\n"
+msgstr ""
+"\t-m minimaalbestand  (of enkel een bestandsnaam an het einde van de argumenten)\n"
+"\t\tZorgt er voor dat hldig URLs leest van het opgegeven bestand en indexeert ze\n"
+"\t\tin plaats van (of in aanvulling op) de bestaande URLs in de database en de\n"
+"\t\tstart_url.  Met het -m attribuut, worden enkel de URLs opgegeven in het bestand\n"
+"\t\taan de database toegevoegd.  Een bestandsnaam van 't' geeft aan dat de standaard\n"
+"\t\tinvoer gebruikt dient te worden.\n"
+"\n"
+
+#: hldig/hldig.cc:504
+#, c-format
+msgid ""
+"\t-s\tReport statistics after completion.\n"
+"\n"
+msgstr ""
+"\t-s\tToon statistieken na voltooien.\n"
+"\n"
+
+#: hldig/hldig.cc:496
+#, c-format
+msgid ""
+"\t-t\tCreate an ASCII version of the document database.\n"
+"\t\tThis database is easy to parse with other programs so\n"
+"\t\tthat information can be extracted from it.\n"
+"\n"
+msgstr ""
+"\t-t\tMaak een ASCII versie van de documenten database.\n"
+"\t\tDeze database is makkelijk te verwerken voor andere programma's\n"
+"\t\tzodat zij hier informatie uit kunnen halen.\n"
+"\n"
+
+#: hldig/hldig.cc:506
+#, c-format
+msgid ""
+"\t-u username:password\n"
+"\t\tTells hldig to send the supplied username and\n"
+"\t\tpassword with each HTTP request.  The credentials\n"
+"\t\twill be encoded using the 'Basic' authentication scheme.\n"
+"\t\tThere *HAS* to be a colon (:) between the username\n"
+"\t\tand password.\n"
+"\n"
+msgstr ""
+"\t-u gebruikersnaam:wachtwoord\n"
+"\t\tZorgt er voor dat de opgegeven gebruikersnaam en\n"
+"\t\twachtwoord met elk HTTP verzoek worden verzonden.  De\n"
+"\t\tgegevens worden verzonden met het 'Basic' schema.\n"
+"\t\tEr *MOET* een dubbele punt (:) tussen de gebruikersnaam\n"
+"\t\ten het wachtwoord aanwezig zijn.\n"
+"\n"
+
+#: htcommon/messages.cc:22
+#, c-format
+msgid ""
+"\t-v\tVerbose mode.  This increases the verbosity of the\n"
+"\t\tprogram.  Using more than 2 is probably only useful\n"
+"\t\tfor debugging purposes.  The default verbose mode\n"
+"\t\tgives a nice progress report of what it is doing and\n"
+"\t\twhere it is.\n"
+"\n"
+msgstr ""
+"\t-v\tVerbale modus.  Dit maakt het programma meer verbaal.\n"
+"\t\tEen getal hoger dan 2 is waarschijnlijk enkel handig bij\n"
+"\t\thet debuggen.  De standaard verbale modus geeft een\n"
+"\t\tmooi voortgangsrapport van wat er gedaan wordt en waar\n"
+"\t\tzich dit bevind.\n"
+"\n"
+
+#: hlsearch/hlsearch.cc:982
+msgid ""
+"\tquery_string\tA CGI-style query string can be given as a single\n"
+"\t\targument, and is only used if the REQUEST_METHOD environment\n"
+"\t\tvariable is not set.  If no query_string is given, and\n"
+"\t\tREQUEST_METHOD is not set, hlsearch will prompt for the query.\n"
+"\n"
+msgstr ""
+"\tquery_string\tEen CGI-stijl query string kan worden opgegeven als een enkel\n"
+"\t\targument, en wordt enkel gebruikt indien de REQUEST_METHOD omgeving\n"
+"\t\tvariable niet is opgegeven.  Indien er geen query_string is gegeven, en\n"
+"\t\tREQUEST_METHOD niet is opgegeven, zal hlsearch er om vragen.\n"
+"\n"
+
+#: hldig/hldig.cc:178
+msgid " is no longer supported\n"
+msgstr " is niet langer ondersteund\n"
+
+#: hldig/hldig.cc:258
+msgid "Importing Cookies input file "
+msgstr "Importeren van Cookies bestand "
+
+#: hldig/hldig.cc:199
+#, c-format
+msgid "Invalid url_part_aliases or common_url_parts: %s"
+msgstr "Onjuiste url_part_aliases of common_url_parts: %s"
+
+#: hldig/hldig.cc:207
+#, c-format
+msgid "Invalid url_rewrite_rules: %s"
+msgstr "Onjuiste url_rewrite_rules: %s"
+
+#: hlsearch/hlsearch.cc:977 httools/htdump.cc:186
+msgid "Options:\n"
+msgstr "Opties:\n"
+
+#: hldig/hldig.cc:158
+#, c-format
+msgid "Unable to find configuration file '%s'"
+msgstr "Kan configuratie bestand niet vinden '%s'"
+
+#: hldig/hldig.cc:278
+#, c-format
+msgid "Unable to load cookies file '%s' in memory"
+msgstr "Kan cookies bestand '%s' niet in het geheugen laden"
+
+#: hldig/hldig.cc:177
+msgid "Warning: Configuration option "
+msgstr "Waarschuwing: Configuratie optie "
+
+#: hldig/hldig.cc:274
+msgid "Warning: Import failed! ("
+msgstr "Waarschuwing: Importeren mislukt! ("
+
+#: hldig/hldig.cc:182
+msgid "Warning: unknown locale!\n"
+msgstr "Waarschuwing: onbekende locale!\n"
+
+#: hldig/hldig.cc:191
+msgid "authorization"
+msgstr "authorizatie"
+
+#: hldig/hldig.cc:470
+msgid "hldig End Time: "
+msgstr "hldig Eind Tijd: "
+
+#: hldig/hldig.cc:148
+msgid "hldig Start Time: "
+msgstr "hldig Start Tijd: "
+
+#: hldig/hldig.cc:181
+msgid "locale"
+msgstr "locale"
+
+#: hldig/hldig.cc:186
+msgid "max_hop_count"
+msgstr "max_hop_count"
+
+#: hldig/hldig.cc:485
+#, c-format
+msgid ""
+"usage: hldig [-v][-i][-c configfile][-t][-m minimalfile]\n"
+"This program is part of hldig %s\n"
+"\n"
+"Options:\n"
+msgstr ""
+"gebruik: hldig [-v][-i][-c configuratiebestand][-t][-m minimaalbestand]\n"
+"Dit programma maakt deel uit van hl://Dig %s\n"
+"\n"
+"Opties:\n"
+
+#: hlsearch/hlsearch.cc:974
+#, c-format
+msgid ""
+"usage: hlsearch [-v][-d][-c configfile] [query_string]\n"
+"This program is part of hl://Dig %s\n"
+"\n"
+msgstr ""
+"gebruik: hlsearch [-v][-d][-c configuratiebestand] [query_string]\n"
+"Dit programma maakt deel uit van hl://Dig %s\n"
+"\n"
+
+#: httools/htdump.cc:183
+#, c-format
+msgid ""
+"usage: htdump [-v][-d][-w][-a][-c configfile]\n"
+"This program is part of hl://Dig %s\n"
+"\n"
+msgstr ""
+"gebruik: htdump [-v][-d][-w][-a][-c configuratiebestand]\n"
+"Dit programma maakt deel uit van hl://Dig %s\n"
+"\n"
