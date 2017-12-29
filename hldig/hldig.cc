@@ -4,11 +4,13 @@
 // hldig: Indexes the web sites specified in the config file
 //        generating several databases to be used by htmerge
 //
-// Part of the ht://Dig package   <https://andy5995.github.io/hldig/>
+// Part of the hl://Dig package   <https://andy5995.github.io/hldig/>
 // Copyright (c) 2017 The hl://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
+//
+//  hl://Dig is a fork of ht://Dig <https://sourceforge.net/projects/htdig/>
 //
 
 #ifdef HAVE_CONFIG_H
@@ -24,6 +26,7 @@
 #include "WordContext.h"
 #include "HtDateTime.h"
 #include "HtURLRewriter.h"
+#include "messages.h"
 
 ////////////////////////////
 // For cookie jar
@@ -478,21 +481,17 @@ main (int ac, char **av)
 void
 usage ()
 {
+  Usage help;
   printf (_("usage: hldig [-v][-i][-c configfile][-t][-m minimalfile]\n\
 This program is part of hldig %s\n\n\
 Options:\n"), VERSION);
 
-  printf (_("\t-v\tVerbose mode.  This increases the verbosity of the\n\
-\t\tprogram.  Using more than 2 is probably only useful\n\
-\t\tfor debugging purposes.  The default verbose mode\n\
-\t\tgives a nice progress report while digging.\n\n"));
+  help.verbose ();
 
   printf (_("\t-i\tInitial.  Do not use any old databases.  This is\n\
 \t\taccomplished by first erasing the databases.\n\n"));
 
-  printf (_("\t-c configfile\n\
-\t\tUse the specified configuration file instead of the\n\
-\t\tdefault.\n\n"));
+  help.config ();
 
   printf (_("\t-t\tCreate an ASCII version of the document database.\n\
 \t\tThis database is easy to parse with other programs so\n\

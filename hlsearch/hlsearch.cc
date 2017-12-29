@@ -33,6 +33,7 @@
 #include "WordContext.h"
 #include "HtRegex.h"
 #include "Collection.h"
+#include "messages.h"
 
 #include <time.h>
 #include <ctype.h>
@@ -969,22 +970,19 @@ reportError (char *msg)
 void
 usage ()
 {
-  cout << _("usage: hlsearch [-v][-d][-c configfile] [query_string]\n");
-  cout << "This program is part of hl://Dig " << VERSION << "\n\n";
-  cout << "Options:\n";
-  cout << "\t-v -d\tVerbose mode.  This increases the verbosity of the\n";
-  cout << "\t\tprogram.  Using more than 2 is probably only useful\n";
-  cout << "\t\tfor debugging purposes.  The default verbose mode\n";
-  cout << "\t\tgives a progress on what it is doing and where it is.\n\n";
-  cout << "\t-c configfile\n";
-  cout << "\t\tUse the specified configuration file instead on the\n";
-  cout << "\t\tdefault.\n\n";
-  cout <<
-    "\tquery_string\tA CGI-style query string can be given as a single\n";
-  cout <<
-    "\t\targument, and is only used if the REQUEST_METHOD environment\n";
-  cout << "\t\tvariable is not set.  If no query_string is given, and\n";
-  cout <<
-    "\t\tREQUEST_METHOD is not set, hlsearch will prompt for the query.\n\n";
+  Usage help;
+  printf (_("\
+usage: hlsearch [-v][-d][-c configfile] [query_string]\n\
+This program is part of hl://Dig %s\n\n"), VERSION);
+  cout << _("Options:\n");
+
+  help.verbose ();
+  help.config ();
+
+  cout << _("\
+\tquery_string\tA CGI-style query string can be given as a single\n\
+\t\targument, and is only used if the REQUEST_METHOD environment\n\
+\t\tvariable is not set.  If no query_string is given, and\n\
+\t\tREQUEST_METHOD is not set, hlsearch will prompt for the query.\n\n");
   exit (0);
 }

@@ -3,7 +3,7 @@ include $(top_srcdir)/Makefile.config
 
 #
 # Do not output #line because it confuses the dependencies
-# generator of GCC if configure run out of source tree. 
+# generator of GCC if configure run out of source tree.
 # Comment these to ease debugging.
 #
 AM_LFLAGS = -L
@@ -18,7 +18,8 @@ libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc \
 	HtURLCodec.cc URL.cc URLTrans.cc \
 	HtZlibCodec.cc cgi.cc HtSGMLCodec.cc \
 	HtConfiguration.cc HtURLRewriter.cc \
-	conf_lexer.lxx conf_parser.yxx 
+	conf_lexer.lxx conf_parser.yxx 			\
+	messages.cc
 
 libcommon_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION) ${extra_ldflags}
 
@@ -34,11 +35,11 @@ noinst_HEADERS = DocumentDB.h \
 	defaults.h \
 	HtConfiguration.h \
 	HtURLRewriter.h \
-	conf_parser.h
+	conf_parser.h 	\
+	messages.h
 
 LOCAL_DEFINES=	-DBIN_DIR=\"$(bindir)\" \
 		-DCOMMON_DIR=\"$(COMMON_DIR)\" \
 		-DCONFIG_DIR=\"$(CONFIG_DIR)\" \
 		-DDATABASE_DIR=\"$(DATABASE_DIR)\" \
-		-DIMAGE_URL_PREFIX=\"$(IMAGE_URL_PREFIX)\" 
-
+		-DIMAGE_URL_PREFIX=\"$(IMAGE_URL_PREFIX)\"

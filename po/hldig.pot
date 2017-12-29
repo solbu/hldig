@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hldig 0.1.01\n"
 "Report-Msgid-Bugs-To: andy400-dev@yahoo.com\n"
-"POT-Creation-Date: 2017-12-28 23:11-0600\n"
+"POT-Creation-Date: 2017-12-29 03:32-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: hldig/hldig.cc:514
+#: hldig/hldig.cc:513
 #, c-format
 msgid ""
 "\t-a\tUse alternate work files.\n"
@@ -28,7 +28,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: hldig/hldig.cc:493
+#: htcommon/messages.cc:31
 #, c-format
 msgid ""
 "\t-c configfile\n"
@@ -37,7 +37,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: hldig/hldig.cc:501
+#: hldig/hldig.cc:500
 #, c-format
 msgid ""
 "\t-h hop count\n"
@@ -46,7 +46,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: hldig/hldig.cc:490
+#: hldig/hldig.cc:491
 #, c-format
 msgid ""
 "\t-i\tInitial.  Do not use any old databases.  This is\n"
@@ -54,7 +54,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: hldig/hldig.cc:520
+#: hldig/hldig.cc:519
 #, c-format
 msgid ""
 "\t-m minimalfile  (or just a file name at end of arguments)\n"
@@ -66,14 +66,14 @@ msgid ""
 "\n"
 msgstr ""
 
-#: hldig/hldig.cc:505
+#: hldig/hldig.cc:504
 #, c-format
 msgid ""
 "\t-s\tReport statistics after completion.\n"
 "\n"
 msgstr ""
 
-#: hldig/hldig.cc:497
+#: hldig/hldig.cc:496
 #, c-format
 msgid ""
 "\t-t\tCreate an ASCII version of the document database.\n"
@@ -82,7 +82,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: hldig/hldig.cc:507
+#: hldig/hldig.cc:506
 #, c-format
 msgid ""
 "\t-u username:password\n"
@@ -94,77 +94,91 @@ msgid ""
 "\n"
 msgstr ""
 
-#: hldig/hldig.cc:485
+#: htcommon/messages.cc:22
 #, c-format
 msgid ""
 "\t-v\tVerbose mode.  This increases the verbosity of the\n"
 "\t\tprogram.  Using more than 2 is probably only useful\n"
 "\t\tfor debugging purposes.  The default verbose mode\n"
-"\t\tgives a nice progress report while digging.\n"
+"\t\tgives a nice progress report of what it is doing and\n"
+"\t\twhere it is.\n"
 "\n"
 msgstr ""
 
-#: hldig/hldig.cc:175
+#: hlsearch/hlsearch.cc:982
+msgid ""
+"\tquery_string\tA CGI-style query string can be given as a single\n"
+"\t\targument, and is only used if the REQUEST_METHOD environment\n"
+"\t\tvariable is not set.  If no query_string is given, and\n"
+"\t\tREQUEST_METHOD is not set, hlsearch will prompt for the query.\n"
+"\n"
+msgstr ""
+
+#: hldig/hldig.cc:178
 msgid " is no longer supported\n"
 msgstr ""
 
-#: hldig/hldig.cc:255
+#: hldig/hldig.cc:258
 msgid "Importing Cookies input file "
 msgstr ""
 
-#: hldig/hldig.cc:196
+#: hldig/hldig.cc:199
 #, c-format
 msgid "Invalid url_part_aliases or common_url_parts: %s"
 msgstr ""
 
-#: hldig/hldig.cc:204
+#: hldig/hldig.cc:207
 #, c-format
 msgid "Invalid url_rewrite_rules: %s"
 msgstr ""
 
-#: hldig/hldig.cc:155
+#: hlsearch/hlsearch.cc:977 httools/htdump.cc:186
+msgid "Options:\n"
+msgstr ""
+
+#: hldig/hldig.cc:158
 #, c-format
 msgid "Unable to find configuration file '%s'"
 msgstr ""
 
-#: hldig/hldig.cc:275
+#: hldig/hldig.cc:278
 #, c-format
 msgid "Unable to load cookies file '%s' in memory"
 msgstr ""
 
-#: hldig/hldig.cc:174
+#: hldig/hldig.cc:177
 msgid "Warning: Configuration option "
 msgstr ""
 
-#: hldig/hldig.cc:271
+#: hldig/hldig.cc:274
 msgid "Warning: Import failed! ("
 msgstr ""
 
-#: hldig/hldig.cc:179
+#: hldig/hldig.cc:182
 msgid "Warning: unknown locale!\n"
 msgstr ""
 
-#: hldig/hldig.cc:188
+#: hldig/hldig.cc:191
 msgid "authorization"
 msgstr ""
 
-#: hldig/hldig.cc:467
+#: hldig/hldig.cc:470
 msgid "hldig End Time: "
 msgstr ""
 
-#: hldig/hldig.cc:145
+#: hldig/hldig.cc:148
 msgid "hldig Start Time: "
 msgstr ""
 
-#: hldig/hldig.cc:178
+#: hldig/hldig.cc:181
 msgid "locale"
 msgstr ""
 
-#: hldig/hldig.cc:183
+#: hldig/hldig.cc:186
 msgid "max_hop_count"
 msgstr ""
 
-#: hldig/hldig.cc:481
+#: hldig/hldig.cc:485
 #, c-format
 msgid ""
 "usage: hldig [-v][-i][-c configfile][-t][-m minimalfile]\n"
@@ -173,6 +187,18 @@ msgid ""
 "Options:\n"
 msgstr ""
 
-#: hlsearch/hlsearch.cc:968
-msgid "usage: hlsearch [-v][-d][-c configfile] [query_string]\n"
+#: hlsearch/hlsearch.cc:974
+#, c-format
+msgid ""
+"usage: hlsearch [-v][-d][-c configfile] [query_string]\n"
+"This program is part of hl://Dig %s\n"
+"\n"
+msgstr ""
+
+#: httools/htdump.cc:183
+#, c-format
+msgid ""
+"usage: htdump [-v][-d][-w][-a][-c configfile]\n"
+"This program is part of hl://Dig %s\n"
+"\n"
 msgstr ""

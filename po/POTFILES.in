@@ -1,4 +1,6 @@
 # List of source files which contain translatable strings.
 
+htcommon/messages.cc
 hldig/hldig.cc
 hlsearch/hlsearch.cc
+httools/htdump.cc
