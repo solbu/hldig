@@ -1,17 +1,17 @@
 //
-// htsearch.cc
+// hlsearch.cc
 //
-// htsearch: The main search CGI. Parses the CGI input, reads the config files
+// hlsearch: The main search CGI. Parses the CGI input, reads the config files
 //           and calls the necessary code to put together the result lists
 //           and the final display.
 //
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2004 The ht://Dig Group
+// Part of the hl://Dig package <https://andy5995.github.io/hldig>
+// Copyright (c) 2017 The hl://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htsearch.cc,v 1.72 2004/05/28 13:15:24 lha Exp $
+//  hl://Dig is a fork of ht://Dig <https://sourceforge.net/projects/htdig/>
 //
 
 #ifdef HAVE_CONFIG_H
@@ -48,7 +48,7 @@
 
 typedef void (*SIGNAL_HANDLER) (...);
 
-// ResultList *htsearch(const String&, List &, Parser *);
+// ResultList *hlsearch(const String&, List &, Parser *);
 void htsearch (Collection *, List &, Parser *);
 
 void setupWords (char *, List &, int, Parser *, String &);
@@ -322,7 +322,7 @@ main (int ac, char **av)
       reportError (form ("Invalid url_part_aliases or common_url_parts: %s",
                          url_part_errors.get ()));
 
-    // for htsearch, use search_rewrite_rules attribute for HtURLRewriter.
+    // for hlsearch, use search_rewrite_rules attribute for HtURLRewriter.
     config->AddParsed ("url_rewrite_rules", "${search_rewrite_rules}");
     url_part_errors = HtURLRewriter::instance ()->ErrMsg ();
     if (url_part_errors.length () != 0)
@@ -946,10 +946,10 @@ reportError (char *msg)
 {
   HtConfiguration *config = HtConfiguration::config ();
   cout << "Content-type: text/html\r\n\r\n";
-  cout << "<html><head><title>htsearch error</title></head>\n";
+  cout << "<html><head><title>hlsearch error</title></head>\n";
   cout << "<body bgcolor=\"#ffffff\">\n";
-  cout << "<h1>ht://Dig error</h1>\n";
-  cout << "<p>htsearch detected an error.  Please report this to the\n";
+  cout << "<h1>hl://Dig error</h1>\n";
+  cout << "<p>hlsearch detected an error.  Please report this to the\n";
   cout << "webmaster of this site by sending an e-mail to:\n";
   cout << "<a href=\"mailto:" << config->Find ("maintainer") << "\">";
   cout << config->Find ("maintainer") << "</a>\n";
@@ -965,8 +965,8 @@ reportError (char *msg)
 void
 usage ()
 {
-  cout << "usage: htsearch [-v][-d][-c configfile] [query_string]\n";
-  cout << "This program is part of ht://Dig " << VERSION << "\n\n";
+  cout << "usage: hlsearch [-v][-d][-c configfile] [query_string]\n";
+  cout << "This program is part of hl://Dig " << VERSION << "\n\n";
   cout << "Options:\n";
   cout << "\t-v -d\tVerbose mode.  This increases the verbosity of the\n";
   cout << "\t\tprogram.  Using more than 2 is probably only useful\n";
@@ -981,6 +981,6 @@ usage ()
     "\t\targument, and is only used if the REQUEST_METHOD environment\n";
   cout << "\t\tvariable is not set.  If no query_string is given, and\n";
   cout <<
-    "\t\tREQUEST_METHOD is not set, htsearch will prompt for the query.\n\n";
+    "\t\tREQUEST_METHOD is not set, hlsearch will prompt for the query.\n\n";
   exit (0);
 }

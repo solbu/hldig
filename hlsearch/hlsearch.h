@@ -1,17 +1,17 @@
 //
-// htsearch.h
+// hlsearch.h
 //
-// htsearch: The main search CGI. Parses the CGI input, reads the config files
+// hlsearch: The main search CGI. Parses the CGI input, reads the config files
 //           and calls the necessary code to put together the result lists
 //           and the final display.
 //
-// Part of the ht://Dig package   <http://www.htdig.org/>
-// Copyright (c) 1995-2004 The ht://Dig Group
+// Part of the hl://Dig package   <https://andy5995.github.io/hldig>
+// Copyright (c) 2017 The hl://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htsearch.h,v 1.16 2004/05/28 13:15:25 lha Exp $
+//  hl://Dig is a fork of ht://Dig <https://sourceforge.net/projects/htdig/>
 //
 
 #ifndef _hlsearch_h_
