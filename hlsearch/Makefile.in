@@ -270,7 +270,7 @@ LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
-LIBS = @LIBS@
+LIBS = @LIBINTL@ @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
@@ -393,6 +393,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htlib/libht.la \
 		$(top_builddir)/db/libhtdb.la
 
+LDADD = $(HTLIBS) @LIBINTL@
 LOCAL_DEFINES = -DCONFIG_DIR=\"$(CONFIG_DIR)\" -I$(top_srcdir)/htfuzzy
 hlsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc \
 		Template.cc TemplateList.cc WeightWord.cc hlsearch.cc \

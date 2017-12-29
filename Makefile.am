@@ -16,9 +16,6 @@ EXTRA_DIST = config.rpath m4/ChangeLog  .version Makefile.config contrib ABOUT-N
 
 ACLOCAL_AMFLAGS = -I m4
 
-PACKAGE = @PACKAGE@
-VERSION = @VERSION@
-
 dist-hook:
 	find $(distdir) -depth -name CVS -print | xargs rm -fr
 
@@ -41,18 +38,3 @@ install-data-hook:
 	@echo "installed as " $(DESTDIR)$(bindir)/rundig
 
 distdir = $(PACKAGE)-$(VERSION)
-dist: Makefile
-	rm -fr $(distdir)
-	mkdir $(distdir)
-	chmod 777 $(distdir)
-	for file in $(DISTFILES); do \
-	  ln $$file $(distdir) 2>/dev/null || cp -p $$file $(distdir); \
-	done
-	for subdir in $(SUBDIRS); do \
-	  mkdir $(distdir)/$$subdir || exit 1; \
-	  chmod 777 $(distdir)/$$subdir; \
-	  (cd $$subdir && $(MAKE) $@) || exit 1; \
-	done
-	tar chozf $(distdir).tar.gz $(distdir)
-	rm -fr $(distdir)
-

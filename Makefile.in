@@ -287,7 +287,7 @@ LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
-LIBS = @LIBS@
+LIBS = @LIBINTL@ @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
@@ -410,6 +410,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htlib/libht.la \
 		$(top_builddir)/db/libhtdb.la
 
+LDADD = $(HTLIBS) @LIBINTL@
 @TESTS_TRUE@TESTDIR = test
 SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb hldig hlsearch httools installdir include $(TESTDIR) po
 EXTRA_DIST = config.rpath m4/ChangeLog  .version Makefile.config contrib ABOUT-NLS
@@ -908,20 +909,6 @@ install-data-hook:
 	@echo "Before you can start searching, you will need to create a"
 	@echo "search database.  A sample script to do this has been"
 	@echo "installed as " $(DESTDIR)$(bindir)/rundig
-dist: Makefile
-	rm -fr $(distdir)
-	mkdir $(distdir)
-	chmod 777 $(distdir)
-	for file in $(DISTFILES); do \
-	  ln $$file $(distdir) 2>/dev/null || cp -p $$file $(distdir); \
-	done
-	for subdir in $(SUBDIRS); do \
-	  mkdir $(distdir)/$$subdir || exit 1; \
-	  chmod 777 $(distdir)/$$subdir; \
-	  (cd $$subdir && $(MAKE) $@) || exit 1; \
-	done
-	tar chozf $(distdir).tar.gz $(distdir)
-	rm -fr $(distdir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

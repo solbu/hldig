@@ -104,6 +104,10 @@ struct
 int
 main (int ac, char **av)
 {
+  setlocale (LC_ALL, "");
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
+
   int c;
   extern char *optarg;
   int override_config = 0;
@@ -965,7 +969,7 @@ reportError (char *msg)
 void
 usage ()
 {
-  cout << "usage: hlsearch [-v][-d][-c configfile] [query_string]\n";
+  cout << _("usage: hlsearch [-v][-d][-c configfile] [query_string]\n");
   cout << "This program is part of hl://Dig " << VERSION << "\n\n";
   cout << "Options:\n";
   cout << "\t-v -d\tVerbose mode.  This increases the verbosity of the\n";

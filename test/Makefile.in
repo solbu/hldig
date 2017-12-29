@@ -488,7 +488,7 @@ LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
-LIBS = @LIBS@
+LIBS = @LIBINTL@ @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
@@ -611,6 +611,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htlib/libht.la \
 		$(top_builddir)/db/libhtdb.la
 
+LDADD = $(HTLIBS) @LIBINTL@
 
 #
 # Part of the ht://Dig package   <http://www.htdig.org/>

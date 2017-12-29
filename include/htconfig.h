@@ -5,10 +5,15 @@
     For copyright details, see the file COPYING in your distribution
     or the GNU General Public License version 2 or later
     <http://www.gnu.org/copyleft/gpl.html>
-    
+
 */
 
 #include <config.h>
+
+#include "gettext.h"
+#define _(String) gettext (String)
+#define gettext_noop(String) String
+#define N_(String) gettext_noop (String)
 
 #if HAVE_STDBOOL_H
 #include <stdbool.h>

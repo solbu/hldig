@@ -278,7 +278,7 @@ LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
-LIBS = @LIBS@
+LIBS = @LIBINTL@ @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
@@ -401,6 +401,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htlib/libht.la \
 		$(top_builddir)/db/libhtdb.la
 
+LDADD = $(HTLIBS) @LIBINTL@
 LOCAL_DEFINES = -DSENDMAIL=\"$(SENDMAIL)\"
 htpurge_SOURCES = htpurge.cc
 htpurge_DEPENDENCIES = $(HTLIBS)

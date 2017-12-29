@@ -308,7 +308,7 @@ LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
-LIBS = @LIBS@
+LIBS = @LIBINTL@ @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
@@ -431,6 +431,7 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htlib/libht.la \
 		$(top_builddir)/db/libhtdb.la
 
+LDADD = $(HTLIBS) @LIBINTL@
 pkglib_LTLIBRARIES = libht.la
 libht_la_SOURCES = Configuration.cc Database.cc Dictionary.cc \
 	DB2_db.cc IntObject.cc List.cc Object.cc \
