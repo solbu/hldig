@@ -483,7 +483,7 @@ usage ()
 {
   Usage help;
   printf (_("usage: hldig [-v][-i][-c configfile][-t][-m minimalfile]\n\
-This program is part of hldig %s\n\n\
+This program is part of hl://Dig %s\n\n\
 Options:\n"), VERSION);
 
   help.verbose ();

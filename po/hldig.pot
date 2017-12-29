@@ -182,7 +182,7 @@ msgstr ""
 #, c-format
 msgid ""
 "usage: hldig [-v][-i][-c configfile][-t][-m minimalfile]\n"
-"This program is part of hldig %s\n"
+"This program is part of hl://Dig %s\n"
 "\n"
 "Options:\n"
 msgstr ""
