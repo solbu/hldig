@@ -14,8 +14,8 @@
 // $Id: htsearch.h,v 1.16 2004/05/28 13:15:25 lha Exp $
 //
 
-#ifndef _htsearch_h_
-#define _htsearch_h_
+#ifndef _hlsearch_h_
+#define _hlsearch_h_
 
 #include "List.h"
 #include "StringList.h"

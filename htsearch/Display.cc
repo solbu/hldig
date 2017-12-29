@@ -16,7 +16,7 @@
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "htsearch.h"
+#include "hlsearch.h"
 #include "Display.h"
 #include "ResultMatch.h"
 #include "WeightWord.h"

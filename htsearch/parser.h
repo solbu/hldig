@@ -1,7 +1,7 @@
 //
 // parser.h
 //
-// parser: Parses a boolean expression tree, retrieving and scoring 
+// parser: Parses a boolean expression tree, retrieving and scoring
 //         the resulting document list
 //
 // Part of the ht://Dig package   <http://www.htdig.org/>
@@ -16,7 +16,7 @@
 #ifndef _parser_h_
 #define _parser_h_
 
-#include "htsearch.h"
+#include "hlsearch.h"
 #include "WeightWord.h"
 #include "ResultList.h"
 #include "DocMatch.h"
