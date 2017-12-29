@@ -70,10 +70,10 @@ cd to $srcdir/samplesite and make a symbolic link to your testing/cgi-bin direct
 
     ln -s ../testing/cgi-bin/
 
-Copy `htsearch.sh` from your $srcdir/scripts directory to your server root
+Copy `hlsearch.sh` from your $srcdir/scripts directory to your server root
 (not the cgi-bin directory).
 
-_Note: htsearch.sh is a wrapper script that calls htsearch._
+_Note: hlsearch.sh is a wrapper script that calls hlsearch._
 
 Change back to the top level of your hldig source directory.
 Start the lighttpd server
@@ -115,12 +115,12 @@ an accurate test.
 If you make changes to the source code, you will have to run `make install`
 to update the files in testing/.
 
-## htsearch
+## hlsearch
 
-### To test `htsearch` from the console
+### To test `hlsearch` from the console
 
 Change to `testing/cgi-bin`
-Use `./htsearch` to search the database. You will get these two prompts:
+Use `./hlsearch` to search the database. You will get these two prompts:
 ```
 Enter value for words:
 Content-type: text/html
@@ -130,7 +130,7 @@ Enter value for format:
     At the first prompt, enter a keyword.
     At the second prompt, just hit return.
 
-hldig was designed to be a search engine for a web site. When `htsearch` is
+hldig was designed to be a search engine for a web site. When `hlsearch` is
 used from the command line, the html code it outputs is displayed. Its true
 purpose is to be run through a form on a web site.
 
@@ -139,10 +139,10 @@ Here is an example of where it's used through a web site form:
 [hldig Testing Ground](http://htdig.dreamhosters.com/)
 
 The is (old) html code used to display a form on a web site and request
-input from a user. You can see how `htsearch` is called:
+input from a user. You can see how `hlsearch` is called:
 
 ```
-<form action="http://localhost:3002/htsearch.sh" target=body>
+<form action="http://localhost:3002/hlsearch.sh" target=body>
   <b>Quick Search:</b><br>
   <font size="-1">
     <input type=text name=words size=15>

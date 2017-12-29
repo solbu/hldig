@@ -95,8 +95,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = htsearch$(EXEEXT) qtest$(EXEEXT)
-subdir = htsearch
+bin_PROGRAMS = hlsearch$(EXEEXT) qtest$(EXEEXT)
+subdir = hlsearch
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
@@ -117,19 +117,19 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_htsearch_OBJECTS = Display.$(OBJEXT) DocMatch.$(OBJEXT) \
+am_hlsearch_OBJECTS = Display.$(OBJEXT) DocMatch.$(OBJEXT) \
 	ResultList.$(OBJEXT) ResultMatch.$(OBJEXT) Template.$(OBJEXT) \
-	TemplateList.$(OBJEXT) WeightWord.$(OBJEXT) htsearch.$(OBJEXT) \
+	TemplateList.$(OBJEXT) WeightWord.$(OBJEXT) hlsearch.$(OBJEXT) \
 	parser.$(OBJEXT) Collection.$(OBJEXT) SplitMatches.$(OBJEXT) \
 	HtURLSeedScore.$(OBJEXT)
-htsearch_OBJECTS = $(am_htsearch_OBJECTS)
+hlsearch_OBJECTS = $(am_hlsearch_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-htsearch_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+hlsearch_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htsearch_LDFLAGS) $(LDFLAGS) -o $@
+	$(CXXFLAGS) $(hlsearch_LDFLAGS) $(LDFLAGS) -o $@
 am_qtest_OBJECTS = DocMatch.$(OBJEXT) ResultList.$(OBJEXT) \
 	AndQuery.$(OBJEXT) BooleanLexer.$(OBJEXT) \
 	BooleanQueryParser.$(OBJEXT) ExactWordQuery.$(OBJEXT) \
@@ -176,8 +176,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(htsearch_SOURCES) $(qtest_SOURCES)
-DIST_SOURCES = $(htsearch_SOURCES) $(qtest_SOURCES)
+SOURCES = $(hlsearch_SOURCES) $(qtest_SOURCES)
+DIST_SOURCES = $(hlsearch_SOURCES) $(qtest_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -394,12 +394,12 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/db/libhtdb.la
 
 LOCAL_DEFINES = -DCONFIG_DIR=\"$(CONFIG_DIR)\" -I$(top_srcdir)/htfuzzy
-htsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc \
-		Template.cc TemplateList.cc WeightWord.cc htsearch.cc \
-		parser.cc Collection.cc SplitMatches.cc HtURLSeedScore.cc 
+hlsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc \
+		Template.cc TemplateList.cc WeightWord.cc hlsearch.cc \
+		parser.cc Collection.cc SplitMatches.cc HtURLSeedScore.cc
 
 noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h \
-	Template.h TemplateList.h WeightWord.h htsearch.h parser.h \
+	Template.h TemplateList.h WeightWord.h hlsearch.h parser.h \
 	Collection.h SplitMatches.h HtURLSeedScore.h \
 	WordSearcher.h AndQuery.h AndQueryParser.h BooleanLexer.h \
 	BooleanQueryParser.h ExactWordQuery.h FuzzyExpander.h GParser.h \
@@ -408,9 +408,9 @@ noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h \
 	QueryLexer.h QueryParser.h SimpleLexer.h SimpleQueryParser.h \
 	VolatileCache.h
 
-htsearch_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
-htsearch_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htsearch_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
+hlsearch_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
+hlsearch_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hlsearch_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc \
 	BooleanLexer.cc BooleanQueryParser.cc ExactWordQuery.cc \
 	GParser.cc NearQuery.cc NotQuery.cc OperatorQuery.cc \
@@ -434,9 +434,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign htsearch/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign hlsearch/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign htsearch/Makefile
+	  $(AUTOMAKE) --foreign hlsearch/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -505,9 +505,9 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
-htsearch$(EXEEXT): $(htsearch_OBJECTS) $(htsearch_DEPENDENCIES) $(EXTRA_htsearch_DEPENDENCIES) 
-	@rm -f htsearch$(EXEEXT)
-	$(AM_V_CXXLD)$(htsearch_LINK) $(htsearch_OBJECTS) $(htsearch_LDADD) $(LIBS)
+hlsearch$(EXEEXT): $(hlsearch_OBJECTS) $(hlsearch_DEPENDENCIES) $(EXTRA_hlsearch_DEPENDENCIES) 
+	@rm -f hlsearch$(EXEEXT)
+	$(AM_V_CXXLD)$(hlsearch_LINK) $(hlsearch_OBJECTS) $(hlsearch_LDADD) $(LIBS)
 
 qtest$(EXEEXT): $(qtest_OBJECTS) $(qtest_DEPENDENCIES) $(EXTRA_qtest_DEPENDENCIES) 
 	@rm -f qtest$(EXEEXT)

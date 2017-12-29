@@ -301,11 +301,11 @@ then
 fi
 
 AC_SUBST(extra_ldflags)
-# Define to the syslog level for htsearch logging
-AC_DEFINE([LOG_LEVEL],[LOG_INFO],[Define to the syslog level for htsearch logging])
+# Define to the syslog level for hlsearch logging
+AC_DEFINE([LOG_LEVEL],[LOG_INFO],[Define to the syslog level for hlsearch logging])
 
-# Define to the syslog facility for htsearch logging
-AC_DEFINE([LOG_FACILITY],[LOG_LOCAL5],[Define to the syslog facility for htsearch logging])
+# Define to the syslog facility for hlsearch logging
+AC_DEFINE([LOG_FACILITY],[LOG_LOCAL5],[Define to the syslog facility for hlsearch logging])
 
 # Any remaining tests probably want the C compiler
 AC_LANG_C
@@ -370,7 +370,7 @@ AC_CONFIG_FILES([Makefile
                  htfuzzy/Makefile
                  htlib/Makefile
                  htnet/Makefile
-                 htsearch/Makefile
+                 hlsearch/Makefile
                  httools/Makefile
                  htword/Makefile
                  include/Makefile

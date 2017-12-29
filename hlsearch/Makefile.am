@@ -5,13 +5,13 @@ bindir = $(CGIBIN_DIR)
 
 LOCAL_DEFINES = -DCONFIG_DIR=\"$(CONFIG_DIR)\" -I$(top_srcdir)/htfuzzy
 
-bin_PROGRAMS = htsearch qtest
+bin_PROGRAMS = hlsearch qtest
 
-htsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc \
-		Template.cc TemplateList.cc WeightWord.cc htsearch.cc \
-		parser.cc Collection.cc SplitMatches.cc HtURLSeedScore.cc 
+hlsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc \
+		Template.cc TemplateList.cc WeightWord.cc hlsearch.cc \
+		parser.cc Collection.cc SplitMatches.cc HtURLSeedScore.cc
 noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h \
-	Template.h TemplateList.h WeightWord.h htsearch.h parser.h \
+	Template.h TemplateList.h WeightWord.h hlsearch.h parser.h \
 	Collection.h SplitMatches.h HtURLSeedScore.h \
 	WordSearcher.h AndQuery.h AndQueryParser.h BooleanLexer.h \
 	BooleanQueryParser.h ExactWordQuery.h FuzzyExpander.h GParser.h \
@@ -19,9 +19,9 @@ noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h \
 	OrQuery.h OrQueryParser.h PhraseQuery.h Query.h QueryCache.h \
 	QueryLexer.h QueryParser.h SimpleLexer.h SimpleQueryParser.h \
 	VolatileCache.h
-htsearch_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
-htsearch_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htsearch_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
+hlsearch_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
+hlsearch_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hlsearch_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
 
 qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc \
 	BooleanLexer.cc BooleanQueryParser.cc ExactWordQuery.cc \

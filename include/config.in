@@ -320,10 +320,10 @@
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
 
-/* Define to the syslog facility for htsearch logging */
+/* Define to the syslog facility for hlsearch logging */
 #undef LOG_FACILITY
 
-/* Define to the syslog level for htsearch logging */
+/* Define to the syslog level for hlsearch logging */
 #undef LOG_LEVEL
 
 /* Define to the sub-directory where libtool stores uninstalled libraries. */

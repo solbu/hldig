@@ -1,4 +1,4 @@
 #!/bin/bash
 
 echo Content-Type: text/plain
-./cgi-bin/htsearch ${1}
+./cgi-bin/hlsearch ${1}

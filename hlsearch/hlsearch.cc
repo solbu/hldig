@@ -18,7 +18,7 @@
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "htsearch.h"
+#include "hlsearch.h"
 #include "WeightWord.h"
 #include "parser.h"
 #include "Display.h"
@@ -277,7 +277,7 @@ main (int ac, char **av)
     if (input.exists ("endyear"))
       config->Add ("endyear", input["endyear"]);
 
-    // END OF CHANGES BY MIKE GROMMET    
+    // END OF CHANGES BY MIKE GROMMET
 
 
     minimum_word_length =
@@ -355,7 +355,7 @@ main (int ac, char **av)
     //
     createLogicalWords (*searchWords, logicalWords, logicalPattern);
 
-    // 
+    //
     // Assemble the full pattern for excerpt matching and highlighting
     //
     origPattern += logicalPattern;
@@ -605,7 +605,7 @@ setupWords (char *allWords, List & searchWords, int boolean, Parser * parser,
           if (debug > 2)
             cerr << "word: " << word << endl;
           if (t == ':')         // e.g. "author:word" to search
-          {                     // only in author 
+          {                     // only in author
             word.lowercase ();
             t = *pos++;
             if (t && (HtIsWordChar (t) ||
