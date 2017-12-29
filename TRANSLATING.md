@@ -5,8 +5,7 @@ translation process.
 
 ## output messages
 
-The process for translating the output messages is a little different,
-but not very difficult. There are some [po editing
+There are some [po editing
 utilities](https://www.gnu.org/software/trans-coord/manual/web-trans/html_node/PO-Editors.html)
 that can be helpful.
 
