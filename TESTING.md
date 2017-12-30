@@ -11,7 +11,14 @@ Install the following packages:
     zlib1g-dev
 
 ### Mac
-(Edit me)
+Install the appropiate xcode cli tools.
+
+    xcode-select --install
+
+Using homebrew install latest openssl and zlib.
+
+    brew install openssl zlib
+
 
 ### Windows
 (Edit me)

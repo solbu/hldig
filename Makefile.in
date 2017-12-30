@@ -180,7 +180,7 @@ CSCOPE = cscope
 DIST_SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb hldig \
 	hlsearch httools installdir include test po
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/Makefile.config \
-	COPYING compile config.guess config.rpath config.sub depcomp \
+	COPYING compile config.guess config.rpath config.sub \
 	install-sh ltmain.sh missing mkinstalldirs ylwrap
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 top_distdir = $(distdir)
@@ -395,7 +395,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign no-dependencies
-AM_CPPFLAGS = -std=c++11 -pedantic										\
+AM_CPPFLAGS = -pedantic										\
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \

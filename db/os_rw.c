@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #ifndef u_long
-typedef __u_long u_long;
+typedef unsigned long int u_long;
 #endif
 
 #include "db_config.h"
@@ -121,7 +121,7 @@ CDB___os_read (fhp, addr, len, nrp)
   /*
      printf("\n[CDB___os_read] fhp->fd=[%d], len=[%d]\n", fhp->fd, len);
      printf("[CDB___os_read] CDB___db_jump.j_read==NULL ?[%d]\n",
-     ( CDB___db_jump.j_read == NULL ?1:0) );  
+     ( CDB___db_jump.j_read == NULL ?1:0) );
      printf("[CDB___os_read] lseek(fhp->fd, 0, SEEK_CUR)=[%d]\n", lseek(fhp->fd, 0, SEEK_CUR));
      printf("[CDB___os_read] current mode=[%#x]\n", setmode(fhp->fd, 0x8000));
    */
@@ -160,7 +160,7 @@ CDB___os_write (fhp, addr, len, nwp)
   /*
      printf("\n[CDB___os_write] fhp->fd=[%d], len=[%d]\n", fhp->fd, len);
      printf("[CDB___os_write] CDB___db_jump.j_write==NULL ?[%d]\n",
-     ( CDB___db_jump.j_write == NULL ?1:0) );  
+     ( CDB___db_jump.j_write == NULL ?1:0) );
      printf("[CDB___os_write] lseek(fhp->fd, 0, SEEK_CUR)=[%d]\n", lseek(fhp->fd, 0, SEEK_CUR));
      printf("[CDB___os_write] current mode=[%#x]\n", setmode(fhp->fd, 0x8000));
    */

@@ -18,11 +18,11 @@ dnl Defines the USER symbol from LOGNAME or USER environment variable,
 dnl depending on which one is filled.
 dnl
 dnl Usage example in Makefile.am:
-dnl   
+dnl
 dnl   program $(USER)
 dnl
 dnl or in Makefile.in:
-dnl 
+dnl
 dnl   program @USER@
 dnl
 dnl @version $Id: acinclude.m4,v 1.19 2004/05/28 13:15:10 lha Exp $
@@ -194,7 +194,7 @@ fi
 dnl @synopsis AC_PROG_APACHE([version])
 dnl
 dnl This macro searches for an installed apache server. If nothing
-dnl was specified when calling configure or just --with-apache, it searches in 
+dnl was specified when calling configure or just --with-apache, it searches in
 dnl /usr/local/apache/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin
 dnl The argument of --with-apache specifies the full pathname of the
 dnl httpd argument. For instance --with-apache=/usr/sbin/httpd.
@@ -203,9 +203,9 @@ dnl If the version argument is given, AC_PROG_APACHE checks that the
 dnl apache server is this version number or higher.
 dnl
 dnl If the apache server is not found, abort configuration with error
-dnl message. 
+dnl message.
 dnl
-dnl It defines the symbol APACHE if the server is found. 
+dnl It defines the symbol APACHE if the server is found.
 dnl
 dnl Files using apache should do the following:
 dnl
@@ -213,7 +213,7 @@ dnl   @APACHE@ -d /etc/httpd
 dnl
 dnl It defines the symbol APACHE_MODULES if a directory containing mod_env.*
 dnl is found in the default server root directory (obtained with httpd -V).
-dnl 
+dnl
 dnl The httpd.conf file listing modules to be loaded dynamicaly can use
 dnl @APACHE_MODULES@ to grab them in the appropriate sub directory. For
 dnl instance:
@@ -332,7 +332,7 @@ AC_DEFUN(AC_PROG_APACHE,
 AC_DEFUN(AM_PROG_TIME, [
 AC_PATH_PROG(TIME, time, time)
 #
-# Try various flags for verbose time information, 
+# Try various flags for verbose time information,
 # if none works TIMEV is the same as TIME
 #
 AC_MSG_CHECKING(verbose time flag)
@@ -351,7 +351,7 @@ AC_SUBST(TIMEV)
 dnl @synopsis AC_FUNC_STRPTIME()
 dnl
 dnl This macro checks that the function strptime exists and that
-dnl it is declared in the time.h header. 
+dnl it is declared in the time.h header.
 dnl
 dnl Here is an example of its use:
 dnl
@@ -412,7 +412,7 @@ AC_DEFUN([CHECK_SSL],
 [AC_MSG_CHECKING(if ssl is wanted)
 AC_ARG_WITH(ssl,
 [AC_HELP_STRING([--with-ssl=DIR],
-  [      enable ssl @<:@ default paths, then /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg @:>@])],
+  [      enable ssl @<:@ default paths, then /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local/opt/openssl @:>@])],
 [   AC_MSG_RESULT(yes)
     if test "$withval" = "yes" ; then
 dnl Don't check the directory "yes"...
@@ -420,7 +420,7 @@ dnl Don't check the directory "yes"...
 	AC_CHECK_HEADER(openssl/ssl.h, [ssldir="default paths"; found_ssl=yes])
     fi
     if test "$found_ssl" = "" ;then
-	for dir in $withval /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg ; do
+	for dir in $withval /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local/opt/openssl ; do
 	    ssldir="$dir"
 	    if test -f "$dir/include/openssl/ssl.h"; then
 		found_ssl=yes;

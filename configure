@@ -1529,7 +1529,8 @@ Optional Packages:
   --with-sysroot[=DIR]    Search for dependent libraries within DIR (or the
                           compiler's sysroot if not specified).
   --with-ssl=DIR          enable ssl [ default paths, then /usr/local/ssl
-                          /usr/lib/ssl /usr/ssl /usr/pkg ]
+                          /usr/lib/ssl /usr/ssl /usr/pkg
+                          /usr/local/opt/openssl ]
   --with-zlib=DIR         root directory path of zlib installation
   --without-zlib          to disable zlib usage completely
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
@@ -17486,7 +17487,7 @@ fi
 
     fi
     if test "$found_ssl" = "" ;then
-	for dir in $withval /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg ; do
+	for dir in $withval /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local/opt/openssl ; do
 	    ssldir="$dir"
 	    if test -f "$dir/include/openssl/ssl.h"; then
 		found_ssl=yes;
