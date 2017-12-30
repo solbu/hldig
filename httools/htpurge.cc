@@ -26,6 +26,7 @@
 #include "DocumentRef.h"
 #include "defaults.h"
 #include "HtURLCodec.h"
+#include "messages.h"
 
 #include <errno.h>
 
@@ -87,7 +88,7 @@ main (int ac, char **av)
 
   if (access ((char *) configfile, R_OK) < 0)
   {
-    reportError (form ("Unable to find configuration file '%s'",
+    reportError (form (_("Unable to find configuration file '%s'"),
                        configfile.get ()));
   }
 
@@ -99,7 +100,7 @@ main (int ac, char **av)
   String url_part_errors = HtURLCodec::instance ()->ErrMsg ();
 
   if (url_part_errors.length () != 0)
-    reportError (form ("Invalid url_part_aliases or common_url_parts: %s",
+    reportError (form (_("Invalid url_part_aliases or common_url_parts: %s"),
                        url_part_errors.get ()));
 
   if (alt_work_area != 0)
@@ -192,7 +193,7 @@ purgeDocs (Dictionary * purgeURLs)
   IDs = db.DocIDs ();
 
   if (IDs->Count () == 0)
-    reportError ("Database is empty!");
+    reportError (_("Database is empty!"));
 
   IDs->Start_Get ();
   IntObject *id;
@@ -223,7 +224,7 @@ purgeDocs (Dictionary * purgeURLs)
       // This document either wasn't found or shouldn't be indexed.
       db.Delete (ref->DocID ());
       if (verbose)
-        cout << "Deleted, noindex: ID: " << idStr << " URL: " << url << endl;
+        cout << _("Deleted, noindex: ID: ") << idStr << " URL: " << url << endl;
       discard_list->Add (idStr.get (), NULL);
     }
     else if (ref->DocState () == Reference_obsolete)
@@ -231,7 +232,7 @@ purgeDocs (Dictionary * purgeURLs)
       // This document was replaced by a newer one
       db.Delete (ref->DocID ());
       if (verbose)
-        cout << "Deleted, obsolete: ID: " << idStr << " URL: " << url << endl;
+        cout << _("Deleted, obsolete: ID: ") << idStr << " URL: " << url << endl;
       discard_list->Add (idStr.get (), NULL);
     }
     else if (remove_unused && ref->DocState () == Reference_not_found)
@@ -250,7 +251,7 @@ purgeDocs (Dictionary * purgeURLs)
       // have an excerpt (probably because of a noindex directive)
       db.Delete (ref->DocID ());
       if (verbose)
-        cout << "Deleted, no excerpt: ID: " << idStr << " URL:  "
+        cout << _("Deleted, no excerpt: ID: ") << idStr << " URL:  "
           << url << endl;
       discard_list->Add (idStr.get (), NULL);
     }
@@ -259,7 +260,7 @@ purgeDocs (Dictionary * purgeURLs)
       // This document has not been retrieved
       db.Delete (ref->DocID ());
       if (verbose)
-        cout << "Deleted, never retrieved: ID: " << idStr << " URL:  "
+        cout << _("Deleted, never retrieved: ID: ") << idStr << " URL:  "
           << url << endl;
       discard_list->Add (idStr.get (), NULL);
     }
@@ -268,7 +269,7 @@ purgeDocs (Dictionary * purgeURLs)
       // This document has been marked to be purged by the user
       db.Delete (ref->DocID ());
       if (verbose)
-        cout << "Deleted, marked by user input: ID: " << idStr << " URL: "
+        cout << _("Deleted, marked by user input: ID: ") << idStr << " URL: "
           << url << endl;
       discard_list->Add (idStr.get (), NULL);
     }
@@ -281,7 +282,7 @@ purgeDocs (Dictionary * purgeURLs)
       document_count++;
       if (verbose && document_count % 10 == 0)
       {
-        cout << "htpurge: " << document_count << '\n';
+        cout << "hlpurge: " << document_count << '\n';
         cout.flush ();
       }
     }
@@ -330,13 +331,13 @@ delete_word (WordList * words, WordDBCursor & cursor,
   {
     if (words->Delete (cursor) != 0)
     {
-      cerr << "htpurge: deletion of " << (char *) word->
+      cerr << "hlpurge: deletion of " << (char *) word->
         Get () << " failed " << strerror (errno) << "\n";
       return NOTOK;
     }
     if (verbose)
     {
-      cout << "htpurge: Discarding ";
+      cout << "hlpurge: Discarding ";
       if (verbose > 2)
         cout << (char *) word->Get ();
       else
@@ -383,7 +384,7 @@ purgeWords (Dictionary * discard_list)
 void
 usage ()
 {
-  cout << "usage: htpurge [-][-u url][-v][-a][-c configfile]\n";
+  cout << "usage: hlpurge [-][-u url][-v][-a][-c configfile]\n";
   cout << "This program is part of ht://Dig " << VERSION << "\n\n";
   cout << "Options:\n";
   cout <<
@@ -395,7 +396,7 @@ usage ()
   cout << "\t\tfor debugging purposes.  The default verbose mode\n";
   cout << "\t\tgives a progress on what it is doing and where it is.\n\n";
   cout << "\t-a\tUse alternate work files.\n";
-  cout << "\t\tTells htpurge to append .work to the database files \n";
+  cout << "\t\tTells hlpurge to append .work to the database files \n";
   cout << "\t\tallowing it to operate on a second set of databases.\n\n";
   cout << "\t-c configfile\n";
   cout << "\t\tUse the specified configuration file instead on the\n";
@@ -410,6 +411,6 @@ usage ()
 void
 reportError (const char *msg)
 {
-  cout << "htpurge: " << msg << "\n\n";
+  cout << "hlpurge: " << msg << "\n\n";
   exit (1);
 }

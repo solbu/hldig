@@ -24,6 +24,7 @@
 #include "HtConfiguration.h"
 #include "DocumentDB.h"
 #include "defaults.h"
+#include "messages.h"
 
 #include <errno.h>
 
@@ -86,7 +87,7 @@ main (int ac, char **av)
 
   if (access ((char *) configfile, R_OK) < 0)
   {
-    reportError (form ("Unable to find configuration file '%s'",
+    reportError (form (_("Unable to find configuration file '%s'"),
                        configfile.get ()));
   }
 
@@ -98,7 +99,7 @@ main (int ac, char **av)
   String url_part_errors = HtURLCodec::instance ()->ErrMsg ();
 
   if (url_part_errors.length () != 0)
-    reportError (form ("Invalid url_part_aliases or common_url_parts: %s",
+    reportError (form (_("Invalid url_part_aliases or common_url_parts: %s"),
                        url_part_errors.get ()));
 
 
@@ -173,7 +174,7 @@ main (int ac, char **av)
 void
 usage ()
 {
-  cout << "usage: htload [-v][-d][-w][-a][-c configfile]\n";
+  cout << "usage: hlload [-v][-d][-w][-a][-c configfile]\n";
   cout << "This program is part of ht://Dig " << VERSION << "\n\n";
   cout << "Options:\n";
   cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
@@ -183,7 +184,7 @@ usage ()
   cout << "\t-d\tDo NOT load the document database.\n\n";
   cout << "\t-w\tDo NOT load the word database.\n\n";
   cout << "\t-a\tUse alternate work files.\n";
-  cout << "\t\tTells htload to append .work to the database files \n";
+  cout << "\t\tTells hlload to append .work to the database files \n";
   cout << "\t\tallowing it to operate on a second set of databases.\n";
   cout << "\t-c configfile\n";
   cout << "\t\tUse the specified configuration file instead on the\n";
@@ -198,6 +199,6 @@ usage ()
 void
 reportError (char *msg)
 {
-  cout << "htload: " << msg << "\n\n";
+  cout << "hlload: " << msg << "\n\n";
   exit (1);
 }

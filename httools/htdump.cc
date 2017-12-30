@@ -102,7 +102,7 @@ main (int ac, char **av)
   String url_part_errors = HtURLCodec::instance ()->ErrMsg ();
 
   if (url_part_errors.length () != 0)
-    reportError (form ("Invalid url_part_aliases or common_url_parts: %s",
+    reportError (form (_("Invalid url_part_aliases or common_url_parts: %s"),
                        url_part_errors.get ()));
 
 
@@ -181,14 +181,14 @@ usage ()
 {
   Usage help;
   printf (_("\
-usage: htdump [-v][-d][-w][-a][-c configfile]\n\
+usage: hldump [-v][-d][-w][-a][-c configfile]\n\
 This program is part of hl://Dig %s\n\n"), VERSION);
   cout << _("Options:\n");
   help.verbose ();
   cout << "\t-d\tDo NOT dump the document database.\n\n";
   cout << "\t-w\tDo NOT dump the word database.\n\n";
   cout << "\t-a\tUse alternate work files.\n";
-  cout << "\t\tTells htdump to append .work to the database files \n";
+  cout << "\t\tTells hldump to append .work to the database files \n";
   cout << "\t\tallowing it to operate on a second set of databases.\n";
   help.config ();
   exit (0);
@@ -201,6 +201,6 @@ This program is part of hl://Dig %s\n\n"), VERSION);
 void
 reportError (char *msg)
 {
-  cout << "htdump: " << msg << "\n\n";
+  cout << "hldump: " << msg << "\n\n";
   exit (1);
 }

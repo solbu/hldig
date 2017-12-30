@@ -211,7 +211,7 @@ main (int ac, char **av)
     //
     config->Defaults (&defaults[0]);
     // To allow . in filename while still being 'secure',
-    // e.g. htdig-f.q.d.n.conf
+    // e.g. hldig-f.q.d.n.conf
     if (!override_config && config_name
         && (strstr (config_name, "./") == NULL))
     {
@@ -231,7 +231,7 @@ main (int ac, char **av)
     }
     if (access ((char *) configFile, R_OK) < 0)
     {
-      reportError ("Unable to read configuration file");
+      reportError (_("Unable to read configuration file"));
     }
     config->Read (configFile);
 
@@ -324,14 +324,14 @@ main (int ac, char **av)
     String url_part_errors = HtURLCodec::instance ()->ErrMsg ();
 
     if (url_part_errors.length () != 0)
-      reportError (form ("Invalid url_part_aliases or common_url_parts: %s",
+      reportError (form (_("Invalid url_part_aliases or common_url_parts: %s"),
                          url_part_errors.get ()));
 
     // for hlsearch, use search_rewrite_rules attribute for HtURLRewriter.
     config->AddParsed ("url_rewrite_rules", "${search_rewrite_rules}");
     url_part_errors = HtURLRewriter::instance ()->ErrMsg ();
     if (url_part_errors.length () != 0)
-      reportError (form ("Invalid url_rewrite_rules: %s",
+      reportError (form (_("Invalid url_rewrite_rules: %s"),
                          url_part_errors.get ()));
 
     // Load boolean_keywords from configuration
@@ -342,7 +342,7 @@ main (int ac, char **av)
     boolean_keywords.Create (config->Find ("boolean_keywords"),
                              "| \t\r\n\001");
     if (boolean_keywords.Count () != 3)
-      reportError ("boolean_keywords attribute should have three entries");
+      reportError (_("boolean_keywords attribute should have three entries"));
 
     Parser *parser = new Parser ();
 
@@ -390,7 +390,7 @@ main (int ac, char **av)
     if (access (word_db, R_OK) < 0)
     {
       reportError (form
-                   ("Unable to read word database file '%s'\nDid you run htdig?",
+                   (_("Unable to read word database file '%s'\nDid you run hldig?"),
                     word_db.get ()));
     }
     // ResultList  *results = htsearch((char*)word_db, searchWords, parser);
@@ -399,7 +399,7 @@ main (int ac, char **av)
     if (access ((char *) doc_index, R_OK) < 0)
     {
       reportError (form
-                   ("Unable to read document index file '%s'\nDid you run htdig?",
+                   (_("Unable to read document index file '%s'\nDid you run hldig?"),
                     doc_index.get ()));
     }
 
@@ -407,7 +407,7 @@ main (int ac, char **av)
     if (access (doc_db, R_OK) < 0)
     {
       reportError (form
-                   ("Unable to read document database file '%s'\nDid you run htdig?",
+                   (_("Unable to read document database file '%s'\nDid you run hldig?"),
                     doc_db.get ()));
     }
 
@@ -415,7 +415,7 @@ main (int ac, char **av)
     if (access (doc_excerpt, R_OK) < 0)
     {
       reportError (form
-                   ("Unable to read document excerpts '%s'\nDid you run htdig?",
+                   (_("Unable to read document excerpts '%s'\nDid you run hldig?"),
                     doc_excerpt.get ()));
     }
 
@@ -442,7 +442,7 @@ main (int ac, char **av)
   Display display (&selected_collections);
   if (display.hasTemplateError ())
   {
-    reportError (form ("Unable to read template file '%s'\nDoes it exist?",
+    reportError (form (_("Unable to read template file '%s'\nDoes it exist?"),
                        (const char *) config->Find ("template_name")));
     return 0;
   }
@@ -953,12 +953,13 @@ reportError (char *msg)
   cout << "Content-type: text/html\r\n\r\n";
   cout << "<html><head><title>hlsearch error</title></head>\n";
   cout << "<body bgcolor=\"#ffffff\">\n";
-  cout << "<h1>hl://Dig error</h1>\n";
-  cout << "<p>hlsearch detected an error.  Please report this to the\n";
-  cout << "webmaster of this site by sending an e-mail to:\n";
+
+  printf (_("<h1>hl://Dig error</h1>\n\
+<p>hlsearch detected an error.  Please report this to the\n\
+webmaster of this site by sending an e-mail to:\n"));
   cout << "<a href=\"mailto:" << config->Find ("maintainer") << "\">";
   cout << config->Find ("maintainer") << "</a>\n";
-  cout << "The error message is:</p>\n";
+  cout << _("The error message is:</p>\n");
   cout << "<pre>\n" << msg << "\n</pre>\n</body></html>\n";
   exit (1);
 }
@@ -980,9 +981,10 @@ This program is part of hl://Dig %s\n\n"), VERSION);
   help.config ();
 
   cout << _("\
-\tquery_string\tA CGI-style query string can be given as a single\n\
-\t\targument, and is only used if the REQUEST_METHOD environment\n\
-\t\tvariable is not set.  If no query_string is given, and\n\
-\t\tREQUEST_METHOD is not set, hlsearch will prompt for the query.\n\n");
+ query_string\n\
+\tA CGI-style query string can be given as a single\n\
+\targument, and is only used if the REQUEST_METHOD environment\n\
+\tvariable is not set.  If no query_string is given, and\n\
+\tREQUEST_METHOD is not set, hlsearch will prompt for the query.\n\n");
   exit (0);
 }

@@ -21,6 +21,7 @@
 #include "HtConfiguration.h"
 #include "DocumentDB.h"
 #include "defaults.h"
+#include "messages.h"
 
 #include <errno.h>
 
@@ -79,7 +80,7 @@ main (int ac, char **av)
 
   if (access ((char *) configfile, R_OK) < 0)
   {
-    reportError (form ("Unable to find configuration file '%s'",
+    reportError (form (_("Unable to find configuration file '%s'"),
                        configfile.get ()));
   }
 
@@ -91,7 +92,7 @@ main (int ac, char **av)
   String url_part_errors = HtURLCodec::instance ()->ErrMsg ();
 
   if (url_part_errors.length () != 0)
-    reportError (form ("Invalid url_part_aliases or common_url_parts: %s",
+    reportError (form (_("Invalid url_part_aliases or common_url_parts: %s"),
                        url_part_errors.get ()));
 
 
@@ -134,13 +135,13 @@ main (int ac, char **av)
                  config->Find ("doc_excerpt")) == OK)
   {
     List *urls = docs.URLs ();
-    cout << "htstat: Total documents: " << urls->Count () << endl;
+    cout << _("hlstat: Total documents: ") << urls->Count () << endl;
     if (url_list)
     {
       // Spit out the list of URLs too
       String *url;
 
-      cout << "htstat: URLs in database: " << endl;
+      cout << _("hlstat: URLs in database: ") << endl;
       urls->Start_Get ();
       while ((url = (String *) urls->Get_Next ()))
       {
@@ -158,8 +159,8 @@ main (int ac, char **av)
   HtWordList words (*config);
   if (words.Open (config->Find ("word_db"), O_RDONLY) == OK)
   {
-    cout << "htstat: Total words: " << words.WordRefs ()->Count () << endl;
-    cout << "htstat: Total unique words: " << words.Words ()->
+    cout << _("hlstat: Total words: ") << words.WordRefs ()->Count () << endl;
+    cout << _("hlstat: Total unique words: ") << words.Words ()->
       Count () << endl;
     words.Close ();
   }
@@ -175,7 +176,7 @@ main (int ac, char **av)
 void
 usage ()
 {
-  cout << "usage: htstat [-v][-a][-c configfile][-u]\n";
+  cout << "usage: hlstat [-v][-a][-c configfile][-u]\n";
   cout << "This program is part of ht://Dig " << VERSION << "\n\n";
   cout << "Options:\n";
   cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
@@ -183,7 +184,7 @@ usage ()
   cout << "\t\tfor debugging purposes.  The default verbose mode\n";
   cout << "\t\tgives a progress on what it is doing and where it is.\n\n";
   cout << "\t-a\tUse alternate work files.\n";
-  cout << "\t\tTells htstat to append .work to the database files \n";
+  cout << "\t\tTells hlstat to append .work to the database files \n";
   cout << "\t\tallowing it to operate on a second set of databases.\n";
   cout << "\t-c configfile\n";
   cout << "\t\tUse the specified configuration file instead on the\n";
@@ -199,6 +200,6 @@ usage ()
 void
 reportError (char *msg)
 {
-  cout << "htstat: " << msg << "\n\n";
+  cout << "hlstat: " << msg << "\n\n";
   exit (1);
 }
