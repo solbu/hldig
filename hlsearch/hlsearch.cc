@@ -231,7 +231,7 @@ main (int ac, char **av)
     }
     if (access ((char *) configFile, R_OK) < 0)
     {
-      reportError (_("Unable to read configuration file"));
+      reportError ( form( _("Unable to read configuration file") ) );
     }
     config->Read (configFile);
 
@@ -342,7 +342,7 @@ main (int ac, char **av)
     boolean_keywords.Create (config->Find ("boolean_keywords"),
                              "| \t\r\n\001");
     if (boolean_keywords.Count () != 3)
-      reportError (_("boolean_keywords attribute should have three entries"));
+      reportError ( form( _("boolean_keywords attribute should have three entries") ) ) ;
 
     Parser *parser = new Parser ();
 
