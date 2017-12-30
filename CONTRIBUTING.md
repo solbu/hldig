@@ -21,6 +21,14 @@ Sometimes a patch will be a single line in a single file; other times a single
 patch will consist of changes to several files. Keep unrelated patches separate
 from each other (i.e. a separate PR for each patch).
 
+## Web site
+
+Most of the files for the [web site](https://andy5995.github.io/hldig/) are in
+[docs/infiles](https://github.com/andy5995/hldig/blob/master/docs/infiles)
+and can be changed with a pull request through GitHub.
+
+Thank you!
+
 ## Pull Requests
 1. Join the [chat room](https://join.slack.com/t/htdig/shared_invite/enQtMjY3NDU1MjMwODk3LTdmM2I2OWI5NWI4MzU4Y2JmMjk2MzAxNDYzM2IzZjJmMGE2MDZmMWMxNDY3MjAwOGFjMmE1YjM2MmM4MzVkNzk)
 so if any problems arise, you can get support.

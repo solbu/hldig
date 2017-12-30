@@ -1,6 +1,11 @@
 # ChangeLog
 
-### Sun Dec 10
+### Sat Dec 30 2017
+
+hl://Dig was tested and patched by [Martin de Boer](https://github.com/sexybiggetje)
+to build and run on **Mac OS X High Sierra 10.13**.
+
+### Sun Dec 10 2017
 
 This project fork was renamed to hl://Dig
 

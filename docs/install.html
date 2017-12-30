@@ -53,9 +53,16 @@
             </form>
           </td>
         <td class = "footer-right-col">
-          <p>
+          <blockquote>This document needs to be merged with <a href="https://github.com/andy5995/hldig/blob/master/TESTING.md">TESTING.md</a>.
+  The TESTING.md document was written more recently, but there may
+  still be useful information below. (We appreciate your patience while
+  we are in the slow process of updating the documentation.) If you
+  would like to edit parts of this document, the file is <a
+  href=https://github.com/andy5995/hldig/blob/master/docs/infiles/install.sct">docs/infiles/install.sct</a>.
+  </blockquote>
+  <p>
     This document will attempt to show the steps needed to build
-    and install the ht://Dig system.<br>
+    and install the hl://Dig system.<br>
     The main sections are:
   </p>
   <ul>
@@ -91,8 +98,12 @@
   <h2>
     <a name="simple">For the impatient...</a>
   </h2>
+  <blockquote>
+    <a href="https://github.com/andy5995/hldig/blob/master/TESTING.md">TESTING.md</a> contains the steps necessary on how to do
+    the following without root privileges.
+  </blockquote>
   <p>
-    The standard GNU installation process works for ht://Dig.<br>
+    The standard GNU installation process works for hl://Dig.<br>
     <code>./configure --prefix=/usr/local</code><br>
     <code>make</code><br>
     <code>make install</code><br>
@@ -106,26 +117,10 @@
   <h2>
     <a name="extract">Extracting the software</a>
   </h2>
-  <p>
-    The distribution of ht://Dig is in the form of a gzipped tar
-    file. The name of the file will be something like <code>
-    htdig-3.2.0.tar.gz</code>. To extract, you can use either the GNU
-    tar command as follows:
-  </p>
   <blockquote>
-    % <strong>tar xzf <em>tarfile.tar.gz</em></strong>
+    There hasn't yet been a release of hl://Dig. You can get the source code
+    from the <a href="https://github.com/andy5995/hldig">git repository</a>.
   </blockquote>
-  <p>
-    If you do not have GNU tar, you can do the following:
-  </p>
-  <blockquote>
-    % <strong>gunzip -c <em>tarfile.tar.gz</em> | tar xf -</strong>
-  </blockquote>
-  <p>
-    In either case, a new directory will be created under which the
-    distribution will be extracted. The directory it creates will
-    be <code>htdig-</code> followed by the version number.
-  </p>
   <hr noshade>
   <h2>
     <a name="configure">Configure</a>
@@ -141,15 +136,8 @@
     This program will attempt to determine what your particular
     system can and can't do.
   </p>
-<!--
   <p>
-    The <strong>configure</strong> program may produce some warnings about
-    libguile and guile. Ignore those warnings since they do not
-    affect the ht://Dig program at all.
-  </p>
--->
-  <p>
-    If you are going to change any of the sources to  ht://Dig, then
+    If you are going to change any of the sources to  hl://Dig, then
     you can optionally add dependency information
     to all the Makefiles before running configure with the command
   </p>
@@ -157,11 +145,7 @@
     % <strong>automake</strong>
   </blockquote>
   <p>
-    This <strong>only</strong> needs to be done if you are going to change
-    any of the sources to ht://Dig and requires <strong>GCC</strong>.
-  </p>
-  <p>
-    The <strong>configure</strong> program has some ht://Dig specific options
+    The <strong>configure</strong> program has some hl://Dig specific options
     in addition to the standard ones that you get when running
     <pre>
     ./configure --help
@@ -282,7 +266,10 @@
   <h2>
     <a name="test">Test</a>
   </h2>
-  <p>
+  <blockquote>The information below is outdated and the test feature needs to be fixed.
+  There is an <a href="https://github.com/andy5995/hldig/issues/45">open ticket</a> to
+  address the issue.
+  <blockquote>
     Once built, you can run tests if you provided the
     <code>--enable-tests</code> at configure time. These tests
     require that you have a working
@@ -493,10 +480,6 @@
   <h2>
   <a name="OSs">Notes for particular operating systems</a>
   </h2>
-  <p>
-  <strong>Mac OS X</strong> cannot handle ht://Dig's shared libraries.
-      Use<br> <code>./configure --disable-shared --enable-static</code>.
-  </p>
   <p>
   <strong>Solaris</strong> cc has problems with long file offsets.
       Use<br> <code>./configure --disable-bigfile</code>.

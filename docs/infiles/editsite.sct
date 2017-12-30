@@ -1,0 +1,10 @@
+title:Edit this Site
+layout:default
+---
+<p>
+  Most of the files for this web site are in <a href="https://github.com/andy5995/hldig/blob/master/docs/infiles/">docs/infiles</a> and
+  can be changed with a <a href="https://github.com/andy5995/hldig/blob/master/CONTRIBUTING.md#pull-requests">pull request through GitHub</a>.
+</p>
+<p>
+  Thank you!
+</p>

@@ -11,7 +11,7 @@ Install the following packages:
     zlib1g-dev
 
 ### Mac
-Install the appropiate xcode cli tools.
+Install the appropriate xcode cli tools.
 
     xcode-select --install
 

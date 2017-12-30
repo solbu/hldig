@@ -203,7 +203,7 @@ layout:default
   </blockquote>
   <hr size="4" noshade>
   <h1>
-    Requirements to build ht://Dig
+    Requirements to build hl://Dig
   </h1>
   <p>
     ht://Dig was developed under Unix using C++.
@@ -215,7 +215,7 @@ layout:default
   </p>
   <p>
     Unfortunately, we only have access to a couple of different
-    Unix machines. ht://Dig has been tested on these machines:
+    Unix machines. hl://Dig has been tested on these machines:
   </p>
   <ul>
 <!--
@@ -232,7 +232,7 @@ layout:default
     IRIX 5.3 (SGI C++ compiler. Don't know the version)
     </li>
     <li>
-    Debian Linux 2.0 (using egcs 1.1b)
+    Debian Linux 9.0
     </li>
 -->
     <li>
@@ -259,9 +259,12 @@ layout:default
     <li>
           Mac OS X 10.2 (using gcc) <!-- Jim Cole -->
     </li>
+    <li>
+          Mac OS X 10.13 High Sierra <!-- Martin de Boer 2017-12-30 -->
+    </li>
 
    </ul>
-  There are reports of ht://Dig working on a number of other platforms.
+  There are reports of hl://Dig working on a number of other platforms.
   <h3>
     libstdc++
   </h3>
