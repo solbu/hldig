@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hldig 0.1.01\n"
 "Report-Msgid-Bugs-To: andy400-dev@yahoo.com\n"
-"POT-Creation-Date: 2017-12-29 03:32-0600\n"
+"POT-Creation-Date: 2017-12-30 03:24-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,100 +17,92 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: hldig/hldig.cc:513
+#: hldig/hldig.cc:521
 #, c-format
 msgid ""
-"\t-a\tUse alternate work files.\n"
-"\t\tTells hldig to append .work to database files, causing\n"
-"\t\ta second copy of the database to be built.  This allows\n"
-"\t\tthe original files to be used by htsearch during the\n"
-"\t\tindexing run.\n"
+" -a\tUse alternate work files.\n"
+"\tTells hldig to append .work to database files, causing\n"
+"\ta second copy of the database to be built.  This allows\n"
+"\tthe original files to be used by hlsearch during the\n"
+"\tindexing run.\n"
 "\n"
 msgstr ""
 
-#: htcommon/messages.cc:31
+#: htcommon/messages.cc:33
 #, c-format
 msgid ""
-"\t-c configfile\n"
-"\t\tUse the specified configuration file instead of the\n"
-"\t\tdefault.\n"
+" -c\tconfigfile\n"
+"\tUse the specified configuration file instead of the\n"
+"\tdefault.\n"
+"\n"
+msgstr ""
+
+#: hldig/hldig.cc:505
+#, c-format
+msgid ""
+" -h\thop count\n"
+"\tLimit the stored documents to those which are at\n"
+"\tmost hopcount links away from the start URL.\n"
+"\n"
+msgstr ""
+
+#: hldig/hldig.cc:494
+#, c-format
+msgid ""
+" -i\tInitial.  Do not use any old databases.  This is\n"
+"\taccomplished by first erasing the databases.\n"
+"\n"
+msgstr ""
+
+#: hldig/hldig.cc:528
+#, c-format
+msgid ""
+" -m\tminimalfile (or just a file name at end of arguments)\n"
+"\tTells hldig to read URLs from the supplied file and index\n"
+"\tthem in place of (or in addition to) the existing URLs in\n"
+"\tthe database and the start_url.  With the -m, only the\n"
+"\tURLs specified are added to the database.  A file name of\n"
+"\t'-' indicates the standard input.\n"
+"\n"
+msgstr ""
+
+#: hldig/hldig.cc:510
+#, c-format
+msgid ""
+" -s\tReport statistics after completion.\n"
 "\n"
 msgstr ""
 
 #: hldig/hldig.cc:500
 #, c-format
 msgid ""
-"\t-h hop count\n"
-"\t\tLimit the stored documents to those which are at\n"
-"\t\tmost hopcount links away from the start URL.\n"
+" -t\tCreate an ASCII version of the document database.\n"
+"\tThis database is easy to parse with other programs so\n"
+"\tthat information can be extracted from it.\n"
 "\n"
 msgstr ""
 
-#: hldig/hldig.cc:491
+#: hldig/hldig.cc:513
 #, c-format
 msgid ""
-"\t-i\tInitial.  Do not use any old databases.  This is\n"
-"\t\taccomplished by first erasing the databases.\n"
-"\n"
-msgstr ""
-
-#: hldig/hldig.cc:519
-#, c-format
-msgid ""
-"\t-m minimalfile  (or just a file name at end of arguments)\n"
-"\t\tTells hldig to read URLs from the supplied file and index\n"
-"\t\tthem in place of (or in addition to) the existing URLs in\n"
-"\t\tthe database and the start_url.  With the -m, only the\n"
-"\t\tURLs specified are added to the database.  A file name of\n"
-"\t\t'-' indicates the standard input.\n"
-"\n"
-msgstr ""
-
-#: hldig/hldig.cc:504
-#, c-format
-msgid ""
-"\t-s\tReport statistics after completion.\n"
-"\n"
-msgstr ""
-
-#: hldig/hldig.cc:496
-#, c-format
-msgid ""
-"\t-t\tCreate an ASCII version of the document database.\n"
-"\t\tThis database is easy to parse with other programs so\n"
-"\t\tthat information can be extracted from it.\n"
-"\n"
-msgstr ""
-
-#: hldig/hldig.cc:506
-#, c-format
-msgid ""
-"\t-u username:password\n"
-"\t\tTells hldig to send the supplied username and\n"
-"\t\tpassword with each HTTP request.  The credentials\n"
-"\t\twill be encoded using the 'Basic' authentication scheme.\n"
-"\t\tThere *HAS* to be a colon (:) between the username\n"
-"\t\tand password.\n"
+" -u\tusername:password\n"
+"\tTells hldig to send the supplied username and\n"
+"\tpassword with each HTTP request.  The credentials\n"
+"\twill be encoded using the 'Basic' authentication scheme.\n"
+"\tThere *HAS* to be a colon (:) between the username\n"
+"\tand password.\n"
 "\n"
 msgstr ""
 
 #: htcommon/messages.cc:22
 #, c-format
 msgid ""
-"\t-v\tVerbose mode.  This increases the verbosity of the\n"
-"\t\tprogram.  Using more than 2 is probably only useful\n"
-"\t\tfor debugging purposes.  The default verbose mode\n"
-"\t\tgives a nice progress report of what it is doing and\n"
-"\t\twhere it is.\n"
-"\n"
-msgstr ""
-
-#: hlsearch/hlsearch.cc:982
-msgid ""
-"\tquery_string\tA CGI-style query string can be given as a single\n"
-"\t\targument, and is only used if the REQUEST_METHOD environment\n"
-"\t\tvariable is not set.  If no query_string is given, and\n"
-"\t\tREQUEST_METHOD is not set, hlsearch will prompt for the query.\n"
+" -v\tVerbose mode\n"
+"\tThis increases the verbosity of the\n"
+"\tprogram.  Using more than 2 is probably only useful\n"
+"\tfor debugging purposes.  The default verbose mode\n"
+"\tgives a nice progress report of what it is doing and\n"
+"\twhere it is.\n"
 "\n"
 msgstr ""
 
@@ -118,25 +110,141 @@ msgstr ""
 msgid " is no longer supported\n"
 msgstr ""
 
+#: hlsearch/hlsearch.cc:983
+msgid ""
+" query_string\n"
+"\tA CGI-style query string can be given as a single\n"
+"\targument, and is only used if the REQUEST_METHOD environment\n"
+"\tvariable is not set.  If no query_string is given, and\n"
+"\tREQUEST_METHOD is not set, hlsearch will prompt for the query.\n"
+"\n"
+msgstr ""
+
+#: htfuzzy/htfuzzy.cc:115
+#, c-format
+msgid "'%s' is not a supported algorithm"
+msgstr ""
+
+#: hlsearch/hlsearch.cc:957
+#, c-format
+msgid ""
+"<h1>hl://Dig error</h1>\n"
+"<p>hlsearch detected an error.  Please report this to the\n"
+"webmaster of this site by sending an e-mail to:\n"
+msgstr ""
+
+#: httools/htpurge.cc:196
+msgid "Database is empty!"
+msgstr ""
+
+#: httools/htnotify.cc:336
+msgid "Date:    "
+msgstr ""
+
+#: httools/htpurge.cc:272
+msgid "Deleted, marked by user input: ID: "
+msgstr ""
+
+#: httools/htpurge.cc:263
+msgid "Deleted, never retrieved: ID: "
+msgstr ""
+
+#: httools/htpurge.cc:254
+msgid "Deleted, no excerpt: ID: "
+msgstr ""
+
+#: httools/htpurge.cc:227
+msgid "Deleted, noindex: ID: "
+msgstr ""
+
+#: httools/htpurge.cc:235
+msgid "Deleted, obsolete: ID: "
+msgstr ""
+
+#: httools/htnotify.cc:339
+msgid "Email:   "
+msgstr ""
+
+#: httools/htnotify.cc:508 httools/htnotify.cc:522
+msgid "From: "
+msgstr ""
+
 #: hldig/hldig.cc:258
 msgid "Importing Cookies input file "
 msgstr ""
 
-#: hldig/hldig.cc:199
+#: hldig/hldig.cc:199 hlsearch/hlsearch.cc:327 httools/htdump.cc:105
+#: httools/htload.cc:102 httools/htmerge.cc:135 httools/htnotify.cc:187
+#: httools/htpurge.cc:103 httools/htstat.cc:95
 #, c-format
 msgid "Invalid url_part_aliases or common_url_parts: %s"
 msgstr ""
 
-#: hldig/hldig.cc:207
+#: hldig/hldig.cc:207 hlsearch/hlsearch.cc:334
 #, c-format
 msgid "Invalid url_rewrite_rules: %s"
 msgstr ""
 
-#: hlsearch/hlsearch.cc:977 httools/htdump.cc:186
+#: httools/htnotify.cc:352
+msgid "Malformed Date"
+msgstr ""
+
+#: httools/htnotify.cc:283
+msgid "Note: This message will be sent again if you do not change or\n"
+msgstr ""
+
+#: httools/htnotify.cc:479
+msgid "Notification required to "
+msgstr ""
+
+#: hlsearch/hlsearch.cc:978 httools/htdump.cc:186
 msgid "Options:\n"
 msgstr ""
 
-#: hldig/hldig.cc:158
+#: httools/htnotify.cc:314
+msgid "Postamble text:"
+msgstr ""
+
+#: httools/htnotify.cc:312
+msgid "Preamble text:"
+msgstr ""
+
+#: httools/htnotify.cc:526
+msgid "Reply-To: "
+msgstr ""
+
+#: httools/htnotify.cc:335
+msgid "Saw a date:"
+msgstr ""
+
+#: httools/htnotify.cc:338 httools/htnotify.cc:531
+msgid "Subject: "
+msgstr ""
+
+#: httools/htnotify.cc:535
+msgid "Subject: Web page expiry ("
+msgstr ""
+
+#: hlsearch/hlsearch.cc:962
+msgid "The error message is:</p>\n"
+msgstr ""
+
+#: httools/htnotify.cc:509 httools/htnotify.cc:523
+msgid "To: "
+msgstr ""
+
+#: httools/htnotify.cc:337
+msgid "URL:     "
+msgstr ""
+
+#: hldig/hldig.cc:304
+#, c-format
+msgid "Unable to create images file '%s'"
+msgstr ""
+
+#: hldig/hldig.cc:158 httools/htload.cc:90 httools/htmerge.cc:123
+#: httools/htmerge.cc:143 httools/htpurge.cc:91 httools/htstat.cc:83
+#: htfuzzy/htfuzzy.cc:131
 #, c-format
 msgid "Unable to find configuration file '%s'"
 msgstr ""
@@ -144,6 +252,70 @@ msgstr ""
 #: hldig/hldig.cc:278
 #, c-format
 msgid "Unable to load cookies file '%s' in memory"
+msgstr ""
+
+#: httools/htmerge.cc:247 httools/htmerge.cc:341
+#, c-format
+msgid "Unable to open document database '%s'"
+msgstr ""
+
+#: httools/htmerge.cc:219 httools/htmerge.cc:241
+#, c-format
+msgid "Unable to open document excerpts '%s'"
+msgstr ""
+
+#: httools/htmerge.cc:212 httools/htmerge.cc:234
+#, c-format
+msgid "Unable to open document index '%s'"
+msgstr ""
+
+#: htfuzzy/htfuzzy.cc:196
+#, c-format
+msgid "Unable to open word database %s"
+msgstr ""
+
+#: hldig/hldig.cc:337 httools/htmerge.cc:225 httools/htmerge.cc:335
+#, c-format
+msgid "Unable to open/create document database '%s'"
+msgstr ""
+
+#: hlsearch/hlsearch.cc:234
+msgid "Unable to read configuration file"
+msgstr ""
+
+#: hlsearch/hlsearch.cc:410
+#, c-format
+msgid ""
+"Unable to read document database file '%s'\n"
+"Did you run hldig?"
+msgstr ""
+
+#: hlsearch/hlsearch.cc:418
+#, c-format
+msgid ""
+"Unable to read document excerpts '%s'\n"
+"Did you run hldig?"
+msgstr ""
+
+#: hlsearch/hlsearch.cc:402
+#, c-format
+msgid ""
+"Unable to read document index file '%s'\n"
+"Did you run hldig?"
+msgstr ""
+
+#: hlsearch/hlsearch.cc:445
+#, c-format
+msgid ""
+"Unable to read template file '%s'\n"
+"Does it exist?"
+msgstr ""
+
+#: hlsearch/hlsearch.cc:393
+#, c-format
+msgid ""
+"Unable to read word database file '%s'\n"
+"Did you run hldig?"
 msgstr ""
 
 #: hldig/hldig.cc:177
@@ -162,12 +334,56 @@ msgstr ""
 msgid "authorization"
 msgstr ""
 
-#: hldig/hldig.cc:470
+#: hlsearch/hlsearch.cc:345
+msgid "boolean_keywords attribute should have three entries"
+msgstr ""
+
+#: hldig/hldig.cc:473
 msgid "hldig End Time: "
 msgstr ""
 
 #: hldig/hldig.cc:148
 msgid "hldig Start Time: "
+msgstr ""
+
+#: htfuzzy/htfuzzy.cc:211
+msgid "hlfuzzy: Could not create database for algorithm: "
+msgstr ""
+
+#: htfuzzy/htfuzzy.cc:219
+msgid "hlfuzzy: Done.\n"
+msgstr ""
+
+#: htfuzzy/htfuzzy.cc:121
+msgid "hlfuzzy: No algorithms specified\n"
+msgstr ""
+
+#: htfuzzy/htfuzzy.cc:206
+msgid "hlfuzzy: Selected algorithm: "
+msgstr ""
+
+#: htfuzzy/htfuzzy.cc:176
+msgid "hlfuzzy: Writing index files...\n"
+msgstr ""
+
+#: htfuzzy/htfuzzy.cc:175
+msgid "hlfuzzy: total words: "
+msgstr ""
+
+#: httools/htstat.cc:138
+msgid "hlstat: Total documents: "
+msgstr ""
+
+#: httools/htstat.cc:163
+msgid "hlstat: Total unique words: "
+msgstr ""
+
+#: httools/htstat.cc:162
+msgid "hlstat: Total words: "
+msgstr ""
+
+#: httools/htstat.cc:144
+msgid "hlstat: URLs in database: "
 msgstr ""
 
 #: hldig/hldig.cc:181
@@ -178,7 +394,11 @@ msgstr ""
 msgid "max_hop_count"
 msgstr ""
 
-#: hldig/hldig.cc:485
+#: httools/htnotify.cc:97
+msgid "page expired"
+msgstr ""
+
+#: hldig/hldig.cc:488
 #, c-format
 msgid ""
 "usage: hldig [-v][-i][-c configfile][-t][-m minimalfile]\n"
@@ -187,18 +407,18 @@ msgid ""
 "Options:\n"
 msgstr ""
 
-#: hlsearch/hlsearch.cc:974
+#: httools/htdump.cc:183
 #, c-format
 msgid ""
-"usage: hlsearch [-v][-d][-c configfile] [query_string]\n"
+"usage: hldump [-v][-d][-w][-a][-c configfile]\n"
 "This program is part of hl://Dig %s\n"
 "\n"
 msgstr ""
 
-#: httools/htdump.cc:183
+#: hlsearch/hlsearch.cc:975
 #, c-format
 msgid ""
-"usage: htdump [-v][-d][-w][-a][-c configfile]\n"
+"usage: hlsearch [-v][-d][-c configfile] [query_string]\n"
 "This program is part of hl://Dig %s\n"
 "\n"
 msgstr ""

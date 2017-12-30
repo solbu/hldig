@@ -301,7 +301,7 @@ main (int ac, char **av)
     images_seen = fopen (filename, initial ? "w" : "a");
     if (images_seen == 0)
     {
-      reportError (form ("Unable to create images file '%s'",
+      reportError (form (_("Unable to create images file '%s'"),
                          filename.get ()));
     }
   }
@@ -334,7 +334,7 @@ main (int ac, char **av)
 
   if (docs.Open (filename, index_filename, head_filename) < 0)
   {
-    reportError (form ("Unable to open/create document database '%s'",
+    reportError (form (_("Unable to open/create document database '%s'"),
                        filename.get ()));
   }
 
@@ -375,6 +375,8 @@ main (int ac, char **av)
 
   // Handle list of URLs given in a file (stdin, if "-") specified as
   // argument to -m or as an optional trailing argument.
+
+  // FIXME: this string needs changing for use with getttext //
   if (optind < ac)
   {
     if (debug)
@@ -414,6 +416,7 @@ main (int ac, char **av)
     else
     {
       cerr << "Could not open argument '" << minimalFile << "' of flag -m\n";
+      // fprintf (stderr, _("Could not open argument '%s' of flag -m\n"), minimalFile.c_str());
       exit (1);
     }
   }
@@ -488,42 +491,47 @@ Options:\n"), VERSION);
 
   help.verbose ();
 
-  printf (_("\t-i\tInitial.  Do not use any old databases.  This is\n\
-\t\taccomplished by first erasing the databases.\n\n"));
+  printf (_("\
+ -i\tInitial.  Do not use any old databases.  This is\n\
+\taccomplished by first erasing the databases.\n\n"));
 
   help.config ();
 
-  printf (_("\t-t\tCreate an ASCII version of the document database.\n\
-\t\tThis database is easy to parse with other programs so\n\
-\t\tthat information can be extracted from it.\n\n"));
+  printf (_("\
+ -t\tCreate an ASCII version of the document database.\n\
+\tThis database is easy to parse with other programs so\n\
+\tthat information can be extracted from it.\n\n"));
 
-  printf (_("\t-h hop count\n\
-\t\tLimit the stored documents to those which are at\n\
-\t\tmost hopcount links away from the start URL.\n\n"));
+  printf (_("\
+ -h\thop count\n\
+\tLimit the stored documents to those which are at\n\
+\tmost hopcount links away from the start URL.\n\n"));
 
-  printf (_("\t-s\tReport statistics after completion.\n\n"));
+  printf (_("\
+ -s\tReport statistics after completion.\n\n"));
 
-  printf (_("\t-u username:password\n\
-\t\tTells hldig to send the supplied username and\n\
-\t\tpassword with each HTTP request.  The credentials\n\
-\t\twill be encoded using the 'Basic' authentication scheme.\n\
-\t\tThere *HAS* to be a colon (:) between the username\n\
-\t\tand password.\n\n"));
+  printf (_("\
+ -u\tusername:password\n\
+\tTells hldig to send the supplied username and\n\
+\tpassword with each HTTP request.  The credentials\n\
+\twill be encoded using the 'Basic' authentication scheme.\n\
+\tThere *HAS* to be a colon (:) between the username\n\
+\tand password.\n\n"));
 
-  printf (_("\t-a\tUse alternate work files.\n\
-\t\tTells hldig to append .work to database files, causing\n\
-\t\ta second copy of the database to be built.  This allows\n\
-\t\tthe original files to be used by htsearch during the\n\
-\t\tindexing run.\n\n"));
+  printf (_("\
+ -a\tUse alternate work files.\n\
+\tTells hldig to append .work to database files, causing\n\
+\ta second copy of the database to be built.  This allows\n\
+\tthe original files to be used by hlsearch during the\n\
+\tindexing run.\n\n"));
 
-  printf (_("\t-m minimalfile  (or just a file name at end of arguments)\n\
-\t\tTells hldig to read URLs from the supplied file and index\n\
-\t\tthem in place of (or in addition to) the existing URLs in\n\
-\t\tthe database and the start_url.  With the -m, only the\n\
-\t\tURLs specified are added to the database.  A file name of\n\
-\t\t'-' indicates the standard input.\n\n"));
-
-
+  printf (_("\
+ -m\tminimalfile (or just a file name at end of arguments)\n\
+\tTells hldig to read URLs from the supplied file and index\n\
+\tthem in place of (or in addition to) the existing URLs in\n\
+\tthe database and the start_url.  With the -m, only the\n\
+\tURLs specified are added to the database.  A file name of\n\
+\t'-' indicates the standard input.\n\n"));
 
   exit (0);
 }

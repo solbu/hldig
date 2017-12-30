@@ -15,7 +15,7 @@
 // Part of the ht://Dig package   <http://www.htdig.org/>
 // Copyright (c) 1995-2004 The ht://Dig Group
 // For copyright details, see the file COPYING in your distribution
-// or the GNU Library General Public License (LGPL) version 2 or later 
+// or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
 // $Id: htfuzzy.cc,v 1.20 2004/05/28 13:15:20 lha Exp $
@@ -37,6 +37,7 @@
 #include "defaults.h"
 #include "HtWordList.h"
 #include "WordContext.h"
+#include "messages.h"
 
 // If we have this, we probably want it.
 #ifdef HAVE_GETOPT_H
@@ -71,11 +72,11 @@ main(int ac, char **av)
       case 'c':
     configFile = optarg;
     break;
-        
+
       case 'v':
     debug++;
     break;
-        
+
       default:
     usage();
   }
@@ -111,23 +112,23 @@ main(int ac, char **av)
   }
   else
   {
-      reportError(form("'%s' is not a supported algorithm",
+      reportError(form(_("'%s' is not a supported algorithm"),
            av[i]));
   }
     }
     if (wordAlgorithms.Count() == 0 && noWordAlgorithms.Count() == 0)
     {
-  cout << "htfuzzy: No algorithms specified\n";
+  cout << _("hlfuzzy: No algorithms specified\n");
   usage();
     }
-  
+
     //
     // Find and parse the configuration file.
     //
     config->Defaults(&defaults[0]);
     if (access((char*)configFile, R_OK) < 0)
     {
-  reportError(form("Unable to find configuration file '%s'",
+  reportError(form(_("Unable to find configuration file '%s'"),
        configFile.get()));
     }
     config->Read(configFile);
@@ -152,7 +153,7 @@ main(int ac, char **av)
       Fuzzy    *fuzzy = 0;
       String    word, fuzzyKey;
       int      count = 0;
-      
+
       words->Start_Get();
       while ((key = (String *) words->Get_Next()))
         {
@@ -165,16 +166,16 @@ main(int ac, char **av)
     count++;
     if ((count % 100) == 0 && debug)
       {
-        cout << "htfuzzy: words: " << count << '\n';
+        cout << "hlfuzzy: words: " << count << '\n';
         cout.flush();
       }
-        }  
+        }
       if (debug)
         {
-    cout << "htfuzzy: total words: " << count << "\n";
-    cout << "htfuzzy: Writing index files...\n";
+    cout << _("hlfuzzy: total words: ") << count << "\n";
+    cout << _("hlfuzzy: Writing index files...\n");
         }
-      
+
       //
       // All the information is now in memory.
       // Write all of it out to the individual databases
@@ -192,7 +193,7 @@ main(int ac, char **av)
     }
   else
     {
-      reportError(form("Unable to open word database %s", config->Find("word_db").get()));
+      reportError(form(_("Unable to open word database %s"), config->Find("word_db").get()));
     }
     }
     if (noWordAlgorithms.Count() > 0)
@@ -202,22 +203,22 @@ main(int ac, char **av)
   {
       if (debug)
       {
-    cout << "htfuzzy: Selected algorithm: " << fuzzy->getName()
+    cout << _("hlfuzzy: Selected algorithm: ") << fuzzy->getName()
          << endl;
       }
       if (fuzzy->createDB(*config) == NOTOK)
         {
-    cout << "htfuzzy: Could not create database for algorithm: "
+    cout << _("hlfuzzy: Could not create database for algorithm: ")
          << fuzzy->getName() << endl;
         }
   }
     }
-  
+
     if (debug)
     {
-  cout << "htfuzzy: Done.\n";
+  cout << _("hlfuzzy: Done.\n");
     }
-  
+
     return 0;
 }
 
@@ -228,7 +229,7 @@ main(int ac, char **av)
 void
 usage()
 {
-    cout << "usage: htfuzzy [-c configfile][-v] algorithm ...\n";
+    cout << "usage: hlfuzzy [-c configfile][-v] algorithm ...\n";
     cout << "This program is part of ht://Dig " << VERSION << "\n\n";
     cout << "Supported algorithms:\n";
     cout << "\tsoundex\n";
@@ -237,7 +238,7 @@ usage()
     cout << "\tendings\n";
     cout << "\tsynonyms\n";
     cout << "\n";
-  
+
     cout << "Options:\n";
 
     cout << "\t-c configfile\n";
@@ -258,7 +259,7 @@ usage()
 void
 reportError(char *msg)
 {
-    cout << "htfuzzy: " << msg << "\n\n";
+    cout << "hlfuzzy: " << msg << "\n\n";
     exit(1);
 }
 

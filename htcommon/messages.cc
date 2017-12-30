@@ -19,18 +19,21 @@
 #include "messages.h"
 
 void Usage::verbose (void) {
-    printf (_("\t-v\tVerbose mode.  This increases the verbosity of the\n\
-\t\tprogram.  Using more than 2 is probably only useful\n\
-\t\tfor debugging purposes.  The default verbose mode\n\
-\t\tgives a nice progress report of what it is doing and\n\
-\t\twhere it is.\n\n"));
+    printf (_("\
+ -v\tVerbose mode\n\
+\tThis increases the verbosity of the\n\
+\tprogram.  Using more than 2 is probably only useful\n\
+\tfor debugging purposes.  The default verbose mode\n\
+\tgives a nice progress report of what it is doing and\n\
+\twhere it is.\n\n"));
 }
 
 void Usage::config (void) {
 
-  printf (_("\t-c configfile\n\
-\t\tUse the specified configuration file instead of the\n\
-\t\tdefault.\n\n"));
+  printf (_("\
+ -c\tconfigfile\n\
+\tUse the specified configuration file instead of the\n\
+\tdefault.\n\n"));
 }
 
 Usage::Usage (void) {}

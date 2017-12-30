@@ -1,7 +1,7 @@
 //
 // htmerge.cc
 //
-// htmerge: Merges two databases and/or updates databases to remove 
+// htmerge: Merges two databases and/or updates databases to remove
 //          old documents and ensures the databases are consistent.
 //          Calls db.cc, docs.cc, and/or words.cc as necessary
 //
@@ -26,6 +26,7 @@
 #include "HtWordList.h"
 #include "HtWordReference.h"
 #include "htString.h"
+#include "messages.h"
 
 #ifdef HAVE_STD
 #include <fstream>
@@ -119,7 +120,7 @@ main (int ac, char **av)
 
   if (access ((char *) configfile, R_OK) < 0)
   {
-    reportError (form ("Unable to find configuration file '%s'",
+    reportError (form (_("Unable to find configuration file '%s'"),
                        configfile.get ()));
   }
 
@@ -131,7 +132,7 @@ main (int ac, char **av)
   String url_part_errors = HtURLCodec::instance ()->ErrMsg ();
 
   if (url_part_errors.length () != 0)
-    reportError (form ("Invalid url_part_aliases or common_url_parts: %s",
+    reportError (form (_("Invalid url_part_aliases or common_url_parts: %s"),
                        url_part_errors.get ()));
 
   if (merge_configfile.length ())
@@ -139,7 +140,7 @@ main (int ac, char **av)
     merge_config.Defaults (&defaults[0]);
     if (access ((char *) merge_configfile, R_OK) < 0)
     {
-      reportError (form ("Unable to find configuration file '%s'",
+      reportError (form (_("Unable to find configuration file '%s'"),
                          merge_configfile.get ()));
     }
     merge_config.Read (merge_configfile);
@@ -208,20 +209,20 @@ mergeDB ()
   if (access (doc_index, R_OK) < 0)
   {
     reportError (form
-                 ("Unable to open document index '%s'",
+                 (_("Unable to open document index '%s'"),
                   (const char *) doc_index));
   }
   const String doc_excerpt = config->Find ("doc_excerpt");
   if (access (doc_excerpt, R_OK) < 0)
   {
     reportError (form
-                 ("Unable to open document excerpts '%s'",
+                 (_("Unable to open document excerpts '%s'"),
                   (const char *) doc_excerpt));
   }
   const String doc_db = config->Find ("doc_db");
   if (db.Open (doc_db, doc_index, doc_excerpt) < 0)
   {
-    reportError (form ("Unable to open/create document database '%s'",
+    reportError (form (_("Unable to open/create document database '%s'"),
                        (const char *) doc_db));
   }
 
@@ -230,20 +231,20 @@ mergeDB ()
   if (access (merge_doc_index, R_OK) < 0)
   {
     reportError (form
-                 ("Unable to open document index '%s'",
+                 (_("Unable to open document index '%s'"),
                   (const char *) merge_doc_index));
   }
   const String merge_doc_excerpt = merge_config["doc_excerpt"];
   if (access (merge_doc_excerpt, R_OK) < 0)
   {
     reportError (form
-                 ("Unable to open document excerpts '%s'",
+                 (_("Unable to open document excerpts '%s'"),
                   (const char *) merge_doc_excerpt));
   }
   const String merge_doc_db = merge_config["doc_db"];
   if (merge_db.Open (merge_doc_db, merge_doc_index, merge_doc_excerpt) < 0)
   {
-    reportError (form ("Unable to open document database '%s'",
+    reportError (form (_("Unable to open document database '%s'"),
                        (const char *) merge_doc_db));
   }
 
@@ -279,7 +280,7 @@ mergeDB ()
 
         if (verbose > 1)
         {
-          cout << "htmerge: Duplicate, URL: " << url <<
+          cout << "hlmerge: Duplicate, URL: " << url <<
             " ignoring merging copy   \n";
           cout.flush ();
         }
@@ -295,7 +296,7 @@ mergeDB ()
         db.Add (*ref);
         if (verbose > 1)
         {
-          cout << "htmerge: Duplicate, URL: ";
+          cout << "hlmerge: Duplicate, URL: ";
           cout << url->get () << " ignoring destination copy   \n";
           cout.flush ();
         }
@@ -309,7 +310,7 @@ mergeDB ()
       db.Add (*ref);
       if (verbose > 1)
       {
-        cout << "htmerge: Merged URL: " << url->get () << "    \n";
+        cout << "hlmerge: Merged URL: " << url->get () << "    \n";
         cout.flush ();
       }
     }
@@ -331,13 +332,13 @@ mergeDB ()
 
   if (wordDB.Open (config->Find ("word_db"), O_RDWR) < 0)
   {
-    reportError (form ("Unable to open/create document database '%s'",
+    reportError (form (_("Unable to open/create document database '%s'"),
                        (const char *) config->Find ("word_db")));
   }
 
   if (mergeWordDB.Open (merge_config["word_db"], O_RDONLY) < 0)
   {
-    reportError (form ("Unable to open document database '%s'",
+    reportError (form (_("Unable to open document database '%s'"),
                        (const char *) merge_config["word_db"]));
   }
 
@@ -382,7 +383,7 @@ mergeDB ()
 void
 usage ()
 {
-  cout << "usage: htmerge [-v][-c configfile][-m merge_configfile]\n";
+  cout << "usage: hlmerge [-v][-c configfile][-m merge_configfile]\n";
   cout << "This program is part of ht://Dig " << VERSION << "\n\n";
   cout << "Options:\n";
   cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
@@ -396,7 +397,7 @@ usage ()
   cout << "\t\tUse the specified configuration file instead on the\n";
   cout << "\t\tdefault.\n\n";
   cout << "\t-a\tUse alternate work files.\n";
-  cout << "\t\tTells htmerge to append .work to database files causing\n";
+  cout << "\t\tTells hlmerge to append .work to database files causing\n";
   cout << "\t\ta second copy of the database to be built.  This allows\n";
   cout << "\t\toriginal files to be used by htsearch during the indexing\n";
   cout << "\t\trun.\n\n";
@@ -410,6 +411,6 @@ usage ()
 void
 reportError (char *msg)
 {
-  cout << "htmerge: " << msg << "\n\n";
+  cout << "hlmerge: " << msg << "\n\n";
   exit (1);
 }

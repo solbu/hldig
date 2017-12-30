@@ -24,6 +24,7 @@
 #include "DocumentRef.h"
 #include "defaults.h"
 #include "HtURLCodec.h"
+#include "messages.h"
 
 #include <stdlib.h>
 
@@ -93,7 +94,7 @@ EmailNotification::EmailNotification (char *pDate, char *pEmail,
   url = pUrl;
   if (!pSubject || !*pSubject)
   {
-    subject = "page expired";
+    subject = _("page expired");
   }
   else
   {
@@ -183,7 +184,7 @@ main (int ac, char **av)
   if (url_part_errors.length () != 0)
   {
     cerr <<
-      form ("htnotify: Invalid url_part_aliases or common_url_parts: %s",
+      form (_("Invalid url_part_aliases or common_url_parts: %s"),
             url_part_errors.get ()) << endl;
     exit (1);
   }
@@ -308,9 +309,9 @@ readPreAndPostamble (void)
 
   if (verbose > 1)
   {
-    cout << "Preamble text:" << endl;
+    cout << _("Preamble text:") << endl;
     cout << preambleText << endl << endl;
-    cout << "Postamble text:" << endl;
+    cout << _("Postamble text:") << endl;
     cout << postambleText << endl;
     cout << endl;
   }
@@ -331,11 +332,11 @@ htnotify (DocumentRef & ref)
   {
     if (verbose > 2)
     {
-      cout << "Saw a date:" << endl;
-      cout << "Date:    " << date << endl;
-      cout << "URL:     " << ref.DocURL () << endl;
-      cout << "Subject: " << ref.DocSubject () << endl;
-      cout << "Email:   " << email << endl;
+      cout << _("Saw a date:") << endl;
+      cout << _("Date:    ") << date << endl;
+      cout << _("URL:     ") << ref.DocURL () << endl;
+      cout << _("Subject: ") << ref.DocSubject () << endl;
+      cout << _("Email:   ") << email << endl;
       cout << endl;
     }
 
@@ -348,7 +349,7 @@ htnotify (DocumentRef & ref)
         cout << "Malformed date: " << date << endl;
       }
 
-      add_notification (date, email, ref.DocURL (), "Malformed Date");
+      add_notification (date, email, ref.DocURL (), _("Malformed Date"));
       return;
     }
 
@@ -374,7 +375,7 @@ htnotify (DocumentRef & ref)
       // Page not yet expired
       if (verbose > 2)
       {
-        cout << "htnotify: URL " << ref.DocURL ()
+        cout << "hlnotify: URL " << ref.DocURL ()
           << " (" << year + 1900 << "-" << month + 1
           << "-" << day << ")" << endl;
       }
@@ -475,7 +476,7 @@ send_notification (char *email, List * notifList)
   else if (verbose)
   {                             // just list the notifiable pages
     cout << endl;
-    cout << "Notification required to " << to << endl;
+    cout << _("Notification required to ") << to << endl;
     cout << listText;
   }
 }
@@ -504,8 +505,8 @@ send_email (List * notifList, String & command,
       cout << endl;
     }
 
-    cout << "From: " << from << endl;
-    cout << "To: " << to << endl;
+    cout << _("From: ") << from << endl;
+    cout << _("To: ") << to << endl;
 
     if (verbose > 1)
     {
@@ -518,20 +519,20 @@ send_email (List * notifList, String & command,
   {
     EmailNotification *notif = (EmailNotification *) notifList->Get_First ();
     String out;
-    out << "From: " << from << '\n';
-    out << "To: " << to << '\n';
+    out << _("From: ") << from << '\n';
+    out << _("To: ") << to << '\n';
     if (replyto.length () > 0)
     {
-      out << "Reply-To: " << replyto << '\n';
+      out << _("Reply-To: ") << replyto << '\n';
     }
 
     if (singleSubject)
     {
-      out << "Subject: " << notif->getSubject () << '\n';
+      out << _("Subject: ") << notif->getSubject () << '\n';
     }
     else
     {
-      out << "Subject: Web page expiry (" << notif->
+      out << _("Subject: Web page expiry (") << notif->
         getSubject () << ", inter alia)\n";
     }
 
@@ -551,12 +552,12 @@ send_email (List * notifList, String & command,
 
 
 //*****************************************************************************
-// Display usage information for the htnotify program
+// Display usage information for the hlnotify program
 //
 void
 usage ()
 {
-  cout << "usage: htnotify [-c configfile][-b db_base]\n";
+  cout << "usage: hlnotify [-c configfile][-b db_base]\n";
   cout << "This program is part of ht://Dig " << VERSION << "\n\n";
   cout << "There can be any number or words.\n";
   cout << "Options:\n";
