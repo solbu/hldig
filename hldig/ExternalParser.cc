@@ -340,7 +340,7 @@ ExternalParser::parse (Retriever & retriever, URL & base)
           (loc = atoi (token2)) >= 0 && (hd = atoi (token3)) >= 0 && hd < 12)
         retriever.got_word (token1, loc, hd);
       else
-        cerr << "External parser error: expected word in line " << line <<
+        cerr << _("External parser error: expected word in line ") << line <<
           "\n" << " URL: " << base.get () << "\n";
       break;
 
@@ -355,8 +355,8 @@ ExternalParser::parse (Retriever & retriever, URL & base)
         retriever.got_href (url, token2);
       }
       else
-        cerr << "External parser error: expected URL in line " << line << "\n"
-          << " URL: " << base.get () << "\n";
+        cerr << _("External parser error: expected URL in line ") << line << "\n"
+          << _(" URL: ") << base.get () << "\n";
       break;
 
     case 't':                  // title
@@ -364,7 +364,7 @@ ExternalParser::parse (Retriever & retriever, URL & base)
       if (token1 != NULL)
         retriever.got_title (token1);
       else
-        cerr << "External parser error: expected title in line " << line <<
+        cerr << _("External parser error: expected title in line ") << line <<
           "\n" << " URL: " << base.get () << "\n";
       break;
 
@@ -373,8 +373,8 @@ ExternalParser::parse (Retriever & retriever, URL & base)
       if (token1 != NULL)
         retriever.got_head (token1);
       else
-        cerr << "External parser error: expected text in line " << line <<
-          "\n" << " URL: " << base.get () << "\n";
+        cerr << _("External parser error: expected text in line ") << line <<
+          "\n" << _(" URL: ") << base.get () << "\n";
       break;
 
     case 'a':                  // anchor
@@ -382,8 +382,8 @@ ExternalParser::parse (Retriever & retriever, URL & base)
       if (token1 != NULL)
         retriever.got_anchor (token1);
       else
-        cerr << "External parser error: expected anchor in line " << line <<
-          "\n" << " URL: " << base.get () << "\n";
+        cerr << _("External parser error: expected anchor in line ") << line <<
+          "\n" << _(" URL: ") << base.get () << "\n";
       break;
 
     case 'i':                  // image url
@@ -391,8 +391,8 @@ ExternalParser::parse (Retriever & retriever, URL & base)
       if (token1 != NULL)
         retriever.got_image (token1);
       else
-        cerr << "External parser error: expected image URL in line " << line
-          << "\n" << " URL: " << base.get () << "\n";
+        cerr << _("External parser error: expected image URL in line ") << line
+          << "\n" << _(" URL: ") << base.get () << "\n";
       break;
 
     case 'm':                  // meta
@@ -541,14 +541,14 @@ ExternalParser::parse (Retriever & retriever, URL & base)
           }
         }
         else
-          cerr << "External parser error: expected metadata in line " << line
-            << "\n" << " URL: " << base.get () << "\n";
+          cerr << _("External parser error: expected metadata in line ") << line
+            << "\n" << _(" URL: ") << base.get () << "\n";
         break;
       }
 
     default:
-      cerr << "External parser error: unknown field in line " << line << "\n"
-        << " URL: " << base.get () << "\n";
+      cerr << _("External parser error: unknown field in line ") << line << "\n"
+        << _(" URL: ") << base.get () << "\n";
       break;
     }
   }                             // while(readLine)
@@ -558,11 +558,17 @@ ExternalParser::parse (Retriever & retriever, URL & base)
         mystrncasecmp ((char *) convertToType, "text/", 5) != 0)
     {
       if (mystrcasecmp ((char *) convertToType, "user-defined") == 0)
-        cerr << "External parser error: no Content-Type given\n";
+      {
+        // TRANSLATORS: Do not translate "Content-Type"
+        cerr << _("External parser error: no Content-Type given\n");
+      }
       else
-        cerr << "External parser error: can't parse Content-Type \""
+      {
+        // TRANSLATORS: Do not translate "Content-Type"
+        cerr << _("External parser error: can't parse Content-Type \"")
           << convertToType << "\"\n";
-      cerr << " URL: " << base.get () << "\n";
+      }
+      cerr << _(" URL: ") << base.get () << "\n";
     }
     else
     {

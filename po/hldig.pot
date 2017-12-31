@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hldig 0.1.01\n"
 "Report-Msgid-Bugs-To: andy400-dev@yahoo.com\n"
-"POT-Creation-Date: 2017-12-30 03:24-0600\n"
+"POT-Creation-Date: 2017-12-31 13:09-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -106,6 +106,36 @@ msgid ""
 "\n"
 msgstr ""
 
+#: hldig/Retriever.cc:2067
+msgid " HEAD call before GET      : No"
+msgstr ""
+
+#: hldig/Retriever.cc:2065
+msgid " HEAD call before GET      : Yes"
+msgstr ""
+
+#: hldig/Retriever.cc:2071
+msgid " Persistent connections    : No"
+msgstr ""
+
+#: hldig/Retriever.cc:2061
+msgid " Persistent connections    : Yes"
+msgstr ""
+
+#: hldig/ExternalParser.cc:359 hldig/ExternalParser.cc:377
+#: hldig/ExternalParser.cc:386 hldig/ExternalParser.cc:395
+#: hldig/ExternalParser.cc:545 hldig/ExternalParser.cc:551
+#: hldig/ExternalParser.cc:571 hldig/ExternalTransport.cc:245
+#: hldig/ExternalTransport.cc:254 hldig/ExternalTransport.cc:264
+#: hldig/ExternalTransport.cc:273 hldig/ExternalTransport.cc:282
+#: hldig/ExternalTransport.cc:291 hldig/ExternalTransport.cc:296
+msgid " URL: "
+msgstr ""
+
+#: hldig/Server.cc:442
+msgid " document"
+msgstr ""
+
 #: hldig/hldig.cc:178
 msgid " is no longer supported\n"
 msgstr ""
@@ -120,9 +150,25 @@ msgid ""
 "\n"
 msgstr ""
 
+#: hldig/Retriever.cc:2024
+msgid " seen:\n"
+msgstr ""
+
+#: hldig/Retriever.cc:2021
+msgid " server"
+msgstr ""
+
 #: htfuzzy/htfuzzy.cc:115
 #, c-format
 msgid "'%s' is not a supported algorithm"
+msgstr ""
+
+#: hldig/Retriever.cc:2049
+msgid ": Errors to take note of:\n"
+msgstr ""
+
+#: hldig/Retriever.cc:2020
+msgid ": Run complete\n"
 msgstr ""
 
 #: hlsearch/hlsearch.cc:957
@@ -131,6 +177,26 @@ msgid ""
 "<h1>hl://Dig error</h1>\n"
 "<p>hlsearch detected an error.  Please report this to the\n"
 "webmaster of this site by sending an e-mail to:\n"
+msgstr ""
+
+#: hldig/Retriever.cc:295
+msgid "Cannot install SIGHUP handler\n"
+msgstr ""
+
+#: hldig/Retriever.cc:289
+msgid "Cannot install SIGINT handler\n"
+msgstr ""
+
+#: hldig/Retriever.cc:315
+msgid "Cannot install SIGPIPE handler\n"
+msgstr ""
+
+#: hldig/Retriever.cc:291
+msgid "Cannot install SIGQUIT handler\n"
+msgstr ""
+
+#: hldig/Retriever.cc:293
+msgid "Cannot install SIGTERM handler\n"
 msgstr ""
 
 #: httools/htpurge.cc:196
@@ -165,8 +231,82 @@ msgstr ""
 msgid "Email:   "
 msgstr ""
 
+#. TRANSLATORS: Do not translate "Content-Type"
+#: hldig/ExternalParser.cc:568
+msgid "External parser error: can't parse Content-Type \""
+msgstr ""
+
+#: hldig/ExternalParser.cc:358
+msgid "External parser error: expected URL in line "
+msgstr ""
+
+#: hldig/ExternalParser.cc:385
+msgid "External parser error: expected anchor in line "
+msgstr ""
+
+#: hldig/ExternalParser.cc:394
+msgid "External parser error: expected image URL in line "
+msgstr ""
+
+#: hldig/ExternalParser.cc:544
+msgid "External parser error: expected metadata in line "
+msgstr ""
+
+#: hldig/ExternalParser.cc:376
+msgid "External parser error: expected text in line "
+msgstr ""
+
+#: hldig/ExternalParser.cc:367
+msgid "External parser error: expected title in line "
+msgstr ""
+
+#: hldig/ExternalParser.cc:343
+msgid "External parser error: expected word in line "
+msgstr ""
+
+#. TRANSLATORS: Do not translate "Content-Type"
+#: hldig/ExternalParser.cc:563
+msgid "External parser error: no Content-Type given\n"
+msgstr ""
+
+#: hldig/ExternalParser.cc:550
+msgid "External parser error: unknown field in line "
+msgstr ""
+
+#: hldig/ExternalTransport.cc:290
+msgid "External transport error: expected URL in line "
+msgstr ""
+
+#: hldig/ExternalTransport.cc:281
+msgid "External transport error: expected content-length in line "
+msgstr ""
+
+#: hldig/ExternalTransport.cc:272
+msgid "External transport error: expected content-type in line "
+msgstr ""
+
+#: hldig/ExternalTransport.cc:263
+msgid "External transport error: expected modification time in line "
+msgstr ""
+
+#: hldig/ExternalTransport.cc:244
+msgid "External transport error: expected status code in line "
+msgstr ""
+
+#: hldig/ExternalTransport.cc:253
+msgid "External transport error: expected status reason in line "
+msgstr ""
+
+#: hldig/ExternalTransport.cc:295
+msgid "External transport error: unknown field in line "
+msgstr ""
+
 #: httools/htnotify.cc:508 httools/htnotify.cc:522
 msgid "From: "
+msgstr ""
+
+#: hldig/Retriever.cc:2056
+msgid "HTTP statistics"
 msgstr ""
 
 #: hldig/hldig.cc:258
@@ -189,8 +329,8 @@ msgstr ""
 msgid "Malformed Date"
 msgstr ""
 
-#: httools/htnotify.cc:283
-msgid "Note: This message will be sent again if you do not change or\n"
+#: hldig/Retriever.cc:1994
+msgid "Not found"
 msgstr ""
 
 #: httools/htnotify.cc:479
@@ -235,6 +375,11 @@ msgstr ""
 
 #: httools/htnotify.cc:337
 msgid "URL:     "
+msgstr ""
+
+#: hldig/Retriever.cc:560
+#, c-format
+msgid "Unable to create URL log file '%s'"
 msgstr ""
 
 #: hldig/hldig.cc:304
@@ -316,6 +461,14 @@ msgstr ""
 msgid ""
 "Unable to read word database file '%s'\n"
 "Did you run hldig?"
+msgstr ""
+
+#: hldig/Retriever.cc:1998
+msgid "Unknown host or unable to contact server"
+msgstr ""
+
+#: hldig/Retriever.cc:2002
+msgid "Unknown host or unable to contact server (port)"
 msgstr ""
 
 #: hldig/hldig.cc:177

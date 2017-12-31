@@ -2,6 +2,10 @@
 
 htcommon/messages.cc
 hldig/hldig.cc
+hldig/Retriever.cc
+hldig/Server.cc
+hldig/ExternalParser.cc
+hldig/ExternalTransport.cc
 hlsearch/hlsearch.cc
 httools/htdump.cc
 httools/htload.cc

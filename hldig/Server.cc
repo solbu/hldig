@@ -439,7 +439,7 @@ void
 Server::reportStatistics (String & out, char *name)
 {
   out << name << " " << _host << ":" << _port;
-  out << " " << _documents << " document";
+  out << " " << _documents << _(" document");
   if (_documents != 1)
     out << "s";
 }

@@ -286,13 +286,13 @@ sig_handlers (void)
   sigemptyset (&action.sa_mask);
   action.sa_flags = 0;
   if (sigaction (SIGINT, &action, NULL) != 0)
-    reportError ("Cannot install SIGINT handler\n");
+    reportError (_("Cannot install SIGINT handler\n"));
   if (sigaction (SIGQUIT, &action, NULL) != 0)
-    reportError ("Cannot install SIGQUIT handler\n");
+    reportError (_("Cannot install SIGQUIT handler\n"));
   if (sigaction (SIGTERM, &action, NULL) != 0)
-    reportError ("Cannot install SIGTERM handler\n");
+    reportError (_("Cannot install SIGTERM handler\n"));
   if (sigaction (SIGHUP, &action, NULL) != 0)
-    reportError ("Cannot install SIGHUP handler\n");
+    reportError (_("Cannot install SIGHUP handler\n"));
 #else
   //ANSI C signal handling - Limited to supported Windows signals.
   signal (SIGINT, sigexit);
@@ -312,7 +312,7 @@ sig_phandler (void)
   action.sa_handler = sigpipe;
   action.sa_flags = SA_RESTART;
   if (sigaction (SIGPIPE, &action, NULL) != 0)
-    reportError ("Cannot install SIGPIPE handler\n");
+    reportError (_("Cannot install SIGPIPE handler\n"));
 #endif //_MSC_VER /* _WIN32 */
 }
 
@@ -557,7 +557,7 @@ Retriever::Start ()
     if (0 == urls_parsed)
     {
       reportError (form
-                   ("Unable to create URL log file '%s'", filelog.get ()));
+                   (_("Unable to create URL log file '%s'"), filelog.get ()));
     }
     else
     {
@@ -1991,15 +1991,15 @@ Retriever::recordNotFound (const String & url, const String & referer,
   switch (reason)
   {
   case Transport::Document_not_found:
-    message = "Not found";
+    message = _("Not found");
     break;
 
   case Transport::Document_no_host:
-    message = "Unknown host or unable to contact server";
+    message = _("Unknown host or unable to contact server");
     break;
 
   case Transport::Document_no_port:
-    message = "Unknown host or unable to contact server (port)";
+    message = _("Unknown host or unable to contact server (port)");
     break;
 
   default:
@@ -2017,11 +2017,11 @@ void
 Retriever::ReportStatistics (const String & name)
 {
   HtConfiguration *config = HtConfiguration::config ();
-  cout << name << ": Run complete\n";
-  cout << name << ": " << servers.Count () << " server";
+  cout << name << _(": Run complete\n");
+  cout << name << ": " << servers.Count () << _(" server");
   if (servers.Count () > 1)
     cout << "s";
-  cout << " seen:\n";
+  cout << _(" seen:\n");
 
   Server *server;
   String buffer;
@@ -2046,28 +2046,29 @@ Retriever::ReportStatistics (const String & name)
 
   if (notFound.length () > 0)
   {
-    cout << "\n" << name << ": Errors to take note of:\n";
+    cout << "\n" << name << _(": Errors to take note of:\n");
     cout << notFound;
   }
 
   cout << endl;
 
   // Report HTTP connections stats
-  cout << "HTTP statistics" << endl;
+  cout << _("HTTP statistics") << endl;
   cout << "===============" << endl;
 
   if (config->Boolean ("persistent_connections"))
   {
-    cout << " Persistent connections    : Yes" << endl;
+    cout << _(" Persistent connections    : Yes") << endl;
 
+    // TRANSLATORS: I do not think "HEAD" or "GET" should be translated.
     if (config->Boolean ("head_before_get"))
-      cout << " HEAD call before GET      : Yes" << endl;
+      cout << _(" HEAD call before GET      : Yes") << endl;
     else
-      cout << " HEAD call before GET      : No" << endl;
+      cout << _(" HEAD call before GET      : No") << endl;
   }
   else
   {
-    cout << " Persistent connections    : No" << endl;
+    cout << _(" Persistent connections    : No") << endl;
   }
 
   HtHTTP::ShowStatistics (cout) << endl;

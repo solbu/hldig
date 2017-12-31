@@ -241,8 +241,8 @@ Transport::DocStatus ExternalTransport::Request ()
       if (token1 != NULL)
         _Response->_status_code = atoi (token1);
       else
-        cerr << "External transport error: expected status code in line " <<
-          line << "\n" << " URL: " << _URL.get () << "\n";
+        cerr << _("External transport error: expected status code in line ") <<
+          line << "\n" << _(" URL: ") << _URL.get () << "\n";
       break;
 
     case 'r':                  // status reason
@@ -250,8 +250,8 @@ Transport::DocStatus ExternalTransport::Request ()
       if (token1 != NULL)
         _Response->_reason_phrase = token1;
       else
-        cerr << "External transport error: expected status reason in line " <<
-          line << "\n" << " URL: " << _URL.get () << "\n";
+        cerr << _("External transport error: expected status reason in line ") <<
+          line << "\n" << _(" URL: ") << _URL.get () << "\n";
       break;
 
     case 'm':                  // modification time
@@ -260,8 +260,8 @@ Transport::DocStatus ExternalTransport::Request ()
         _Response->_modification_time = NewDate (token1);       // Hopefully we can grok it...
       else
         cerr <<
-          "External transport error: expected modification time in line " <<
-          line << "\n" << " URL: " << _URL.get () << "\n";
+          _("External transport error: expected modification time in line ") <<
+          line << "\n" << _(" URL: ") << _URL.get () << "\n";
       break;
 
     case 't':                  // Content-Type
@@ -269,8 +269,8 @@ Transport::DocStatus ExternalTransport::Request ()
       if (token1 != NULL)
         _Response->_content_type = token1;
       else
-        cerr << "External transport error: expected content-type in line " <<
-          line << "\n" << " URL: " << _URL.get () << "\n";
+        cerr << _("External transport error: expected content-type in line ") <<
+          line << "\n" << _(" URL: ") << _URL.get () << "\n";
       break;
 
     case 'l':                  // Content-Length
@@ -278,8 +278,8 @@ Transport::DocStatus ExternalTransport::Request ()
       if (token1 != NULL)
         _Response->_content_length = atoi (token1);
       else
-        cerr << "External transport error: expected content-length in line "
-          << line << "\n" << " URL: " << _URL.get () << "\n";
+        cerr << _("External transport error: expected content-length in line ")
+          << line << "\n" << _(" URL: ") << _URL.get () << "\n";
       break;
 
     case 'u':                  // redirect target
@@ -287,13 +287,13 @@ Transport::DocStatus ExternalTransport::Request ()
       if (token1 != NULL)
         _Response->_location = token1;
       else
-        cerr << "External transport error: expected URL in line " << line <<
-          "\n" << " URL: " << _URL.get () << "\n";
+        cerr << _("External transport error: expected URL in line ") << line <<
+          "\n" << _(" URL: ") << _URL.get () << "\n";
       break;
 
     default:
-      cerr << "External transport error: unknown field in line " << line <<
-        "\n" << " URL: " << _URL.get () << "\n";
+      cerr << _("External transport error: unknown field in line ") << line <<
+        "\n" << _(" URL: ") << _URL.get () << "\n";
       break;
     }
   }
