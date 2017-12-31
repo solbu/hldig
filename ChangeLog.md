@@ -1,8 +1,11 @@
 # ChangeLog
 
+This document contains information about changes after hl://Dig was
+forked. To see information about the original project, visit [ht://Dig on SourceForge](https://sourceforge.net/projects/htdig/)
+
 ### Sat Dec 30 2017
 
-hl://Dig was tested and patched by [Martin de Boer](https://github.com/sexybiggetje)
+hl://Dig was tested and patched by [Martijn de Boer](https://github.com/sexybiggetje)
 to build and run on **Mac OS X High Sierra 10.13**.
 
 ### Sun Dec 10 2017
