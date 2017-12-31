@@ -10,9 +10,38 @@ if TESTS
 TESTDIR = test
 endif
 
-SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb hldig hlsearch httools installdir include $(TESTDIR) po
+# process the Makefile.am files in these directories. the po directory
+# is a little # different because of a rule near the end of configure.ac
 
-EXTRA_DIST = config.rpath m4/ChangeLog  .version Makefile.config contrib ABOUT-NLS
+SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb hldig hlsearch	\
+httools installdir include $(TESTDIR) po
+
+# files to be installed to destination docdir when 'make install' is run
+packextrasdir=@docdir@
+
+EXTRA_DIST =	\
+.version	\
+COPYING	\
+INSTALL	\
+README.md	\
+AUTHORS.md	\
+TESTING.md	\
+CONTRIBUTING.md	\
+TRANSLATING.md \
+ChangeLog.md \
+STATUS	\
+CODE_OF_CONDUCT.md
+
+packextras_DATA=$(EXTRA_DIST)
+
+# This only install the html and gif files, but not the assets (css and images)
+# in the docs directory
+# packextraswebsitedir=@docdir@/docs
+
+# WEBSITE = \
+#	docs/*.html \
+#	docs/*.gif
+# packextraswebsite_DATA=$(WEBSITE)
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -36,5 +65,9 @@ install-data-hook:
 	@echo "Before you can start searching, you will need to create a"
 	@echo "search database.  A sample script to do this has been"
 	@echo "installed as " $(DESTDIR)$(bindir)/rundig
+	@echo ""
+	@echo "To uninstall hldig, use 'make uninstall' (must be run before 'make distclean')"
+	@echo "To remove build files, use 'make distclean'"
+
 
 distdir = $(PACKAGE)-$(VERSION)
