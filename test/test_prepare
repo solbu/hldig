@@ -9,11 +9,11 @@
 #
 test_prog=$1
 
-[ ! -d conf ] && cp -rp $srcdir/conf .
-[ ! -d htdocs ] && cp -rp $srcdir/htdocs .
+[ ! -d conf ] && cp -rp $top_srcdir/conf .
+[ ! -d htdocs ] && cp -rp $top_srcdir/htdocs .
 
-if [ ! -f skiptest_db.txt ] ; then 
-	cp $srcdir/skiptest_db.txt .
+if [ ! -f skiptest_db.txt ] ; then
+	cp $top_srcdir/skiptest_db.txt .
 fi
 
-exec $srcdir/$test_prog
+exec $top_srcdir/$test_prog
