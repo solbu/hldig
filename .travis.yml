@@ -1,12 +1,12 @@
 language: cpp
 
 os:
-- linux
-- osx
+  - linux
+  - osx
 
 compiler:
-- clang
-- gcc
+  - clang
+  - gcc
 
 script: ./configure --prefix=$PWD/tempbuild --with-ssl --with-zlib --enable-bigfile && make && make install
 
