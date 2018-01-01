@@ -7,7 +7,7 @@
 #
 include $(top_srcdir)/Makefile.config
 
-LOCAL_DEFINES = 
+LOCAL_DEFINES =
 
 pkglib_LTLIBRARIES = libhtword.la
 
@@ -29,7 +29,7 @@ libhtword_la_SOURCES = \
 	WordStat.cc \
 	WordType.cc
 
-libhtword_la_LDFLAGS = -release $(HTDIG_MAJOR_VERSION).$(HTDIG_MINOR_VERSION).$(HTDIG_MICRO_VERSION) ${extra_ldflags}
+libhtword_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
 
 pkginclude_HEADERS = \
 	WordBitCompress.h \
