@@ -14,12 +14,6 @@
 
 @SET_MAKE@
 
-#
-# To compile with profiling do the following:
-#
-# make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
-#
-
 
 VPATH = @srcdir@
 am__is_gnu_make = { \
@@ -240,9 +234,8 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/Makefile.config \
-	$(top_srcdir)/mkinstalldirs malloc.c memcmp.c realloc.c \
-	regex.c snprintf.c vsnprintf.c
+am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/mkinstalldirs \
+	malloc.c memcmp.c realloc.c regex.c snprintf.c vsnprintf.c
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALLOCA = @ALLOCA@
@@ -415,8 +408,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+
+# include $(top_srcdir)/Makefile.config
 AUTOMAKE_OPTIONS = foreign no-dependencies
-AM_CPPFLAGS = -pedantic	-std=c++11									\
+AM_CPPFLAGS = -pedantic	\
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
@@ -498,7 +493,7 @@ all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .cc .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/Makefile.config $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -518,7 +513,6 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(top_srcdir)/Makefile.config $(am__empty):
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
