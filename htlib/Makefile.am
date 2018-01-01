@@ -1,4 +1,28 @@
-include $(top_srcdir)/Makefile.config
+# include $(top_srcdir)/Makefile.config
+AUTOMAKE_OPTIONS = foreign no-dependencies
+
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+
+AM_CPPFLAGS=-pedantic	\
+		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
+		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
+		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
+		-I$(top_srcdir)/htword \
+		-I$(top_srcdir)/db -I$(top_builddir)/db \
+		$(LOCAL_DEFINES) $(PROFILING) \
+		-DLOCALEDIR=\"$(localedir)\"
+
+HTLIBS=		$(top_builddir)/htnet/libhtnet.la \
+		$(top_builddir)/htcommon/libcommon.la \
+		$(top_builddir)/htword/libhtword.la \
+		$(top_builddir)/htlib/libht.la \
+		$(top_builddir)/db/libhtdb.la
+
+localedir = @localedir@
+LIBS = @LIBINTL@ @LIBS@
+
+LDADD = $(HTLIBS) @LIBINTL@
 
 pkglib_LTLIBRARIES = libht.la
 
