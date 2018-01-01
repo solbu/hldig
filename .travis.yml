@@ -10,6 +10,9 @@ compiler:
 
 script: ./configure --prefix=$PWD/tempbuild --with-ssl --with-zlib --enable-bigfile && make && make install
 
+allow_failures:
+    - os: osx
+
 # blocklist
 #branches:
 #  except:
