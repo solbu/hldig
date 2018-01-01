@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/andy5995/hldig.svg?branch=master)](https://travis-ci.org/andy5995/hldig)
+[![Build Status](https://semaphoreci.com/api/v1/andy5995/hldig/branches/master/badge.svg)](https://semaphoreci.com/andy5995/hldig)
 
 hl://Dig is a fork of [ht://Dig](https://sourceforge.net/projects/htdig/),
 a world-wide-web search system for an intranet or small internet.
