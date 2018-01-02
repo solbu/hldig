@@ -8,7 +8,9 @@ compiler:
   - clang
   - gcc
 
-script: ./configure --prefix=$PWD/tempbuild --with-ssl --with-zlib --enable-bigfile && make && make install
+script:
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then xcode-select --install; fi
+  - ./configure --prefix=$PWD/tempbuild --with-ssl --with-zlib --enable-bigfile && make && make install
 
 allow_failures:
     - os: osx
