@@ -383,23 +383,20 @@ mergeDB ()
 void
 usage ()
 {
-  cout << "usage: hlmerge [-v][-c configfile][-m merge_configfile]\n";
-  cout << "This program is part of ht://Dig " << VERSION << "\n\n";
-  cout << "Options:\n";
-  cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
-  cout << "\t\tprogram.  Using more than 2 is probably only useful\n";
-  cout << "\t\tfor debugging purposes.  The default verbose mode\n";
-  cout << "\t\tgives a progress on what it is doing and where it is.\n\n";
+  Usage help;
+  cout << _("usage:");
+  cout << " hlmerge [-v][-c configfile][-m merge_configfile]\n";
+  printf (_("This program is part of hl://Dig %s\n\n"), VERSION);
+  cout << _("Options:\n");
+  help.verbose ();
   cout << "\t-m merge_configfile\n";
   cout << "\t\tMerge the databases specified into the databases specified\n";
   cout << "\t\tby -c or the default.\n\n";
-  cout << "\t-c configfile\n";
-  cout << "\t\tUse the specified configuration file instead on the\n";
-  cout << "\t\tdefault.\n\n";
-  cout << "\t-a\tUse alternate work files.\n";
+  help.config ();
+  help.alternate_common ();
   cout << "\t\tTells hlmerge to append .work to database files causing\n";
   cout << "\t\ta second copy of the database to be built.  This allows\n";
-  cout << "\t\toriginal files to be used by htsearch during the indexing\n";
+  cout << "\t\toriginal files to be used by hlsearch during the indexing\n";
   cout << "\t\trun.\n\n";
   exit (0);
 }

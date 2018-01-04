@@ -29,11 +29,15 @@ void Usage::verbose (void) {
 }
 
 void Usage::config (void) {
-
   printf (_("\
  -c\tconfigfile\n\
 \tUse the specified configuration file instead of the\n\
 \tdefault.\n\n"));
+}
+
+void Usage::alternate_common (void) {
+  printf (_("\
+ -a\tUse alternate work files.\n"));
 }
 
 Usage::Usage (void) {}

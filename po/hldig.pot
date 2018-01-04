@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hldig 0.1.01\n"
 "Report-Msgid-Bugs-To: andy400-dev@yahoo.com\n"
-"POT-Creation-Date: 2017-12-31 13:09-0600\n"
+"POT-Creation-Date: 2018-01-04 15:46-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,10 +17,9 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: hldig/hldig.cc:521
+#: hldig/hldig.cc:522
 #, c-format
 msgid ""
-" -a\tUse alternate work files.\n"
 "\tTells hldig to append .work to database files, causing\n"
 "\ta second copy of the database to be built.  This allows\n"
 "\tthe original files to be used by hlsearch during the\n"
@@ -28,7 +27,12 @@ msgid ""
 "\n"
 msgstr ""
 
-#: htcommon/messages.cc:33
+#: htcommon/messages.cc:39
+#, c-format
+msgid " -a\tUse alternate work files.\n"
+msgstr ""
+
+#: htcommon/messages.cc:32
 #, c-format
 msgid ""
 " -c\tconfigfile\n"
@@ -199,6 +203,11 @@ msgstr ""
 msgid "Cannot install SIGTERM handler\n"
 msgstr ""
 
+#: hldig/hldig.cc:418
+#, c-format
+msgid "Could not open argument '%s' of flag -m\n"
+msgstr ""
+
 #: httools/htpurge.cc:196
 msgid "Database is empty!"
 msgstr ""
@@ -337,7 +346,9 @@ msgstr ""
 msgid "Notification required to "
 msgstr ""
 
-#: hlsearch/hlsearch.cc:978 httools/htdump.cc:186
+#: hldig/hldig.cc:490 hlsearch/hlsearch.cc:978 httools/htdump.cc:186
+#: httools/htload.cc:181 httools/htmerge.cc:390 httools/htnotify.cc:567
+#: httools/htpurge.cc:391 httools/htstat.cc:183 htfuzzy/htfuzzy.cc:244
 msgid "Options:\n"
 msgstr ""
 
@@ -365,8 +376,21 @@ msgstr ""
 msgid "Subject: Web page expiry ("
 msgstr ""
 
+#: htfuzzy/htfuzzy.cc:236
+msgid "Supported algorithms:\n"
+msgstr ""
+
 #: hlsearch/hlsearch.cc:962
 msgid "The error message is:</p>\n"
+msgstr ""
+
+#: hldig/hldig.cc:489 hlsearch/hlsearch.cc:977 httools/htdump.cc:185
+#: httools/htload.cc:180 httools/htmerge.cc:389 httools/htnotify.cc:563
+#: httools/htpurge.cc:390 httools/htstat.cc:182 htfuzzy/htfuzzy.cc:235
+#, c-format
+msgid ""
+"This program is part of hl://Dig %s\n"
+"\n"
 msgstr ""
 
 #: httools/htnotify.cc:509 httools/htnotify.cc:523
@@ -491,7 +515,7 @@ msgstr ""
 msgid "boolean_keywords attribute should have three entries"
 msgstr ""
 
-#: hldig/hldig.cc:473
+#: hldig/hldig.cc:472
 msgid "hldig End Time: "
 msgstr ""
 
@@ -551,27 +575,8 @@ msgstr ""
 msgid "page expired"
 msgstr ""
 
-#: hldig/hldig.cc:488
-#, c-format
-msgid ""
-"usage: hldig [-v][-i][-c configfile][-t][-m minimalfile]\n"
-"This program is part of hl://Dig %s\n"
-"\n"
-"Options:\n"
-msgstr ""
-
-#: httools/htdump.cc:183
-#, c-format
-msgid ""
-"usage: hldump [-v][-d][-w][-a][-c configfile]\n"
-"This program is part of hl://Dig %s\n"
-"\n"
-msgstr ""
-
-#: hlsearch/hlsearch.cc:975
-#, c-format
-msgid ""
-"usage: hlsearch [-v][-d][-c configfile] [query_string]\n"
-"This program is part of hl://Dig %s\n"
-"\n"
+#: hldig/hldig.cc:487 hlsearch/hlsearch.cc:975 httools/htdump.cc:183
+#: httools/htload.cc:178 httools/htmerge.cc:387 httools/htnotify.cc:561
+#: httools/htpurge.cc:388 httools/htstat.cc:180 htfuzzy/htfuzzy.cc:233
+msgid "usage:"
 msgstr ""

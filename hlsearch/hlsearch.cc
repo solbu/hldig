@@ -972,9 +972,9 @@ void
 usage ()
 {
   Usage help;
-  printf (_("\
-usage: hlsearch [-v][-d][-c configfile] [query_string]\n\
-This program is part of hl://Dig %s\n\n"), VERSION);
+  cout << _("usage:");
+  cout << " hlsearch [-v][-d][-c configfile] [query_string]\n";
+  printf (_("This program is part of hl://Dig %s\n\n"), VERSION);
   cout << _("Options:\n");
 
   help.verbose ();

@@ -17,6 +17,7 @@ class Usage {
   public:
     void config (void);
     void verbose (void);
+    void alternate_common (void);
     Usage ();
     ~Usage ();
 };

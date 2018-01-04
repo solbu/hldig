@@ -180,14 +180,14 @@ void
 usage ()
 {
   Usage help;
-  printf (_("\
-usage: hldump [-v][-d][-w][-a][-c configfile]\n\
-This program is part of hl://Dig %s\n\n"), VERSION);
+  cout << _("usage:");
+  cout << "hldump [-v][-d][-w][-a][-c configfile]\n";
+  printf (_("This program is part of hl://Dig %s\n\n"), VERSION);
   cout << _("Options:\n");
   help.verbose ();
   cout << "\t-d\tDo NOT dump the document database.\n\n";
   cout << "\t-w\tDo NOT dump the word database.\n\n";
-  cout << "\t-a\tUse alternate work files.\n";
+  help.alternate_common ();
   cout << "\t\tTells hldump to append .work to the database files \n";
   cout << "\t\tallowing it to operate on a second set of databases.\n";
   help.config ();

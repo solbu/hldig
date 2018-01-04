@@ -557,18 +557,20 @@ send_email (List * notifList, String & command,
 void
 usage ()
 {
-  cout << "usage: hlnotify [-c configfile][-b db_base]\n";
-  cout << "This program is part of ht://Dig " << VERSION << "\n\n";
-  cout << "There can be any number or words.\n";
-  cout << "Options:\n";
-  cout << "\t-c configfile\n";
-  cout <<
-    "\t\tUse the specified configuration file instead of the default.\n\n";
+  Usage help;
+  cout << _("usage:");
+  cout << " hlnotify [-c configfile][-b db_base]\n";
+  printf (_("This program is part of hl://Dig %s\n\n"), VERSION);
+
+  // Why is this here?
+  // cout << "There can be any number or words.\n";
+  cout << _("Options:\n");
+
+  help.verbose ();
+  help.config ();
+
   cout << "\t-b db_base\n";
   cout << "\t\tSet the base path of the document database.\n";
-  cout << "\t-v\n";
-  cout << "\t\tIncrease the verbose level. Use two or three times for\n";
-  cout << "\t\tmore output.\n";
   cout << "\t-n\n";
   cout << "\t\tDon't send any email, just list what has expired.\n";
   exit (0);

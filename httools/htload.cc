@@ -174,21 +174,22 @@ main (int ac, char **av)
 void
 usage ()
 {
-  cout << "usage: hlload [-v][-d][-w][-a][-c configfile]\n";
-  cout << "This program is part of ht://Dig " << VERSION << "\n\n";
-  cout << "Options:\n";
-  cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
-  cout << "\t\tprogram.  Using more than 2 is probably only useful\n";
-  cout << "\t\tfor debugging purposes.  The default verbose mode\n";
-  cout << "\t\tgives a progress on what it is doing and where it is.\n\n";
+  Usage help;
+  cout << _("usage:");
+  cout << " hlload [-v][-d][-w][-a][-c configfile]\n";
+  printf (_("This program is part of hl://Dig %s\n\n"), VERSION);
+  cout << _("Options:\n");
+
+  help.verbose ();
+
   cout << "\t-d\tDo NOT load the document database.\n\n";
   cout << "\t-w\tDo NOT load the word database.\n\n";
-  cout << "\t-a\tUse alternate work files.\n";
+
+  help.alternate_common ();
   cout << "\t\tTells hlload to append .work to the database files \n";
   cout << "\t\tallowing it to operate on a second set of databases.\n";
-  cout << "\t-c configfile\n";
-  cout << "\t\tUse the specified configuration file instead on the\n";
-  cout << "\t\tdefault.\n\n";
+
+  help.config ();
   exit (0);
 }
 

@@ -229,9 +229,11 @@ main(int ac, char **av)
 void
 usage()
 {
-    cout << "usage: hlfuzzy [-c configfile][-v] algorithm ...\n";
-    cout << "This program is part of ht://Dig " << VERSION << "\n\n";
-    cout << "Supported algorithms:\n";
+    Usage help;
+    cout << _("usage:");
+    cout << " hlfuzzy [-c configfile][-v] algorithm ...\n";
+    printf (_("This program is part of hl://Dig %s\n\n"), VERSION);
+    cout << _("Supported algorithms:\n");
     cout << "\tsoundex\n";
     cout << "\tmetaphone\n";
     cout << "\taccents\n";
@@ -239,15 +241,10 @@ usage()
     cout << "\tsynonyms\n";
     cout << "\n";
 
-    cout << "Options:\n";
+    cout << _("Options:\n");
 
-    cout << "\t-c configfile\n";
-    cout << "\t\tUse the specified configuration file instead of the\n";
-    cout << "\t\tdefault.\n\n";
-
-    cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
-    cout << "\t\tprogram.  Using more than 2 is probably only useful\n";
-    cout << "\t\tfor debugging purposes.\n\n";
+    help.config ();
+    help.verbose ();
 
     exit(0);
 }

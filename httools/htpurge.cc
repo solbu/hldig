@@ -384,23 +384,23 @@ purgeWords (Dictionary * discard_list)
 void
 usage ()
 {
-  cout << "usage: hlpurge [-][-u url][-v][-a][-c configfile]\n";
-  cout << "This program is part of ht://Dig " << VERSION << "\n\n";
-  cout << "Options:\n";
+  Usage help;
+  cout << _("usage:");
+  cout << " hlpurge [-][-u url][-v][-a][-c configfile]\n";
+  printf (_("This program is part of hl://Dig %s\n\n"), VERSION);
+  cout << _("Options:\n");
   cout <<
     "\t-\tURL input. Read in a list of URLs to remove, one per line.\n\n";
   cout << "\t-u\tURL input. Add this url to the list of URLs to remove.\n";
   cout << "\t\t(can be specified multiple times)\n\n";
-  cout << "\t-v\tVerbose mode.  This increases the verbosity of the\n";
-  cout << "\t\tprogram.  Using more than 2 is probably only useful\n";
-  cout << "\t\tfor debugging purposes.  The default verbose mode\n";
-  cout << "\t\tgives a progress on what it is doing and where it is.\n\n";
-  cout << "\t-a\tUse alternate work files.\n";
+
+  help.verbose ();
+
+  help.alternate_common ();
   cout << "\t\tTells hlpurge to append .work to the database files \n";
   cout << "\t\tallowing it to operate on a second set of databases.\n\n";
-  cout << "\t-c configfile\n";
-  cout << "\t\tUse the specified configuration file instead on the\n";
-  cout << "\t\tdefault.\n\n";
+  help.config ();
+
   exit (0);
 }
 

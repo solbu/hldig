@@ -415,8 +415,7 @@ main (int ac, char **av)
     }
     else
     {
-      cerr << "Could not open argument '" << minimalFile << "' of flag -m\n";
-      // fprintf (stderr, _("Could not open argument '%s' of flag -m\n"), minimalFile.c_str());
+      fprintf (stderr, _("Could not open argument '%s' of flag -m\n"), &minimalFile[0]);
       exit (1);
     }
   }
@@ -485,9 +484,10 @@ void
 usage ()
 {
   Usage help;
-  printf (_("usage: hldig [-v][-i][-c configfile][-t][-m minimalfile]\n\
-This program is part of hl://Dig %s\n\n\
-Options:\n"), VERSION);
+  cout << _("usage:");
+  cout << " hldig [-v][-i][-c configfile][-t][-m minimalfile]\n";
+  printf (_("This program is part of hl://Dig %s\n\n"), VERSION);
+  cout << _("Options:\n");
 
   help.verbose ();
 
@@ -518,8 +518,8 @@ Options:\n"), VERSION);
 \tThere *HAS* to be a colon (:) between the username\n\
 \tand password.\n\n"));
 
+  help.alternate_common();
   printf (_("\
- -a\tUse alternate work files.\n\
 \tTells hldig to append .work to database files, causing\n\
 \ta second copy of the database to be built.  This allows\n\
 \tthe original files to be used by hlsearch during the\n\
