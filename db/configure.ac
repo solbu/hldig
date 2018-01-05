@@ -5,16 +5,20 @@ AC_PREREQ(2.57)
 #AC_INIT
 
 VERSION=`cat ${srcdir}/../.version`
+
+
+# AM_INIT_AUTOMAKE(htdig_db, $VERSION,nosubst)
+
+AC_INIT([htdig_db], 0.1.01)
+AC_CONFIG_SRCDIR([db_byteorder.c])
+AM_INIT_AUTOMAKE
+
 MAJOR_VERSION=[`expr $VERSION : '\([0-9][0-9]*\)'`]
 AC_SUBST(MAJOR_VERSION)
 MINOR_VERSION=[`expr $VERSION : '[0-9][0-9]*\.\([0-9][0-9]*\)'`]
 AC_SUBST(MINOR_VERSION)
 MICRO_VERSION=[`expr $VERSION : '[0-9][0-9]*\.[0-9][0-9]*\.\([0-9][0-9]*\)'`]
 AC_SUBST(MICRO_VERSION)
-
-AC_INIT([htdig_db], 0.1.01)
-AC_CONFIG_SRCDIR([db_byteorder.c])
-AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER([db_config.h])
 AC_CONFIG_MACRO_DIRS([m4])

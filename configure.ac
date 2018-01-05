@@ -11,17 +11,18 @@ AC_PREREQ(2.57)
 #
 # hl://Dig's version
 #
-VERSION=`cat ${srcdir}/.version`
+# VERSION=`cat ${srcdir}/.version`
+
+AC_INIT([hldig], 0.1.01)
+AC_CONFIG_SRCDIR([hldig/hldig.cc])
+AM_INIT_AUTOMAKE
+
 HLDIG_MAJOR_VERSION=[`expr $VERSION : '\([0-9][0-9]*\)'`]
 AC_SUBST(HLDIG_MAJOR_VERSION)
 HLDIG_MINOR_VERSION=[`expr $VERSION : '[0-9][0-9]*\.\([0-9][0-9]*\)'`]
 AC_SUBST(HLDIG_MINOR_VERSION)
 HLDIG_MICRO_VERSION=[`expr $VERSION : '[0-9][0-9]*\.[0-9][0-9]*\.\([0-9][0-9]*\)'`]
 AC_SUBST(HLDIG_MICRO_VERSION)
-
-AC_INIT([hldig], 0.1.01)
-AC_CONFIG_SRCDIR([hldig/hldig.cc])
-AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER([include/config.h:include/config.in])
 AC_CONFIG_LIBOBJ_DIR([htlib])

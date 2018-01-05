@@ -702,6 +702,9 @@ build_os
 build_vendor
 build_cpu
 build
+MICRO_VERSION
+MINOR_VERSION
+MAJOR_VERSION
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 AM_DEFAULT_V
@@ -766,10 +769,7 @@ PACKAGE_VERSION
 PACKAGE_TARNAME
 PACKAGE_NAME
 PATH_SEPARATOR
-SHELL
-MICRO_VERSION
-MINOR_VERSION
-MAJOR_VERSION'
+SHELL'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
@@ -3098,6 +3098,13 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
+
+
+MAJOR_VERSION=`expr $VERSION : '\([0-9][0-9]*\)'`
+
+MINOR_VERSION=`expr $VERSION : '[0-9][0-9]*\.\([0-9][0-9]*\)'`
+
+MICRO_VERSION=`expr $VERSION : '[0-9][0-9]*\.[0-9][0-9]*\.\([0-9][0-9]*\)'`
 
 
 ac_config_headers="$ac_config_headers db_config.h"

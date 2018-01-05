@@ -745,6 +745,9 @@ CONFIG_DIR
 MAINT
 MAINTAINER_MODE_FALSE
 MAINTAINER_MODE_TRUE
+HLDIG_MICRO_VERSION
+HLDIG_MINOR_VERSION
+HLDIG_MAJOR_VERSION
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 AM_DEFAULT_V
@@ -809,10 +812,7 @@ PACKAGE_VERSION
 PACKAGE_TARNAME
 PACKAGE_NAME
 PATH_SEPARATOR
-SHELL
-HLDIG_MICRO_VERSION
-HLDIG_MINOR_VERSION
-HLDIG_MAJOR_VERSION'
+SHELL'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
@@ -3499,6 +3499,13 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
+
+
+HLDIG_MAJOR_VERSION=`expr $VERSION : '\([0-9][0-9]*\)'`
+
+HLDIG_MINOR_VERSION=`expr $VERSION : '[0-9][0-9]*\.\([0-9][0-9]*\)'`
+
+HLDIG_MICRO_VERSION=`expr $VERSION : '[0-9][0-9]*\.[0-9][0-9]*\.\([0-9][0-9]*\)'`
 
 
 ac_config_headers="$ac_config_headers include/config.h:include/config.in"
