@@ -371,7 +371,7 @@ AC_CONFIG_FILES([Makefile
                  htlib/Makefile
                  htnet/Makefile
                  hlsearch/Makefile
-                 httools/Makefile
+                 hltools/Makefile
                  htword/Makefile
                  include/Makefile
                  installdir/Makefile

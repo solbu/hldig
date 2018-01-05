@@ -1,18 +1,18 @@
 #
-# Makefile - makefile for htsearch
+# Makefile - makefile for hlsearch
 #
 
 APP_NAME    = Right Now Web CGI
 RNT_PRODUCT = rnw
 
-TARGET1      = $(BINDIR)/htdump$(EXESFX)
-TARGET2      = $(BINDIR)/htload$(EXESFX)
-TARGET3      = $(BINDIR)/htmerge$(EXESFX)
-TARGET4      = $(BINDIR)/htnotify$(EXESFX)
-TARGET5      = $(BINDIR)/htpurge$(EXESFX)
-TARGET6      = $(BINDIR)/htstat$(EXESFX)
+TARGET1      = $(BINDIR)/hldump$(EXESFX)
+TARGET2      = $(BINDIR)/hlload$(EXESFX)
+TARGET3      = $(BINDIR)/hlmerge$(EXESFX)
+TARGET4      = $(BINDIR)/hlnotify$(EXESFX)
+TARGET5      = $(BINDIR)/hlpurge$(EXESFX)
+TARGET6      = $(BINDIR)/hlstat$(EXESFX)
 
-#htdump.cc  htload.cc  htmerge.cc  htnotify.cc  htpurge.cc  htstat.cc
+#hldump.cc  hlload.cc  hlmerge.cc  hlnotify.cc  hlpurge.cc  hlstat.cc
 
 include ../Makedefs.win32
 
@@ -22,17 +22,17 @@ include ../Makedefs.win32
 
 CXXSRC = htdump.cc  htload.cc  htmerge.cc  htnotify.cc  htpurge.cc  htstat.cc
 
-OBJS1 = win32/htdump.obj 
-OBJS2 = win32/htload.obj 
-OBJS3 = win32/htmerge.obj 
-OBJS4 = win32/htnotify.obj
-OBJS5 = win32/htpurge.obj
-OBJS6 = win32/htstat.obj
+OBJS1 = win32/hldump.obj
+OBJS2 = win32/hlload.obj
+OBJS3 = win32/hlmerge.obj
+OBJS4 = win32/hlnotify.obj
+OBJS5 = win32/hlpurge.obj
+OBJS6 = win32/hlstat.obj
 
 
 CPPFLAGS += -DHAVE_CONFIG_H -DSENDMAIL=\"\"  -I. -I../include -I../htlib -I../htcommon -I../htword -I../db -I../htnet
 
-LDLIBS = ../lib/$(ARCH)/libhtnet.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libfuzzy.lib ../lib/$(ARCH)/libhtdb.lib 
+LDLIBS = ../lib/$(ARCH)/libhtnet.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libfuzzy.lib ../lib/$(ARCH)/libhtdb.lib
 OTHERLIBS = ws2_32.lib  L:/win32/lib/zlib114/zlib.lib
 
 DEPLIBS += $(LDLIBS)

@@ -19,11 +19,11 @@ conffile=$PREFIX/conf/htdig.conf
 
 # To help debug problems, try running rundig -vvv
 # This will add lots of debugging output to all of the programs
-stats= opts= alt= nohtnotify=
+stats= opts= alt= nohlnotify=
 while [ "$#" -gt 0 ]
 do
     case "$1" in
-    --no-htnotify) nohtnotify="true" ;;
+    --no-hlnotify) nohlnotify="true" ;;
     -a)  alt="$1" ;;
     -s)  stats="$1" ;;
     -c)  shift
@@ -60,7 +60,7 @@ TMPDIR=$DBDIR
 export TMPDIR
 
 $BINDIR/hldig -i $opts $stats $alt
-$BINDIR/htpurge $opts $alt
+$BINDIR/hlpurge $opts $alt
 case "$alt" in
 -a)
   ( cd $DBDIR && test -f db.docdb.work &&
@@ -71,10 +71,10 @@ case "$alt" in
     test -f db.words.db.work_weakcmpr &&
 	mv -f db.words.db.work_weakcmpr db.words.db_weakcmpr) ;;
 esac
-if [ "$nohtnotify" = "true" ]; then
-	echo "Skipping htnotify."
+if [ "$nohlnotify" = "true" ]; then
+	echo "Skipping hlnotify."
 else
-	$BINDIR/htnotify $opts
+	$BINDIR/hlnotify $opts
 fi
 # If you want to use the soundex and (or) metaphone fuzzy matchings,
 # Uncomment the following line

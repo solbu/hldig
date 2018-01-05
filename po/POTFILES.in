@@ -7,10 +7,10 @@ hldig/Server.cc
 hldig/ExternalParser.cc
 hldig/ExternalTransport.cc
 hlsearch/hlsearch.cc
-httools/htdump.cc
-httools/htload.cc
-httools/htmerge.cc
-httools/htnotify.cc
-httools/htpurge.cc
-httools/htstat.cc
+hltools/hldump.cc
+hltools/hlload.cc
+hltools/hlmerge.cc
+hltools/hlnotify.cc
+hltools/hlpurge.cc
+hltools/hlstat.cc
 htfuzzy/htfuzzy.cc

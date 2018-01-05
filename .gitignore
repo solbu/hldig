@@ -17,7 +17,6 @@ debian
 config.status
 htdoc/attrs.html
 hlsearch/qtest
-httools/htmerge
 include/config.h
 installdir/htdigconfig.8
 libtool

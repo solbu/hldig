@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hldig 0.1.01\n"
 "Report-Msgid-Bugs-To: andy400-dev@yahoo.com\n"
-"POT-Creation-Date: 2018-01-04 15:46-0600\n"
+"POT-Creation-Date: 2018-01-05 04:06-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -208,35 +208,35 @@ msgstr ""
 msgid "Could not open argument '%s' of flag -m\n"
 msgstr ""
 
-#: httools/htpurge.cc:196
+#: hltools/hlpurge.cc:196
 msgid "Database is empty!"
 msgstr ""
 
-#: httools/htnotify.cc:336
+#: hltools/hlnotify.cc:336
 msgid "Date:    "
 msgstr ""
 
-#: httools/htpurge.cc:272
+#: hltools/hlpurge.cc:272
 msgid "Deleted, marked by user input: ID: "
 msgstr ""
 
-#: httools/htpurge.cc:263
+#: hltools/hlpurge.cc:263
 msgid "Deleted, never retrieved: ID: "
 msgstr ""
 
-#: httools/htpurge.cc:254
+#: hltools/hlpurge.cc:254
 msgid "Deleted, no excerpt: ID: "
 msgstr ""
 
-#: httools/htpurge.cc:227
+#: hltools/hlpurge.cc:227
 msgid "Deleted, noindex: ID: "
 msgstr ""
 
-#: httools/htpurge.cc:235
+#: hltools/hlpurge.cc:235
 msgid "Deleted, obsolete: ID: "
 msgstr ""
 
-#: httools/htnotify.cc:339
+#: hltools/hlnotify.cc:339
 msgid "Email:   "
 msgstr ""
 
@@ -310,7 +310,7 @@ msgstr ""
 msgid "External transport error: unknown field in line "
 msgstr ""
 
-#: httools/htnotify.cc:508 httools/htnotify.cc:522
+#: hltools/hlnotify.cc:508 hltools/hlnotify.cc:522
 msgid "From: "
 msgstr ""
 
@@ -322,9 +322,9 @@ msgstr ""
 msgid "Importing Cookies input file "
 msgstr ""
 
-#: hldig/hldig.cc:199 hlsearch/hlsearch.cc:327 httools/htdump.cc:105
-#: httools/htload.cc:102 httools/htmerge.cc:135 httools/htnotify.cc:187
-#: httools/htpurge.cc:103 httools/htstat.cc:95
+#: hldig/hldig.cc:199 hlsearch/hlsearch.cc:327 hltools/hldump.cc:105
+#: hltools/hlload.cc:102 hltools/hlmerge.cc:135 hltools/hlnotify.cc:187
+#: hltools/hlpurge.cc:103 hltools/hlstat.cc:95
 #, c-format
 msgid "Invalid url_part_aliases or common_url_parts: %s"
 msgstr ""
@@ -334,7 +334,7 @@ msgstr ""
 msgid "Invalid url_rewrite_rules: %s"
 msgstr ""
 
-#: httools/htnotify.cc:352
+#: hltools/hlnotify.cc:352
 msgid "Malformed Date"
 msgstr ""
 
@@ -342,37 +342,37 @@ msgstr ""
 msgid "Not found"
 msgstr ""
 
-#: httools/htnotify.cc:479
+#: hltools/hlnotify.cc:479
 msgid "Notification required to "
 msgstr ""
 
-#: hldig/hldig.cc:490 hlsearch/hlsearch.cc:978 httools/htdump.cc:186
-#: httools/htload.cc:181 httools/htmerge.cc:390 httools/htnotify.cc:567
-#: httools/htpurge.cc:391 httools/htstat.cc:183 htfuzzy/htfuzzy.cc:244
+#: hldig/hldig.cc:490 hlsearch/hlsearch.cc:978 hltools/hldump.cc:186
+#: hltools/hlload.cc:181 hltools/hlmerge.cc:390 hltools/hlnotify.cc:567
+#: hltools/hlpurge.cc:391 hltools/hlstat.cc:183 htfuzzy/htfuzzy.cc:244
 msgid "Options:\n"
 msgstr ""
 
-#: httools/htnotify.cc:314
+#: hltools/hlnotify.cc:314
 msgid "Postamble text:"
 msgstr ""
 
-#: httools/htnotify.cc:312
+#: hltools/hlnotify.cc:312
 msgid "Preamble text:"
 msgstr ""
 
-#: httools/htnotify.cc:526
+#: hltools/hlnotify.cc:526
 msgid "Reply-To: "
 msgstr ""
 
-#: httools/htnotify.cc:335
+#: hltools/hlnotify.cc:335
 msgid "Saw a date:"
 msgstr ""
 
-#: httools/htnotify.cc:338 httools/htnotify.cc:531
+#: hltools/hlnotify.cc:338 hltools/hlnotify.cc:531
 msgid "Subject: "
 msgstr ""
 
-#: httools/htnotify.cc:535
+#: hltools/hlnotify.cc:535
 msgid "Subject: Web page expiry ("
 msgstr ""
 
@@ -384,20 +384,20 @@ msgstr ""
 msgid "The error message is:</p>\n"
 msgstr ""
 
-#: hldig/hldig.cc:489 hlsearch/hlsearch.cc:977 httools/htdump.cc:185
-#: httools/htload.cc:180 httools/htmerge.cc:389 httools/htnotify.cc:563
-#: httools/htpurge.cc:390 httools/htstat.cc:182 htfuzzy/htfuzzy.cc:235
+#: hldig/hldig.cc:489 hlsearch/hlsearch.cc:977 hltools/hldump.cc:185
+#: hltools/hlload.cc:180 hltools/hlmerge.cc:389 hltools/hlnotify.cc:563
+#: hltools/hlpurge.cc:390 hltools/hlstat.cc:182 htfuzzy/htfuzzy.cc:235
 #, c-format
 msgid ""
 "This program is part of hl://Dig %s\n"
 "\n"
 msgstr ""
 
-#: httools/htnotify.cc:509 httools/htnotify.cc:523
+#: hltools/hlnotify.cc:509 hltools/hlnotify.cc:523
 msgid "To: "
 msgstr ""
 
-#: httools/htnotify.cc:337
+#: hltools/hlnotify.cc:337
 msgid "URL:     "
 msgstr ""
 
@@ -411,8 +411,8 @@ msgstr ""
 msgid "Unable to create images file '%s'"
 msgstr ""
 
-#: hldig/hldig.cc:158 httools/htload.cc:90 httools/htmerge.cc:123
-#: httools/htmerge.cc:143 httools/htpurge.cc:91 httools/htstat.cc:83
+#: hldig/hldig.cc:158 hltools/hlload.cc:90 hltools/hlmerge.cc:123
+#: hltools/hlmerge.cc:143 hltools/hlpurge.cc:91 hltools/hlstat.cc:83
 #: htfuzzy/htfuzzy.cc:131
 #, c-format
 msgid "Unable to find configuration file '%s'"
@@ -423,17 +423,17 @@ msgstr ""
 msgid "Unable to load cookies file '%s' in memory"
 msgstr ""
 
-#: httools/htmerge.cc:247 httools/htmerge.cc:341
+#: hltools/hlmerge.cc:247 hltools/hlmerge.cc:341
 #, c-format
 msgid "Unable to open document database '%s'"
 msgstr ""
 
-#: httools/htmerge.cc:219 httools/htmerge.cc:241
+#: hltools/hlmerge.cc:219 hltools/hlmerge.cc:241
 #, c-format
 msgid "Unable to open document excerpts '%s'"
 msgstr ""
 
-#: httools/htmerge.cc:212 httools/htmerge.cc:234
+#: hltools/hlmerge.cc:212 hltools/hlmerge.cc:234
 #, c-format
 msgid "Unable to open document index '%s'"
 msgstr ""
@@ -443,7 +443,7 @@ msgstr ""
 msgid "Unable to open word database %s"
 msgstr ""
 
-#: hldig/hldig.cc:337 httools/htmerge.cc:225 httools/htmerge.cc:335
+#: hldig/hldig.cc:337 hltools/hlmerge.cc:225 hltools/hlmerge.cc:335
 #, c-format
 msgid "Unable to open/create document database '%s'"
 msgstr ""
@@ -547,19 +547,19 @@ msgstr ""
 msgid "hlfuzzy: total words: "
 msgstr ""
 
-#: httools/htstat.cc:138
+#: hltools/hlstat.cc:138
 msgid "hlstat: Total documents: "
 msgstr ""
 
-#: httools/htstat.cc:163
+#: hltools/hlstat.cc:163
 msgid "hlstat: Total unique words: "
 msgstr ""
 
-#: httools/htstat.cc:162
+#: hltools/hlstat.cc:162
 msgid "hlstat: Total words: "
 msgstr ""
 
-#: httools/htstat.cc:144
+#: hltools/hlstat.cc:144
 msgid "hlstat: URLs in database: "
 msgstr ""
 
@@ -571,12 +571,12 @@ msgstr ""
 msgid "max_hop_count"
 msgstr ""
 
-#: httools/htnotify.cc:97
+#: hltools/hlnotify.cc:97
 msgid "page expired"
 msgstr ""
 
-#: hldig/hldig.cc:487 hlsearch/hlsearch.cc:975 httools/htdump.cc:183
-#: httools/htload.cc:178 httools/htmerge.cc:387 httools/htnotify.cc:561
-#: httools/htpurge.cc:388 httools/htstat.cc:180 htfuzzy/htfuzzy.cc:233
+#: hldig/hldig.cc:487 hlsearch/hlsearch.cc:975 hltools/hldump.cc:183
+#: hltools/hlload.cc:178 hltools/hlmerge.cc:387 hltools/hlnotify.cc:561
+#: hltools/hlpurge.cc:388 hltools/hlstat.cc:180 htfuzzy/htfuzzy.cc:233
 msgid "usage:"
 msgstr ""

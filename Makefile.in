@@ -208,7 +208,7 @@ ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb hldig \
-	hlsearch httools installdir include test po
+	hlsearch hltools installdir include test po
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/Makefile.config \
 	ABOUT-NLS COPYING INSTALL compile config.guess config.rpath \
 	config.sub install-sh ltmain.sh missing mkinstalldirs ylwrap
@@ -446,7 +446,7 @@ LDADD = $(HTLIBS) @LIBINTL@
 # process the Makefile.am files in these directories. the po directory
 # is a little # different because of a rule near the end of configure.ac
 SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb hldig hlsearch	\
-httools installdir include $(TESTDIR) po
+hltools installdir include $(TESTDIR) po
 
 
 # files to be installed to destination docdir when 'make install' is run

@@ -1,0 +1,13 @@
+Makefile
+*.lo
+*.la
+.purify
+.pure
+.deps
+.libs
+hlpurge
+hlload
+hldump
+hlstat
+hlnotify
+hlmerge

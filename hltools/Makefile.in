@@ -94,9 +94,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = htpurge$(EXEEXT) htnotify$(EXEEXT) htdump$(EXEEXT) \
-	htstat$(EXEEXT) htload$(EXEEXT) htmerge$(EXEEXT)
-subdir = httools
+bin_PROGRAMS = hlpurge$(EXEEXT) hlnotify$(EXEEXT) hldump$(EXEEXT) \
+	hlstat$(EXEEXT) hlload$(EXEEXT) hlmerge$(EXEEXT)
+subdir = hltools
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
@@ -116,40 +116,40 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_htdump_OBJECTS = htdump.$(OBJEXT)
-htdump_OBJECTS = $(am_htdump_OBJECTS)
+am_hldump_OBJECTS = hldump.$(OBJEXT)
+hldump_OBJECTS = $(am_hldump_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-htdump_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+hldump_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htdump_LDFLAGS) $(LDFLAGS) -o $@
-am_htload_OBJECTS = htload.$(OBJEXT)
-htload_OBJECTS = $(am_htload_OBJECTS)
-htload_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(CXXFLAGS) $(hldump_LDFLAGS) $(LDFLAGS) -o $@
+am_hlload_OBJECTS = hlload.$(OBJEXT)
+hlload_OBJECTS = $(am_hlload_OBJECTS)
+hlload_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htload_LDFLAGS) $(LDFLAGS) -o $@
-am_htmerge_OBJECTS = htmerge.$(OBJEXT)
-htmerge_OBJECTS = $(am_htmerge_OBJECTS)
-htmerge_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(CXXFLAGS) $(hlload_LDFLAGS) $(LDFLAGS) -o $@
+am_hlmerge_OBJECTS = hlmerge.$(OBJEXT)
+hlmerge_OBJECTS = $(am_hlmerge_OBJECTS)
+hlmerge_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htmerge_LDFLAGS) $(LDFLAGS) -o $@
-am_htnotify_OBJECTS = htnotify.$(OBJEXT)
-htnotify_OBJECTS = $(am_htnotify_OBJECTS)
-htnotify_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(CXXFLAGS) $(hlmerge_LDFLAGS) $(LDFLAGS) -o $@
+am_hlnotify_OBJECTS = hlnotify.$(OBJEXT)
+hlnotify_OBJECTS = $(am_hlnotify_OBJECTS)
+hlnotify_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htnotify_LDFLAGS) $(LDFLAGS) -o $@
-am_htpurge_OBJECTS = htpurge.$(OBJEXT)
-htpurge_OBJECTS = $(am_htpurge_OBJECTS)
-htpurge_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(CXXFLAGS) $(hlnotify_LDFLAGS) $(LDFLAGS) -o $@
+am_hlpurge_OBJECTS = hlpurge.$(OBJEXT)
+hlpurge_OBJECTS = $(am_hlpurge_OBJECTS)
+hlpurge_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htpurge_LDFLAGS) $(LDFLAGS) -o $@
-am_htstat_OBJECTS = htstat.$(OBJEXT)
-htstat_OBJECTS = $(am_htstat_OBJECTS)
-htstat_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(CXXFLAGS) $(hlpurge_LDFLAGS) $(LDFLAGS) -o $@
+am_hlstat_OBJECTS = hlstat.$(OBJEXT)
+hlstat_OBJECTS = $(am_hlstat_OBJECTS)
+hlstat_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htstat_LDFLAGS) $(LDFLAGS) -o $@
+	$(CXXFLAGS) $(hlstat_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -183,10 +183,10 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(htdump_SOURCES) $(htload_SOURCES) $(htmerge_SOURCES) \
-	$(htnotify_SOURCES) $(htpurge_SOURCES) $(htstat_SOURCES)
-DIST_SOURCES = $(htdump_SOURCES) $(htload_SOURCES) $(htmerge_SOURCES) \
-	$(htnotify_SOURCES) $(htpurge_SOURCES) $(htstat_SOURCES)
+SOURCES = $(hldump_SOURCES) $(hlload_SOURCES) $(hlmerge_SOURCES) \
+	$(hlnotify_SOURCES) $(hlpurge_SOURCES) $(hlstat_SOURCES)
+DIST_SOURCES = $(hldump_SOURCES) $(hlload_SOURCES) $(hlmerge_SOURCES) \
+	$(hlnotify_SOURCES) $(hlpurge_SOURCES) $(hlstat_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -403,30 +403,30 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 
 LDADD = $(HTLIBS) @LIBINTL@
 LOCAL_DEFINES = -DSENDMAIL=\"$(SENDMAIL)\"
-htpurge_SOURCES = htpurge.cc
-htpurge_DEPENDENCIES = $(HTLIBS)
-htpurge_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htpurge_LDADD = $(HTLIBS)
-htnotify_SOURCES = htnotify.cc
-htnotify_DEPENDENCIES = $(HTLIBS)
-htnotify_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htnotify_LDADD = $(HTLIBS)
-htdump_SOURCES = htdump.cc
-htdump_DEPENDENCIES = $(HTLIBS)
-htdump_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htdump_LDADD = $(HTLIBS)
-htstat_SOURCES = htstat.cc
-htstat_DEPENDENCIES = $(HTLIBS)
-htstat_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htstat_LDADD = $(HTLIBS)
-htload_SOURCES = htload.cc
-htload_DEPENDENCIES = $(HTLIBS)
-htload_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htload_LDADD = $(HTLIBS)
-htmerge_SOURCES = htmerge.cc
-htmerge_DEPENDENCIES = $(HTLIBS)
-htmerge_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htmerge_LDADD = $(HTLIBS)
+hlpurge_SOURCES = hlpurge.cc
+hlpurge_DEPENDENCIES = $(HTLIBS)
+hlpurge_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hlpurge_LDADD = $(HTLIBS)
+hlnotify_SOURCES = hlnotify.cc
+hlnotify_DEPENDENCIES = $(HTLIBS)
+hlnotify_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hlnotify_LDADD = $(HTLIBS)
+hldump_SOURCES = hldump.cc
+hldump_DEPENDENCIES = $(HTLIBS)
+hldump_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hldump_LDADD = $(HTLIBS)
+hlstat_SOURCES = hlstat.cc
+hlstat_DEPENDENCIES = $(HTLIBS)
+hlstat_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hlstat_LDADD = $(HTLIBS)
+hlload_SOURCES = hlload.cc
+hlload_DEPENDENCIES = $(HTLIBS)
+hlload_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hlload_LDADD = $(HTLIBS)
+hlmerge_SOURCES = hlmerge.cc
+hlmerge_DEPENDENCIES = $(HTLIBS)
+hlmerge_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hlmerge_LDADD = $(HTLIBS)
 all: all-am
 
 .SUFFIXES:
@@ -440,9 +440,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign httools/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign hltools/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign httools/Makefile
+	  $(AUTOMAKE) --foreign hltools/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -511,29 +511,29 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
-htdump$(EXEEXT): $(htdump_OBJECTS) $(htdump_DEPENDENCIES) $(EXTRA_htdump_DEPENDENCIES) 
-	@rm -f htdump$(EXEEXT)
-	$(AM_V_CXXLD)$(htdump_LINK) $(htdump_OBJECTS) $(htdump_LDADD) $(LIBS)
+hldump$(EXEEXT): $(hldump_OBJECTS) $(hldump_DEPENDENCIES) $(EXTRA_hldump_DEPENDENCIES) 
+	@rm -f hldump$(EXEEXT)
+	$(AM_V_CXXLD)$(hldump_LINK) $(hldump_OBJECTS) $(hldump_LDADD) $(LIBS)
 
-htload$(EXEEXT): $(htload_OBJECTS) $(htload_DEPENDENCIES) $(EXTRA_htload_DEPENDENCIES) 
-	@rm -f htload$(EXEEXT)
-	$(AM_V_CXXLD)$(htload_LINK) $(htload_OBJECTS) $(htload_LDADD) $(LIBS)
+hlload$(EXEEXT): $(hlload_OBJECTS) $(hlload_DEPENDENCIES) $(EXTRA_hlload_DEPENDENCIES) 
+	@rm -f hlload$(EXEEXT)
+	$(AM_V_CXXLD)$(hlload_LINK) $(hlload_OBJECTS) $(hlload_LDADD) $(LIBS)
 
-htmerge$(EXEEXT): $(htmerge_OBJECTS) $(htmerge_DEPENDENCIES) $(EXTRA_htmerge_DEPENDENCIES) 
-	@rm -f htmerge$(EXEEXT)
-	$(AM_V_CXXLD)$(htmerge_LINK) $(htmerge_OBJECTS) $(htmerge_LDADD) $(LIBS)
+hlmerge$(EXEEXT): $(hlmerge_OBJECTS) $(hlmerge_DEPENDENCIES) $(EXTRA_hlmerge_DEPENDENCIES) 
+	@rm -f hlmerge$(EXEEXT)
+	$(AM_V_CXXLD)$(hlmerge_LINK) $(hlmerge_OBJECTS) $(hlmerge_LDADD) $(LIBS)
 
-htnotify$(EXEEXT): $(htnotify_OBJECTS) $(htnotify_DEPENDENCIES) $(EXTRA_htnotify_DEPENDENCIES) 
-	@rm -f htnotify$(EXEEXT)
-	$(AM_V_CXXLD)$(htnotify_LINK) $(htnotify_OBJECTS) $(htnotify_LDADD) $(LIBS)
+hlnotify$(EXEEXT): $(hlnotify_OBJECTS) $(hlnotify_DEPENDENCIES) $(EXTRA_hlnotify_DEPENDENCIES) 
+	@rm -f hlnotify$(EXEEXT)
+	$(AM_V_CXXLD)$(hlnotify_LINK) $(hlnotify_OBJECTS) $(hlnotify_LDADD) $(LIBS)
 
-htpurge$(EXEEXT): $(htpurge_OBJECTS) $(htpurge_DEPENDENCIES) $(EXTRA_htpurge_DEPENDENCIES) 
-	@rm -f htpurge$(EXEEXT)
-	$(AM_V_CXXLD)$(htpurge_LINK) $(htpurge_OBJECTS) $(htpurge_LDADD) $(LIBS)
+hlpurge$(EXEEXT): $(hlpurge_OBJECTS) $(hlpurge_DEPENDENCIES) $(EXTRA_hlpurge_DEPENDENCIES) 
+	@rm -f hlpurge$(EXEEXT)
+	$(AM_V_CXXLD)$(hlpurge_LINK) $(hlpurge_OBJECTS) $(hlpurge_LDADD) $(LIBS)
 
-htstat$(EXEEXT): $(htstat_OBJECTS) $(htstat_DEPENDENCIES) $(EXTRA_htstat_DEPENDENCIES) 
-	@rm -f htstat$(EXEEXT)
-	$(AM_V_CXXLD)$(htstat_LINK) $(htstat_OBJECTS) $(htstat_LDADD) $(LIBS)
+hlstat$(EXEEXT): $(hlstat_OBJECTS) $(hlstat_DEPENDENCIES) $(EXTRA_hlstat_DEPENDENCIES) 
+	@rm -f hlstat$(EXEEXT)
+	$(AM_V_CXXLD)$(hlstat_LINK) $(hlstat_OBJECTS) $(hlstat_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
