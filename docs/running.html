@@ -18,22 +18,22 @@
           <img src="dot.gif" alt="*" width=9 height=9> <a href="where.html">Where to get it</a><br>
           <img src="dot.gif" alt="*" width=9 height=9> <a href="install.html">Installation</a><br>
           <img src="dot.gif" alt="*" width=9 height=9> <a href="config.html">Configuration</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="running.html">Running ht://Dig</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="running.html">Running hl://Dig</a><br>
           <img src="dot.gif" alt="*" width=9 height=9> <a href="FAQ.html">FAQ</a><br>
           <img src="dot.gif" alt="*" width=9 height=9> <a href="https://github.com/andy5995/hldig/blob/master/COPYING">License information</a><br>
         </font> <br>
           <strong>Reference</strong> <font face="helvetica,arial" size="2"><br>
           <img src="dot.gif" alt="*" width=9 height=9> <a href="all.html">Overview</a><br>
           <img src="dot.gif" alt="*" width=9 height=9> <a href="rundig.html">rundig</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htdig.html">htdig</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htmerge.html">htmerge</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htnotify.html">htnotify</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htdump.html">htdump</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htload.html">htload</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htpurge.html">htpurge</a><br>
-          <img src="dot.gif" alt="*" width=9 height=9> <a href="htstat.html">htstat</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="hldig.html">hldig</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="hlmerge.html">hlmerge</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="hlnotify.html">hlnotify</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="hldump.html">hldump</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="hlload.html">hlload</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="hlpurge.html">hlpurge</a><br>
+          <img src="dot.gif" alt="*" width=9 height=9> <a href="hlstat.html">hlstat</a><br>
           <img src="dot.gif" alt="*" width=9 height=9> <a href="htfuzzy.html">htfuzzy</a><br>
-          <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="htsearch.html">htsearch</a><br>
+          <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="hlsearch.html">hlsearch</a><br>
           <img src="triangle.gif" alt="&gt;" width=9 height=9> <a href="confindex.html" target="_top">Configuration file</a><br>
           <img src="dot.gif" alt="*" width=9 height=9> <a href="meta.html">META tags</a><br>
           </font> <br>
@@ -55,7 +55,7 @@
         <td class = "footer-right-col">
           <p>
     This document will attempt to show the steps needed to use
-    the ht://Dig system, after <a href="where.html">obtaining</a>,
+    the hl://Dig system, after <a href="where.html">obtaining</a>,
     <a href="install.html">installing</a> and
     <a href="config.html">configuring</a> it.<br>
     The main sections are:
@@ -98,7 +98,7 @@
     <a href="attrs.html#search_algorithm">search_algorithm</a>
     attribute. The <em>endings</em> and <em>synonyms</em> algorithms
     use static dictionaries, so their databases only need to be rebuilt
-    by htfuzzy when the dictionary files are changed, or when ht://Dig
+    by htfuzzy when the dictionary files are changed, or when hl://Dig
     is initially installed. The rundig script handles the building of
     these two databases as needed for the default setup. A few of the
     other fuzzy match algorithms use databases that are derived from
@@ -118,21 +118,21 @@
     Once the databases are built, you should test out htsearch.
     It's recommended that you first try a few queries running
     htsearch on the command line, as it helps to separate problems
-    that are specific to ht://Dig from web server or CGI problems.
+    that are specific to hl://Dig from web server or CGI problems.
     Once you have that working, try running htsearch from your web
     browser, using the search form you configured.
   </p>
   <p>
     If you run into problems at any point in the building and testing
-    of your databases, there are many things you can do. All ht://Dig
+    of your databases, there are many things you can do. All hl://Dig
     programs feature a <strong>-v</strong> option to get some debugging
     output. The more of these options you put on the command line, the
     more output you'll usually get. To get help with common problems,
     or with interpreting some of the debugging output, please look to
-    the ht://Dig <a href="FAQ.html">FAQ</a> (frequently asked questions)
-    as your first line of support. Most of the problems that ht://Dig
+    the hl://Dig <a href="FAQ.html">FAQ</a> (frequently asked questions)
+    as your first line of support. Most of the problems that hl://Dig
     users have are explained there, and the on-line
-    <a href="http://www.htdig.org/FAQ.html">FAQ on the website</a> is
+    <a href="https://andy5995.github.io/hldig/FAQ.html">FAQ on the website</a> is
     updated frequently as new problems arise. The FAQ will also tell
     you where you can turn if your question isn't answered there.
     Remember that questions may not be phrased exactly as you'd state
@@ -160,7 +160,7 @@
   </p>
   <p>
     You need to pay close attention to how long updates take to run.
-    There are no database lockouts in ht://Dig, so you don't want to
+    There are no database lockouts in hl://Dig, so you don't want to
     schedule update or reindexing runs so frequently that they run
     into each other.
   </p>

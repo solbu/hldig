@@ -104,7 +104,7 @@ layout:default
     <code>--prefix=DIR</code>
     </dt>
     <dd>
-    This is where all of the ht://Dig parts will be installed.
+    This is where all of the hl://Dig parts will be installed.
     Various other variables will use this value as their base.
     [default=/opt/www]
     </dd>
@@ -112,7 +112,7 @@ layout:default
     <code>--bindir=DIR</code>
     </dt>
     <dd>
-    All the ht://Dig executable programs will go here
+    All the hl://Dig executable programs will go here
     [default=/opt/www/bin].
     </dd>
     <dt>
@@ -405,14 +405,14 @@ layout:default
     Configuration</a> manual has the details on how what
     attributes are needed.
     Then, you'll be ready to begin <a href="running.html">
-    running ht://Dig</a>.
+    running hl://Dig</a>.
   </p>
   <hr noshade>
   <h2>
     <a name="sharelib">Shared Libraries</a>
   </h2>
   <p>
-    By default ht://Dig is compiled with shared libraries. If
+    By default hl://Dig is compiled with shared libraries. If
     running on a platform other than Linux or FreeBSD, this may
     be a problem. We recommend that you compile with the
     <code>--disable-shared</code> configure option.

@@ -1,4 +1,4 @@
-title:htload
+title:hldump
 layout:default
 ---
   <dl>
@@ -8,7 +8,7 @@ layout:default
     </h2>
     </dd>
     <dd>
-    htload [<em>options</em>]
+    hldump [<em>options</em>]
     </dd>
   </dl>
   <dl>
@@ -18,10 +18,8 @@ layout:default
     </h2>
     </dd>
     <dd>
-    Htload reads in an ASCII-text version of the document and word
-    databases in the same form as the -t option of htdig
-    and htdump. Note that this will overwrite data in your
-    databases, so this should be used with great care.
+    Htdump writes out an ASCII-text version of the document and word
+    databases in the same form as the -t option of htdig.
     </dd>
   </dl>
   <dl>
@@ -36,7 +34,7 @@ layout:default
       -a
       </dt>
       <dd>
-      Use alternate work files. Tells htload to append <em>
+      Use alternate work files. Tells htdump to append <em>
       .work</em> to database files, allowing it to
       operate on a second set of databases.
       </dd>
@@ -51,7 +49,7 @@ layout:default
       -d
       </dt>
       <dd>
-      Do <strong>not</strong> load the document database.
+      Do <strong>not</strong> dump the document database.
       </dd>
       <dt>
       -v
@@ -63,7 +61,7 @@ layout:default
       -w
       </dt>
       <dd>
-      Do <strong>not</strong> load the word database.
+      Do <strong>not</strong> dump the word database.
       </dd>
 
     </dl>
@@ -149,19 +147,19 @@ layout:default
     <dd>
     <dl>
       <dt>
-      CONFIG_DIR/htdig.conf
+      <a href="attrs.html#config_dir">CONFIG_DIR</a>/htdig.conf
       </dt>
       <dd>
       The default configuration file.
       </dd>
       <dt>
-           DATABASE_DIR/db.docs
+           <a href="attrs.html#database_dir">DATABASE_DIR</a>/db.docs
       </dt>
       <dd>
            The default ASCII document database file.
       </dd>
       <dt>
-           DATABASE_DIR/db.worddump
+           <a href="attrs.html#database_dir">DATABASE_DIR</a>/db.worddump
       </dt>
       <dd>
            The default ASCII word database file.
@@ -176,8 +174,8 @@ layout:default
     </h2>
     </dd>
     <dd>
-    <a href="htdig.html">htdig</a>,
-    <a href="htdump.html">htdump</a> and
+    <a href="hldig.html">hldig</a>,
+    <a href="hlload.html">hlload</a> and
     <a href="attrs.html">Configuration file format</a>
     </dd>
   </dl>

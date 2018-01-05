@@ -19,7 +19,7 @@ layout:default
     </dd>
     <dd>
     Rundig is a shell script that builds the databases necessary
-    for a typical ht://Dig setup. It runs <a href="htdig.html">
+    for a typical hl://Dig setup. It runs <a href="htdig.html">
     htdig</a> first to build the initial database, then it runs
     <a href="htpurge.html">htpurge</a> to clean up the document
     and word databases that were created by htdig.
@@ -120,11 +120,11 @@ layout:default
     </h2>
     </dd>
     <dd>
-    <a href="htdig.html">htdig</a>,
-    <a href="htpurge.html">htpurge</a>,
-    <a href="htnotify.html">htnotify</a>,
+    <a href="hldig.html">hldig</a>,
+    <a href="hlpurge.html">hlpurge</a>,
+    <a href="hlnotify.html">hlnotify</a>,
     <a href="htfuzzy.html">htfuzzy</a>,
-    <a href="htsearch.html" target="_top">htsearch</a>, and
+    <a href="hlsearch.html">hlsearch</a>, and
     <a href="attrs.html">Configuration file format</a>.
     </dd>
   </dl>
@@ -161,7 +161,7 @@ layout:default
     your site from scratch. When it comes to more drastic changes
     such as this, many users chose to write their own custom
     script, rather than modifying rundig. For example, see the
-    <a href="http://www.htdig.org/files/contrib/scripts/rundig.sh">
+    <a href="https://github.com/andy5995/hldig/blob/master/contrib/examples/rundig.sh">
     rundig.sh</a> script in our contributed files.
     </dd>
   </dl>

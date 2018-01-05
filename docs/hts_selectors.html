@@ -3,22 +3,22 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>hl://Dig: htsearch | Input parameter select lists</title>
+    <title>hl://Dig: hlsearch | Input parameter select lists</title>
     <link rel="alternate" type="application/rss+xml" title="Recent commits to hldig:master" href="https://github.com/andy5995/hldig/commits/master.atom">
     <link rel="stylesheet" href="assets/css/style.css">
   </head>
   <body>
-    <h1>hl://Dig: htsearch | Input parameter select lists</h1>
+    <h1>hl://Dig: hlsearch | Input parameter select lists</h1>
     <table>
       <tr>
         <td class = "footer-left-col">
-            <img src="up.gif" alt="^" width=9 height=9> <a href="index.html" target="_top">hl://Dig</a> <br>
+            <img src="up.gif" alt="^" width=9 height=9> <a href="index.html">hl://Dig</a> <br>
             <br>
             <strong>htsearch</strong> <font face="helvetica,arial" size="2"><br>
-            <img src="dot.gif" alt="*" width=9 height=9> <a href="hts_general.html" target="body">General</a><br>
-            <img src="dot.gif" alt="*" width=9 height=9> <a href="hts_form.html" target="body">HTML form</a><br>
-            <img src="dot.gif" alt="*" width=9 height=9> <a href="hts_templates.html" target="body">Templates</a><br>
-            <img src="dot.gif" alt="*" width=9 height=9> <a href="hts_method.html" target="body">Search method</a><br>
+            <img src="dot.gif" alt="*" width=9 height=9> <a href="hts_general.html">General</a><br>
+            <img src="dot.gif" alt="*" width=9 height=9> <a href="hts_form.html">HTML form</a><br>
+            <img src="dot.gif" alt="*" width=9 height=9> <a href="hts_templates.html">Templates</a><br>
+            <img src="dot.gif" alt="*" width=9 height=9> <a href="hts_method.html">Search method</a><br>
             </font>
         </td>
         <td class = "footer-right-col">
@@ -26,7 +26,7 @@
     Input parameter select lists
   </h2>
   <p>
-    The primary interface to htsearch is through an HTML
+    The primary interface to hlsearch is through an HTML
     <a href="hts_form.html">form</a>.
     The input fields in this form can be defined as any type that
     HTML allows, but some of these are best handled through HTML
@@ -39,7 +39,7 @@
   <p>
     In order to propagate these select lists to the search form
     in the results template, so that the default <em>selected</em>
-    value will be the one the user last selected, htsearch defines
+    value will be the one the user last selected, hlsearch defines
     a few of these select lists as
     <a href="hts_templates.html">template variables</a>.
     These variables are:
@@ -86,10 +86,10 @@
     </li>
   </ul>
   <p>
-    In addition to these template variables, htsearch makes
+    In addition to these template variables, hlsearch makes
     use of a number of other input parameters, all of which
     have corresponding template variables and configuration
-    attributes.  It's also possible, within htsearch, to make an
+    attributes.  It's also possible, within hlsearch, to make an
     input parameter out of any <a href="attrs.html">configuration
     attribute</a> that's not already automatically handled by an
     input parameter. This is accomplished by means of the
@@ -106,13 +106,13 @@
   </h3>
   <p>
     This gives you a great deal of flexibility in configuring
-    htsearch, but all of these template variables still contain
+    hlsearch, but all of these template variables still contain
     only the parameter value, and not a select list to choose
     the value. In order to use any input parameters as select
     lists, other than the three pre-defined variables above, one
     must either statically define a select list in the results
     template follow-up form, just as in the initial search form
-    or instruct htsearch to build one as a template variable.
+    or instruct hlsearch to build one as a template variable.
     Statically defining new select lists is easier, as you have
     to do it for the initial search form anyway, but this has the
     drawback that the user's selection from the initial form does
@@ -123,7 +123,7 @@
     To overcome this drawback, you must use the
     <a href="attrs.html#build_select_lists">build_select_lists</a>
     configuration attribute. Its usage is a bit complicated, but
-    it's extremely flexible, allowing you do define any htsearch
+    it's extremely flexible, allowing you do define any hlsearch
     input parameter as a select list for use in templates, provided
     you also define the corresponding name list attribute which
     enumerates all the choices to put in the list. It can be used
@@ -250,7 +250,7 @@ restrict_names: "http://www.myschool.edu/Admin/" "Admin Web Pages" \
   </pre>
   <p>
     The FORMAT_LIST example should give something equivalent to the FORMAT
-    template variable, which is already set by htsearch.  It is included as
+    template variable, which is already set by hlsearch.  It is included as
     an additional example of how to specify the tuple size and indices of
     values and labels in a tuple.
   </p>
@@ -288,8 +288,8 @@ build_select_lists:     "RESTRICT_LIST,checkbox,'&lt;font face=\\"Arial,Helvetic
     corresponding result template will override any template the
     user selected with the format parameter. The problem stems
     from the fact that the two were not originally intended to
-    be used together in the same htsearch configuration. When
-    configuring htsearch, you'd normally set it up to use one
+    be used together in the same hlsearch configuration. When
+    configuring hlsearch, you'd normally set it up to use one
     mechanism or the other, but not a combination of the two.
   </p>
   <p>
@@ -306,7 +306,7 @@ template_patterns: .pdf ${common_dir}/${template_name}-pdffile.html \
   </pre>
   <p>
     This works because the template_name attribute gets set
-    internally in htsearch, to the user-selected value of the
+    internally in hlsearch, to the user-selected value of the
     <strong>format</strong> input parameter, before the variable expansion
     in template_patterns takes place. As long as you stick to
     a template file naming convention that uses the internal

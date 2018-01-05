@@ -1,12 +1,12 @@
-title:hl://Dig: htsearch | HTML Form
-layout:htsearch
+title:hl://Dig: hlsearch | HTML Form
+layout:hlsearch
 ---
   <h2>
     HTML Form
   </h2>
   <p>
-    The primary interface to htsearch is through an HTML form.
-    When the form is submitted, the htsearch program will take
+    The primary interface to hlsearch is through an HTML form.
+    When the form is submitted, the hlsearch program will take
     values from the form and perform the actual search. The
     search can be modified in many ways with either hidden input
     fields or other HTML form tags. Study the examples to get a
@@ -30,7 +30,7 @@ layout:htsearch
     CONFIG_DIR directory. Periods are <strong>not</strong> allowed in this
     field for security reasons (to prevent HTML authors from
     pointing all around at your files).<br>
-    The default is <em>htdig</em>
+    The default is <em>hldig</em>
     </dd>
     <dt>
     <strong><a name="exclude">exclude</a></strong>

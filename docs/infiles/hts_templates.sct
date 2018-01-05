@@ -1,11 +1,11 @@
-title:hl://Dig: htsearch | Output Templates
-layout:htsearch
+title:hl://Dig: hlsearch | Output Templates
+layout:hlsearch
 ---
   <h2>
     Output Templates
   </h2>
   <p>
-    The htsearch program will normally produce HTML output. In this
+    The hlsearch program will normally produce HTML output. In this
     process it makes extensive use of template in which variables
     will be substituted. The templates are specified in the
     configuration file. The configuration file attributes defining
@@ -48,7 +48,7 @@ layout:htsearch
     the name that will appear in the FORMAT menu (see below)
     </li>
     <li>
-    the internal name used by htsearch for this result template
+    the internal name used by hlsearch for this result template
     </li>
     <li>
     the base filename for the template.

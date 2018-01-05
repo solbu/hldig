@@ -1,4 +1,4 @@
-title:htmerge
+title:hlmerge
 layout:default
 ---
   <dl>
@@ -20,9 +20,9 @@ layout:default
     <dd>
     Htmerge is used to create a document index and word
     database from the files that were created by
-    <a href="htdig.html">htdig</a>. These databases are then used by
-    <a href="htsearch.html" target="_top">htsearch</a> to perform
-    the actual searched.
+    <a href="hldig.html">hldig</a>. These databases are then used by
+    <a href="hlsearch.html" target="_top">hlsearch</a> to perform
+    the actual searche.
     </dd>
   </dl>
   <dl>
@@ -37,7 +37,7 @@ layout:default
       -a
       </dt>
       <dd>
-      Use alternate work files. Tells htdig to append <em>
+      Use alternate work files. Tells hldig to append <em>
       .work</em> to database files, causing a second copy of
       the database to be built. This allows the original
       files to be used by htsearch during the indexing run.
@@ -69,7 +69,7 @@ layout:default
       they are in different directories or files.<br>
       <strong>Note:</strong> You <em>must</em> run htmerge
       separately on each of the databases created by
-      <a href="htdig.html">htdig</a> before merging them
+      <a href="hldig.html">hldig</a> before merging them
       together with this option. This is because merging
       the two wordlists together requires wordlists that
       have already been cleaned up by htmerge.
@@ -133,8 +133,8 @@ layout:default
     </h2>
     </dd>
     <dd>
-    <a href="htdig.html">htdig</a>,
-    <a href="htsearch.html" target="_top">htsearch</a> and
+    <a href="hldig.html">hldig</a>,
+    <a href="hlsearch.html" target="_top">hlsearch</a> and
     <a href="attrs.html">Configuration file format</a>.
     </dd>
   </dl>

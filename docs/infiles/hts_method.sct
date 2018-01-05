@@ -1,15 +1,15 @@
-title:hl://Dig: htsearch | Search Method
-layout:htsearch
+title:hl://Dig: hlsearch | Search Method
+layout:hlsearch
 ---
   <p>
-    The way htsearch performs it search and applies its ranking
+    The way hlsearch performs it search and applies its ranking
     rules are fairly complicated. This is an attempt at explaining
-    in global terms what goes on when htsearch searches.
+    in global terms what goes on when hlsearch searches.
   </p>
   <p>
-    htsearch gets a list of (case insensitive) words from the HTML
+    hlsearch gets a list of (case insensitive) words from the HTML
     form that invoked
-    it. If htsearch was invoked with boolean expression parsing
+    it. If hlsearch was invoked with boolean expression parsing
     enabled, it will do a quick syntax check on the input words.
     If there are syntax errors, it will display the syntax error
     file that is specified with the

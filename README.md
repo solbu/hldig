@@ -33,5 +33,7 @@ If you are interested in translating the output messages from hldig, please see
 Anyone interested in this project may join the
 [chat room](https://join.slack.com/t/htdig/shared_invite/enQtMjY3NDU1MjMwODk3LTdmM2I2OWI5NWI4MzU4Y2JmMjk2MzAxNDYzM2IzZjJmMGE2MDZmMWMxNDY3MjAwOGFjMmE1YjM2MmM4MzVkNzk)
 
+or IRC - chat.freenode.net / channel: ##hldig
+
 Project maintainer: Andy Alt
 Email: andy400-dev [at] yahoo.com

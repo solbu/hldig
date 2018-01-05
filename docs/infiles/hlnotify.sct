@@ -1,4 +1,4 @@
-title:htnotify
+title:hlnotify
 layout:default
 ---
   <dl>
@@ -19,7 +19,7 @@ layout:default
     </dd>
     <dd>
     Htnotify scans the document database created by
-    <a href="htmerge.html">htmerge</a> and sends an email message for
+    <a href="hlmerge.html">hlmerge</a> and sends an email message for
     every page that is out of date. Look in the
     <a href="notification.html">notification</a> manual for
     instructions to set up this service.
@@ -92,8 +92,8 @@ layout:default
     </h2>
     </dd>
     <dd>
-    <a href="htdig.html">htdig</a>,
-    <a href="htmerge.html">htmerge</a>,
+    <a href="hldig.html">hldig</a>,
+    <a href="hlmerge.html">hlmerge</a>,
     <a href="notification.html">Email notification service</a> and
     <a href="attrs.html">Configuration file format</a>.
     </dd>

@@ -1,14 +1,14 @@
-title:hl://Dig: htsearch | General
-layout:htsearch
+title:hl://Dig: hlsearch | General
+layout:hlsearch
 ---
   <p>
-    Htsearch is the actual search engine of the ht://Dig search
+    hlsearch is the actual search engine of the ht://Dig search
     system. It is a CGI program that is expected to be invoked by
     an HTML form. It will accept both the GET and POST methods of
     passing data to the CGI program.
   </p>
   <h2>
-    Files used by htsearch
+    Files used by hlsearch
   </h2>
   <dl>
     <dt>

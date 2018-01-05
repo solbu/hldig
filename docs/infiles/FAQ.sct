@@ -1,32 +1,46 @@
 title:Frequently Asked Questions
 layout:default
 ---
-    <p class="main">This FAQ is compiled by the ht://Dig developers and the
+    <p class="main">This FAQ is compiled by the hl://Dig developers and the
     most recent version is available at &lt;<a
-    href="http://www.htdig.org/FAQ.html">http://www.htdig.org/FAQ.html</a>&gt;.
+    href="https://andy5995.github.io/hldig/FAQ.html">FAQ.html</a>&gt;.
     Questions (and answers!) are greatly appreciated.
-    Please send questions and/or answers to the ht://Dig user
-    mailing list at: &lt;<a href="mailto:htdig-general@lists.sourceforge.net">htdig-general@lists.sourceforge.net</a>&gt;.
+
+    Primary methods of communication:
+    <ul>
+      <li>
+        <a href="https://join.slack.com/t/htdig/shared_invite/enQtMjY3NDU1MjMwODk3LTdmM2I2OWI5NWI4MzU4Y2JmMjk2MzAxNDYzM2IzZjJmMGE2MDZmMWMxNDY3MjAwOGFjMmE1YjM2MmM4MzVkNzk">Slack workspace</a></br />
+      </li>
+      <li>
+        <a href="https://github.com/andy5995/hldig/issues">GitHub Issue tracker</a>
+      </li>
+      <li>
+        IRC - chat.freenode.net##hldig
+      </li>
+    </ul>
+
     </p>
+    <blockquote>Note: 2018-01-04 - This document is very out-of-date and will take a very long
+    time to review and update.</blockquote>
     <h2>Questions</h2>
 
     <h3>1. General</h3>
-    1.1. <a href="#q1.1">Can I search the internet with ht://Dig?</a><br>
-    1.2. <a href="#q1.2">Can I index the internet with ht://Dig?</a><br>
+    1.1. <a href="#q1.1">Can I search the internet with hl://Dig?</a><br>
+    1.2. <a href="#q1.2">Can I index the internet with hl://Dig?</a><br>
     1.3. <a href="#q1.3">What's the difference between htdig and
-    ht://Dig?</a><br>
+    hl://Dig?</a><br>
     1.4. <a href="#q1.4">I sent mail to Andrew or Geoff or
     Gilles, but I never got a response!</a><br>
     1.5. <a href="#q1.5">I sent a question to the mailing list but I
     never got a response!</a><br>
-    1.6. <a href="#q1.6">I have a great idea/patch for ht://Dig!</a><br>
-    1.7. <a href="#q1.7">Is ht://Dig Y2K compliant?</a><br>
+    1.6. <a href="#q1.6">I have a great idea/patch for hl://Dig!</a><br>
+    1.7. <a href="#q1.7">Is hl://Dig Y2K compliant?</a><br>
     1.8. <a href="#q1.8">I think I found a bug. What should I do?</a><br>
-    1.9. <a href="#q1.9">Does ht://Dig support phrase or near
+    1.9. <a href="#q1.9">Does hl://Dig support phrase or near
     matching?</a><br>
     1.10. <a href="#q1.10">What are the practical and/or theoretical
-    limits of ht://Dig?</a><br>
-    1.12. <a href="#q1.12">Can I use ht://Dig on a commercial website?</a><br>
+    limits of hl://Dig?</a><br>
+    1.12. <a href="#q1.12">Can I use hl://Dig on a commercial website?</a><br>
     1.13. <a href="#q1.13">Why do you use a non-free product to
     index PDF files?</a><br>
     1.14. <a href="#q1.14">Why do you have all those SourceForge
@@ -37,27 +51,27 @@ layout:default
     I e-mail questions directly to them rather than the mailing list?</a><br>
     1.17. <a href="#q1.17">Why do replies to messages on the
     mailing list only go to the sender and not to the list?</a><br>
-    1.18. <a href="#q1.18">Can I use ht://Dig to index and search
+    1.18. <a href="#q1.18">Can I use hl://Dig to index and search
     an SQL database?</a><br>
 
     <hr noshade size=2>
 
-    <h3>2. Getting ht://Dig</h3>
-    2.1. <a href="#q2.1">What's the latest version of ht://Dig?</a><br>
-    2.2. <a href="#q2.2">Are there binary distributions of ht://Dig?</a><br>
-    2.3. <a href="#q2.3">Are there mirror sites for ht://Dig?</a><br>
-    2.4. <a href="#q2.4">Is ht://Dig available by ftp?</a><br>
+    <h3>2. Getting hl://Dig</h3>
+    2.1. <a href="#q2.1">What's the latest version of hl://Dig?</a><br>
+    2.2. <a href="#q2.2">Are there binary distributions of hl://Dig?</a><br>
+    2.3. <a href="#q2.3">Are there mirror sites for hl://Dig?</a><br>
+    2.4. <a href="#q2.4">Is hl://Dig available by ftp?</a><br>
     2.5. <a href="#q2.5">Are patches around to upgrade between
     versions?</a><br>
     2.6. <a href="#q2.6">Is there a Windows 95/98/2000/NT
-    version of ht://Dig?</a><br>
+    version of hl://Dig?</a><br>
     2.7. <a href="#q2.7">Where can I find the documentation for my
-    version of ht://Dig?</a><br>
+    version of hl://Dig?</a><br>
 
     <hr noshade size=2>
 
     <h3>3. Compiling</h3>
-    3.1. <a href="#q3.1">When I compile ht://Dig I get an error
+    3.1. <a href="#q3.1">When I compile hl://Dig I get an error
     about libht.a.</a><br>
     3.2. <a href="#q3.2">I get an error about -lg</a><br>
     3.3. <a href="#q3.3">I'm compiling on Digital Unix and I get
@@ -83,7 +97,7 @@ layout:default
     4.4. <a href="#q4.4">Can I use multiple databases?</a><br>
     4.5. <a href="#q4.5">OK, I can use multiple databases. Can I
     merge them into one?</a><br>
-    4.6. <a href="#q4.6">Wow, ht://Dig eats up a lot of disk
+    4.6. <a href="#q4.6">Wow, hl://Dig eats up a lot of disk
     space. How can I cut down?</a><br>
     4.7. <a href="#q4.7">Can I use SSI or other CGIs in my
     htsearch results?</a><br>
@@ -190,7 +204,7 @@ layout:default
     5.32. <a href="#q5.32">When I run htsearch, it gives a page
     with an "Unable to read configuration file" message.</a><br>
     5.33. <a href="#q5.33">How can I find out which version
-    of ht://Dig I have installed?</a><br>
+    of hl://Dig I have installed?</a><br>
     5.34. <a href="#q5.34">When running htdig, I get "Error (0):
     PDF file is damaged - attempting to reconstruct xref table..."</a><br>
     5.35. <a href="#q5.35">When running htdig on Mandrake Linux,
@@ -209,30 +223,30 @@ layout:default
 
     <h3>1. General</h3>
     <strong>1.1. <a name="q1.1">Can I search the internet with
-    ht://Dig?</a></strong><br>
-    <p>No, ht://Dig is a system for indexing and searching a
+    hl://Dig?</a></strong><br>
+    <p>No, hl://Dig is a system for indexing and searching a
     finite (not necessarily small) set of sites or intranet. It
     is not meant to replace any of the many internet-wide search
     engines.</p>
 
     <strong>1.2. <a name="q1.2">Can I index the internet with
-    ht://Dig?</a></strong><br>
-    <p>No, as above, ht://Dig is not meant as an
+    hl://Dig?</a></strong><br>
+    <p>No, as above, hl://Dig is not meant as an
     internet-wide search engine. While there is
     <em>theoretically</em> nothing to stop you from indexing as
     much as you wish, practical considerations (e.g. time, disk
     space, memory, etc.) will limit this.</p>
 
     <strong>1.3. <a name="q1.3">What's the difference between htdig and
-    ht://Dig?</a></strong><br>
-    <p>The complete ht://Dig package consists of several programs, one of
+    hl://Dig?</a></strong><br>
+    <p>The complete hl://Dig package consists of several programs, one of
     which is called "htdig." This program performs the "digging" or
     indexing of the web pages. Of course an index doesn't do you much good
     without a program to sort it, search through it, etc.</p>
 
     <strong>1.4. <a name="q1.4">I sent mail to Andrew or Geoff
     or Gilles, but I never got a response!</a></strong><br>
-    <p>Andrew no longer does much work on ht://Dig. He has started a
+    <p>Andrew no longer does much work on hl://Dig. He has started a
     company, called <a href="http://www.contigo.com/">Contigo
     Software</a> and is quite busy with that. To contact any of the
     current developers, send mail to &lt;<a
@@ -241,9 +255,9 @@ layout:default
     and future development of the software.</p>
 
     <p>Geoff and Gilles are currently the maintainers of
-    ht://Dig, but they are both volunteers. So while they do
+    hl://Dig, but they are both volunteers. So while they do
     read all the e-mail they receive, they may not respond
-    immediately. Questions about ht://Dig in general, and especially
+    immediately. Questions about hl://Dig in general, and especially
     questions or requests for help in configuring the software,
     should be posted to the &lt;<a
     href="mailto:htdig-general@lists.sourceforge.net">htdig-general</a>&gt;
@@ -258,7 +272,7 @@ layout:default
 
     <strong>1.5. <a name="q1.5">I sent a question to the mailing list but I
     never got a response!</a></strong><br>
-    <p>Development of ht://Dig is done by volunteers. Since we all
+    <p>Development of hl://Dig is done by volunteers. Since we all
     have other jobs, it make take a while before someone gets back
     to you. Please be patient and don't hound the volunteers with
     direct or repeated requests. If you don't get a response after
@@ -266,20 +280,20 @@ layout:default
     See also question <a href="#q1.16">1.16</a>.</p>
 
     <strong>1.6. <a name="q1.6">I have a great idea/patch for
-    ht://Dig!</a></strong><br>
-    <p>Great! Development of ht://Dig continues through suggestions
+    hl://Dig!</a></strong><br>
+    <p>Great! Development of hl://Dig continues through suggestions
     and improvements from users. If you have an idea (or even better,
-    a patch), please send it to the ht://Dig mailing list so others
+    a patch), please send it to the hl://Dig mailing list so others
     can use it. For suggestions on how to submit patches, please check
     the <a href="dev/patches.html">Guidelines for
     Patch Submissions</a>. If you'd like to make a feature request,
-    you can do so through the <a href="bugs.html">ht://Dig bug
+    you can do so through the <a href="bugs.html">hl://Dig bug
     database</a></p>
 
-    <strong>1.7. <a name="q1.7">Is ht://Dig Y2K compliant?</a></strong><br>
+    <strong>1.7. <a name="q1.7">Is hl://Dig Y2K compliant?</a></strong><br>
     <p>
-    ht://Dig should be y2k compliant since it never <em>stores</em> dates as
-    two-digit years. Under ht://Dig's copyright (GPL), there is no warranty
+    hl://Dig should be y2k compliant since it never <em>stores</em> dates as
+    two-digit years. Under hl://Dig's copyright (GPL), there is no warranty
     whatsoever as permitted by law. If you would like an iron-clad,
     legally-binding guarantee, feel free to check the source code
     itself. Versions prior to 3.1.2 did have a problem with the parsing
@@ -295,13 +309,13 @@ layout:default
     <strong>1.8. <a name="q1.8">I think I found a bug. What should I
     do?</a></strong><br>
     <p>Well, there are probably bugs out there. You have two options
-    for bug-reporting. You can either mail the ht://Dig mailing list
+    for bug-reporting. You can either mail the hl://Dig mailing list
     at &lt;<a href="mailto:htdig-general@lists.sourceforge.net">htdig-general@lists.sourceforge.net</a>&gt; or
     better yet, report it to the <a href="bugs.html">bug
     database</a>, which ensures it won't
     become lost amongst all of the other mail on the list.
     Please try to include as much information as possible, including
-    the version of ht://Dig (see question <a href="#q5.33">5.33</a>),
+    the version of hl://Dig (see question <a href="#q5.33">5.33</a>),
     the OS, and anything else that might be helpful.
     Often, running the programs with one "-v" or more
     (e.g. "-vvv") gives useful debugging information.
@@ -320,7 +334,7 @@ layout:default
     <p>Whether reporting problems to the bug database or mailing
     list, we cannot stress enough the importance of
     <strong>always</strong> indicating <strong>which version of
-    ht://Dig you are running</strong>.
+    hl://Dig you are running</strong>.
     See question <a href="#q5.33">5.33</a>. There
     are still a lot of users, ISPs and software distributors using
     older versions, and there have been a lot of bug fixes and
@@ -331,7 +345,7 @@ layout:default
     please see the <a href="RELEASE.html">
     release notes</a>. See also question <a href="#q2.1">2.1</a>.</p>
 
-    <strong>1.9. <a name="q1.9">Does ht://Dig support phrase or near
+    <strong>1.9. <a name="q1.9">Does hl://Dig support phrase or near
     matching?</a></strong><br>
     <p>Phrase searching has been added for the 3.2 release,
     which is currently in the beta phase
@@ -341,7 +355,7 @@ layout:default
     </p>
 
     <strong>1.10. <a name="q1.10">What are the practical and/or theoretical
-    limits of ht://Dig?</a></strong><br>
+    limits of hl://Dig?</a></strong><br>
     <p>The code itself doesn't put any real limit on the number of
     pages. There are several sites in the hundreds of thousands
     of pages. As for practical limits, it depends a lot on how
@@ -364,13 +378,13 @@ layout:default
     significantly, making them usually around 50% the size of
     those in previous versions.</p>
 
-    <strong>1.12. <a name="q1.12">Can I use ht://Dig on a
+    <strong>1.12. <a name="q1.12">Can I use hl://Dig on a
     commercial website?</a></strong><br>
     <p>Sure! The <a href="COPYING">GNU Library General Public License (LGPL)</a> has no
-    restrictions on use. So you are free to use ht://Dig however you
+    restrictions on use. So you are free to use hl://Dig however you
     want on your website, personal files, etc. The license only
     restricts distribution. So if you're planning on a
-    commercial software product that includes ht://Dig, you will
+    commercial software product that includes hl://Dig, you will
     have to provide source code including any modifications upon
     request.
     </p>
@@ -395,11 +409,11 @@ layout:default
     <p><a href="http://sourceforge.net/">SourceForge</a> is a
     new service for open source software. You can host your
     project on SourceForge servers and use many of their
-    services like bug-tracking and the like. The ht://Dig
+    services like bug-tracking and the like. The hl://Dig
     project currently uses SourceForge for a mirror of the main
     website at <a
     href="http://htdig.sourceforge.net/">htdig.sourceforge.net</a>
-    as well as a mirror of ht://Dig releases and contributed
+    as well as a mirror of hl://Dig releases and contributed
     work.
     </p>
 
@@ -428,7 +442,7 @@ layout:default
     for help on things like
     <a href="http://www.htdig.org/files/contrib/guides/htmlhelp.html">HTML
     forms</a> and CGI, tutorials on installing, configuring, using, and
-    internationalizing ht://Dig, as well as using PHP with htsearch.
+    internationalizing hl://Dig, as well as using PHP with htsearch.
     </p>
     <p>
     Finally, if you've exhausted all the online documentation, there's the
@@ -452,7 +466,7 @@ layout:default
     and replies, but future users who may run into the exact same
     problems won't see them. Remember that the developers are all
     volunteers, and they don't work for free for your benefit alone.
-    They volunteer for the benefit of the whole ht://Dig user
+    They volunteer for the benefit of the whole hl://Dig user
     community, so don't expect extra support from them outside of
     that community. See also questions <a href="#q1.4">1.4</a>
     and <a href="#q1.5">1.5</a>.</p>
@@ -480,17 +494,17 @@ layout:default
     SourceForge's policy on Reply-To: munging</a>, where you'll
     find all the gory details about the pros and cons of the two
     common ways of setting up a mailing list, and why SourceForge
-    turns off Reply-To munging. It so happens that the ht://Dig
+    turns off Reply-To munging. It so happens that the hl://Dig
     maintainers agree with SourceForge's policy on this, even if
     we did have a say in the matter. So, counterarguments to this
     policy are rather moot, and it would be better not to waste
     any more mailing list bandwidth debating them. (We've heard
     all the arguments anyway.)</p>
 
-    <strong>1.18. <a name="q1.18">Can I use ht://Dig to index and search
+    <strong>1.18. <a name="q1.18">Can I use hl://Dig to index and search
     an SQL database?</a></strong><br>
     <p>You can if your database has a web-based front end that can
-    be "spidered" by ht://Dig. The requirement is that every search
+    be "spidered" by hl://Dig. The requirement is that every search
     result must resolve to a unique URL which can be accessed via
     HTTP. The htdig program uses these URLs, which you feed it via
     the <a href="attrs.html#start_url">start_url</a> attribute, to
@@ -498,10 +512,10 @@ layout:default
     will then give a list of URLs for all pages that match the
     search terms. If you don't have such a front end to your
     database, or the search results must be given as something
-    other than URLs, then ht://Dig is probably not the best way of
+    other than URLs, then hl://Dig is probably not the best way of
     dealing with this problem: you may be better off using an SQL
     query engine that works directly on your own database, rather
-    than building a separate ht://Dig database for searching.</p>
+    than building a separate hl://Dig database for searching.</p>
 
     <p>Ted Stresen-Reuter had the following tips: "In my case,
     because I like htdig's ability to rank results (and that
@@ -515,8 +529,8 @@ layout:default
 
     <hr noshade size=2>
 
-    <h3>2. Getting ht://Dig</h3>
-    <strong>2.1. <a name="q2.1">What's the latest version of ht://Dig?</a></strong><br>
+    <h3>2. Getting hl://Dig</h3>
+    <strong>2.1. <a name="q2.1">What's the latest version of hl://Dig?</a></strong><br>
     <p>The latest version is 3.1.6 as of this writing. A beta
     version of the 3.2 code,
    <a href="http://www.htdig.org/files/htdig-3.2.0b6.tar.gz">3.2.0b6</a>,
@@ -541,7 +555,7 @@ layout:default
     <a href="#q5.33">5.33</a>.</p>
 
     <strong>2.2. <a name="q2.2">Are there binary distributions of
-    ht://Dig?</a></strong><br>
+    hl://Dig?</a></strong><br>
     <p>We're trying to get consistent binary distributions for
     popular platforms. Contributed binary releases will go in <a
     href="http://www.htdig.org/files/contrib/binaries/">
@@ -551,15 +565,15 @@ layout:default
     mailing list.
 
     <p>Anyone who would like to make consistent binary
-    distributions of ht://Dig at least should signup to the <a
+    distributions of hl://Dig at least should signup to the <a
     href="mailing.html">htdig-announce mailing list</a>.</p>
 
-    <strong>2.3. <a name="q2.3">Are there mirror sites for ht://Dig?</a></strong><br>
+    <strong>2.3. <a name="q2.3">Are there mirror sites for hl://Dig?</a></strong><br>
     <p>Yes, see our <a href="mirrors.html">mirrors
     listing</a>. If you'd like to mirror the site, please see
     the <a href="howto-mirror.html">mirroring guide</a>.</p>
 
-    <strong>2.4. <a name="q2.4">Is ht://Dig available by ftp?</a></strong><br>
+    <strong>2.4. <a name="q2.4">Is hl://Dig available by ftp?</a></strong><br>
     <p>Yes. You can find the current versions and several older
     versions at various &lt;<a
     href="mirrors.html">mirror sites</a>&gt;
@@ -580,11 +594,11 @@ layout:default
     htdig-patches ftp site</a>.</p>
 
     <strong>2.6. <a name="q2.6">Is there a Windows 95/98/2000/NT
-    version of ht://Dig?</a></strong><br>
-    <p>The ht://Dig package can be built on the Win32 platform when
+    version of hl://Dig?</a></strong><br>
+    <p>The hl://Dig package can be built on the Win32 platform when
     using the Cygwin package. For details, see the contributed guide,
     <a href="http://www.htdig.org/files/contrib/guides/Installing_on_Win32.html">
-    <em>Idiot's Guide to Installing ht://Dig on Win32</em></a>.
+    <em>Idiot's Guide to Installing hl://Dig on Win32</em></a>.
     </p>
     <p>
     As of the <a href="http://www.htdig.org/files/htdig-3.2.0b5.tar.gz">3.2.0b5</a>
@@ -593,7 +607,7 @@ layout:default
     </p>
 
     <strong>2.7. <a name="q2.7">Where can I find the documentation for my
-    version of ht://Dig?</a></strong><br>
+    version of hl://Dig?</a></strong><br>
     <p>The documentation for the most recent stable release is always
     posted at <a href="http://www.htdig.org/">www.htdig.org</a>.
     The documentation for the latest beta release can be found at
@@ -606,7 +620,7 @@ layout:default
     <hr noshade size=2>
 
     <h3>3. Compiling</h3>
-    <strong>3.1. <a name="q3.1">When I compile ht://Dig I get an error about
+    <strong>3.1. <a name="q3.1">When I compile hl://Dig I get an error about
     libht.a</a></strong><br>
     <p>This usually indicates that either libstdc++ is not installed or
     is installed incorrectly. To get libstdc++ or any other GNU too,
@@ -648,7 +662,7 @@ layout:default
 
     <strong>3.5. <a name="q3.5">I'm compiling on HP/UX and I get a complaint about
     "Large Files not supported."</a></strong><br>
-    <p>The db/ pacakge, included with ht://Dig seems to be unable to complete
+    <p>The db/ pacakge, included with hl://Dig seems to be unable to complete
     on HP/UX 10.20 in particular. After running the top-level configure
     script, cd into db/dist and type:</p>
     <code>./configure --disable-bigfile</code>
@@ -697,7 +711,7 @@ layout:default
     all sorts of warnings/errors about ostream and such.</a></strong><br>
     <p>
     With versions before 3.2.0b5,
-    you should use the following command to configure the ht://Dig
+    you should use the following command to configure the hl://Dig
     package so it can be built with gcc 3.2:
 <pre>
 CXXFLAGS=-Wno-deprecated CPPFLAGS=-Wno-deprecated ./configure
@@ -708,7 +722,7 @@ CXXFLAGS=-Wno-deprecated CPPFLAGS=-Wno-deprecated ./configure
 
     <h3>4. Configuration</h3>
     <strong>4.1. <a name="q4.1">How come I can't index my site?</a></strong><br>
-    <p>There are a variety of reasons ht://Dig won't index a
+    <p>There are a variety of reasons hl://Dig won't index a
     site. To get to the bottom of things, it's advisable to turn on
     some debugging output from the htdig program. When running from
     the command-line, try "-vvv"  in addition to any other
@@ -761,7 +775,7 @@ following line would do it:<br>
 
     <strong>4.3. <a name="q4.3">How do I index pages that start with '~'?</a></strong><br>
     <p>
-    ht://Dig should index pages starting with '~' as if it was another
+    hl://Dig should index pages starting with '~' as if it was another
     web browser. If you are having problems with this, check your server
     log files to see what file the server is attempting to return.
     </p>
@@ -783,7 +797,7 @@ following line would do it:<br>
     <p>As of version 3.1.0, you can do this with the -m option to
     <a href="htmerge.html">htmerge</a>.</p>
 
-    <strong>4.6. <a name="q4.6">Wow, ht://Dig eats up a lot of disk
+    <strong>4.6. <a name="q4.6">Wow, hl://Dig eats up a lot of disk
     space. How can I cut down?</a></strong><br>
     <p>There are several ways to cut down on disk space. One is
     not to use the "-a" option, which creates work copies of the
@@ -851,7 +865,7 @@ following line would do it:<br>
     href="http://www.htdig.org/contrib/guides.html">contributed
     guides</a>) not only describes a wrapper script for PHP, but
     also offers a step by step tutorial to the basics of
-    ht://dig and is well worth reading.
+    hl://Dig and is well worth reading.
     For other alternatives, see question <a href="#q4.11">4.11</a>.
     </p>
 
@@ -928,7 +942,7 @@ following line would do it:<br>
     to convert the PDF to PostScript, was the first method which
     was provided. It had a few problems with it: acroread is not
     open source, it is not supported on all systems on which
-    ht://Dig can run, and for some PDFs, the PostScript that
+    hl://Dig can run, and for some PDFs, the PostScript that
     acroread generated was very difficult to parse into indexable
     text. Also, the built-in PDF support expected PDF documents to
     use the same character encoding as is defined in your current
@@ -959,12 +973,12 @@ following line would do it:<br>
     <strong>4.10. <a name="q4.10">How do I index documents in other
     languages?</a></strong><br>
     <p>The first and most important thing you must do,
-    to allow ht://Dig to properly support international
+    to allow hl://Dig to properly support international
     characters, is to define the correct locale for the
     language and country you wish to support.  This is done
     by setting the <a href="attrs.html#locale">locale</a>
     attribute (see question <a href="#q5.8">5.8</a>). The
-    next step is to configure ht://Dig to use dictionary and
+    next step is to configure hl://Dig to use dictionary and
     affix files for the language of your choice. These can
     be the same dictionary and affix files as are used by the
     ispell software.  A collection of these is available from
@@ -1031,7 +1045,7 @@ lang_dir:             ${<a href="attrs.html#common_dir">common_dir</a>}/german
     making up a lang_dir attribute as above, as many language-specific
     files are defined relative to the common_dir setting.</p>
 
-    <p>If you're running version 3.1.6 of ht://Dig, you may also
+    <p>If you're running version 3.1.6 of hl://Dig, you may also
     be interested in the <strong>accents</strong> fuzzy match
     algorithm in the
     <a href="attrs.html#search_algorithm">search_algorithm</a>
@@ -1047,7 +1061,7 @@ lang_dir:             ${<a href="attrs.html#common_dir">common_dir</a>}/german
     attributes in 3.1.6 for changing other language-specific messages
     in htsearch.</p>
 
-    <p>Current versions of ht://Dig only support 8-bit
+    <p>Current versions of hl://Dig only support 8-bit
     characters, so languages such as Chinese and Japanese, which
     require 16-bit characters, are not currently supported.</p>
 
@@ -1215,7 +1229,7 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
     also set this URL path similarly in in common/header.html and
     common/wrapper.html, as they also refer to the star.gif file.
     If you want to relocate other graphics, such as the buttons or
-    the ht://Dig logo, you should change all references to these
+    the hl://Dig logo, you should change all references to these
     in htdig.conf and common/*.html.</p>
 
     <strong>4.17. <a name="q4.17">How do I get htdig or htsearch to rewrite
@@ -1265,7 +1279,7 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
 
     <strong>4.18. <a name="q4.18">What are all the options in
     htdig.conf, and are there others?</a></strong><br>
-    <p>In ht://Dig's terminology, the settings in its configuration
+    <p>In hl://Dig's terminology, the settings in its configuration
     files are called <a href="attrs.html">configuration attributes</a>,
     to distinguish them from <a href="htdig.html">command line
     options</a>, <a href="hts_form.html">CGI input parameters</a>
@@ -1291,7 +1305,7 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
     <p>The number of pages is controlled by the
     <a href="attrs.html#maximum_pages">maximum_pages</a> attribute in
     your search configuration file.
-    The current default for maximum_pages is 10 because the ht://Dig
+    The current default for maximum_pages is 10 because the hl://Dig
     package comes with 10 images, with numbers 1 through 10, for
     use as page list buttons. If we increased the limit, we'd have
     to field a whole lot more questions from users irate because
@@ -1330,7 +1344,7 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
     The University at Albany has a good description of how to use
     the <strong>restrict</strong> or <strong>exclude</strong> input
     parameters: <a href="http://www.albany.edu/its/web/search/">
-    Constructing a local search using ht://Dig Search forms</a>.
+    Constructing a local search using hl://Dig Search forms</a>.
     <br>To include a hex encoded character (such as a %20 for a space)
     in a restrict or exclude string, the '%' must again be encoded.
     For example, to match a filename containing a space, the URL must
@@ -1351,7 +1365,7 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
     by the user in a URL with CGI parameters. The safest
     option would be to host the secure and non-secure areas on
     separate servers with independent installations of htsearch,
-    each with its own ht://Dig database, but that is often too
+    each with its own hl://Dig database, but that is often too
     costly or impractical an option. The next best thing is to
     host them on the same site, but make sure that everything
     is very clearly separated to prevent any leakage of secure
@@ -1630,7 +1644,7 @@ require group foo
 
     <strong>5.2. <a name="q5.2">I can't index PDF files.</a></strong><br>
     <p>As above, this usually has to do with the default document
-    size. What happens is ht://Dig will read in part of a PDF file
+    size. What happens is hl://Dig will read in part of a PDF file
     and try to index it. This usually fails. Try setting
     <a href="attrs.html#max_doc_size">max_doc_size</a>
     in your config file to a larger value than the
@@ -1711,7 +1725,7 @@ require group foo
     </p>
 
     <p>Setting the locale correctly seems to be a frequent source of
-    frustration for ht://Dig users, so here are a few pointers which
+    frustration for hl://Dig users, so here are a few pointers which
     some have found useful. First of all, if you don't have any luck
     with the settings of the <a href="attrs.html#locale">locale</a>
     attribute that you try, make sure you use a locale that is
@@ -1806,7 +1820,7 @@ require group foo
     db.words.db to URLs used to look up records in db.docdb), is
     incomplete or messed up.  You'll likely need to rebuild your
     database from scratch if it's corrupted. Older versions of
-    ht://Dig were susceptible to database corruption of this
+    hl://Dig were susceptible to database corruption of this
     sort. Versions 3.1.2 and later are much more stable.</p>
 
     <p>Another possible cause of this problem is unreadable result
@@ -2243,7 +2257,7 @@ find /path/to/your/document/root -type f -name \*.html -print | \
     <strong>5.30. <a name="q5.30">Why does htsearch no longer recognize
     the -c option when run from the web server?</a></strong><br>
     <p>This was a security hole in 3.1.5 and older, and 3.2.0b3 and
-    older releases of ht://Dig. (See question <a href="#q2.1">2.1</a>.)
+    older releases of hl://Dig. (See question <a href="#q2.1">2.1</a>.)
     There's a compile-time macro you can set in htsearch.cc to disable
     this security fix, but that's a bad idea because it reopens the hole.
     This should only be done as a last recourse, when all other avenues
@@ -2297,7 +2311,7 @@ find /path/to/your/document/root -type f -name \*.html -print | \
     Consult the appropriate documentation, or upgrade to the current
     release.
     <li>You're not modifying the right configuration file. The default
-    configuration file is specified when you first configure ht://Dig
+    configuration file is specified when you first configure hl://Dig
     before compiling, but other configuration files can be specified
     at run time, using the -c command-line option for most programs,
     or the <strong>config</strong> input parameter for htsearch
@@ -2389,23 +2403,23 @@ find /path/to/your/document/root -type f -name \*.html -print | \
     </ul>
 
     <strong>5.33. <a name="q5.33">How can I find out which version
-    of ht://Dig I have installed?</a></strong><br>
-    <p>You should always check which version of ht://Dig you're
+    of hl://Dig I have installed?</a></strong><br>
+    <p>You should always check which version of hl://Dig you're
     running, before you report any problems, or even if you
     suspect a problem. You can find out the version number of an
-    installed ht://Dig package by running the command:</p>
+    installed hl://Dig package by running the command:</p>
     <blockquote>
     <code>htdig -\? | head</code>
     </blockquote>
     <p>(or use "more" if you don't have a "head" command). The
     full version number appears on the third line of output,
-    after "This program is part of ht://Dig", and it should also
+    after "This program is part of hl://Dig", and it should also
     include the snapshot date if you're running a pre-release
     snapshot. Always include this full version number with any
     bug report or problem report on a mailing list. You can save
     yourself and others a lot of grief by being certain of which
     version you're running, especially if you've installed more than
-    one. If you're running ht://Dig from an RPM package, you should
+    one. If you're running hl://Dig from an RPM package, you should
     also report the package version and release number, which you
     can determine with the command "<code>rpm -q htdig</code>",
     and mention where you obtained the package. This will alert
@@ -2458,7 +2472,7 @@ find /path/to/your/document/root -type f -name \*.html -print | \
     <a href="attrs.html#search_results_footer">search_results_footer</a>
     files (or the
     <a href="attrs.html#search_results_wrapper">search_results_wrapper</a>
-    file) in the correct location (where you told ht://Dig they'd be
+    file) in the correct location (where you told hl://Dig they'd be
     when you configured prior to compiling). Also make sure they
     have read permission for the user ID under which htsearch runs,
     and all directories leading up to these template files are
