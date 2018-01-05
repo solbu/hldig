@@ -9,7 +9,13 @@ compiler:
   - gcc
 
 script:
-  - ./configure --prefix=$PWD/tempbuild --with-ssl --with-zlib --enable-bigfile && make && make install
+  - cd docs/src
+  - ./configure
+  - make
+  - cd ../..
+  - ./configure --prefix=$PWD/tempbuild --with-ssl --with-zlib --enable-bigfile
+  - make
+  - make install
 
 branches:
   only:
@@ -20,7 +26,7 @@ notifications:
     irc:
       channels:
         - "chat.freenode.net##hldig"
-      skip_join: false
+      skip_join: true
       use_notice: true
       on_success: change
       template:
