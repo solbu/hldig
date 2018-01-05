@@ -40,7 +40,7 @@ try building using only `make` with no options.
 
 Files will be installed to $source_dir/testing; as a result, you won't have
 any problems with write permissions to the database folder, and hldig will
-know where to find the htdig.conf (-c won't be needed)
+know where to find the hldig.conf (-c won't be needed)
 
 ## https URLS
 SSL isn't enabled by default, but it's needed for hldig to crawl `https`

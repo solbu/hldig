@@ -6,14 +6,8 @@
 # <http://www.gnu.org/copyleft/lgpl.html>
 
 AC_PREREQ(2.57)
-#AC_INIT
 
-#
-# hl://Dig's version
-#
-# VERSION=`cat ${srcdir}/.version`
-
-AC_INIT([hldig], 0.1.01)
+AC_INIT([hldig], [m4_esyscmd_s([cat ./VERSION])])
 AC_CONFIG_SRCDIR([hldig/hldig.cc])
 AM_INIT_AUTOMAKE
 
@@ -42,20 +36,20 @@ AC_SUBST(CONFIG_DIR)
 AC_ARG_WITH(default-config-file,
 	[AC_HELP_STRING([--with-default-config-file=FILE],
 	[where the various programs will look for a configuration file
-	@<:@PREFIX/conf/htdig.conf@:>@])],
- DEFAULT_CONFIG_FILE="$withval", DEFAULT_CONFIG_FILE='${CONFIG_DIR}/htdig.conf')
+	@<:@PREFIX/conf/hldig.conf@:>@])],
+ DEFAULT_CONFIG_FILE="$withval", DEFAULT_CONFIG_FILE='${CONFIG_DIR}/hldig.conf')
 AC_SUBST(DEFAULT_CONFIG_FILE)
 
 AC_ARG_WITH(common-dir, [AC_HELP_STRING([--with-common-dir=DIR],
 	[where your .html templates are stored
-	@<:@PREFIX/share/htdig@:>@])],
- COMMON_DIR="$withval", COMMON_DIR='${datadir}/htdig')
+	@<:@PREFIX/share/hldig@:>@])],
+ COMMON_DIR="$withval", COMMON_DIR='${datadir}/hldig')
 AC_SUBST(COMMON_DIR)
 
 AC_ARG_WITH(database-dir, [AC_HELP_STRING([--with-database-dir=DIR],
 	[where your database directory is
-	@<:@PREFIX/var/htdig@:>@])],
- DATABASE_DIR="$withval", DATABASE_DIR='${localstatedir}/htdig')
+	@<:@PREFIX/var/hldig@:>@])],
+ DATABASE_DIR="$withval", DATABASE_DIR='${localstatedir}/hldig')
 AC_SUBST(DATABASE_DIR)
 
 AC_ARG_WITH(cgi-bin-dir, [AC_HELP_STRING([--with-cgi-bin-dir=DIR],
@@ -66,8 +60,8 @@ AC_SUBST(CGIBIN_DIR)
 
 AC_ARG_WITH(search-dir, [AC_HELP_STRING([--with-search-dir=DIR],
 	[where the sample search form should be installed
-	@<:@PREFIX/htdocs/htdig@:>@])],
- SEARCH_DIR="$withval", SEARCH_DIR='${prefix}/htdocs/htdig')
+	@<:@PREFIX/htdocs/hldig@:>@])],
+ SEARCH_DIR="$withval", SEARCH_DIR='${prefix}/htdocs/hldig')
 AC_SUBST(SEARCH_DIR)
 
 AC_ARG_WITH(search-form, [AC_HELP_STRING([--with-search-form=FILE],
@@ -77,14 +71,14 @@ AC_SUBST(SEARCH_FORM)
 
 AC_ARG_WITH(image-dir, [AC_HELP_STRING([--with-image-dir=DIR],
 	[where the hl://Dig images are installed
-	@<:@PREFIX/htdocs/htdig@:>@])],
- IMAGE_DIR="$withval", IMAGE_DIR='${prefix}/htdocs/htdig')
+	@<:@PREFIX/htdocs/hldig@:>@])],
+ IMAGE_DIR="$withval", IMAGE_DIR='${prefix}/htdocs/hldig')
 AC_SUBST(IMAGE_DIR)
 
 AC_ARG_WITH(image-url-prefix,
 	[AC_HELP_STRING([--with-image-url-prefix=LOCATION],
-	[the URL path to the installed images @<:@/htdig@:>@])],
- IMAGE_URL_PREFIX="$withval", IMAGE_URL_PREFIX='/htdig')
+	[the URL path to the installed images @<:@/hldig@:>@])],
+ IMAGE_URL_PREFIX="$withval", IMAGE_URL_PREFIX='/hldig')
 AC_SUBST(IMAGE_URL_PREFIX)
 
 AC_ARG_WITH(rx, [AC_HELP_STRING([--with-rx],

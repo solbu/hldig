@@ -20,7 +20,7 @@ hltools installdir include $(TESTDIR) po
 packextrasdir=@docdir@
 
 EXTRA_DIST =	\
-.version	\
+VERSION	\
 COPYING	\
 INSTALL	\
 README.md	\

@@ -15,7 +15,7 @@ PREFIX=..
 DBDIR=$PREFIX/var/htdig
 COMMONDIR=$PREFIX/conf
 BINDIR=.
-conffile=$PREFIX/conf/htdig.conf
+conffile=$PREFIX/conf/hldig.conf
 
 # To help debug problems, try running rundig -vvv
 # This will add lots of debugging output to all of the programs

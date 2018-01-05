@@ -32,3 +32,4 @@ ABOUT-NLS
 /po/Makevars.template
 /po/POTFILES
 /po/stamp-po
+/po/remove-potcdate.sed

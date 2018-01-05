@@ -2,14 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-#AC_INIT
-
-VERSION=`cat ${srcdir}/../.version`
-
-
-# AM_INIT_AUTOMAKE(htdig_db, $VERSION,nosubst)
-
-AC_INIT([htdig_db], 0.1.01)
+AC_INIT([hldig_db], [m4_esyscmd_s([cat ../VERSION])])
 AC_CONFIG_SRCDIR([db_byteorder.c])
 AM_INIT_AUTOMAKE
 
