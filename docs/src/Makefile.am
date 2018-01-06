@@ -15,3 +15,8 @@ VERSION = @VERSION@
 
 sysconfdir = @sysconfdir@
 DEFS = -DSYSCONFDIR=\"$(sysconfdir)\" @DEFS@
+
+ACLOCAL = true
+AUTOCONF = true
+AUTOHEADER = true
+AUTOMAKE = true
