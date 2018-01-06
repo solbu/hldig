@@ -103,7 +103,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_simplecgen_OBJECTS = simplecgen.$(OBJEXT) \
+am_simplecgen_OBJECTS = simplecgen.$(OBJEXT) utils.$(OBJEXT) \
 	template_functions.$(OBJEXT)
 simplecgen_OBJECTS = $(am_simplecgen_OBJECTS)
 simplecgen_LDADD = $(LDADD)
@@ -272,8 +272,16 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CFLAGS = -std=c99 -Wall -pedantic -g
-simplecgen_SOURCES = simplecgen.c template_functions.c
-noinst_HEADERS = template_functions.h
+simplecgen_SOURCES = \
+simplecgen.c	\
+utils.c	\
+template_functions.c
+
+noinst_HEADERS = \
+simplecgen.h	\
+utils.h	\
+template_functions.h
+
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -382,6 +390,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simplecgen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/template_functions.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

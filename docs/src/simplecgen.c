@@ -1,47 +1,35 @@
 /*
  * simplecgen.c: generates html files using the simplectemplate library
  *
- * Copyright 2017 Andy <andy400-004@yahoo.com>
+ * This file is part of hl://Dig <https://github.com/andy5995/hldig>
  *
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*/
+ *  Copyright (C) 2017-2018  Andy Alt (andy400-dev@yahoo.com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ *
+ *
+ */
 
-#include "config.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
 #include <libgen.h>
 #include <dirent.h>
-#include "template_functions.h"
+#include <unistd.h>
+#include <limits.h>
 
-#ifndef VERSION
-  #define VERSION "unversioned"
-#endif
-
-#define LINE_LEN_MAX 80
-#define FILENAME_LEN_MAX 248
-
-void
-del_char_shift_left (char *str, char c);
-
-int
-trim (char *str);
-
-void
-add_newline (char *str);
+#include "simplecgen.h"
+#include "utils.h"
 
 int main(int argc, char **argv)
 {
@@ -58,6 +46,16 @@ int main(int argc, char **argv)
       return 1;
     }
   }
+
+  char *bin_dir = dirname (argv[0]);
+
+  char cfg_file[PATH_MAX + 1];
+  sprintf (cfg_file, "%s/%s", bin_dir, CONFIG_FILE_BASE);
+
+  char site_title[120];
+  printf ("%s\n", cfg_file);
+  parse_config  (cfg_file, site_title);
+  exit (0);
 
   FILE *tail_fp;
   if ((tail_fp = fopen ("templates/tail.html", "r")) == NULL)
@@ -287,75 +285,4 @@ int main(int argc, char **argv)
   }
 
   return 0;
-}
-
-/**
- * Erases characters from the beginning of a string
- * (i.e. shifts the remaining string to the left
- */
-void del_char_shift_left (char *str, char c)
-{
-  static int c_count;
-  c_count = 0;
-
-  /* count how many instances of 'c' */
-  while (str[c_count] == c)
-    c_count++;
-
-  /* if no instances of 'c' were found... */
-  if (!c_count)
-    return;
-
-  static int len;
-  len = strlen (str);
-  static int pos;
-
-  for (pos = 0; pos < len - c_count; pos++)
-    str[pos] = str[pos + c_count];
-
-  str[len - c_count] = '\0';
-
-  return;
-}
-
-/**
- * trim: remove trailing blanks, tabs, newlines
- * Adapted from The ANSI C Programming Language, 2nd Edition (p. 65)
- * Brian W. Kernighan & Dennis M. Ritchie
- */
-int
-trim (char *str)
-{
-  static int n;
-
-  n = strlen (str);
-
-  char c;
-  c = str[n];
-
-  if (c != '\0')
-  {
-    printf ("null terminator not found\n");
-  }
-
-  n--;
-  c = str[n];
-
-  while (c == ' ' || c == '\t' || c == '\n' || c == EOF)
-  {
-    str[n] = '\0';
-    n--;
-    c = str[n];
-  }
-
-  return n;
-}
-
-void
-add_newline (char *str)
-{
-  static size_t len;
-  len = strlen (str);
-  str[len] = '\n';
-  str[len + 1] = '\0';
 }
