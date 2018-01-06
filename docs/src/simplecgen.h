@@ -42,7 +42,11 @@
   #define VERSION "unversioned"
 #endif
 
-#define LINE_LEN_MAX 80
+#ifdef DEBUG
+#   define PRINT_DEBUG printf ("[DEBUG]:"); printf
+#endif
+
+#define LINE_LEN_MAX 161
 #define FILENAME_LEN_MAX 248
 
 #define CONFIG_FILE_BASE "simplecgen.conf"
@@ -53,7 +57,9 @@ typedef unsigned short int ushort;
  */
 enum {
   EXIT_BUF_ERR = 100,
-  ERROR_CONFIG_OPEN
+  ERROR_CONFIG_OPEN,
+  ERROR_CONFIG_CLOSE,
+  ERROR_CONFIG_LINE
 };
 
 

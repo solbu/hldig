@@ -1,0 +1,25 @@
+
+simplecgen will read from infiles/ and create html files
+in the docs folder using the layouts in templates/
+
+The {{title}} tag contained in the template files will be replaced by
+the "title" line at the top of each .sct file.
+
+The {{body}} tag contained in the template files will be replaced by
+the html contents of each .sct file.
+
+The "layout" line is used to determine the template.
+
+Example: "layout:default" (located near the top of an .sct file), will
+use templates/default.html
+
+To build simplecgen, see the README in docs/src/.
+
+Afterward, run simplecgen to generate the web site from the docs
+directory:
+
+    src/simplecgen
+
+simplecgen uses the [simplectemplate library][sct_repo] to generate a web site.
+
+[sct_repo]: https://github.com/dafky2000/simplectemplate

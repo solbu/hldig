@@ -1,5 +1,7 @@
+AUTOMAKE_OPTIONS = subdir-objects foreign no-dependencies
+
 bin_PROGRAMS=simplecgen
-AM_CFLAGS= -std=c99 -Wall -pedantic -g
+AM_CFLAGS=	-Wall -pedantic -std=c99 -g
 simplecgen_SOURCES=		\
 simplecgen.c	\
 utils.c	\
@@ -15,8 +17,3 @@ VERSION = @VERSION@
 
 sysconfdir = @sysconfdir@
 DEFS = -DSYSCONFDIR=\"$(sysconfdir)\" @DEFS@
-
-ACLOCAL = true
-AUTOCONF = true
-AUTOHEADER = true
-AUTOMAKE = true

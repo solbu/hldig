@@ -26,15 +26,73 @@
 #include "simplecgen.h"
 #include "utils.h"
 
+/**
+ * Erases characters from the beginning of a string
+ * (i.e. shifts the remaining string to the left
+ *
+ * This function operates differently than del_char_shift_left
+ *
+ * example use shown in parse_config()
+ */
+void del_char (char **str, const char c)
+{
+  while (**str == c)
+    ++(*str);
+
+  return;
+}
+
 void
 parse_config (const char *cf, char *site_title)
 {
+  /* open the config file */
   FILE *cfg_p;
   if ((cfg_p = fopen (cf, "r")) == NULL)
   {
     fprintf (stderr, "  :Error: while opening %s\n", cf);
     exit (ERROR_CONFIG_OPEN);
   }
+
+  char *cfg_line = calloc (LINE_LEN_MAX, 1);
+
+  while (fgets (cfg_line, LINE_LEN_MAX, cfg_p) != NULL)
+  {
+    if (*cfg_line == '#')
+      continue;
+
+    char *opt;
+    // if (strncmp (cfg_line, "site_title", strlen ("site_title")) == 0)
+    if (strcmp (cfg_line, "site_title") > 0)
+    {
+      if ((opt = strchr (cfg_line, '=')) == NULL)
+      {
+        fprintf (stderr, "  %s\n", cfg_line);
+        fprintf (stderr, "  :Error: in config file\n");
+        exit (ERROR_CONFIG_LINE);
+      }
+
+      del_char (&opt, '=');
+
+      while (*opt == ' ')
+      {
+        del_char (&opt, ' ');
+      }
+
+      strcpy (site_title, opt);
+      continue;
+    }
+  }
+
+  free (cfg_line);
+
+  /* Close the config file */
+  if (fclose (cfg_p) == EOF)
+  {
+    fprintf (stderr, "  :Error: while closing %s\n", cf);
+    exit (ERROR_CONFIG_CLOSE);
+  }
+
+  return;
 }
 
 short
@@ -75,35 +133,6 @@ bufchk (const char *str, ushort boundary)
   fprintf (stderr, "%s\n\n", temp);
 
   return EXIT_BUF_ERR;
-}
-
-/**
- * Erases characters from the beginning of a string
- * (i.e. shifts the remaining string to the left
- */
-void del_char_shift_left (char *str, char c)
-{
-  static int c_count;
-  c_count = 0;
-
-  /* count how many instances of 'c' */
-  while (str[c_count] == c)
-    c_count++;
-
-  /* if no instances of 'c' were found... */
-  if (!c_count)
-    return;
-
-  static int len;
-  len = strlen (str);
-  static int pos;
-
-  for (pos = 0; pos < len - c_count; pos++)
-    str[pos] = str[pos + c_count];
-
-  str[len - c_count] = '\0';
-
-  return;
 }
 
 /**

@@ -24,13 +24,13 @@
  */
 
 void
+del_char (char **str, const char c);
+
+void
 parse_config (const char *cf, char *site_title);
 
 short
 bufchk (const char *str, ushort boundary);
-
-void
-del_char_shift_left (char *str, char c);
 
 int
 trim (char *str);

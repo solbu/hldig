@@ -53,9 +53,20 @@ int main(int argc, char **argv)
   sprintf (cfg_file, "%s/%s", bin_dir, CONFIG_FILE_BASE);
 
   char site_title[120];
-  printf ("%s\n", cfg_file);
+
+#ifdef DEBUG
+  PRINT_DEBUG ("config file = %s\n", cfg_file);
+#endif
+
+  /* As more config options are added, it will be easier to pass
+   * a single structure, as opposed to all the different config
+   * variables
+   */
   parse_config  (cfg_file, site_title);
-  exit (0);
+
+#ifdef DEBUG
+  PRINT_DEBUG ("site_title = %s\n", site_title);
+#endif
 
   FILE *tail_fp;
   if ((tail_fp = fopen ("templates/tail.html", "r")) == NULL)
@@ -69,7 +80,7 @@ int main(int argc, char **argv)
   rewind (tail_fp);
 
   char *output_tail;
-  if ((output_tail = calloc (tail_size + 1, 1)) == NULL)
+  if ((output_tail = calloc (tail_size + 1, sizeof (char))) == NULL)
   {
     printf ("Unable to allocate memory\n");
     return 1;
@@ -128,8 +139,7 @@ int main(int argc, char **argv)
       return 1;
     }
 
-    del_char_shift_left (title, ':');
-
+    del_char (&title, ':');
     trim (title);
 
     /* get the layout line */
@@ -150,7 +160,7 @@ int main(int argc, char **argv)
       return 1;
     }
 
-    del_char_shift_left (layout, ':');
+    del_char (&layout, ':');
     trim (layout);
 
     /* Go back to the beginning of the file */
@@ -180,8 +190,8 @@ int main(int argc, char **argv)
     }
 
     /* find the first ocurrence of "-" */
-    char *body;
-    body = strchr (contents, '-');
+    // char *body;
+    char *body = strchr (contents, '-');
 
     if (body == NULL)
     {
@@ -192,7 +202,7 @@ int main(int argc, char **argv)
     }
 
     while (body[0] == '-' || body[0] == '\n')
-      del_char_shift_left (body, body[0]);
+      del_char (&body, body[0]);
 
     len = strlen (body) - 1;
 
@@ -271,6 +281,9 @@ int main(int argc, char **argv)
       perror ("Error while closing file\n");
     }
 
+    free (title);
+    free (body);
+    free (layout);
     free (contents);
     free (output_head_tmp);
     free (output_layout_tmp);
