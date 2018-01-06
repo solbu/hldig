@@ -2,10 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>hl://Dig: hlsearch | Output Templates</title>
     <link rel="alternate" type="application/rss+xml" title="Recent commits to hldig:master" href="https://github.com/andy5995/hldig/commits/master.atom">
     <link rel="stylesheet" href="assets/css/style.css">
+    <!--including Bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
   </head>
   <body>
     <h1>hl://Dig: hlsearch | Output Templates</h1>
@@ -515,11 +517,16 @@
         </td>
       </tr>
     </table>
-    <p><a href="https://github.com/andy5995/hldig/commits/master.atom">
-    <img src="assets/images/rss_23x23.jpeg" alt="rss" height="23" width="23"></p>
-    </a>
+   <div class="footer">
     <p class="sct_footer">
-      Powered by <a href="https://github.com/dafky2000/simplectemplate">simplectemplate</a>
+      Powered by <a href="https://github.com/dafky2000/simplectemplate">simplectemplate</a> - RSS<a href="https://github.com/andy5995/hldig/commits/master.atom">
+    <img src="assets/icons/si-glyph-rss.svg" alt="rss" height="23" width="23"></p>
+    </a>
     </p>
+</div>
+    <!--The following included for responsize web design with Bootstrap-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
   </body>
 </html>
