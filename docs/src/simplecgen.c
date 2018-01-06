@@ -232,16 +232,21 @@ int main(int argc, char **argv)
       return 1;
     }
 
-    char *output_head;
-    char *output_layout;
+    /* FIXME: This is a temporary fix to try to solve a malloc error
+     * @escottalexander is having on his os x system.
+     */
+    char output_head[2000000];
+    char output_layout[2000000];
 
     /* FIXME: need a check to make sure the directory and file exists
      * add more flexibility so the user can change this (hint: config file)
      */
-    output_head = render_template_file ("templates/head.html", 1, title_data);
+    char *output_head_tmp = render_template_file ("templates/head.html", 1, title_data);
+    strcpy (output_head, output_head_tmp);
     add_newline (output_head);
 
-    output_layout = render_template_file (layout_template, 1, body_data);
+    char *output_layout_tmp = render_template_file (layout_template, 1, body_data);
+    strcpy (output_layout, output_layout_tmp);
     add_newline (output_layout);
 
     char output[strlen (output_head) + strlen (output_layout) +
@@ -269,10 +274,10 @@ int main(int argc, char **argv)
     }
 
     free (contents);
-    free (output_head);
-    free (output_layout);
-
+    free (output_head_tmp);
+    free (output_layout_tmp);
   }
+
   free (output_tail);
 
   if (closedir (infiles_dir) != 0)
@@ -351,7 +356,6 @@ add_newline (char *str)
 {
   static size_t len;
   len = strlen (str);
-  str = realloc (str, len + 2);
   str[len] = '\n';
   str[len + 1] = '\0';
 }
