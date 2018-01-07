@@ -1,7 +1,7 @@
 dnl @(#)mutex.m4	11.9 (Sleepycat) 10/15/99
 
 dnl Figure out mutexes for this compiler/architecture.
-AC_DEFUN(AM_DEFINE_MUTEXES, [
+AC_DEFUN([AM_DEFINE_MUTEXES], [
 
 AC_CACHE_CHECK([for mutexes], db_cv_mutex, [dnl
 db_cv_mutex=no
@@ -65,7 +65,7 @@ main(){
 	int type = USYNC_PROCESS;
 	exit (
 	mutex_init(&mutex, type, NULL) ||
-	cond_init(&cond, type, NULL) || 
+	cond_init(&cond, type, NULL) ||
 	mutex_lock(&mutex) ||
 	mutex_unlock(&mutex));
 }]])], [db_cv_mutex="UI/threads/library"], [:])
@@ -81,7 +81,7 @@ main(){
 	int type = USYNC_PROCESS;
 	exit (
 	mutex_init(&mutex, type, NULL) ||
-	cond_init(&cond, type, NULL) || 
+	cond_init(&cond, type, NULL) ||
 	mutex_lock(&mutex) ||
 	mutex_unlock(&mutex));
 }]])], [db_cv_mutex="UI/threads"], [:])
@@ -364,7 +364,7 @@ esac
 dnl @(#)options.m4	11.5 (Sleepycat) 10/15/99
 
 dnl Process user-specified options.
-AC_DEFUN(AM_OPTIONS_SET, [
+AC_DEFUN([AM_OPTIONS_SET], [
 
 AC_MSG_CHECKING(if --enable-bigfile option specified)
 AC_ARG_ENABLE(bigfile,
@@ -412,7 +412,7 @@ AC_MSG_RESULT($db_cv_uimutexes)
 dnl @(#)programs.m4	11.7 (Sleepycat) 9/3/99
 
 dnl Check for programs used in building/installation.
-AC_DEFUN(AM_PROGRAMS_SET, [
+AC_DEFUN([AM_PROGRAMS_SET], [
 
 AC_PATH_PROG(db_cv_path_ar, ar, missing_ar)
 if test "$db_cv_path_ar" = missing_ar; then
@@ -492,7 +492,7 @@ fi
 dnl @(#)types.m4	11.2 (Sleepycat) 10/5/99
 
 dnl Check for the standard shorthand types.
-AC_DEFUN(AM_SHORTHAND_TYPES, [dnl
+AC_DEFUN([AM_SHORTHAND_TYPES], [dnl
 
 AC_SUBST(ssize_t_decl)
 AC_CACHE_CHECK([for ssize_t], db_cv_ssize_t, [dnl
@@ -631,7 +631,7 @@ dnl
 dnl @version $Id: acinclude.m4,v 1.5 2003/07/21 08:16:09 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
-AC_DEFUN(CHECK_ZLIB,
+AC_DEFUN([CHECK_ZLIB],
 #
 # Handle user hints
 #
@@ -690,7 +690,7 @@ dnl @version $Id: acinclude.m4,v 1.5 2003/07/21 08:16:09 angusgb Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
-AC_DEFUN(AC_COMPILE_WARNINGS,
+AC_DEFUN([AC_COMPILE_WARNINGS],
 [AC_MSG_CHECKING(maximum warning verbosity option)
 if test -n "$CXX"
 then

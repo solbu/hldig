@@ -29,9 +29,9 @@ dnl @version $Id: acinclude.m4,v 1.19 2004/05/28 13:15:10 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
-AC_DEFUN(CHECK_USER,
-[AC_MSG_CHECKING(user name)
-test -n "$LOGNAME" && USER=$LOGNAME
+AC_DEFUN([CHECK_USER],
+[AC_MSG_CHECKING([user name])
+  test -n "$LOGNAME" && USER=$LOGNAME
 AC_SUBST(USER)
 AC_MSG_RESULT($USER)
 ])
@@ -40,7 +40,7 @@ dnl
 dnl Prevent accidental use of Run Time Type Information g++ builtin
 dnl functions.
 dnl
-AC_DEFUN(NO_RTTI,
+AC_DEFUN([NO_RTTI],
 [AC_MSG_CHECKING(adding -fno-rtti to g++)
 if test -n "$CXX"
 then
@@ -61,7 +61,7 @@ dnl
 dnl Prevent accidental use of Exceptions g++ builtin
 dnl functions.
 dnl
-AC_DEFUN(NO_EXCEPTIONS,
+AC_DEFUN([NO_EXCEPTIONS],
 [AC_MSG_CHECKING(adding -fno-exceptions to g++)
 if test -n "$CXX"
 then
@@ -89,7 +89,7 @@ dnl @version $Id: acinclude.m4,v 1.19 2004/05/28 13:15:10 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
-AC_DEFUN(AC_COMPILE_WARNINGS,
+AC_DEFUN([AC_COMPILE_WARNINGS],
 [AC_MSG_CHECKING(maximum warning verbosity option)
 if test -n "$CXX"
 then
@@ -140,7 +140,7 @@ dnl @version $Id: acinclude.m4,v 1.19 2004/05/28 13:15:10 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
-AC_DEFUN(CHECK_ZLIB,
+AC_DEFUN([CHECK_ZLIB],
 #
 # Handle user hints
 #
@@ -227,7 +227,7 @@ dnl @version $Id: acinclude.m4,v 1.19 2004/05/28 13:15:10 lha Exp $
 dnl @author Loic Dachary <loic@senga.org>
 dnl
 
-AC_DEFUN(AC_PROG_APACHE,
+AC_DEFUN([AC_PROG_APACHE],
 #
 # Handle user hints
 #
@@ -329,7 +329,7 @@ AC_DEFUN(AC_PROG_APACHE,
 ## Check time prog path library and options.       ##
 ## ----------------------------------------------- ##
 
-AC_DEFUN(AM_PROG_TIME, [
+AC_DEFUN([AM_PROG_TIME], [
 AC_PATH_PROG(TIME, time, time)
 #
 # Try various flags for verbose time information,
@@ -371,7 +371,7 @@ dnl @author Loic Dachary <loic@senga.org>
 dnl @version 1.0
 dnl
 
-AC_DEFUN(AC_FUNC_STRPTIME, [
+AC_DEFUN([AC_FUNC_STRPTIME], [
     AC_CHECK_FUNCS(strptime)
     AC_MSG_CHECKING(for strptime declaration in time.h)
     AC_EGREP_HEADER(strptime, time.h, [

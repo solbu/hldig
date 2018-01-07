@@ -22155,7 +22155,7 @@ if test x$hldig_cv_tests = xyes
 then
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking user name" >&5
 $as_echo_n "checking user name... " >&6; }
-test -n "$LOGNAME" && USER=$LOGNAME
+  test -n "$LOGNAME" && USER=$LOGNAME
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USER" >&5
 $as_echo "$USER" >&6; }
