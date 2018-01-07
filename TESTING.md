@@ -7,6 +7,7 @@ Install the following packages:
 
     build-essential
     libstdc++
+    libcrypto
     libssl-dev
     zlib1g-dev
 
@@ -24,7 +25,7 @@ Using homebrew install latest openssl and zlib.
 (Edit me)
 
 ## Testing
-* ./configure --prefix=$PWD/testing --with-ssl
+* ./configure --prefix=$PWD/testing
 * make [-j?]
 
 You can often speed up build time by using `make -j<jobs>`.
@@ -43,8 +44,10 @@ any problems with write permissions to the database folder, and hldig will
 know where to find the hldig.conf (-c won't be needed)
 
 ## https URLS
-SSL isn't enabled by default, but it's needed for hldig to crawl `https`
-urls. Use ./configure --with-ssl to build hldig with ssl support.
+
+SSL, which is now enabled by default, is needed for hldig to crawl
+`https` urls. To disable support for SSL, use ./configure
+--with-openssl=no when building
 
 ## install lighttpd
 

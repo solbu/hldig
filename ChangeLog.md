@@ -3,6 +3,17 @@
 This document contains information about changes after hl://Dig was
 forked. To see information about the original project, visit [ht://Dig on SourceForge](https://sourceforge.net/projects/htdig/)
 
+### Sun Jan 07 2018
+
+ssl support is now enabled by default. Use `./configure --with-openssl=no`
+to disable.
+
+### Sat Jan 06 2018
+
+Thanks to [Elliot Alexander](https://github.com/escottalexander) who,
+with the help of [Bootstrap](http://getbootstrap.com/), overhauled the [web site](https://andy5995.github.io/hldig/)
+and made it **mobile-friendly**.
+
 ### Sat Dec 30 2017
 
 hl://Dig was tested and patched by [Martijn de Boer](https://github.com/sexybiggetje)

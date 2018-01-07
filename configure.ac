@@ -1,6 +1,6 @@
 #
 # Part of the hl://Dig package   <https://andy5995.github.io/hldig/>
-# Copyright (c) 1999-2017 The hl://Dig Group
+# Copyright (c) 2017-2018 The hl://Dig Group
 # For copyright details, see the file COPYING in your distribution
 # or the GNU Library General Public License (LGPL) version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>
@@ -119,12 +119,84 @@ AC_PATH_PROG(SENDMAIL, sendmail, /usr/lib/sendmail,
    $PATH:/usr/libexec:/usr/sbin:/usr/lib:/usr/etc:etc)
 AM_PROG_TIME
 
-
 # Checks for libraries.
 #AC_CHECK_LIB([z], [main])
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, t_accept)
-CHECK_SSL
+
+# Check for libssl
+# Adapted from configure.ac @ the lighttpd project
+# <https://github.com/lighttpd/lighttpd2/blob/master/configure.ac>
+dnl Check for openssl
+AC_MSG_NOTICE([----------------------------------------])
+AC_MSG_CHECKING([for OpenSSL])
+AC_ARG_WITH([openssl],
+  [AC_HELP_STRING([--with-openssl@<:@=DIR@:>@],
+    [Include openssl support (default yes)]
+  )],
+  [WITH_OPENSSL=$withval],
+  [WITH_OPENSSL=yes]
+)
+AC_MSG_RESULT([$WITH_OPENSSL])
+
+if test "$WITH_OPENSSL" != no; then
+  if test "$WITH_OPENSSL" != yes; then
+    openssl_append_CPPFLAGS=" -I$WITH_OPENSSL/include"
+    openssl_append_LDFLAGS=" -L$WITH_OPENSSL/lib"
+  fi
+fi
+
+AC_MSG_CHECKING([custom include directory for openssl])
+AC_ARG_WITH([openssl-includes],
+  [AC_HELP_STRING([--with-openssl-includes=DIR], [OpenSSL includes])],
+  [
+    if test "$WITH_OPENSSL" = no; then
+      AC_MSG_ERROR([build --with-openssl to use --with-openssl-includes])
+    fi
+    openssl_append_CPPFLAGS=" -I$withval"
+    AC_MSG_RESULT([$withval])
+  ],
+  [AC_MSG_RESULT([no])]
+)
+
+AC_MSG_CHECKING([custom lib directory for openssl])
+AC_ARG_WITH([openssl-libs],
+  [AC_HELP_STRING([--with-openssl-libs=DIR], [OpenSSL libraries])],
+  [
+    if test "$WITH_OPENSSL" = no; then
+      AC_MSG_ERROR([build --with-openssl to use --with-openssl-libs])
+    fi
+    LDFLAGS="$LDFLAGS -L$withval"
+    AC_MSG_RESULT([$withval])
+  ],
+  [AC_MSG_RESULT([no])]
+)
+
+AM_CONDITIONAL([BUILD_WITH_OPENSSL], [test "$WITH_OPENSSL" != no])
+
+if test "$WITH_OPENSSL" != no; then
+
+  CPPFLAGS="${CPPFLAGS}${openssl_append_CPPFLAGS}"
+  LDFLAGS="${LDFLAGS}${openssl_append_LDFLAGS}"
+
+  AC_CHECK_HEADERS([openssl/ssl.h], [], [
+    AC_MSG_ERROR([openssl headers not found. install them or build without --with-openssl])
+  ])
+  AC_CHECK_LIB([crypto], [BIO_f_base64],
+    [LIBS="$LIBS -lcrypto"],
+    [AC_MSG_ERROR([openssl crypto library not found. install it or build without --with-openssl])]
+  )
+  AC_CHECK_LIB([ssl], [SSL_new],
+    [LIBS="$LIBS -lssl -lcrypto"],
+    [AC_MSG_ERROR([openssl ssl library not found. install it or build without --with-openssl])],
+    [ -lcrypto "$DL_LIB" ]
+  )
+
+  AC_DEFINE([HAVE_SSL_H], [], [Have libssl])
+  AC_SUBST([SSL_LIB])
+  AC_SUBST([CRYPTO_LIB])
+fi
+
 CHECK_ZLIB
 AC_SUBST(CXXFLAGS)
 AC_SUBST(LDFLAGS)

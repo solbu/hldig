@@ -661,7 +661,10 @@ GETTEXT_MACRO_VERSION
 USE_NLS
 LIBOBJS
 ALLOCA
-HAVE_SSL
+CRYPTO_LIB
+SSL_LIB
+BUILD_WITH_OPENSSL_FALSE
+BUILD_WITH_OPENSSL_TRUE
 TIMEV
 TIME
 SENDMAIL
@@ -838,7 +841,9 @@ with_aix_soname
 with_gnu_ld
 with_sysroot
 enable_libtool_lock
-with_ssl
+with_openssl
+with_openssl_includes
+with_openssl_libs
 with_zlib
 enable_nls
 enable_rpath
@@ -1528,9 +1533,10 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot[=DIR]    Search for dependent libraries within DIR (or the
                           compiler's sysroot if not specified).
-  --with-ssl=DIR          enable ssl [ default paths, then /usr/local/ssl
-                          /usr/lib/ssl /usr/ssl /usr/pkg
-                          /usr/local/opt/openssl ]
+  --with-openssl[=DIR]    Include openssl support (default yes)
+  --with-openssl-includes=DIR
+                          OpenSSL includes
+  --with-openssl-libs=DIR OpenSSL libraries
   --with-zlib=DIR         root directory path of zlib installation
   --without-zlib          to disable zlib usage completely
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
@@ -17353,7 +17359,6 @@ $as_echo "$TIMEV" >&6; }
 
 
 
-
 # Checks for libraries.
 #AC_CHECK_LIB([z], [main])
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lsocket" >&5
@@ -17446,52 +17451,196 @@ _ACEOF
 
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if ssl is wanted" >&5
-$as_echo_n "checking if ssl is wanted... " >&6; }
 
-# Check whether --with-ssl was given.
-if test "${with_ssl+set}" = set; then :
-  withval=$with_ssl;    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-    if test "$withval" = "yes" ; then
-	withval=""
-	ac_fn_c_check_header_mongrel "$LINENO" "openssl/ssl.h" "ac_cv_header_openssl_ssl_h" "$ac_includes_default"
-if test "x$ac_cv_header_openssl_ssl_h" = xyes; then :
-  ssldir="default paths"; found_ssl=yes
+# Check for libssl
+# Adapted from configure.ac @ the lighttpd project
+# <https://github.com/lighttpd/lighttpd2/blob/master/configure.ac>
+{ $as_echo "$as_me:${as_lineno-$LINENO}: ----------------------------------------" >&5
+$as_echo "$as_me: ----------------------------------------" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenSSL" >&5
+$as_echo_n "checking for OpenSSL... " >&6; }
+
+# Check whether --with-openssl was given.
+if test "${with_openssl+set}" = set; then :
+  withval=$with_openssl; WITH_OPENSSL=$withval
+else
+  WITH_OPENSSL=yes
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $WITH_OPENSSL" >&5
+$as_echo "$WITH_OPENSSL" >&6; }
+
+if test "$WITH_OPENSSL" != no; then
+  if test "$WITH_OPENSSL" != yes; then
+    openssl_append_CPPFLAGS=" -I$WITH_OPENSSL/include"
+    openssl_append_LDFLAGS=" -L$WITH_OPENSSL/lib"
+  fi
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking custom include directory for openssl" >&5
+$as_echo_n "checking custom include directory for openssl... " >&6; }
+
+# Check whether --with-openssl-includes was given.
+if test "${with_openssl_includes+set}" = set; then :
+  withval=$with_openssl_includes;
+    if test "$WITH_OPENSSL" = no; then
+      as_fn_error $? "build --with-openssl to use --with-openssl-includes" "$LINENO" 5
+    fi
+    openssl_append_CPPFLAGS=" -I$withval"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $withval" >&5
+$as_echo "$withval" >&6; }
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
 fi
 
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking custom lib directory for openssl" >&5
+$as_echo_n "checking custom lib directory for openssl... " >&6; }
+
+# Check whether --with-openssl-libs was given.
+if test "${with_openssl_libs+set}" = set; then :
+  withval=$with_openssl_libs;
+    if test "$WITH_OPENSSL" = no; then
+      as_fn_error $? "build --with-openssl to use --with-openssl-libs" "$LINENO" 5
     fi
-    if test "$found_ssl" = "" ;then
-	for dir in $withval /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local/opt/openssl ; do
-	    ssldir="$dir"
-	    if test -f "$dir/include/openssl/ssl.h"; then
-		found_ssl=yes;
-		CPPFLAGS="$CPPFLAGS -I$ssldir/include";
-		LDFLAGS="$LDFLAGS -L$ssldir/lib";
-		break;
-	    fi
-	done
-    fi
-    if test x_$found_ssl != x_yes; then
-        as_fn_error $? "Cannot find ssl libraries" "$LINENO" 5
-    else
-        printf "OpenSSL found in $ssldir\n";
-        LIBS="$LIBS -lssl -lcrypto";
-	HAVE_SSL=yes
-    fi
+    LDFLAGS="$LDFLAGS -L$withval"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $withval" >&5
+$as_echo "$withval" >&6; }
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+fi
+
+
+ if test "$WITH_OPENSSL" != no; then
+  BUILD_WITH_OPENSSL_TRUE=
+  BUILD_WITH_OPENSSL_FALSE='#'
+else
+  BUILD_WITH_OPENSSL_TRUE='#'
+  BUILD_WITH_OPENSSL_FALSE=
+fi
+
+
+if test "$WITH_OPENSSL" != no; then
+
+  CPPFLAGS="${CPPFLAGS}${openssl_append_CPPFLAGS}"
+  LDFLAGS="${LDFLAGS}${openssl_append_LDFLAGS}"
+
+  for ac_header in openssl/ssl.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "openssl/ssl.h" "ac_cv_header_openssl_ssl_h" "$ac_includes_default"
+if test "x$ac_cv_header_openssl_ssl_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_OPENSSL_SSL_H 1
+_ACEOF
+
+else
+
+    as_fn_error $? "openssl headers not found. install them or build without --with-openssl" "$LINENO" 5
+
+fi
+
+done
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BIO_f_base64 in -lcrypto" >&5
+$as_echo_n "checking for BIO_f_base64 in -lcrypto... " >&6; }
+if ${ac_cv_lib_crypto_BIO_f_base64+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcrypto  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char BIO_f_base64 ();
+int
+main ()
+{
+return BIO_f_base64 ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_crypto_BIO_f_base64=yes
+else
+  ac_cv_lib_crypto_BIO_f_base64=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_BIO_f_base64" >&5
+$as_echo "$ac_cv_lib_crypto_BIO_f_base64" >&6; }
+if test "x$ac_cv_lib_crypto_BIO_f_base64" = xyes; then :
+  LIBS="$LIBS -lcrypto"
+else
+  as_fn_error $? "openssl crypto library not found. install it or build without --with-openssl" "$LINENO" 5
+
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_new in -lssl" >&5
+$as_echo_n "checking for SSL_new in -lssl... " >&6; }
+if ${ac_cv_lib_ssl_SSL_new+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lssl  -lcrypto "$DL_LIB"
+   $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char SSL_new ();
+int
+main ()
+{
+return SSL_new ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_ssl_SSL_new=yes
+else
+  ac_cv_lib_ssl_SSL_new=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_SSL_new" >&5
+$as_echo "$ac_cv_lib_ssl_SSL_new" >&6; }
+if test "x$ac_cv_lib_ssl_SSL_new" = xyes; then :
+  LIBS="$LIBS -lssl -lcrypto"
+else
+  as_fn_error $? "openssl ssl library not found. install it or build without --with-openssl" "$LINENO" 5
+fi
+
 
 
 $as_echo "#define HAVE_SSL_H /**/" >>confdefs.h
 
 
-else
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 
 fi
-
 
 #
 # Handle user hints
@@ -22331,6 +22480,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${BUILD_WITH_OPENSSL_TRUE}" && test -z "${BUILD_WITH_OPENSSL_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_WITH_OPENSSL\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
