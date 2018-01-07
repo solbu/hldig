@@ -281,9 +281,6 @@ int main(int argc, char **argv)
       perror ("Error while closing file\n");
     }
 
-    free (title);
-    free (body);
-    free (layout);
     free (contents);
     free (output_head_tmp);
     free (output_layout_tmp);

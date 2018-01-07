@@ -17,3 +17,13 @@ VERSION = @VERSION@
 
 sysconfdir = @sysconfdir@
 DEFS = -DSYSCONFDIR=\"$(sysconfdir)\" @DEFS@
+
+# These 4 lines are needed because of a bug in GNU autotools?
+# https://github.com/andy5995/rmw/issues/21
+#
+# prevents the error shown at
+# https://travis-ci.org/andy5995/hldig/jobs/325914641#L478
+ACLOCAL = true
+AUTOCONF = true
+AUTOHEADER = true
+AUTOMAKE = true

@@ -185,12 +185,18 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = @ACLOCAL@
+
+# These 4 lines are needed because of a bug in GNU autotools?
+# https://github.com/andy5995/rmw/issues/21
+#
+# prevents the error shown at
+# https://travis-ci.org/andy5995/hldig/jobs/325914641#L478
+ACLOCAL = true
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
-AUTOCONF = @AUTOCONF@
-AUTOHEADER = @AUTOHEADER@
-AUTOMAKE = @AUTOMAKE@
+AUTOCONF = true
+AUTOHEADER = true
+AUTOMAKE = true
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
