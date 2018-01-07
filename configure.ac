@@ -179,9 +179,23 @@ if test "$WITH_OPENSSL" != no; then
   CPPFLAGS="${CPPFLAGS}${openssl_append_CPPFLAGS}"
   LDFLAGS="${LDFLAGS}${openssl_append_LDFLAGS}"
 
-  AC_CHECK_HEADERS([openssl/ssl.h], [], [
+  AC_CHECK_HEADERS([openssl/ssl.h], found_ssl=yes)
+  if test "x$found_ssl" != xyes ;then
+    for dir in /usr /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local/opt/openssl ; do
+      ssldir="$dir"
+      if test -f "$dir/include/openssl/ssl.h"; then
+        found_ssl=yes;
+        CPPFLAGS="$CPPFLAGS -I$ssldir/include";
+        LDFLAGS="$LDFLAGS -L$ssldir/lib";
+        break;
+      fi
+    done
+  fi
+
+  if test "x$found_ssl" != xyes ;then
     AC_MSG_ERROR([openssl headers not found. install them or build without --with-openssl])
-  ])
+  fi
+
   AC_CHECK_LIB([crypto], [BIO_f_base64],
     [LIBS="$LIBS -lcrypto"],
     [AC_MSG_ERROR([openssl crypto library not found. install it or build without --with-openssl])]
