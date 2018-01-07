@@ -1,7 +1,16 @@
+simplecgen uses the [simplectemplate library][sct_repo] to generate a web site.
 
-simplecgen will read from the docs/infiles directory and create html files
-in the docs folder using templates/default.html
+(The library is included)
 
-To run simplecgen, from the docs directory, type in
+To build simplecgen:
 
-    src/simplecgen
+    ./configure
+    make
+
+simplecgen will look for the **config file** in the same directory as the
+binary file created after make is run.
+
+See the README in the docs/ directory to learn how the html files are
+generated.
+
+[sct_repo]: https://github.com/dafky2000/simplectemplate
