@@ -216,17 +216,28 @@ int main(int argc, char **argv)
       len--;
     }
 
-    /* Because the head and layout templates are split now, this is not used
-     *
-    const char *data[] = {
-      "title", title,
-      "body", body
-    };
-    *
-    */
+    char fb[FILENAME_LEN_MAX];
+
+    /* truncate the .sct extension */
+    input_file[strlen (input_file) - 4] = '\0';
+    strcpy (fb, basename (input_file));
+
+    /* sub_title will appear after 'page title | ' in the title bar */
+    char sub_title[LINE_LEN_MAX];
+
+    if (strcmp (fb, "index") != 0)
+      strcpy (sub_title, cfgopts->site_title);
+    else
+      strcpy (sub_title, cfgopts->site_description);
+
+#ifdef DEBUG
+PRINT_DEBUG ("basename is '%s' at L%d\n", fb, __LINE__);
+PRINT_DEBUG ("sub_title is '%s' at L%d\n", sub_title, __LINE__);
+#endif
 
     const char *title_data[] = {
-      "title", title
+      "title", title,
+      "sub_title", sub_title
     };
 
     const char *body_data[] = {
@@ -252,7 +263,7 @@ int main(int argc, char **argv)
     /* FIXME: need a check to make sure the directory and file exists
      * add more flexibility so the user can change this (hint: config file)
      */
-    char *output_head_tmp = render_template_file ("templates/head.html", 1, title_data);
+    char *output_head_tmp = render_template_file ("templates/head.html", 2, title_data);
     strcpy (output_head, output_head_tmp);
     add_newline (output_head);
 
@@ -264,11 +275,8 @@ int main(int argc, char **argv)
         tail_size + 1];
     sprintf (output, "%s%s%s", output_head, output_layout, output_tail);
 
-    /* truncate the .sct extension */
-    input_file[strlen (input_file) - 4] = '\0';
-
     char dest_file[FILENAME_LEN_MAX + 1];
-    sprintf (dest_file, "%s.html", basename (input_file));
+    sprintf (dest_file, "%s.html", fb);
 
     if ((fp = fopen (dest_file, "w")) == NULL)
     {
