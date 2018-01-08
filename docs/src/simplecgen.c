@@ -52,7 +52,9 @@ int main(int argc, char **argv)
   char cfg_file[PATH_MAX + 1];
   sprintf (cfg_file, "%s/%s", bin_dir, CONFIG_FILE_BASE);
 
-  char site_title[120];
+  struct_cfg *cfgopts = calloc (sizeof (struct_cfg), 1);
+
+  // char site_title[120];
 
 #ifdef DEBUG
   PRINT_DEBUG ("config file = %s\n", cfg_file);
@@ -62,10 +64,11 @@ int main(int argc, char **argv)
    * a single structure, as opposed to all the different config
    * variables
    */
-  parse_config  (cfg_file, site_title);
+  parse_config  (cfg_file, cfgopts);
 
 #ifdef DEBUG
-  PRINT_DEBUG ("site_title = %s\n", site_title);
+  PRINT_DEBUG ("after parsing, site_title is '%s'\n", cfgopts->site_title);
+  PRINT_DEBUG ("after parsing, site_description is '%s'\n", cfgopts->site_description);
 #endif
 
   FILE *tail_fp;
@@ -286,6 +289,7 @@ int main(int argc, char **argv)
     free (output_layout_tmp);
   }
 
+  free (cfgopts);
   free (output_tail);
 
   if (closedir (infiles_dir) != 0)

@@ -23,7 +23,6 @@
  *
  */
 
-#include "simplecgen.h"
 #include "utils.h"
 
 /**
@@ -42,8 +41,33 @@ void del_char (char **str, const char c)
   return;
 }
 
+static void
+parse_option (char *str, const char *l)
+{
+  char *value;
+  if ((value = strchr (l, '=')) == NULL)
+  {
+    fprintf (stderr, "  %s\n", l);
+    fprintf (stderr, "  :Error: in config file\n");
+    exit (ERROR_CONFIG_LINE);
+  }
+
+  del_char (&value, '=');
+  del_char (&value, ' ');
+
+  trim (value);
+  strcpy (str, value);
+
+#ifdef DEBUG
+PRINT_DEBUG ("value is '%s'\n", value);
+PRINT_DEBUG ("str is '%s' at line %d\n", value, __LINE__);
+#endif
+
+  return;
+}
+
 void
-parse_config (const char *cf, char *site_title)
+parse_config (const char *cf, struct cfg *cfgopts)
 {
   /* open the config file */
   FILE *cfg_p;
@@ -53,37 +77,33 @@ parse_config (const char *cf, char *site_title)
     exit (ERROR_CONFIG_OPEN);
   }
 
-  char *cfg_line = calloc (LINE_LEN_MAX, 1);
+  char cfg_line[LINE_LEN_MAX];
 
   while (fgets (cfg_line, LINE_LEN_MAX, cfg_p) != NULL)
   {
     if (*cfg_line == '#')
       continue;
 
-    char *opt;
-    // if (strncmp (cfg_line, "site_title", strlen ("site_title")) == 0)
     if (strcmp (cfg_line, "site_title") > 0)
     {
-      if ((opt = strchr (cfg_line, '=')) == NULL)
-      {
-        fprintf (stderr, "  %s\n", cfg_line);
-        fprintf (stderr, "  :Error: in config file\n");
-        exit (ERROR_CONFIG_LINE);
-      }
+      parse_option (cfgopts->site_title, cfg_line);
+#ifdef DEBUG
+PRINT_DEBUG ("cfg_line is %s at line %d\n", cfg_line, __LINE__);
+PRINT_DEBUG ("cfgopts.site_title is '%s' at line %d\n", cfgopts->site_title, __LINE__);
+#endif
+      continue;
+    }
 
-      del_char (&opt, '=');
-
-      while (*opt == ' ')
-      {
-        del_char (&opt, ' ');
-      }
-
-      strcpy (site_title, opt);
+    if (strcmp (cfg_line, "site_description") > 0)
+    {
+      parse_option (cfgopts->site_description, cfg_line);
+#ifdef DEBUG
+PRINT_DEBUG ("cfg_line is\n%s at line %d\n", cfg_line, __LINE__);
+PRINT_DEBUG ("cfgopts.site_description is '%s' at line %d\n", cfgopts->site_description, __LINE__);
+#endif
       continue;
     }
   }
-
-  free (cfg_line);
 
   /* Close the config file */
   if (fclose (cfg_p) == EOF)

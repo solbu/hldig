@@ -23,11 +23,13 @@
  *
  */
 
+#include "simplecgen.h"
+
 void
 del_char (char **str, const char c);
 
 void
-parse_config (const char *cf, char *site_title);
+parse_config (const char *cf, struct cfg *cfgopts);
 
 short
 bufchk (const char *str, ushort boundary);
