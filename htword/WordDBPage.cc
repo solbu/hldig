@@ -223,7 +223,7 @@ WordDBPage::Uncompress_main (Compressor * pin)
   // number arrays used to reconstruct the original page
   unsigned int **rnums = new unsigned int *[nnums];
   CHECK_MEM (rnums);
-  // sizes of each array 
+  // sizes of each array
   int *rnum_sizes = new int[nnums];
   CHECK_MEM (rnum_sizes);
   // char differences between words
@@ -238,7 +238,7 @@ WordDBPage::Uncompress_main (Compressor * pin)
 
   // get first key(s):
   //type=5: key(0) stored seperately ... others are decompressed frome differences
-  // 
+  //
   //type=3: btikey(0) is particular (len=0) it is stored seperately
   //        btikey(1) stored seperately ... others are decompressed frome differences
   //
@@ -398,7 +398,7 @@ WordDBPage::Uncompress_rebuild (unsigned int **rnums, int *rnum_sizes,
   WordDBKey pkey;
   WordDBKey akey = get_WordDBKey (i0);
 
-  // reconstruct each key using previous key and  coded differences 
+  // reconstruct each key using previous key and  coded differences
   for (ii = i0; ii < nk; ii++)
   {
     WordDBRecord arec;
@@ -465,7 +465,7 @@ WordDBPage::Uncompress_rebuild (unsigned int **rnums, int *rnum_sizes,
         int changed = flags & pow2 (j - 1);
         if (changed)
         {
-          // this field's number 
+          // this field's number
           int k = CNFIELDS + j - 1;
           // current position within coded differences of this field
           int indx = rnum_pos[k];
@@ -548,7 +548,7 @@ WordDBPage::Uncompress_show_rebuild (unsigned int **rnums, int *rnum_sizes,
       printf ("diffield %2d:", j);
       for (i = 0; i < rnum_sizes[j]; i++)
       {
-        ;                       //    printf("%2d:%d ",i,nums[j*nk+i] == rnums[j][i]);        
+        ;                       //    printf("%2d:%d ",i,nums[j*nk+i] == rnums[j][i]);
       }
       printf ("\n");
     }
@@ -626,7 +626,7 @@ WordDBPage::Compress (int ndebug, DB_CMPR_INFO * cmprInfo /*=NULL*/ )
     res->show ();
   }
   return res;
-};
+}
 
 int
 WordDBPage::Compress_main (Compressor & out)
@@ -747,7 +747,7 @@ WordDBPage::Compress_extract_vals_wordiffs (int *nums, int *nums_pos, int,
       // ****** WordRecord (data/stats)
       // get word record
       WordDBRecord arec (data (ii), akey.RecType ());
-      // add record 
+      // add record
       if (arec.type == WORD_RECORD_STATS)
       {
         nums[CNDATASTATS0 * nk + nums_pos[CNDATASTATS0]++] =
@@ -1191,11 +1191,11 @@ WordDBPage::Compare (WordDBPage & other)
 
 // Bit stream description
 // | field[last] changed only | yes -> delta field[last]
-// 
+//
 
-// redo=0 -> 
+// redo=0 ->
 // redo=1 -> oops, dont show!
-// redo=2 -> 
+// redo=2 ->
 void
 WordDBPage::show ()
 {
