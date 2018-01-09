@@ -2,7 +2,9 @@ language: cpp
 
 os:
   - linux
-  - osx
+  # - osx
+  # os x doesn't build on travis
+  # https://travis-ci.org/andy5995/hldig/jobs/326877457
 
 compiler:
   - clang
