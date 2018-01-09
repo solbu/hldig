@@ -236,16 +236,25 @@ layout:default
     </li>
 -->
     <li>
-    FreeBSD 4.6 (using gcc 2.95.3) <!-- lha -->
-    </li>
-    <li>
-          Mandrake Linux 8.2 (using gcc 3.2) <!-- lha -->
-    </li>
-    <li>
-    Debian, 2.2.19 kernel (using gcc 2.95.4) <!-- lha -->
+      Debian GNU/Linux 9 <!-- andy5995 2018-01-09 -->
     </li>
     <li>
           Debian on an Alpha <!-- lha -->
+    </li>
+    <li>
+      Open BSD 6.2 <!-- andy5995 2018-01-09 -->
+    </li>
+    <li>
+      FreeBSD 4.6 (using gcc 2.95.3) <!-- lha -->
+    </li>
+    <li>
+          Mac OS X 10.2 (using gcc) <!-- Jim Cole -->
+    </li>
+    <li>
+          Mac OS X 10.13 High Sierra <!-- Martijn de Boer 2017-12-30 -->
+    </li>
+    <li>
+          Mandrake Linux 8.2 (using gcc 3.2) <!-- lha -->
     </li>
     <li>
           RedHat 7.3, 8.0 <!-- Jim Cole -->
@@ -256,13 +265,6 @@ layout:default
     <li>
           Sun Solaris 2.8 = SunOS 5.8 (using Sun's cc / g++ 3.1) <!-- lha -->
     </li>
-    <li>
-          Mac OS X 10.2 (using gcc) <!-- Jim Cole -->
-    </li>
-    <li>
-          Mac OS X 10.13 High Sierra <!-- Martijn de Boer 2017-12-30 -->
-    </li>
-
    </ul>
   There are reports of hl://Dig working on a number of other platforms.
   <h3>
