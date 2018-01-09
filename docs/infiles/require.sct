@@ -242,7 +242,7 @@ layout:default
           Debian on an Alpha <!-- lha -->
     </li>
     <li>
-      Open BSD 6.2 <!-- andy5995 2018-01-09 -->
+      OpenBSD 6.2 <!-- andy5995 2018-01-09 -->
     </li>
     <li>
       FreeBSD 4.6 (using gcc 2.95.3) <!-- lha -->
