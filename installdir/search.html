@@ -1,48 +1,63 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html>
 <html>
 <head>
-<title>htdig WWW Search</title>
+  <meta name="generator" content=
+  "HTML Tidy for HTML5 for Linux version 5.2.0">
+  <title>htdig WWW Search</title>
+  <link rel="stylesheet" href="../../share/hldig/style.css">
 </head>
-<body bgcolor="#eef7ff">
-<h1>
-<a href="https://github.com/andy5995/htdig"><IMG SRC="@IMAGEDIR@/htdig.gif" align="bottom" alt="htdig" border="0"></a>
-WWW Site Search</h1>
-<hr noshade size="4">
-This search will allow you to search the contents of
-all the publicly available WWW documents at this site.
-<br>
-<p>
-<form method="post" action="/cgi-bin/htsearch">
-<font size="-1">
-Match: <select name="method">
-<option value="and">All
-<option value="or">Any
-<option value="boolean">Boolean
-</select>
-Format: <select name="format">
-<option value="builtin-long">Long
-<option value="builtin-short">Short
-</select>
-Sort by: <select name="sort">
-<option value="score">Score
-<option value="time">Time
-<option value="title">Title
-<option value="revscore">Reverse Score
-<option value="revtime">Reverse Time
-<option value="revtitle">Reverse Title
-</select>
-</font>
-<input type="hidden" name="config" value="htdig">
-<input type="hidden" name="restrict" value="">
-<input type="hidden" name="exclude" value="">
-<br>
-Search:
-<input type="text" size="30" name="words" value="">
-<input type="submit" value="Search">
-</form>
-<hr noshade size="4">
-<a href="https://github.com/andy5995/htdig">
-Powered by htdig $(VERSION)</a>
+<body>
+  <h1><a href="https://github.com/andy5995/hldig"><img src=
+  "@IMAGEDIR@/htdig.gif" alt="hl://dig" border="0"></a> WWW Site
+  Search</h1>
+  <hr noshade size="4">
+  This search will allow you to search the contents of all the
+  publicly available WWW documents at this site.<br>
+  <form method="post" action="/cgi-bin/htsearch">
+    <font size="-1">Match: <select name="method">
+      <option value="and">
+        All
+      </option>
+      <option value="or">
+        Any
+      </option>
+      <option value="boolean">
+        Boolean
+      </option>
+    </select> Format: <select name="format">
+      <option value="builtin-long">
+        Long
+      </option>
+      <option value="builtin-short">
+        Short
+      </option>
+    </select> Sort by: <select name="sort">
+      <option value="score">
+        Score
+      </option>
+      <option value="time">
+        Time
+      </option>
+      <option value="title">
+        Title
+      </option>
+      <option value="revscore">
+        Reverse Score
+      </option>
+      <option value="revtime">
+        Reverse Time
+      </option>
+      <option value="revtitle">
+        Reverse Title
+      </option>
+    </select></font> <input type="hidden" name="config" value=
+    "htdig"> <input type="hidden" name="restrict" value="">
+    <input type="hidden" name="exclude" value=""><br>
+    Search: <input type="text" size="30" name="words" value="">
+    <input type="submit" value="Search">
+  </form>
+  <hr noshade size="4">
+  <a href="https://github.com/andy5995/hldig">Powered by hl://dig
+  $(VERSION)</a>
 </body>
 </html>
-

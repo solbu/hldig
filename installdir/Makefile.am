@@ -12,6 +12,9 @@ IMAGES=		button1.gif button2.gif button3.gif button4.gif button5.gif \
                 buttonr.png button10.png htdig.png star.png star_blank.png
 COMMONHTML=	header.html footer.html wrapper.html nomatch.html syntax.html \
 		long.html short.html
+
+COMMONCSS= style.css
+
 COMMONDICT=	bad_words english.0 english.aff synonyms
 
 EXTRA_DIST = $(IMAGES) $(COMMONHTML) $(COMMONDICT) rundig hldig.conf mime.types \
@@ -29,6 +32,9 @@ install-data-local:	all
 	$(mkinstalldirs) $(DESTDIR)$(COMMON_DIR)
 	@for i in $(COMMONHTML); do \
 		if [ ! -f $(DESTDIR)$(COMMON_DIR)/$$i ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/installdir/$$i >$(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i;fi; \
+	done && test -z "$$fail"
+	@for i in $(COMMONCSS); do \
+		if [ ! -f $(DESTDIR)$COMMON_DIR/$$i ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/docs/assets/css/$$i >$(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i;fi; \
 	done && test -z "$$fail"
 	@for i in $(COMMONDICT); do \
 		if [ ! -f $(DESTDIR)$(COMMON_DIR)/$$i ]; then $(INSTALL_DATA) $(top_srcdir)/installdir/$$i $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; fi; \
