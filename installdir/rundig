@@ -8,14 +8,10 @@
 # This is a sample script to create a search database for hl://Dig.
 #
 
-DIRECTORY=`dirname $0`
-cd $DIRECTORY
-
-PREFIX=..
-DBDIR=$PREFIX/var/htdig
-COMMONDIR=$PREFIX/conf
-BINDIR=.
-conffile=$PREFIX/conf/hldig.conf
+DBDIR=@DATABASE_DIR@
+COMMONDIR=@COMMON_DIR@
+BINDIR=@BIN_DIR@
+conffile=@DEFAULT_CONFIG_FILE@
 
 # To help debug problems, try running rundig -vvv
 # This will add lots of debugging output to all of the programs
