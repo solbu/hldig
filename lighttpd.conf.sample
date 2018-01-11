@@ -11,7 +11,8 @@ mimetype.assign = (
   ".html" => "text/html",
   ".txt" => "text/plain",
   ".jpg" => "image/jpeg",
-  ".png" => "image/png"
+  ".png" => "image/png",
+  ".css" => "text/css,
 )
 
 static-file.exclude-extensions = ( ".fcgi", ".php", ".rb", "~", ".inc" )

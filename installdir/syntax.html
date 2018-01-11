@@ -1,34 +1,36 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html><head><title>Error in Boolean search for '$&(WORDS)'</title></head>
-<body bgcolor="#eef7ff">
-<h1><img src="@IMAGEDIR@/htdig.gif" alt="ht://Dig">
-Error in Boolean search for '$&(LOGICAL_WORDS)'</h1>
-<hr noshade size="4">
-Boolean expressions need to be 'correct' in order for the search
-system to use them.
-The expression you entered has errors in it.<p>
-Examples of correct expressions are: <strong>cat and dog</strong>, <strong>cat
-not dog</strong>, <strong>cat or (dog not nose)</strong>.<br>Note that
-the operator <strong>not</strong> has the meaning of 'without'.
-<blockquote><strong>
-$(SYNTAXERROR)
-</strong></blockquote>
-<hr noshade size="4">
-<form method="get" action="$(CGI)">
-<font size="-1">
-<input type="hidden" name="config" value="$&(CONFIG)">
-<input type="hidden" name="restrict" value="$&(RESTRICT)">
-<input type="hidden" name="exclude" value="$&(EXCLUDE)">
-Match: $(METHOD)
-Format: $(FORMAT)
-Sort: $(SORT)
-<br>
-Refine search:
-<input type="text" size="30" name="words" value="$&(WORDS)">
-<input type="submit" value="Search">
-</font>
-</form>
-<hr noshade size="4">
-<a href="https://github.com/andy5995/htdig">
-<img src="@IMAGEDIR@/htdig.gif" border="0" alt="">htdig $(VERSION)</a>
-</body></html>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for HTML5 for Linux version 5.2.0">
+  <title>Error in Boolean search for '$&amp;(WORDS)'</title>
+  <link rel="stylesheet" href="@IMAGEDIR@/style.css">
+</head>
+<body>
+  <h1><img src="@IMAGEDIR@/htdig.gif" alt="hl://Dig"> Error in
+  Boolean search for '$&amp;(LOGICAL_WORDS)'</h1>
+  <hr noshade size="4">
+  Boolean expressions need to be 'correct' in order for the search
+  system to use them. The expression you entered has errors in it.
+  <p>Examples of correct expressions are: <p class="thick">cat and
+  dog, cat not dog, cat or (dog not nose).</p>
+  Note that the operator <strong>not</strong> has the meaning of
+  'without'.</p>
+  <blockquote>
+    <p class="thick">$(SYNTAXERROR)</p>
+  </blockquote>
+  <hr>
+  <form method="get" action="$(CGI)">
+    <div class="form"><input type="hidden" name="config" value=
+    "$&amp;(CONFIG)"> <input type="hidden" name="restrict" value=
+    "$&amp;(RESTRICT)"> <input type="hidden" name="exclude" value=
+    "$&amp;(EXCLUDE)"> Match: $(METHOD) Format: $(FORMAT) Sort:
+    $(SORT)<br>
+    Refine search: <input type="text" size="30" name="words" value=
+    "$&amp;(WORDS)"> <input type="submit" value="Search"></div>
+  </form>
+  <hr>
+  <a href="https://github.com/andy5995/hldig"><img src=
+  "@IMAGEDIR@/htdig.gif" border="0" alt="">hl://dig $(VERSION)</a>
+</body>
+</html>

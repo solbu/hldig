@@ -1,3 +1,43 @@
+/*********************************************
+  Default font settings and typography.
+*********************************************/
+html {
+  font-size: 100%;
+}
+body {
+  color: #323848;
+        font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
+  line-height: 1.2;
+}
+input, select, textarea {
+  font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+pre, code, tt, kbd {
+  font-family: 'andale mono', 'lucida console', monospace;
+  font-size: 1em;
+  line-height: 1.5;
+}
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+address, dfn, samp, ul, ol, dl {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+hr {
+  display: block;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  margin-left: auto;
+  margin-right: auto;
+  border-style: inset;
+  border-width: 1px;
+}
+
+a img {
+  margin: 0;
+}
+
 .plaintext {
   font-size: 18px;
   font-family: arial;
@@ -35,4 +75,12 @@
 
 h1 {
 text-align: center;
+}
+
+.form {
+font-size: 10px;
+}
+
+p.thick {
+    font-weight: bold;
 }

@@ -3,6 +3,29 @@
 This document contains information about changes after hl://Dig was
 forked. To see information about the original project, visit [ht://Dig on SourceForge](https://sourceforge.net/projects/htdig/)
 
+### Thu Jan 11 2018
+
+[#24](https://github.com/andy5995/hldig/issues/24) Added support for a
+linked css stylesheet and reformatted the html code of the .html files
+in installdir. Those are the files that are used for hlsearch results.
+Instructions for
+[testing](https://github.com/andy5995/hldig/blob/master/TESTING.md)
+have been updated accordingly.
+
+If you've already installed lighttpd for testing (as outlined in
+TESTING.md), you'll need to add ".css" to the mimetype.assign section
+in ~/usr/etc/lighttpd.conf
+
+```
+mimetype.assign = (
+  ".html" => "text/html",
+  ".txt" => "text/plain",
+  ".jpg" => "image/jpeg",
+  ".png" => "image/png",
+  ".css" => "text/css,
+)
+```
+
 ### Sun Jan 07 2018
 
 ssl support is now enabled by default. Use `./configure --with-openssl=no`
