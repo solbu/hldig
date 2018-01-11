@@ -4,17 +4,17 @@
   <meta name="generator" content=
   "HTML Tidy for HTML5 for Linux version 5.2.0">
   <title>htdig WWW Search</title>
-  <link rel="stylesheet" href="../../share/hldig/style.css">
+  <link rel="stylesheet" href="@IMAGEDIR@/style.css">
 </head>
 <body>
   <h1><a href="https://github.com/andy5995/hldig"><img src=
   "@IMAGEDIR@/htdig.gif" alt="hl://dig" border="0"></a> WWW Site
   Search</h1>
-  <hr noshade size="4">
+  <hr>
   This search will allow you to search the contents of all the
   publicly available WWW documents at this site.<br>
   <form method="post" action="/cgi-bin/htsearch">
-    <font size="-1">Match: <select name="method">
+    <div class="form">Match: <select name="method">
       <option value="and">
         All
       </option>
@@ -50,13 +50,13 @@
       <option value="revtitle">
         Reverse Title
       </option>
-    </select></font> <input type="hidden" name="config" value=
-    "htdig"> <input type="hidden" name="restrict" value="">
-    <input type="hidden" name="exclude" value=""><br>
+    </select> <input type="hidden" name="config" value="htdig">
+    <input type="hidden" name="restrict" value=""> <input type=
+    "hidden" name="exclude" value=""><br>
     Search: <input type="text" size="30" name="words" value="">
-    <input type="submit" value="Search">
+    <input type="submit" value="Search"></div>
   </form>
-  <hr noshade size="4">
+  <hr>
   <a href="https://github.com/andy5995/hldig">Powered by hl://dig
   $(VERSION)</a>
 </body>

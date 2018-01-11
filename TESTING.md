@@ -85,6 +85,11 @@ Copy `hlsearch.sh` from your $srcdir/scripts directory to your server root
 
 _Note: hlsearch.sh is a wrapper script that calls hlsearch._
 
+So lighttpd can find the web graphics and css stylesheet, in your
+server root, make a symbolic link to testing/htdocs/hldig
+
+    ln -s ../testing/hldig
+
 Change back to the top level of your hldig source directory.
 Start the lighttpd server
 
@@ -174,3 +179,20 @@ remove build files
 remove files created by ./configure
 
     make distclean
+
+## CSS and HTML changes
+
+The css file is located in docs/assets/css. The stylesheet used for the
+main web site is the same one used for the samplesite and the hlsearch
+results pages. It's copied from that directory to testing/htdocs/hldig/
+when `make install` is run.
+
+If you make changes to that css file, or the html files in installdir/,
+you'll need to remove the files from **testing/share/hldig** and
+**testing/htdocs/hldig** and then then run `make install` from
+installdir.
+
+## Web site
+
+Please see [CONTRIBUTING -> Web site](https://github.com/andy5995/hldig/blob/master/CONTRIBUTING.md#web-site) for information
+about making changes to the web site.

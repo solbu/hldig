@@ -23,9 +23,10 @@ single from each other (i.e. a separate PR for each patch).
 
 ## Web site
 
-Most of the files for the [web site][hldig_repo] are in
+Most of the files for the [web site][hldig_website] are in
 [docs/infiles][site_infiles] and can be changed with a pull request
-through GitHub.
+through GitHub. To preview your changes, you can use
+docs/src/simplecgen to generate new html files in docs/
 
 Thank you!
 
@@ -79,7 +80,7 @@ repo with the remote upstream. GitHub has instructions for doing this:
     4 & 5 of **Syncing a Fork**).
 
 [GNU_style_guide]: https://www.gnu.org/prep/standards/html_node/Formatting.html
-[hldig_repo]: https://andy5995.github.io/hldig/
+[hldig_website]: https://andy5995.github.io/hldig/
 [site_infiles]: https://github.com/andy5995/hldig/blob/master/docs/infiles
 [authors]: https://github.com/andy5995/hldig/blob/master/AUTHORS.md
 [git-cola]: https://git-cola.github.io/

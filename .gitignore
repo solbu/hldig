@@ -33,3 +33,4 @@ ABOUT-NLS
 /po/POTFILES
 /po/stamp-po
 /po/remove-potcdate.sed
+/samplesite/hldig
