@@ -24,7 +24,6 @@ branches:
   - master
 
 notifications:
-    slack: htdig:KJALZaL1b3jsXdVMir6cyTYI
     irc:
       channels:
         - "chat.freenode.net##hldig"

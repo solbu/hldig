@@ -32,8 +32,9 @@ Thank you!
 
 ## Pull Requests
 
-1. Join the ##hldig channel on Freenode IRC. so if any problems arise,
-you can get support.
+1. Join the [##hldig channel on Freenode
+IRC[(http://webchat.freenode.net/?channels=%23%23hldig&uio=d4), so if
+any problems arise, you can get support.
 
 2. [Fork the repo][fork] (if you haven't already done so)
 
@@ -84,7 +85,6 @@ repo with the remote upstream. GitHub has instructions for doing this:
 [site_infiles]: https://github.com/andy5995/hldig/blob/master/docs/infiles
 [authors]: https://github.com/andy5995/hldig/blob/master/AUTHORS.md
 [git-cola]: https://git-cola.github.io/
-[hldig_slack]: https://join.slack.com/t/htdig/shared_invite/enQtMjY3NDU1MjMwODk3LTdmM2I2OWI5NWI4MzU4Y2JmMjk2MzAxNDYzM2IzZjJmMGE2MDZmMWMxNDY3MjAwOGFjMmE1YjM2MmM4MzVkNzk
 [fork]: https://github.com/andy5995/hldig/fork
 [sep_branch]: https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches
 [PR]: https://help.github.com/articles/creating-a-pull-request-from-a-fork/
