@@ -32,8 +32,8 @@ Thank you!
 
 ## Pull Requests
 
-1. Join the [hldig Slack workspace][hldig_slack] so if any problems arise, you can
-get support. You may also join the ##hldig channel on Freenode IRC.
+1. Join the ##hldig channel on Freenode IRC. so if any problems arise,
+you can get support.
 
 2. [Fork the repo][fork] (if you haven't already done so)
 
