@@ -29,8 +29,10 @@ List of [Contributors](https://github.com/andy5995/hldig/graphs/contributors)
 If you are interested in translating the output messages from hldig, please see
 [TRANSLATING](https://github.com/andy5995/hldig/blob/master/TRANSLATING.md).
 
-## Community/Contact Anyone interested in this project may join the IRC
-channel - [chat.freenode.net / channel: ##hldig](http://webchat.freenode.net?channels=%23%23hldig&uio=d4)
+## Community/Contact
+
+Anyone interested in this project may join the IRC channel -
+[chat.freenode.net / channel: ##hldig](http://webchat.freenode.net?channels=%23%23hldig&uio=d4)
 
 Project maintainer: Andy Alt
 Email: andy400-dev [at] yahoo.com
