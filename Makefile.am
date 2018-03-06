@@ -17,7 +17,7 @@ SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb hldig hlsearch	\
 hltools installdir include $(TESTDIR) po
 
 # files to be installed to destination docdir when 'make install' is run
-packextrasdir=@docdir@
+# packextrasdir=@docdir@
 
 EXTRA_DIST =	\
 VERSION	\
@@ -32,7 +32,7 @@ ChangeLog.md \
 STATUS	\
 CODE_OF_CONDUCT.md
 
-packextras_DATA=$(EXTRA_DIST)
+# packextras_DATA=$(EXTRA_DIST)
 
 # This only install the html and gif files, but not the assets (css and images)
 # in the docs directory
