@@ -4,7 +4,8 @@ include $(top_srcdir)/Makefile.config
 man_MANS = htdig-pdfparser.1 htdig.1 htdump.1 htfuzzy.1 htload.1 htmerge.1 \
 		htnotify.1 htpurge.1 htsearch.1 htstat.1 rundig.1 htdigconfig.8
 
-IMAGES=		button1.gif button2.gif button3.gif button4.gif button5.gif \
+hldir	=	$(IMAGE_DIR)
+hl_DATA	=	button1.gif button2.gif button3.gif button4.gif button5.gif \
 		button6.gif button7.gif button8.gif button9.gif buttonl.gif \
 		buttonr.gif button10.gif htdig.gif star.gif star_blank.gif \
 		button1.png button2.png button3.png button4.png button5.png \
@@ -38,11 +39,6 @@ install-data-local:	all
 		if [ ! -f $(DESTDIR)$(COMMON_DIR)/$$i ]; then $(INSTALL_DATA) $(top_srcdir)/installdir/$$i $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; fi; \
 	done && test -z "$$fail"
 	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/cookies.txt ]; then cp $(top_srcdir)/installdir/cookies.txt $(DESTDIR)$(CONFIG_DIR)/cookies.txt; echo $(DESTDIR)$(CONFIG_DIR)/cookies.txt;fi
-	@echo "Installing images..."
-	$(mkinstalldirs) $(DESTDIR)$(IMAGE_DIR)
-	@for i in $(IMAGES); do \
-		if [ ! -f $(DESTDIR)$(IMAGE_DIR)/$$i ]; then $(INSTALL_DATA) $(top_srcdir)/installdir/$$i $(DESTDIR)$(IMAGE_DIR)/$$i; echo $(DESTDIR)$(IMAGE_DIR)/$$i;fi; \
-	done && test -z "$$fail"
 	@for i in $(COMMONCSS); do \
 		if [ ! -f $(DESTDIR)$(IMAGE_DIR)/$$i ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/docs/assets/css/$$i >$(DESTDIR)$(IMAGE_DIR)/$$i; echo $(DESTDIR)$(IMAGE_DIR)/$$i;fi; \
 	done && test -z "$$fail"
@@ -58,3 +54,27 @@ install-data-local:	all
 		sed -es%@\CONFIG_DIR@%$(CONFIG_DIR)% $(top_srcdir)/installdir/HtFileType >$(DESTDIR)$(bindir)/HtFileType; \
 		chmod 755 $(DESTDIR)$(bindir)/HtFileType; \
 	fi
+
+uninstall-local:
+	rm -f $(DESTDIR)$(bindir)/HtFileType
+	rm -f $(DESTDIR)$(bindir)/rundig
+	rm -f $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM)
+	rm -f $(DESTDIR)$(CONFIG_DIR)/hldig.conf
+	rm -f $(DESTDIR)$(CONFIG_DIR)/mime.types
+	rm -f $(DESTDIR)$(CONFIG_DIR)/HtFileType-magic.mime
+	rm -f $(DESTDIR)$(CONFIG_DIR)/cookies.txt
+	
+	@for i in $(COMMONHTML); do \
+		rm -f $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; \
+	done && test -z "$$fail"
+	
+	
+	@for i in $(COMMONDICT); do \
+		rm -f $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; \
+	done && test -z "$$fail"
+	
+	@for i in $(COMMONCSS); do \
+		rm -f $(DESTDIR)$(IMAGE_DIR)/$$i; echo $(DESTDIR)$(IMAGE_DIR)/$$i; \
+	done && test -z "$$fail"
+	
+	
