@@ -3,6 +3,11 @@
 This document contains information about changes after hl://Dig was
 forked. To see information about the original project, visit [ht://Dig on SourceForge](https://sourceforge.net/projects/htdig/)
 
+### Tue Mar 06 2018
+
+HTML Documention from docs/ is no longer installed when running `make
+install` (to help with rpm packaging problems).
+
 ### Thu Jan 11 2018
 
 [#24](https://github.com/andy5995/hldig/issues/24) Added support for a
