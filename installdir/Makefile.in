@@ -19,6 +19,7 @@
 #
 # make CFLAGS=-g CXXFLAGS=-g PROFILING=-p all
 #
+
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -159,10 +160,12 @@ am__uninstall_files_from_dir = { \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
 man1dir = $(mandir)/man1
-am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man8dir)"
+am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man8dir)" \
+	"$(DESTDIR)$(hldir)"
 man8dir = $(mandir)/man8
 NROFF = nroff
 MANS = $(man_MANS)
+DATA = $(hl_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -357,7 +360,8 @@ LDADD = $(HTLIBS) @LIBINTL@
 man_MANS = htdig-pdfparser.1 htdig.1 htdump.1 htfuzzy.1 htload.1 htmerge.1 \
 		htnotify.1 htpurge.1 htsearch.1 htstat.1 rundig.1 htdigconfig.8
 
-IMAGES = button1.gif button2.gif button3.gif button4.gif button5.gif \
+hldir = $(IMAGE_DIR)
+hl_DATA = button1.gif button2.gif button3.gif button4.gif button5.gif \
 		button6.gif button7.gif button8.gif button9.gif buttonl.gif \
 		buttonr.gif button10.gif htdig.gif star.gif star_blank.gif \
 		button1.png button2.png button3.png button4.png button5.png \
@@ -522,6 +526,27 @@ uninstall-man8:
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^8][0-9a-z]*$$,8,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	dir='$(DESTDIR)$(man8dir)'; $(am__uninstall_files_from_dir)
+install-hlDATA: $(hl_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(hl_DATA)'; test -n "$(hldir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(hldir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(hldir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(hldir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(hldir)" || exit $$?; \
+	done
+
+uninstall-hlDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(hl_DATA)'; test -n "$(hldir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(hldir)'; $(am__uninstall_files_from_dir)
 tags TAGS:
 
 ctags CTAGS:
@@ -561,9 +586,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(MANS)
+all-am: Makefile $(MANS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man8dir)"; do \
+	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man8dir)" "$(DESTDIR)$(hldir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -616,7 +641,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-data-local install-man
+install-data-am: install-data-local install-hlDATA install-man
 
 install-dvi: install-dvi-am
 
@@ -660,7 +685,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-man
+uninstall-am: uninstall-hlDATA uninstall-local uninstall-man
 
 uninstall-man: uninstall-man1 uninstall-man8
 
@@ -671,14 +696,14 @@ uninstall-man: uninstall-man1 uninstall-man8
 	distclean-libtool distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am \
 	install-data-local install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-man1 install-man8 \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags-am uninstall uninstall-am uninstall-man uninstall-man1 \
-	uninstall-man8
+	install-exec-am install-hlDATA install-html install-html-am \
+	install-info install-info-am install-man install-man1 \
+	install-man8 install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am tags-am uninstall uninstall-am uninstall-hlDATA \
+	uninstall-local uninstall-man uninstall-man1 uninstall-man8
 
 
 install-data-local:	all
@@ -698,11 +723,6 @@ install-data-local:	all
 		if [ ! -f $(DESTDIR)$(COMMON_DIR)/$$i ]; then $(INSTALL_DATA) $(top_srcdir)/installdir/$$i $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; fi; \
 	done && test -z "$$fail"
 	@if [ ! -f $(DESTDIR)$(CONFIG_DIR)/cookies.txt ]; then cp $(top_srcdir)/installdir/cookies.txt $(DESTDIR)$(CONFIG_DIR)/cookies.txt; echo $(DESTDIR)$(CONFIG_DIR)/cookies.txt;fi
-	@echo "Installing images..."
-	$(mkinstalldirs) $(DESTDIR)$(IMAGE_DIR)
-	@for i in $(IMAGES); do \
-		if [ ! -f $(DESTDIR)$(IMAGE_DIR)/$$i ]; then $(INSTALL_DATA) $(top_srcdir)/installdir/$$i $(DESTDIR)$(IMAGE_DIR)/$$i; echo $(DESTDIR)$(IMAGE_DIR)/$$i;fi; \
-	done && test -z "$$fail"
 	@for i in $(COMMONCSS); do \
 		if [ ! -f $(DESTDIR)$(IMAGE_DIR)/$$i ]; then sed -e s%@\IMAGEDIR@%$(IMAGE_URL_PREFIX)% $(top_srcdir)/docs/assets/css/$$i >$(DESTDIR)$(IMAGE_DIR)/$$i; echo $(DESTDIR)$(IMAGE_DIR)/$$i;fi; \
 	done && test -z "$$fail"
@@ -718,6 +738,27 @@ install-data-local:	all
 		sed -es%@\CONFIG_DIR@%$(CONFIG_DIR)% $(top_srcdir)/installdir/HtFileType >$(DESTDIR)$(bindir)/HtFileType; \
 		chmod 755 $(DESTDIR)$(bindir)/HtFileType; \
 	fi
+
+uninstall-local:
+	rm -f $(DESTDIR)$(bindir)/HtFileType
+	rm -f $(DESTDIR)$(bindir)/rundig
+	rm -f $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM)
+	rm -f $(DESTDIR)$(CONFIG_DIR)/hldig.conf
+	rm -f $(DESTDIR)$(CONFIG_DIR)/mime.types
+	rm -f $(DESTDIR)$(CONFIG_DIR)/HtFileType-magic.mime
+	rm -f $(DESTDIR)$(CONFIG_DIR)/cookies.txt
+
+	@for i in $(COMMONHTML); do \
+		rm -f $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; \
+	done && test -z "$$fail"
+
+	@for i in $(COMMONDICT); do \
+		rm -f $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; \
+	done && test -z "$$fail"
+
+	@for i in $(COMMONCSS); do \
+		rm -f $(DESTDIR)$(IMAGE_DIR)/$$i; echo $(DESTDIR)$(IMAGE_DIR)/$$i; \
+	done && test -z "$$fail"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -268,7 +268,7 @@ AC_CXX_HAVE_STD
 
 # Initialize gettext for translations
 AM_GNU_GETTEXT([external], [need-formatstring-macros])
-AM_GNU_GETTEXT_VERSION([0.19.8])
+AM_GNU_GETTEXT_VERSION([0.19.4])
 
 AC_MSG_CHECKING(whether we need gethostname() prototype?)
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[

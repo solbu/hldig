@@ -15,3 +15,4 @@ GitHub's automated list: [graphs/contributors](https://github.com/andy5995/hldig
 | [Debasish Das](https://github.com/Debu44) | |
 | [tauheed25](https://github.com/tauheed25) | |
 | [Elliott Alexander](https://github.com/escottalexander) | |
+| [Johnny A. Solbu](https://www.solbu.net/) | |
