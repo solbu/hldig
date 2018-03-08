@@ -29,7 +29,7 @@ AM_MAINTAINER_MODE
 
 AC_ARG_WITH(config-dir, [AC_HELP_STRING([--with-config-dir=DIR],
 	[where your config directory is @<:@PREFIX/conf@:>@])],
- CONFIG_DIR="$withval", CONFIG_DIR='${prefix}/conf')
+ CONFIG_DIR="$withval", CONFIG_DIR='${sysconfdir}/hldig')
 AC_SUBST(CONFIG_DIR)
 
 # In the below, the strings @<:@ and @:>@ expand to [ and ]
@@ -60,8 +60,8 @@ AC_SUBST(CGIBIN_DIR)
 
 AC_ARG_WITH(search-dir, [AC_HELP_STRING([--with-search-dir=DIR],
 	[where the sample search form should be installed
-	@<:@PREFIX/htdocs/hldig@:>@])],
- SEARCH_DIR="$withval", SEARCH_DIR='${prefix}/htdocs/hldig')
+	@<:@PREFIX/www/html/hldig@:>@])],
+ SEARCH_DIR="$withval", SEARCH_DIR='${localstatedir}/www/html/hldig')
 AC_SUBST(SEARCH_DIR)
 
 AC_ARG_WITH(search-form, [AC_HELP_STRING([--with-search-form=FILE],
@@ -71,8 +71,8 @@ AC_SUBST(SEARCH_FORM)
 
 AC_ARG_WITH(image-dir, [AC_HELP_STRING([--with-image-dir=DIR],
 	[where the hl://Dig images are installed
-	@<:@PREFIX/htdocs/hldig@:>@])],
- IMAGE_DIR="$withval", IMAGE_DIR='${prefix}/htdocs/hldig')
+	@<:@PREFIX/www/html/hldig@:>@])],
+ IMAGE_DIR="$withval", IMAGE_DIR='${localstatedir}/www/html/hldig')
 AC_SUBST(IMAGE_DIR)
 
 AC_ARG_WITH(image-url-prefix,

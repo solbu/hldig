@@ -1518,10 +1518,10 @@ Optional Packages:
   --with-cgi-bin-dir=DIR  where your web server cgi-bin directory is
                           [PREFIX/cgi-bin]
   --with-search-dir=DIR   where the sample search form should be installed
-                          [PREFIX/htdocs/hldig]
+                          [PREFIX/www/html/hldig]
   --with-search-form=FILE the name for the sample search form [search.html]
   --with-image-dir=DIR    where the hl://Dig images are installed
-                          [PREFIX/htdocs/hldig]
+                          [PREFIX/www/html/hldig]
   --with-image-url-prefix=LOCATION
                           the URL path to the installed images [/hldig]
   --with-rx               with system rx instead of regex [no]
@@ -3550,7 +3550,7 @@ fi
 if test "${with_config_dir+set}" = set; then :
   withval=$with_config_dir; CONFIG_DIR="$withval"
 else
-  CONFIG_DIR='${prefix}/conf'
+  CONFIG_DIR='${sysconfdir}/hldig'
 fi
 
 
@@ -3601,7 +3601,7 @@ fi
 if test "${with_search_dir+set}" = set; then :
   withval=$with_search_dir; SEARCH_DIR="$withval"
 else
-  SEARCH_DIR='${prefix}/htdocs/hldig'
+  SEARCH_DIR='${localstatedir}/www/html/hldig'
 fi
 
 
@@ -3621,7 +3621,7 @@ fi
 if test "${with_image_dir+set}" = set; then :
   withval=$with_image_dir; IMAGE_DIR="$withval"
 else
-  IMAGE_DIR='${prefix}/htdocs/hldig'
+  IMAGE_DIR='${localstatedir}/www/html/hldig'
 fi
 
 
