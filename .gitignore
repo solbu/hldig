@@ -35,3 +35,5 @@ ABOUT-NLS
 /po/remove-potcdate.sed
 /samplesite/hldig
 *.patch
+po/*.gmo
+po/*.mo
