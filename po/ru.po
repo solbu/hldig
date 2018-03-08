@@ -1,0 +1,648 @@
+# Russian translations for hldig package
+# ���������� �������� ��� ������ hldig.
+# Copyright (C) 2018 Andy Alt
+# This file is distributed under the same license as the hldig package.
+# svitlana.galianova@gmail.com, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: hldig 0.1.01\n"
+"Report-Msgid-Bugs-To: andy400-dev@yahoo.com\n"
+"POT-Creation-Date: 2018-01-05 04:06-0600\n"
+"PO-Revision-Date: 2018-03-07 20:41-0500\n"
+"Last-Translator: svitlana.galianova@gmail.com\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CP1251\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: hldig/hldig.cc:522
+#, c-format
+msgid ""
+"\tTells hldig to append .work to database files, causing\n"
+"\ta second copy of the database to be built.  This allows\n"
+"\tthe original files to be used by hlsearch during the\n"
+"\tindexing run.\n"
+"\n"
+msgstr ""
+"\thldig добавит .work к файлам базы данных, что приведет\n"
+"\tк загрузке второй базы данных.  Это позволит\n"
+"\thlsearch использовать оригинальные файлы при\n"
+"\tпрогоне индексов.\n"
+"\n"
+
+#: htcommon/messages.cc:39
+#, c-format
+msgid " -a\tUse alternate work files.\n"
+msgstr " -a\tИспользовать альтернативные рабочие файлы.\n"
+
+#: htcommon/messages.cc:32
+#, c-format
+msgid ""
+" -c\tconfigfile\n"
+"\tUse the specified configuration file instead of the\n"
+"\tdefault.\n"
+"\n"
+msgstr ""
+" -c\tconfigfile\n"
+"\tИспользовать указанные настройки файла вместо\n"
+"\tнастроек по умолчанию.\n"
+"\n"
+
+#: hldig/hldig.cc:505
+#, c-format
+msgid ""
+" -h\thop count\n"
+"\tLimit the stored documents to those which are at\n"
+"\tmost hopcount links away from the start URL.\n"
+"\n"
+msgstr ""
+" -h\thop count\n"
+"\tОграничить количество сохраненных файлов до тех которые\n"
+"\tотдалены на самое большое количество хопов от начала URL.\n"
+"\n"
+
+#: hldig/hldig.cc:494
+#, c-format
+msgid ""
+" -i\tInitial.  Do not use any old databases.  This is\n"
+"\taccomplished by first erasing the databases.\n"
+"\n"
+msgstr ""
+" -i\tНачало.  Не используйте старые базы данных.  Это\n"
+"\tбудет достигнуто при первом удалении баз данных.\n"
+"\n"
+
+#: hldig/hldig.cc:528
+#, c-format
+msgid ""
+" -m\tminimalfile (or just a file name at end of arguments)\n"
+"\tTells hldig to read URLs from the supplied file and index\n"
+"\tthem in place of (or in addition to) the existing URLs in\n"
+"\tthe database and the start_url.  With the -m, only the\n"
+"\tURLs specified are added to the database.  A file name of\n"
+"\t'-' indicates the standard input.\n"
+"\n"
+msgstr ""
+" -m\tminimalfile (или просто имя файлов в конце аргументов)\n"
+"\thldig будет читать URLs с предоставленного файла и индекса\n"
+"\tвместо (или в придачу к) существующим URLs в\n"
+"\tбазе данных и start_url.  С -m, только\n"
+"\tуказанные URLs будут добавлены в базу данных.  А название файла\n"
+"\t'-' определит стандартный ввод.\n"
+"\n"
+
+#: hldig/hldig.cc:510
+#, c-format
+msgid ""
+" -s\tReport statistics after completion.\n"
+"\n"
+msgstr ""
+" -s\tСообщить результаты после завершения.\n"
+"\n"
+
+#: hldig/hldig.cc:500
+#, c-format
+msgid ""
+" -t\tCreate an ASCII version of the document database.\n"
+"\tThis database is easy to parse with other programs so\n"
+"\tthat information can be extracted from it.\n"
+"\n"
+msgstr ""
+" -t\tСоздать ASCII версию базы данных, которая содержит документы.\n"
+"\tЭту базу данных будет проще анализировать в других программах так что\n"
+"\tэта информация будет извлечена из базы данных.\n"
+"\n"
+
+#: hldig/hldig.cc:513
+#, c-format
+msgid ""
+" -u\tusername:password\n"
+"\tTells hldig to send the supplied username and\n"
+"\tpassword with each HTTP request.  The credentials\n"
+"\twill be encoded using the 'Basic' authentication scheme.\n"
+"\tThere *HAS* to be a colon (:) between the username\n"
+"\tand password.\n"
+"\n"
+msgstr ""
+" -u\tusername:password\n"
+"\thldig отправит предоставленные имя пользователя и\n"
+"\tпароль с каждым HTTP запросом.  Учетные данные\n"
+"\tбудут закодированы по схеме аутентификации 'Basic'.\n"
+"\tДанные *ДОЛЖНЫ* содержать двоеточие (:) между именем пользователя\n"
+"\tи паролем.\n"
+"\n"
+
+#: htcommon/messages.cc:22
+#, c-format
+msgid ""
+" -v\tVerbose mode\n"
+"\tThis increases the verbosity of the\n"
+"\tprogram.  Using more than 2 is probably only useful\n"
+"\tfor debugging purposes.  The default verbose mode\n"
+"\tgives a nice progress report of what it is doing and\n"
+"\twhere it is.\n"
+"\n"
+msgstr ""
+" -v\tПодробный режим\n"
+"\tЭто увеличит детальность\n"
+"\tпрограммы.  Использовать больше чем 2 будет полезно\n"
+"\tдля отладочных целей.  Детальность по умолчанию\n"
+"\tсгенерирует отчет о ходе работы включая что происходит\n"
+"\tи где происходит.\n"
+"\n"
+
+#: hldig/Retriever.cc:2067
+msgid " HEAD call before GET      : No"
+msgstr " Вызов HEAD перед GET      : Нет"
+
+#: hldig/Retriever.cc:2065
+msgid " HEAD call before GET      : Yes"
+msgstr " Вызов HEAD перед GET      : Да"
+
+#: hldig/Retriever.cc:2071
+msgid " Persistent connections    : No"
+msgstr " Постоянные подключения    : Нет"
+
+#: hldig/Retriever.cc:2061
+msgid " Persistent connections    : Yes"
+msgstr " Постоянные подключения    : Да"
+
+#: hldig/ExternalParser.cc:359 hldig/ExternalParser.cc:377
+#: hldig/ExternalParser.cc:386 hldig/ExternalParser.cc:395
+#: hldig/ExternalParser.cc:545 hldig/ExternalParser.cc:551
+#: hldig/ExternalParser.cc:571 hldig/ExternalTransport.cc:245
+#: hldig/ExternalTransport.cc:254 hldig/ExternalTransport.cc:264
+#: hldig/ExternalTransport.cc:273 hldig/ExternalTransport.cc:282
+#: hldig/ExternalTransport.cc:291 hldig/ExternalTransport.cc:296
+msgid " URL: "
+msgstr " Ссылка: "
+
+#: hldig/Server.cc:442
+msgid " document"
+msgstr " документ"
+
+#: hldig/hldig.cc:178
+msgid " is no longer supported\n"
+msgstr " больше не поддерживается\n"
+
+#: hlsearch/hlsearch.cc:983
+msgid ""
+" query_string\n"
+"\tA CGI-style query string can be given as a single\n"
+"\targument, and is only used if the REQUEST_METHOD environment\n"
+"\tvariable is not set.  If no query_string is given, and\n"
+"\tREQUEST_METHOD is not set, hlsearch will prompt for the query.\n"
+"\n"
+msgstr ""
+" query_string\n"
+"\tСтринг стиля CGI может быть передан как одиночный\n"
+"\tаргумент, и будет использован только если REQUEST_METHOD переменная\n"
+"\tсреды не обнаружена.  Если query_string не указан, и\n"
+"\tREQUEST_METHOD не обнаружена, hlsearch запросит стринг.\n"
+"\n"
+
+#: hldig/Retriever.cc:2024
+msgid " seen:\n"
+msgstr " просмотренно:\n"
+
+#: hldig/Retriever.cc:2021
+msgid " server"
+msgstr " сервер"
+
+#: htfuzzy/htfuzzy.cc:115
+#, c-format
+msgid "'%s' is not a supported algorithm"
+msgstr "'%s' не поддерживается алгоритмом"
+
+#: hldig/Retriever.cc:2049
+msgid ": Errors to take note of:\n"
+msgstr ": Обратите внимание на ошибки:\n"
+
+#: hldig/Retriever.cc:2020
+msgid ": Run complete\n"
+msgstr ": Запуск завершен\n"
+
+#: hlsearch/hlsearch.cc:957
+#, c-format
+msgid ""
+"<h1>hl://Dig error</h1>\n"
+"<p>hlsearch detected an error.  Please report this to the\n"
+"webmaster of this site by sending an e-mail to:\n"
+msgstr ""
+"<h1>hl://Dig error</h1>\n"
+"<p>hlsearch обнаружил ошибку.  Пожалуйста сообщите\n"
+"системному администратору сайта по этому имейлу:\n"
+
+#: hldig/Retriever.cc:295
+msgid "Cannot install SIGHUP handler\n"
+msgstr "Невозможно установить SIGHUP\n"
+
+#: hldig/Retriever.cc:289
+msgid "Cannot install SIGINT handler\n"
+msgstr "Невозможно установить SIGINT\n"
+
+#: hldig/Retriever.cc:315
+msgid "Cannot install SIGPIPE handler\n"
+msgstr "Невозможно установить SIGPIPE\n"
+
+#: hldig/Retriever.cc:291
+msgid "Cannot install SIGQUIT handler\n"
+msgstr "Невозможно установить SIGQUIT\n"
+
+#: hldig/Retriever.cc:293
+msgid "Cannot install SIGTERM handler\n"
+msgstr "Невозможно установить SIGTERM\n"
+
+#: hldig/hldig.cc:418
+#, c-format
+msgid "Could not open argument '%s' of flag -m\n"
+msgstr "Невозможно открыть аргумент '%s' флага -m\n"
+
+#: hltools/hlpurge.cc:196
+msgid "Database is empty!"
+msgstr "База данных - пуста!"
+
+#: hltools/hlnotify.cc:336
+msgid "Date:    "
+msgstr "Дата:    "
+
+#: hltools/hlpurge.cc:272
+msgid "Deleted, marked by user input: ID: "
+msgstr "Удалено, обозначено вводом пользователя: ID: "
+
+#: hltools/hlpurge.cc:263
+msgid "Deleted, never retrieved: ID: "
+msgstr "Удалено, не полученно: ID: "
+
+#: hltools/hlpurge.cc:254
+msgid "Deleted, no excerpt: ID: "
+msgstr "Удалено, не выписано: ID: "
+
+#: hltools/hlpurge.cc:227
+msgid "Deleted, noindex: ID: "
+msgstr "Удалено, нет индекса: ID: "
+
+#: hltools/hlpurge.cc:235
+msgid "Deleted, obsolete: ID: "
+msgstr "Удалено, устарело: ID: "
+
+#: hltools/hlnotify.cc:339
+msgid "Email:   "
+msgstr "Имейл:   "
+
+#. TRANSLATORS: Do not translate "Content-Type"
+#: hldig/ExternalParser.cc:568
+msgid "External parser error: can't parse Content-Type \""
+msgstr "Ошибка внешнего парсера: невозможно обработать Content-Type \""
+
+#: hldig/ExternalParser.cc:358
+msgid "External parser error: expected URL in line "
+msgstr "Ошибка внешнего парсера: ожидали URL на строчке "
+
+#: hldig/ExternalParser.cc:385
+msgid "External parser error: expected anchor in line "
+msgstr "Ошибка внешнего парсера: ожидали anchor на строчке "
+
+#: hldig/ExternalParser.cc:394
+msgid "External parser error: expected image URL in line "
+msgstr "Ошибка внешнего парсера: ожидали URL изображения на строчке "
+
+#: hldig/ExternalParser.cc:544
+msgid "External parser error: expected metadata in line "
+msgstr "Ошибка внешнего парсера: ожидали мета дату на строчке "
+
+#: hldig/ExternalParser.cc:376
+msgid "External parser error: expected text in line "
+msgstr "Ошибка внешнего парсера: ожидали текст на строчке "
+
+#: hldig/ExternalParser.cc:367
+msgid "External parser error: expected title in line "
+msgstr "Ошибка внешнего парсера: ожидали заголовок на строчке "
+
+#: hldig/ExternalParser.cc:343
+msgid "External parser error: expected word in line "
+msgstr "Ошибка внешнего парсера: ожидали слово на строчке "
+
+#. TRANSLATORS: Do not translate "Content-Type"
+#: hldig/ExternalParser.cc:563
+msgid "External parser error: no Content-Type given\n"
+msgstr "Ошибка внешнего парсера: Content-Type не найден\n"
+
+#: hldig/ExternalParser.cc:550
+msgid "External parser error: unknown field in line "
+msgstr "Ошибка внешнего парсера: неопознаное поле на строчке "
+
+#: hldig/ExternalTransport.cc:290
+msgid "External transport error: expected URL in line "
+msgstr "Ошибка внешнего транспортера: ожидали URL на строчке "
+
+#: hldig/ExternalTransport.cc:281
+msgid "External transport error: expected content-length in line "
+msgstr "Ошибка внешнего транспортера: ожидали content-length на строчке "
+
+#: hldig/ExternalTransport.cc:272
+msgid "External transport error: expected content-type in line "
+msgstr "Ошибка внешнего транспортера: ожидали content-type на строчке "
+
+#: hldig/ExternalTransport.cc:263
+msgid "External transport error: expected modification time in line "
+msgstr "Ошибка внешнего транспортера: ожидали изменение времени на строчке "
+
+#: hldig/ExternalTransport.cc:244
+msgid "External transport error: expected status code in line "
+msgstr "Ошибка внешнего транспортера: ожидали код статуса на строчке "
+
+#: hldig/ExternalTransport.cc:253
+msgid "External transport error: expected status reason in line "
+msgstr "Ошибка внешнего транспортера: ожидали причину статуса на строчке "
+
+#: hldig/ExternalTransport.cc:295
+msgid "External transport error: unknown field in line "
+msgstr "Ошибка внешнего транспортера: неопознаное поле на строчке "
+
+#: hltools/hlnotify.cc:508 hltools/hlnotify.cc:522
+msgid "From: "
+msgstr "От: "
+
+#: hldig/Retriever.cc:2056
+msgid "HTTP statistics"
+msgstr "HTTP статистика"
+
+#: hldig/hldig.cc:258
+msgid "Importing Cookies input file "
+msgstr "Импортируем файл с куками "
+
+#: hldig/hldig.cc:199 hlsearch/hlsearch.cc:327 hltools/hldump.cc:105
+#: hltools/hlload.cc:102 hltools/hlmerge.cc:135 hltools/hlnotify.cc:187
+#: hltools/hlpurge.cc:103 hltools/hlstat.cc:95
+#, c-format
+msgid "Invalid url_part_aliases or common_url_parts: %s"
+msgstr "Неправильные url_part_aliases или common_url_parts: %s"
+
+#: hldig/hldig.cc:207 hlsearch/hlsearch.cc:334
+#, c-format
+msgid "Invalid url_rewrite_rules: %s"
+msgstr "Неправильные url_rewrite_rules: %s"
+
+#: hltools/hlnotify.cc:352
+msgid "Malformed Date"
+msgstr "Неправильная Дата"
+
+#: hldig/Retriever.cc:1994
+msgid "Not found"
+msgstr "Не найдено"
+
+#: hltools/hlnotify.cc:479
+msgid "Notification required to "
+msgstr "Напоминание должно "
+
+#: hldig/hldig.cc:490 hlsearch/hlsearch.cc:978 hltools/hldump.cc:186
+#: hltools/hlload.cc:181 hltools/hlmerge.cc:390 hltools/hlnotify.cc:567
+#: hltools/hlpurge.cc:391 hltools/hlstat.cc:183 htfuzzy/htfuzzy.cc:244
+msgid "Options:\n"
+msgstr "Опции:\n"
+
+#: hltools/hlnotify.cc:314
+msgid "Postamble text:"
+msgstr "Текст постамбулы:"
+
+#: hltools/hlnotify.cc:312
+msgid "Preamble text:"
+msgstr "Текст преамбулы:"
+
+#: hltools/hlnotify.cc:526
+msgid "Reply-To: "
+msgstr "Ответить-Для: "
+
+#: hltools/hlnotify.cc:335
+msgid "Saw a date:"
+msgstr "Обнаружили дату:"
+
+#: hltools/hlnotify.cc:338 hltools/hlnotify.cc:531
+msgid "Subject: "
+msgstr "Тема: "
+
+#: hltools/hlnotify.cc:535
+msgid "Subject: Web page expiry ("
+msgstr "Тема: Истекает срок действия Веб страницы ("
+
+#: htfuzzy/htfuzzy.cc:236
+msgid "Supported algorithms:\n"
+msgstr "Поддерживаемые алгоритмы:\n"
+
+#: hlsearch/hlsearch.cc:962
+msgid "The error message is:</p>\n"
+msgstr "Сообщение ошибки:</p>\n"
+
+#: hldig/hldig.cc:489 hlsearch/hlsearch.cc:977 hltools/hldump.cc:185
+#: hltools/hlload.cc:180 hltools/hlmerge.cc:389 hltools/hlnotify.cc:563
+#: hltools/hlpurge.cc:390 hltools/hlstat.cc:182 htfuzzy/htfuzzy.cc:235
+#, c-format
+msgid ""
+"This program is part of hl://Dig %s\n"
+"\n"
+msgstr ""
+"Эта программа часть - hl://Dig %s\n"
+"\n"
+
+#: hltools/hlnotify.cc:509 hltools/hlnotify.cc:523
+msgid "To: "
+msgstr "Для: "
+
+#: hltools/hlnotify.cc:337
+msgid "URL:     "
+msgstr "Ссылка:     "
+
+#: hldig/Retriever.cc:560
+#, c-format
+msgid "Unable to create URL log file '%s'"
+msgstr "Невозможно создать URL файл с логами '%s'"
+
+#: hldig/hldig.cc:304
+#, c-format
+msgid "Unable to create images file '%s'"
+msgstr "Невозможно создать файл с изображениями '%s'"
+
+#: hldig/hldig.cc:158 hltools/hlload.cc:90 hltools/hlmerge.cc:123
+#: hltools/hlmerge.cc:143 hltools/hlpurge.cc:91 hltools/hlstat.cc:83
+#: htfuzzy/htfuzzy.cc:131
+#, c-format
+msgid "Unable to find configuration file '%s'"
+msgstr "Невозможно найти файл с настройками '%s'"
+
+#: hldig/hldig.cc:278
+#, c-format
+msgid "Unable to load cookies file '%s' in memory"
+msgstr "Невозможно загрузить куки файл '%s' в память"
+
+#: hltools/hlmerge.cc:247 hltools/hlmerge.cc:341
+#, c-format
+msgid "Unable to open document database '%s'"
+msgstr "Невозможно открыть базу данных с документами '%s'"
+
+#: hltools/hlmerge.cc:219 hltools/hlmerge.cc:241
+#, c-format
+msgid "Unable to open document excerpts '%s'"
+msgstr "Невозможно открыть документ выдержки '%s'"
+
+#: hltools/hlmerge.cc:212 hltools/hlmerge.cc:234
+#, c-format
+msgid "Unable to open document index '%s'"
+msgstr "Невозможно открыть документ индекс '%s'"
+
+#: htfuzzy/htfuzzy.cc:196
+#, c-format
+msgid "Unable to open word database %s"
+msgstr "Невозможно открыть базу данных со словами %s"
+
+#: hldig/hldig.cc:337 hltools/hlmerge.cc:225 hltools/hlmerge.cc:335
+#, c-format
+msgid "Unable to open/create document database '%s'"
+msgstr "Невозможно открыть/создать базу данных с документами '%s'"
+
+#: hlsearch/hlsearch.cc:234
+msgid "Unable to read configuration file"
+msgstr "Невозможно прочитать файл с настройками"
+
+#: hlsearch/hlsearch.cc:410
+#, c-format
+msgid ""
+"Unable to read document database file '%s'\n"
+"Did you run hldig?"
+msgstr ""
+"Невозможно прочитать файл базы данных с документами '%s'\n"
+"Вы запускали hldig?"
+
+#: hlsearch/hlsearch.cc:418
+#, c-format
+msgid ""
+"Unable to read document excerpts '%s'\n"
+"Did you run hldig?"
+msgstr ""
+"Невозможно прочитать документ выдержки '%s'\n"
+"Вы запускали hldig?"
+
+#: hlsearch/hlsearch.cc:402
+#, c-format
+msgid ""
+"Unable to read document index file '%s'\n"
+"Did you run hldig?"
+msgstr ""
+"Невозможно прочитать документ индекс файл '%s'\n"
+"Вы запускали hldig?"
+
+#: hlsearch/hlsearch.cc:445
+#, c-format
+msgid ""
+"Unable to read template file '%s'\n"
+"Does it exist?"
+msgstr ""
+"Невозможно прочитать файл формы '%s'\n"
+"Он существует?"
+
+#: hlsearch/hlsearch.cc:393
+#, c-format
+msgid ""
+"Unable to read word database file '%s'\n"
+"Did you run hldig?"
+msgstr ""
+"Невозможно прочитать базу данных слов '%s'\n"
+"Вы запускали hldig?"
+
+#: hldig/Retriever.cc:1998
+msgid "Unknown host or unable to contact server"
+msgstr "Неизвестный host или невозможно подключиться к серверу"
+
+#: hldig/Retriever.cc:2002
+msgid "Unknown host or unable to contact server (port)"
+msgstr "Неизвестный host или невозможно подключиться к серверу (порт)"
+
+#: hldig/hldig.cc:177
+msgid "Warning: Configuration option "
+msgstr "Предупреждение: Опция настройки "
+
+#: hldig/hldig.cc:274
+msgid "Warning: Import failed! ("
+msgstr "Предупреждение: Импорт безуспешен! ("
+
+#: hldig/hldig.cc:182
+msgid "Warning: unknown locale!\n"
+msgstr "Предупреждение: неизвестный locale!\n"
+
+#: hldig/hldig.cc:191
+msgid "authorization"
+msgstr "авторизация"
+
+#: hlsearch/hlsearch.cc:345
+msgid "boolean_keywords attribute should have three entries"
+msgstr "boolean_keywords атрибут должен содержать три ввода"
+
+#: hldig/hldig.cc:472
+msgid "hldig End Time: "
+msgstr "hldig Время Окончания: "
+
+#: hldig/hldig.cc:148
+msgid "hldig Start Time: "
+msgstr "hldig Время начала: "
+
+#: htfuzzy/htfuzzy.cc:211
+msgid "hlfuzzy: Could not create database for algorithm: "
+msgstr "hlfuzzy: Не удалось создать базу данных для алгоритма: "
+
+#: htfuzzy/htfuzzy.cc:219
+msgid "hlfuzzy: Done.\n"
+msgstr "hlfuzzy: Завершено.\n"
+
+#: htfuzzy/htfuzzy.cc:121
+msgid "hlfuzzy: No algorithms specified\n"
+msgstr "hlfuzzy: Алгоритмы не указаны\n"
+
+#: htfuzzy/htfuzzy.cc:206
+msgid "hlfuzzy: Selected algorithm: "
+msgstr "hlfuzzy: Выбраный алгоритм: "
+
+#: htfuzzy/htfuzzy.cc:176
+msgid "hlfuzzy: Writing index files...\n"
+msgstr "hlfuzzy: Пишем индекс файлы...\n"
+
+#: htfuzzy/htfuzzy.cc:175
+msgid "hlfuzzy: total words: "
+msgstr "hlfuzzy: общее количество слов: "
+
+#: hltools/hlstat.cc:138
+msgid "hlstat: Total documents: "
+msgstr "hlstat: Общее количество документов: "
+
+#: hltools/hlstat.cc:163
+msgid "hlstat: Total unique words: "
+msgstr "hlstat: Общее количество уникальных слов: "
+
+#: hltools/hlstat.cc:162
+msgid "hlstat: Total words: "
+msgstr "hlfuzzy: Общее количество слов: "
+
+#: hltools/hlstat.cc:144
+msgid "hlstat: URLs in database: "
+msgstr "hlstat: URLs в базе данных: "
+
+#: hldig/hldig.cc:181
+msgid "locale"
+msgstr "locale"
+
+#: hldig/hldig.cc:186
+msgid "max_hop_count"
+msgstr "max_hop_count"
+
+#: hltools/hlnotify.cc:97
+msgid "page expired"
+msgstr "истек срок годности страницы"
+
+#: hldig/hldig.cc:487 hlsearch/hlsearch.cc:975 hltools/hldump.cc:183
+#: hltools/hlload.cc:178 hltools/hlmerge.cc:387 hltools/hlnotify.cc:561
+#: hltools/hlpurge.cc:388 hltools/hlstat.cc:180 htfuzzy/htfuzzy.cc:233
+msgid "usage:"
+msgstr "использовать:"
