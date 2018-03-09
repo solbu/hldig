@@ -36,11 +36,11 @@ msgid "regular file"
 msgstr "reguläre Datei"
 ```
 
-* You will need the `gettext` package from your OS distribution.
+* You will need the `gettext` package from your OS distribution. (Most likely it is already installed by default)
 * Follow the steps for [pull requests](https://github.com/andy5995/hldig/blob/master/CONTRIBUTING.md#pull-requests) to begin working on your translation addition.
 * After you clone your fork, go into the hldig source po/ directory
-* run `msginit -i hldig.pot -o ??.po -l ??` (Where ?? is your
- [iso-631-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes))
+* run `msginit -l ??` (Where ?? is your
+ [iso-631-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)) Example: To create a french .po file, run `msginit -l fr`.
 * At this point, you may open your new .po file and begin adding translations
 * When done, make a [pull request](https://github.com/andy5995/hldig/blob/master/CONTRIBUTING.md#pull-requests)
 * Thank you!
