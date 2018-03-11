@@ -7,10 +7,6 @@ matrix:
     - os: osx
       osx_image: xcode9.3beta
 
-compiler:
-  - gcc
-  - clang
-
 script:
   - cd docs/src
   - ./configure
