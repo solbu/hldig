@@ -87,10 +87,10 @@ mkdir -p var/hldig
 mkdir -p var/hldig2
 
 hldig=../hldig/hldig
-htsearch=../htsearch/htsearch
-htmerge=../httools/htmerge
-htpurge=../httools/htpurge
-htstat=../httools/htstat
+hlsearch=../hlsearch/hlsearch
+hlmerge=../hltools/hlmerge
+hlpurge=../hltools/hlpurge
+hlstat=../hltools/hlstat
 hldump=../hltools/hldump
 hlload=../hltools/hlload
 htfuzzy=../htfuzzy/htfuzzy
