@@ -1,12 +1,12 @@
 language: cpp
 
-os:
-  - linux
-  - osx
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
 
-compiler:
-  - clang
-  - gcc
+    - os: osx
+      osx_image: xcode9.3beta
 
 script:
   - cd docs/src
