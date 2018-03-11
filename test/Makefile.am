@@ -112,13 +112,13 @@ NWORDS =
 #MONITOR = -m
 MONITOR = 
 
-bench:
+benchmark: dbbench
 	rm -f $(BASE) $(BASE)_weakcmpr __db* monitor.out bench.out
 	( \
 	  MIFLUZ_CONFIG=$(top_srcdir)/test/mifluz.conf $(TIMEV) $(top_builddir)/test/dbbench $(CACHESIZE) $(PAGESIZE) $(CMPR) $(WORDS) $(LOOP) -B $(BASE) $(NWORDS) $(MONITOR) ; \
 	  ls -l $(BASE) ; \
-	  if [ -f $(BASE)_weakcmpr ] ; then MIFLUZ_CONFIG=$(top_srcdir)/test/mifluz.conf $(top_builddir)/htdb/htdump -p $(BASE)_weakcmpr ; fi ; \
-	  MIFLUZ_CONFIG=$(top_srcdir)/test/mifluz.conf $(top_builddir)/htdb/htstat $(CMPR) -d $(BASE) ; \
+	  if [ -f $(BASE)_weakcmpr ] ; then MIFLUZ_CONFIG=$(top_srcdir)/test/mifluz.conf $(top_builddir)/htdb/htdb_dump -p $(BASE)_weakcmpr ; fi ; \
+	  MIFLUZ_CONFIG=$(top_srcdir)/test/mifluz.conf $(top_builddir)/htdb/htdb_stat $(CMPR) -d $(BASE) ; \
 	) 2>&1 | tee bench.out
 	if [ "$(RRDTOOL)" -a "X$(MONITOR)" != "X" ] ; then \
 		if [ "$(REPORT)" ] ; \
@@ -128,6 +128,7 @@ bench:
 		$(PERL) benchmark-report $$output --comment="`cat bench.out`" ; \
 		rm monitor.out ; \
 	fi
+	mkdir -p benchmark
 
 #
 # Generate list of words from info and man files.

@@ -79,20 +79,20 @@ then
 fi
 
 #
-# Prepare htdig test environment
+# Prepare hldig test environment
 #
-rm -fr var/htdig
-rm -fr var/htdig2
-mkdir -p var/htdig
-mkdir -p var/htdig2
+rm -fr var/hldig
+rm -fr var/hldig2
+mkdir -p var/hldig
+mkdir -p var/hldig2
 
-htdig=../htdig/htdig
+hldig=../hldig/hldig
 htsearch=../htsearch/htsearch
 htmerge=../httools/htmerge
 htpurge=../httools/htpurge
 htstat=../httools/htstat
-htdump=../httools/htdump
-htload=../httools/htload
+hldump=../hltools/hldump
+hlload=../hltools/hlload
 htfuzzy=../htfuzzy/htfuzzy
 
 #
