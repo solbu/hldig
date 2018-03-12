@@ -23,7 +23,6 @@ libtool
 test/test_functions
 /samplesite/cgi-bin
 /samplesite/htsearch.sh
-ABOUT-NLS
 /docs/src/simplecgen
 /samplesite/hlsearch.sh
 /docs/src/config.h
