@@ -24,7 +24,7 @@ branches:
 notifications:
     irc:
       channels:
-        - "chat.freenode.net##hldig"
+        - "chat.freenode.net#hldig"
       skip_join: false
       use_notice: false
       on_success: change
