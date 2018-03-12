@@ -156,36 +156,29 @@ bufchk (const char *str, ushort boundary)
 }
 
 /**
- * trim: remove trailing blanks, tabs, newlines
- * Adapted from The ANSI C Programming Language, 2nd Edition (p. 65)
- * Brian W. Kernighan & Dennis M. Ritchie
+ * trim: remove trailing blanks, tabs, newlines, carriage returns
  */
-int
+void
 trim (char *str)
 {
-  static int n;
-
-  n = strlen (str);
-
-  char c;
-  c = str[n];
-
-  if (c != '\0')
+  /* Advance pointer until NULL terminator is found */
+  while (*str != '\0')
   {
-    printf ("null terminator not found\n");
+    str++;
+  };
+
+  /* set pointer to segment preceding NULL terminator */
+  str--;
+
+  /* /r added to fix a bug. It was failing on files when the lines ended
+   * with CRLF */
+  while (*str == ' ' || *str == '\t' || *str == '\n' || *str == EOF || *str == '\r')
+  {
+    *str = '\0';
+    str--;
   }
 
-  n--;
-  c = str[n];
-
-  while (c == ' ' || c == '\t' || c == '\n' || c == EOF)
-  {
-    str[n] = '\0';
-    n--;
-    c = str[n];
-  }
-
-  return n;
+  return;
 }
 
 void
