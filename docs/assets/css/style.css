@@ -84,3 +84,32 @@ font-size: 10px;
 p.thick {
     font-weight: bold;
 }
+
+.nav li:not(:first-of-type),
+.nav li:not(:nth-of-type(10)),
+.nav li:not(:nth-of-type(24)),
+.nav li:not(:nth-of-type(31)) {
+  font-family: helvetica, arial;
+  font-size: 13px;
+}
+
+.nav > li:first-child,
+.nav > li:nth-of-type(10),
+.nav > li:nth-of-type(24),
+.nav > li:nth-of-type(31) {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.nav input {
+  font-size: 13px;
+}
+
+div[class="col-md-8"] > h2:first-of-type {
+  text-align: center;
+}
+
+div[class="col-md-8"] > hr {
+  border-top: 1px solid rgba(0,0,0,0.5);
+}

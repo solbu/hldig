@@ -1,27 +1,27 @@
 title:hl://Dig
 layout:default
 ---
-<h2 align="center">
-  <a href="https://github.com/andy5995/hldig">hl://Dig</a> is a fork of <a href="https://sourceforge.net/projects/htdig/">ht://Dig</a>, a world-wide-web search system for an intranet or small internet.
-</h2>
-<p>
-  hl://Dig Copyright &copy; 2017<br>
-  Please see the file <a href="https://github.com/andy5995/hldig/blob/master/COPYING">COPYING</a> for
-  license information.
-</p>
-<hr size="4" noshade>
 <h2>
-  Recent News
+<a href="https://github.com/andy5995/hldig">hl://Dig</a> is a fork of <a href="https://sourceforge.net/projects/htdig/">ht://Dig</a>, a world-wide-web search system for an intranet or small internet.
 </h2>
 <p>
-  View the <a href="https://github.com/andy5995/hldig/blob/master/ChangeLog.md">ChangeLog</a>
+hl://Dig Copyright &copy; 2017<br>
+Please see the file <a href="https://github.com/andy5995/hldig/blob/master/COPYING">COPYING</a> for
+license information.
+</p>
+<hr>
+<h2>
+Recent News
+</h2>
+<p>
+View the <a href="https://github.com/andy5995/hldig/blob/master/ChangeLog.md">ChangeLog</a>
 </p>
 <form action="http://htdig.dreamhosters.com/cgi-bin/htsearch.cgi" method="post">
-  <p>
-    You can search this documentation as well:<br />
-    <input type="text" name="words" size="40"><br />
-      Restrict to: <select name="restrict">
-    <input type="submit" value="Search">
-  </p>
+<p>
+You can search this documentation as well:<br />
+<input type="text" name="words" size="40"><br />
+Restrict to: <select name="restrict"></select>
+<input type="submit" value="Search">
+</p>
 </form>
-<hr size="4" noshade>
+<hr>
