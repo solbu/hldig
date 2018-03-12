@@ -16,7 +16,7 @@ Recent News
 <p>
 View the <a href="https://github.com/andy5995/hldig/blob/master/ChangeLog.md">ChangeLog</a>
 </p>
-<form action="http://htdig.dreamhosters.com/cgi-bin/htsearch.cgi" method="post">
+<form action="http://htdig.dreamhosters.com/hlsearch.sh" method="post">
 <p>
 You can search this documentation as well:<br />
 <input type="text" name="words" size="40"><br />
