@@ -33,7 +33,7 @@ Thank you!
 ## Pull Requests
 
 1. Join the [##hldig channel on Freenode
-IRC](http://webchat.freenode.net/?channels=%23%23hldig&uio=d4), so if
+IRC](http://webchat.freenode.net/?channels=%23hldig&uio=d4), so if
 any problems arise, you can get support.
 
 2. [Fork the repo][fork] (if you haven't already done so)
