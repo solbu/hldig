@@ -32,7 +32,7 @@ Thank you!
 
 ## Pull Requests
 
-1. Join the [##hldig channel on Freenode
+1. Join the [#hldig channel on Freenode
 IRC](http://webchat.freenode.net/?channels=%23hldig&uio=d4), so if
 any problems arise, you can get support.
 
