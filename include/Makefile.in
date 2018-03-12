@@ -365,7 +365,10 @@ HTLIBS = $(top_builddir)/htnet/libhtnet.la \
 
 LDADD = $(HTLIBS) @LIBINTL@
 EXTRA_DIST = config.h.in stamp-h.in
-pkginclude_HEADERS = htconfig.h
+pkginclude_HEADERS = \
+	htconfig.h 	\
+	gettext.h
+
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
