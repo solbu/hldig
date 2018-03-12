@@ -91,9 +91,9 @@ build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = $(top_srcdir)/Makefile.config $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/configure \
-	$(am__configure_deps) mkinstalldirs COPYING INSTALL compile \
-	config.guess config.rpath config.sub install-sh missing ylwrap \
-	ltmain.sh
+	$(am__configure_deps) mkinstalldirs ABOUT-NLS COPYING INSTALL \
+	compile config.guess config.rpath config.sub install-sh \
+	missing ylwrap ltmain.sh
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
@@ -413,17 +413,18 @@ hltools installdir include $(TESTDIR) po
 # files to be installed to destination docdir when 'make install' is run
 # packextrasdir=@docdir@
 EXTRA_DIST = \
-VERSION	\
-COPYING	\
-INSTALL	\
-README.md	\
-AUTHORS.md	\
-TESTING.md	\
-CONTRIBUTING.md	\
-TRANSLATING.md \
-ChangeLog.md \
-STATUS	\
-CODE_OF_CONDUCT.md
+VERSION			\
+COPYING			\
+INSTALL			\
+README.md		\
+AUTHORS.md		\
+TESTING.md		\
+CONTRIBUTING.md		\
+TRANSLATING.md 		\
+ChangeLog.md 		\
+STATUS			\
+CODE_OF_CONDUCT.md	\
+ABOUT-NLS
 
 
 # packextras_DATA=$(EXTRA_DIST)

@@ -32,7 +32,7 @@ If you are interested in translating the output messages from hldig, please see
 ## Community/Contact
 
 Anyone interested in this project may join the IRC channel -
-[chat.freenode.net / channel: ##hldig](http://webchat.freenode.net?channels=%23%23hldig&uio=d4)
+[chat.freenode.net / channel: #hldig](http://webchat.freenode.net?channels=%23hldig&uio=d4)
 
 Project maintainer: Andy Alt
 Email: andy400-dev [at] yahoo.com

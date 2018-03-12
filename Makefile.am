@@ -19,18 +19,19 @@ hltools installdir include $(TESTDIR) po
 # files to be installed to destination docdir when 'make install' is run
 # packextrasdir=@docdir@
 
-EXTRA_DIST =	\
-VERSION	\
-COPYING	\
-INSTALL	\
-README.md	\
-AUTHORS.md	\
-TESTING.md	\
-CONTRIBUTING.md	\
-TRANSLATING.md \
-ChangeLog.md \
-STATUS	\
-CODE_OF_CONDUCT.md
+EXTRA_DIST =		\
+VERSION			\
+COPYING			\
+INSTALL			\
+README.md		\
+AUTHORS.md		\
+TESTING.md		\
+CONTRIBUTING.md		\
+TRANSLATING.md 		\
+ChangeLog.md 		\
+STATUS			\
+CODE_OF_CONDUCT.md	\
+ABOUT-NLS
 
 # packextras_DATA=$(EXTRA_DIST)
 

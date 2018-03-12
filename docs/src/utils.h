@@ -34,7 +34,7 @@ parse_config (const char *cf, struct cfg *cfgopts);
 short
 bufchk (const char *str, ushort boundary);
 
-int
+void
 trim (char *str);
 
 void
