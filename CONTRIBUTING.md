@@ -47,20 +47,27 @@ any problems arise, you can get support.
 5. Make your changes. If you're unsure of some details while you're
 making edits, you can discuss them on the ticket.
 
-6. If you are a first time contributor, please add your name and link
+7. If you are a first time contributor, please add your name and link
 of your choice to [AUTHORS.md][authors].
 
-6. Commit your changes. [git-cola][git-cola] is a nice GUI front-end
+8. Commit your changes. [git-cola][git-cola] is a nice GUI front-end
 for adding files and entering commit messages (git-cola is probably
 available from your OS repository).
 
-7. Push the working branch (e.g. issue_32) to your remote fork and make
+If you're working on documentation or something else that doesn't require compilation, add
+
+    [skip ci]
+
+to the commit message. That way, the [Travis code integration test]
+(https://travis-ci.org/andy5995/hldig) will be skipped.
+
+9. Push the working branch (e.g. issue_32) to your remote fork and make
 your [pull request][PR].
     * Do not merge it with the master branch on your fork. That would
     result in multiple, or unrelated patches being included in a single
     PR.
 
-8. If any further changes need to be made, comments will be made on the
+10. If any further changes need to be made, comments will be made on the
 pull request.
 
 It's possible to work on two or more different patches (and therefore
