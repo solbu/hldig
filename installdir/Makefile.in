@@ -368,13 +368,18 @@ hl_DATA = button1.gif button2.gif button3.gif button4.gif button5.gif \
                 button6.png button7.png button8.png button9.png buttonl.png \
                 buttonr.png button10.png htdig.png star.png star_blank.png
 
+HLCONF = hldig.conf \
+		cookies.txt \
+		HtFileType-magic.mime \
+		mime.types
+
 COMMONHTML = header.html footer.html wrapper.html nomatch.html syntax.html \
 		long.html short.html
 
 COMMONCSS = style.css
 COMMONDICT = bad_words english.0 english.aff synonyms
-EXTRA_DIST = $(IMAGES) $(COMMONHTML) $(COMMONDICT) rundig hldig.conf mime.types \
-		search.html HtFileType HtFileType-magic.mime cookies.txt
+EXTRA_DIST = $(IMAGES) $(COMMONHTML) $(COMMONDICT) $(HLCONF) rundig \
+		search.html HtFileType
 
 all: all-am
 
@@ -743,10 +748,10 @@ uninstall-local:
 	rm -f $(DESTDIR)$(bindir)/HtFileType
 	rm -f $(DESTDIR)$(bindir)/rundig
 	rm -f $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM)
-	rm -f $(DESTDIR)$(CONFIG_DIR)/hldig.conf
-	rm -f $(DESTDIR)$(CONFIG_DIR)/mime.types
-	rm -f $(DESTDIR)$(CONFIG_DIR)/HtFileType-magic.mime
-	rm -f $(DESTDIR)$(CONFIG_DIR)/cookies.txt
+#	rm -f $(DESTDIR)$(CONFIG_DIR)/hldig.conf
+#	rm -f $(DESTDIR)$(CONFIG_DIR)/mime.types
+#	rm -f $(DESTDIR)$(CONFIG_DIR)/HtFileType-magic.mime
+#	rm -f $(DESTDIR)$(CONFIG_DIR)/cookies.txt
 
 	@for i in $(COMMONHTML); do \
 		rm -f $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; \
