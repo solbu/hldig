@@ -7,10 +7,10 @@ man_MANS = htdig-pdfparser.1 htdig.1 htdump.1 htfuzzy.1 htload.1 htmerge.1 \
 hldir	=	$(IMAGE_DIR)
 hl_DATA	=	button1.gif button2.gif button3.gif button4.gif button5.gif \
 		button6.gif button7.gif button8.gif button9.gif buttonl.gif \
-		buttonr.gif button10.gif htdig.gif star.gif star_blank.gif \
+		buttonr.gif button10.gif logo.jpg star.gif star_blank.gif \
 		button1.png button2.png button3.png button4.png button5.png \
                 button6.png button7.png button8.png button9.png buttonl.png \
-                buttonr.png button10.png htdig.png star.png star_blank.png
+                buttonr.png button10.png logo.jpg star.png star_blank.png
 
 HLCONF =	hldig.conf \
 		cookies.txt \
@@ -68,18 +68,16 @@ uninstall-local:
 #	rm -f $(DESTDIR)$(CONFIG_DIR)/mime.types
 #	rm -f $(DESTDIR)$(CONFIG_DIR)/HtFileType-magic.mime
 #	rm -f $(DESTDIR)$(CONFIG_DIR)/cookies.txt
-	
+
 	@for i in $(COMMONHTML); do \
 		rm -f $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; \
 	done && test -z "$$fail"
-	
-	
+
+
 	@for i in $(COMMONDICT); do \
 		rm -f $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; \
 	done && test -z "$$fail"
-	
+
 	@for i in $(COMMONCSS); do \
 		rm -f $(DESTDIR)$(IMAGE_DIR)/$$i; echo $(DESTDIR)$(IMAGE_DIR)/$$i; \
 	done && test -z "$$fail"
-	
-	
