@@ -46,9 +46,6 @@ ABOUT-NLS
 
 ACLOCAL_AMFLAGS = -I m4
 
-dist-hook:
-	find $(distdir) -depth -name CVS -print | xargs rm -fr
-
 #
 # If --enable-tests is not specified, should remove
 # the test/Makefile anyway
