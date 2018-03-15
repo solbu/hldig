@@ -75,10 +75,12 @@ AC_ARG_WITH(image-dir, [AC_HELP_STRING([--with-image-dir=DIR],
  IMAGE_DIR="$withval", IMAGE_DIR='${datadir}/hldig/www')
 AC_SUBST(IMAGE_DIR)
 
+# path needs to be absolute or relative to the web site root, not the
+# filesystem. This value is used to load images on the search results page.
 AC_ARG_WITH(image-url-prefix,
 	[AC_HELP_STRING([--with-image-url-prefix=LOCATION],
-	[the URL path to the installed images @<:@/hldig@:>@])],
- IMAGE_URL_PREFIX="$withval", IMAGE_URL_PREFIX='/hldig')
+	[the URL path to the installed images @<:@$/www@:>@])],
+ IMAGE_URL_PREFIX="$withval", IMAGE_URL_PREFIX='/www')
 AC_SUBST(IMAGE_URL_PREFIX)
 
 AC_ARG_WITH(rx, [AC_HELP_STRING([--with-rx],
