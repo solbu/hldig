@@ -30,7 +30,10 @@ Using homebrew install latest openssl and zlib.
 
 You can often speed up build time by using `make -j<jobs>`.
 
-Example: `make -j12`
+Example: `make -j5`
+
+Suggested: Use a number that is 1 greater than the number of CPUs on
+your computer.
 
 (See https://www.gnu.org/software/make/manual/html_node/Options-Summary.html#Options-Summary for details)
 
@@ -78,7 +81,7 @@ Rename it to `lighttpd.conf` and edit the paths for these two variables:
 
 cd to $srcdir/samplesite and make a symbolic link to your testing/cgi-bin directory
 
-    ln -s ../testing/cgi-bin/
+    ln -s ../testing/share/hldig/cgi-bin
 
 Copy `hlsearch.sh` from your $srcdir/scripts directory to your server root
 (not the cgi-bin directory).
@@ -88,7 +91,7 @@ _Note: hlsearch.sh is a wrapper script that calls hlsearch._
 So lighttpd can find the web graphics and css stylesheet, in your
 server root, make a symbolic link to testing/htdocs/hldig
 
-    ln -s ../testing/hldig
+    ln -s ../testing/share/hldig/www
 
 Change back to the top level of your hldig source directory.
 Start the lighttpd server
@@ -107,10 +110,10 @@ Now switch to another terminal window.
 Change to the `testing` directory and you should see the following directory structure:
 ```
 andy@oceanus:~/src/hldig/testing$ ls
-bin  cgi-bin  conf  htdocs  include  lib  man  share  var
+bin  etc  include  lib  share  var
 ```
 
-Verify that `start_url` in testing/hldig.conf is set to `http://localhost:3002`
+Verify that `start_url` in testing/etc/hldig/hldig.conf is set to `http://localhost:3002`
 
 Change to testing/bin and run `./hldig -is` to initialize the database. The
 `-i` initializes and adding the `s' shows a summary.
@@ -134,7 +137,7 @@ to update the files in testing/.
 
 ### To test `hlsearch` from the console
 
-Change to `testing/cgi-bin`
+Change to `testing/share/hldig/cgi-bin`
 Use `./hlsearch` to search the database. You will get these two prompts:
 ```
 Enter value for words:
