@@ -1,7 +1,7 @@
                     == hldig Web site ==
 
 The html files in this folder are automatically published to the hldig
-web site <https://andy5995.github.io/hldig/>.
+web site <https://solbu.github.io/hldig/>.
 
 docs/src/simplecgen will read from infiles/ and create html files
 in the docs folder using the layouts in templates/

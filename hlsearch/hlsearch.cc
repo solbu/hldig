@@ -5,7 +5,7 @@
 //           and calls the necessary code to put together the result lists
 //           and the final display.
 //
-// Part of the hl://Dig package <https://andy5995.github.io/hldig>
+// Part of the hl://Dig package <https://solbu.github.io/hldig>
 // Copyright (c) 2017 The hl://Dig Group
 // For copyright details, see the file COPYING in your distribution
 // or the GNU Library General Public License (LGPL) version 2 or later
