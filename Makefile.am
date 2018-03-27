@@ -1,5 +1,5 @@
 # Main Makefile for hl://Dig
-# Copyright (c) 2017 The hl://Dig Group <https://andy5995.github.io/hldig/>
+# Copyright (c) 2017 The hl://Dig Group <https://solbu.github.io/hldig/>
 # For copyright details, see the file COPYING in your distribution
 # or the GNU Library General Public License version 2 or later
 # <http://www.gnu.org/copyleft/lgpl.html>

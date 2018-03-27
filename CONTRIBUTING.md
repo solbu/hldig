@@ -80,7 +80,7 @@ Periodically, especially before starting a new patch, you'll need the sync your
 repo with the remote upstream. GitHub has instructions for doing this:
 
 1. [Configuring a remote for a fork](https://help.github.com/articles/configuring-a-remote-for-a-fork/)
-    * For step 3 on that page, use https://github.com/andy5995/hldig
+    * For step 3 on that page, use https://github.com/solbu/hldig
     for the URL.
 
 2. [Syncing a Fork](https://help.github.com/articles/syncing-a-fork/)
@@ -88,10 +88,10 @@ repo with the remote upstream. GitHub has instructions for doing this:
     4 & 5 of **Syncing a Fork**).
 
 [GNU_style_guide]: https://www.gnu.org/prep/standards/html_node/Formatting.html
-[hldig_website]: https://andy5995.github.io/hldig/
-[site_infiles]: https://github.com/andy5995/hldig/blob/master/docs/infiles
-[authors]: https://github.com/andy5995/hldig/blob/master/AUTHORS.md
+[hldig_website]: https://solbu.github.io/hldig/
+[site_infiles]: https://github.com/solbu/hldig/blob/master/docs/infiles
+[authors]: https://github.com/solbu/hldig/blob/master/AUTHORS.md
 [git-cola]: https://git-cola.github.io/
-[fork]: https://github.com/andy5995/hldig/fork
+[fork]: https://github.com/solbu/hldig/fork
 [sep_branch]: https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches
 [PR]: https://help.github.com/articles/creating-a-pull-request-from-a-fork/

@@ -197,5 +197,5 @@ installdir.
 
 ## Web site
 
-Please see [CONTRIBUTING -> Web site](https://github.com/andy5995/hldig/blob/master/CONTRIBUTING.md#web-site) for information
+Please see [CONTRIBUTING -> Web site](https://github.com/solbu/hldig/blob/master/CONTRIBUTING.md#web-site) for information
 about making changes to the web site.
