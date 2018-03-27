@@ -1,7 +1,7 @@
 /*
  * simplecgen.h: generates html files using the simplectemplate library
  *
- * This file is part of hl://Dig <https://github.com/andy5995/hldig>
+ * This file is part of hl://Dig <https://github.com/solbu/hldig>
  *
  *  Copyright (C) 2017-2018  Andy Alt (andy400-dev@yahoo.com)
  *

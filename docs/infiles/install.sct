@@ -1,12 +1,12 @@
 title:Installation
 layout:default
 ---
-  <blockquote>This document needs to be merged with <a href="https://github.com/andy5995/hldig/blob/master/TESTING.md">TESTING.md</a>.
+  <blockquote>This document needs to be merged with <a href="https://github.com/solbu/hldig/blob/master/TESTING.md">TESTING.md</a>.
   The TESTING.md document was written more recently, but there may
   still be useful information below. (We appreciate your patience while
   we are in the slow process of updating the documentation.) If you
   would like to edit parts of this document, the file is <a
-  href=https://github.com/andy5995/hldig/blob/master/docs/infiles/install.sct">docs/infiles/install.sct</a>.
+  href=https://github.com/solbu/hldig/blob/master/docs/infiles/install.sct">docs/infiles/install.sct</a>.
   </blockquote>
   <p>
     This document will attempt to show the steps needed to build
@@ -47,7 +47,7 @@ layout:default
     <a name="simple">For the impatient...</a>
   </h2>
   <blockquote>
-    <a href="https://github.com/andy5995/hldig/blob/master/TESTING.md">TESTING.md</a> contains the steps necessary on how to do
+    <a href="https://github.com/solbu/hldig/blob/master/TESTING.md">TESTING.md</a> contains the steps necessary on how to do
     the following without root privileges.
   </blockquote>
   <p>
@@ -67,7 +67,7 @@ layout:default
   </h2>
   <blockquote>
     There hasn't yet been a release of hl://Dig. You can get the source code
-    from the <a href="https://github.com/andy5995/hldig">git repository</a>.
+    from the <a href="https://github.com/solbu/hldig">git repository</a>.
   </blockquote>
   <hr noshade>
   <h2>
@@ -215,7 +215,7 @@ layout:default
     <a name="test">Test</a>
   </h2>
   <blockquote>The information below is outdated and the test feature needs to be fixed.
-  There is an <a href="https://github.com/andy5995/hldig/issues/45">open ticket</a> to
+  There is an <a href="https://github.com/solbu/hldig/issues/45">open ticket</a> to
   address the issue.
   <blockquote>
     Once built, you can run tests if you provided the

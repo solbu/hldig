@@ -2,11 +2,11 @@ title:hl://Dig
 layout:default
 ---
 <h2>
-<a href="https://github.com/andy5995/hldig">hl://Dig</a> is a fork of <a href="https://sourceforge.net/projects/htdig/">ht://Dig</a>, a world-wide-web search system for an intranet or small internet.
+<a href="https://github.com/solbu/hldig">hl://Dig</a> is a fork of <a href="https://sourceforge.net/projects/htdig/">ht://Dig</a>, a world-wide-web search system for an intranet or small internet.
 </h2>
 <p>
 hl://Dig Copyright &copy; 2017<br>
-Please see the file <a href="https://github.com/andy5995/hldig/blob/master/COPYING">COPYING</a> for
+Please see the file <a href="https://github.com/solbu/hldig/blob/master/COPYING">COPYING</a> for
 license information.
 </p>
 <hr>
@@ -14,7 +14,7 @@ license information.
 Recent News
 </h2>
 <p>
-View the <a href="https://github.com/andy5995/hldig/blob/master/ChangeLog.md">ChangeLog</a>
+View the <a href="https://github.com/solbu/hldig/blob/master/ChangeLog.md">ChangeLog</a>
 </p>
 <form action="http://htdig.dreamhosters.com/hlsearch.sh" method="post">
 <p>
