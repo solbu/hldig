@@ -256,7 +256,7 @@ no_page_number_text:    '&lt;img src="/htdig/button1.gif" border="2" align="midd
 &lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
 &lt;h1&gt;
-&lt;a href="http://www.htdig.org"&gt;&lt;IMG SRC="/htdig/htdig.gif" align="bottom" alt="ht://Dig" border="0"&gt;&lt;/a&gt;
+&lt;a href="http://www.htdig.org"&gt;&lt;IMG SRC="/htdig/logo.jpg" align="bottom" alt="ht://Dig" border="0"&gt;&lt;/a&gt;
 WWW Site Search&lt;/h1&gt;
 &lt;hr noshade size="4"&gt;
 This search will allow you to search the contents of
@@ -328,7 +328,7 @@ Search:
 &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"&gt;
 &lt;html&gt;&lt;head&gt;&lt;title&gt;Search results for '$&(WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
-&lt;h2&gt;&lt;img src="/htdig/htdig.gif" alt="ht://Dig"&gt;
+&lt;h2&gt;&lt;img src="/htdig/logo.jpg" alt="ht://Dig"&gt;
 Search results for '$&(LOGICAL_WORDS)'&lt;/h2&gt;
 &lt;hr noshade size="4"&gt;
 &lt;form method="get" action="$(CGI)"&gt;
@@ -371,7 +371,7 @@ $(PAGEHEADER)
 $(PREVPAGE) $(PAGELIST) $(NEXTPAGE)
 &lt;hr noshade size="4"&gt;
 &lt;a href="http://www.htdig.org/"&gt;
-&lt;img src="/htdig/htdig.gif" border="0" alt="ht://Dig"&gt;ht://Dig $(VERSION)&lt;/a&gt;
+&lt;img src="/htdig/logo.jpg" border="0" alt="ht://Dig"&gt;ht://Dig $(VERSION)&lt;/a&gt;
 &lt;/body&gt;&lt;/html&gt;
 </font>
 </pre>
@@ -404,7 +404,7 @@ $(PREVPAGE) $(PAGELIST) $(NEXTPAGE)
 &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"&gt;
 &lt;html&gt;&lt;head&gt;&lt;title&gt;No match for '$&(LOGICAL_WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
-&lt;h1&gt;&lt;img src="/htdig/htdig.gif" alt="ht://Dig"&gt;
+&lt;h1&gt;&lt;img src="/htdig/logo.jpg" alt="ht://Dig"&gt;
 Search results&lt;/h1&gt;
 &lt;hr noshade size="4"&gt;
 &lt;h2&gt;No matches were found for '$&(LOGICAL_WORDS)'&lt;/h2&gt;
@@ -436,7 +436,7 @@ Refine search:
 &lt;/form&gt;
 &lt;hr noshade size="4"&gt;
 &lt;a href="http://www.htdig.org/"&gt;
-&lt;img src="/htdig/htdig.gif" border="0" alt="ht://Dig"&gt;ht://Dig $(VERSION)&lt;/a&gt;
+&lt;img src="/htdig/logo.jpg" border="0" alt="ht://Dig"&gt;ht://Dig $(VERSION)&lt;/a&gt;
 &lt;/body&gt;&lt;/html&gt;
 </font>
 </pre>
@@ -453,7 +453,7 @@ Refine search:
 &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"&gt;
 &lt;html&gt;&lt;head&gt;&lt;title&gt;Error in Boolean search for '$&(WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
-&lt;h1&gt;&lt;img src="/htdig/htdig.gif" alt="ht://Dig"&gt;
+&lt;h1&gt;&lt;img src="/htdig/logo.jpg" alt="ht://Dig"&gt;
 Error in Boolean search for '$&(LOGICAL_WORDS)'&lt;/h1&gt;
 &lt;hr noshade size="4"&gt;
 Boolean expressions need to be 'correct' in order for the search
@@ -482,7 +482,7 @@ Refine search:
 &lt;/form&gt;
 &lt;hr noshade size="4"&gt;
 &lt;a href="http://www.htdig.org/"&gt;
-&lt;img src="/htdig/htdig.gif" border="0" alt="ht://Dig"&gt;ht://Dig $(VERSION)&lt;/a&gt;
+&lt;img src="/htdig/logo.jpg" border="0" alt="ht://Dig"&gt;ht://Dig $(VERSION)&lt;/a&gt;
 &lt;/body&gt;&lt;/html&gt;
 
 </font>

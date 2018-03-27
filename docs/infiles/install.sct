@@ -351,10 +351,10 @@ layout:default
       results in the short listing.
       </dd>
       <dt>
-      <em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-image-dir=DIR</code></em>/htdig.gif
+      <em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-image-dir=DIR</code></em>/logo.jpg
       </dt>
       <dd>
-      The nifty ht://Dig logo.
+      The nifty hl://Dig logo.
       </dd>
       <dt>
       <em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-image-dir=DIR</code></em>/button*.gif

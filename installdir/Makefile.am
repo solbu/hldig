@@ -10,7 +10,7 @@ hl_DATA	=	button1.gif button2.gif button3.gif button4.gif button5.gif \
 		buttonr.gif button10.gif logo.jpg star.gif star_blank.gif \
 		button1.png button2.png button3.png button4.png button5.png \
                 button6.png button7.png button8.png button9.png buttonl.png \
-                buttonr.png button10.png logo.jpg star.png star_blank.png
+                buttonr.png button10.png star.png star_blank.png
 
 HLCONF =	hldig.conf \
 		cookies.txt \
