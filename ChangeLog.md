@@ -5,7 +5,7 @@ forked. To see information about the original project, visit [ht://Dig on Source
 
 ### Wed Mar 15 2018
 
-Default install paths have changed [#90](https://github.com/andy5995/hldig/pull/90)
+Default install paths have changed [#90](https://github.com/solbu/hldig/pull/90)
 
 ### Tue Mar 06 2018
 
@@ -14,11 +14,11 @@ install` (to help with rpm packaging problems).
 
 ### Thu Jan 11 2018
 
-[#24](https://github.com/andy5995/hldig/issues/24) Added support for a
+[#24](https://github.com/solbu/hldig/issues/24) Added support for a
 linked css stylesheet and reformatted the html code of the .html files
 in installdir. Those are the files that are used for hlsearch results.
 Instructions for
-[testing](https://github.com/andy5995/hldig/blob/master/TESTING.md)
+[testing](https://github.com/solbu/hldig/blob/master/TESTING.md)
 have been updated accordingly.
 
 If you've already installed lighttpd for testing (as outlined in
@@ -43,7 +43,7 @@ to disable.
 ### Sat Jan 06 2018
 
 Thanks to [Elliot Alexander](https://github.com/escottalexander) who,
-with the help of [Bootstrap](http://getbootstrap.com/), overhauled the [web site](https://andy5995.github.io/hldig/)
+with the help of [Bootstrap](http://getbootstrap.com/), overhauled the [web site](https://solbu.github.io/hldig/)
 and made it **mobile-friendly**.
 
 ### Sat Dec 30 2017
@@ -68,7 +68,7 @@ Updated the "configure.ac" and "Makefile.am" files so aclocal, autoreconf,
 and automake could be run (renamed the "configure.in" files to "configure.ac")
 
 Documented how to use [lighttpd](http://www.lighttpd.net/)
-for [testing](https://github.com/andy5995/htdig/blob/master/TESTING.md)
+for [testing](https://github.com/solbu/hldig/blob/master/TESTING.md)
 
 ### Tue Nov 14 2017
 
@@ -85,11 +85,11 @@ document)
 ### Sun Nov 12 2107
 
 Merged a commit (patch apparently from Jim Cole) lost when I reverted to 3.2.0b6
-[Fix bug in handling SSL connections.](https://github.com/andy5995/htdig/commit/2aa0e4ed52211003288491dedd3a1e72d1c4ddc1)
+[Fix bug in handling SSL connections.](https://github.com/solbu/hldig/commit/2aa0e4ed52211003288491dedd3a1e72d1c4ddc1)
 
 ### Wed Nov 08 2017
 
-[reverted to 3.2.0b6](https://github.com/andy5995/htdig/commit/af7c7041cf95e60be248a65ca0ee162024e06345)
+[reverted to 3.2.0b6](https://github.com/solbu/hldig/commit/af7c7041cf95e60be248a65ca0ee162024e06345)
 and applied [patches from the GNU Debian maintainers](https://packages.debian.org/stretch/htdig)
 
 ### Mon Nov 06 2017
