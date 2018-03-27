@@ -32,6 +32,7 @@ po/Makevars.template
 po/POTFILES
 po/stamp-po
 po/remove-potcdate.sed
+po/*mo
 samplesite/hldig
 *.patch
 
