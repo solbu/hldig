@@ -138,7 +138,7 @@ protected:
 void Dbase::dobench()
 {
   dbinit();
-  
+
   if(params->find) {
     find();
   } else if(params->remove) {
@@ -164,7 +164,7 @@ void Dbase::fill() {
   fprintf(stderr, "Reading from %s ... ", params->wordsfile);
 
   for(i = 0; i < params->loop; i++) {
-  
+
     FILE* in = fopen(params->wordsfile, "r");
     if(!in) {
       fprintf(stderr, "cannot open %s for reading : ", params->wordsfile);
@@ -266,7 +266,7 @@ void Dsimple::dbinit()
  */
 void Dsimple::dbinit_env()
 {
-  char *progname = "dbbench problem...";
+  const char *progname = "dbbench problem...";
 
   Configuration* config = WordContext::Initialize();
   config->Add("wordlist_env_skip", "true");
@@ -294,7 +294,7 @@ void Dsimple::dbinit_env()
     }
     pad[pad_length] = '\0';
   }
-  
+
   int error;
   if((error = CDB_db_env_create(&dbenv, 0)) != 0) {
     fprintf(stderr, "%s: %s\n", progname, CDB_db_strerror(error));
@@ -408,7 +408,7 @@ void Dsimple::find()
 
     key.flags = 0;
   } while(cursor->c_get(cursor, &key, &data, next) == 0);
-  
+
   cursor->c_close(cursor);
 }
 
@@ -446,7 +446,7 @@ void Dsimple::remove()
     removed++;
     if(params->remove < removed) break;
   } while(cursor->c_get(cursor, &key, &data, DB_NEXT) == 0);
-  
+
   cursor->c_close(cursor);
 }
 
@@ -771,7 +771,7 @@ static void usage()
  * compression overhead.
  */
 
-extern "C" 
+extern "C"
 {
     extern int CDB___memp_cmpr_inflate(const u_int8_t *, int, u_int8_t * , int  , void *);
     extern int CDB___memp_cmpr_deflate(const u_int8_t *, int, u_int8_t **, int *, void *);
@@ -791,7 +791,7 @@ int compressone(params_t* params, unsigned char* buffin, int buffin_length) {
   if(params->uncompress) {
     u_int8_t *bufftmp = (u_int8_t*)malloc(buffin_length);
     int bufftmp_length = buffin_length;
-    
+
     if(CDB___memp_cmpr_inflate(buffout, buffout_length, bufftmp, bufftmp_length,NULL) != 0) {
       fprintf(stderr, "compressone: inflate failed\n");
       abort();
@@ -824,7 +824,7 @@ static void docompress(params_t* params)
     count++;
   }
   printf("overflow: %d out of %d\n", overflow, count);
-  
+
   close(in);
 }
 #endif /* HAVE_LIBZ */
