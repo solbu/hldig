@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Andy Alt
+# Copyright (C) YEAR The hl://Dig group
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: hldig 0.1.01\n"
+"Project-Id-Version: hldig 0.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/solbu/hldig/issues\n"
-"POT-Creation-Date: 2018-03-27 23:07+0200\n"
+"POT-Creation-Date: 2018-04-02 14:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
