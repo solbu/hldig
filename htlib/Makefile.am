@@ -63,4 +63,5 @@ pkginclude_HEADERS = \
 	libdefs.h \
 	myqsort.h \
 	mhash_md5.h \
-	md5.h
+	md5.h \
+	filecopy.h
