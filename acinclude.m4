@@ -1,5 +1,5 @@
 dnl
-dnl Part of the ht://Dig package   <http://www.htdig.org/>
+dnl Part of the hl://Dig package   <https://github.com/solbu/hldig>
 dnl Copyright (c) 1999-2004 The ht://Dig Group
 dnl For copyright details, see the file COPYING in your distribution
 dnl or the GNU Library General Public License (LGPL) version 2 or later

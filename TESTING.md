@@ -127,7 +127,7 @@ Use the form on the local test site to search the new database you created.
 
 '-i' is used to initialize the database for the first time. Normally it
 wouldn't be used after that. But while testing new changes, often the files
-in the database directory (testing/var/htdig) must be removed to ensure
+in the database directory (testing/var/hldig) must be removed to ensure
 an accurate test.
 
 If you make changes to the source code, you will have to run `make install`

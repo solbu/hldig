@@ -1,5 +1,5 @@
 #
-# Makefile - makefile for Win32 Native HtDig
+# Makefile - makefile for Win32 Native HlDig
 #
 # TODO:  Clean up remove references to RNT & OLPP
 #
@@ -7,7 +7,7 @@
 RNTBASE = .
 
 LIBDIRS = db htlib htcommon htnet htword htfuzzy
-EXEDIRS = htdig htsearch httools
+EXEDIRS = hldig hlsearch httools
 
 MAKE += -f Makefile.win32
 

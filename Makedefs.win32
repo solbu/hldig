@@ -1,10 +1,10 @@
 # ----------------------------------------------------------------------------
-# HtDig Win32 Makefile
+# HlDig Win32 Makefile
 # 
 # TODO:  Fix up this file.  There is lots of stuff in here that can be tossed.
 #
 
-ifeq ($(PRODUCT),htdig)
+ifeq ($(PRODUCT),hldig)
 #BUILD_VER  = 3.2.2
 #BUILD_NUM = b5
 BUILD_VER = 3.2.0b5
@@ -455,8 +455,8 @@ CFLAGS += -I../include -DDBUG_OFF -D_WIN32 -DWIN32 -D__WIN32__
 # ZLIB
 CFLAGS += -IL:/win32/include/zlib
 
-#HtDig default defines
-CFLAGS += -DDEFAULT_CONFIG_FILE=\"c:\htdig\demo.conf\" -DCOMMON_DIR=\"c:\htdig\demo.db\templates\" -DBIN_DIR=\"c:\htdig\demo.db\bin\" -DCONFIG_DIR=\"c:\htdig\"  -DIMAGE_URL_PREFIX=\"/rnt/rnm/img\" -DDATABASE_DIR=\"c:\htdig\demo.db\"
+#HlDig default defines
+CFLAGS += -DDEFAULT_CONFIG_FILE=\"c:\hldig\demo.conf\" -DCOMMON_DIR=\"c:\hldig\demo.db\templates\" -DBIN_DIR=\"c:\hldig\demo.db\bin\" -DCONFIG_DIR=\"c:\hldig\"  -DIMAGE_URL_PREFIX=\"/rnt/rnm/img\" -DDATABASE_DIR=\"c:\hldig\demo.db\"
 
 
 ifdef TARGET
