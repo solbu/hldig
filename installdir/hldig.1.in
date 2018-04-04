@@ -20,7 +20,7 @@ Get the list of URLs to start indexing from standard input. This will override t
 Use alternate work files. Tells hldig to append
 .I .work
 to database files, causing a second copy of the database to be
-built. This allows the original files to be used by htsearch
+built. This allows the original files to be used by hlsearch
 during the indexing run. 
 .TP
 .B \-c \fIconfigfile\fR
@@ -67,7 +67,7 @@ b	Number of links to the document, also called
 c	Hop count of this document
 g	Signature of this document 
 	(used to detect duplicates)
-e	E-Mail address to use for a notification from \fIhtnotify\fR
+e	E-Mail address to use for a notification from \fIhlnotify\fR
 n	Date on which such notification is sent
 S	Subject of the notfication message 
 d	The text of Incoming links pointing to this document 
@@ -111,14 +111,14 @@ Please refer to the HTML pages (in the hldig-doc package)
 and the manual pages
 .I hldigconfig(8)
 ,
-.I htmerge(1)
+.I hlmerge(1)
 ,
-.I htnotify(1)
+.I hlnotify(1)
 ,
-.I htsearch(1)
+.I hlsearch(1)
 and
 .I rundig(1)
 for a detailed description of hl://Dig and its commands.
 .SH AUTHOR
 This manual page was written by Christian Schwarz, modified by Stijn de Bekker. It is updated and maintained by Robert Ribnitz 
-and based on the HTML documentation of ht://Dig and hl://Dig.
+and based on the HTML documentation of hl://Dig and hl://Dig.

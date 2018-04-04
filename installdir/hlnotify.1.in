@@ -1,17 +1,17 @@
-.TH htnotify 1 "21 July 1997"
+.TH hlnotify 1 "21 July 1997"
 .\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
 .\" other parms are allowed: see man(7), man(1)
 .SH NAME
-htnotify \- sends email notifications about out-dated web pages discovered by htmerge
+hlnotify \- sends email notifications about out-dated web pages discovered by hlmerge
 .SH SYNOPSIS
-.B htnotify
+.B hlnotify
 .I "[options]"
 .SH "DESCRIPTION"
-.I Htnotify
+.I hlnotify
 scans the document database created by
-.I htmerge
+.I hlmerge
 and sends an email message for every page that is out of date. Please
-have a look at the ht://Dig notification manual for instructions on how to
+have a look at the hl://Dig notification manual for instructions on how to
 set up this service. 
 .SH OPTIONS
 .TP
@@ -33,13 +33,13 @@ each document that has email notification set.
 .B @DEFAULT_CONFIG_FILE@
 The default configuration file.
 .SH "SEE ALSO"
-Please refer to the HTML pages (in the htdig-doc package)
-.B /usr/share/doc/htdig-doc/html/index.html
+Please refer to the HTML pages (in the hldig-doc package)
+.B /usr/share/doc/hldig-doc/html/index.html
 and the manual pages
-.I htdig(1)
+.I hldig(1)
 and 
-.I htmerge(1)
-for a detailed description of ht://Dig and its commands.
+.I hlmerge(1)
+for a detailed description of hl://Dig and its commands.
 .SH AUTHOR
 This manual page was written by Christian Schwarz, modified by
-Stijn de Bekker, based on the HTML documentation of ht://Dig.
+Stijn de Bekker, based on the HTML documentation of hl://Dig.

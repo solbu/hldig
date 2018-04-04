@@ -132,7 +132,7 @@ The default ASCII document database file.
 The default ASCII word database file.
 .SH "SEE ALSO"
 Please refer to the HTML pages (in the hldig-doc package)
-.B /usr/share/doc/hldig-doc/hlml/index.hlml
+.B /usr/share/doc/hldig-doc/html/index.html
 and the manual pages
 .I hldig(1)
 ,

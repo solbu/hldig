@@ -1,26 +1,26 @@
-.TH htmerge 1 "21 July 1997"
+.TH hlmerge 1 "21 July 1997"
 .\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
 .\" other parms are allowed: see man(7), man(1)
 .SH NAME
-htmerge \- create document index and word database for the ht://Dig
+hlmerge \- create document index and word database for the hl://Dig
 search engine
 .SH SYNOPSIS
-.B htmerge
+.B hlmerge
 .I "[options]"
 .SH "DESCRIPTION"
-.I Htmerge
+.I hlmerge
 is used to create a document index and word database
-from the files that were created by \fIhtdig\fR. These databases are
+from the files that were created by \fIhldig\fR. These databases are
 then used by
-.I htsearch
+.I hlsearch
 to perform the actual searched. 
 .SH OPTIONS
 .TP
 .B \-a
-Use alternate work files. Tells htdig to append
+Use alternate work files. Tells hldig to append
 .I .work
 to database files, causing a second copy of the database to be
-built. This allows the original files to be used by htsearch
+built. This allows the original files to be used by hlsearch
 during the indexing run. 
 .TP
 .B \-c \fIconfigfile\fR
@@ -33,12 +33,12 @@ Prevent the document index from being created.
 .TP
 .B \-s
 Print statistics about the document and word databases
-after htmerge has finished. 
+after hlmerge has finished. 
 .TP
 .B \-v
 Run in verbose mode. This will provide some hints as to the
 progress of the merge. This can be useful when running
-htmerge interactively since some parts (especially the word
+hlmerge interactively since some parts (especially the word
 database creation) can take a very long time. 
 .TP
 .B \-w
@@ -56,13 +56,13 @@ intermediate files are stored during the sorting process.
 .B @DEFAULT_CONFIG_FILE@
 The default configuration file.
 .SH "SEE ALSO"
-Please refer to the HTML pages (in the htdig-doc package)
-.B /usr/share/doc/htdig-doc/html/index.html
+Please refer to the HTML pages (in the hldig-doc package)
+.B /usr/share/doc/hldig-doc/html/index.html
 and the manual pages
-.I htdig(1)
+.I hldig(1)
 and 
-.I htsearch(1)
-for a detailed description of ht://Dig and its commands.
+.I hlsearch(1)
+for a detailed description of hl://Dig and its commands.
 .SH AUTHOR
 This manual page was written by Christian Schwarz, modified
-by Stijn de Bekker, based on the HTML documentation of ht://Dig.
+by Stijn de Bekker, based on the HTML documentation of hl://Dig.

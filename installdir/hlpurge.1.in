@@ -1,25 +1,25 @@
-.TH htdig 1 "January 2004"
+.TH hldig 1 "January 2004"
 .\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
 .\" other parms are allowed: see man(7), man(1)
 .SH NAME
-htpurge \-  remove unused odocuments from the database (general maintenance script)
+hlpurge \-  remove unused odocuments from the database (general maintenance script)
 .SH SYNOPSIS
-.B htpurge
+.B hlpurge
 .I "[-][-a][-c configfile][-u][-v]"
 .SH "DESCRIPTION"
-Htpurge functions to remove specified URLs from the databases as well as bad URLs, 
-unretrieved URLs, obsolete documents, etc. It is recommended that htpurge be run 
-after htdig to clean out any documents of this sort. 
+hlpurge functions to remove specified URLs from the databases as well as bad URLs, 
+unretrieved URLs, obsolete documents, etc. It is recommended that hlpurge be run 
+after hldig to clean out any documents of this sort. 
 .TP
 .SH OPTIONS
 .TP
 .B \-
 Take \fIURL\fR list from standard input (rather than specified with \fI-u\fR). Format of input file is one URL per line.
 .B \-a
-Use alternate work files. Tells htpurge to append
+Use alternate work files. Tells hlpurge to append
 .I .work
 to database files, causing a second copy of the database to be
-built. This allows the original files to be used by htsearch
+built. This allows the original files to be used by hlsearch
 during the run. 
 .TP
 .B \-c \fIconfigfile\fR
@@ -41,16 +41,16 @@ a nice progress report while digging.
 .B @DEFAULT_CONFIG_FILE@
 The default configuration file.
 .SH "SEE ALSO"
-Please refer to the HTML pages (in the htdig-doc package)
-.B /usr/share/doc/htdig-doc/html/index.html
+Please refer to the HTML pages (in the hldig-doc package)
+.B /usr/share/doc/hldig-doc/html/index.html
 and the manual pages
-.I htdigconfig(8)
+.I hldigconfig(8)
 ,
-.I htdig(1)
+.I hldig(1)
 and
-.I htmerge(1)
-for a detailed description of ht://Dig and its commands.
+.I hlmerge(1)
+for a detailed description of hl://Dig and its commands.
 
 .SH AUTHOR
 This manual page was written by Robert Ribnitz, 
-based on the HTML documentation of ht://Dig.
+based on the HTML documentation of hl://Dig.
