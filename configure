@@ -2909,7 +2909,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-am__api_version='1.15'
+am__api_version='1.14'
 
 ac_aux_dir=
 for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
@@ -3110,8 +3110,8 @@ test "$program_suffix" != NONE &&
 ac_script='s/[\\$]/&&/g;s/;s,x,x,$//'
 program_transform_name=`$as_echo "$program_transform_name" | sed "$ac_script"`
 
-# Expand $ac_aux_dir to an absolute path.
-am_aux_dir=`cd "$ac_aux_dir" && pwd`
+# expand $ac_aux_dir to an absolute path
+am_aux_dir=`cd $ac_aux_dir && pwd`
 
 if test x"${MISSING+set}" != xset; then
   case $am_aux_dir in
@@ -3130,7 +3130,7 @@ else
 $as_echo "$as_me: WARNING: 'missing' script is too old or missing" >&2;}
 fi
 
-if test x"${install_sh+set}" != xset; then
+if test x"${install_sh}" != xset; then
   case $am_aux_dir in
   *\ * | *\	*)
     install_sh="\${SHELL} '$am_aux_dir/install-sh'" ;;
@@ -3458,8 +3458,8 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 # <http://lists.gnu.org/archive/html/automake/2012-07/msg00014.html>
 mkdir_p='$(MKDIR_P)'
 
-# We need awk for the "check" target (and possibly the TAP driver).  The
-# system "awk" is bad on some platforms.
+# We need awk for the "check" target.  The system "awk" is bad on
+# some platforms.
 # Always define AMTAR for backward compatibility.  Yes, it's still used
 # in the wild :-(  We should find a proper way to deprecate it ...
 AMTAR='$${TAR-tar}'
@@ -3516,7 +3516,6 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
-
 
 HLDIG_MAJOR_VERSION=`expr $VERSION : '\([0-9][0-9]*\)'`
 
@@ -22392,7 +22391,7 @@ while echo $VERSION | grep '\$' >/dev/null ; do
   eval "VERSION=$VERSION"
 done
 
-ac_config_files="$ac_config_files Makefile htcommon/Makefile htdb/Makefile hldig/Makefile installdir/htdig.1 installdir/htdig-pdfparser.1 installdir/htfuzzy.1 installdir/htmerge.1 installdir/htpurge.1 installdir/htstat.1 installdir/htdigconfig.8 installdir/htdump.1 installdir/htload.1 installdir/htnotify.1 installdir/htsearch.1 installdir/rundig.1 htfuzzy/Makefile htlib/Makefile htnet/Makefile hlsearch/Makefile hltools/Makefile htword/Makefile include/Makefile installdir/Makefile test/Makefile po/Makefile.in test/test_functions"
+ac_config_files="$ac_config_files Makefile htcommon/Makefile htdb/Makefile hldig/Makefile installdir/hldig.1 installdir/hldig-pdfparser.1 installdir/hlfuzzy.1 installdir/hlmerge.1 installdir/hlpurge.1 installdir/hlstat.1 installdir/hldigconfig.8 installdir/hldump.1 installdir/hlload.1 installdir/hlnotify.1 installdir/hlsearch.1 installdir/rundig.1 htfuzzy/Makefile htlib/Makefile htnet/Makefile hlsearch/Makefile hltools/Makefile htword/Makefile include/Makefile installdir/Makefile test/Makefile po/Makefile.in test/test_functions"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -23530,17 +23529,17 @@ do
     "htcommon/Makefile") CONFIG_FILES="$CONFIG_FILES htcommon/Makefile" ;;
     "htdb/Makefile") CONFIG_FILES="$CONFIG_FILES htdb/Makefile" ;;
     "hldig/Makefile") CONFIG_FILES="$CONFIG_FILES hldig/Makefile" ;;
-    "installdir/htdig.1") CONFIG_FILES="$CONFIG_FILES installdir/htdig.1" ;;
-    "installdir/htdig-pdfparser.1") CONFIG_FILES="$CONFIG_FILES installdir/htdig-pdfparser.1" ;;
-    "installdir/htfuzzy.1") CONFIG_FILES="$CONFIG_FILES installdir/htfuzzy.1" ;;
-    "installdir/htmerge.1") CONFIG_FILES="$CONFIG_FILES installdir/htmerge.1" ;;
-    "installdir/htpurge.1") CONFIG_FILES="$CONFIG_FILES installdir/htpurge.1" ;;
-    "installdir/htstat.1") CONFIG_FILES="$CONFIG_FILES installdir/htstat.1" ;;
-    "installdir/htdigconfig.8") CONFIG_FILES="$CONFIG_FILES installdir/htdigconfig.8" ;;
-    "installdir/htdump.1") CONFIG_FILES="$CONFIG_FILES installdir/htdump.1" ;;
-    "installdir/htload.1") CONFIG_FILES="$CONFIG_FILES installdir/htload.1" ;;
-    "installdir/htnotify.1") CONFIG_FILES="$CONFIG_FILES installdir/htnotify.1" ;;
-    "installdir/htsearch.1") CONFIG_FILES="$CONFIG_FILES installdir/htsearch.1" ;;
+    "installdir/hldig.1") CONFIG_FILES="$CONFIG_FILES installdir/hldig.1" ;;
+    "installdir/hldig-pdfparser.1") CONFIG_FILES="$CONFIG_FILES installdir/hldig-pdfparser.1" ;;
+    "installdir/hlfuzzy.1") CONFIG_FILES="$CONFIG_FILES installdir/hlfuzzy.1" ;;
+    "installdir/hlmerge.1") CONFIG_FILES="$CONFIG_FILES installdir/hlmerge.1" ;;
+    "installdir/hlpurge.1") CONFIG_FILES="$CONFIG_FILES installdir/hlpurge.1" ;;
+    "installdir/hlstat.1") CONFIG_FILES="$CONFIG_FILES installdir/hlstat.1" ;;
+    "installdir/hldigconfig.8") CONFIG_FILES="$CONFIG_FILES installdir/hldigconfig.8" ;;
+    "installdir/hldump.1") CONFIG_FILES="$CONFIG_FILES installdir/hldump.1" ;;
+    "installdir/hlload.1") CONFIG_FILES="$CONFIG_FILES installdir/hlload.1" ;;
+    "installdir/hlnotify.1") CONFIG_FILES="$CONFIG_FILES installdir/hlnotify.1" ;;
+    "installdir/hlsearch.1") CONFIG_FILES="$CONFIG_FILES installdir/hlsearch.1" ;;
     "installdir/rundig.1") CONFIG_FILES="$CONFIG_FILES installdir/rundig.1" ;;
     "htfuzzy/Makefile") CONFIG_FILES="$CONFIG_FILES htfuzzy/Makefile" ;;
     "htlib/Makefile") CONFIG_FILES="$CONFIG_FILES htlib/Makefile" ;;
