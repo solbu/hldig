@@ -1,13 +1,13 @@
-.TH htdig 1 "21 July 1997"
+.TH hldig 1 "2018-04-04"
 .\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
 .\" other parms are allowed: see man(7), man(1)
 .SH NAME
-htdig \- retrieve HTML documents for ht://Dig search engine
+hldig \- retrieve HTML documents for hl://Dig search engine
 .SH SYNOPSIS
-.B htdig
+.B hldig
 .I "[options]"
 .SH "DESCRIPTION"
-Htdig retrieves HTML documents using the HTTP protocol and
+hldig retrieves HTML documents using the HTTP protocol and
 gathers information from these documents which can later be
 used to search these documents. This program can be referred to
 as the search robot. 
@@ -17,7 +17,7 @@ as the search robot.
 Get the list of URLs to start indexing from standard input. This will override the default parameter \fIstart_url\fR specified in the config file  and the file supplied to the \fI-m\fR option.
 .TP
 .B \-a
-Use alternate work files. Tells htdig to append
+Use alternate work files. Tells hldig to append
 .I .work
 to database files, causing a second copy of the database to be
 built. This allows the original files to be used by htsearch
@@ -76,7 +76,7 @@ A	Anchors in the document (i.e. <A NAME=...)
 .TE
 .TP
 .B \-u \fIusername:password\fR
-Tells htdig to send the supplied username and password with
+Tells hldig to send the supplied username and password with
 each HTTP request. The credentials will be encoded using the
 \fI\'Basic\'\fR authentication method. There \fBHAS\fR to be a colon (:)
 between the username and password. 
@@ -91,7 +91,7 @@ A line is shown for each URL, with 3 numbers before the URL and some symbols aft
 .IP 
 \fI"+"\fR is printed for a new link just queued
 .IP
-\fI"-"\fR is output for a link rejected for any of a number of reasons. To find out what those reasons are, you need to run htdig with at least 3 \fI-v\fR options, i.e. \fI-vvv\fR. 
+\fI"-"\fR is output for a link rejected for any of a number of reasons. To find out what those reasons are, you need to run hldig with at least 3 \fI-v\fR options, i.e. \fI-vvv\fR. 
 .TP
 If there are no "*", "+" or "-" symbols after the URL, it doesn't mean the document was not parsed or was empty, but only that no links to other documents were found within it. With more verbose output, these symbols will get interspersed in several lines of debugging output. 
 .TP
@@ -106,10 +106,10 @@ Record which documents each word occurs in.
 .B @DATABASE_DIR@/db.excerpts
 Stores start of each document to show context of matches.
 .SH "SEE ALSO"
-Please refer to the HTML pages (in the htdig-doc package)
-.B /usr/share/doc/htdig-doc/html/index.html
+Please refer to the HTML pages (in the hldig-doc package)
+.B /usr/share/doc/hldig-doc/html/index.html
 and the manual pages
-.I htdigconfig(8)
+.I hldigconfig(8)
 ,
 .I htmerge(1)
 ,
@@ -118,7 +118,7 @@ and the manual pages
 .I htsearch(1)
 and
 .I rundig(1)
-for a detailed description of ht://Dig and its commands.
+for a detailed description of hl://Dig and its commands.
 .SH AUTHOR
 This manual page was written by Christian Schwarz, modified by Stijn de Bekker. It is updated and maintained by Robert Ribnitz 
-and based on the HTML documentation of ht://Dig.
+and based on the HTML documentation of ht://Dig and hl://Dig.

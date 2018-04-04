@@ -1,19 +1,19 @@
-.TH htload 1 "15 October 2001"
+.TH hlload 1 "2018-04-04"
 .\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
 .\" other parms are allowed: see man(7), man(1)
 .SH NAME
-htload \- reads in an ASCII-text version of the document database
+hlload \- reads in an ASCII-text version of the document database
 .SH SYNOPSIS
-.B htload
+.B hlload
 .I "[options]"
 .SH "DESCRIPTION"
-Htload  reads in an ASCII-text version of the document database in the same form as
-the  -t  option  of  htdig  and  htdump. Note that this will overwrite data in your
+hlload  reads in an ASCII-text version of the document database in the same form as
+the  -t  option  of  hldig  and  hldump. Note that this will overwrite data in your
 databases, so this should be used with great care.
 .SH OPTIONS
 .TP
 .B \-a
-Use alternate work files. Tells htload to append 
+Use alternate work files. Tells hlload to append 
 .I .work
 to database files, allowing it to
 operate on a second set of databases.
@@ -77,7 +77,7 @@ HopCount of this document
 Signature of the document used for duplicate-detection
 .TP
 .B e
-E-mail address to use for a notification message from htnotify
+E-mail address to use for a notification message from hlnotify
 .TP
 .B n
 Date to send out a notification e-mail message
@@ -92,16 +92,16 @@ The text of links pointing to this document. (e.g. <a href="docURL">description<
 Anchors in the document (i.e. <A NAME=...)
 .TP
 .B Word Database
-While htdump and htload don't deal with the word database
+While hldump and hlload don't deal with the word database
 directly, it's worth mentioning it here because you need to
 deal with it when copying the ASCII databases from one system
-to another. The initial word database produced by htdig is
+to another. The initial word database produced by hldig is
 already in ASCII format, and a binary version of it is
-produced by htmerge, for use by htsearch. So, when you copy
+produced by hlmerge, for use by hlsearch. So, when you copy
 over the ASCII version of the document database produced by
-htdump, you need to copy over the wordlist as well, then
-run htload to make the binary document database on the target
-system, followed by running htmerge to make the word index.
+hldump, you need to copy over the wordlist as well, then
+run hlload to make the binary document database on the target
+system, followed by running hlmerge to make the word index.
 .TP
 Each line in the word list file starts with the word
 followed by a list of
@@ -118,7 +118,7 @@ Document ID
 Location of word in document (1 to 1000)
 .TP
 .B w
-Weight of word based on scoring factors
+Weighl of word based on scoring factors
 .TP
 .B c
 Count of word's appearances in document, if more than 1
@@ -136,15 +136,15 @@ The default ASCII document database file.
 .B @DATABASE_DIR@/db.wordlist
 The default ASCII word database file.
 .SH "SEE ALSO"
-Please refer to the HTML pages (in the htdig-doc package)
-.B /usr/share/doc/htdig-doc/html/index.html
+Please refer to the HTML pages (in the hldig-doc package)
+.B /usr/share/doc/hldig-doc/hlml/index.hlml
 and the manual pages
-.I htdig(1)
+.I hldig(1)
 ,
-.I htmerge(1)
+.I hlmerge(1)
 and
-.I htdump(1)
-for a detailed description of ht://Dig and its commands.
+.I hldump(1)
+for a detailed description of hl://Dig and its commands.
 .SH AUTHOR
 This manual page was written by Stijn de Bekker, based on the HTML
-documentation of ht://Dig.
+documentation of hl://Dig.
