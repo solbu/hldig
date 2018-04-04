@@ -1,8 +1,8 @@
 
 include $(top_srcdir)/Makefile.config
 
-man_MANS = htdig-pdfparser.1 htdig.1 htdump.1 htfuzzy.1 htload.1 htmerge.1 \
-		htnotify.1 htpurge.1 htsearch.1 htstat.1 rundig.1 htdigconfig.8
+man_MANS = hldig-pdfparser.1 hldig.1 hldump.1 hlfuzzy.1 hlload.1 hlmerge.1 \
+		hlnotify.1 hlpurge.1 hlsearch.1 hlstat.1 rundig.1 hldigconfig.8
 
 hldir	=	$(IMAGE_DIR)
 hl_DATA	=	button1.gif button2.gif button3.gif button4.gif button5.gif \

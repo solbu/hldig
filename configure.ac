@@ -438,17 +438,17 @@ AC_CONFIG_FILES([Makefile
                  htcommon/Makefile
                  htdb/Makefile
                  hldig/Makefile
-                 installdir/htdig.1
-                 installdir/htdig-pdfparser.1
-                 installdir/htfuzzy.1
-                 installdir/htmerge.1
-                 installdir/htpurge.1
-                 installdir/htstat.1
-                 installdir/htdigconfig.8
-                 installdir/htdump.1
-                 installdir/htload.1
-                 installdir/htnotify.1
-                 installdir/htsearch.1
+                 installdir/hldig.1
+                 installdir/hldig-pdfparser.1
+                 installdir/hlfuzzy.1
+                 installdir/hlmerge.1
+                 installdir/hlpurge.1
+                 installdir/hlstat.1
+                 installdir/hldigconfig.8
+                 installdir/hldump.1
+                 installdir/hlload.1
+                 installdir/hlnotify.1
+                 installdir/hlsearch.1
                  installdir/rundig.1
                  htfuzzy/Makefile
                  htlib/Makefile
