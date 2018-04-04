@@ -1,10 +1,10 @@
-.TH htdig 1 "21 July 1997"
+.TH hldig 1 "2018-04-04"
 .\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
 .\" other parms are allowed: see man(7), man(1)
 .SH NAME
-htfuzzy \- fuzzy command-line search utility for the ht://Dig search engine
+hlfuzzy \- fuzzy command-line search utility for the hl://Dig search engine
 .SH SYNOPSIS
-.B htfuzzy [-c configfile] [-v] algorithm
+.B hlfuzzy [-c configfile] [-v] algorithm
 .I "[options]"
 .SH "DESCRIPTION"
 Description to follow here
@@ -17,7 +17,7 @@ instead of the default.
 .TP
 .B \-v 
 .I Verbose mode
-. Use this to get more verbose output while running htfuzzy. More than one \fIv\fR can be specified (ie. 
+. Use this to get more verbose output while running hlfuzzy. More than one \fIv\fR can be specified (ie. 
 .\fI-vv\fR
 ,
 \fI-vvv\fR
@@ -74,10 +74,10 @@ The default configuration file.
 .B @COMMON_DIR@/synonyms.db
 (Output) Database used for synonyms fuzzy rule
 .SH "SEE ALSO"
-Please refer to the HTML pages (in the htdig-doc package)
-.B /usr/share/doc/htdig-doc/html/index.html
+Please refer to the HTML pages (in the hldig-doc package)
+.B /usr/share/doc/hldig-doc/html/index.html
 and the manual pages
-.I htdigconfig(8)
+.I hldigconfig(8)
 ,
 .I htmerge(1)
 ,
@@ -86,6 +86,6 @@ and the manual pages
 .I htsearch(1)
 and
 .I rundig(1)
-for a detailed description of ht://Dig and its commands.
+for a detailed description of hl://Dig and its commands.
 .SH AUTHOR
-This manual page was written by Robert Ribnitz. It is based on documentation of ht://Dig, and on earlier manpages provided by Christian Schwarz and Stijn de Bekker.
+This manual page was written by Robert Ribnitz. It is based on documentation of hl://Dig, and on earlier manpages provided by Christian Schwarz and Stijn de Bekker.
