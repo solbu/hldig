@@ -1,8 +1,9 @@
 #
-# Example of input file for cookies for ht://Dig and ht://Check
+# Example of input file for cookies for hl://Dig and hl://Check
 #
 # Copyright (c) 1999-2004 Comune di Prato - Prato - Italy
 # Copyright (c) 1995-2004 The ht://Dig Group <www.htdig.org>
+# Copyright (c) 2017-2018 The hl://Dig Group <https://github.com/solbu/hldig>
 # Author: Gabriele Bartolini - Prato - Italy <angusgb@users.sourceforge.net>
 #
 # For copyright details, see the file COPYING in your distribution
@@ -10,7 +11,7 @@
 # <http://www.gnu.org/copyleft/gpl.html>
 #
 # This file must be located through the 'cookies_input_file' directive, and
-# its purpose is to pre-load cookies into ht://Check and ht://Dig and to be used for a
+# its purpose is to pre-load cookies into hl://Check and hl://Dig and to be used for a
 # crawl. Each line contains one name-value pair. Lines beginning with '#'
 # or empty ones are ignored.
 #

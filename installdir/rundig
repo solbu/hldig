@@ -74,7 +74,7 @@ else
 fi
 # If you want to use the soundex and (or) metaphone fuzzy matchings,
 # Uncomment the following line
-# $BINDIR/htfuzzy $opts soundex metaphone
+# $BINDIR/hlfuzzy $opts soundex metaphone
 
 #
 # Create the endings and synonym databases if they don't exist
@@ -85,11 +85,11 @@ fi
 if [ "`ls -t $COMMONDIR/english.0 $COMMONDIR/word2root.db 2>/dev/null | sed 1q`" = \
 	"$COMMONDIR/english.0" ]
 then
-    $BINDIR/htfuzzy $opts endings
+    $BINDIR/hlfuzzy $opts endings
 fi
 
 if [ "`ls -t $COMMONDIR/synonyms $COMMONDIR/synonyms.db 2>/dev/null | sed 1q`" = \
 	"$COMMONDIR/synonyms" ]
 then
-    $BINDIR/htfuzzy $opts synonyms
+    $BINDIR/hlfuzzy $opts synonyms
 fi
