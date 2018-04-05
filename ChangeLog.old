@@ -1,0 +1,6407 @@
+2004-06-19  lha <lha>
+
+	* Fix handling of boolean_keywords in phrases The patch of June 11 avoids endless loop when combining phrases and
+	boolean search, but searches fails.  This patch distinguishes if a boolean keyword is in a phrase or not.
+	When it is in a phrase it isn't treated special (that is, as a
+	boolean), but as a part of the phrase.
+
+2004-06-14  lha <lha>
+
+	* Don't omit URL from url_log if interrupted.  The interrupt signal is checked in the same while condition, the
+	next URL is popped.  The signal has to be checked first, so the next
+	URL is still in the list of URLs not yet checked.
+
+2005-02-25  nealr <nealr>
+
+	* correct version number in Berkely DB License correct version number in Berkely DB License per Michael Olson @
+	Sleepycat.  (cherry picked from commit 53da03c74f1a2d3fad3d391a9966eb80f4082098)
+
+2013-08-17  Jim Cole <lists@yggdrasill.net>
+
+	* Fix external command parsing bug.  The single argument StringList constructor only considers a tab to
+	be a valid separator. As such a space between a command and argument
+	(e.g.  "convert.pl -x") is not treated as a separator, and the
+	string is not split properly. This results in execv calling a
+	command that generally doesn't exist (e.g. "convert.pl -x" rather
+	than convert.pl).  Incidentally this change merges: - Patch from ht://Dig ftp server: CommandParsing.0 - fedora: htdig-3.2.0-external_parsers part 1 - old htdig tree after 3.2.0-b6: first part of "patches from   Jim Cole" (commit f0482c39bc87bd008783fc355f10270bec036210)
+	* Fix bug in handling SSL connections.  Corrects a bug in the Read_Partial code used for handling SSL
+	connections.  Incidentally this change merges: - Patch from ht://Dig ftp server: SSL_pending.0 - openSUSE Patch: htdig-SSLConnection.patch - old htdig tree after 3.2.0-b6: third part of "patches from   Jim Cole" (commit f0482c39bc87bd008783fc355f10270bec036210)
+	* Fix typo in htdig/ExternalParser.cc.  Incidentally this change merges: - Patch from ht://Dig ftp server: ExternalParsersTypo.0 - openSUSE Patch: htdig-ExternalParser-typo.patch - fedora: third part of htdig-3.2.0-external_parsers.patch - old htdig tree after 3.2.0-b6: second part of "patches from Jim
+	  Cole" (commit f0482c39bc87bd008783fc355f10270bec036210)
+
+2013-08-17  Robert Klein (roklein) <roklein@roklein.de>
+
+	* Fix CVE-2007-6110 XSS Vulnerability.  From CVE entry: Cross-site scripting (XSS) vulnerability in htsearch
+	in htdig 3.2.0b6 allows remote attackers to inject arbitrary web
+	script or HTML via the sort parameter.) Incidentally this change merges: - openSUSE Patch: htdig-quoting.patch - fedora Patch: htdig-3.2-CVE-2007-6110.patch Can't identify original patch author.
+	* Fix CVE-2005-085 XSS Vulnerability.  From CVE entry: Cross-site scripting (XSS) vulnerability in ht://dig (htdig) allows remote attackers to execute arbitrary web script or
+	HTML via the config parameter, which is not properly sanitized
+	before it is displayed in an error message.  Incidentally this change merges: - openSUSE Patch: htdig-cross-site-CAN-2005-0085.patch - fedora Patch: htdig-3.2.0b6-unescaped_output.patch Can't identify original patch author.  Probably a Michael Krax.
+
+2013-08-17  Gilles Detillieux <grdetil@scrc.umanitoba.ca>
+
+	* Give meaningful error message if execv fails.  This change fixes bug #1087186.  Previuosly committed (in the
+	htdig-legacy branch) as: - b000f1dacfbc4ae9ee65a2fcde217ecbbe0c2640 and - fbb37dba767fe37f7c94ab7b0158950f59135f6b Incidentally this change merges: - Patch from ht://Dig ftp server: external_parsers.0 (without typo) - fedora patch: second part of htdig-3.2.0-external_parsers.patc
+
+2013-08-17  Robert Klein (roklein) <roklein@roklein.de>
+
+	* Remove class qualifier from method declaration.  Incidentally this change merges: - openSUSE Patch: htsearch-gcc41.patch - fedora Patch:   htdig-3.2.0b6-compile-fix.patch Original patch author is unknown, but probably found and fixed
+	independently several times.
+
+2013-07-05  Robert Klein <roklein@roklein.de>
+
+	* branch for htdig 3.2 development
+
+2004-06-13  lha <lha>
+
+	* RE-fix Cygwin database-empty bug
+
+2004-06-12  lha <lha>
+
+	* Update "files" section of documentation, esp. hyperlink ..._DIR
+	parts
+
+2004-06-11  grdetil <grdetil>
+
+	* htsearch/parser.cc (phrase): Applied Lachlan's patch to prevent
+	  endless loop when boolean keywords appear in a phrase in boolean
+	match method.
+	* db/hash.c (CDB___ham_open): Applied Red Hat's h_hash patch, to
+	  ensure that hash function always set to something valid.
+	* installdir/HtFileType: Added -f to rm command.
+	* htsearch/parser.cc (perform_or): Added missing & in if clause.
+	* contrib/htdig-3.2.0.spec: Updated for 3.2.0b6.
+	* installdir/Makefile.{am,in}: Don't stick $(DESTDIR) in HtFileType.
+
+2004-06-10  angusgb <angusgb>
+
+	* - Updated RELEASE.html and ChangeLog before the release
+	* - Tagged release 3.2.0b6
+	* htcommon/conf_(lexer.lxx,parser.yxx): applied Gilles' patch (April
+	  22) which features:   - improved error handling, gives file name and correct line
+	  number,               even  if using include files - allows space before comment, because otherwise it would just
+	  complain           about the "#" character and go on to parse the
+	  text after it as a               definition - allows config file with an unterminated line at end of file, by
+	  pushing an extra newline token to the parser at EOF - parser correctly handles extra newline tokens, by moving this
+	handling out of simple_expression, and into simple_expression_list
+	and block, as simple_expression must return a new ConfigDefaults
+	object and a newline token doesn't cut it (caused segfaults when
+	dealing with fix above)
+	* htcommon/conf_lexer.cxx: Regenerate using flex 2.5.31. 
+	* htcommon/conf_parser.cxx: Regenerate using bison 1.875a.
+
+2004-06-09  grdetil <grdetil>
+
+	* htdig/HTML.cc (do_tag): Fixed meta date handling fix of June 3 to   ensure null byte gets put in by get() call.
+
+2004-06-09  lha <lha>
+
+	* Add OpenOffice support to  doc2html
+
+2004-06-05  lha <lha>
+
+	* Avoid failure and spurious warnings for two tests on
+	non-linux/gnu systems
+	* Hyperlink attrs.html for default values defined in terms of
+	other attributes.
+	* defaults.cc: Escaped new-line in file-space entry, and fixed
+	no_next_page_text
+
+2004-06-04  grdetil <grdetil>
+
+	* htdig/HTML.cc (do_tag): Fixed meta date handling to avoid
+	  inadvertently matching names like DC.Date.Review.
+	* - htcommon/URL.cc: added "allow_space_in_url" (from fileSpace.1
+	patch) - htcommon/defaults.[cc,xml]: added documentation of
+	allow_space_in_url - htdoc/attrs.html.in: regenerated using cf_generate.pl - htdoc/cf_byname.html: ditto - htdoc/cf_byprog.html: ditto - htdoc/RELEASE.html: updated with info regarding this attribute
+
+2004-06-03  angusgb <angusgb>
+
+	* - Tagged release htdig-3-2-0b6
+	* - global: updated with 'autoreconf -if' (autoconf 2.59, libtool
+	1.5.6 and automake 1.7.9)
+	* - htdoc/RELEASE.html: updated release notes and changes - htdoc/THANKS.html: updated the 'thanks' section
+
+2004-06-02  angusgb <angusgb>
+
+	* - Updated for htdig-3.2.0b6 release
+	* - contrib/rtf2html: added the rtf2html.c source as modified by David
+	Lippi and Gabriele Bartolini of the Comune di Prato. The source code
+	is now released under GNU GPL and included in the ht://Dig package.
+
+2004-06-01  angusgb <angusgb>
+
+	* - htcommon/HtSGMLCodec.cc: changed &curren; to &euro;
+
+2004-05-28  lha <lha>
+
+	* Update copyright to 2004
+
+2004-05-23  lha <lha>
+
+	* Sync htdoc/FAQ.html with offical FAQ on  www.htdig.org
+	* Fix evaluation of variables (like BINDIR) used in attrs.html
+	* Prepare documentation for 3.2.0b6 release
+
+2004-04-26  grdetil <grdetil>
+
+	* htfuzzy/Soundex.cc (generateKey): Applied Alex Kiesel's fix to
+	  prevent segfaults when word has no letters.
+
+2004-04-25  lha <lha>
+
+	* Handle empty noindex_start/end.  Restore an accidentally
+	backed-out patch.
+	* Defensive programming: Don't crash if error returned by
+	getDocumentRef()
+	* Correctly detect paths beginning  C:  as absolute paths in
+	Windows. Fix #814268
+	* Gilles's patch to compile  exclude_urls  only when it is
+	changed, not each URL.
+	* Use mktemp to create safe temporary file
+
+2004-04-07  grdetil <grdetil>
+
+	* htdig/Retriever.cc (IsValidURL): Fixed bug #931377 so
+	  bad_extensions and valid_extensions not thrown off by periods in
+	query strings.
+
+2004-03-20  nealr <nealr>
+
+	* commit libhtdigphp addition
+
+2004-03-15  angusgb <angusgb>
+
+	* - htsearch/Display.cc: changed (and fixed) the date factor formula
+	as Lachlan and David Lippi suggested, in order not to give negative
+	results.
+
+2004-03-12  angusgb <angusgb>
+
+	* I forgot to: - specify that bug #909674 is fixed (according to me) - remove older man pages (I had a connection error while removing
+	them)
+
+2004-03-12  angusgb <angusgb>
+
+	* - configure.in: removed 'eval' expressions which caused the 'NONE'
+	prefix path to be instantiated and the make script to hang - acinclude.in: fixed AC_DEFINEs for SSL and ZLIB check macros,
+	which prevented autoheader (and therefore autoreconf) to correctly
+	work - moved manual pages from htdoc to installdir - htdoc/[manpages].in: removed - installdir/*.[1,8]: removed man pages (htdig-pdfparser.1, htdig.1,
+	htdump.1, htfuzzy.1, htload.1, htmerge.1, htnotify.1, htpurge.1,
+	htsearch.1, htstat.1, rundig.1, htdigconfig.8) - installdir/*.[1,8].in: added pre-configure man pages
+	(htdig-pdfparser.1.in, htdig.1.in, htdump.1.in, htfuzzy.1.in,
+	htload.1.in, htmerge.1.in, htnotify.1.in, htpurge.1.in,
+	htsearch.1.in, htstat.1.in, rundig.1.in, htdigconfig.8.in) - regenerated configure scripts with autoreconf
+
+2004-03-03  lha <lha>
+
+	* Use mktemp to create safe temporary file
+
+2004-02-25  angusgb <angusgb>
+
+	* - htdocs/THANKS.html: added Robert Ribnitz to the 'thanks' page and
+	fixed Nenciarini's position (it was not in alphabetical order -
+	sorry!).
+
+2004-02-25  angusgb <angusgb>
+
+	* - installdir/*.[1,8]: added man pages (htdig-pdfparser.1, htdig.1,
+	htdump.1, htfuzzy.1, htload.1, htmerge.1, htnotify.1, htpurge.1,
+	htsearch.1, htstat.1, rundig.1, htdigconfig.8) provided by Robert
+	Ribnitz <ribnitz@linuxbourg.ch> of the Debian Project - installdir/Makefile.am: prepared the automake script for correctly
+	handling the man pages
+
+2004-02-20  lha <lha>
+
+	* Back out buggy fix to allow spaces in restrict/exclude arguments
+
+2004-02-19  lha <lha>
+
+	* Added  man  pages.  Many changes to configuration process.
+
+2004-02-13  lha <lha>
+
+	* Fix bug with --without-zlib
+
+2004-02-08  lha <lha>
+
+	* Several patches to fix attributes related to spidering
+
+2004-02-03  angusgb <angusgb>
+
+	* - htcommon/HtConfiguration.cc: changed the Find method in order not
+	to            ignore empty string results for string attributes
+	whenever they are             defined in the configuration file by
+	the user - htdig/Document.cc: fixed bugs in handling the http_proxy,
+	http_proxy_authorization, authorization attributes - htlib/Configuration.[h,cc]: added the Exists method in order to
+	query           whether an attribute's definition is present in the
+	configuration               dictionary (before it was checked
+	against its string's length which             prevented empty
+	attributes to be correctly used) - these changes fix bug #887552
+
+2004-01-18  lha <lha>
+
+	* Fix name of  allow_double_slash  attribute.  (Was ..._dbl_... in
+	places.)
+
+2004-01-17  lha <lha>
+
+	* Expanded test suite
+
+2004-01-17  lha <lha>
+
+	* Fix bug causing  max_descriptions  to be ignored.  Update docs.
+
+2004-01-12  lha <lha>
+
+	* Change C++ style comments to C style comments in all C files
+
+2004-01-12  lha <lha>
+
+	* Add  t_parsing  to test config some attributes
+
+2003-12-29  lha <lha>
+
+	* Test validity of all URLs, including first from each server
+
+2003-12-29  lha <lha>
+
+	* Accept list of starting urls from stdin if "-" given as argument
+	of -m
+
+2003-12-29  lha <lha>
+
+	* Make  rundig -a  use correct (possibly non-default) database
+	directory
+
+2003-12-21  lha <lha>
+
+	* Improve handling of restrict/exclude URLs with spaces
+
+2003-12-21  lha <lha>
+
+	* Correctly split URL patterns at | for url_seed_score and
+	search_results_order
+
+2003-12-14  lha <lha>
+
+	* Allow indexing if  robots.txt  has an empty "disallow" line
+
+2003-12-14  lha <lha>
+
+	* Warn if config file has entries for obsolete attributes
+
+2003-12-14  lha <lha>
+
+	* Replace 'Value("start_ellipses")' with 'Find(...)'
+
+2003-12-14  lha <lha>
+
+	* Add  t_fuzzy  t_templates  t_validwords  and  t_factors  to test
+	suite
+
+2003-12-14  lha <lha>
+
+	* Abandon patch to add extra "blank" line to config, as junk line
+	added instead.
+
+2003-12-13  lha <lha>
+
+	* Fix cross-referencing of  max_excerpts  attribute
+
+2003-12-03  lha <lha>
+
+	* Add missing brackets to previous change in conf_lexer.{cxx,lxx}
+	(Can't add a Changelog entry -- cvs hangs while processing it!?? ):
+
+2003-11-22  lha <lha>
+
+	* Fix bug when config file doesn't end in newline
+
+2003-11-11  angusgb <angusgb>
+
+	* - Updated 'where' and the static version of the news
+
+2003-11-10  nealr <nealr>
+
+	* Update link to 3.2.0b5 snapshot
+
+2003-11-09  angusgb <angusgb>
+
+	* - Added entry for htdig-3.2.0b5 release
+
+2003-11-09  angusgb <angusgb>
+
+	* - Added Marco Nenciarini
+
+2003-11-08  angusgb <angusgb>
+
+	* - Updated ChangeLog in the htdoc directory
+
+2003-11-08  lha <lha>
+
+	* Updated docs ready for 3.2.0b5 release
+
+2003-11-07  lha <lha>
+
+	* Fix backlink_factor, and use of multimatch_factor
+
+2003-11-01  lha <lha>
+
+	* Get alignment right if first word in phrase is a bad word.
+
+2003-10-28  angusgb <angusgb>
+
+	* - htdig/htdig.cc: set the debug level when we are importing a cookie
+	file. Fix bug #831478.
+
+2003-10-27  grdetil <grdetil>
+
+	* htdig/Server.cc: Fix bug #831407.  Make sure time properly reset
+	after delay.
+
+2003-10-27  grdetil <grdetil>
+
+	* htdoc/THANKS.html: Added Lachlan, Jim and Neal to the active
+	developers list.
+
+2003-10-26  lha <lha>
+
+	* Clarify documentation for NEXTPAGE/PREVPAGE when there is only
+	one page
+
+2003-10-26  lha <lha>
+
+	* Removed spurious '>' from boolean_syntax_errors, and clarified
+	that noindex_start/end do not introduce whitespace.
+
+2003-10-26  angusgb <angusgb>
+
+	* - htcommon/defaults.cc: Fixed description of 'head_before_get' after
+	Lachlan fixes.  - htdoc/attrs.html: rerun cf_generate.pl
+
+2003-10-25  lha <lha>
+
+	* When filenames are used as titles, URL-decode them to remove
+	%20.
+
+2003-10-25  lha <lha>
+
+	* Don't assume time_t is signed.  Only use positive times in
+	Server::delay()
+
+2003-10-24  grdetil <grdetil>
+
+	* htdoc/htdig.html, htdoc/meta.html, htdoc/require.html: Update URL
+	  for the Standard for Robot Exclusion.
+
+2003-10-24  grdetil <grdetil>
+
+	* htdoc/htmerge.html: Added two clarifications to -m option
+	description.
+
+2003-10-24  grdetil <grdetil>
+
+	* htdoc/cf_types.html: Make clear distinction between String List
+	  and Quoted String List.
+
+2003-10-24  grdetil <grdetil>
+
+	* htsearch/Display.cc: Fix bug #829746. Applied Niel Kohl's fix for
+	  this, to check if words input given before trying to use it.
+
+2003-10-24  grdetil <grdetil>
+
+	* htsearch/Display.cc: Fix bug #578570. The enddate handling now
+	  works correctly for a large, negative startday value.
+
+2003-10-24  grdetil <grdetil>
+
+	* htdig/HTML.cc (ctor): Fix obvious typo in metadatetags.Pattern
+	setting.
+
+2003-10-23  lha <lha>
+
+	* Remove explicit default startyear of 1970
+
+2003-10-23  angusgb <angusgb>
+
+	* - htdig/htdig.cc: restored the code before Oct 21 (fixes ##828628)
+
+2003-10-23  angusgb <angusgb>
+
+	* - htdig/Retriever.[h,cc]: removed 'head_before_get' overriding by
+	restoring the code before Oct 21.  - htdig/Document.[h,cc]: ditto, with the exception of detaching the
+	HEAD before GET mechanism from the persistent connections'.  - htcommon/defaults.cc: improved documentation (even though it needs
+	corrections by an english-speaking developer).  - These changes fix bug #828628
+
+2003-10-22  lha <lha>
+
+	* Correct error of counting urls whose display is suppressed
+
+2003-10-21  angusgb <angusgb>
+
+	* - htdig/Retriever.h: added the 'RetrieverType' enum and an object
+	variable for storing the type of dig we are performing (default
+	initial); - htdig/Retriever.cc: changed constructor in order to handle the
+	type, added some debugging explanation regarding the override of the
+	'head_before_get' attribute, added checks regarding an empty
+	database of URLs to be updated (set the type to initial).  - htdig/Document.h: added the attribute 'is_initial' which stores
+	the information regarding the type of indexing (initial or
+	incremental) we are currently performing. Added access methods
+	(get-and-set-like) - htdig/Document.cc: modified the logic of the HeadBeforeGet
+	settings during the retrieval phase, in order to always override
+	user's settings in an incremental dig and automatically set the
+	'HEAD' call in this case.  - htcommon/defaults.cc: modified the default value of
+	'head_before_get' and a bit of its explanation.  - htnet/HtHTTP.cc: detached the HEAD before GET mechanism to the
+	persistent connections one - htdig/Server.cc: added one level of debugging to the display of
+	the server settings in the server constructor
+
+2003-10-17  lha <lha>
+
+	* Fix allow_numbers
+
+2003-10-17  lha <lha>
+
+	* Escape $ in valid punctuation, and document need to escape $ and
+	\.
+
+2003-10-15  grdetil <grdetil>
+
+	* htdig/Server.cc (robotstxt): Patched to fix bug #765726.    Don't block paths with subpaths excluded by robots.txt, and make   sure any regex meta characters are properly escaped.
+
+2003-10-14  angusgb <angusgb>
+
+	* htnet/HtHTTP.cc: add an empty Accept-Encoding header - this inform
+	the server that htdig is only able to manage documents that are not
+	encoded (if no Accept-Encoding is sent, the server assumes that the
+	client is capable of handling every content encoding - i.e. zipped
+	documents with Apache's mod_gzip module). Partial fix of bug #594790
+	(which now becomes a feature request)
+
+2003-10-14  angusgb <angusgb>
+
+	* - Inserted a missing '</a>'
+
+2003-10-13  lha <lha>
+
+	* Fix bugs in Speling and Regex fuzzy rules.  Update some
+	documentation.
+
+2003-10-12  lha <lha>
+
+	* Fix bug in insertion of "exact" word, if fuzzy algorithm give no
+	search term
+
+2003-10-12  lha <lha>
+
+	* Back out change to Robots.txt handling
+
+2003-10-05  lha <lha>
+
+	* Fix robot exclusions.  Jim Cole's patch with bug report #765726.
+
+2003-10-05  lha <lha>
+
+	* Fix highlighting of phrases containing bad_words or short words
+
+2003-09-27  lha <lha>
+
+	* Pass arguments correctly to test_functions.  Was broken on
+	FreeBSD.
+
+2003-09-27  lha <lha>
+
+	* Fix for HP-UX  -- avoid ambiguity between  time_t  and  int.
+
+2003-09-22  ghutchis <ghutchis>
+
+	* Updated with Dave Bannon's test of ItaniumII RH AdvancedServer
+
+2003-08-29  nealr <nealr>
+
+	* remove unused vars
+
+2003-08-29  nealr <nealr>
+
+	* remove references to CDB_set_mp_diry_level,
+	CDB_get_mp_diry_level and CDB___mp_dirty_level
+
+2003-08-28  nealr <nealr>
+
+	* added notes for new Sleepycat license and mp_alloc.c rollback
+
+2003-08-28  nealr <nealr>
+
+	* backout last three changes (revert to Revision 1.2 , Sat Feb 2
+	18:18:05 2002) - they caused very large DB growth - the data was the
+	same but the files were MUCH larger
+
+2003-08-28  nealr <nealr>
+
+	* Changeover to New Berkeley DB License from Sleepycat
+
+2003-08-28  angusgb <angusgb>
+
+	* - global: updated with 'autoreconf -if' (autoconf 2.57, libtool
+	1.5.0a and automake 1.7.6) - 'make check' successful on: AMD64 Linux 2.4, Alpha Linux 2.2,
+	RedHat Linux 7.3 (2.4), SPARC Ultra60 Linux 2.4, Sparc R220 Sun
+	Solaris (5.8).  - README.developer: added further info
+
+2003-08-28  angusgb <angusgb>
+
+	* - db/[config.guess,config.sub,install-sh,ltmain.sh,missing]: added
+	in the database directory (this way 'make dist' goes on); I have not
+	been able to tell the db/configure script to get the 'top_srcdir'
+	ones (which should be the default behaviour). Maybe in the future
+	we'll look for this.
+
+2003-08-28  angusgb <angusgb>
+
+	* - db/configure.in: changed AC_PROG_INSTALL() to AC_PROG_INSTALL and
+	removed AC_CONFIG_AUX_DIR; this implies that autotools copies will
+	be made for the db directory as well.
+
+2003-08-28  angusgb <angusgb>
+
+	* -
+
+	[htcommon,htdb,htdig,htfuzzy,htlib,htnet,htsearch,httools,htword,test]/Makefile.am:added the option above to every
+	*_LDFLAGS
+
+2003-08-28  angusgb <angusgb>
+
+	* - Makefile.am: removed acconfig.h from the EXTRA_DIST list
+
+2003-08-28  angusgb <angusgb>
+
+	* configure.in: removed portability checks for error, stat and lstat
+	that caused a compile errors on Solaris. Added the '-mimpure-text'
+	extra ld flag for GCC on solaris systems (a linkage error occurs
+	when libstdc++ is not shared)
+
+2003-08-28  angusgb <angusgb>
+
+	* include/Makefile.am: changed htconfig.h.in into config.h.in
+
+2003-08-28  angusgb <angusgb>
+
+	* - htlib/error.[h,c]: removed for now, until replacement functions
+	will be correctly performed.
+
+2003-08-28  angusgb <angusgb>
+
+	* - htdoc/cf_generate.pl: fixed an error when opening tail and head
+	files - Makefile.am: enabled rebuild from a different directory (it is
+	used my 'make dist')
+
+2003-08-28  angusgb <angusgb>
+
+	* - htlib/malloc.c: modified according to autoconf specifications as
+	far as replacement functions are regarded - htlib/[lstat, stat].c: removed for now
+
+2003-08-28  angusgb <angusgb>
+
+	* - htdoc/cf_generate.pl: accept an optional parameter (top source
+	directory) - htcommon/defaults.cc: fixed some broken lines which prevented
+	cf_generate.pl from correctly working - htdoc/Makefile.am: modified the automake file for passing the top
+	source directory to cf_generate.pl - htdoc/attrs.html, htdoc/cf_byname.html, htdoc/cf_byprog.html:
+	Regenerated using cf_generate.pl.
+
+2003-08-26  angusgb <angusgb>
+
+	* - configure.in: removed AC_FUNC_MKTIME because it may not work
+	properly and added default replacement directory (htlib) for future
+	uses - htlib/Makefile.am: back-step with re-inclusion of mktime.c in the
+	list of files to be always compiled (caused linking errors for the
+	__mktime_internal function) - global: updated with 'autoreconf -if'
+
+2003-08-24  angusgb <angusgb>
+
+	* - updated with 'autoreconf -if': autoconf 2.57, automake 1.7.6 and
+	libtool 1.5.0a (autotools that come with Debian SID)
+
+2003-08-24  angusgb <angusgb>
+
+	* - configure.in: moved AC_PROG_LEX to AM_PROG_LEX - db/configure.in: enabled AM_MAINTAINER_MODE which prevented users
+	without autotools to configure and compile the program (relatively
+	to the db directory) - include/htconfig.h: previously excluded from the branch (severe
+	error!)
+
+2003-07-21  angusgb <angusgb>
+
+	* - htlib/(malloc|error|lstat|stat|realloc).c: added for
+	cross-compiling reasons (as suggested by automake) - htlib/error.h: ditto - db/acconfig.h: removed as suggested by autotools' new versions - configure.in: removed AC_PROG_RANLIB (overriden by
+	AC_PROG_LIBTOOL) - updated as of rerun 'autoreconf -if'
+
+2003-07-21  angusgb <angusgb>
+
+	* - Patch provided by Marco Nenciarini <mnencia@linux.it> has been
+	completely applied; the patch adds support for detection of standard
+	C++ library - all sources using <iostream.h> <fstream.h> <iomanip.h>: modified
+	to use standard ISO C++ library, if present - db/configure scripts: modified for autoconf 2.57
+
+2003-07-21  angusgb <angusgb>
+
+	* - [.,*]/Makefile.in: regenerated by new automake against new
+	configure.in - Makefile.config: now looking for the global configuration file in
+	the source directory
+
+2003-07-21  angusgb <angusgb>
+
+	* - configure.in: completely rewritten, deprecated directives have
+	been removed and now version 2.57 is a prerequisite.  - acinclude.m4: moved all the macros here - aclocal.m4, configure: regenerated by aclocal and autoconf - acconfig.h: removed as now it is deprecated - include/htconfig.h.in: removed, as 'config.h.in' is preferred and
+	auto-generated - config.[guess,sub]: updated with newer versions
+
+2003-07-08  grdetil <grdetil>
+
+	* htsearch/parser.cc (checkSyntax): Fixed boolean_syntax_errors   handling to work over multiple config files.
+
+2003-07-05  lha <lha>
+
+	* Wait 2 seconds for Apache to start.  Don't try to kill it if it
+	isn't running.
+
+2003-07-05  lha <lha>
+
+	* Disable cache flushing, as it leaked database pages due to
+	another bug.
+
+2003-06-27  nealr <nealr>
+
+	* minor fixup
+
+2003-06-27  nealr <nealr>
+
+	* Copyright update (2003)
+
+2003-06-27  nealr <nealr>
+
+	* Copyright update (2003) & GPL -> LGPL License change (Decided by
+	HtDig Board & Membership October 2002)
+
+2003-06-27  nealr <nealr>
+
+	* make win32 exes depend on libraries
+
+2003-06-27  nealr <nealr>
+
+	* make CDB___mp_dirty_level non-global and use accessor functions
+	-- already done in db.h.win32
+
+2003-06-25  nealr <nealr>
+
+	* Need -I../htcommon for updates to DB2_db.cc
+
+2003-06-24  nealr <nealr>
+
+	* Copyright update (2003) & GPL -> LGPL License change (Decided by
+	HtDig Board & Membership October 2002)
+
+2003-06-24  nealr <nealr>
+
+	* Copyright update (2003) & GPL -> LGPL License change (Decided by
+	HtDig Board & Membership October 2002)
+
+2003-06-24  nealr <nealr>
+
+	* Copyright update (2003) & GPL -> LGPL License change (Decided by
+	HtDig Board & Membership October 2002)
+
+2003-06-24  nealr <nealr>
+
+	* Copyright update (2003) & GPL -> LGPL License change (Decided by
+	HtDig Board & Membership October 2002)
+
+2003-06-24  nealr <nealr>
+
+	* Add Copyright and LGPL License Notice
+
+2003-06-24  nealr <nealr>
+
+	* Copyright update (2003) & GPL -> LGPL License change (Decided by
+	HtDig Board & Membership October 2002)
+
+2003-06-24  nealr <nealr>
+
+	* Copyright update (2003) & GPL -> LGPL License change (Decided by
+	HtDig Board & Membership October 2002)
+
+2003-06-24  nealr <nealr>
+
+	* GPL -> LGPL License change
+
+2003-06-23  nealr <nealr>
+
+	* Neal's comments for raft of Native Win22 related commits
+
+2003-06-23  nealr <nealr>
+
+	* Makefile for Native WIN32
+
+2003-06-23  nealr <nealr>
+
+	* Lots of changes/improvements/new-features - Native WIN32 among
+	others
+
+2003-06-23  nealr <nealr>
+
+	* Changes for Native WIN32
+
+2003-06-23  nealr <nealr>
+
+	* Changes for Native WIN32
+
+2003-06-23  nealr <nealr>
+
+	* Changes for Native WIN32
+
+2003-06-23  nealr <nealr>
+
+	* Changes for Native WIN32 and use functions added to db rather
+	than global variable
+
+2003-06-23  nealr <nealr>
+
+	* Changes for Native WIN32
+
+2003-06-23  nealr <nealr>
+
+	* Changes for Native WIN32 & improve IsValidURL with return codes
+
+2003-06-23  nealr <nealr>
+
+	* Changes for Native WIN32
+
+2003-06-23  nealr <nealr>
+
+	* Changes for Native WIN32
+
+2003-06-23  nealr <nealr>
+
+	* remove global variable and subsitute functions to set/get
+	variable
+
+2003-06-23  nealr <nealr>
+
+	* Changes for Native WIN32
+
+2003-06-23  nealr <nealr>
+
+	* Changes for Native WIN32
+
+2003-06-23  nealr <nealr>
+
+	* Changes for Native WIN32
+
+2003-06-23  nealr <nealr>
+
+	* add GNU LGPL regex code that was ported to Native Win32
+
+2003-06-23  nealr <nealr>
+
+	* Add well-tested public domain getopt routines to htlib for
+	native Win32
+
+2003-06-23  nealr <nealr>
+
+	* donate file copy routines Unix & Native WIN32 versions
+
+2003-06-23  nealr <nealr>
+
+	* Donate POSIX-Like directory routines for Native WIN32
+
+2003-06-23  nealr <nealr>
+
+	* add Native Win32 makefile
+
+2003-06-23  nealr <nealr>
+
+	* add Native Win32 config files
+
+2003-06-23  nealr <nealr>
+
+	* add Native Win32 makefiles
+
+2003-06-23  ghutchis <ghutchis>
+
+	* Minor update.
+
+2003-06-22  lha <lha>
+
+	* Eliminated DB compression recursion (at its source)
+
+2003-06-20  lha <lha>
+
+	* Fix --with-ssl  bug in  configure
+
+2003-06-20  lha <lha>
+
+	* Fix to compile with Sun's C++  (and, I hope, configure on
+	HP/UX).
+
+2003-06-15  lha <lha>
+
+	* Set wordlist_chache_dirty_level to its most conservative.
+	Update several docs.
+
+2003-06-13  lha <lha>
+
+	* Set  MATCH_MESSAGE  from  method_names  attribute, for
+	non-English sites.
+
+2003-06-12  grdetil <grdetil>
+
+	* htsearch/htsearch.cc (main): Fixed boolean_keywords handling to
+	  work over multiple config files (must destroy old list before
+	creating new one).
+
+2003-06-12  grdetil <grdetil>
+
+	* htcommon/defaults.cc, htsearch/Display.cc (setVariables): Removed
+	  incorrect default value for "config" attribute, and removed hack
+	that tried to fix it. 
+	* htdoc/attrs.html: Regenerated using cf_generate.pl.
+
+2003-06-12  grdetil <grdetil>
+
+	* htcommon/defaults.cc, htcommon/HtSGMLCodec.cc (ctor): Added
+	  translate_latin1 option to allow disable Latin 1 specific SGML
+	translations. 
+	* htdoc/attrs.html, htdoc/cf_by{name,prog}.html: Regen. with
+	cf_generate.pl.
+
+2003-06-09  lha <lha>
+
+	* Fix infinite loop in setupWords when query ended with non-word
+	characters
+
+2003-06-09  lha <lha>
+
+	* Fix bug with "Refine search" option -- CONFIG templ variable was
+	whole path
+
+2003-06-09  lha <lha>
+
+	* Tidy documentation.  Don't kill apache multiple times in
+	test/test_functions
+
+2003-06-08  lha <lha>
+
+	* Hack  configure  to set OS dependent flags.  Only start Apache
+	for tests which actually need it, and kill it afterwards.
+
+2003-06-02  lha <lha>
+
+	* Add zlib_level to mp_cmpr.c defaults, and avoid warnings in
+	conf_lexer.cxx
+
+2003-05-30  lha <lha>
+
+	* Back out last commit (re-run autotools), I hope!  OS X
+	*should*
+	work again.
+
+2003-05-29  lha <lha>
+
+	* Fixed  acconfig.h  and re-ran libtool 1.5, autoconf 2.57,
+	automake 1.6.3 Hacked  test/Makefile.in  again to chmod 755 before
+	running tests
+
+2003-05-29  lha <lha>
+
+	* Fix signed/unsigned comparison bug on SunOS cc
+
+2003-05-27  lha <lha>
+
+	* Fix configuration bugs, portability issues, and bug introduced
+	last commit(
+
+2003-05-27  lha <lha>
+
+	* Fix bugs in configure, portability fix, avoid compiler warnings
+
+2003-05-24  lha <lha>
+
+	* Partially fix configure process, especially for non-gcc
+
+2003-05-22  lha <lha>
+
+	* Fix late-night bug in previous update...
+
+2003-05-22  lha <lha>
+
+	* Ensure  wordlist_cache_dirty_level  set before database is
+	opened
+
+2003-05-22  lha <lha>
+
+	* Hack to fix static library inter-dependency problems on MacOS X
+
+2003-05-18  lha <lha>
+
+	* Second bug-fix to patch to avoid DB recursion under OS X
+
+2003-05-18  lha <lha>
+
+	* Declare variable left out in  db/mp_cmpr.c  patch
+
+2003-05-17  lha <lha>
+
+	* Avoid infinite recursion in database memory allocation
+
+2003-04-19  lha <lha>
+
+	* Remove  db.words.db_weakcmpr  if  htdig -i  specified.
+
+2003-04-18  nealr <nealr>
+
+	* Cleanup Code with GNU indent => %indent -gnu --tab-size5 -bli0
+	-i5 -l110 -npcs -npsl -bl -cs -nfca
+
+2003-04-18  nealr <nealr>
+
+	* eliminate redundant server pings by moving robots.txt check
+	after limits checks
+
+2003-04-09  nealr <nealr>
+
+	* First add of libhtdig code to offical tree
+
+2003-02-26  angusgb <angusgb>
+
+	* - htnet/HtHTTP.cc: fixed colon (':') problem with HTTP header
+	parsing, as Frank Passek, Gilles and others suggested, as space is
+	not mandatory between the field declaration and the field value
+	returned by the server
+
+2003-02-23  angusgb <angusgb>
+
+	* - htcommon/defaults.[cc,xml]: added the 'cookies_input_file'
+	configuration attribute for pre-loading cookies in memory - htdig/htdig.cc: added the feature above; the code automatically
+	loads the cookies from the input file into the 'jar' that will be
+	used during the crawl.
+
+2003-02-23  angusgb <angusgb>
+
+	* - htnet/HtHTTP.h: removed the NULL pointer check before assigning a
+	new jar to the HTTP code
+
+2003-02-11  lha <lha>
+
+	* Enable Neal's  zlib  patch by default
+
+2003-02-11  lha <lha>
+
+	* Added field-restricted searches, and indexing of author
+
+2003-02-09  lha <lha>
+
+	* Trivial bug fixes
+
+2003-02-01  angusgb <angusgb>
+
+	* - htnet/HtCookie.[h,cc]: allowed printDebug to be passed an ostream
+	object - htnet/HtCookieMemJar.cc: removed a debug call
+
+2003-02-01  nealr <nealr>
+
+	* Trivial change to test my commit permissions - bcopy->memcopy
+	TODO
+
+2003-01-30  angusgb <angusgb>
+
+	* - configure.in: used AC_LIBOBJ instead of deprecated LTLIBOBJS's
+	workaround - ltconfig: removed as not needed anymore since libtool 1.4 - db/configure.in: added AC_CONFIG_AUX_DIR(../) for letting automake
+	know to use the main ltmain.sh file - configure, aclocal.m4, Makefile.in,
+	*/Makefile.in, config.guess,
+	config.sub, install-sh, ltmain.sh, missing, mkinstalldirs:
+	re-generated by autotools: aclocal, autoconf 2.57, automake 1.6.3
+	and libtool 1.4.3 - db/aclocal.m4, db/configure, db/mkinstalldirs: ditto
+
+2003-01-30  angusgb <angusgb>
+
+	* - htsearch/htsearch.cc: removed a warning due to a not-initialized
+	pointer
+
+2003-01-29  angusgb <angusgb>
+
+	* - htsearch/htsearch.cc: removed a warning due to a not-initialized
+	pointer
+
+2003-01-29  angusgb <angusgb>
+
+	* - acinclude.m4: included the function for checking against SSL, as
+	found in the ac-archive.
+
+2003-01-28  angusgb <angusgb>
+
+	* - htnet/Makefile.am: added HtCookieInFileJar.[h,cc] files - installdir/cookies.txt: example file for pre-loading HTTP cookies - installdir/Makefile.am: added cookies.txt
+
+2003-01-28  angusgb <angusgb>
+
+	* - htnet/Makefile.am: added HtCookieInFileJar.[h,cc] files - installdir/cookies.txt: example file for pre-loading HTTP cookies - installdir/Makefile.am: added cookies.txt
+
+2003-01-28  angusgb <angusgb>
+
+	* - htnet/HtCookieMemJar.[h,cc]: performed deep copy of the jar in the
+	copy constructor
+
+2003-01-28  angusgb <angusgb>
+
+	* - htnet/HtCookie.[h,cc]: added the constructor of a cookie object
+	from a line of a cookie input file (Netscape's way): if an
+	expiration value of '0' is set through the cookies input file, the
+	cookie is managed as a session cookie.  Improved copy constructor,
+	solving a bug related to the expires field.
+
+2003-01-28  angusgb <angusgb>
+
+	* - htnet/HtCookieInFileJar.[h,cc]: class for importing cookies from a
+	text file
+
+2003-01-28  angusgb <angusgb>
+
+	* - htlib/HtDateTime.h: added the constructor HtDateTime(const int)
+
+2003-01-24  lha <lha>
+
+	* Remove \n from $DESCRIPTION to allow use in Javascript
+
+2003-01-20  lha <lha>
+
+	* Allow noindex_start & noindex_end as string lists
+
+2003-01-11  lha <lha>
+
+	* Suppress display of docuemtns with a score of 0.0
+
+2003-01-11  lha <lha>
+
+	* Decode URL paths before use as local file names.
+
+2003-01-10  lha <lha>
+
+	* Blank lines no longer taken as EOF in
+	operator>>(istream&,String&)
+
+2003-01-03  lha <lha>
+
+	* Fixed temporary file name...
+
+2003-01-03  lha <lha>
+
+	* Improved MIME type discovery for local files, and fixed symlink
+	bug.
+
+2002-12-31  lha <lha>
+
+	* Renamed  regex.h  to  gregex.h  and allow use of  rx  instead.
+
+2002-12-30  lha <lha>
+
+	* Updated  doc2html  to version 3.0.1  (Thanks to David Adams.)
+
+2002-12-30  lha <lha>
+
+	* Forward-port of many 3.1.6 features.
+
+2002-12-23  lha <lha>
+
+	* 	* htlib/String.cc:  Ignore strings of negative length (from 3.1.6).
+
+2002-11-28  grdetil <grdetil>
+
+	* installdir/english.0: Removed S flag from birth, because it
+	  doesn't do what we want (birthes, not births).
+
+2002-11-27  grdetil <grdetil>
+
+	* htdoc/hts_form.html: Fixed typo in link & description for
+	restrict.
+
+2002-11-27  grdetil <grdetil>
+
+	* Committed synonyms.original
+
+2002-11-27  grdetil <grdetil>
+
+	* installdir/english.0: Patched with Lachlan Andrew's changes,
+	  fixing lots of dubious uses of suffixes to get more appropriate and
+	  correct fuzzy endings expansions. 
+	* installdir/synonyms: Updated with the version contributed by   David Adams, with minor changes.  Kept old one as
+	  synonyms.original.
+
+2002-11-04  angusgb <angusgb>
+
+	* - Provided the assignment operator for the URL class
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Merge in wordlist DB zlib patch from Neal.
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Update using cf_generate.pl
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Add attribute wordlist_compress_zlib
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Merge in fixes from Lachlan Andrew
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Create valid boolean query if "exact" not         specified in search_algorithms by adding the exact word with
+	        low weight. Solves PR#405294.
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Documentation fixes.
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Fix minor bug--recognize service         specified as https:// rather than https.
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Add documentation for allow_double_slash,         as well as various documentation cleanups.
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Add new configuration attribute         allow_double_slash to only remove // marks when requested
+	        (since some server-side code uses them), handle initial
+	        protocols without double slashes, and only remove the default doc
+	        string from appropriate protocol URLs (e.g. not file), treat ".//"
+	        as a relative path, and collapse /../
+	*after* // and /./ handling.
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Add URL tests to the automatic test suite (rather than requiring
+	them to be run manually).
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Updated using automake-1.4p6
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Updated for autom4te.cache from new automake/autoconf tools.
+
+2002-10-27  ghutchis <ghutchis>
+
+	* Updated with status from new patches.
+
+2002-10-04  ghutchis <ghutchis>
+
+	*        
+	* htcommon/defaults.xml: Added first-draft XML version of
+	        defaults file. This will eventually be used to generate
+	        defaults.cc and documentation automatically. (As pointed out by
+	        Brian White, this will make the binaries smaller.)
+
+2002-10-04  ghutchis <ghutchis>
+
+	* Begin updating. New PRs added, some status items removed, added,
+	etc.  (still a bit out-of-date.)
+
+2002-09-25  grdetil <grdetil>
+
+	* htdig/HTML.cc (parse): Fixed handling of JavaScript skipping so it   doesn't get confused by "<" in code.
+
+2002-09-19  angusgb <angusgb>
+
+	* - htnet/HtHTTP.cc: another check against null pointer (cookie jar
+	case)
+
+2002-09-17  grdetil <grdetil>
+
+	* htcommon/defaults.cc (external_protocols): Fixed table formatting   as suggested by Lachlan Andrew.
+
+2002-08-30  svc <svc>
+
+	* Added description of recent changes made in order to allow htdig
+	to handle 'ftp://'
+
+2002-08-29  svc <svc>
+
+	* Added files HtFTP.cc HtFTP.h implementing the FTP handling by
+	HtDig. Made suitable modifications to Makefile.am and Makefile.in
+	The Implementation compiles, but does not yet function.
+
+2002-08-29  svc <svc>
+
+	* Added lines to implement handling of the FTP protocol (see also
+	htnet/HtFTP.cc)
+
+2002-08-29  svc <svc>
+
+	* Added line to include HtFTP.h to support the FTP protocol.  The
+	Feature is not tested, but compiles without warnings
+
+2002-08-09  grdetil <grdetil>
+
+	* httools/htnotify.cc (readPreAndPostamble): Check for empty strings   in file names, not just NULL, as suggested by Martin Kraemer.
+
+2002-08-07  grdetil <grdetil>
+
+	* htdig/ExternalParser.cc (parse): Fixed to impose max_doc_size   restriction on external converter output which it reads in.
+
+2002-08-07  angusgb <angusgb>
+
+	* - Fixed the version
+
+2002-08-06  angusgb <angusgb>
+
+	* - these changes were suggested by David Reed <DReed1@citgo.com>
+	(thanks) - htdig/Document.cc: manage cookies via SSL - htnet/HtCookie.[h,cc]: features both RFC2109 and Netscape version - htnet/HtCookieJar.cc: ditto
+
+2002-08-06  angusgb <angusgb>
+
+	* - htcommon/defaults.cc: added the 'http_proxy_authorization'
+	attribute.  Needs revision due to my usual
+	*spaghetti* english.-) - htdig/Document.[h,cc]: proxy authorization is now enabled
+
+2002-08-06  angusgb <angusgb>
+
+	* All these changes have been made basically for 2 reasons: 1) syncing the code with ht://Check net library 2) adding Proxy authorization feature Here they are: - htnet/Connection.[h,cc]: IP address storing as string - htnet/Transport.[h,cc]: HTTP Proxy and Basic credentials handling
+	moved here (ditto) through the use of a protected static method - htnet/HtHTTP.h: SetCredentials declared to be virtual (unnecessary
+	because inherited, but gives better understanding); new method
+	SetProxyCredentials for proxy authorization.  - htnet/HtHTTP.cc: HTTP header Proxy-Authorization is now handled.
+	The SetCredentials and SetProxyCredentials methods now make use of
+	the Transport::SetHTTPBasicAccessAuthorizationString method, in
+	order to write the string for negotiating the access.
+
+2002-08-04  ghutchis <ghutchis>
+
+	* Updated Status report.
+
+2002-08-02  grdetil <grdetil>
+
+	* htdig/Document.cc (Retrieve): Allow redirects from HTTPSConnect.
+
+2002-07-30  grdetil <grdetil>
+
+	* htlib/md5.cc: Added missing include of stdlib.h, as Geoff
+	suggested.
+
+2002-07-27  ghutchis <ghutchis>
+
+	*        
+	* htnet/SSLConnection.cc: Add fix for segfault on SSL
+	        connections noticed by several users. Fix contributed by
+	        Andy Bach <afbach@users.sourceforge.net>.
+
+2002-06-18  ghutchis <ghutchis>
+
+	* 	* htdig/Retriever.cc (got_word): Check that the word length meets 	the minimum word length before doing any processing.
+
+2002-06-14  grdetil <grdetil>
+
+	* htsearch/Display.cc (buildMatchList), htsearch/HtURLSeedScore.cc
+	  (Match), htsearch/SplitMatches.cc (Match): Added Jim Cole's fix to
+	  bugs in handling of search_results_order.
+
+2002-05-15  angusgb <angusgb>
+
+	* - htnet/Retriever.cc: fixed the bug regarding the server_wait_time
+	  feature after the maximum number of requests per connection has been
+	reached.
+
+2002-04-09  angusgb <angusgb>
+
+	* - htnet/HtCookie*.[h,cc]: RFC2109 compliant.  - htlib/HtDateTime.[h,cc]: Add const-ness to the DiffTime static
+	method
+
+2002-04-09  angusgb <angusgb>
+
+	* - htnet/HtCookie.cc: fixed a bug regarding expiry date recognition
+
+2002-04-05  grdetil <grdetil>
+
+	* htdig/ExternalTransport.cc (Request): Fixed to strip CR from   header lines, output header lines with -vvv.
+
+2002-03-19  angusgb <angusgb>
+
+	* - htnet/HtCookie.cc: enhanced controls regarding the expires setting
+	  when no expires is returned. Prevents NULL pointer exceptions to be
+	arisen.
+
+2002-03-18  angusgb <angusgb>
+
+	* - htlib/HtDateTime.h: added the copy constructor - htnet/HtCookie.cc: fixed a NULL pointer bug regarding 'datestring'
+	  management and HtDateTime copy constructor is now used
+
+2002-03-13  grdetil <grdetil>
+
+	* htlib/HtDateTime.cc (Parse, SetFTime): Added Parse method for   more flexible parsing of LOOSE/SHORT formats, use it in SetFTime.    Also skip unexpected leading spaces in SetFTime, as these
+	  frequently cause problems with some strptime() implementations.
+
+2002-02-18  ghutchis <ghutchis>
+
+	* Make sure we're including builddir/include not srcdir/include.
+
+2002-02-14  ghutchis <ghutchis>
+
+	* Basically a chance to see if the sendlog changes help debug
+	this.
+
+2002-02-12  ghutchis <ghutchis>
+
+	* Trial of hash function suggested by Jamie Anstice.
+
+2002-02-12  ghutchis <ghutchis>
+
+	* Fix bug that prevented external         transport methods from reporting redirects as reported by
+	        Jamie Anstice <Jamie.Anstice@sli-systems.com>.
+
+2002-02-12  ghutchis <ghutchis>
+
+	* Add referer to properly handle         broken links through a redirect as reported by Joe Jah.
+
+2002-02-10  ghutchis <ghutchis>
+
+	* Add scoring code for the new htsearch framework.
+
+2002-02-07  ghutchis <ghutchis>
+
+	*  (ReadChunkedBody): gets control of Read_Line 	methods (return error when they fail).
+
+2002-02-02  ghutchis <ghutchis>
+
+	* Finished merge of 3-2-x branch into mainline. (Needed to wait
+	for SF to clear stale CVS lock.)
+
+2002-02-01  ghutchis <ghutchis>
+
+	* First step in clobbering mainline and merging in 3-2-x branch.
+
+2001-10-12  junkmale <junkmale>
+
+	* Don't allow people to enter HTML or PHP into the search field.
+	This may or may not be a potential exploit.  This fix removes that
+	potential.  This solution is not ideal, as it merely removes any tags (e.g. <IMG
+	SRC..) and the user is left with an empty search field.  This is
+	considered acceptable in the short term. Eventually, it would be
+	nice to return to them their original string.
+
+2001-08-17  junkmale <junkmale>
+
+	* First commit. woo hoo!
+
+2001-05-06  ghutchis <ghutchis>
+
+	* Update with more blatant warnings about the 3-2-x branch v. the
+	mainline.
+
+2000-02-19  ghutchis <ghutchis>
+
+	* Merge in 3.2.0b1 branch.
+
+1999-11-08  toivo <toivo>
+
+	* Fix memory dealloc error
+
+1999-10-15  bosc <bosc>
+
+	* added README to htword
+
+1999-10-15  bosc <bosc>
+
+	* Added README to htword
+
+1999-10-15  jtillman <jtillman>
+
+	* modified to build Searcher.cc
+
+1999-10-15  jtillman <jtillman>
+
+	* fixed bad include directive for "new_htsearch.h"
+
+1999-10-15  jtillman <jtillman>
+
+	* fixed name in comment to be 'htsearch.h'
+
+1999-10-15  jtillman <jtillman>
+
+	* changed include directive from "new_htsearch.h" to "htsearch.h"
+
+1999-10-15  jtillman <jtillman>
+
+	* a replacement for parser.h that both parses and searches
+
+1999-10-15  jtillman <jtillman>
+
+	* a replacement for parser.cc, which both parses and searches
+
+1999-10-15  jtillman <jtillman>
+
+	* modified to work with new Display (which uses smarter
+	ResultList)
+
+1999-10-15  jtillman <jtillman>
+
+	* modified to use the smarter ResultList for accessing doc data,
+	rather than going to doc_db itself.
+
+1999-10-15  jtillman <jtillman>
+
+	* modifications to work with new htsearch.cc
+
+1999-10-15  jtillman <jtillman>
+
+	* modified to use the Searcher object instead of searching
+	directly
+
+1999-10-15  jtillman <jtillman>
+
+	* smartened up ResultList to avoid Display.cc having to access
+	database directly
+
+1999-10-15  jtillman <jtillman>
+
+	* smartened up the ResultList to avoid Display.cc having to access
+	database directly
+
+1999-10-12  loic <loic>
+
+	* install headers and libraries so that htdig libraries may be
+	used by external programs
+
+1999-10-08  ghutchis <ghutchis>
+
+	* Change Document class to finally use generalized Transport
+	methods. This will shortly allow methods other than HTTP.
+
+1999-10-08  ghutchis <ghutchis>
+
+	* Use Document::Retrieve instead of RetrieveHTTP.
+
+1999-10-08  ghutchis <ghutchis>
+
+	* Use Transport class for obtaining documents. Remove duplication
+	of declarations (e.g. DocStatus).
+
+1999-10-08  ghutchis <ghutchis>
+
+	* Adapt switch statements from         Document::DocStatus to Transport::DocStatus.
+
+1999-10-08  loic <loic>
+
+	* 	* test/t_htnet: succeed if timeout occurs. It was the opposite.  	* configure.in: AC_MSG_CHECKING(how to call getpeername?) add
+		  missing comma at end for header spec block.
+
+1999-10-08  ghutchis <ghutchis>
+
+	* Change buffer argument to const         char* to prevent problems passing in const buffers.
+
+1999-10-08  ghutchis <ghutchis>
+
+	* Change SetUserAgent to take a const char* to         prevent problems passing in const parameters.
+
+1999-10-08  loic <loic>
+
+	* Fix all warnings reported by gcc-2.95.1 related to string   cast to char*.
+
+1999-10-08  loic <loic>
+
+	* 	* htlib/Configuration,ParsedString,Dictionary: change char* to
+		  String where possible.  	* Fix a lot of warnings reported by gcc-2.95.1 related to string 	  cast to char*.  	* Completely disable exception code from db.
+
+1999-10-08  loic <loic>
+
+	* 	* htlib/Configuration,ParsedString,Dictionary: change char* to
+		  String where possible.  	* Fix a lot of warnings reported by gcc-2.95.1 related to string 	  cast to char*.  	* Completely disable exception code from db.
+
+1999-10-08  loic <loic>
+
+	* 	* htdig/Retriever.cc (IsValidURL): test return value of 	  ext = strrchr(url, .); 	* htword/WordRecord.h: initialize info member to 0 in constructor
+		  and Clear.  	* htlib/Configuration: char* -> String to all functions. Resolve 	  warnings.
+
+1999-10-08  angus <angus>
+
+	* - HtHTTP.cc : fixed a little bug when assigning the modification
+	  time if not returned by the server.
+
+1999-10-08  angus <angus>
+
+	* - Transport.h: added two other DocStatus enum values, for no
+	  connection and no port (even if for now it's unused).  - HtHTTP.cc: management of connection failures return values - testnet.cc: modified in order to accomplish new changes above
+
+1999-10-08  angus <angus>
+
+	* - configure: modified getpeername() test.
+
+1999-10-08  angus <angus>
+
+	* - configure.in: modified getpeername() test
+
+1999-10-07  loic <loic>
+
+	* 	* htnet/HtHTTP.cc (ReadChunkedBody): use append instead of 	  << because buffer is
+	*not* null terminated.  	* htnet/Transport.cc (Transport): initialize _port and
+		  _max_document_size otherwise comparison with undefined value
+	occurs.
+
+1999-10-07  angus <angus>
+
+	* - HtHTTP.cc: FinishRequest call for returning a value in
+	HTTPRequest() - testnet.cc: more statistics available in verbose mode
+
+1999-10-07  angus <angus>
+
+	* - Modified getpeername test function in configure.in . Now it's a
+	  C++ test autoconf function instead of a C one. According to
+	Michael's problem.
+
+1999-10-07  angus <angus>
+
+	* - HtHTTP.cc: fixed memory deletion bug in class destructor as Loic
+	suggested.
+
+1999-10-07  loic <loic>
+
+	* fix constness in htword/WordKey,WordRecord
+
+1999-10-07  ghutchis <ghutchis>
+
+	* Add more verbose flags for errors.
+
+1999-10-07  ghutchis <ghutchis>
+
+	* Merge in io class. Connection class was the only subclass of io.
+
+1999-10-06  loic <loic>
+
+	* Fix UMR in htlib/URL.cc and free/delete mismatch in
+	htnet/Connection.CC
+
+1999-10-06  angus <angus>
+
+	* - Little changes on testnet.cc
+
+1999-10-06  loic <loic>
+
+	* Move htlib/HtSGMLCodec.* to htcommon to prevent crossed
+	interdependencies between htlib and htcommon
+
+1999-10-06  angus <angus>
+
+	* - Fixed HtHTTP.cc code as Michal Hirohama suggested. Changed the
+	  call to SetBodyReadingController() method.
+
+1999-10-06  loic <loic>
+
+	* Move htlib/HtZlibCodec.* htlib/cgi.* to htcommon to prevent
+	crossed interdependencies between htlib and htcommon
+
+1999-10-06  angus <angus>
+
+	* - Server info retrieving - Fixed debug info in chunk managing function
+
+1999-10-06  loic <loic>
+
+	* Move htlib/*URL* to htcommon
+
+1999-10-06  loic <loic>
+
+	* update README with htword, fix test/t_htnet
+
+1999-10-06  angus <angus>
+
+	* - Updated README with htnet explaination
+
+1999-10-06  angus <angus>
+
+	* - Test script of t_htnet
+
+1999-10-05  ghutchis <ghutchis>
+
+	* Import and resolution of conflicts in db 2.7.7. Needs
+	testing--not sure #defines are set correctly with DB_COMPRESS.
+
+1999-10-05  ghutchis <ghutchis>
+
+	* Initial revision
+
+1999-10-05  loic <loic>
+
+	* htdig/Display.cc, htword/*.cc: add inclusion of htconfig.h
+
+1999-10-05  loic <loic>
+
+	* Fix warnings in WordDB.h and WordStat.h when compiling with
+	gcc-2.95
+
+1999-10-05  loic <loic>
+
+	*        . Modify the test procedures so that they can run when          doing configure outside the source tree.         . The WordKey class has been simplified and has performance          enhancements.         . Added the WordStat class, derived from WordReference.         . WordRecord is now mutable and can contain either word          statistics as well as per word occurence information.         . The WordList is now able to track per uniq word statistics.           This is not activated by default because it uses more space  and no code uses it at present. The tests validate this code  however.         . A String bug reported was fixed and the set(char*) was
+	       added.
+
+1999-10-04  angus <angus>
+
+	* - test/testnet.cc: control for HEAD before GET disabling/enabling - Transport.h: added start time and end time info - HtHTTP.h: removed start time and end time info; _head_before_get
+	  management methods are now public. They weren't before. Sorry-) .
+
+1999-10-04  angus <angus>
+
+	* - Transport: added the FlushConnection() method - HtHTTP:   - added the _head_before_get static attribute.    - added the managers of the variable above   - the old Request() method is now called HTTPRequest()   - the interface Request() method now handles the possibility to
+	    make a HEAD call precede a GET call, depending on the
+	    _head_before_get value and if persistent connections are allowed.
+
+1999-10-04  angus <angus>
+
+	* - Added a flush() method to the io base class, which re-initialize
+	  the buffers of the connection.  - Modified the method for reading the 'chunks' by adding the call to
+	  thi method.
+
+1999-10-01  loic <loic>
+
+	* Create htword/WordDB, thin layer above Berkeley DB mainly
+	containing argument conversion facilities
+
+1999-10-01  loic <loic>
+
+	* More tester friendly tests for WordKey
+
+1999-10-01  loic <loic>
+
+	* Fix cast warning with decompress
+
+1999-10-01  loic <loic>
+
+	* Add HtWordReference, derived from WordReference and containing
+	specialized accessors. Modify WordRecord to be mutable to prepare
+	the ground for per word statistics
+
+1999-10-01  loic <loic>
+
+	* Fix location settings in tags + create HtWordList
+
+1999-10-01  loic <loic>
+
+	* Makefile.config add duplicate to resolve interdependencies. Add
+	htword/.cvsignore
+
+1999-09-30  loic <loic>
+
+	* Create htword dir.Rename HtWordType to WordType.  WordList now
+	uses db_cxx instead of Database. Introduce the WordCursor class.
+	WordList::Walk callback has cursor argument, less hazardous to
+	delete record while walking.
+
+1999-09-29  loic <loic>
+
+	* Kill unused (De)serialize of Object and make Copy, compare const
+	functions, kill overloaded mystrcasestr because AIX xlC does not
+	like it
+
+1999-09-29  loic <loic>
+
+	* AC_COMPILE_WARNINGS to include -Wall only if g++ or gcc
+
+1999-09-29  angus <angus>
+
+	* - Added the Chunked decoding of a HTTP/1.1 response (HtHTTP class) - Added a function which controls the reading of the body
+	  dynamically depending on the transfer-encoding value.  - Fixed some bugs on HtHTTP and Transport constructors/destructors - Added some features to HtHTTP (stores Server and Transfer-encoding   headers) Some bugs still remain on Chunk decoding, but it's a first step and
+	the decoding process works. The bug is that connection timeouts
+	after having read the Chunked-body. We will work on it ...
+
+1999-09-29  loic <loic>
+
+	* fix warnings from gcc-2.95, extend apache detection, fix inline
+	declarations to be consistent
+
+1999-09-29  loic <loic>
+
+	* fix warnings from gcc-2.95, extend apache detection, fix inline
+	declarations to be consistent
+
+1999-09-28  loic <loic>
+
+	* Makefile.config (HTLIBS): libhtnet at the beginning of the list.
+	It matters on Solaris-2.6 for instance. Fix warning with times in
+	test/testnet.cc
+
+1999-09-28  loic <loic>
+
+	* WordList::Walk is public WordList::Delete -> WordList::Delete
+	and WordList::WalkDelete htmerge mergeWords use WordList::Walk to
+	avoid loading ALL the words into memory
+
+1999-09-28  loic <loic>
+
+	* Reimplement WordList::Delete, add regression tests, add error
+	handling in DocumentDB::Open
+
+1999-09-28  loic <loic>
+
+	* enhance htdig test, add document.cc to query the document
+	database from test shell scripts, upgrade .cvsignore
+
+1999-09-28  angus <angus>
+
+	* - Status code and reason phrase are now attributes of the base class   Transport_Response and not more of HtHTTP_Response.  - The body of a HTTP response is read only if the return result is
+	2xx.  - Added the GetLocation() method to HtHTTP_Response.
+
+1999-09-28  loic <loic>
+
+	* fix looping location
+
+1999-09-28  loic <loic>
+
+	* test/htdocs/set3: create and populate with cgi scripts have bad
+	behaviour (time out and, slow connection).
+
+1999-09-28  loic <loic>
+
+	* move html files in set1/set2 subdirectories to allows tests that
+	use different set of files. Change htdig.conf accordingly.
+
+1999-09-28  loic <loic>
+
+	* Cleanup WordType & concentrate word related (length, type...) in
+	it. Inline operator [] in String. Kill useless entries in bad_words
+
+1999-09-27  angus <angus>
+
+	* - Removed the dependency of HtHTTP class on ExternalParser. Now it's   possible to choose outside the class a manager for the control   of the 'parsability' of a document.  - Created the testnet program under test dir (I know it's in still
+	  in the utero, but it will grow up and get adult, believe me).
+
+1999-09-27  loic <loic>
+
+	* fix leak in htmerge/db.cc mergeDB
+
+1999-09-27  loic <loic>
+
+	* comment testnet
+
+1999-09-27  loic <loic>
+
+	* comment testnet
+
+1999-09-27  angus <angus>
+
+	* I forgot to add the files of htnet. Sorry ...
+
+1999-09-27  angus <angus>
+
+	* - Added 'htnet' directory and library - Removed Connection.cc and .h from htlib - Removed Transport.cc and .h from htdig - Removed HtHTTP.cc and .h from htdig - Modified configure.in as needed - Modified the various Makefile.am
+
+1999-09-27  loic <loic>
+
+	* update copyright and comments. update Loic Dachary THANKS entry
+
+1999-09-27  loic <loic>
+
+	* fix test warning
+
+1999-09-27  loic <loic>
+
+	* Set Data in all String.cc constructors. Fix dm->id not set in
+	parser.cc
+
+1999-09-27  angus <angus>
+
+	* - Removed Compiler warnings on String.cc - Fixed $Id$ tag in HtHTTP.h
+
+1999-09-27  loic <loic>
+
+	* Fix memory leak (purify) + test conf parameter
+
+1999-09-24  loic <loic>
+
+	* Fix more memory leaks and allocation bugs (purify).
+
+1999-09-24  loic <loic>
+
+	* Fix memory leaks and allocation bugs (purify). Update .cvsignore
+	everywhere
+
+1999-09-24  loic <loic>
+
+	* remove DB2_hash.h inclusion
+
+1999-09-24  loic <loic>
+
+	* Add WordKey, constness and String usage everywhere, attr HTML
+	description generation, DB2/Database cleanup, Configuration []
+	returns String instead of char.
+
+1999-09-17  bergolth <bergolth>
+
+	* [no log message]
+
+1999-09-14  ghutchis <ghutchis>
+
+	* Rewrite to use the WordList functions to merge the two word
+	databases. Also make sure to load the document excerpt when adding
+	in DocumentRefs.
+
+1999-09-14  ghutchis <ghutchis>
+
+	* Fix bug where ids were not added to the discard list correctly.
+
+1999-09-12  ghutchis <ghutchis>
+
+	*  Ensure -a and -i are followed for the word_db file. Fixes PR #638.
+
+1999-09-12  ghutchis <ghutchis>
+
+	* Remove word_list since that file is no longer used.
+
+1999-09-11  ghutchis <ghutchis>
+
+	* Add back mistakenly deleted #ifndef/#define.
+
+1999-09-11  ghutchis <ghutchis>
+
+	* Add copyright information.
+
+1999-09-10  ghutchis <ghutchis>
+
+	* Added copyright information.
+
+1999-09-10  ghutchis <ghutchis>
+
+	* Add copyright information.
+
+1999-09-10  loic <loic>
+
+	* Ascii graphic htdig class hierarchy
+
+1999-09-10  loic <loic>
+
+	* Restore docid before leaving AddDescription
+
+1999-09-10  loic <loic>
+
+	* add word_dump to get an ascii version of the word database
+
+1999-09-10  loic <loic>
+
+	* add word_dump to get an ascii version of the word database
+
+1999-09-10  loic <loic>
+
+	* add word_dump to get an ascii version of the word database
+
+1999-09-10  ghutchis <ghutchis>
+
+	* Change to use WordList code instead of direct access to the
+	database.
+
+1999-09-09  grdetil <grdetil>
+
+	* fix bug in pdf title extraction.
+
+1999-09-09  loic <loic>
+
+	* remove stall usage of SORT_PROG
+
+1999-09-09  loic <loic>
+
+	* fix file handling in CreateSearchDB
+
+1999-09-09  loic <loic>
+
+	* document format of ascii file produced by htdig -t
+
+1999-09-09  loic <loic>
+
+	* fix popen -> fopen
+
+1999-09-09  loic <loic>
+
+	* remove obsolete files
+
+1999-09-09  loic <loic>
+
+	* update comments
+
+1999-09-09  loic <loic>
+
+	* remove unused files
+
+1999-09-08  loic <loic>
+
+	* update comments
+
+1999-09-08  loic <loic>
+
+	* update comments
+
+1999-09-08  loic <loic>
+
+	* update comments
+
+1999-09-08  loic <loic>
+
+	* add missing "fail" function
+
+1999-09-08  ghutchis <ghutchis>
+
+	* A rather boring night. Hence, a rather boring set of changes.
+
+1999-09-08  ghutchis <ghutchis>
+
+	* Don't call HtStripPunctuation. This is now done in the
+	WordList::Word method.
+
+1999-09-08  ghutchis <ghutchis>
+
+	* Change parsing of location to allow phrase searching -- location
+	is
+	*not* just 0-1000.
+
+1999-09-08  ghutchis <ghutchis>
+
+	* (Prefix): New method to do prefix retrievals. Essentially the same
+	as [], except the loop is broken only in the unlikely event that we
+	retrieve something beyond the range set.  (Exists): New method for checking the existance of a string--attempt
+	to retrieve it and determine if anything's actually there.
+
+1999-09-08  ghutchis <ghutchis>
+
+	* Add new configuration option removed_unretrieved_urls to remove
+	docs that have not been accessed.
+
+1999-09-08  ghutchis <ghutchis>
+
+	* Add copyright notice to head of file.
+
+1999-09-06  ghutchis <ghutchis>
+
+	* Fixed document excerpt compression.
+
+1999-09-06  ghutchis <ghutchis>
+
+	* Ensure a document with empty excerpt has actually been
+	retrieved. Otherwise document stubs are always removed.
+
+1999-09-06  ghutchis <ghutchis>
+
+	* (instance): New method as used in other codecs.  (encode, decode): Fix compilation errors.
+
+1999-09-06  ghutchis <ghutchis>
+
+	* Added HtZlibCodec.cc to the compilation list.
+
+1999-09-06  ghutchis <ghutchis>
+
+	* (ReadExcerpt): Call HtZlibCodec to decompress the excerpt.  (Add): Call HtZlibCodec to compress the excerpt before storing.  (Open, Read): If the databases are already open, close them first in
+	case we're opening under a different filename.  (CreateSearchDB): Remove call to external sort program. Database is
+	already sorted by DocID.
+
+1999-09-06  ghutchis <ghutchis>
+
+	* Remove check for external sort program. No longer necessary.
+
+1999-09-05  ghutchis <ghutchis>
+
+	* Implement a compare method for WordRefs to use in sorting. Uses
+	String::nocase_compare()
+
+1999-09-05  ghutchis <ghutchis>
+
+	* Implement the nocase_compare method.
+
+1999-09-05  ghutchis <ghutchis>
+
+	* Update the headers.
+
+1999-09-05  ghutchis <ghutchis>
+
+	* Bug fixes... Now starting to look like it should!
+
+1999-09-05  ghutchis <ghutchis>
+
+	* (percolateUp): Fix a bug where the parent was not updated when
+	moving up more than once.  (pushDownRoot): Fix a bug where the root was inproperly pushed down
+	when it required looping.
+
+1999-09-05  ghutchis <ghutchis>
+
+	* If debugging, write out an entry for the robots.txt file.
+
+1999-09-05  ghutchis <ghutchis>
+
+	* (AddDescription): Pass in a WordList to use when adding link text
+	words. Ensures that the word db is never opened twice for writing.
+
+1999-09-05  ghutchis <ghutchis>
+
+	* (Flush): Call Add() instead of storing the data ourselves.
+	Additionally, don't open the database ourself (and then close it),
+	instead call Open() if it's not open already.
+
+1999-09-03  ghutchis <ghutchis>
+
+	* Change _paths to work on a heap, based on the hopcount. Ensures
+	on a given server that the indexing will be done in level-order by
+	hopcount.
+
+1999-09-03  ghutchis <ghutchis>
+
+	* Correct bug where after a removal, the structure was not
+	"re-heapified" correctly. The last item should be moved to the top
+	and pushed down.  (pushDownRoot): Don't move items past the size of the underlying
+	array.
+
+1999-09-02  loic <loic>
+
+	* fix wrong setting of MAKE in configure.in
+
+1999-09-01  ghutchis <ghutchis>
+
+	* Attempting to get rid of rx-1.5 once and for all!
+
+1999-09-01  grdetil <grdetil>
+
+	* Fix minor typo in ChangeLog.
+
+1999-09-01  loic <loic>
+
+	* add minimal tests for htdig and htsearch
+
+1999-08-31  ghutchis <ghutchis>
+
+	* (Flush): Use HtPack to compress the WordRecord before storage.  ([],
+	WordRefs): Use HtUnpack to decompress the WordRecord after storage.
+
+1999-08-31  ghutchis <ghutchis>
+
+	* Change back to struct to ensure integrity when compressed and
+	stored in the word database.
+
+1999-08-29  ghutchis <ghutchis>
+
+	* Finished phrase searching. It's an extremely naive and slow
+	algorithm at the moment, but it works. (And seems to work without
+	complaint, knock on wood.)
+
+1999-08-29  ghutchis <ghutchis>
+
+	* (phrase): Keep the current list of successful matched words around
+	to pass to score and perform_phrase.  (perform_phrase): Naively (and slowly, but correctly) loop through
+	past words to make sure they match DocID as well as successive
+	locations.  Move scoring to score().  (perform_push): Move scoring to score().  (score): Loop through a list of WordReferences and create a list of
+	scored DocMatches.
+
+1999-08-29  ghutchis <ghutchis>
+
+	* Add new method score(List) to merge scoring for both standard
+	and phrase searching.
+
+1999-08-29  ghutchis <ghutchis>
+
+	*  Remove debugging  strings.
+
+1999-08-29  ghutchis <ghutchis>
+
+	* Handles phrase searches, but only performs and between terms in
+	a phrase.
+
+1999-08-29  ghutchis <ghutchis>
+
+	* (lexan): Return a '"' when present for phrase searching.  (factor): Call phrase() before parsing a factor--phrases are the
+	highest priority, so ("RedHat Linux" & Debian) ! Windows makes
+	sense.  (phrase): New method--slurps up the rest of a phrase and calls
+	perform_phrase to do the matching.  (perform_phrase): New method--currently just calls perform_and to
+	give the simulation of a phrase match.
+
+1999-08-29  ghutchis <ghutchis>
+
+	* Add new methods phrase and perfor_phrase to take care of parsing
+	phrases and performing the actual matching.
+
+1999-08-29  ghutchis <ghutchis>
+
+	* (createLogicalWords): Hack to produce correct output with phrase
+	searching (e.g. anything in quotes is essentially left alone).
+	Ensure the StringMatch pattern includes the phrase with correct
+	spacing as well.  (setupWords): Add a " token whenever it occurs in the query.  (convertToBoolean): Make sure booleans are not inserted into
+	phrases.
+
+1999-08-28  ghutchis <ghutchis>
+
+	* Updates to get htmerge(words) and htsearch working correctly.
+
+1999-08-28  ghutchis <ghutchis>
+
+	* (Flush): Don't use HtPack on the data--somehow when unpacking,
+	there's a mismatch of sizes.  (Read): Fix thinko where we attempted to open the database as a
+	DB_HASH.  ([]): Don't use HtUnpack since we get mismatches. Use the
+	new Get_Next(data) call instead of calling Get_Item separately.  (WordRefs): Same as above.
+
+1999-08-28  ghutchis <ghutchis>
+
+	* Use the WordList[] operator to return a list of all matching
+	WordRefs and loop through, summing the score.
+
+1999-08-28  ghutchis <ghutchis>
+
+	* Don't attempt to open the word db ourselves. Instead, pass the
+	filename off to the parser, which will do it through WordList.
+
+1999-08-28  ghutchis <ghutchis>
+
+	* Use a WordList instead of a generic Database.
+
+1999-08-28  ghutchis <ghutchis>
+
+	* Change Get_Item to Get_Next(String item) to return the data as a
+	reference. This makes it easier to use in a loop and cuts the
+	database calls in half.
+
+1999-08-28  ghutchis <ghutchis>
+
+	* Call got_word with actual word sequence (i.e. 1, 2, 3...) rather
+	than scaling to 1-1000 by character offset.
+
+1999-08-28  ghutchis <ghutchis>
+
+	* Change unnecessary long ints (id and flags) to plain ints.
+
+1999-08-28  ghutchis <ghutchis>
+
+	* Change score to double and clean up headers.
+
+1999-08-28  ghutchis <ghutchis>
+
+	* Change default index to 1 to more closely match DocIDs shown
+	with verbose output.
+
+1999-08-28  ghutchis <ghutchis>
+
+	* Undo yesterdays change -- still very buggy and shouldn't be used
+	yet.
+
+1999-08-27  ghutchis <ghutchis>
+
+	* Change _paths to a HtHeap sorted on hopcount first (and order
+	placed on heap second). Ensures that on each server, the order
+	indexed is guaranteed to be level-order by hopcount.
+
+1999-08-27  ghutchis <ghutchis>
+
+	* Add comparison method to enable sorting by hopcount.
+
+1999-08-27  ghutchis <ghutchis>
+
+	* (Need2Get): Remove duplicate detection code for local_urls. The code
+	is somewhat buggy and should be replaced by more general code
+	shortly.
+
+1999-08-27  ghutchis <ghutchis>
+
+	* Change words to a list instead of a dictionary for minor speed
+	improvement.
+
+1999-08-26  grdetil <grdetil>
+
+	* Increase default maximum_word_length to 32.
+
+1999-08-25  grdetil <grdetil>
+
+	* Make got_word check for compound words and add their component
+	parts to the word dictionary.  Change PDF and Plaintext parsers not
+	to strip punctuation or lowercase the word before calling got_word.
+
+1999-08-25  grdetil <grdetil>
+
+	* Add an IgnorePunct() method, use it to highlight matching words
+	in excerpts regardless of punctuation, and don't add short or bad
+	words to pattern.
+
+1999-08-25  grdetil <grdetil>
+
+	* Use a lookup table to speed up HtIsWordChar() and
+	HtIsStrictWordChar().
+
+1999-08-23  grdetil <grdetil>
+
+	* Fix problems with null pointer when attempting SGML entity
+	decoding on bare &.
+
+1999-08-19  grdetil <grdetil>
+
+	* Fix to allow multiple keywords input parameter definitions.
+
+1999-08-19  grdetil <grdetil>
+
+	* contrib/parse_doc.pl: make spaces optional in LANGUAGE =
+	POSTSCRIPT PJL test.
+
+1999-08-18  grdetil <grdetil>
+
+	* Fixed wrong variable name in new acroread handling code in
+	parse().
+
+1999-08-17  grdetil <grdetil>
+
+	* Apply Geoff's patch to fix Remove.
+
+1999-08-17  grdetil <grdetil>
+
+	* Various bounds overrun bug fixes and checking in Last(), Nth() &
+	Index().
+
+1999-08-16  grdetil <grdetil>
+
+	* 
+
+1999-08-13  grdetil <grdetil>
+
+	* htdig/PDF.cc(parse): added missing ')' in new code.  Oops!
+
+1999-08-13  grdetil <grdetil>
+
+	* added missing #include "htconfig.h"
+
+1999-08-13  grdetil <grdetil>
+
+	* Removed -pairs option from default arguments, added special test
+	for acroread to decide whether to use output file or directory as
+	last argument (also adds -toPostScript if missing).  Program now
+	tries to test for existance of parser before trying to call it.
+
+1999-08-13  grdetil <grdetil>
+
+	* Updated xpdf version number in pdf_parser description.
+
+1999-08-12  grdetil <grdetil>
+
+	* contrib/parse_doc.pl: updated for xpdf 0.90, plus other fixes.
+
+1999-08-12  grdetil <grdetil>
+
+	* htdoc/attrs.html(logging): added Geoff's description of log
+	lines.
+
+1999-08-12  loic <loic>
+
+	* Updated AM_WITH_ZLIB macro comments
+
+1999-08-12  loic <loic>
+
+	* AC_FUNC_STRPTIME defined in acinclude.m4 and used in
+	  configure.in, conditional compilation of strptime.c (only if
+	  HAVE_STRPTIME not defined), removed Htstrptime (strptime.c now
+	  defines strptime), changed all calls to Htstrptime to calls to
+	strptime.
+
+1999-08-11  loic <loic>
+
+	* Added Loic Dachary
+
+1999-08-11  loic <loic>
+
+	* use -release instead of -version-info
+
+1999-08-11  loic <loic>
+
+	* fix various configure and auto* details
+
+1999-08-11  loic <loic>
+
+	* added AM_WITH_ZLIB macro. Cleaner and more consistent.
+
+1999-08-11  ghutchis <ghutchis>
+
+	* Remove unused file.
+
+1999-08-11  ghutchis <ghutchis>
+
+	* Fix compilation errors.
+
+1999-08-11  ghutchis <ghutchis>
+
+	* Fix compilation error with assignment between char
+	* and char
+	*.
+
+1999-08-11  ghutchis <ghutchis>
+
+	* Use cleaner trick to sidestep discarding const char
+	* as
+	suggested by Gilles.
+
+1999-08-10  grdetil <grdetil>
+
+	* Clean up, simplify and label lexical analyzer states in
+	expandVariables().
+
+1999-08-10  grdetil <grdetil>
+
+	* Add handling for $%(var) and $&(var) in templates.
+
+1999-08-10  grdetil <grdetil>
+
+	* Fix SGML entity decoding, add decoding of entities within tag
+	attributes.
+
+1999-08-10  loic <loic>
+
+	* fixed HAVE_ZLIB -> HAVE_LIBZ
+
+1999-08-10  loic <loic>
+
+	* Added --with-zlib configure flag for htdig. Otherwise db
+	configuration is confused and miss an existing libz
+
+1999-08-10  loic <loic>
+
+	* fixed cmpr_open called even if libz not here
+
+1999-08-10  loic <loic>
+
+	* added htlib/langinfo.h for htlib/strptime.c
+
+1999-08-10  ghutchis <ghutchis>
+
+	* FIxed compiler errors and thorny hopcount problem.
+
+1999-08-10  ghutchis <ghutchis>
+
+	* Fix mistake in hopcount calculations. Now returns the correct
+	hopcount even for pages when a faster path is found. (Still need to
+	change indexing to sort on hopcount).
+
+1999-08-10  ghutchis <ghutchis>
+
+	* Fix declaration errors.
+
+1999-08-10  ghutchis <ghutchis>
+
+	* Fix compiler error in gcc-2.95 when discarding const by using
+	strcpy. It's a hack, hopefully there's a better way.
+
+1999-08-09  grdetil <grdetil>
+
+	* fix small memory leak in new default path code.
+
+1999-08-09  grdetil <grdetil>
+
+	* PR#572 fixed - htsearch won't crash if CONTENT_LENGTH not set
+
+1999-08-09  grdetil <grdetil>
+
+	* PR#514 fixed - null strings & non-ASCII letters won't crash
+	htfuzzy
+
+1999-08-09  grdetil <grdetil>
+
+	* changed MAX_WORD_LENGTH option into maximum_word_length config
+	attribute.
+
+1999-08-09  grdetil <grdetil>
+
+	* clean up header parsing, allow application/pdf in isParsable.
+
+1999-08-09  grdetil <grdetil>
+
+	* clean up header parsing in readHeader
+
+1999-08-09  grdetil <grdetil>
+
+	* PR#81 & PR#472 fixed - htdig -vvv shouldn't crash in strftime()
+
+1999-08-09  grdetil <grdetil>
+
+	* PR#348 fixed - missing or invalid port number will get set
+	correctly
+
+1999-08-09  grdetil <grdetil>
+
+	* documentation updates, including PR#558 & PR#626
+
+1999-08-09  grdetil <grdetil>
+
+	* PR#545 fixed - configure tests for presence of alloca.h for
+	regex.c
+
+1999-08-07  loic <loic>
+
+	* Fix wrong strptime dependency in HtDateTime.cc
+
+1999-08-07  loic <loic>
+
+	* Add todo, fix bug in conditional inclusion
+
+1999-08-06  grdetil <grdetil>
+
+	* fix call to match() and test of return value in UseProxy() to
+	work as documented for http_proxy_exclude (PR#603)
+
+1999-08-06  loic <loic>
+
+	* Disable compression if zlib not found by configure
+
+1999-08-06  loic <loic>
+
+	* Add time -v to dbbench test
+
+1999-08-05  loic <loic>
+
+	* Add dbbench call examples
+
+1999-08-05  loic <loic>
+
+	* Invert -z and -Z for consistency
+
+1999-08-05  loic <loic>
+
+	* Transparent Berkeley DB compression (DB_COMPRESS) and test
+	program dbbench.cc, Makefile in test
+
+1999-08-05  ghutchis <ghutchis>
+
+	* Import of Sleepycat's Berkeley DB 2.7.5
+
+1999-08-05  ghutchis <ghutchis>
+
+	* Add in contributed bug fixes from Andrew Bishop to work on SunOS
+	4.x machines.
+
+1999-08-04  ghutchis <ghutchis>
+
+	* Update to use the canonical version of the GPL from the FSF. In
+	particular, this version now uses the correct mailing address for
+	the FSF.
+
+1999-08-02  angus <angus>
+
+	* Added the possibility to insert an unsigned int into a string by
+	overloading the << operator of the String class.  Modified htdig.cc
+	in order to show start and end time (with -v).
+
+1999-07-22  angus <angus>
+
+	* Modified the destructors of the 2 classes. Both of them were
+	calling the same function (CloseConnection()). Now it's called only
+	by the Transport class.
+
+1999-07-22  angus <angus>
+
+	* Re-analyzed the whole inheritance between base class Transport
+	and derived class HtHTTP . It still doesn't work fairly (cos a
+	segfault dumps) but this may be considered as a first attempt.
+
+1999-07-20  loic <loic>
+
+	* in Makefile.am tags were not substituted in files because @TAG@
+	was substituted by configure. Added a backslash and tested.
+
+1999-07-20  loic <loic>
+
+	* configure.in : added AM_MAINTAINER_MODE to prevent unwanted
+	dependencies. db/Makefile.in remove Makefile when distclean
+
+1999-07-19  loic <loic>
+
+	* fix Makefile.config and db/Makefile.in to allow configure in a
+	directory that is not the source directory
+
+1999-07-19  loic <loic>
+
+	* Makefile.config must not be ignored anymore
+
+1999-07-19  loic <loic>
+
+	* Makefile.config must not be ignored anymore
+
+1999-07-19  loic <loic>
+
+	* Summary of changes regarding shared library support, libtool and
+	automake
+
+1999-07-19  loic <loic>
+
+	* remove CONFIG.in CONFIG Makefile.config.in now handled in
+	configure.in --with arguments, add Makefile.config that contains
+	common lines for every Makefile.am
+
+1999-07-19  loic <loic>
+
+	* Modified Makefile.ins generated by automake, modified aclocal.m4
+	generated by aclocal
+
+1999-07-19  loic <loic>
+
+	* Makefiles for automake and utility scripts and files
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Eliminated compiler errors. Currently returns no matches until
+	bugs in the WordList code are fixed.
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Update (and significant cleanup) since WordList writes directly
+	to db.words.db. Iterate over the stored words, deleting those from
+	deleted documents.
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Update to eliminate compiler errors. Currently disabled until
+	bugs in the words code are fixed.
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Update for difference in calling order.
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Update for files necessary for merge calls.  Call convertDocs
+	before mergeWords so that the discardList gets the list of documents
+	deleted.
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Cleanup, including WordRecord and WordReference as needed.
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Change factor to accomodate flags instead of weighting factors.
+
+1999-07-19  ghutchis <ghutchis>
+
+	* (AddDescription) Use FLAG_LINK_TEXT as defined in
+	htcommon/WordRecord.h.
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Collapse the multiple heading_factors into one. (It's
+	prohibitive to define a flag for each h* tag).  Add a new url_factor
+	for the text of URLs (presently unused).
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Update calls to got_word with appropriate new offsets into
+	factor[].
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Add database access routines to match DocumentDB.cc.  (Word): Recognize flags instead of weight, simply add the word.
+	(Duplicates expected!) (mark*): Simply delete the list of words.  (flush): Rather than dump to a text file, dump directly to the db.
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Update to use flags instead of weight.
+
+1999-07-19  ghutchis <ghutchis>
+
+	* Add new method Get_Item to access the data of the current item
+	when using Get_Next() or Get_Next_Seq().
+
+1999-07-17  ghutchis <ghutchis>
+
+	* Added various HTML files as the beginnings of a testing suite.
+
+1999-07-16  grdetil <grdetil>
+
+	* Fix parse() to prevent closing ">" from being passed to
+	do_tag().
+
+1999-07-16  angus <angus>
+
+	* Created methods for interfacing the HtDateTime class directly
+	with integers.  There's a new constructor that accepts an int value,
+	and there are also comparison methods in this direction. Now you can
+	initialize an object of this class with 0. Sorry, but I forgot to
+	modify the ChangeLog yesterday.
+
+1999-07-16  ghutchis <ghutchis>
+
+	* Remove broken Postscript parser as it never worked.
+
+1999-07-16  ghutchis <ghutchis>
+
+	* Add back application/pdf to use builtin PDF code.
+
+1999-07-16  ghutchis <ghutchis>
+
+	* Use config.Boolean as pointed out by Gilles.
+
+1999-07-15  grdetil <grdetil>
+
+	* Add corrections & clarifications, links to relevant FAQ entries
+	for pdf_parser and external_parsers.
+
+1999-07-15  angus <angus>
+
+	* Created methods for interfacing the HtDateTime class directly
+	with integers.  There's a new constructor that accepts an int value,
+	and there are also comparison methods in this direction. Now you can
+	initialize an object of this class with 0.
+
+1999-07-15  ghutchis <ghutchis>
+
+	* If not case_sensitive, lowercase the URL. Should ensure that all
+	URLs are appropriately lowercased, regardless of where they're
+	generated.
+
+1999-07-15  ghutchis <ghutchis>
+
+	* Add flag DB_DUP to database to allow storage of duplicate keys
+	(in this case, words).
+
+1999-07-13  grdetil <grdetil>
+
+	* Fix handling of <link> and <area>, to use href= instead of src=,
+	in do_tag().
+
+1999-07-13  ghutchis <ghutchis>
+
+	* Remove unintentional $(VERSION).
+
+1999-07-13  ghutchis <ghutchis>
+
+	* Cleanups suggested by Gilles, combining <link> and <area>,
+	<embed> <object> and <frame> and moving <img> to a separate case.
+
+1999-07-11  ghutchis <ghutchis>
+
+	* Update based on behavior of script_name attribute.
+
+1999-07-11  ghutchis <ghutchis>
+
+	* Set SCRIPT_NAME variable to attribute script_name if set and CGI
+	environment variable if undefined.
+
+1999-07-11  ghutchis <ghutchis>
+
+	* Update question 4.7 based on including htsearch as a CGI in SSI
+	markup.
+
+1999-07-11  ghutchis <ghutchis>
+
+	* Add script_name attribute to override SCRIPT_NAME CGI
+	environment variable.
+
+1999-07-11  ghutchis <ghutchis>
+
+	* An example of using htsearch within dynamic SSI pages.
+
+1999-07-11  ghutchis <ghutchis>
+
+	* Add scriptname directory.
+
+1999-07-10  ghutchis <ghutchis>
+
+	* Anchor the match to the beginning of string, add
+	regex-interpeted characters to extra_word_chars temporarily, and
+	strip remaining punctuation before making a match.
+
+1999-07-10  ghutchis <ghutchis>
+
+	* Back out change of June 24.  Do not strip punctuation in favor
+	of requiring Fuzzy classes to strip whatever punctuation is
+	necessary. (e.g. allows for regex matching with .?)
+
+1999-07-10  ghutchis <ghutchis>
+
+	* Back out change of June 24.
+
+1999-07-10  ghutchis <ghutchis>
+
+	* Remove HtStripPunctuation in favor of requiring Fuzzy classes to
+	strip whatever punctuation is necessary. (Allows Regex to strip very
+	little.)
+
+1999-07-09  ghutchis <ghutchis>
+
+	* Add support for parsing <LINK> tags.
+
+1999-07-05  ghutchis <ghutchis>
+
+	* Insert '*' instead of username/password combination to hide
+	credentials in process accounting.
+
+1999-07-03  ghutchis <ghutchis>
+
+	* Fixes and Cleanups.
+
+1999-07-03  ghutchis <ghutchis>
+
+	* Return value from Connection::write call.
+
+1999-07-03  ghutchis <ghutchis>
+
+	* Fix <meta> robots parsing to allow multiple directives to work
+	correctly.  Fixes PR#578, as provided by Chris Liddiard
+	<c.h.liddiard@qmw.ac.uk>.
+
+1999-07-03  ghutchis <ghutchis>
+
+	* Remove old SGMLEntities code.
+
+1999-07-03  ghutchis <ghutchis>
+
+	* Changes to support URL referers as well as authentication
+	credentials.
+
+1999-07-03  ghutchis <ghutchis>
+
+	* (Clear): Change default value of docHopCount to 0 to fix several
+	hopcount bugs.
+
+1999-07-02  angus <angus>
+
+	* I have forgotten the Changelog updating ... :-)
+
+1999-06-30  angus <angus>
+
+	* Moved the connection management out from HtHTTP class. It's now
+	part of the Transport class, in order to be inherited from every
+	application layer protocol (like ftp, ...).
+
+1999-06-27  ghutchis <ghutchis>
+
+	* Rewrite using Configuration class to separate tag attributes.
+
+1999-06-27  ghutchis <ghutchis>
+
+	* Added img_alt_factor
+
+1999-06-25  ghutchis <ghutchis>
+
+	* Give default (empty) declarations for Transport_Response
+	methods.
+
+1999-06-25  ghutchis <ghutchis>
+
+	* Fix syntax error in class declaration.
+
+1999-06-25  ghutchis <ghutchis>
+
+	* Add support for form inputs configdir and commondir as
+	contributed by Herbert Martin Dietze <herbert@fh-wedel.de>.
+
+1999-06-24  ghutchis <ghutchis>
+
+	* Make a subclass of Transport.
+
+1999-06-24  ghutchis <ghutchis>
+
+	* Handle single-quoted values for attributes.
+
+1999-06-23  ghutchis <ghutchis>
+
+	* New virtual classes to handle transport protocols such as HTTP,
+	FTP, WAIS, gopher, etc.
+
+1999-06-21  grdetil <grdetil>
+
+	* Fix handling of modification_time_is_now in readHeader.  Add
+	similar code to ParseHeader.
+
+1999-06-21  ghutchis <ghutchis>
+
+	* Make sure HtHTTP is compiled and fix strange segfaults.
+
+1999-06-21  ghutchis <ghutchis>
+
+	* Add hop parameter to got_href to allow frame, embed and object
+	tags to have the same hopcount as the parent.
+
+1999-06-18  grdetil <grdetil>
+
+	* Changes to fix the disappearing excerpts problem.
+
+1999-06-17  ghutchis <ghutchis>
+
+	* Change http_proxy_exclude to an escaped regex string. Allows for
+	much more complicated rules.
+
+1999-06-16  grdetil <grdetil>
+
+	* Fix typo in name IMAGE_URL_PREFIX.
+
+1999-06-16  grdetil <grdetil>
+
+	* Change handling of valids to only reject if list is not empty,
+	give different error message.
+
+1999-06-16  grdetil <grdetil>
+
+	* pass StringList args to setEscaped() instead of unprocessed
+	input[] char
+	*'s.
+
+1999-06-16  grdetil <grdetil>
+
+	* Cast score to (int) in maxScore calculation, to avoid compiler
+	warnings.
+
+1999-06-16  grdetil <grdetil>
+
+	* Change comparison on minimalFile to avoid compiler warnings.
+
+1999-06-16  grdetil <grdetil>
+
+	* Fix appending of substring to avoid compiler warnings.
+
+1999-06-16  grdetil <grdetil>
+
+	* Strip out all the nonsense that doesn't work, set Ht_t directly
+	instead.
+
+1999-06-16  grdetil <grdetil>
+
+	* Correct handling of SEARCH_FORM variable, as Gabriele
+	recommended.
+
+1999-06-16  grdetil <grdetil>
+
+	* Allow a query string to be passed as an argument.
+
+1999-06-16  grdetil <grdetil>
+
+	* Use standard $(bindir) variable instead of $(BIN_DIR).
+
+1999-06-15  grdetil <grdetil>
+
+	* Move line that clears _parsedString, so title cleared even if
+	rejected.
+
+1999-06-15  grdetil <grdetil>
+
+	* Move maxScore calculation from sort to buildMatchList.
+
+1999-06-14  grdetil <grdetil>
+
+	* Show "Unknown host" message if assign_server() fails
+	(gethostbyname() failure).
+
+1999-06-14  grdetil <grdetil>
+
+	* Add template_patterns attribute, to select result templates
+	based on URL.
+
+1999-06-13  ghutchis <ghutchis>
+
+	* Add valid_extension list, as requested numerous times.
+
+1999-06-13  ghutchis <ghutchis>
+
+	* Fix thinkos introduced in change earlier today. Actually
+	compiles correctly now.
+
+1999-06-13  ghutchis <ghutchis>
+
+	* Cleaned out incoming report backlog in bug database.
+
+1999-06-13  ghutchis <ghutchis>
+
+	* Fix parsing to take empty headers into account. Fixes PR#557.
+
+1999-06-13  ghutchis <ghutchis>
+
+	* Fix declaration to refer to first as reference--ensures ANCHOR
+	is properly set. Fixes PR#541 as suggested by <pmb1@york.ac.uk>.
+
+1999-06-13  ghutchis <ghutchis>
+
+	* Fixed PR#560 as suggested by Steve Arlow <yorick@ClarkHill.com>.
+	Solves problems with fuzzy matching on words like -ness: witness,
+	highness, likeness...
+
+1999-06-13  ghutchis <ghutchis>
+
+	* Add Boolean to default search form, as suggested by PR#561.
+
+1999-06-13  ghutchis <ghutchis>
+
+	* Fix PR#566 by setting the correct length of the string being
+	matched.  'http://' is 7 characters...
+
+1999-06-12  ghutchis <ghutchis>
+
+	* Remove compression access and restore DocHead access through
+	default methods. Compression of excerpts will occur through the
+	HtZlibCodec classes and through the DocumentDB excerpt access.
+
+1999-06-12  ghutchis <ghutchis>
+
+	* New files. Provide general access to zlib compression routines
+	when available.
+
+1999-06-12  ghutchis <ghutchis>
+
+	* Load excerpt from external database before considering it empty.
+
+1999-06-12  ghutchis <ghutchis>
+
+	* Sunny and mild. Very blue sky.
+
+1999-06-12  ghutchis <ghutchis>
+
+	* (do_tag): Add parsing for <embed> and <object>, including
+	suggestions from Gilles as to condensing cases with <img> parsing.
+
+1999-06-12  ghutchis <ghutchis>
+
+	* (displayMatch): Added patch from Torsten Neuer <tneuer@inwise.de> to
+	fix PR# 554.
+
+1999-06-12  ghutchis <ghutchis>
+
+	* (parse): Quote the filename before passing it to the command-line to
+	prevent shell escapes. Fixes PR#542.
+
+1999-06-11  grdetil <grdetil>
+
+	* Use CompareWord instead of FindFirstWord, to avoid substring
+	matches.
+
+1999-06-02  grdetil <grdetil>
+
+	* Fix encodeURL() to ensure that non-ASCII letters get
+	URL-encoded.
+
+1999-06-01  ghutchis <ghutchis>
+
+	* Finish changes needed to move excerpts to external database.
+
+1999-06-01  ghutchis <ghutchis>
+
+	* (Display): Call DocumentDB::Open with all three filenames.  (excerpt): Retrieve the excerpt from the excerpt database.
+
+1999-06-01  ghutchis <ghutchis>
+
+	* Call Display::Display with all three doc db filenames.
+
+1999-06-01  ghutchis <ghutchis>
+
+	* Call mergeDB and convertDocs with doc_excerpt parameter.
+
+1999-06-01  ghutchis <ghutchis>
+
+	* (convertDocs): Ditto. Also don't delete a document simply because it
+	has an empty DocHead. Excerpts are now stored in a separate
+	database!
+
+1999-06-01  ghutchis <ghutchis>
+
+	* (mergeDB): Call DocumentDB::Open() with doc_excerpt for
+	consistency--doesn't actually do anything with it.
+
+1999-06-01  ghutchis <ghutchis>
+
+	* (main): Unlink the doc_excerpt file when doing an initial dig.  (main): Fix silly typo with minimumFile.
+
+1999-06-01  ghutchis <ghutchis>
+
+	* (isValidURL): Remove code restricting URLs to relative and http://.
+
+1999-06-01  ghutchis <ghutchis>
+
+	* (ReadExcerpt): Fix silly typos with methods, thinko with docID.  (Add): Add the excerpt
+	*before* the URL index is written.
+
+1999-05-31  ghutchis <ghutchis>
+
+	* Committed DocHead migration.
+
+1999-05-31  ghutchis <ghutchis>
+
+	* Add new method ReadExcerpt to read the excerpt from the separate
+	(new) excerpt database. Change Open() and Read() methods to account
+	for this new database.
+
+1999-05-31  ghutchis <ghutchis>
+
+	* (Open): Open the excerpt database too.  (Read): Ditto.  (Close): Close it if it exists.  (ReadExcerpt): Explicitly read the DocHead of this DocumentRef.  (Add): Make sure DocHeads go into the excerpt database.  (Delete): Make sure we delete the associated excerpt too.  (CreateSearchDB): Make sure we grab the excerpt from the database.
+
+1999-05-31  ghutchis <ghutchis>
+
+	* Don't serialize the DocHead field, this is done in the
+	DocumentDB code.
+
+1999-05-31  ghutchis <ghutchis>
+
+	* (modification_time_is_now): Set to true to avoid problems with not
+	setting dates when no Last-Modified: header appears.  (doc_excerpt): Add new attribute for the filename of the excerpt
+	database.
+
+1999-05-31  ghutchis <ghutchis>
+
+	* Remove incorrect virtual declarations from Request and
+	EstablishConnection methods. Assign void return value to
+	ResetStatistics since it doesn't return a value.
+
+1999-05-31  ghutchis <ghutchis>
+
+	* Add new "minimal" flag '-m' to only index the URLs in the
+	supplied file.  Sets hopcount to ignore links.
+
+1999-05-30  bergolth <bergolth>
+
+	* htDateTime::Httimegm calls Httimegm in timegm.c unless
+	HAVE_TIMEGM
+
+1999-05-30  bergolth <bergolth>
+
+	* Fix bug in URL::normalizePath().
+
+1999-05-27  ghutchis <ghutchis>
+
+	* Add patch contributed by Roman Dimov <roman@twist.mark-itt.ru>
+	to fix problems with confusing docIDs, resulting in documents in
+	main db removed when the corresponding DocID was supposed to be
+	removed from the merged db.
+
+1999-05-26  ghutchis <ghutchis>
+
+	* Fix typo clobbering setting of excludes. Obviously fixes
+	problems with badquerystr and excludes!
+
+1999-05-26  ghutchis <ghutchis>
+
+	* Change parsing to skip extra whitespace, as in 5/19
+	Document.cc(readHeader) change.
+
+1999-05-26  ghutchis <ghutchis>
+
+	* Switch restrict and excludes to use HtRegex instead of
+	StringMatch.
+
+1999-05-20  ghutchis <ghutchis>
+
+	* A rainy day--time to go study and socialize.
+
+1999-05-20  ghutchis <ghutchis>
+
+	* Use full list of characters to escape as suggested by Gilles.
+
+1999-05-20  ghutchis <ghutchis>
+
+	* Change end-of-expansion test to include states 2 and 5 to ensure
+	templates ending in } are still properly expanded.
+
+1999-05-20  ghutchis <ghutchis>
+
+	* Fix change of 5/16 to actually work! :-)
+
+1999-05-20  ghutchis <ghutchis>
+
+	* New files, contributed by Gabriele, a start at an HTTP/1.1
+	implementation.
+
+1999-05-16  ghutchis <ghutchis>
+
+	* (readHeader): Since multiple whitespace characters are allowed after
+	headers, don't use strtok.  (readHeader): We no longer pretend to parse Word, PostScript, or PDF
+	files internally.  (getParsable): Don't generate PostScript or PDF objects since we no
+	longer recommend using them.
+
+1999-05-16  ghutchis <ghutchis>
+
+	* Bug fixes in HtRegex, Retriever, and HTML.
+
+1999-05-16  ghutchis <ghutchis>
+
+	* Use HtSGMLCodec during parsing, rather than encoding the whole
+	document at the beginning. More consistent with previous use of
+	SGMLEntities.
+
+1999-05-16  ghutchis <ghutchis>
+
+	* Fix badquerystr parsing to use HtRegex as expected. (Oops!)
+
+1999-05-16  ghutchis <ghutchis>
+
+	* Ensure escaping does not loop beyond the end of a string.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Added new method setEscaped(StringList) to produce a pattern
+	connected with '|' of possibly escaped strings. Strings are not
+	escaped if enclosed in [] and the brackets are removed from
+	unescaped regex.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Use HtRegex instead of StringMatch for limiting by default. Use
+	setEscaped to set limits correctly (i.e. in a backwards-compatible
+	way).
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Use HtRegex instead of StringMatch for limiting by default.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Add new method Nth to solve problems with (String
+	*)->[].
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Remove extra (useless) variable declarations.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Added new Speling [sic] fuzzy algorithm.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Compile and use new Speling algorithm.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* New files for simple spelling corection. Currently limited to
+	transpostion and added character errors. Missing character errors to
+	be added soon.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Add new option minimum_speling_length for the shortest query
+	word to receive speling fuzzy modifications. Should prevent problems
+	with valid words generating unrelated "corrections" of words.
+	Default is 5 chars.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Get yer' fresh hot updates...
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Ensure words are non-null and not empty strings. Should solve
+	PR#514.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Do not use modification_time_is_now attribute. Simply reset
+	modtime to 0, time is set elsewhere.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Use standard $(bindir) variable instead of $(BIN_DIR). Allows
+	for standard configure flags to set this.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Make linking CONFIG-dependent files depend on Makefile.config,
+	not CONFIG.
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Add configure-level switches for --with-image-url-prefix= and
+	--with-search-form=. Do not generate CONFIG file (hopefully to be
+	phased out soon).
+
+1999-05-15  ghutchis <ghutchis>
+
+	* Add options from separate CONFIG files.
+
+1999-05-11  ghutchis <ghutchis>
+
+	* Add patch from Warren Jones <wjones@tc.fluke.com> to keep track
+	of inodes on local files to eliminate duplicates. Hopefully this
+	will serve for a first-try at a signature method for HTTP as well.
+
+1999-05-11  ghutchis <ghutchis>
+
+	* Updates from Gabriele, fixing SetToNow() and adding GetDiff to
+	return the difference in time_t between two objects.
+
+1999-05-05  ghutchis <ghutchis>
+
+	* Added new Regex fuzzy algorithm.
+
+1999-05-05  ghutchis <ghutchis>
+
+	* Slight cleanup of how to return.
+
+1999-05-05  ghutchis <ghutchis>
+
+	* Fix the comments for search_algorithm to refer to all the
+	current possibilities.
+
+1999-05-05  ghutchis <ghutchis>
+
+	* Define names attribute for debugging purposes.
+
+1999-05-05  ghutchis <ghutchis>
+
+	* Add new regex fuzzy algorithm, based on Substring and Prefix.
+
+1999-05-04  ghutchis <ghutchis>
+
+	* Minor bug-fixes.
+
+1999-05-04  ghutchis <ghutchis>
+
+	* Add e-mail of maintainer to error message. Should help direct
+	people to the correct place.
+
+1999-05-04  ghutchis <ghutchis>
+
+	* Lowercase all extensions from bad_extensions as well as all
+	extensions used in comparisons. Ensures we're using case-insenstive
+	matching.
+
+1999-05-04  ghutchis <ghutchis>
+
+	* Add conditionals for REGEX to use HtRegex instead of StringMatch
+	methods when defined.
+
+1999-05-04  ghutchis <ghutchis>
+
+	* Minor bug fixes.
+
+1999-05-04  ghutchis <ghutchis>
+
+	* Rearrange date/time checks for clarity.
+
+1999-05-04  ghutchis <ghutchis>
+
+	* Declare my_mktime_gmtime_r to prevent compiler errors with
+	incompatible gmtime structures.
+
+1999-05-04  ghutchis <ghutchis>
+
+	* Replace call to mktime internal function to Httimegm.
+
+1999-05-04  ghutchis <ghutchis>
+
+	* Update to remove definitions of true and false, established by
+	May 2 change in include/htconfig.h.in as contributed by Gabriele.
+
+1999-05-04  ghutchis <ghutchis>
+
+	* Fix typo with #else statement for REGEX.
+
+1999-05-04  ghutchis <ghutchis>
+
+	* Add HAVE_STRFTIME flag.
+
+1999-05-02  bergolth <bergolth>
+
+	* added a configure test for the availability of the bool type
+
+1999-05-01  ghutchis <ghutchis>
+
+	* Add in new versions sent by Gabriele.
+
+1999-04-30  ghutchis <ghutchis>
+
+	* Add HtRegex class, use it for htdig's limits and excludes.
+
+1999-04-30  ghutchis <ghutchis>
+
+	* Remove extra newline after STARSRIGHT and STARSLEFT variables,
+	noted by Torsten Neuer <tneuer@inwise.de>.
+
+1999-04-30  bergolth <bergolth>
+
+	* add :80 to server_alias entries if port is omitted
+
+1999-04-29  ghutchis <ghutchis>
+
+	* Minor nit-picking stuff.
+
+1999-04-29  ghutchis <ghutchis>
+
+	* Added Gabriele's HtDateTime class.
+
+1999-04-28  grdetil <grdetil>
+
+	* In mergeDB: fix a few errors in how the merge index name is
+	obtained.
+
+1999-04-28  ghutchis <ghutchis>
+
+	* Remove ancient mailarchive stuff.
+
+1999-04-28  ghutchis <ghutchis>
+
+	* Remove useless LIBDIRS variable.
+
+1999-04-27  grdetil <grdetil>
+
+	* In setupImages: Remove code setting URLimage to a bogus pattern
+	(remnant left over after merge).
+
+1999-04-27  grdetil <grdetil>
+
+	* In RetrieveHTTP: Show "Unable to build connection" message at
+	lower debug level.
+
+1999-04-27  ghutchis <ghutchis>
+
+	* Fix bogus calls introduced during merge from 3.1.2 sources.
+
+1999-04-27  ghutchis <ghutchis>
+
+	* Final readme for multidig 1.1.
+
+1999-04-26  ghutchis <ghutchis>
+
+	* More updates for multidig. Just about ready for full-scale
+	announcement.
+
+1999-04-25  ghutchis <ghutchis>
+
+	* Updating towards multidig 1.1 version. Still need more README.
+
+1999-04-25  ghutchis <ghutchis>
+
+	* Merge in changes from 3.1.2.
+
+1999-04-24  hp <hp>
+
+	* Fix newly introduced bug with Display::sort and 0 hits (empty
+	list).
+
+1999-04-19  hp <hp>
+
+	* Change of ResultMatch, change of Display to remove unnecessary
+	data stored with each hit when sorting.  Saves about 13% on normal
+	score search, 100:s times more on title and date search since
+	there's no DocumentRef stashed for each hit.
+
+1999-04-14  bergolth <bergolth>
+
+	* fixed compile problem with AIX xlc compiler
+
+1999-04-14  ghutchis <ghutchis>
+
+	* Added compareID to allow sorting by DocID.
+
+1999-04-14  ghutchis <ghutchis>
+
+	* Added patches for META date tags.
+
+1999-04-11  hp <hp>
+
+	* - thisRef was not deleted if it was excluded by URL.  Matters if   you don't have a few M RAM to spare per search.  - thismatch->setRef(NULL), not thismatch->setRef(thisRef) since   thisRef is to be deleted before thismatch is used for anything.    Not really led to anything bad, but was confusing,
+
+1999-04-07  ghutchis <ghutchis>
+
+	* Remove bogus -w flag.
+
+1999-04-01  grdetil <grdetil>
+
+	* Avoid using an invalid matchesperpage CGI input variable.
+	Correct invalid values for matches_per_page attribute to avoid div.
+	by 0 error.
+
+1999-03-31  grdetil <grdetil>
+
+	* Fix previous fix of minor memory leak (db pointer wasn't
+	properly set)
+
+1999-03-29  ghutchis <ghutchis>
+
+	* Added patch from Gabriele to improve display of excerpts--show
+	top of description always, otherwise try to find the excerpt.
+
+1999-03-28  hp <hp>
+
+	* Various bugs all related to not really getting
+	remove_default_doc to work and tangential incorrectness in the URL
+	class.
+
+1999-03-28  hp <hp>
+
+	* Correct bugs with packing (WordRecords).  Only worked #ifndef
+	NO_WORD_COUNT.  Add 'c' to pack often-one ints like the "count"
+	member even better.
+
+1999-03-25  grdetil <grdetil>
+
+	* Remove backslashes from long.html & short.html, install them in
+	Makefile.in
+
+1999-03-25  grdetil <grdetil>
+
+	* Add date_format attribute suggested by Marc Pohl.
+
+1999-03-25  grdetil <grdetil>
+
+	* Avoid segfault when DocAnchors list has too few entries for
+	current anchor no.
+
+1999-03-23  grdetil <grdetil>
+
+	* Fix problem in displayMatch when documents did not have any
+	descriptions.
+
+1999-03-23  grdetil <grdetil>
+
+	* Use minimum_word_length instead of hardcoded constant 2.
+
+1999-03-23  grdetil <grdetil>
+
+	* Fix bug where noindex_start was empty, allow case insensitive
+	start & end.
+
+1999-03-23  grdetil <grdetil>
+
+	* Add check for <a href=...> tag that is missing a closing </a>
+	tag.
+
+1999-03-23  grdetil <grdetil>
+
+	* Fix check of Content-type header in readHeader(), check external
+	parsers.
+
+1999-03-23  grdetil <grdetil>
+
+	* More lenient comment parsing, allows extra dashes.
+
+1999-03-23  grdetil <grdetil>
+
+	* Fix to avoid infinite loop with bad isalnum() function.
+
+1999-03-23  grdetil <grdetil>
+
+	* Fix three bugs with inconsistent handling of space &
+	punctuation.
+
+1999-03-23  grdetil <grdetil>
+
+	* Use minimum_word_length instead of hardcoded constant 2.
+
+1999-03-23  grdetil <grdetil>
+
+	* fix to prevent clobbering anchor numbers during merge with
+	description words.
+
+1999-03-23  grdetil <grdetil>
+
+	* Add in support for use_star_image to Display::generateStars
+
+1999-03-23  grdetil <grdetil>
+
+	* Add missing ';' in for loops, between fi & done in Makefile.in
+
+1999-03-22  grdetil <grdetil>
+
+	* handle multiple <title> tags in HTML.cc
+
+1999-03-22  grdetil <grdetil>
+
+	* fix handling of min word length in parse_doc.pl
+
+1999-03-21  hp <hp>
+
+	* Pack WordRecords (halving-and-then-some the size of db.words.db)
+	(Forgot some files.  Again.  Doh!)
+
+1999-03-21  hp <hp>
+
+	* Pack WordRecords (halving-and-then-some the size of db.words.db)
+
+1999-03-21  hp <hp>
+
+	* Temporary strings were .get() upon, with subsequent uses of
+	dangling pointers.
+
+1999-03-19  ghutchis <ghutchis>
+
+	* Add on-disk versions of the builtin templates.
+
+1999-03-17  hp <hp>
+
+	* Big oops! Forgot to ci the new HtWordType files
+
+1999-03-16  hp <hp>
+
+	* Fix bug with DocumentDB::Delete() - it never worked after the
+	DocID change
+
+1999-03-16  hp <hp>
+
+	* New attribute extra_word_characters
+	* Remove all code "everywhere". reading and caching   valid_punctuation, replace with new ctype-like functions   HtIsWordChar(), HtIsStrictWordChar() and HtStripPunctuation()
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Add HtSGMLEntities.o to OBJS.
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Fix thinko in use of Append() method.
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Many fixes on this fine snowy day...
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Cleaned up comments, use more efficient procedure to build from
+	a vector.
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Check for out-of-bounds requests before doing anything.
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Initial support for multiple schemes and user@host URLs.
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Fix bug with constructing from uninitialized variables!
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Use HtSGMLCodec to covert
+	*back* to SGML entities before
+	displaying.
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Use HtSGMLCodec instead of SGMLEntities.
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Add new class to convert between SGML entities and high-bit
+	characters.
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Check to see that description isn't a null string or contains
+	only whitespace before doing anything.
+
+1999-03-14  ghutchis <ghutchis>
+
+	* Switch to DB_HASH for faster access. Most important for very
+	quick URL lookups!
+
+1999-03-13  ghutchis <ghutchis>
+
+	* Rotate ChangeLog (old one was getting too big).
+
+1999-03-12  hp <hp>
+
+	* Correct number of initializers, warned about by compiler
+
+1999-03-12  hp <hp>
+
+	* Oops, typo, empty first entry
+
+1999-03-12  hp <hp>
+
+	* Index on DocID instead of URL; change db.docs.index to translate   URL -> DocID instead of other way around. 
+	* htmerge/docs.cc: Debug messages about cause when deleting   documents.  If verbose > 1, write id/URL for every URL.
+
+1999-03-10  hp <hp>
+
+	* Just a typo in attrs.html
+
+1999-03-08  hp <hp>
+
+	* Check if the ref is for the current document before adding it to
+	 the db.  Fixes some duplicate docs, later overwritten, with lost
+	backlink fields from same document.
+
+1999-03-08  ghutchis <ghutchis>
+
+	* Fix problems with zlib #ifdef statements.
+
+1999-03-08  ghutchis <ghutchis>
+
+	* Use link and unlink calls to portably move the databases into
+	place.
+
+1999-03-08  hp <hp>
+
+	* Forgot to remove logs
+
+1999-03-08  hp <hp>
+
+	* Removed errno; it should never be defined by a user program.
+	(If it fails, the wrong library or header file is used.)
+
+1999-03-07  ghutchis <ghutchis>
+
+	* More changes to htlib/
+
+1999-03-07  ghutchis <ghutchis>
+
+	* Use glibc regex.c instead of rx.
+
+1999-03-07  ghutchis <ghutchis>
+
+	* Fixed problems on libc5 systems noted by Hans-Peter.
+
+1999-03-05  grdetil <grdetil>
+
+	* better error message when parse_doc.pl can't determine file type
+
+1999-03-05  grdetil <grdetil>
+
+	* add PDF support to parse_doc.pl, various other fixes to it
+
+1999-03-03  ghutchis <ghutchis>
+
+	* Fix problem with definitions in last commit.
+
+1999-03-03  ghutchis <ghutchis>
+
+	* Add definitions for different database formats. Change call for
+	getDatabaseInstance() to require a format parameter. Defaults to
+	DB_BTREE for compatiblity.
+
+1999-03-03  ghutchis <ghutchis>
+
+	* Use new getDatabaseInstance() call with option DB_BTREE for
+	compatibility.
+
+1999-03-03  ghutchis <ghutchis>
+
+	* Compile new DB2_hash class.
+
+1999-03-03  ghutchis <ghutchis>
+
+	* Added interfaces to Berkeley hash format.
+
+1999-03-03  ghutchis <ghutchis>
+
+	* Use new timegm replacement if necessary.
+
+1999-03-03  ghutchis <ghutchis>
+
+	* Build htdig.o instead of main.o
+
+1999-03-03  ghutchis <ghutchis>
+
+	* Renamed for consistency with other directories. htdig.cc ->
+	htdig
+
+1999-03-02  ghutchis <ghutchis>
+
+	* Changed to glibc mktime and timegm() functions.
+
+1999-03-02  ghutchis <ghutchis>
+
+	* Added changes to support using glibc functions.
+
+1999-03-02  ghutchis <ghutchis>
+
+	* And finally back again (from the dead).
+
+1999-03-02  ghutchis <ghutchis>
+
+	* Back and forth we go.
+
+1999-03-02  ghutchis <ghutchis>
+
+	* Added Y2K and other future tests.
+
+1999-03-02  ghutchis <ghutchis>
+
+	* Oops, forgot old ChangeLog entries for mytimegm and configure.
+
+1999-03-02  hp <hp>
+
+	* Clarify and rephrase url_part_aliases doc entry
+
+1999-02-28  hp <hp>
+
+	* Fixed small memleak; missing 'delete myWordCodec' in ~HtURLCodec
+
+1999-02-27  ghutchis <ghutchis>
+
+	* Fix Y2K problems with leap years.
+
+1999-02-27  ghutchis <ghutchis>
+
+	* Fix typo on timegm test.
+
+1999-02-25  ghutchis <ghutchis>
+
+	* Fix thinko in last update.
+
+1999-02-25  ghutchis <ghutchis>
+
+	* Fix more htsearch memory leaks.
+
+1999-02-25  ghutchis <ghutchis>
+
+	* Fix horrible memory leaks.
+
+1999-02-25  ghutchis <ghutchis>
+
+	* Remove redundant copy.
+
+1999-02-25  ghutchis <ghutchis>
+
+	* Remember to delete the parser!
+
+1999-02-24  ghutchis <ghutchis>
+
+	* Fix up code to be cleaner with memory allocation, inline
+	next_power_of_2.
+
+1999-02-24  ghutchis <ghutchis>
+
+	* Fix tiny leak in locale code.
+
+1999-02-23  ghutchis <ghutchis>
+
+	* Fixed some String memory leaks.
+
+1999-02-23  ghutchis <ghutchis>
+
+	* Clean up
+	*some* memory leaks.
+
+1999-02-22  ghutchis <ghutchis>
+
+	* Use HtVector instead of List for elements().
+
+1999-02-22  ghutchis <ghutchis>
+
+	* Implement Release() method and ensure memory is freed properly.
+
+1999-02-22  ghutchis <ghutchis>
+
+	* Check if key can be converted to an integer using strtol. If so,
+	use the integer as the hash code.
+
+1999-02-21  ghutchis <ghutchis>
+
+	* Added new Heap class.
+
+1999-02-21  ghutchis <ghutchis>
+
+	* Added HtHeap class.
+
+1999-02-21  ghutchis <ghutchis>
+
+	* Changes and changes.
+
+1999-02-21  ghutchis <ghutchis>
+
+	* Add patch from Gabriele ensuring descriptions are included even
+	if in keyword list.
+
+1999-02-21  ghutchis <ghutchis>
+
+	* Cleanups of Feb 16 fix, including cleaner error handling.
+
+1999-02-21  ghutchis <ghutchis>
+
+	* Add patch from Jerome Alet <alet@unice.fr> to allow '.' in
+	config field but NOT './' for security reasons.
+
+1999-02-19  ghutchis <ghutchis>
+
+	* Update on new strptime from glibc 2.1.
+
+1999-02-19  ghutchis <ghutchis>
+
+	* Remove old, decayed files.
+
+1999-02-19  ghutchis <ghutchis>
+
+	* Added regex functions from glibc-2.1 (posix).
+
+1999-02-19  ghutchis <ghutchis>
+
+	* Import new version from glibc-2.1.
+
+1999-02-19  ghutchis <ghutchis>
+
+	* Change to Ht prefix.
+
+1999-02-19  ghutchis <ghutchis>
+
+	* Added strptime code from glibc-2.1.
+
+1999-02-19  ghutchis <ghutchis>
+
+	* Added new HtVector class.
+
+1999-02-18  ghutchis <ghutchis>
+
+	* Add autoconf macro to detect syntax of makefile includes.
+
+1999-02-18  ghutchis <ghutchis>
+
+	* Initial revision
+
+1999-02-17  ghutchis <ghutchis>
+
+	* Merged in updates from 3.1.1 final.
+
+1999-02-17  hp <hp>
+
+	* Change default for locale to 'C'
+
+1999-02-14  ghutchis <ghutchis>
+
+	* Merged in updates from 3.1.x branch.
+
+1999-02-10  hp <hp>
+
+	* - Fix for machines that do not allow unaligned accesses for
+	"unsigned short".  - Deserialize from unsigned types, as when serializing.
+
+1999-02-10  ghutchis <ghutchis>
+
+	* Synched with latest version in the top level.
+
+1999-02-10  ghutchis <ghutchis>
+
+	* Update for 3.1.0 release.
+
+1999-02-10  ghutchis <ghutchis>
+
+	* Added remaining backlog.
+
+1999-02-10  ghutchis <ghutchis>
+
+	* Ensure we remove the temporary file.
+
+1999-02-09  ghutchis <ghutchis>
+
+	* Documentation updates for 3.1.0.
+
+1999-02-07  ghutchis <ghutchis>
+
+	* Fixed compile problem when zlib is disabled.
+
+1999-02-07  ghutchis <ghutchis>
+
+	* Updated documentation towards releases.
+
+1999-02-07  ghutchis <ghutchis>
+
+	* Added entries for url_log, compression_level, noindex_start,
+	noindex_end, allow_in_form, bad_querystr, no_title_text.
+
+1999-02-07  ghutchis <ghutchis>
+
+	* Synch with maindocs files.
+
+1999-02-07  ghutchis <ghutchis>
+
+	* Added Gabriele Bartolini.
+
+1999-02-06  ghutchis <ghutchis>
+
+	* Check for zlib.h header as well as libz before using zlib
+	compression.
+
+1999-02-06  ghutchis <ghutchis>
+
+	* Fix typo.
+
+1999-02-06  ghutchis <ghutchis>
+
+	* Add function parse_date() to parse date strings from
+	htnotify-date tags. It tries to be as flexible as possible about
+	formatting and will report invalid dates. Based in part from code
+	contributed by Gabriele Bartolini.
+
+1999-02-05  ghutchis <ghutchis>
+
+	* Add support for $INSTALL_ROOT, making it easier to build
+	packages (e.g.  RPMs) into directories for later processing.
+
+1999-02-05  ghutchis <ghutchis>
+
+	* Tiny patch to silence a compiler warning.
+
+1999-02-05  ghutchis <ghutchis>
+
+	* Fix more bugs in fuzzy code.
+
+1999-02-05  ghutchis <ghutchis>
+
+	* Add debugging output of the fuzzy key used.
+
+1999-02-05  ghutchis <ghutchis>
+
+	* General bug-fixing, fixing a bug that corrupted the string to be
+	processed, fixing typos, and ensuring keys generated fit the
+	metaphone algorithm.
+
+1999-02-05  ghutchis <ghutchis>
+
+	* Skip initial non-alphabetic characters and explicitly skip
+	characters without values.
+
+1999-02-04  ghutchis <ghutchis>
+
+	* Change to support additions to ht://Dig database format.
+
+1999-02-04  ghutchis <ghutchis>
+
+	* Fixed problems with soundex and metaphone algorithms.
+
+1999-02-04  ghutchis <ghutchis>
+
+	* Fix bug where only one word would be stored per key in the
+	database.
+
+1999-02-04  ghutchis <ghutchis>
+
+	* Add debugging information on words returned from fuzzy matching.
+
+1999-02-04  ghutchis <ghutchis>
+
+	* Updated documentation on command-line flags.
+
+1999-02-04  ghutchis <ghutchis>
+
+	* Bump for upcoming release.
+
+1999-02-04  ghutchis <ghutchis>
+
+	* Minor documentation updates.
+
+1999-02-04  ghutchis <ghutchis>
+
+	* Fix problems with dates returned from servers with incorrect
+	formats. Those simply missing the day of week are parsed correctly,
+	otherwise output an error, use the current date, and keep going.
+
+1999-02-04  ghutchis <ghutchis>
+
+	* Updated with patches from Gilles.
+
+1999-02-04  ghutchis <ghutchis>
+
+	* Add check for URLs with no / in the no_title code.
+
+1999-02-03  ghutchis <ghutchis>
+
+	* Finish up 3.1.0 release notes.
+
+1999-02-03  ghutchis <ghutchis>
+
+	* Update with status and new directions.
+
+1999-02-03  ghutchis <ghutchis>
+
+	* Finish up the 3.1.0 release notes (if not the documentation).
+
+1999-02-03  ghutchis <ghutchis>
+
+	* Fix small typo.
+
+1999-02-03  ghutchis <ghutchis>
+
+	* Fixed small typo.
+
+1999-02-03  bergolth <bergolth>
+
+	* Removed some of yesterdays Display.cc changes (thinko).
+
+1999-02-02  ghutchis <ghutchis>
+
+	* Fix problems with PDFs generated by CorelDraw.
+
+1999-02-02  bergolth <bergolth>
+
+	* Fix allow_in_form bug pointed out by Gilles.
+
+1999-02-02  ghutchis <ghutchis>
+
+	* Ensure scores are always positive or zero.
+
+1999-02-02  ghutchis <ghutchis>
+
+	* Rewrite getpeername_length_t detection to use prototypes to
+	eliminate type conversion.
+
+1999-02-01  hp <hp>
+
+	* Spotted incorrect description of what is default for
+	nothing_found_file
+
+1999-02-01  ghutchis <ghutchis>
+
+	* Define INSTALL_PROGRAM from configure.
+
+1999-02-01  ghutchis <ghutchis>
+
+	* Removed compiler warnings, added Gilles's External Parser patch.
+
+1999-02-01  ghutchis <ghutchis>
+
+	* Removed compiler warnings.
+
+1999-02-01  ghutchis <ghutchis>
+
+	* Add checks to prevent wayward parsers from bringing down the
+	dig.
+
+1999-02-01  ghutchis <ghutchis>
+
+	* Started release notes for version 3.1.0.
+
+1999-02-01  ghutchis <ghutchis>
+
+	* Define INSTALL, INSTALL_PROGRAM, INSTALL_SCRIPT and INSTALL_DATA
+	as defined by configure. Use them.
+
+1999-02-01  ghutchis <ghutchis>
+
+	* Remove bogus definitions of INSTALL.
+
+1999-02-01  ghutchis <ghutchis>
+
+	* Ensure word is lowercased for accurate fuzzy comparisons.
+
+1999-02-01  ghutchis <ghutchis>
+
+	* Destroy the database reference if we cannot open the database.
+	Fixes a coredump in classes that inherit this method.
+
+1999-02-01  hp <hp>
+
+	* Fixes of String class: - Remove "String
+	*" ctor, memory leaking callers set straight.  - Copy ctor without extra default argument.  - Associated removal of $Log$ and changing htlib <> into "".
+
+1999-01-31  bergolth <bergolth>
+
+	* Include sys/time.h in htlib/Connection.cc.
+
+1999-01-31  hp <hp>
+
+	* Faked friend function in HtURLCodec and removed log header
+
+1999-01-31  hp <hp>
+
+	* Some more lowercasing of URLs spotted and removed.
+
+1999-01-31  ghutchis <ghutchis>
+
+	* DocHead compression, cleanups and configure changes.
+
+1999-01-31  ghutchis <ghutchis>
+
+	* Change document compression to only compress the DocHead field
+	and only decompress when necessary.
+
+1999-01-31  ghutchis <ghutchis>
+
+	* If using compressed document databases, declare compress and
+	decompress functions and the current state of the head (excerpt).
+
+1999-01-31  ghutchis <ghutchis>
+
+	* As mentioned by Gilles, use sed with ls -t test. Add more
+	comments for FAQs.
+
+1999-01-31  ghutchis <ghutchis>
+
+	* Added translation of Dutch comment for us ignorant Americans.
+	;-)
+
+1999-01-31  ghutchis <ghutchis>
+
+	* Add support for program name transformations.
+
+1999-01-31  ghutchis <ghutchis>
+
+	* Add --with-cgi-bin-dir, --with-image-dir and --with-search-dir
+	flags to set CONFIG variables.
+
+1999-01-30  hp <hp>
+
+	* - Remove "static" from c_buffer definition casuing compialtion   error with latest egcs cvs.  - Add #ifdef around declaration and definition.
+
+1999-01-29  ghutchis <ghutchis>
+
+	* Fixed problems with punctuation and matching excerpts.
+
+1999-01-29  ghutchis <ghutchis>
+
+	* Construct the StringMatch used for finding excerpts in two
+	pieces--user input and post-fuzzy matching. Fixes problems with
+	matching searches with punctuation.
+
+1999-01-29  ghutchis <ghutchis>
+
+	* Fix small memory leak pointed out by Gilles.
+
+1999-01-29  ghutchis <ghutchis>
+
+	* Updated with copyright changes.
+
+1999-01-29  ghutchis <ghutchis>
+
+	* Updated copyright information.
+
+1999-01-29  ghutchis <ghutchis>
+
+	* Fix bug when sorting results would cause a coredump.
+
+1999-01-29  ghutchis <ghutchis>
+
+	* Use a portable test for testing the endings and synonym
+	databases. Also enhanced support for flags (-a, -s, -vvv, -c
+	config).
+
+1999-01-29  ghutchis <ghutchis>
+
+	* Make sure we put the wrapper file in the right place. Make sure
+	dictionaries are installed with the correct permissions.
+
+1999-01-29  ghutchis <ghutchis>
+
+	* Changed copyright information to mention the ht://Dig group,
+	removing Andrew's name.
+
+1999-01-28  ghutchis <ghutchis>
+
+	* Docuument new remove_default_doc attribute.
+
+1999-01-28  ghutchis <ghutchis>
+
+	* Added Gilles' patches.
+
+1999-01-28  ghutchis <ghutchis>
+
+	* Various minor fixes.
+
+1999-01-28  ghutchis <ghutchis>
+
+	* Fix problems with star_patterns attribute.
+
+1999-01-28  ghutchis <ghutchis>
+
+	* Speedup by converting many config lookups into static variables.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Minor updates towards 3.1.0.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Use StringMatch class for matching &quot; &amp; &lt; and &gt; as
+	defined by config options. Should speed up translation.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Do not lowercase the URL before storing it. URLs can be
+	case-sensitive.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Added Gilles' patches and fixed up .h files a bit.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Define TRUE and FALSE if not defined. Change default of
+	NO_WORD_COUNT (now undefined) for compatibility.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Remove definition of TRUE and FALSE, now defined in
+	include/htconfig.h.in
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Change sort option to be more grammatically correct.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Add info on the wrapper alternative to separate header and
+	footer files.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Allow braces in wrapper file.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Fix broken code calling acroread.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Add new variable contentLength and consider content-length
+	headers when reading in documents.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Use remove_default_doc as option of default document to strip
+	off URLs (e.g.  /index.html -> /). Fix bug with stripping double
+	slashes and the like from a query string.
+
+1999-01-27  ghutchis <ghutchis>
+
+	* Define remove_default_doc as option of default document to strip
+	off URLs (e.g. /index.html -> /).
+
+1999-01-26  hp <hp>
+
+	* Fix typo with default 'case_sensitive'
+
+1999-01-26  hp <hp>
+
+	* - Code URLs in db.docs.index too (still clean upgrade from old
+	db:s).  - Minor fixes: removed $Log$, checked/fixed file title, changed   #include <> to "" for htdig-specific includes.
+
+1999-01-26  bergolth <bergolth>
+
+	* minor changes
+
+1999-01-26  hp <hp>
+
+	* Typo
+
+1999-01-26  ghutchis <ghutchis>
+
+	* Make error message for missing entries conditional to DEBUG
+	symbol. Removes odd error messages under normal use.
+
+1999-01-25  ghutchis <ghutchis>
+
+	* Fix comiler errors.
+
+1999-01-25  ghutchis <ghutchis>
+
+	* Fix comiler errors (finally).
+
+1999-01-25  ghutchis <ghutchis>
+
+	* Fix comiler errors.
+
+1999-01-25  ghutchis <ghutchis>
+
+	* Fix comiler errors.
+
+1999-01-25  ghutchis <ghutchis>
+
+	* Ignore word count by compile-time option NO_WORD_COUNT.
+
+1999-01-25  ghutchis <ghutchis>
+
+	* Move declarations out of the loop. Don't add non-word characters
+	to the excerpt if they're in the title. Fixes PR #80.
+
+1999-01-25  ghutchis <ghutchis>
+
+	* Minor fixes.
+
+1999-01-25  ghutchis <ghutchis>
+
+	* Complain when an option to be retrieved is not in the list.
+
+1999-01-25  ghutchis <ghutchis>
+
+	* Use autoconf check for strstr, fix compiler warnings.
+
+1999-01-25  ghutchis <ghutchis>
+
+	* Fix compiler warnings.
+
+1999-01-25  ghutchis <ghutchis>
+
+	* Added fix from Gilles in case REMOTE_ADDR is NULL as well.
+
+1999-01-25  hp <hp>
+
+	* Provide a clean upgrade from old databses without
+	"url_part_aliases" and "common_url_parts" through the new option
+	"uncoded_db_compatible".
+
+1999-01-24  hp <hp>
+
+	* - Fix bug in HtWordCodec::code() when replacement list is empty;   e.g. common_url_parts and url_part_aliases are both empty.  - Non-fatal bug in calculating limits for replacement lists and   smaller nits in HtWordCodec constructors.
+
+1999-01-24  ghutchis <ghutchis>
+
+	* If a server ignores the If-Modified-Since request, still compare
+	the retrieved date to the stored date to see if it has been
+	modified.
+
+1999-01-23  ghutchis <ghutchis>
+
+	* Unlink the db.docs.index file before we build it again. This
+	ensures we have a clean copy and don't duplicate URLs.
+
+1999-01-23  ghutchis <ghutchis>
+
+	* Cleaned up preprocessor definitions.
+
+1999-01-23  ghutchis <ghutchis>
+
+	* Fix NEED_PROTO_GETHOSTNAME check and make check for
+	GETPEERNAME_LENGTH_T more flexible.
+
+1999-01-23  ghutchis <ghutchis>
+
+	* Change __sun__ to NEED_PROTO_GETHOSTNAME since we prefer feature
+	tests.
+
+1999-01-23  ghutchis <ghutchis>
+
+	* Add support for keyword "include" to include other config files.
+
+1999-01-23  hp <hp>
+
+	* Typo: "-", not '-'
+
+1999-01-23  hp <hp>
+
+	* Fixed _some_ missing const qualifiers on common methods
+	(requiring temps)
+
+1999-01-22  ghutchis <ghutchis>
+
+	* Fix thinko in that last patch.
+
+1999-01-22  ghutchis <ghutchis>
+
+	* Check if HTTP_REFERER is NULL, if so, use a dash. (Otherwise
+	we'll kill some syslog() services).
+
+1999-01-21  hp <hp>
+
+	* Fixed miss in ChangeLog with the Ht..Codec files
+
+1999-01-21  ghutchis <ghutchis>
+
+	* New files.
+
+1999-01-21  ghutchis <ghutchis>
+
+	* Added new .o files as targets.
+
+1999-01-21  ghutchis <ghutchis>
+
+	* Add common_url_parts and url_part_aliases.
+
+1999-01-21  ghutchis <ghutchis>
+
+	* Check HtURLCodec for errors.
+
+1999-01-21  ghutchis <ghutchis>
+
+	* Use HtURLCodec; ::encode() and ::decode() the URL used as a key.
+
+1999-01-21  ghutchis <ghutchis>
+
+	* Added in rest of Hans-Peter's url_part_aliases, common_url_parts
+	patches.
+
+1999-01-21  ghutchis <ghutchis>
+
+	* Started on Hans-Peter's url_alias patches.
+
+1999-01-21  ghutchis <ghutchis>
+
+	* Add default parameter sep = '|'.
+
+1999-01-21  ghutchis <ghutchis>
+
+	* Document url_part_aliases and common_url_parts.
+
+1999-01-21  ghutchis <ghutchis>
+
+	* Fixed typo in last patch.
+
+1999-01-21  ghutchis <ghutchis>
+
+	* [no log message]
+
+1999-01-21  ghutchis <ghutchis>
+
+	* Use REMOTE_ADDR when REMOTE_HOST is unavailable (otherwise we
+	silently dump core).
+
+1999-01-21  ghutchis <ghutchis>
+
+	* Words cannot be valid if they're shorter than
+	minimum_word_length!
+
+1999-01-20  ghutchis <ghutchis>
+
+	* Fix logic to remove documents--missing else statements allow
+	some "deleted" documents to not be removed.
+
+1999-01-20  ghutchis <ghutchis>
+
+	* Revised setting ANCHOR variable: it will be empty if there is no
+	excerpt which matches the search formula. Fixes problems with META
+	descriptions. Based on a patch contributed by Marjolein.
+
+1999-01-20  ghutchis <ghutchis>
+
+	* Call good_strtok with appropriate parameters (explicitly include
+	NULL first parameter, second param is char, not char
+	*).
+
+1999-01-20  ghutchis <ghutchis>
+
+	* Added fixes and speed improvements contributed by Andrew Bishop.
+
+1999-01-20  ghutchis <ghutchis>
+
+	* Added check for adding words with weight zero.
+
+1999-01-20  ghutchis <ghutchis>
+
+	* Fixed compilation problems.
+
+1999-01-20  ghutchis <ghutchis>
+
+	* Declare extern config
+
+1999-01-20  ghutchis <ghutchis>
+
+	* Fix typo causing compile problems.
+
+1999-01-20  ghutchis <ghutchis>
+
+	* Use translate_quote, _lt_gt, and _amp to optionally translate
+	these entities.
+
+1999-01-20  ghutchis <ghutchis>
+
+	* More changes than you can imagine...
+
+1999-01-20  ghutchis <ghutchis>
+
+	* New macros for assigning portably to some possibly-enum numeric
+	type.  (getnum): Use them.
+
+1999-01-20  ghutchis <ghutchis>
+
+	* Eliminate FINAL and use all bits in masks, contributed by
+	Hans-Peter.
+
+1999-01-20  ghutchis <ghutchis>
+
+	* Fix bugs with clobbering multi-state matches and non-greedy
+	behavior, contributed by Hans-Peter Nilsson.
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Fix thinko with compression_level.
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Use no_title_text to set the title  appropriately, as
+	contributed by Marjolein. Ensure PERCENT is at least 1.
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Added no_title_text option to allow configuration of the text
+	when no title is available. Default is the filename.
+
+1999-01-18  ghutchis <ghutchis>
+
+	* When reading chunks of document, if a chunk puts us over the
+	max_doc_size limit, take everything up to that limit (rather than
+	discarding the entire chunk).
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Use max_doc_size when retrieving robots.txt files instead of a
+	hard-coded 10k limit.
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Added in final patches from Gilles.
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Add in sort option to form.
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Added variable SORT to render a form menu for sort options,
+	based on "sort" and "sort_names" options.
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Added options "sort" and "sort_names" to pick result sorting
+	order and text names for sort options.
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Add documentation for "sort" config and form input.
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Fixed compiler warnings.
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Fix mismatched naming of compression_level (was
+	compression_factor).
+
+1999-01-18  ghutchis <ghutchis>
+
+	* Fix compiler warnings.
+
+1999-01-17  ghutchis <ghutchis>
+
+	* Almost cleared out the backlog.
+
+1999-01-17  ghutchis <ghutchis>
+
+	* Added example rundig script from David Robley
+	<webmaster@www.nisu.flinders.edu.au>
+
+1999-01-17  ghutchis <ghutchis>
+
+	* Change default pdf_parser attribute to include acrobat-specific
+	flags.
+
+1999-01-17  ghutchis <ghutchis>
+
+	* Add debugging output of URLs causing problems. Also, switch
+	system call to make it easier to call xpdf instead of acroread.
+
+1999-01-17  ghutchis <ghutchis>
+
+	* Check to see if we have acroread before copying the pdf into
+	TMPDIR!
+
+1999-01-17  ghutchis <ghutchis>
+
+	* Added support for url_log, save and restart digs.
+
+1999-01-17  ghutchis <ghutchis>
+
+	* Take advantage of createFromString returning an error value to
+	bail out of poorly-constructed template_maps, based on code
+	contributed by <tlm@mbox.comune.prato.it>.
+
+1999-01-17  ghutchis <ghutchis>
+
+	* Ensure template_map config has three members for each template
+	we add, contributed by <tlm@mbox.comune.prato.it>.
+
+1999-01-17  ghutchis <ghutchis>
+
+	* Save space when lengths can fit in an unsigned char or unsigned
+	short.
+
+1999-01-15  ghutchis <ghutchis>
+
+	* Add rundig example from Colin Viebrock with a few modifications
+	for using less disk space.
+
+1999-01-15  ghutchis <ghutchis>
+
+	* Added options noindex_start and noindex_end to enable NOT
+	indexing some sections of HTML.
+
+1999-01-15  ghutchis <ghutchis>
+
+	* Updated with a few small things.
+
+1999-01-15  ghutchis <ghutchis>
+
+	* Fix looping in query string caused by slashes. Noted by Adam
+	Coyne <adam@criticalmass.com>.
+
+1999-01-15  ghutchis <ghutchis>
+
+	* Set compression_factor to 0 for default (no compression).
+
+1999-01-15  ghutchis <ghutchis>
+
+	* Update for upcoming 3.1.0 release.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Added support for 'm': meta element in ExternalParser.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Added support for 'm': meta element.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Added slight fixes to the comment parsing code, contributed by
+	Marjolein.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Create originalWords from input, not via setupWords().
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Updated with all of Gilles patches.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Added support for using the wrapper instead of header and footer
+	if search_results_wrapper is set. Added support for sorting and
+	reverse sorting by date, time, and score.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Added support for sorting and reverse sorting by date, time, and
+	score.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Update from Randy Winch to eliminate use_document_compression
+	and fix compilation problems noted by Hans-Peter.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Added info on search_results_wrapper.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Added Akos Domotor.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Added check for sort config.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Added search_results_wrapper for the location of the wrapper
+	file, if used.  (The default is empty, which uses header.html and
+	footer.html)
+
+1999-01-14  ghutchis <ghutchis>
+
+	* New file to merge header and footer files.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Bring latest security patch from 3.1.0b4 onto the mainline
+	source.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Use new StringList::Join function for http_proxy_exclude.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Bump to 3.1.0dev.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Added example bad_words file by Marjolein.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Add wrapper.html to the common directory when installing.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* First batch of changes.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Fix typo with META example.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Small speed improvements based on gprof.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Call AddDescription even if max_hop_count is reached.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Removed use_document_compression (redundant) and fixed problem
+	with missing comma. Setting compression_factor to 0 is the
+	equivalent of turning off use_document_compression.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Fixed problem with db.NextDocID() being set incorrectly,
+	reported by Roman Dimov <roman@mark-itt.ru>.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Added IncNextDocID to allow big changes in NextDocID, such as
+	when merging databases.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Changed field order in db.wordlist. With the old order, words
+	from HTML body and words from links to that url weren't merged
+	sometimes.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Small speed improvements.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Fixed small memory leak with bogus HTML and small speedups.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Fixed time format to standard to avoid sending If-Modified-Since
+	http headers in native format (which would be incorrect behavior).
+	Use C locale.
+
+1999-01-14  ghutchis <ghutchis>
+
+	* Add new method GetNextElement to directly return next object
+	when iterating.
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Added support for zlib document compression, contributed by
+	Randy Winch.
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Added autoconf check for libz and deflate function.
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Added config options use_document_compression and
+	compression_factor for zlib support.
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Added support for compressing data using zlib if available,
+	contributed by Randy Winch <gumby@cafes.net>.
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Documentation updates.
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Alphabetized, added a form for requests, and added in lots of
+	new sites.
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Added release info from 3.1.0b4.
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Minor cleanups
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Updates to clean out the patch queue.
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Add explanation of operator "not".
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Fixed thinko with setting the docIDs of new words in the
+	destination wordlist.
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Do not skip words if "boolean" search.
+
+1999-01-12  ghutchis <ghutchis>
+
+	* Added examples of correct logical expressions.
+
+1999-01-11  ghutchis <ghutchis>
+
+	* Added prefix and substring matching--somehow slipped through the
+	cracks!
+
+1999-01-11  ghutchis <ghutchis>
+
+	* Updated Hans-Peter Nilsson--not just nit-picking...
+
+1999-01-10  ghutchis <ghutchis>
+
+	* Added check for header status when considering content-types.
+
+1999-01-10  ghutchis <ghutchis>
+
+	* Patches and patches and patches...
+
+1999-01-10  ghutchis <ghutchis>
+
+	* Break out of looping once we're sure the word is invalid.
+
+1999-01-10  ghutchis <ghutchis>
+
+	* Remember special case of an empty dictionary.
+
+1999-01-10  ghutchis <ghutchis>
+
+	* Don't capitalize headers--this creates problems with non-ASCII
+	values, since String::uppercase doesn't know how to capitalize them.
+
+1999-01-09  ghutchis <ghutchis>
+
+	* Added database merging code.
+
+1999-01-09  ghutchis <ghutchis>
+
+	* Implements merging of two database sets specified by the
+	merge_config and config variables.
+
+1999-01-09  ghutchis <ghutchis>
+
+	* Add db.o as an object to be compiled.
+
+1999-01-09  ghutchis <ghutchis>
+
+	* Set up merge_config file and add options for mergeDB code.
+
+1999-01-09  ghutchis <ghutchis>
+
+	* Declare new mergeDB code.
+
+1999-01-09  ghutchis <ghutchis>
+
+	* Strip off weekday before calling strptime since some servers
+	return invalid weekdays.
+
+1999-01-08  bergolth <bergolth>
+
+	* bugfixes in htdig/Plaintext.cc and htlib/URL.cc
+
+1999-01-08  ghutchis <ghutchis>
+
+	* Update for 1999 copyright, version, etc.
+
+1999-01-08  ghutchis <ghutchis>
+
+	* Implement add_anchors_to_excerpt option and new variable ANCHOR
+	as contributed by Marjolein.
+
+1999-01-08  ghutchis <ghutchis>
+
+	* Corrected problems with parsing comments, as contributed by
+	Marjolein Katsma <webmaster@javawoman.com> and Gilles.
+
+1999-01-08  ghutchis <ghutchis>
+
+	* Added new contributors.
+
+1999-01-07  ghutchis <ghutchis>
+
+	* Fix typo noted by Joe Jah: keyword_factor -> keywords_factor.
+
+1999-01-07  ghutchis <ghutchis>
+
+	* Use the no_page_list_header stuff.
+
+1999-01-07  ghutchis <ghutchis>
+
+	* The start template, if provided, should come out after the
+	header, not before.
+
+1999-01-07  ghutchis <ghutchis>
+
+	* Add PNG versions of the default GIF graphics.
+
+1999-01-07  ghutchis <ghutchis>
+
+	* A long day with lots of updates...
+
+1999-01-07  ghutchis <ghutchis>
+
+	* Changed allocation of database cursors to match new API in
+	version 2.6.4.
+
+1999-01-07  ghutchis <ghutchis>
+
+	* Skip changing to lowercase in got_word, we do it in
+	WordList::Word.
+
+1999-01-07  ghutchis <ghutchis>
+
+	* Initial revision
+
+1999-01-07  ghutchis <ghutchis>
+
+	* Fix minor memory leaks.
+
+1999-01-07  ghutchis <ghutchis>
+
+	* Removed check for age of synonym and endings DB. Nice feature,
+	but it broke under too many shells.
+
+1999-01-07  ghutchis <ghutchis>
+
+	* Fix minor memory leaks.
+
+1999-01-07  ghutchis <ghutchis>
+
+	* Add .bin, .tgz, .rpm, .mov, .mpg, .avi to bad_extensions.
+
+1999-01-06  ghutchis <ghutchis>
+
+	* Synched documentation with current options.
+
+1999-01-06  ghutchis <ghutchis>
+
+	* Changed to require Autoconf 2.13 to eliminate bugs obeserved by
+	users with older autoconf versions.
+
+1999-01-06  ghutchis <ghutchis>
+
+	* Applied fix from Dave Alden <alden@math.ohio-state.edu> to
+	compile under SunPRO compilers by eliminating trailing comma in
+	enum.
+
+1999-01-06  bergolth <bergolth>
+
+	* fixed relative path problem in Makefiles if install-sh is used
+
+1999-01-06  bergolth <bergolth>
+
+	* fixed bug in StringList::Join
+
+1999-01-06  ghutchis <ghutchis>
+
+	* Remove delete instruction that fouls up everything (it was
+	removing descriptions as we add them!).
+
+1999-01-06  ghutchis <ghutchis>
+
+	* Add missing [] to delete.
+
+1999-01-06  ghutchis <ghutchis>
+
+	* Do not add non-word characters to the wordlist.
+
+1999-01-06  ghutchis <ghutchis>
+
+	* More changes today!? What a day...
+
+1999-01-06  ghutchis <ghutchis>
+
+	* Fixed html syntax "<br" and "/a>".
+
+1999-01-06  ghutchis <ghutchis>
+
+	* Check if we need to do backlink and date factoring (e.g. we
+	don't if they're zero!), from a patch by Gilles.
+
+1999-01-05  bergolth <bergolth>
+
+	* check for strings.h
+
+1999-01-05  ghutchis <ghutchis>
+
+	* Fix dereferencing mistake in last version.
+
+1999-01-05  ghutchis <ghutchis>
+
+	* Bump to 3.1.0b5dev.
+
+1999-01-05  ghutchis <ghutchis>
+
+	* Support restriction of max_descriptions.
+
+1999-01-05  ghutchis <ghutchis>
+
+	* Added new option max_descriptions for limit on the number of
+	descriptions to store (default 5, matches behavior pre 3.1.0b3).
+
+1999-01-05  ghutchis <ghutchis>
+
+	* Added comments on the members (fields) of DocumentRef objects.
+
+1999-01-05  bergolth <bergolth>
+
+	* fixed bug in bad_querystring detection
+
+1999-01-05  ghutchis <ghutchis>
+
+	* Added fixes from Hans-Peter Nilsson.
+
+1999-01-02  bergolth <bergolth>
+
+	* added warning message if locale selection failed
+
+1999-01-02  bergolth <bergolth>
+
+	* changed Makefiles to allow seperate build-directories
+
+1998-12-27  bergolth <bergolth>
+
+	* Fixed memory leaks and local_default_doc bug.
+
+1998-12-19  bergolth <bergolth>
+
+	* Added defaults.
+
+1998-12-19  bergolth <bergolth>
+
+	* Added bad_querystr option.
+
+1998-12-19  bergolth <bergolth>
+
+	* Added allow_in_form option.
+
+1998-12-19  ghutchis <ghutchis>
+
+	* Fix nasty security hole found by Werner Hett <hett@isbiel.ch>.
+
+1998-12-19  ghutchis <ghutchis>
+
+	* Update from Jesse.
+
+1998-12-19  ghutchis <ghutchis>
+
+	* Fix for parse_word_doc and htnotify security hole.
+
+1998-12-19  ghutchis <ghutchis>
+
+	* Bump for 3.1.0b4
+
+1998-12-19  bergolth <bergolth>
+
+	* Added StringList::Join and fixed URL::removeIndex.
+
+1998-12-15  ghutchis <ghutchis>
+
+	* It's finally released!
+
+1998-12-15  ghutchis <ghutchis>
+
+	* Updated to match top directory.
+
+1998-12-14  ghutchis <ghutchis>
+
+	* Fix potential coredump when calculating date_factor and
+	backlink_factor on docs that aren't in the database.
+
+1998-12-13  ghutchis <ghutchis>
+
+	* Change undefined minimumWordLength to
+	config("minimum_word_length").
+
+1998-12-13  ghutchis <ghutchis>
+
+	* Imported version from directory above. (Can't we have links?)
+
+1998-12-13  ghutchis <ghutchis>
+
+	* Finally doc updates for 3.1.0b3.
+
+1998-12-13  ghutchis <ghutchis>
+
+	* Added new options backlink_factor, date_factor,
+	description_factor, server_wait_time, server_max_docs,
+	http_proxy_exclude, no_excerpt_show_top
+
+1998-12-13  ghutchis <ghutchis>
+
+	* Added info on using CGI environment variables in templates.
+
+1998-12-13  ghutchis <ghutchis>
+
+	* Added notes for 3.1.0b3 release.
+
+1998-12-13  ghutchis <ghutchis>
+
+	* Added check to prevent currenthopcount from becoming -1.
+
+1998-12-13  ghutchis <ghutchis>
+
+	* Added additional cleanups for words in the bad word list. Check
+	to make sure they don't have punctuation, etc.
+
+1998-12-13  ghutchis <ghutchis>
+
+	* Minor updates to makefiles. Ensures we use the version of the
+	library here.
+
+1998-12-13  ghutchis <ghutchis>
+
+	* Updates for 3.1.0b3 when it arrives.
+
+1998-12-12  bergolth <bergolth>
+
+	* Small change so that it compiles on AIX
+
+1998-12-12  ghutchis <ghutchis>
+
+	* Fix coredump when META refresh tags don't have content portions
+	(e.g. no URL).
+
+1998-12-12  ghutchis <ghutchis>
+
+	* Check http_proxy_exclude to see if it's empty. If so, use the
+	proxy always.
+
+1998-12-12  ghutchis <ghutchis>
+
+	* Added a patch from Gilles allowing CGI environment variables in
+	templates.
+
+1998-12-12  ghutchis <ghutchis>
+
+	* Fixed a bug where pointer, rather than strings were assigned.
+	Silly references...
+
+1998-12-12  ghutchis <ghutchis>
+
+	* Added additional debugging info on the reason for excluding a
+	URL, based on a patch by Benoit Majeau <Benoit.Majeau@nrc.ca>.
+
+1998-12-12  ghutchis <ghutchis>
+
+	* More updates on bugfixes, etc. 3.1.0b3 coming someday soon.
+
+1998-12-12  ghutchis <ghutchis>
+
+	* Updates for 3.1.0b3, coming to a theater near you.
+
+1998-12-11  ghutchis <ghutchis>
+
+	* Changed support for server_wait_time to use delay() method in
+	Server. Delay is from beginning of last connection to this one.
+
+1998-12-11  ghutchis <ghutchis>
+
+	* Added option for server_max_docs as a limit on the number of
+	docs returned from a server.
+
+1998-12-11  ghutchis <ghutchis>
+
+	* New version from Jesse. New code speedups and better matching of
+	punctuation.
+
+1998-12-08  ghutchis <ghutchis>
+
+	* Updated for recent bugfixes. 3.1.0b3 is coming soon...
+
+1998-12-08  ghutchis <ghutchis>
+
+	* Use server_wait_time to call sleep() before requests. Should
+	help prevent server abuse.-)
+
+1998-12-08  ghutchis <ghutchis>
+
+	* Add new option server_wait_time for the number of seconds to
+	wait between requests.
+
+1998-12-08  ghutchis <ghutchis>
+
+	* Fix thinko with multiple excludes and restricts. Pointed out by
+	Gilles.
+
+1998-12-08  ghutchis <ghutchis>
+
+	* Fix typo that added description text that contained punctuation
+	or was too short.
+
+1998-12-08  ghutchis <ghutchis>
+
+	* Remove unnecessary code.
+
+1998-12-08  ghutchis <ghutchis>
+
+	* Updated from maindocs.
+
+1998-12-06  ghutchis <ghutchis>
+
+	* Update with lots of bug fixes. Version 3.1.0b3 is just about
+	ready...
+
+1998-12-06  ghutchis <ghutchis>
+
+	* Ensure temporary files are placed in TMPDIR if it's set.
+
+1998-12-06  ghutchis <ghutchis>
+
+	* Ensure blank WordRecords have a default count of 1 since a word
+	has to exist to have a WordRecord!
+
+1998-12-06  ghutchis <ghutchis>
+
+	* Ensure duplicate words have minimum location and anchor
+	attributes.
+
+1998-12-06  ghutchis <ghutchis>
+
+	* Import latest version from autoconf.
+
+1998-12-06  ghutchis <ghutchis>
+
+	* Check for empty boolean searches and report an error. Fixes bug
+	reported by Chuck O'Donnell <cao@bus.net>.
+
+1998-12-06  ghutchis <ghutchis>
+
+	* Add the text of descriptions to the word database with weight
+	description_factor.
+
+1998-12-06  ghutchis <ghutchis>
+
+	* Don't add the text of descriptions to the word db here, it's
+	better to do it in the DocumentRef itself.
+
+1998-12-06  ghutchis <ghutchis>
+
+	* Check for word entries that are duplicates and compact them.
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Fix mistake in last update--file was included twice.
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Patch from Klaus Mueller <K.Mueller@intershop.de> to compile
+	under CygWinB20.
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Updated for all the latest fixes and changes. Warm weather in
+	december??
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Regenerate for configure.in changes.
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Remove DB_DIR and RX_DIR completely.
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Added usage message for the command line.
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Don't store c:1 and a:0 entries in db.wordlist to save space.
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Added a parameter to Initial function to prevent URLs from being
+	checked twice during an update dig.
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Remove previous db.words.db file before doing a word merging.
+	Fixes bug with deleted documents keeping entries.
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Allow server_alias to work under virtual hosts.
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Added check for empty dictionaries.
+
+1998-12-05  ghutchis <ghutchis>
+
+	* Fix parser bug with &lt; becoming a tag.
+
+1998-12-04  bergolth <bergolth>
+
+	* Added configure check for the getpeername argument types.
+
+1998-12-04  ghutchis <ghutchis>
+
+	* Updated for latest changes.
+
+1998-12-04  ghutchis <ghutchis>
+
+	* Use new option "http_proxy_exclude" to decide whether to use the
+	proxy.
+
+1998-12-04  ghutchis <ghutchis>
+
+	* Add new option "http_proxy_exclude" for servers that shouldn't
+	use the proxy, from a patch by Gilles Detillieux.
+
+1998-12-04  ghutchis <ghutchis>
+
+	* Use configure check to only include getopt.h when it exists.
+
+1998-12-04  ghutchis <ghutchis>
+
+	* Removed compiler warnings.
+
+1998-12-04  ghutchis <ghutchis>
+
+	* Define HAVE_GETOPT_H.
+
+1998-12-04  ghutchis <ghutchis>
+
+	* Generate from configure.in with latest autoconf(2.12.2).
+
+1998-12-04  ghutchis <ghutchis>
+
+	* Check for getopt.h for those platforms that don't have it. Fix
+	checks for db and rx dirs since these names won't change.
+
+1998-12-02  ghutchis <ghutchis>
+
+	* Updated for a slew of bug fixes.
+
+1998-12-02  ghutchis <ghutchis>
+
+	* Regenerated log messages.
+
+1998-12-02  ghutchis <ghutchis>
+
+	* Added fix from Christian Schneider <cschneid@relog.ch>,
+	discovered from behavior with limit_urls_to.
+
+1998-12-02  ghutchis <ghutchis>
+
+	* Added fix from Alexander Bergolth for Berkeley DB under AIX.
+
+1998-12-02  ghutchis <ghutchis>
+
+	* Update hopcount correctly by taking the shortest paths to
+	documents.
+
+1998-12-02  ghutchis <ghutchis>
+
+	* Add include <getopt.h> to help compiling under Win32 with
+	CygWinB20.
+
+1998-12-02  ghutchis <ghutchis>
+
+	* Fixed bug with "make depend," noted by Morgan Davis
+	<mdavis@cts.com>.
+
+1998-11-30  ghutchis <ghutchis>
+
+	* Fix mistake in last update so the code compiles.
+
+1998-11-30  ghutchis <ghutchis>
+
+	* Fixed problems under FreeBSD where <sys/types.h> needed to be
+	before <sys/stat.h>, noted by Gilles. Fixed core dumps caused by
+	mystrptime returning NULL. Instead, we'll use the time(0).
+
+1998-11-30  ghutchis <ghutchis>
+
+	* More changes again. Time go enjoy the nice evening...
+
+1998-11-30  ghutchis <ghutchis>
+
+	* Fixed bug with robots.txt files containing tabs, based on patch
+	from Christian Schneider <cschneid@relog.ch>.
+
+1998-11-30  ghutchis <ghutchis>
+
+	* Fixed problems under FreeBSD where <sys/types.h> needed to be
+	before <sys/stat.h>, noted by Gilles.
+
+1998-11-30  ghutchis <ghutchis>
+
+	* Improved support for multiple restrict and exclude patterns,
+	based on code from Gilles Detillieux and William Rhee
+	<willrhee@umich.edu>.
+
+1998-11-28  ghutchis <ghutchis>
+
+	* Update for recent changes (lots of them!)
+
+1998-11-27  ghutchis <ghutchis>
+
+	* Initial revision
+
+1998-11-27  ghutchis <ghutchis>
+
+	* Updated to deal with changes in db, rx directories.
+
+1998-11-27  ghutchis <ghutchis>
+
+	* Removed bogus code with "%01" -> "|"
+
+1998-11-27  ghutchis <ghutchis>
+
+	* Considers URLs with "%7E" to be equivalent to "~"
+
+1998-11-27  ghutchis <ghutchis>
+
+	* Changed MinimumAllocationSize to cut down on memory usage on
+	small strings.
+
+1998-11-27  ghutchis <ghutchis>
+
+	* Changed Retriever::got_word to check for small words,
+	valid_punctuation to remove bugs in HTML.cc.
+
+1998-11-27  ghutchis <ghutchis>
+
+	* Changed backlink_factor to 1000, description_factor to 150,
+	match_method to and, and meta_description factor to 50. Should
+	produce more accurate search results.
+
+1998-11-27  ghutchis <ghutchis>
+
+	* Fixed bug with bad_words and MAX_WORD_LENGTH, noted by Jeff
+	Breidenbach <jeff@alum.mit.edu>.
+
+1998-11-27  ghutchis <ghutchis>
+
+	* Updated to reflect bug-tracking system.
+
+1998-11-24  ghutchis <ghutchis>
+
+	* Added patch to use local_default doc with local_user_urls from
+	Gilles Detillieux <grdetil@scrc.umanitoba.ca>.
+
+1998-11-22  ghutchis <ghutchis>
+
+	* Updates from recent changes.
+
+1998-11-22  ghutchis <ghutchis>
+
+	* Adjust date_factor and backlink_factor rankings to produce
+	better results, Use "no_excerpt_show_top."
+
+1998-11-22  ghutchis <ghutchis>
+
+	* Don't remove boolean operators from boolean search strings!
+
+1998-11-22  ghutchis <ghutchis>
+
+	* Use "description_factor" to weight link descriptions with the
+	documents at the end of the link.
+
+1998-11-22  ghutchis <ghutchis>
+
+	* New config options "description_factor" and
+	"no_excerpt_show_top"
+
+1998-11-22  ghutchis <ghutchis>
+
+	* Added checks for synonym databases older than the synonym files.
+
+1998-11-18  ghutchis <ghutchis>
+
+	* Updated for recent changes.
+
+1998-11-18  ghutchis <ghutchis>
+
+	* Remove limit on link descriptions.
+
+1998-11-18  ghutchis <ghutchis>
+
+	* Fixed memory leak as a result of a thinko.
+
+1998-11-18  ghutchis <ghutchis>
+
+	* Added HTTP_REFERER to search logging.
+
+1998-11-18  ghutchis <ghutchis>
+
+	* Added changes by Iosif.
+
+1998-11-17  ghutchis <ghutchis>
+
+	* Add new ranking factors backlink_factor and date_factor
+
+1998-11-17  ghutchis <ghutchis>
+
+	* Import new version.
+
+1998-11-16  ghutchis <ghutchis>
+
+	* Fix back link count.
+
+1998-11-16  ghutchis <ghutchis>
+
+	* Add checks for null tokens, adapted from patch by Vadim Checkan.
+
+1998-11-15  ghutchis <ghutchis>
+
+	* Implement docBackLinks backlink count.
+
+1998-11-15  ghutchis <ghutchis>
+
+	* Change \r to \n as noted by Andrew Bishoip.
+
+1998-11-15  ghutchis <ghutchis>
+
+	* Generated using autoconf 2.12.1
+
+1998-11-15  ghutchis <ghutchis>
+
+	* Fix for refresh tags w/o URLs.
+
+1998-11-15  turtle <turtle>
+
+	*  fixed bug which assumed that all http-equiv=refresh attributes
+	   also have url=something.  The url=something is optional
+
+1998-11-15  ghutchis <ghutchis>
+
+	* Fixed bugs with META robots, URL parsing, and added support for
+	META refresh tags.
+
+1998-11-15  ghutchis <ghutchis>
+
+	* Reformatting.
+
+1998-11-15  ghutchis <ghutchis>
+
+	* Declared loop int variable. (to simplify frost.com merge)
+
+1998-11-09  ghutchis <ghutchis>
+
+	* Changed reset to keep proxy settings--fixes bug noted by Didier
+	Gautheron <dgautheron@magic.fr>.
+
+1998-11-06  ghutchis <ghutchis>
+
+	* Updated for recent changes.
+
+1998-11-06  ghutchis <ghutchis>
+
+	* Updated to include short descriptions of scripts.
+
+1998-11-06  ghutchis <ghutchis>
+
+	* Scripts to make multiple databases a little easier.
+
+1998-11-06  ghutchis <ghutchis>
+
+	* Fixed buglet with -F flag to sendmail.
+
+1998-11-06  ghutchis <ghutchis>
+
+	* Updated to work with .version and snapshots
+
+1998-11-06  ghutchis <ghutchis>
+
+	* Updated for 3.1.0b3
+
+1998-11-06  ghutchis <ghutchis>
+
+	* Updates to use DB2 and bug fixes.
+
+1998-11-06  ghutchis <ghutchis>
+
+	* Resurrected to support automatic versions for snapshots.
+
+1998-11-04  ghutchis <ghutchis>
+
+	* Added patch from Vadim Chekan to change char to unsigned char to
+	fix reading Cyrillic plaintext files.
+
+1998-11-03  turtle <turtle>
+
+	* test commit
+
+1998-11-03  ghutchis <ghutchis>
+
+	* Updated to include final changes in 3.1.0b2.
+
+1998-11-03  ghutchis <ghutchis>
+
+	* Fixed buglet with make dist target.
+
+1998-11-03  ghutchis <ghutchis>
+
+	* Changed references to HTDig to ht://Dig.
+
+1998-11-03  ghutchis <ghutchis>
+
+	* Removed file generatedgure.
+
+1998-11-02  ghutchis <ghutchis>
+
+	* Changed HTDig to ht://Dig.
+
+1998-11-02  ghutchis <ghutchis>
+
+	* Fixed buglet with distclean target.
+
+1998-11-02  ghutchis <ghutchis>
+
+	* Call mytimegm.cc instead of timegm.c.
+
+1998-11-02  ghutchis <ghutchis>
+
+	* Remove const from
+	*ext to fix compiler warning.
+
+1998-11-02  ghutchis <ghutchis>
+
+	* Updates for version 3.1.0b2.
+
+1998-11-01  ghutchis <ghutchis>
+
+	* Added template var DESCRIPTION as first item in DESCRIPTIONS, as
+	requested by Ryan Scott <test@netcreations.com>.
+
+1998-11-01  ghutchis <ghutchis>
+
+	* Resurrected mytimegm() until problems with glibc version can be
+	solved.
+
+1998-11-01  ghutchis <ghutchis>
+
+	* Replaced system calls with htlib/my* functions.
+
+1998-10-31  ghutchis <ghutchis>
+
+	* Fixed compiler warning.
+
+1998-10-28  turtle <turtle>
+
+	* changed
+
+1998-10-28  turtle <turtle>
+
+	*  added extern "C" to mytimegm declaration.  still doesn't seem to
+	help...
+
+1998-10-28  turtle <turtle>
+
+	*  made 'make depend' work again.
+
+1998-10-28  ghutchis <ghutchis>
+
+	* Fixes for timegm replacement.
+
+1998-10-27  ghutchis <ghutchis>
+
+	* Fixed bug noted by Vadim Chekan with CreateSearchDB.
+
+1998-10-27  ghutchis <ghutchis>
+
+	* Import of new version from glibc-2.0.99
+
+1998-10-26  ghutchis <ghutchis>
+
+	* Cleaned up -Wall warnings.
+
+1998-10-26  ghutchis <ghutchis>
+
+	* Fixed bug introduced by Oct 18 change. Authorization will not be
+	cleared.
+
+1998-10-26  ghutchis <ghutchis>
+
+	* Added fix from Jacques Reynes <Jacques.Reynes@cict.fr> to get
+	whatsnew to work with Berkeley DB.
+
+1998-10-26  ghutchis <ghutchis>
+
+	* Added patch by Esa Ahola to fix bug with not properly ignoring
+	bad_words
+
+1998-10-26  ghutchis <ghutchis>
+
+	* Documentation updates
+
+1998-10-26  ghutchis <ghutchis>
+
+	* Fixed problems with missing libraries
+
+1998-10-21  ghutchis <ghutchis>
+
+	* Cleaned up HTML parsing based on patch by Reni Seindal.
+
+1998-10-21  ghutchis <ghutchis>
+
+	* Added defaults for server_aliases and limit_normalized
+
+1998-10-21  bergolth <bergolth>
+
+	* Added translation of server names. Additional limiting after
+	normalization of the URL.
+
+1998-10-18  ghutchis <ghutchis>
+
+	* Revised connection timeout methods.
+
+1998-10-18  ghutchis <ghutchis>
+
+	* Fixed database corruption bug and other misc. cleanups.
+
+1998-10-18  ghutchis <ghutchis>
+
+	* Fix to declare __gmtime_r if not defined
+
+1998-10-17  ghutchis <ghutchis>
+
+	* Fixed problem with configuring DB_DIR introduced by Oct 11
+	change.
+
+1998-10-17  ghutchis <ghutchis>
+
+	* Included fixes sent by Paul J. Meyer
+	<pmeyer@rimeice.msfc.nasa.gov> to fix connections on Dec Alpha
+	environments.
+
+1998-10-17  ghutchis <ghutchis>
+
+	* Update for recent changes
+
+1998-10-17  ghutchis <ghutchis>
+
+	* Added variable CURRENT as the number of the current match,
+	adapted from a patch by Reni Seindal <seindal@webadm.kb.dk>
+
+1998-10-17  ghutchis <ghutchis>
+
+	* Changed htdig.sdsu.edu to www.htdig.org in start_urls
+
+1998-10-15  ghutchis <ghutchis>
+
+	* Remove unused files
+
+1998-10-14  turtle <turtle>
+
+	*  fixed broken link pointed out by chris@impulsedata.net
+	*  moved maintainer stuff up in the file
+
+1998-10-12  ghutchis <ghutchis>
+
+	* Added fix suggested by Domotor Akos <dome@impulzus.sch.bme.hu>
+	with (char
+	*)NULL cast.
+
+1998-10-12  ghutchis <ghutchis>
+
+	* Updated for recent CVS commits
+
+1998-10-12  ghutchis <ghutchis>
+
+	* Removed old mytimegm function.
+
+1998-10-12  ghutchis <ghutchis>
+
+	* GNU standard mkinstalldirs script
+
+1998-10-12  ghutchis <ghutchis>
+
+	* Improved boolean method error message. It now gives examples of
+	boolean expressions.
+
+1998-10-12  ghutchis <ghutchis>
+
+	* Added htsearch logging patch from Alexander Bergolth.
+
+1998-10-12  ghutchis <ghutchis>
+
+	* Updated Makefiles and configure variables.
+
+1998-10-09  turtle <turtle>
+
+	*  newly created from the modified configure.in
+
+1998-10-09  turtle <turtle>
+
+	*  The AC_CONFIG_SUBDIRS macro doesn't work for the berkeley db.
+	   Changed it back to what it was before.
+
+1998-10-09  ghutchis <ghutchis>
+
+	* Fixed typos
+
+1998-10-09  ghutchis <ghutchis>
+
+	* Improved Boolean syntax HTML file. Now it gives some examples.
+
+1998-10-08  ghutchis <ghutchis>
+
+	* Added README for ewswrap.
+
+1998-10-05  ghutchis <ghutchis>
+
+	* New contributed scripts from John Grohol PsyD
+	<johngr@cmhcsys.com>
+
+1998-10-02  ghutchis <ghutchis>
+
+	* Added check for docs marked noindex--words aren't indexed
+	anymore
+
+1998-10-02  ghutchis <ghutchis>
+
+	* More configure changes
+
+1998-10-02  ghutchis <ghutchis>
+
+	* Cleanup
+
+1998-10-02  ghutchis <ghutchis>
+
+	* Fixed bug with multiple delimeters
+
+1998-10-02  ghutchis <ghutchis>
+
+	* Improvements in configure.in, notably using --prefix= and
+	--exec-prefix=
+
+1998-09-30  ghutchis <ghutchis>
+
+	* Changes for 3.1.0b2
+
+1998-09-23  ghutchis <ghutchis>
+
+	* Update for latest changes
+
+1998-09-23  ghutchis <ghutchis>
+
+	* Many, many bug fixes
+
+1998-09-18  ghutchis <ghutchis>
+
+	* YABF (Yet another bug fix)
+
+1998-09-18  ghutchis <ghutchis>
+
+	* Bug fixes for 3.1.0b2
+
+1998-09-15  turtle <turtle>
+
+	* add substitution for @DATABASE_DIR@
+
+1998-09-10  ghutchis <ghutchis>
+
+	* More bug fixes.
+
+1998-09-08  ghutchis <ghutchis>
+
+	* Clean up for 3.1.0b1.
+
+1998-09-07  ghutchis <ghutchis>
+
+	* Add builtin-long as a default-template to use in case of errors.
+
+1998-09-07  ghutchis <ghutchis>
+
+	* Added DocState for documents marked as "noindex".
+
+1998-09-07  ghutchis <ghutchis>
+
+	* Bug fixes.
+
+1998-09-06  ghutchis <ghutchis>
+
+	* Bug fixes
+
+1998-09-04  ghutchis <ghutchis>
+
+	* Various bug fixes.
+
+1998-08-11  ghutchis <ghutchis>
+
+	* ChangeLog for previous update.
+
+1998-08-11  ghutchis <ghutchis>
+
+	* Second patch for META description tags. New field in DocDB for
+	the desc., space in word DB w/ proper factor.
+
+1998-08-06  ghutchis <ghutchis>
+
+	* Added config option "local_dir_doc" for default filename in a
+	local directory. Fixed spelling mistake in "elipses" attributes.
+
+1998-08-04  ghutchis <ghutchis>
+
+	* Added support for META robots tags.
+
+1998-08-04  ghutchis <ghutchis>
+
+	* Added fix by Philippe Rochat <prochat@lbdsun.epfl.ch> to remove
+	whitespace after config options.
+
+1998-08-03  ghutchis <ghutchis>
+
+	* Added entry for warning fixes.
+
+1998-08-03  ghutchis <ghutchis>
+
+	* Fixed compiler warnings under -Wall
+
+1998-08-03  ghutchis <ghutchis>
+
+	* Fixed spelling mistake for "ellipses"
+
+1998-07-25  turtle <turtle>
+
+	* Added PFD.o so that it is actually compiled and linked in
+
+1998-07-23  ghutchis <ghutchis>
+
+	* Added files (and patch) from Sylvain Wallez for PDF parsing.
+	Incorporates fix for non-Adobe PDFs.
+
+1998-07-22  ghutchis <ghutchis>
+
+	* Added patches from Sylvain Wallez <s.wallez.alcatel@e-mail.com>
+	to Display.cc to use the filename if no title is found and Chris
+	Jason Richards <richards@cs.tamu.edu> to htnotify.cc to fix problems
+	with sendmail.
+
+1998-07-21  ghutchis <ghutchis>
+
+	* Added patch by Rob Stone <rob@psych.york.ac.uk> to create new
+	environment variables to htsearch: SELECTED_FORMAT and
+	SELECTED_METHOD.
+
+1998-07-19  turtle <turtle>
+
+	* New configure script dealing with extraction of the berkeley db
+	archive
+
+1998-07-19  turtle <turtle>
+
+	* changed
+
+1998-07-19  turtle <turtle>
+
+	* Added code to extract the berkeley db archive if it wasn't
+	already extracted.  This relies on gunzip and tar.  If they cannot
+	be found, the user will be asked to extract the berkeley files
+	manually.
+
+1998-07-16  ghutchis <ghutchis>
+
+	* Added patch from Stephan Muehlstrasser <smuehlst@Rational.Com>
+	to fix delete syntax and a memory leak.
+
+1998-07-13  ghutchis <ghutchis>
+
+	* Resurrected ChangeLog from CVS logs
+
+1998-07-09  ghutchis <ghutchis>
+
+	* Added support for local file digging using patches by Pasi.
+	Patches include support for local user (~username) digging.
+
+1998-07-09  ghutchis <ghutchis>
+
+	* Added initial support for META Description tags
+
+1998-07-09  ghutchis <ghutchis>
+
+	* Added support for META name=description tags. Uses new
+	config-file option "use_meta_description" which is off by default.
+
+1998-06-22  turtle <turtle>
+
+	* Added test to make sure that the berkeley db library is present
+
+1998-06-22  turtle <turtle>
+
+	* Ignore the berkeley db library
+
+1998-06-22  turtle <turtle>
+
+	* changed
+
+1998-06-22  turtle <turtle>
+
+	* Removed GDBM references
+
+1998-06-22  turtle <turtle>
+
+	* Removed GDMB references
+
+1998-06-22  turtle <turtle>
+
+	* updated version to 3.1.0b1
+
+1998-06-22  turtle <turtle>
+
+	* Updated version # and website location
+
+1998-06-22  turtle <turtle>
+
+	* Applied patch that prevented SGML entities that translate to
+	valid_punctuation characters from becoming part of words
+
+1998-06-22  turtle <turtle>
+
+	* Removed references to GDBM
+
+1998-06-22  turtle <turtle>
+
+	* Got rid of my email address as the default maintainer
+
+1998-06-22  turtle <turtle>
+
+	* simple config file for development
+
+1998-06-22  turtle <turtle>
+
+	* New Berkeley database stuff
+
+1998-06-22  turtle <turtle>
+
+	* removed SDSU.*
+
+1998-06-22  turtle <turtle>
+
+	* Changed to use the new http://www.htdig.org/ instead of the sdsu
+	site
+
+1998-06-21  turtle <turtle>
+
+	* patches by Esa and Jesse to add BerkeleyDB and Prefix searching
+
+1998-06-15  turtle <turtle>
+
+	* Added suggestion by Chris Liddiard to add ',' to the list of
+	separator characters for meta keyword parsing
+
+1998-05-26  turtle <turtle>
+
+	* Got rid of compiler warnings.
+
+1998-04-03  turtle <turtle>
+
+	* Patch to make excludes work
+
+1998-03-10  turtle <turtle>
+
+	* Applied patch by Bernhard Griener to add arguments checks in the
+	mystrncasecmp() function
+
+1998-02-22  turtle <turtle>
+
+	* New mailing list archive location
+
+1998-02-17  turtle <turtle>
+
+	* added new one
+
+1998-02-12  turtle <turtle>
+
+	* Added more sites
+
+1998-01-05  turtle <turtle>
+
+	* Added check for fstream.h to get rid of the annoying emails
+	about ht://Dig not compiling...
+
+1998-01-05  turtle <turtle>
+
+	* Added include of the GDBM library back
+
+1998-01-05  turtle <turtle>
+
+	* Now at version 3.0.9
+
+1998-01-05  turtle <turtle>
+
+	* Changed refs to time related stuff
+
+1998-01-05  turtle <turtle>
+
+	* format changes
+
+1998-01-05  turtle <turtle>
+
+	* Changed tm from pointer to real structure
+
+1998-01-05  turtle <turtle>
+
+	* Our own timegm function
+
+1998-01-05  turtle <turtle>
+
+	* Fixed memory leak
+
+1998-01-05  turtle <turtle>
+
+	* Added own replacement of timegm()
+
+1998-01-05  turtle <turtle>
+
+	* Fixed memory leaks
+
+1998-01-05  turtle <turtle>
+
+	* Fix by Pontus Borg for AIX.  Changed 'size_t' to 'unsigned long'
+	for the length parameter for getpeername()
+
+1998-01-05  turtle <turtle>
+
+	* formatting changes
+
+1998-01-05  turtle <turtle>
+
+	* fixed memory leak
+
+1998-01-05  turtle <turtle>
+
+	*  Alarm was not cancelled if readHeader returned anything but OK
+	*  Use our own timegm() replacement if necessary
+
+1998-01-05  turtle <turtle>
+
+	* format changes
+
+1998-01-05  turtle <turtle>
+
+	* reformatting
+
+1998-01-05  turtle <turtle>
+
+	* Fixed major memory leak
+
+1998-01-05  turtle <turtle>
+
+	* General cleanup of archived stuff
+
+1998-01-05  turtle <turtle>
+
+	* config.cache added
+
+1998-01-05  turtle <turtle>
+
+	* Added htdig
+
+1997-12-16  turtle <turtle>
+
+	* Added little patch by Tobias Oetiker <oetiker@ee.ethz.ch> that
+	should fix problems with timeouts.
+
+1997-12-11  turtle <turtle>
+
+	* Added double slash removal code.  These were causing loops.
+
+1997-10-23  turtle <turtle>
+
+	* Fix by Pontus Borg for AIX.  Changed 'size_t' to 'unsigned long'
+	for the length parameter for getpeername()
+
+1997-10-13  turtle <turtle>
+
+	* remove files that shouldn't be in the repository
+
+1997-10-13  turtle <turtle>
+
+	* Ignore Makefile
+
+1997-10-13  turtle <turtle>
+
+	* Added documentation for the external_parsers attribute.
+
+1997-07-14  turtle <turtle>
+
+	* added cambridge
+
+1997-07-09  turtle <turtle>
+
+	* added the rhodos project
+
+1997-07-07  turtle <turtle>
+
+	* Removed old getdate() code that replaced '-' with ' '.
+
+1997-07-07  turtle <turtle>
+
+	* Sequences of "/./" are now replaced with "/" to reduce the
+	chance of infinite loops
+
+1997-07-07  turtle <turtle>
+
+	* Added better date parsing.  Now also supports the old RFC 850
+	format
+
+1997-07-03  turtle <turtle>
+
+	* Added support for virtual hosts
+
+1997-06-30  turtle <turtle>
+
+	* Added Depaul university
+
+1997-06-24  turtle <turtle>
+
+	* Fixed syntax error in the installation target.
+
+1997-06-23  turtle <turtle>
+
+	* Removed old config files
+
+1997-06-23  turtle <turtle>
+
+	* FAQ initial
+
+1997-06-23  turtle <turtle>
+
+	* Added link to the new FAQ
+
+1997-06-23  turtle <turtle>
+
+	* [no log message]
+
+1997-06-23  turtle <turtle>
+
+	* Added version info to the usage output
+
+1997-06-23  turtle <turtle>
+
+	* Added version info the usage output
+
+1997-06-23  turtle <turtle>
+
+	* Added version info to usage message
+
+1997-06-23  turtle <turtle>
+
+	* Added version info to the usage message
+
+1997-06-16  turtle <turtle>
+
+	* Changed the hardcoded version number to the new VERSION variable
+
+1997-06-16  turtle <turtle>
+
+	* Added docs for the VERSION and PERCENT variables
+
+1997-06-16  turtle <turtle>
+
+	* Added PERCENT and VERSION variables for the output templates
+
+1997-06-14  turtle <turtle>
+
+	* Made redirect detection code more general
+
+1997-06-13  turtle <turtle>
+
+	* Fixed typo
+
+1997-06-05  turtle <turtle>
+
+	* added VG Gas Analysis Systems
+
+1997-06-03  turtle <turtle>
+
+	* Added new english dictionary for the endings algorithm
+
+1997-05-29  turtle <turtle>
+
+	* Added Indiana University Computer Security Office
+
+1997-05-28  turtle <turtle>
+
+	* Fixed typo
+
+1997-05-19  turtle <turtle>
+
+	* Added daily californian online
+
+1997-05-13  turtle <turtle>
+
+	* Added The Reohr Group
+
+1997-05-13  turtle <turtle>
+
+	* Added the Linux Documentation Project
+
+1997-05-11  turtle <turtle>
+
+	* Made the contents frame a little wider so that text doesn't wrap
+
+1997-05-11  turtle <turtle>
+
+	* Added NOVA and Gajo & Associati
+
+1997-05-02  turtle <turtle>
+
+	* added www.bajan.org
+
+1997-04-30  turtle <turtle>
+
+	* Added Caldera, Inc.
+
+1997-04-27  turtle <turtle>
+
+	* changes
+
+1997-04-21  turtle <turtle>
+
+	* Added code to check the search words against the
+	minimum_word_length attribute
+
+1997-04-20  turtle <turtle>
+
+	* Made paths more generic
+
+1997-04-20  turtle <turtle>
+
+	* Added include for ctype.h
+
+1997-04-20  turtle <turtle>
+
+	* Fixed bug
+
+1997-04-01  turtle <turtle>
+
+	* added ukc
+
+1997-03-30  turtle <turtle>
+
+	* update
+
+1997-03-27  turtle <turtle>
+
+	* Applied patch supplied by Peter Enderborg <pme@ufh.se> to fix a
+	problem with a pointer running off the end of a string.
+
+1997-03-24  turtle <turtle>
+
+	* Renamed the String.h file to htString.h to help compiling under
+	win32
+
+1997-03-24  turtle <turtle>
+
+	* Updated "make dist" to remove CVS stuff
+
+1997-03-14  turtle <turtle>
+
+	* Changed default value for remove_bad_urls to true
+
+1997-03-13  turtle <turtle>
+
+	* Changes
+
+1997-02-27  turtle <turtle>
+
+	* new uses
+
+1997-02-24  turtle <turtle>
+
+	* Applied patches supplied by "Jan P. Sorensen"
+	<japs@garm.adm.ku.dk> to make ht://Dig run on 8-bit text without the
+	global unsigned-char option to gcc.
+
+1997-02-23  turtle <turtle>
+
+	* [no log message]
+
+1997-02-18  turtle <turtle>
+
+	* New uses of ht://Dig
+
+1997-02-11  turtle <turtle>
+
+	* Renamed the very bad wordlist variable to badWords
+
+1997-02-10  turtle <turtle>
+
+	* Applied AIX specific patches supplied by Lars-Owe Ivarsson
+	<lars-owe.ivarsson@its.uu.se>
+
+1997-02-07  turtle <turtle>
+
+	* Fixed problem with anchors without a URL
+
+1997-02-03  turtle <turtle>
+
+	* updated stuff to 3.0.8
+
+1997-02-03  turtle <turtle>
+
+	* Initial revision
+
