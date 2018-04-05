@@ -28,7 +28,7 @@ AUTHORS.md		\
 TESTING.md		\
 CONTRIBUTING.md		\
 TRANSLATING.md 		\
-ChangeLog.md 		\
+ChangeLog 		\
 STATUS			\
 CODE_OF_CONDUCT.md	\
 ABOUT-NLS
