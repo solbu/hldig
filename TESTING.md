@@ -3,13 +3,18 @@
 ## System Requirements
 
 ### Linux
-Install the following packages:
+On Debian and Debian derivatives like Ubuntu, Mint etc, install the following packages:
 
     build-essential
     libstdc++
-    libcrypto
     libssl-dev
     zlib1g-dev
+
+On Mageia, Fedora and other rpm based systems, install the following packages:
+
+    libstdc++-devel
+    openssl-devel
+    libzlib-devel
 
 ### Mac
 Install the appropriate xcode cli tools.
@@ -20,9 +25,6 @@ Using homebrew install latest openssl and zlib.
 
     brew install openssl zlib
 
-
-### Windows
-(Edit me)
 
 ## Testing
 * ./configure --prefix=$PWD/testing
