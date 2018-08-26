@@ -1,6 +1,5 @@
 Makefile
 *.log
-autom4te.cache
 *~
 testing
 temp
