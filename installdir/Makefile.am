@@ -24,7 +24,7 @@ COMMONCSS= style.css
 
 COMMONDICT=	bad_words english.0 english.aff synonyms
 
-EXTRA_DIST = $(IMAGES) $(COMMONHTML) $(COMMONDICT) $(HLCONF) rundig \
+EXTRA_DIST = $(hl_DATA) $(COMMONHTML) $(COMMONDICT) $(HLCONF) rundig \
 		search.html HtFileType
 
 install-data-local:	all
