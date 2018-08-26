@@ -42,7 +42,7 @@ AM_MAKEFLAGS = MAKE="$(MAKE)"
 
 EXTRA_DIST = test_functions.in test_prepare $(TESTS) \
 	skiptest_db.txt search.txt mifluz.conf mifluz-search.conf \
-	benchmark-report benchmark t_htdb.dump \
+	benchmark-report t_htdb.dump \
 	htdocs conf url.parents url.children url.output
 
 LOCAL_DEFINES = -I$(top_builddir)/db -I$(top_srcdir)/db $(PROFILING)
