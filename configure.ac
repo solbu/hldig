@@ -7,7 +7,7 @@
 
 AC_PREREQ(2.57)
 
-AC_INIT([hldig], [0.2.0], [https://github.com/solbu/hldig/issues/])
+AC_INIT([hldig], [0.2.0], [https://github.com/solbu/hldig/issues/], ,['https://github.com/solbu/hldig/'])
 AC_CONFIG_SRCDIR([hldig/hldig.cc])
 AM_INIT_AUTOMAKE
 
@@ -363,17 +363,7 @@ AC_ARG_ENABLE(bigfile,
 	[db_cv_bigfile="$enable_bigfile"], [db_cv_bigfile="yes"])
 AC_MSG_RESULT($db_cv_bigfile)
 
-# Vendors are doing 64-bit lseek in different ways.
-# Linux, AIX, HP/UX and Solaris all use _FILE_OFFSET_BITS to specify a "big-file"
-# environment.
-if test "$db_cv_bigfile" = yes; then
-	case "$host_os" in
-	bsdi*|aix*|hpux*|solaris*)	AC_DEFINE(HAVE_FILE_OFFSET_BITS,,['big-file' environment]);;
-	linux*)	AC_DEFINE(HAVE_FILE_OFFSET_BITS,,['big-file' environment])
-		AC_DEFINE(HAVE_LARGEFILE_SOURCE,,[large file sources])
-		;;
-	esac
-fi
+AC_SYS_LARGEFILE
 
 # Add the -mimpure-text option on Solaris with GCC and libstc++ that is not shared
 if test "$GXX" = "yes"
