@@ -7,10 +7,10 @@ We are in the process of updating the
 [web site](https://solbu.github.io/hldig/)
 and documentation.
 
-Recently, I wrote a quick-guide to [building and testing hl://Dig](TESTING.md),
+Recently, we wrote a quick-guide to [building and testing hl://Dig](TESTING.md),
 but it doesn't cover all the programs in the hl://Dig package.
 
-I've [opened a ticket](https://github.com/solbu/hldig/issues/50)
+We have [opened a ticket](https://github.com/solbu/hldig/issues/50)
 to discuss how to proceed with documentation and what type of web site to put
 in place.
 
@@ -33,5 +33,6 @@ If you are interested in translating the output messages from hldig, please see
 Anyone interested in this project may join the IRC channel -
 [chat.freenode.net / channel: #hldig](http://webchat.freenode.net?channels=%23hldig&uio=d4)
 
-Project maintainer: Andy Alt
+Project maintainer: Johnny A. Solbu
+Main developer: Andy Alt
 Email: andy400-dev [at] yahoo.com
