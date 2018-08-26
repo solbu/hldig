@@ -13,7 +13,7 @@ script:
   - ./configure
   - make
   - cd ../..
-  - ./configure --prefix=$PWD/tempbuild --with-zlib --enable-bigfile
+  - ./configure --prefix=$PWD/tempbuild --with-zlib
   - make
   - make install
 

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([hldig_db], [m4_esyscmd_s([cat ../VERSION])])
+AC_INIT([hldig_db], [m4_esyscmd_s([cat ../VERSION])], [https://github.com/solbu/hldig/issues/], ,['https://github.com/solbu/hldig/'])
 AC_CONFIG_SRCDIR([db_byteorder.c])
 AM_INIT_AUTOMAKE
 
