@@ -1,5 +1,6 @@
 2018-08-26  Johnny A. Solbu <johnny@solbu.net>
 
+	* Release version 0.2.0
 	* Image files doesn't need execute permission
 	* Update TESTING.md with current build requirements
 	* Remove non-existant benchmark folder from dist target:
@@ -21,11 +22,7 @@
 2018-04-02  Johnny A. Solbu <johnny@solbu.net>
 
 	* VERSION file is obsolete now that version is in configure.ac
-	[skip ci]
-	* Update pot file: copyright are assigned to «the hl://Dig
-	group» [skip ci]
-	* commit fb7ea686ffe3fd4aac7e823f1855fb34a3f68dd3 Author: Johnny
-	A. Solbu <johnny@solbu.net> Date:   Mon Apr 2 13:31:43 2018 +0200
+	* Update pot file: copyright are assigned to «the hl://Dig group»
 
 2018-03-27  andy5995 <andy400-dev@yahoo.com>
 
@@ -61,13 +58,13 @@
 
 2018-03-15  Andy Alt <andy5995@users.noreply.github.com>
 
-	* Changlog.md:add note about default install paths [skip ci]
-	* Makefile.am:remove CVS dist-hook [skip ci]
-	* CONTRIBUTING.md:add note about "skip ci" [skip ci]
-	* TESTING.md:updated [skip ci] This reflects changes to the new install locations, which was a
+	* Changlog.md:add note about default install paths
+	* Makefile.am:remove CVS dist-hook
+	* CONTRIBUTING.md:add note about "skip ci"
+	* TESTING.md:updated This reflects changes to the new install locations, which was a
 	recent patch submitted by @Solbu
 	* push regenerated build scripts and makefiles Regenerated due to previous commit
-	* configure.ac:change path of www images [skip ci] When installdir/Makefile is run, it uses the value here to prefix
+	* configure.ac:change path of www images When installdir/Makefile is run, it uses the value here to prefix
 	urls to images in the installdir/html templates with /www/ To be accessible, a symlink can be put in the web root that points
 	to that directory.
 
@@ -84,7 +81,7 @@
 
 2018-03-12  james south <jamessouth@users.noreply.github.com>
 
-	* make sure home page validates (#100) (fixes #81) [skip ci]
+	* make sure home page validates (#100) (fixes #81)
 
 2018-03-12  Johnny A. Solbu <johnny@solbu.net>
 
@@ -93,11 +90,11 @@
 
 2018-03-11  andy5995 <andy400-dev@yahoo.com>
 
-	* ABOUT-NLS:add to distribution [skip ci]
-	* remove '#' (forgot to do this in a previous commit) [skip ci]
-	* .travis.yml:drop '#' from hldig Freenode channel [skip ci]
+	* ABOUT-NLS:add to distribution
+	* remove '#' (forgot to do this in a previous commit)
+	* .travis.yml:drop '#' from hldig Freenode channel
 	* simplecgen:refactor trim() function
-	* list #hldig for the chat room, not ##hldig [skip ci]
+	* list #hldig for the chat room, not ##hldig
 	* .travis.yml: change failure and error notifications Only notify on_failure if there's a change Always notify on error
 	* .travis.yml:change irc notification options
 	* .travis.yml:change osx and Xcode version (#98)
@@ -113,13 +110,13 @@
 
 2018-03-09  Andy Alt <andy5995@users.noreply.github.com>
 
-	* Merge pull request #92 from solbu/doc-changes [skip ci] Simplify translation instructions
+	* Merge pull request #92 from solbu/doc-changes Simplify translation instructions
 
 2018-03-07  andy5995 <andy400-dev@yahoo.com>
 
 	* translation:add ru to LINGUAS, generate gmo file (closes #68)
 	* travis.yml:add osx (#76)
-	* ne.po:remove empty file [skip ci]
+	* ne.po:remove empty file
 
 2018-03-07  Svitlana Galianova <svitlana.galianova@gmail.com>
 
@@ -144,9 +141,9 @@
 
 2018-01-21  andy5995 <andy400-dev@yahoo.com>
 
-	* fix formatting [skip ci]
+	* fix formatting
 	* remove Slack, use IRC found some leftovers to remove (see previous commit)
-	* remove Slack workspace from contact info [skip ci] IRC should be sufficient for this project.  http://webchat.freenode.net?channels=%23%23hldig&uio=d4
+	* remove Slack workspace from contact info IRC should be sufficient for this project.  http://webchat.freenode.net?channels=%23%23hldig&uio=d4
 
 2018-01-15  andy5995 <andy400-dev@yahoo.com>
 
@@ -165,12 +162,12 @@
 
 2018-01-10  andy5995 <andy400-dev@yahoo.com>
 
-	* rundig: update vars automatically (fixes #15) [skip ci]
+	* rundig: update vars automatically (fixes #15)
 
 2018-01-09  andy5995 <andy400-dev@yahoo.com>
 
-	* require.html: remove extra space (OpenBSD) [skip ci]
-	* require.html: add OpenBSD 6.2 and Debian 9 [skip ci]
+	* require.html: remove extra space (OpenBSD)
+	* require.html: add OpenBSD 6.2 and Debian 9
 	* WordDBPage.cc: remove extra The build failed on OpenBSD 6.2 because of this semicolon
 	* gettext.h: fix warning about variable length array (#80)
 	* gettext.h: fix warning about variable length array This was a harmless warning on Debian 9, but when I tried building
@@ -184,7 +181,7 @@
 
 2018-01-08  andy5995 <andy400-dev@yahoo.com>
 
-	* genarate site with new title tags [skip ci]
+	* genarate site with new title tags
 	* simplecgen: add title | subtitle code
 	* Merge pull request #79 from andy5995/simplecgen simplecgen: implement structure for config file options
 
@@ -252,8 +249,8 @@
 	*** [simplecgen.o] Error 127 make:
 	*** [all]
 	Error 2` ```
-	* [wip] update web site [skip ci]
-	* CONTRIBUTING.md: fix link, add IRC info [skip ci]
+	* [wip] update web site
+	* CONTRIBUTING.md: fix link, add IRC info
 	* Update TRANSLATING.md add IRC info
 	* rename directories to hldig, htdig.conf to hldig.conf This also uses the contents in VERSION (see configure.ac diff)
 	* configure.ac: move var assignments below AC_INIT (fixes #74) VERSION doesn't appear to have an assignment until after AC_INIT, so
@@ -276,7 +273,7 @@
 	* [wip #74] match HLDIG version vars to those in configure.ac In a previous commit, I changed HTDIG_MAJOR... to HLDIG in
 	configure.ac but I didn't do that in the rest of the files in this
 	commit.  This doesn't fix the problem in #74 though.
-	* README.md: add semaphore badge [skip ci]
+	* README.md: add semaphore badge
 	* .travis.yml: add indentation
 	* .travis.yml: add language
 	* .travis.yml: add osx and clang
@@ -284,17 +281,17 @@
 2017-12-31  andy5995 <andy400-dev@yahoo.com>
 
 	* [wip #52, #36] mark strings for translation
-	* test_prepare (fixes #45) [skip ci]
+	* test_prepare (fixes #45)
 	* Makefile.am: install docs when make install is run The docs under the EXTRA_DIST variable in Makefile.am will now be
 	installed to $prefix/share/doc/hldig or some similar location.  Other files are part of this commit because I ran autoreconf -ivf
 	* .gitignore: files added
-	* INSTALL: add generic doc [skip ci]
+	* INSTALL: add generic doc
 	* CONTRIBUTING.md: minor update
 	* fix Martijn's name @sexybiggetje
 
 2017-12-30  andy5995 <andy400-dev@yahoo.com>
 
-	* [#50] update web site and docs [skip ci]
+	* [#50] update web site and docs
 	* Add note to ChangeLog about @sexybiggetje's Mac patch
 	* install.html: add notes about TESTING.md document
 	* require.html: add current info about Mac OS X, change Debian from
@@ -310,15 +307,8 @@
 
 	* Patches to build on latest os x 10.13 high sierra
 
-2017-12-30  andy5995 <andy400-dev@yahoo.com>
-
-	* commit 0c02d5058b63c55529297c300c9386985e44eb3a Author: andy5995
-	<andy400-dev@yahoo.com> Date:   Sat Dec 30 02:33:22 2017 -0600
-
 2017-12-29  andy5995 <andy400-dev@yahoo.com>
 
-	* commit 56cb36c48ac71dd4232495ea081dda8bc6c40972 Author: andy5995
-	<andy400-dev@yahoo.com> Date:   Fri Dec 29 05:12:46 2017 -0600
 	* generate gmo from @sexybiggetje's nl_NL translation
 
 2017-12-29  Martijn de Boer <github@sexybiggetje.nl>
@@ -332,9 +322,9 @@
 	* README.developer: archive This isn't how the files mentioned are generated anymore. Though I
 	wish I would have looked at this more closely before I converted the
 	web site. This doc may still need to be reference in the future.
-	* TRANSLATING.md: grammar [skip ci]
-	* TRANSLATING.md: remove irrelevant text [skip ci]
-	* TRANSLATING.md: add info for translators [skip ci]
+	* TRANSLATING.md: grammar
+	* TRANSLATING.md: remove irrelevant text
+	* TRANSLATING.md: add info for translators
 
 2017-12-28  andy5995 <andy400-dev@yahoo.com>
 
@@ -353,18 +343,18 @@
 
 2017-12-27  Andy Alt <andy5995@users.noreply.github.com>
 
-	* Merge pull request #65 from andy5995/update_makevars Makevars: add sort-output option for pot and po files [skip ci]
+	* Merge pull request #65 from andy5995/update_makevars Makevars: add sort-output option for pot and po files
 	* update makefiles using automake 1.15.1
-	* Merge pull request #64 from andy5995/issue_15 [fixes #15] changed paths in rundig script [skip ci]
+	* Merge pull request #64 from andy5995/issue_15 [fixes #15] changed paths in rundig script
 
 2017-12-23  Andy Alt <andy5995@users.noreply.github.com>
 
 	* Merge pull request #63 from andy5995/convert_faq FAQ.html: converted to new site
-	* htdig.pot: use htdig.pot instead of messages.pot [skip ci] (#62)
-	* htdig.pot: use htdig.pot instead of messages.pot [skip ci]
-	* Makevars: update [skip ci]
-	* Merge pull request #61 from andy5995/wip_website [wip #50] convert old site to using simplectemplate [skip ci]
-	* Merge pull request #60 from andy5995/update_lighttpd_conf lighttpd.conf.sample: change htdig to hldig [skip ci]
+	* htdig.pot: use htdig.pot instead of messages.pot (#62)
+	* htdig.pot: use htdig.pot instead of messages.pot
+	* Makevars: update
+	* Merge pull request #61 from andy5995/wip_website [wip #50] convert old site to using simplectemplate
+	* Merge pull request #60 from andy5995/update_lighttpd_conf lighttpd.conf.sample: change htdig to hldig
 	* Merge pull request #59 from andy5995/fix_warnings fix some harmless warnings
 	* fix some harmless warnings
 
@@ -377,17 +367,17 @@
 
 2017-12-17  andy5995 <andy400-dev@yahoo.com>
 
-	* web site: migrate more file to new site [skip ci]
-	* simplecgen.c:bugfix: exit if layout isn't found [skip ci]
+	* web site: migrate more file to new site
+	* simplecgen.c:bugfix: exit if layout isn't found
 
 2017-12-16  andy5995 <andy400-dev@yahoo.com>
 
-	* simplecgen.c: address mem issues, use realloc [skip ci] @dafky2000, is this the correct way to address my buffer overflow
+	* simplecgen.c: address mem issues, use realloc @dafky2000, is this the correct way to address my buffer overflow
 	problem?
 
 2017-12-15  andy5995 <andy400-dev@yahoo.com>
 
-	* teamplates: remove unnecessary newlines [skip ci] @dafky2000 If there are 2 newlines at the end of head.html, I get a crash. I'm
+	* teamplates: remove unnecessary newlines @dafky2000 If there are 2 newlines at the end of head.html, I get a crash. I'm
 	not sure if it's a bug in my code or not, but thought you may want
 	to be aware of it.  ``` Reading symbols from src/simplecgen...done.  (gdb) run Starting program: /home/andy/src/hldig/docs/src/simplecgen
 	processing infiles/hts_form.sct processing infiles/hts_selectors.sct
@@ -409,29 +399,29 @@
 
 2017-12-14  andy5995 <andy400-dev@yahoo.com>
 
-	* bugfix: update site [skip ci]
-	* [wip #50] update web site [skip ci]
-	* simplecgen: add layout feature [skip ci]
+	* bugfix: update site
+	* [wip #50] update web site
+	* simplecgen: add layout feature
 
 2017-12-13  andy5995 <andy400-dev@yahoo.com>
 
 	* update site (refresh files after bug fix from previous commit)
-	* simplecgen.c: [skip ci] bugfix: use calloc instead of malloc
-	* web site:fix link to index.html [skip ci]
-	* Merge pull request #54 from andy5995/generate_site (closes #53) [wip #53] implement @dafky2000's simplectemplate [skip ci]
-	* generate_site: (#53) [skip ci] rename to simplecgen.c add extra error checking add versioning info
+	* simplecgen.c: bugfix: use calloc instead of malloc
+	* web site:fix link to index.html
+	* Merge pull request #54 from andy5995/generate_site (closes #53) [wip #53] implement @dafky2000's simplectemplate
+	* generate_site: (#53) rename to simplecgen.c add extra error checking add versioning info
 	add configure script add README
 
 2017-12-12  andy5995 <andy400-dev@yahoo.com>
 
-	* simplectemplate: update lib, drop "data." prefix [skip ci]
+	* simplectemplate: update lib, drop "data." prefix
 
 2017-12-11  andy5995 <andy400-dev@yahoo.com>
 
 	* [wip #53] generate_site.c: assign return value
-	* [wip #53] add loop, process all files in infiles dir [skip ci]
+	* [wip #53] add loop, process all files in infiles dir
 	* [wip #53] fix segfault, write html file the segfault: I was freeing "contents" too early
-	* [wip #53] implement @dafky2000's simplectemplate [skip ci] For some reason, I'm getting a segfault. Before that, things were
+	* [wip #53] implement @dafky2000's simplectemplate For some reason, I'm getting a segfault. Before that, things were
 	working really well. I was all set to write out main.html.  ``` $ ./generate_site ../infiles/main.sct ../infiles/main.sct
 	Segmentation fault ``` ``` int main(int argc, char
 	**argv) { // char
@@ -441,17 +431,17 @@
 
 2017-12-12  andy5995 <andy400-dev@yahoo.com>
 
-	* docs dir: remove Makefiles [skip ci] The new site won't use these (#53).
+	* docs dir: remove Makefiles The new site won't use these (#53).
 	* change fork version to 0.1.01
 
 2017-12-10  andy5995 <andy400-dev@yahoo.com>
 
-	* docs: update links [skip ci]
+	* docs: update links
 	* docs: [wip] update
 
 2017-12-08  Andy Alt <andy5995@users.noreply.github.com>
 
-	* Merge pull request #51 from andy5995/update_README README.md: update [skip ci]
+	* Merge pull request #51 from andy5995/update_README README.md: update
 
 2017-12-07  andy5995 <andy400-dev@yahoo.com>
 
@@ -460,7 +450,7 @@
 
 2017-11-28  andy5995 <andy400-dev@yahoo.com>
 
-	* .gitattributes:detect C++ [skip ci]
+	* .gitattributes:detect C++
 
 2017-11-27  andy5995 <andy400-dev@yahoo.com>
 
@@ -516,12 +506,12 @@
 
 	* removed ChangeLog automatically created by gettextize
 	* adding htdig40_refactor.pdf This is a pdf file created in 2007 by the original development team
-	* CONTRIBUTING.md:message about prevening work overlap [skip ci]
+	* CONTRIBUTING.md:message about prevening work overlap
 
 2017-11-20  andy5995 <andy400-dev@yahoo.com>
 
 	* po/messages.pot:remove 2 strings, add comments
-	* po/messages.pot:add email [skip ci]
+	* po/messages.pot:add email
 	* URLRef.cc:remove duplicate const (added by "indent")
 	* htdig folder:formatting
 	* ExternalParser.cc:formatting
@@ -545,9 +535,9 @@
 
 2017-11-19  andy5995 <andy400-dev@yahoo.com>
 
-	* CONTRIBUTING:note about single file patches [skip ci]
-	* CONTRIBUTING:note about coding style [skip ci]
-	* ChangeLog:add note about i18n [skip ci]
+	* CONTRIBUTING:note about single file patches
+	* CONTRIBUTING:note about coding style
+	* ChangeLog:add note about i18n
 	* htdig.cc:move ( (fix build)
 	* create initial pot file, init ne.po (#36)
 	* prepare sources and Makfiles for i18n (#36)
@@ -556,15 +546,15 @@
 
 	* ChangeLog:add note about autotools files
 	* update configure and Makefiles
-	* ChangeLog:add note about @lighttpd testing process [skip ci]
-	* .gitignore:add symlink [skip ci]
-	* samplesite/cgi-bin:remove symlink from repo [skip ci]
+	* ChangeLog:add note about @lighttpd testing process
+	* .gitignore:add symlink
+	* samplesite/cgi-bin:remove symlink from repo
 	* TESTING:rearrange some info
-	* TESTING:fix formatting [skip ci]
-	* index.html:remove link [skip ci]
+	* TESTING:fix formatting
+	* index.html:remove link
 	* add lighttpd testing method
-	* move script to scripts dir [skip ci]
-	* TESTING:removed duplicate info [skip ci]
+	* move script to scripts dir
+	* TESTING:removed duplicate info
 	* TESTING:add system requirements
 
 2017-11-18  Ram Dahal <ram.dahal@gmail.com>
@@ -592,8 +582,6 @@
 2017-11-15  Andy Alt <andy5995@users.noreply.github.com>
 
 	* Merge pull request #25 from AlexChristoforides/issue_7 Fixed #7, warning about converting a string constant to char*
-	* commit 519b70c5e6db30fb61529f3f7804eeef7d53a8b5 Author: andy5995
-	<andy400-dev@yahoo.com> Date:   Wed Nov 15 20:09:08 2017 -0600
 
 2017-11-15  Andy Alt <andy5995@users.noreply.github.com>
 
@@ -616,8 +604,6 @@
 
 	* update html with new links
 	* WordMonitor:get rid of conversion warnings
-	* commit cc97fa1af1cea7158334114d1f07360351924a90 Author: andy5995
-	<andy400-dev@yahoo.com> Date:   Wed Nov 15 17:56:04 2017 -0600
 	* Merge pull request #23 from ramdahal/htpurge (closes #5) #5
 	* add links
 	* #5
@@ -633,7 +619,7 @@
 	* strptime.cc: gets rid of strptime.cc:85:1: warning: deprecated conversion from string constant to 'char*'
 	[-Wwrite-strings]
 	* defaults.cc:revert part of 9d42fead
-	* grammar [skip ci]
+	* grammar
 	* Makefile:change reference to ChangeLog.md
 	* .travis.yml: add 'make install'
 	* fix formatting
@@ -648,7 +634,7 @@
 
 2017-11-13  andy5995 <andy400-dev@yahoo.com>
 
-	* TESTING.md: add info [skip ci]
+	* TESTING.md: add info
 	* update README
 	* removing htdoc folder (closes #16) I think it's going to be easier to start from scratch, using a
 	different method for html documentation. I also think it will be
@@ -664,18 +650,16 @@
 
 2017-11-12  andy5995 <andy400-dev@yahoo.com>
 
-	* [skip ci]TESTING.md: remove config info
-	* [skip ci]htdig.conf: put htdig.org back as the default start_url
+	*TESTING.md: remove config info
+	*htdig.conf: put htdig.org back as the default start_url
 	* remove --with-apache option from build options
 	* htdig.conf: update to use a "file://" url for testing
-	* formatting [skip ci]
+	* formatting
 	* note about start_url: value in htdig.conf
 	* swap install.html
 	* install.html: update
 	* install.html: copy to docs folder (gh-pages enabled) Viewable at https://github.com/andy5995/htdig
 	* htdoc: rename to original, build fails
-	* commit a49311a221d48b337311a4759efd39ce43abb5f3 Author: andy5995
-	<andy400-dev@yahoo.com> Date:   Sun Nov 12 20:12:17 2017 -0600
 	* Update TESTING.md
 	* .gitignore: add files created after build
 	* add link to "fork"
@@ -690,15 +674,15 @@
 2013-08-17  Jim Cole <lists@yggdrasill.net>
 
 	* Fix typo in htdig/ExternalParser.cc.  Incidentally this change merges: - Patch from ht://Dig ftp server: ExternalParsersTypo.0 - openSUSE Patch: htdig-ExternalParser-typo.patch - fedora: third part of htdig-3.2.0-external_parsers.patch - old htdig tree after 3.2.0-b6: second part of "patches from Jim
-	  Cole" (commit f0482c39bc87bd008783fc355f10270bec036210)
+	  Cole"
 	* Fix external command parsing bug.  The single argument StringList constructor only considers a tab to
 	be a valid separator. As such a space between a command and argument
 	(e.g.  "convert.pl -x") is not treated as a separator, and the
 	string is not split properly. This results in execv calling a
 	command that generally doesn't exist (e.g. "convert.pl -x" rather
-	than convert.pl).  Incidentally this change merges: - Patch from ht://Dig ftp server: CommandParsing.0 - fedora: htdig-3.2.0-external_parsers part 1 - old htdig tree after 3.2.0-b6: first part of "patches from   Jim Cole" (commit f0482c39bc87bd008783fc355f10270bec036210)
+	than convert.pl).  Incidentally this change merges: - Patch from ht://Dig ftp server: CommandParsing.0 - fedora: htdig-3.2.0-external_parsers part 1 - old htdig tree after 3.2.0-b6: first part of "patches from   Jim Cole"
 	* Fix bug in handling SSL connections.  Corrects a bug in the Read_Partial code used for handling SSL
-	connections.  Incidentally this change merges: - Patch from ht://Dig ftp server: SSL_pending.0 - openSUSE Patch: htdig-SSLConnection.patch - old htdig tree after 3.2.0-b6: third part of "patches from   Jim Cole" (commit f0482c39bc87bd008783fc355f10270bec036210)
+	connections.  Incidentally this change merges: - Patch from ht://Dig ftp server: SSL_pending.0 - openSUSE Patch: htdig-SSLConnection.patch - old htdig tree after 3.2.0-b6: third part of "patches from   Jim Cole"
 
 2017-11-12  andy5995 <andy400-dev@yahoo.com>
 
@@ -719,7 +703,7 @@
 	* .travis.yml: build in more support
 	* [ci skip] create TESTING.md, add links to README
 	* init dbc with malloc
-	* [skip ci] remove .cvsignore
+	* remove .cvsignore
 	* update config
 	* add .xml to bad extension
 	* change default start_url to localhost
@@ -733,7 +717,7 @@
 	* .version: correct permission
 	* add note about building with ssl
 	* grammar
-	* [skip ci] fixing link
+	* fixing link
 	* update README, ChangeLog
 	* reverted back to @roklein 's master branch
 	* applied Debian patch
