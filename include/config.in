@@ -67,9 +67,6 @@
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
-/* 'big-file' environment */
-#undef HAVE_FILE_OFFSET_BITS
-
 /* Define to 1 if you have the <float.h> header file. */
 #undef HAVE_FLOAT_H
 
@@ -96,9 +93,6 @@
 
 /* Define to 1 if you have the <langinfo.h> header file. */
 #undef HAVE_LANGINFO_H
-
-/* large file sources */
-#undef HAVE_LARGEFILE_SOURCE
 
 /* Define to 1 if you have the <libintl.h> header file. */
 #undef HAVE_LIBINTL_H
@@ -434,6 +428,17 @@
 /* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
    `char[]'. */
 #undef YYTEXT_POINTER
+
+/* Enable large inode numbers on Mac OS X 10.5.  */
+#ifndef _DARWIN_USE_64_BIT_INODE
+# define _DARWIN_USE_64_BIT_INODE 1
+#endif
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+#undef _FILE_OFFSET_BITS
+
+/* Define for large files, on AIX-style hosts. */
+#undef _LARGE_FILES
 
 /* Define to 1 if on MINIX. */
 #undef _MINIX

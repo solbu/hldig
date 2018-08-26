@@ -91,9 +91,9 @@ build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = $(top_srcdir)/Makefile.config $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/configure \
-	$(am__configure_deps) mkinstalldirs ABOUT-NLS COPYING INSTALL \
-	compile config.guess config.rpath config.sub install-sh \
-	missing ylwrap ltmain.sh
+	$(am__configure_deps) mkinstalldirs ABOUT-NLS COPYING \
+	ChangeLog INSTALL compile config.guess config.rpath config.sub \
+	install-sh missing ylwrap ltmain.sh
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
