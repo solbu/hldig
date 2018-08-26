@@ -31,8 +31,8 @@ If you are interested in translating the output messages from hldig, please see
 ## Community/Contact
 
 Anyone interested in this project may join the IRC channel -
-[chat.freenode.net / channel: #hldig](http://webchat.freenode.net?channels=%23hldig&uio=d4)
+[chat.freenode.net / channel: #hldig](ircs://irc.freenode.net/hldig)
 
-Project maintainer: Johnny A. Solbu
-Main developer: Andy Alt
+Project maintainer: [Johnny A. Solbu](https://www.solbu.net/)<br>
+Main developer: Andy Alt –
 Email: andy400-dev [at] yahoo.com
