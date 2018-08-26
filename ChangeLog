@@ -1,3 +1,12 @@
+2018-08-26  Johnny A. Solbu <johnny@solbu.net>
+
+	* Image files doesn't need execute permission
+	* Update TESTING.md with current build requirements
+	* Remove non-existant benchmark folder from dist target:
+	  git doesn't track empty folders
+	* Some Makefile.am fixes
+
+
 2018-04-04  Johnny A. Solbu <johnny@solbu.net>
 
 	* Remove broken build test link
