@@ -6,11 +6,8 @@
 # Copyright (c) 2018
 # modified for hldig <https://github.com/solbu/hldig> by Andy Alt
 
-# ----------------------------------------------------------------------------
-# Load shared functions
-#. $SCRIPTDIR/mk/linux/mg_shared.sh
-#detect_system
-# ----------------------------------------------------------------------------
+codename=trusty
+
 Compiler_name="$1"; Compiler_version="$2"
 Compiler_version_grep="$(echo "$Compiler_version" | sed 's/\./\\./g')"
 
@@ -47,12 +44,12 @@ if [ "$Compiler_version" != "" ] && [ "$Compiler_version" != "default" ]; then
 	Gcc_AvSepGpp="$(apt-cache search ^g[c+][c+]-[0-9] | grep -v '[0-9]-[a-zA-Z]' | grep "^g++-$Compiler_version_grep")"
 	set -ex
 	if [ "$Gcc_AvSepGpp" = "" ]; then
-	    sudo apt-get install gcc-${Compiler_version}
+	    sudo apt-get --allow-unauthenticated install -qq --force-yes gcc-${Compiler_version}
 	else
-	    sudo apt-get install gcc-${Compiler_version} g++-${Compiler_version}
+	    sudo apt-get --allow-unauthenticated install -qq --force-yes gcc-${Compiler_version} g++-${Compiler_version}
 	fi
     elif [ "$Compiler_name" = "clang" ]; then
-      sudo apt-get install clang-${Compiler_version}
+	sudo apt-get --allow-unauthenticated install -qq --force-yes clang-${Compiler_version}
     fi
 fi
 
