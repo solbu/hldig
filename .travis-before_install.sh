@@ -49,10 +49,10 @@ if [ "$Compiler_version" != "" ] && [ "$Compiler_version" != "default" ]; then
 	if [ "$Gcc_AvSepGpp" = "" ]; then
 	    sudo apt-get install gcc-${Compiler_version}
 	else
-	    sudo apt-get gcc-${Compiler_version} g++-${Compiler_version}
+	    sudo apt-get install gcc-${Compiler_version} g++-${Compiler_version}
 	fi
     elif [ "$Compiler_name" = "clang" ]; then
-	sudo apt-get clang-${Compiler_version}
+      sudo apt-get install clang-${Compiler_version}
     fi
 fi
 
