@@ -1,3 +1,9 @@
+2018-09-03  Johnny A. Solbu <johnny@solbu.net>
+
+	* Rename htfuzzy as hlfuzzy
+	* Fix compile error on gcc 7, 8, and clang 6
+	* Fix various compile warnings
+
 2018-08-26  Johnny A. Solbu <johnny@solbu.net>
 
 	* Release version 0.2.0
