@@ -388,7 +388,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign no-dependencies
-AM_CPPFLAGS = -pedantic										\
+AM_CPPFLAGS = \
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
