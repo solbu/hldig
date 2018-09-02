@@ -75,7 +75,7 @@ Parsable::addString (Retriever & retriever, char *s, int &wordindex, int slot)
       retriever.got_word (w, wordindex++, slot);        // slot for img_alt
     w = HtWordToken (0);
   }
-  w = '\0';
+  *w = '\0';
 }
 
 //*****************************************************************************
@@ -93,5 +93,5 @@ Parsable::addKeywordString (Retriever & retriever, char *s, int &wordindex)
       retriever.got_word (w, wordindex++, 9);
     w = HtWordToken (0);
   }
-  w = '\0';
+  *w = '\0';
 }
