@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = subdir-objects foreign no-dependencies
 
 bin_PROGRAMS=simplecgen
-AM_CFLAGS=	-Wall -pedantic -std=c99 -g
+AM_CFLAGS=	-Wall -std=c99 -g
 simplecgen_SOURCES=		\
 simplecgen.c	\
 utils.c	\
