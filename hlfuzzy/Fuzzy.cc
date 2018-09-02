@@ -24,7 +24,7 @@
 #include <fcntl.h>
 
 #include "Fuzzy.h"
-#include "htfuzzy.h"
+#include "hlfuzzy.h"
 #include "HtConfiguration.h"
 #include "List.h"
 #include "StringList.h"
@@ -162,18 +162,18 @@ Fuzzy::writeDB ()
 
     if (debug > 1)
     {
-      cout << "htfuzzy: '" << fuzzyKey << "' ==> '" << s->get () << "'\n";
+      cout << "hlfuzzy: '" << fuzzyKey << "' ==> '" << s->get () << "'\n";
     }
     count++;
     if ((count % 100) == 0 && debug == 1)
     {
-      cout << "htfuzzy: keys: " << count << '\n';
+      cout << "hlfuzzy: keys: " << count << '\n';
       cout.flush ();
     }
   }
   if (debug == 1)
   {
-    cout << "htfuzzy:Total keys: " << count << "\n";
+    cout << "hlfuzzy:Total keys: " << count << "\n";
   }
   return OK;
 }

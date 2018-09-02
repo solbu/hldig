@@ -19,7 +19,7 @@
 #include <fcntl.h>
 
 #include "Endings.h"
-#include "htfuzzy.h"
+#include "hlfuzzy.h"
 #include "SuffixEntry.h"
 #include "Dictionary.h"
 #include "List.h"
@@ -86,13 +86,13 @@ Endings::createDB (const HtConfiguration & config)
   root2word << "/root2word.db";
 
   if (debug)
-    cout << "htfuzzy/endings: Reading rules\n";
+    cout << "hlfuzzy/endings: Reading rules\n";
 
   if (readRules (rules, config["endings_affix_file"]) == NOTOK)
     return NOTOK;
 
   if (debug)
-    cout << "htfuzzy/endings: Creating databases\n";
+    cout << "hlfuzzy/endings: Creating databases\n";
 
   if (createRoot (rules, word2root, root2word,
                   config["endings_dictionary"]) == NOTOK)
@@ -249,7 +249,7 @@ Endings::createRoot (Dictionary & rules, char *word2root, char *root2word,
   {
     if ((count % 100) == 0 && debug == 1)
     {
-      cout << "htfuzzy/endings: words: " << count << '\n';
+      cout << "hlfuzzy/endings: words: " << count << '\n';
       cout.flush ();
     }
     count++;
@@ -264,7 +264,7 @@ Endings::createRoot (Dictionary & rules, char *word2root, char *root2word,
     expandWord (words, wordList, rules, word, p);
 
     if (debug > 1)
-      cout << "htfuzzy/endings: " << word << " --> " << words << endl;
+      cout << "hlfuzzy/endings: " << word << " --> " << words << endl;
 
     //
     // Store the root mapped to the list of expanded words.

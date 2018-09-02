@@ -20,7 +20,7 @@
 #include <fcntl.h>
 
 #include "Synonym.h"
-#include "htfuzzy.h"
+#include "hlfuzzy.h"
 #include "List.h"
 #include "StringList.h"
 #include "HtConfiguration.h"
@@ -89,10 +89,10 @@ Synonym::createDB (const HtConfiguration & config)
   fl = fopen (sourceFile, "r");
   if (fl == NULL)
   {
-    cout << "htfuzzy/synonyms: unable to open " << sourceFile << endl;
-    cout << "htfuzzy/synonyms: Use the 'synonym_dictionary' attribute\n";
+    cout << "hlfuzzy/synonyms: unable to open " << sourceFile << endl;
+    cout << "hlfuzzy/synonyms: Use the 'synonym_dictionary' attribute\n";
     cout <<
-      "htfuzzy/synonyms: to specify the file that contains the synonyms\n";
+      "hlfuzzy/synonyms: to specify the file that contains the synonyms\n";
     return NOTOK;
   }
 
@@ -115,7 +115,7 @@ Synonym::createDB (const HtConfiguration & config)
     {                           // Avoid segfault caused by calling Database::Put()
       if (debug)                // with negative length for data field
       {
-        cout << "htfuzzy/synonyms: Rejected line with less than 2 words: "
+        cout << "hlfuzzy/synonyms: Rejected line with less than 2 words: "
           << input << endl;
         cout.flush ();
       }
@@ -135,7 +135,7 @@ Synonym::createDB (const HtConfiguration & config)
       db->Put (word, String (data.get (), data.length () - 1));
       if (debug && (count % 10) == 0)
       {
-        cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
+        cout << "hlfuzzy/synonyms: " << count << ' ' << word << "\n";
         cout.flush ();
       }
       count++;
@@ -164,8 +164,8 @@ Synonym::createDB (const HtConfiguration & config)
 
   if (debug)
   {
-    cout << "htfuzzy/synonyms: " << count << ' ' << word << "\n";
-    cout << "htfuzzy/synonyms: Done.\n";
+    cout << "hlfuzzy/synonyms: " << count << ' ' << word << "\n";
+    cout << "hlfuzzy/synonyms: Done.\n";
   }
 
 #else //This code uses a system call - Phase this out

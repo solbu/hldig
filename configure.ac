@@ -440,7 +440,7 @@ AC_CONFIG_FILES([Makefile
                  installdir/hlnotify.1
                  installdir/hlsearch.1
                  installdir/rundig.1
-                 htfuzzy/Makefile
+                 hlfuzzy/Makefile
                  htlib/Makefile
                  htnet/Makefile
                  hlsearch/Makefile

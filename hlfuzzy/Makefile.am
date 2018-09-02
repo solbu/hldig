@@ -24,11 +24,11 @@ noinst_HEADERS = Accents.h \
 	Substring.h \
 	SuffixEntry.h \
 	Synonym.h \
-	htfuzzy.h
+	hlfuzzy.h
 
-bin_PROGRAMS = htfuzzy
+bin_PROGRAMS = hlfuzzy
 
-htfuzzy_SOURCES = htfuzzy.cc
-htfuzzy_DEPENDENCIES = libfuzzy.la $(HTLIBS)
-htfuzzy_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htfuzzy_LDADD = libfuzzy.la $(HTLIBS)
+hlfuzzy_SOURCES = hlfuzzy.cc
+hlfuzzy_DEPENDENCIES = libfuzzy.la $(HTLIBS)
+hlfuzzy_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hlfuzzy_LDADD = libfuzzy.la $(HTLIBS)

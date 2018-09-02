@@ -6,7 +6,7 @@
 
 RNTBASE = .
 
-LIBDIRS = db htlib htcommon htnet htword htfuzzy
+LIBDIRS = db htlib htcommon htnet htword hlfuzzy
 EXEDIRS = hldig hlsearch httools
 
 MAKE += -f Makefile.win32

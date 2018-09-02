@@ -21,7 +21,7 @@
 
 #include "StringList.h"
 #include "Endings.h"
-#include "htfuzzy.h"
+#include "hlfuzzy.h"
 #include "HtConfiguration.h"
 
 

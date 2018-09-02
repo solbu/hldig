@@ -1,7 +1,7 @@
 //
-// htfuzzy.cc
+// hlfuzzy.cc
 //
-// htfuzzy: Create one or more ``fuzzy'' indexes into the main word database.
+// hlfuzzy: Create one or more ``fuzzy'' indexes into the main word database.
 //          These indexes can be used by htsearch to perform a search that uses
 //          other algorithms than exact word match.
 //
@@ -18,13 +18,13 @@
 // or the GNU Library General Public License (LGPL) version 2 or later
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: htfuzzy.cc,v 1.20 2004/05/28 13:15:20 lha Exp $
+// $Id: hlfuzzy.cc,v 1.20 2004/05/28 13:15:20 lha Exp $
 //
 #ifdef HAVE_CONFIG_H
 #include "htconfig.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "htfuzzy.h"
+#include "hlfuzzy.h"
 #include "Fuzzy.h"
 #include "Accents.h"
 #include "Soundex.h"

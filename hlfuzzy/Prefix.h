@@ -18,7 +18,7 @@
 #define _Prefix_h_
 
 #include "Fuzzy.h"
-#include "htfuzzy.h"
+#include "hlfuzzy.h"
 
 class Dictionary;
 class String;
