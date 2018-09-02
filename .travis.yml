@@ -1,13 +1,43 @@
 language: cpp
 
+sudo: required
+
 matrix:
   include:
     - os: linux
       compiler: gcc
+      env: Tr_Compiler_Version="default"
+    - os: linux
+      compiler: gcc
+      env: Tr_Compiler_Version="5"
+    - os: linux
+      compiler: gcc
+      env: Tr_Compiler_Version="6"
+    - os: linux
+      compiler: gcc
+      env: Tr_Compiler_Version="7"
+    - os: linux
+      compiler: gcc
+      env: Tr_Compiler_Version="8"
+    - os: linux
+# clang
+      compiler: clang
+      env: Tr_Compiler_Version="default"
     - os: linux
       compiler: clang
+      env: Tr_Compiler_Version="6.0"
+# osx
+    - os: osx
+      osx_image: xcode9.2
     - os: osx
       osx_image: xcode9.3beta
+
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then ./.travis-before_install.sh "$CC" "$Tr_Compiler_Version"; fi
+  - if [ "$Tr_Compiler_Version" != "" ] && [ "$Tr_Compiler_Version" != "default" ] && [ "$CC" = "gcc" ]; then export CXX="g++-${Tr_Compiler_Version}" CC="gcc-${Tr_Compiler_Version}"; fi
+  - if [ "$Tr_Compiler_Version" != "" ] && [ "$Tr_Compiler_Version" != "default" ] && [ "$CC" == "clang" ]; then export CXX="clang++-${Tr_Compiler_Version}" CC="clang-${Tr_Compiler_Version}"; fi
+  - $CC --version
+  - $CXX --version
 
 script:
   - cd docs/src
@@ -17,10 +47,6 @@ script:
   - ./configure --prefix=$PWD/tempbuild --with-zlib
   - make
   - make install
-
-branches:
-  only:
-  - master
 
 notifications:
     irc:
