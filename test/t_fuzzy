@@ -48,19 +48,19 @@ set_attr synonym_dictionary "$testdir/synonym_dict"
 set_attr endings_affix_file "$testdir/dummy.affixes"
 set_attr endings_dictionary "$testdir/dummy.stems"
 
-# db.words.db needed by  htfuzzy, so dig before generating fuzzy databases
+# db.words.db needed by  hlfuzzy, so dig before generating fuzzy databases
 #set_attr locale fr
 set_attr extra_word_characters çé
 $htdig "$@" -t -i -c $config
 $htpurge -c $config
 
 # Check that databases can be generated
-$htfuzzy -c $config accents soundex metaphone endings synonyms || fail "Error generating fuzzy database"
+$hlfuzzy -c $config accents soundex metaphone endings synonyms || fail "Error generating fuzzy database"
 
 # Make sure databases put in correct locations
 for database in $databases; do
     if [ ! -f $testdir/var/htdig/test_${database}.db ] ; then
-	fail "htfuzzy didn't recognise ${database}_db attribute"
+	fail "hlfuzzy didn't recognise ${database}_db attribute"
     fi
 done
 

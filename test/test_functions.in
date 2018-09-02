@@ -93,7 +93,7 @@ hlpurge=../hltools/hlpurge
 hlstat=../hltools/hlstat
 hldump=../hltools/hldump
 hlload=../hltools/hlload
-htfuzzy=../htfuzzy/htfuzzy
+hlfuzzy=../hlfuzzy/hlfuzzy
 
 #
 # Default index description used for testing

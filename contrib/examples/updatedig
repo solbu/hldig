@@ -39,7 +39,7 @@ mv /web/webdocs/htdig/db/db.words.gdbm.work /web/webdocs/htdig/db/db.words.gdbm
 #
 if [ ! -f /web/webdocs/htdig/common/word2root.gdbm ]
 then
-    /web/webdocs/htdig/bin/htfuzzy $verbose endings
+    /web/webdocs/htdig/bin/hlfuzzy $verbose endings
 fi
 
 # This next needs to be run if synonyms are added/modified/removed
@@ -48,6 +48,6 @@ fi
 
 if [ ! -f /web/webdocs/htdig/common/synonyms.gdbm ]
 then
-    /web/webdocs/htdig/bin/htfuzzy $verbose synonyms
+    /web/webdocs/htdig/bin/hlfuzzy $verbose synonyms
 fi
 # end updatedig

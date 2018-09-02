@@ -57,7 +57,7 @@ echo rundig: Done Purging: $TIME >> $REPORT
 ##### Cleanup Phase
 # To enable htnotify or the soundex search, uncomment the following lines
 # $BASEDIR/bin/htnotify $verbose >>$REPORT
-# $BASEDIR/bin/htfuzzy $verbose soundex
+# $BASEDIR/bin/hlfuzzy $verbose soundex
 # To get additional statistics, uncomment the following line
 # $BASEDIR/bin/htstat $verbose >>$REPORT
 
