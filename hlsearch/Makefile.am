@@ -3,7 +3,7 @@ include $(top_srcdir)/Makefile.config
 
 bindir = $(CGIBIN_DIR)
 
-LOCAL_DEFINES = -DCONFIG_DIR=\"$(CONFIG_DIR)\" -I$(top_srcdir)/htfuzzy
+LOCAL_DEFINES = -DCONFIG_DIR=\"$(CONFIG_DIR)\" -I$(top_srcdir)/hlfuzzy
 
 bin_PROGRAMS = hlsearch qtest
 
@@ -19,9 +19,9 @@ noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h \
 	OrQuery.h OrQueryParser.h PhraseQuery.h Query.h QueryCache.h \
 	QueryLexer.h QueryParser.h SimpleLexer.h SimpleQueryParser.h \
 	VolatileCache.h
-hlsearch_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
+hlsearch_DEPENDENCIES = $(top_builddir)/hlfuzzy/libfuzzy.la $(HTLIBS)
 hlsearch_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlsearch_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
+hlsearch_LDADD = $(top_builddir)/hlfuzzy/libfuzzy.la $(HTLIBS)
 
 qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc \
 	BooleanLexer.cc BooleanQueryParser.cc ExactWordQuery.cc \
@@ -29,7 +29,7 @@ qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc \
 	OrFuzzyExpander.cc OrQuery.cc PhraseQuery.cc Query.cc \
 	QueryLexer.cc QueryParser.cc SimpleQueryParser.cc VolatileCache.cc \
 	WordSearcher.cc qtest.cc
-qtest_DEPENDENCIES = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
+qtest_DEPENDENCIES = $(top_builddir)/hlfuzzy/libfuzzy.la $(HTLIBS)
 qtest_LDFLAGS = $(PROFILING) ${extra_ldflags}
-qtest_LDADD = $(top_builddir)/htfuzzy/libfuzzy.la $(HTLIBS)
+qtest_LDADD = $(top_builddir)/hlfuzzy/libfuzzy.la $(HTLIBS)
 

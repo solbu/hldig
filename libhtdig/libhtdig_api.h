@@ -50,7 +50,7 @@
 
 #define HTDIG_CUSTOM_TEXT_MIME_TYPE           "text/vnd.customdocument"
 
-//htfuzzy
+//hlfuzzy
 #define  HTDIG_ALG_ACCENTS                  0x00000100  //"accents"
 #define  HTDIG_ALG_ACCENTS_STR              "accents"
 
@@ -392,7 +392,7 @@ int htmerge_index_merge (htmerge_parameters_struct *);
 
 
 /**************************************************
- *   HTDIG_DOCUMENTATION for  htfuzzy_parameters_struct 
+ *   HTDIG_DOCUMENTATION for  hlfuzzy_parameters_struct 
  * 
  *    DEBUGGING PARAMETERS
  *
@@ -423,7 +423,7 @@ int htmerge_index_merge (htmerge_parameters_struct *);
  ***************************************************/
 
 
-typedef struct htfuzzy_parameters_struct
+typedef struct hlfuzzy_parameters_struct
 {
 
   char configFile[HTDIG_MAX_FILENAME_PATH_L];
@@ -435,11 +435,11 @@ typedef struct htfuzzy_parameters_struct
 
   //booelan values
 
-} htfuzzy_parameters_struct;
+} hlfuzzy_parameters_struct;
 
 
-// htfuzzy functions
-int htfuzzy_index (htfuzzy_parameters_struct *);
+// hlfuzzy functions
+int hlfuzzy_index (hlfuzzy_parameters_struct *);
 
 
 

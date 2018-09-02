@@ -4,7 +4,7 @@
 //PHP header file for htdig
 //mirrors 
 
-//htfuzzy
+//hlfuzzy
 
 define(HTDIG_ALG_SOUNDEX_STR,         "soundex");
 define(HTDIG_ALG_METAPHONE_STR,       "metaphone");

@@ -24,7 +24,7 @@
 //  Default value ("" becomes "no default" in .html docs)
 //  Type (boolean, number, integer, string, string list, quoted string list,
 //        pattern list)
-//  Commands using attribute (all, htdig, htsearch, htfuzzy,
+//  Commands using attribute (all, htdig, htsearch, hlfuzzy,
 //        htdump, htload, htnotify, htpurge)
 //  Block (Global, Server, URL)
 //  Versions for which attribute is present
@@ -40,11 +40,11 @@
 ConfigDefaults defaults[] = {
 
   {"accents_db", "${database_base}.accents.db",
-   "string", "htfuzzy htsearch", "", "all", "File Layout",
+   "string", "hlfuzzy htsearch", "", "all", "File Layout",
    "accents_db: ${database_base}.uml.db", " \
   The database file used for the fuzzy \"accents\" search \
   algorithm. This database is created by \
-  <a href=\"htfuzzy.html\">htfuzzy</a> and used by \
+  <a href=\"hlfuzzy.html\">hlfuzzy</a> and used by \
   <a href=\"htsearch.html\" target=\"_top\">htsearch</a>. \
 "}
   ,
@@ -671,34 +671,34 @@ http://www.htdig.org/",
 "}
   ,
   {"endings_affix_file", "${common_dir}/english.aff",
-   "string", "htfuzzy", "", "all", "File Layout",
+   "string", "hlfuzzy", "", "all", "File Layout",
    "endings_affix_file: /var/htdig/affix_rules", " \
   Specifies the location of the file which contains the \
   affix rules used to create the endings search algorithm \
   databases. Consult the documentation on \
-  <a href=\"htfuzzy.html\">htfuzzy</a> for more information on the \
+  <a href=\"hlfuzzy.html\">hlfuzzy</a> for more information on the \
   format of this file. \
 "}
   ,
   {"endings_dictionary", "${common_dir}/english.0",
-   "string", "htfuzzy", "", "all", "File Layout",
+   "string", "hlfuzzy", "", "all", "File Layout",
    "endings_dictionary: /var/htdig/dictionary", " \
   Specifies the location of the file which contains the \
   dictionary used to create the endings search algorithm \
   databases. Consult the documentation on \
-  <a href=\"htfuzzy.html\">htfuzzy</a> for more information on the \
+  <a href=\"hlfuzzy.html\">hlfuzzy</a> for more information on the \
   format of this file. \
 "}
   ,
   {"endings_root2word_db", "${database_dir}/root2word.db",
-   "string", "htfuzzy htsearch", "", "all", "File Layout",
+   "string", "hlfuzzy htsearch", "", "all", "File Layout",
    "endings_root2word_db: /var/htdig/r2w.db", " \
   This attributes specifies the database filename to be \
   used in the 'endings' fuzzy search algorithm. The \
   database maps word roots to all legal words with that \
   root. For more information about this and other fuzzy \
   search algorithms, consult the \
-  <a href=\"htfuzzy.html\">htfuzzy</a> documentation.<br> \
+  <a href=\"hlfuzzy.html\">hlfuzzy</a> documentation.<br> \
   Note that the default value uses the \
   <a href=\"#common_dir\">common_dir</a> attribute instead of the \
   <a href=\"#database_dir\">database_dir</a> attribute. \
@@ -707,13 +707,13 @@ http://www.htdig.org/",
 "}
   ,
   {"endings_word2root_db", "${database_dir}/word2root.db",
-   "string", "htfuzzy htsearch", "", "all", "File Layout",
+   "string", "hlfuzzy htsearch", "", "all", "File Layout",
    "endings_word2root_db: /var/htdig/w2r.bm", " \
   This attributes specifies the database filename to be \
   used in the 'endings' fuzzy search algorithm. The \
   database maps words to their root. For more information \
   about this and other fuzzy search algorithms, consult \
-  the <a href=\"htfuzzy.html\">htfuzzy</a> \
+  the <a href=\"hlfuzzy.html\">hlfuzzy</a> \
   documentation.<br> \
   Note that the default value uses the \
   <a href=\"#common_dir\">common_dir</a> attribute instead of the \
@@ -1715,7 +1715,7 @@ http://www.htdig.org/",
 "}
   ,
   {"maximum_word_length", "32",
-   "integer", "htdig htsearch htfuzzy", "", "3.1.3", "Indexing:What",
+   "integer", "htdig htsearch hlfuzzy", "", "3.1.3", "Indexing:What",
    "maximum_word_length: 15", " \
   This sets the maximum length of words that will be \
   indexed. Words longer than this value will be silently \
@@ -1743,11 +1743,11 @@ http://www.htdig.org/",
 "}
   ,
   {"metaphone_db", "${database_base}.metaphone.db",
-   "string", "htfuzzy htsearch", "", "all", "File Layout",
+   "string", "hlfuzzy htsearch", "", "all", "File Layout",
    "metaphone_db: ${database_base}.mp.db", " \
   The database file used for the fuzzy \"metaphone\" search \
   algorithm. This database is created by \
-  <a href=\"htfuzzy.html\">htfuzzy</a> and used by \
+  <a href=\"hlfuzzy.html\">hlfuzzy</a> and used by \
   <a href=\"htsearch.html\" target=\"_top\">htsearch</a>. \
 "}
   ,
@@ -2184,7 +2184,7 @@ http://www.htdig.org/",
         Uses a slightly modified <a href=\"http://www.sog.org.uk/cig/vol6/605tdrake.pdf\">soundex</a> algorithm to match \
         words. This requires that the soundex database be \
         present. It is generated with the \
-        <a href=\"htfuzzy.html\">htfuzzy</a> program. \
+        <a href=\"hlfuzzy.html\">hlfuzzy</a> program. \
         </dd> \
         <dt> \
         metaphone \
@@ -2194,7 +2194,7 @@ http://www.htdig.org/",
         This algorithm is more specific to the english \
         language than soundex. It requires the metaphone \
         database, which is generated with the <a \
-        href=\"htfuzzy.html\">htfuzzy</a> program. \
+        href=\"hlfuzzy.html\">hlfuzzy</a> program. \
         </dd> \
         <dt> \
         accents \
@@ -2205,7 +2205,7 @@ http://www.htdig.org/",
         as equivalent to their unaccented counterparts. \
         It requires the accents database, which is \
         generated with the <a \
-        href=\"htfuzzy.html\">htfuzzy</a> program. \
+        href=\"hlfuzzy.html\">hlfuzzy</a> program. \
         </dd> \
         <dt> \
         endings \
@@ -2215,8 +2215,8 @@ http://www.htdig.org/",
         to find matches. Each word is first reduced to its \
         word root and then all known legal endings are used \
         for the matching. This algorithm uses two databases \
-        which are generated with <a href=\"htfuzzy.html\"> \
-        htfuzzy</a>. \
+        which are generated with <a href=\"hlfuzzy.html\"> \
+        hlfuzzy</a>. \
         </dd> \
         <dt> \
         synonyms \
@@ -2224,7 +2224,7 @@ http://www.htdig.org/",
         <dd> \
         Performs a dictionary lookup on all the words. This \
         algorithm uses a database generated with the <a \
-        href=\"htfuzzy.html\">htfuzzy</a> program. \
+        href=\"hlfuzzy.html\">hlfuzzy</a> program. \
         </dd> \
       <dt> \
       substring \
@@ -2587,11 +2587,11 @@ http://www.htdig.org/",
 "}
   ,
   {"soundex_db", "${database_base}.soundex.db",
-   "string", "htfuzzy htsearch", "", "all", "File Layout",
+   "string", "hlfuzzy htsearch", "", "all", "File Layout",
    "soundex_db: ${database_base}.snd.db", " \
   The database file used for the fuzzy \"soundex\" search \
   algorithm. This database is created by \
-  <a href=\"htfuzzy.html\">htfuzzy</a> and used by \
+  <a href=\"hlfuzzy.html\">hlfuzzy</a> and used by \
   <a href=\"htsearch.html\" target=\"_top\">htsearch</a>. \
 "}
   ,
@@ -2737,17 +2737,17 @@ http://www.htdig.org/",
 "}
   ,
   {"synonym_db", "${database_dir}/synonyms.db",
-   "string", "htsearch htfuzzy", "", "3.0", "File Layout",
+   "string", "htsearch hlfuzzy", "", "3.0", "File Layout",
    "synonym_db: ${database_base}.syn.db", " \
-  Points to the database that <a href=\"htfuzzy.html\"> \
-  htfuzzy</a> creates when the <strong>synonyms</strong> \
+  Points to the database that <a href=\"hlfuzzy.html\"> \
+  hlfuzzy</a> creates when the <strong>synonyms</strong> \
   algorithm is used.<br> \
   <a href=\"htsearch.html\" target=\"_top\">htsearch</a> \
   uses this to perform synonym dictionary lookups. \
 "}
   ,
   {"synonym_dictionary", "${common_dir}/synonyms",
-   "string", "htfuzzy", "", "3.0", "File Layout",
+   "string", "hlfuzzy", "", "3.0", "File Layout",
    "synonym_dictionary: /usr/dict/synonyms", " \
   This points to a text file containing the synonym \
   dictionary used for the synonyms search algorithm.<br> \

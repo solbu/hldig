@@ -22,7 +22,7 @@
 #include "WeightWord.h"
 #include "parser.h"
 #include "Display.h"
-#include "../htfuzzy/Fuzzy.h"
+#include "../hlfuzzy/Fuzzy.h"
 #include "cgi.h"
 #include "WordRecord.h"
 #include "HtWordList.h"

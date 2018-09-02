@@ -1,6 +1,6 @@
 
 TARGET1  = $(LIBDIR)/libfuzzy$(LIBSFX)
-TARGET2 = $(BINDIR)/htfuzzy$(EXESFX)
+TARGET2 = $(BINDIR)/hlfuzzy$(EXESFX)
 
 # ----------------------------------------------------------------------------
 # add new library members to this list
@@ -15,7 +15,7 @@ CXXSRC = Endings.cc EndingsDB.cc Exact.cc Fuzzy.cc Metaphone.cc \
 
 CPPFLAGS += -DHAVE_CONFIG_H -I. -I../htlib -I../db -I../htcommon -I../htword
 
-OBJS2 = win32/htfuzzy.obj 
+OBJS2 = win32/hlfuzzy.obj 
 
 LDLIBS = ../lib/$(ARCH)/libhtnet.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libcommon.lib ../lib/$(ARCH)/libhtword.lib ../lib/$(ARCH)/libht.lib ../lib/$(ARCH)/libfuzzy.lib ../lib/$(ARCH)/libhtdb.lib 
 OTHERLIBS = ws2_32.lib  L:/win32/lib/zlib114/zlib.lib

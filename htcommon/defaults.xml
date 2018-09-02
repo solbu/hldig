@@ -2,7 +2,7 @@
 <HtdigAttributes>
    <attribute name="accents_db" 
               type="string" 
-              programs="htfuzzy htsearch" 
+              programs="hlfuzzy htsearch" 
               version="all" 
               category="File Layout" >
      <default>${database_base}.accents.db</default>
@@ -10,7 +10,7 @@
      <description> 
 	The database file used for the fuzzy "accents" search 
 	algorithm. This database is created by 
-	<ref type="program">htfuzzy</ref> and used by 
+	<ref type="program">hlfuzzy</ref> and used by 
 	<ref type="program">htsearch</ref>. 
      </description>
    </attribute>
@@ -871,7 +871,7 @@ http://www.htdig.org/</example>
 
    <attribute name="endings_affix_file" 
               type="string" 
-              programs="htfuzzy" 
+              programs="hlfuzzy" 
               version="all" 
               category="File Layout" >
      <default>${common_dir}/english.aff</default>
@@ -880,14 +880,14 @@ http://www.htdig.org/</example>
 	Specifies the location of the file which contains the 
 	affix rules used to create the endings search algorithm 
 	databases. Consult the documentation on 
-	<ref type="program">htfuzzy</ref> for more information on the 
+	<ref type="program">hlfuzzy</ref> for more information on the 
 	format of this file. 
      </description>
    </attribute>
 
    <attribute name="endings_dictionary" 
               type="string" 
-              programs="htfuzzy" 
+              programs="hlfuzzy" 
               version="all" 
               category="File Layout" >
      <default>${common_dir}/english.0</default>
@@ -896,14 +896,14 @@ http://www.htdig.org/</example>
 	Specifies the location of the file which contains the 
 	dictionary used to create the endings search algorithm 
 	databases. Consult the documentation on 
-	<ref type="program">htfuzzy</ref> for more information on the 
+	<ref type="program">hlfuzzy</ref> for more information on the 
 	format of this file. 
      </description>
    </attribute>
 
    <attribute name="endings_root2word_db" 
               type="string" 
-              programs="htfuzzy htsearch" 
+              programs="hlfuzzy htsearch" 
               version="all" 
               category="File Layout" >
      <default>${common_dir}/root2word.db</default>
@@ -914,7 +914,7 @@ http://www.htdig.org/</example>
 	database maps word roots to all legal words with that 
 	root. For more information about this and other fuzzy 
 	search algorithms, consult the 
-	<ref type="program">htfuzzy</ref> documentation.<br/> 
+	<ref type="program">hlfuzzy</ref> documentation.<br/> 
 	Note that the default value uses the 
 	<ref type="attr">common_dir</ref> attribute instead of the 
 	<ref type="attr">database_dir</ref> attribute. 
@@ -925,7 +925,7 @@ http://www.htdig.org/</example>
 
    <attribute name="endings_word2root_db" 
               type="string" 
-              programs="htfuzzy htsearch" 
+              programs="hlfuzzy htsearch" 
               version="all" 
               category="File Layout" >
      <default>${common_dir}/word2root.db</default>
@@ -935,7 +935,7 @@ http://www.htdig.org/</example>
 	used in the 'endings' fuzzy search algorithm. The 
 	database maps words to their root. For more information 
 	about this and other fuzzy search algorithms, consult 
-	the <ref type="program">htfuzzy</ref> 
+	the <ref type="program">hlfuzzy</ref> 
 	documentation.<br/> 
 	Note that the default value uses the 
 	<ref type="attr">common_dir</ref> attribute instead of the 
@@ -2468,7 +2468,7 @@ http://www.htdig.org/</example>
 
    <attribute name="metaphone_db" 
               type="string" 
-              programs="htfuzzy htsearch" 
+              programs="hlfuzzy htsearch" 
               version="all" 
               category="File Layout" >
      <default>${database_base}.metaphone.db</default>
@@ -2476,7 +2476,7 @@ http://www.htdig.org/</example>
      <description> 
 	The database file used for the fuzzy "metaphone" search 
 	algorithm. This database is created by 
-	<ref type="program">htfuzzy</ref> and used by 
+	<ref type="program">hlfuzzy</ref> and used by 
 	<ref type="program">htsearch</ref>. 
      </description>
    </attribute>
@@ -3092,7 +3092,7 @@ http://www.htdig.org/</example>
 				Uses a slightly modified soundex algorithm to match 
 				words. This requires that the soundex database be 
 				present. It is generated with the 
-				<ref type="program">htfuzzy</ref> program. 
+				<ref type="program">hlfuzzy</ref> program. 
 			  </dd> 
 			  <dt> 
 				metaphone 
@@ -3101,7 +3101,7 @@ http://www.htdig.org/</example>
 				Uses the metaphone algorithm for matching words. 
 				This algorithm is more specific to the english 
 				language than soundex. It requires the metaphone 
-				database, which is generated with the <ref type="program">htfuzzy</ref> program. 
+				database, which is generated with the <ref type="program">hlfuzzy</ref> program. 
 			  </dd> 
 			  <dt> 
 				accents 
@@ -3111,7 +3111,7 @@ http://www.htdig.org/</example>
 				This algorithm will treat all accented letters 
 				as equivalent to their unaccented counterparts. 
 				It requires the accents database, which is 
-				generated with the <ref type="program">htfuzzy</ref> program. 
+				generated with the <ref type="program">hlfuzzy</ref> program. 
 			  </dd> 
 			  <dt> 
 				endings 
@@ -3121,14 +3121,14 @@ http://www.htdig.org/</example>
 				to find matches. Each word is first reduced to its 
 				word root and then all known legal endings are used 
 				for the matching. This algorithm uses two databases 
-				which are generated with <ref type="program">htfuzzy</ref>. 
+				which are generated with <ref type="program">hlfuzzy</ref>. 
 			  </dd> 
 			  <dt> 
 				synonyms 
 			  </dt> 
 			  <dd> 
 				Performs a dictionary lookup on all the words. This 
-				algorithm uses a database generated with the <ref type="program">htfuzzy</ref> program. 
+				algorithm uses a database generated with the <ref type="program">hlfuzzy</ref> program. 
 			  </dd> 
 			<dt> 
 			substring 
@@ -3543,7 +3543,7 @@ http://www.htdig.org/</example>
 
    <attribute name="soundex_db" 
               type="string" 
-              programs="htfuzzy htsearch" 
+              programs="hlfuzzy htsearch" 
               version="all" 
               category="File Layout" >
      <default>${database_base}.soundex.db</default>
@@ -3551,7 +3551,7 @@ http://www.htdig.org/</example>
      <description> 
 	The database file used for the fuzzy "soundex" search 
 	algorithm. This database is created by 
-	<ref type="program">htfuzzy</ref> and used by 
+	<ref type="program">hlfuzzy</ref> and used by 
 	<ref type="program">htsearch</ref>. 
      </description>
    </attribute>
@@ -3749,13 +3749,13 @@ http://www.htdig.org/</example>
 
    <attribute name="synonym_db" 
               type="string" 
-              programs="htsearch htfuzzy" 
+              programs="htsearch hlfuzzy" 
               version="3.0" 
               category="File Layout" >
      <default>${common_dir}/synonyms.db</default>
      <example>${database_base}.syn.db</example>
      <description> 
-	Points to the database that <ref type="program">htfuzzy</ref> creates when the <strong>synonyms</strong> 
+	Points to the database that <ref type="program">hlfuzzy</ref> creates when the <strong>synonyms</strong> 
 	algorithm is used.<br/> 
 	<ref type="program">htsearch</ref> 
 	uses this to perform synonym dictionary lookups. 
@@ -3764,7 +3764,7 @@ http://www.htdig.org/</example>
 
    <attribute name="synonym_dictionary" 
               type="string" 
-              programs="htfuzzy" 
+              programs="hlfuzzy" 
               version="3.0" 
               category="File Layout" >
      <default>${common_dir}/synonyms</default>

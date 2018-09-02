@@ -1,14 +1,14 @@
 //----------------------------------------------------------------
 //
-// libhtdig_htfuzzy.cc
+// libhtdig_hlfuzzy.cc
 //
-// 1/25/2002 created from htfuzzy.cc
+// 1/25/2002 created from hlfuzzy.cc
 //
 // Neal Richter nealr@rightnow.com
 //
-// libhtdig_htfuzzy.cc
+// libhtdig_hlfuzzy.cc
 //
-// htfuzzy: Create one or more ``fuzzy'' indexes into the main word database.
+// hlfuzzy: Create one or more ``fuzzy'' indexes into the main word database.
 //          These indexes can be used by htsearch to perform a search that uses
 //          other algorithms than exact word match.
 //
@@ -25,7 +25,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: libhtdig_htfuzzy.cc,v 1.5 2004/05/28 13:15:29 lha Exp $
+// $Id: libhtdig_hlfuzzy.cc,v 1.5 2004/05/28 13:15:29 lha Exp $
 //
 //----------------------------------------------------------------
 
@@ -41,7 +41,7 @@ extern "C"
 #include "libhtdig_log.h"
 
 
-//#include "htfuzzy.h"  //NOT USED
+//#include "hlfuzzy.h"  //NOT USED
 
 #include "Fuzzy.h"
 #include "Accents.h"
@@ -94,7 +94,7 @@ static HtConfiguration *config = NULL;
 //int main(int ac, char **av)
 
 int
-htfuzzy_index (htfuzzy_parameters_struct * htfuzzy_parms)
+hlfuzzy_index (hlfuzzy_parameters_struct * hlfuzzy_parms)
 {
   String configFile = DEFAULT_CONFIG_FILE;
   int ret = 0;
@@ -103,20 +103,20 @@ htfuzzy_index (htfuzzy_parameters_struct * htfuzzy_parms)
   // Parse command line arguments
   //
 
-  debug = htfuzzy_parms->debug;
+  debug = hlfuzzy_parms->debug;
   if (debug != 0)
   {
-    ret = logOpen (htfuzzy_parms->logFile);
+    ret = logOpen (hlfuzzy_parms->logFile);
 
     if (ret == FALSE)
     {
       fprintf (stderr, "htdig: Error opening file [%s]. Error:[%d], %s\n",
-               htfuzzy_parms->logFile, errno, strerror (errno));
+               hlfuzzy_parms->logFile, errno, strerror (errno));
     }
   }
 
 
-  configFile = htfuzzy_parms->configFile;
+  configFile = hlfuzzy_parms->configFile;
 
   config = HtConfiguration::config ();
 
@@ -126,23 +126,23 @@ htfuzzy_index (htfuzzy_parameters_struct * htfuzzy_parms)
   List wordAlgorithms;
   List noWordAlgorithms;
 
-  if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_SOUNDEX)
+  if (hlfuzzy_parms->algorithms_flag & HTDIG_ALG_SOUNDEX)
   {
     wordAlgorithms.Add (new Soundex (*config));
   }
-  else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_METAPHONE)
+  else if (hlfuzzy_parms->algorithms_flag & HTDIG_ALG_METAPHONE)
   {
     wordAlgorithms.Add (new Metaphone (*config));
   }
-  else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_ACCENTS)
+  else if (hlfuzzy_parms->algorithms_flag & HTDIG_ALG_ACCENTS)
   {
     wordAlgorithms.Add (new Accents (*config));
   }
-  else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_ENDINGS)
+  else if (hlfuzzy_parms->algorithms_flag & HTDIG_ALG_ENDINGS)
   {
     noWordAlgorithms.Add (new Endings (*config));
   }
-  else if (htfuzzy_parms->algorithms_flag & HTDIG_ALG_SYNONYMS)
+  else if (hlfuzzy_parms->algorithms_flag & HTDIG_ALG_SYNONYMS)
   {
     noWordAlgorithms.Add (new Synonym (*config));
   }
@@ -150,7 +150,7 @@ htfuzzy_index (htfuzzy_parameters_struct * htfuzzy_parms)
 
   if (wordAlgorithms.Count () == 0 && noWordAlgorithms.Count () == 0)
   {
-    logEntry (form ("htfuzzy: No algorithms specified\n"));
+    logEntry (form ("hlfuzzy: No algorithms specified\n"));
   }
 
   //
@@ -198,13 +198,13 @@ htfuzzy_index (htfuzzy_parameters_struct * htfuzzy_parms)
         count++;
         if ((count % 100) == 0 && debug)
         {
-          //cout << "htfuzzy: words: " << count << '\n';
+          //cout << "hlfuzzy: words: " << count << '\n';
         }
       }
       if (debug)
       {
-        logEntry (form ("htfuzzy: total words: %d\n", count));
-        logEntry (form ("htfuzzy: Writing index files...\n"));
+        logEntry (form ("hlfuzzy: total words: %d\n", count));
+        logEntry (form ("hlfuzzy: Writing index files...\n"));
       }
 
       //
@@ -225,7 +225,7 @@ htfuzzy_index (htfuzzy_parameters_struct * htfuzzy_parms)
     else
     {
       reportError (form
-                   ("[htfuzzy] Unable to open word database %s",
+                   ("[hlfuzzy] Unable to open word database %s",
                     config->Find ("word_db").get ()));
     }
   }
@@ -237,12 +237,12 @@ htfuzzy_index (htfuzzy_parameters_struct * htfuzzy_parms)
       if (debug)
       {
         logEntry (form
-                  ("htfuzzy: Selected algorithm: %s\n", fuzzy->getName ()));
+                  ("hlfuzzy: Selected algorithm: %s\n", fuzzy->getName ()));
       }
       if (fuzzy->createDB (*config) == NOTOK)
       {
         logEntry (form
-                  ("htfuzzy: Could not create database for algorithm: %s\n",
+                  ("hlfuzzy: Could not create database for algorithm: %s\n",
                    fuzzy->getName ()));
       }
     }
@@ -250,7 +250,7 @@ htfuzzy_index (htfuzzy_parameters_struct * htfuzzy_parms)
 
   if (debug)
   {
-    logEntry ("htfuzzy: Done.\n");
+    logEntry ("hlfuzzy: Done.\n");
   }
 
   if (debug != 0)
@@ -259,8 +259,8 @@ htfuzzy_index (htfuzzy_parameters_struct * htfuzzy_parms)
 
     if (ret == FALSE)
     {
-      fprintf (stderr, "htfuzzy: Error closing file [%s]. Error:[%d], %s\n",
-               htfuzzy_parms->logFile, errno, strerror (errno));
+      fprintf (stderr, "hlfuzzy: Error closing file [%s]. Error:[%d], %s\n",
+               hlfuzzy_parms->logFile, errno, strerror (errno));
     }
   }
 

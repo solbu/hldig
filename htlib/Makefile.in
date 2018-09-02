@@ -86,8 +86,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = $(top_srcdir)/Makefile.config $(srcdir)/Makefile.in \
-	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs malloc.c \
-	vsnprintf.c regex.c memcmp.c snprintf.c realloc.c \
+	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs memcmp.c \
+	vsnprintf.c snprintf.c malloc.c regex.c realloc.c \
 	$(pkginclude_HEADERS)
 subdir = htlib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4

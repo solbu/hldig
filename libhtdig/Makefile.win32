@@ -64,7 +64,7 @@ HTNET_CXX_OBJS += Connection.obj Transport.obj HtHTTP.obj HtFile.obj HtNNTP.obj 
 #htdig c++ files
 HTDIG_CXX_OBJS += Document.obj ExternalTransport.obj Parsable.obj Retriever.obj URLRef.obj ExternalParser.obj HTML.obj Plaintext.obj Server.obj
 
-#htfuzzy c++ files
+#hlfuzzy c++ files
 HTFUZZY_CXX_OBJS += Accents.obj EndingsDB.obj Fuzzy.obj Prefix.obj Soundex.obj Substring.obj Synonym.obj Endings.obj Exact.obj Metaphone.obj Regexp.obj Speling.obj SuffixEntry.obj 
 
 #HTFUZZY_C_OBJS += filecopy.o
@@ -73,7 +73,7 @@ HTFUZZY_CXX_OBJS += Accents.obj EndingsDB.obj Fuzzy.obj Prefix.obj Soundex.obj S
 HTSEARCH_CXX_OBJS += Collection.obj DocMatch.obj  ResultList.obj SplitMatches.obj TemplateList.obj Display.obj  HtURLSeedScore.obj ResultMatch.obj Template.obj WeightWord.obj parser.obj
 
 #libhtdig c++ files
-LIBHTDIG_CXX_OBJS += ResultFetch.obj BasicDocument.obj TextCollector.obj libhtdig_htdig.obj libhtdig_htmerge.obj libhtdig_htfuzzy.obj libhtdig_log.obj libhtdig_htsearch.obj
+LIBHTDIG_CXX_OBJS += ResultFetch.obj BasicDocument.obj TextCollector.obj libhtdig_htdig.obj libhtdig_htmerge.obj libhtdig_hlfuzzy.obj libhtdig_log.obj libhtdig_htsearch.obj
 
 #htcommon lex & yacc targets
 LIBHTDIG_CXX_OBJS += conf_lexer.obj conf_parser.obj
@@ -96,7 +96,7 @@ OTHERLIBS =  L:/win32/lib/zlib114/zlib.lib ws2_32.lib
 CMNDLLS = 
 
 CPPFLAGS += -DHAVE_CONFIG_H -I. -I../include -I../htlib -I../htcommon -I../htword \
-        -I../db -I../htnet -I../htsearch -I../htdig -I../htfuzzy
+        -I../db -I../htnet -I../htsearch -I../htdig -I../hlfuzzy
 
 CFLAGS += $(CPPFLAGS)
 
@@ -139,10 +139,10 @@ $(HTNET_CXX_OBJS): %.obj: ../htnet/%.cc
 $(HTDIG_CXX_OBJS): %.obj: ../htdig/%.cc
 	$(CC) $(CFLAGS) $(OPTS) $(DBG) /TP -c $< 
 
-$(HTFUZZY_C_OBJS): %.obj: ../htfuzzy/%.c
+$(HTFUZZY_C_OBJS): %.obj: ../hlfuzzy/%.c
 	$(CC) $(CFLAGS) $(OPTS) $(DBG) /TC -c $< 
 
-$(HTFUZZY_CXX_OBJS): %.obj: ../htfuzzy/%.cc
+$(HTFUZZY_CXX_OBJS): %.obj: ../hlfuzzy/%.cc
 	$(CC) $(CFLAGS) $(OPTS) $(DBG) /TP -c $< 
 
 $(HTSEARCH_CXX_OBJS): %.obj: ../htsearch/%.cc
