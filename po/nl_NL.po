@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hldig 0.1.01\n"
 "Report-Msgid-Bugs-To: https://github.com/solbu/hldig/issues\n"
-"POT-Creation-Date: 2018-04-02 14:03+0200\n"
+"POT-Creation-Date: 2018-09-02 23:50+0200\n"
 "PO-Revision-Date: 2017-12-29 11:13+0100\n"
 "Last-Translator: Martijn de Boer <translations@sexybiggetje.nl>\n"
 "Language-Team: \n"
@@ -224,7 +224,7 @@ msgstr ""
 msgid " server"
 msgstr ""
 
-#: htfuzzy/htfuzzy.cc:115
+#: hlfuzzy/hlfuzzy.cc:115
 #, c-format
 msgid "'%s' is not a supported algorithm"
 msgstr ""
@@ -410,7 +410,7 @@ msgstr ""
 
 #: hldig/hldig.cc:490 hlsearch/hlsearch.cc:978 hltools/hldump.cc:186
 #: hltools/hlload.cc:181 hltools/hlmerge.cc:390 hltools/hlnotify.cc:567
-#: hltools/hlpurge.cc:391 hltools/hlstat.cc:183 htfuzzy/htfuzzy.cc:244
+#: hltools/hlpurge.cc:391 hltools/hlstat.cc:183 hlfuzzy/hlfuzzy.cc:244
 msgid "Options:\n"
 msgstr "Opties:\n"
 
@@ -438,7 +438,7 @@ msgstr ""
 msgid "Subject: Web page expiry ("
 msgstr ""
 
-#: htfuzzy/htfuzzy.cc:236
+#: hlfuzzy/hlfuzzy.cc:236
 msgid "Supported algorithms:\n"
 msgstr ""
 
@@ -448,7 +448,7 @@ msgstr ""
 
 #: hldig/hldig.cc:489 hlsearch/hlsearch.cc:977 hltools/hldump.cc:185
 #: hltools/hlload.cc:180 hltools/hlmerge.cc:389 hltools/hlnotify.cc:563
-#: hltools/hlpurge.cc:390 hltools/hlstat.cc:182 htfuzzy/htfuzzy.cc:235
+#: hltools/hlpurge.cc:390 hltools/hlstat.cc:182 hlfuzzy/hlfuzzy.cc:235
 #, fuzzy, c-format
 #| msgid ""
 #| "usage: htdump [-v][-d][-w][-a][-c configfile]\n"
@@ -484,7 +484,7 @@ msgstr "Kan configuratie bestand niet vinden '%s'"
 
 #: hldig/hldig.cc:158 hltools/hlload.cc:90 hltools/hlmerge.cc:123
 #: hltools/hlmerge.cc:143 hltools/hlpurge.cc:91 hltools/hlstat.cc:83
-#: htfuzzy/htfuzzy.cc:131
+#: hlfuzzy/hlfuzzy.cc:131
 #, c-format
 msgid "Unable to find configuration file '%s'"
 msgstr "Kan configuratie bestand niet vinden '%s'"
@@ -512,7 +512,7 @@ msgstr "Kan cookies bestand '%s' niet in het geheugen laden"
 msgid "Unable to open document index '%s'"
 msgstr "Kan cookies bestand '%s' niet in het geheugen laden"
 
-#: htfuzzy/htfuzzy.cc:196
+#: hlfuzzy/hlfuzzy.cc:196
 #, c-format
 msgid "Unable to open word database %s"
 msgstr ""
@@ -601,27 +601,27 @@ msgstr "hldig Eind Tijd: "
 msgid "hldig Start Time: "
 msgstr "hldig Start Tijd: "
 
-#: htfuzzy/htfuzzy.cc:211
+#: hlfuzzy/hlfuzzy.cc:211
 msgid "hlfuzzy: Could not create database for algorithm: "
 msgstr ""
 
-#: htfuzzy/htfuzzy.cc:219
+#: hlfuzzy/hlfuzzy.cc:219
 msgid "hlfuzzy: Done.\n"
 msgstr ""
 
-#: htfuzzy/htfuzzy.cc:121
+#: hlfuzzy/hlfuzzy.cc:121
 msgid "hlfuzzy: No algorithms specified\n"
 msgstr ""
 
-#: htfuzzy/htfuzzy.cc:206
+#: hlfuzzy/hlfuzzy.cc:206
 msgid "hlfuzzy: Selected algorithm: "
 msgstr ""
 
-#: htfuzzy/htfuzzy.cc:176
+#: hlfuzzy/hlfuzzy.cc:176
 msgid "hlfuzzy: Writing index files...\n"
 msgstr ""
 
-#: htfuzzy/htfuzzy.cc:175
+#: hlfuzzy/hlfuzzy.cc:175
 msgid "hlfuzzy: total words: "
 msgstr ""
 
@@ -655,7 +655,7 @@ msgstr ""
 
 #: hldig/hldig.cc:487 hlsearch/hlsearch.cc:975 hltools/hldump.cc:183
 #: hltools/hlload.cc:178 hltools/hlmerge.cc:387 hltools/hlnotify.cc:561
-#: hltools/hlpurge.cc:388 hltools/hlstat.cc:180 htfuzzy/htfuzzy.cc:233
+#: hltools/hlpurge.cc:388 hltools/hlstat.cc:180 hlfuzzy/hlfuzzy.cc:233
 msgid "usage:"
 msgstr ""
 

@@ -13,4 +13,4 @@ hltools/hlmerge.cc
 hltools/hlnotify.cc
 hltools/hlpurge.cc
 hltools/hlstat.cc
-htfuzzy/htfuzzy.cc
+hlfuzzy/hlfuzzy.cc

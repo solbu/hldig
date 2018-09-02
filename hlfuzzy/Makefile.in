@@ -89,8 +89,8 @@ host_triplet = @host@
 DIST_COMMON = $(top_srcdir)/Makefile.config $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs \
 	$(noinst_HEADERS)
-bin_PROGRAMS = htfuzzy$(EXEEXT)
-subdir = htfuzzy
+bin_PROGRAMS = hlfuzzy$(EXEEXT)
+subdir = hlfuzzy
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
@@ -149,11 +149,11 @@ libfuzzy_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libfuzzy_la_LDFLAGS) $(LDFLAGS) -o $@
 PROGRAMS = $(bin_PROGRAMS)
-am_htfuzzy_OBJECTS = htfuzzy.$(OBJEXT)
-htfuzzy_OBJECTS = $(am_htfuzzy_OBJECTS)
-htfuzzy_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+am_hlfuzzy_OBJECTS = hlfuzzy.$(OBJEXT)
+hlfuzzy_OBJECTS = $(am_hlfuzzy_OBJECTS)
+hlfuzzy_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htfuzzy_LDFLAGS) $(LDFLAGS) -o $@
+	$(CXXFLAGS) $(hlfuzzy_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -187,8 +187,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libfuzzy_la_SOURCES) $(htfuzzy_SOURCES)
-DIST_SOURCES = $(libfuzzy_la_SOURCES) $(htfuzzy_SOURCES)
+SOURCES = $(libfuzzy_la_SOURCES) $(hlfuzzy_SOURCES)
+DIST_SOURCES = $(libfuzzy_la_SOURCES) $(hlfuzzy_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -424,12 +424,12 @@ noinst_HEADERS = Accents.h \
 	Substring.h \
 	SuffixEntry.h \
 	Synonym.h \
-	htfuzzy.h
+	hlfuzzy.h
 
-htfuzzy_SOURCES = htfuzzy.cc
-htfuzzy_DEPENDENCIES = libfuzzy.la $(HTLIBS)
-htfuzzy_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htfuzzy_LDADD = libfuzzy.la $(HTLIBS)
+hlfuzzy_SOURCES = hlfuzzy.cc
+hlfuzzy_DEPENDENCIES = libfuzzy.la $(HTLIBS)
+hlfuzzy_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hlfuzzy_LDADD = libfuzzy.la $(HTLIBS)
 all: all-am
 
 .SUFFIXES:
@@ -443,9 +443,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign htfuzzy/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign hlfuzzy/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign htfuzzy/Makefile
+	  $(AUTOMAKE) --foreign hlfuzzy/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -553,9 +553,9 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
-htfuzzy$(EXEEXT): $(htfuzzy_OBJECTS) $(htfuzzy_DEPENDENCIES) $(EXTRA_htfuzzy_DEPENDENCIES) 
-	@rm -f htfuzzy$(EXEEXT)
-	$(AM_V_CXXLD)$(htfuzzy_LINK) $(htfuzzy_OBJECTS) $(htfuzzy_LDADD) $(LIBS)
+hlfuzzy$(EXEEXT): $(hlfuzzy_OBJECTS) $(hlfuzzy_DEPENDENCIES) $(EXTRA_hlfuzzy_DEPENDENCIES) 
+	@rm -f hlfuzzy$(EXEEXT)
+	$(AM_V_CXXLD)$(hlfuzzy_LINK) $(hlfuzzy_OBJECTS) $(hlfuzzy_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

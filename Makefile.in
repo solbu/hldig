@@ -170,7 +170,7 @@ am__define_uniq_tagged_files = \
 ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
-DIST_SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb hldig \
+DIST_SUBDIRS = db htlib htword htcommon htnet hlfuzzy htdb hldig \
 	hlsearch hltools installdir include test po
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 top_distdir = $(distdir)
@@ -406,7 +406,7 @@ LDADD = $(HTLIBS) @LIBINTL@
 
 # process the Makefile.am files in these directories. the po directory
 # is a little # different because of a rule near the end of configure.ac
-SUBDIRS = db htlib htword htcommon htnet htfuzzy htdb hldig hlsearch	\
+SUBDIRS = db htlib htword htcommon htnet hlfuzzy htdb hldig hlsearch	\
 hltools installdir include $(TESTDIR) po
 
 
