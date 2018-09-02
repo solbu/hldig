@@ -13,6 +13,7 @@
 /*******************************************************
  * General includes.
  *******************************************************/
+#include <stdint.h>
 #include "db.h"
 
 #ifndef _MSC_VER                /* WIN32 */
@@ -85,10 +86,10 @@
  * an array.
  */
 #undef  SSZ
-#define SSZ(name, field)  ((int)&(((name *)0)->field))
+#define SSZ(name, field)  ((intptr_t)&(((name *)0)->field))
 
 #undef  SSZA
-#define SSZA(name, field)  ((int)&(((name *)0)->field[0]))
+#define SSZA(name, field)  ((intptr_t)&(((name *)0)->field[0]))
 
 /* Structure used to print flag values. */
 typedef struct __fn
