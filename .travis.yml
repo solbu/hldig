@@ -20,11 +20,15 @@ matrix:
       compiler: gcc
       env: Tr_Compiler_Version="8"
     - os: linux
+# clang
       compiler: clang
       env: Tr_Compiler_Version="default"
     - os: linux
       compiler: clang
       env: Tr_Compiler_Version="6.0"
+# osx
+    - os: osx
+      osx_image: xcode9.2
     - os: osx
       osx_image: xcode9.3beta
 
