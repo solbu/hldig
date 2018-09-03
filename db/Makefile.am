@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/../htlib
+AM_CPPFLAGS = -I$(top_srcdir)/../hllib
 
 AUTOMAKE_OPTIONS = foreign no-dependencies
 
@@ -9,9 +9,9 @@ EXTRA_DIST = db_config.h.in db.h.in \
 
 ACLOCAL_AMFLAGS = -I m4
 
-pkglib_LTLIBRARIES = libhtdb.la
+pkglib_LTLIBRARIES = libhldb.la
 
-libhtdb_la_SOURCES = \
+libhldb_la_SOURCES = \
 	bt_compare.c \
 	bt_conv.c \
 	bt_curadj.c \
@@ -139,7 +139,7 @@ libhtdb_la_SOURCES = \
 	xa_db.c \
 	xa_map.c
 
-libhtdb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
+libhldb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 
 pkginclude_HEADERS = \
 	btree.h \

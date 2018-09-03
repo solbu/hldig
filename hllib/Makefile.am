@@ -1,8 +1,8 @@
 include $(top_srcdir)/Makefile.config
 
-pkglib_LTLIBRARIES = libht.la
+pkglib_LTLIBRARIES = libhl.la
 
-libht_la_SOURCES = \
+libhl_la_SOURCES = \
 	Configuration.cc \
 	Database.cc \
 	DB2_db.cc \
@@ -45,10 +45,10 @@ libht_la_SOURCES = \
 	strptime.cc \
 	timegm.c
 
-libht_la_LIBADD=@LTLIBOBJS@
+libhl_la_LIBADD=@LTLIBOBJS@
 # this includes regex.c
 
-libht_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
+libhl_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
 
 pkginclude_HEADERS = \
 	ber.h \

@@ -6,31 +6,31 @@ LOCAL_DEFINES=  -DSENDMAIL=\"$(SENDMAIL)\"
 bin_PROGRAMS = hlpurge hlnotify hldump hlstat hlload hlmerge
 
 hlpurge_SOURCES = hlpurge.cc
-hlpurge_DEPENDENCIES = $(HTLIBS)
+hlpurge_DEPENDENCIES = $(HLLIBS)
 hlpurge_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlpurge_LDADD = $(HTLIBS)
+hlpurge_LDADD = $(HLLIBS)
 
 hlnotify_SOURCES = hlnotify.cc
-hlnotify_DEPENDENCIES = $(HTLIBS)
+hlnotify_DEPENDENCIES = $(HLLIBS)
 hlnotify_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlnotify_LDADD = $(HTLIBS)
+hlnotify_LDADD = $(HLLIBS)
 
 hldump_SOURCES = hldump.cc
-hldump_DEPENDENCIES = $(HTLIBS)
+hldump_DEPENDENCIES = $(HLLIBS)
 hldump_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hldump_LDADD = $(HTLIBS)
+hldump_LDADD = $(HLLIBS)
 
 hlstat_SOURCES = hlstat.cc
-hlstat_DEPENDENCIES = $(HTLIBS)
+hlstat_DEPENDENCIES = $(HLLIBS)
 hlstat_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlstat_LDADD = $(HTLIBS)
+hlstat_LDADD = $(HLLIBS)
 
 hlload_SOURCES = hlload.cc
-hlload_DEPENDENCIES = $(HTLIBS)
+hlload_DEPENDENCIES = $(HLLIBS)
 hlload_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlload_LDADD = $(HTLIBS)
+hlload_LDADD = $(HLLIBS)
 
 hlmerge_SOURCES = hlmerge.cc
-hlmerge_DEPENDENCIES = $(HTLIBS)
+hlmerge_DEPENDENCIES = $(HLLIBS)
 hlmerge_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlmerge_LDADD = $(HTLIBS)
+hlmerge_LDADD = $(HLLIBS)
