@@ -378,45 +378,45 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign no-dependencies
 AM_CPPFLAGS = \
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
-		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
+		-I$(top_srcdir)/include -I$(top_srcdir)/hllib \
 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
 		-I$(top_srcdir)/htword \
 		-I$(top_srcdir)/db -I$(top_builddir)/db \
 		$(LOCAL_DEFINES) $(PROFILING) \
 		-DLOCALEDIR=\"$(localedir)\"
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la \
+HLLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
 		$(top_builddir)/htword/libhtword.la \
-		$(top_builddir)/htlib/libht.la \
-		$(top_builddir)/db/libhtdb.la
+		$(top_builddir)/hllib/libhl.la \
+		$(top_builddir)/db/libhldb.la
 
-LDADD = $(HTLIBS) @LIBINTL@
+LDADD = $(HLLIBS) @LIBINTL@
 LOCAL_DEFINES = -DSENDMAIL=\"$(SENDMAIL)\"
 hlpurge_SOURCES = hlpurge.cc
-hlpurge_DEPENDENCIES = $(HTLIBS)
+hlpurge_DEPENDENCIES = $(HLLIBS)
 hlpurge_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlpurge_LDADD = $(HTLIBS)
+hlpurge_LDADD = $(HLLIBS)
 hlnotify_SOURCES = hlnotify.cc
-hlnotify_DEPENDENCIES = $(HTLIBS)
+hlnotify_DEPENDENCIES = $(HLLIBS)
 hlnotify_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlnotify_LDADD = $(HTLIBS)
+hlnotify_LDADD = $(HLLIBS)
 hldump_SOURCES = hldump.cc
-hldump_DEPENDENCIES = $(HTLIBS)
+hldump_DEPENDENCIES = $(HLLIBS)
 hldump_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hldump_LDADD = $(HTLIBS)
+hldump_LDADD = $(HLLIBS)
 hlstat_SOURCES = hlstat.cc
-hlstat_DEPENDENCIES = $(HTLIBS)
+hlstat_DEPENDENCIES = $(HLLIBS)
 hlstat_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlstat_LDADD = $(HTLIBS)
+hlstat_LDADD = $(HLLIBS)
 hlload_SOURCES = hlload.cc
-hlload_DEPENDENCIES = $(HTLIBS)
+hlload_DEPENDENCIES = $(HLLIBS)
 hlload_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlload_LDADD = $(HTLIBS)
+hlload_LDADD = $(HLLIBS)
 hlmerge_SOURCES = hlmerge.cc
-hlmerge_DEPENDENCIES = $(HTLIBS)
+hlmerge_DEPENDENCIES = $(HLLIBS)
 hlmerge_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlmerge_LDADD = $(HTLIBS)
+hlmerge_LDADD = $(HLLIBS)
 all: all-am
 
 .SUFFIXES:

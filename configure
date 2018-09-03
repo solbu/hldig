@@ -596,7 +596,7 @@ PACKAGE_BUGREPORT='https://github.com/solbu/hldig/issues/'
 PACKAGE_URL=''https://github.com/solbu/hldig/''
 
 ac_unique_file="hldig/hldig.cc"
-ac_config_libobj_dir=htlib
+ac_config_libobj_dir=hllib
 ac_default_prefix=/opt/www
 # Factoring default headers for most tests.
 ac_includes_default="\
@@ -22097,7 +22097,7 @@ if test $WITH_RX = no; then
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if we should use the included regex?" >&5
 $as_echo_n "checking if we should use the included regex?... " >&6; }
  OLD_CFLAGS=$CFLAGS
- CFLAGS="$CFLAGS -I${srcdir}/htlib"
+ CFLAGS="$CFLAGS -I${srcdir}/hllib"
 
 if test "$cross_compiling" = yes; then :
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: unknown" >&5
@@ -22108,7 +22108,7 @@ else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-#include "${srcdir}/htlib/regex.c"
+#include "${srcdir}/hllib/regex.c"
 int main() {
     regex_t re;
     return regcomp(&re, "ht.*Dig", REG_ICASE);
@@ -22577,7 +22577,7 @@ while echo $VERSION | grep '\$' >/dev/null ; do
   eval "VERSION=$VERSION"
 done
 
-ac_config_files="$ac_config_files Makefile htcommon/Makefile htdb/Makefile hldig/Makefile installdir/hldig.1 installdir/hldig-pdfparser.1 installdir/hlfuzzy.1 installdir/hlmerge.1 installdir/hlpurge.1 installdir/hlstat.1 installdir/hldigconfig.8 installdir/hldump.1 installdir/hlload.1 installdir/hlnotify.1 installdir/hlsearch.1 installdir/rundig.1 hlfuzzy/Makefile htlib/Makefile htnet/Makefile hlsearch/Makefile hltools/Makefile htword/Makefile include/Makefile installdir/Makefile test/Makefile po/Makefile.in test/test_functions"
+ac_config_files="$ac_config_files Makefile htcommon/Makefile hldb/Makefile hldig/Makefile installdir/hldig.1 installdir/hldig-pdfparser.1 installdir/hlfuzzy.1 installdir/hlmerge.1 installdir/hlpurge.1 installdir/hlstat.1 installdir/hldigconfig.8 installdir/hldump.1 installdir/hlload.1 installdir/hlnotify.1 installdir/hlsearch.1 installdir/rundig.1 hlfuzzy/Makefile hllib/Makefile htnet/Makefile hlsearch/Makefile hltools/Makefile htword/Makefile include/Makefile installdir/Makefile test/Makefile po/Makefile.in test/test_functions"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -23714,7 +23714,7 @@ do
     "po-directories") CONFIG_COMMANDS="$CONFIG_COMMANDS po-directories" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "htcommon/Makefile") CONFIG_FILES="$CONFIG_FILES htcommon/Makefile" ;;
-    "htdb/Makefile") CONFIG_FILES="$CONFIG_FILES htdb/Makefile" ;;
+    "hldb/Makefile") CONFIG_FILES="$CONFIG_FILES hldb/Makefile" ;;
     "hldig/Makefile") CONFIG_FILES="$CONFIG_FILES hldig/Makefile" ;;
     "installdir/hldig.1") CONFIG_FILES="$CONFIG_FILES installdir/hldig.1" ;;
     "installdir/hldig-pdfparser.1") CONFIG_FILES="$CONFIG_FILES installdir/hldig-pdfparser.1" ;;
@@ -23729,7 +23729,7 @@ do
     "installdir/hlsearch.1") CONFIG_FILES="$CONFIG_FILES installdir/hlsearch.1" ;;
     "installdir/rundig.1") CONFIG_FILES="$CONFIG_FILES installdir/rundig.1" ;;
     "hlfuzzy/Makefile") CONFIG_FILES="$CONFIG_FILES hlfuzzy/Makefile" ;;
-    "htlib/Makefile") CONFIG_FILES="$CONFIG_FILES htlib/Makefile" ;;
+    "hllib/Makefile") CONFIG_FILES="$CONFIG_FILES hllib/Makefile" ;;
     "htnet/Makefile") CONFIG_FILES="$CONFIG_FILES htnet/Makefile" ;;
     "hlsearch/Makefile") CONFIG_FILES="$CONFIG_FILES hlsearch/Makefile" ;;
     "hltools/Makefile") CONFIG_FILES="$CONFIG_FILES hltools/Makefile" ;;

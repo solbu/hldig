@@ -128,8 +128,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(pkglibdir)" \
 	"$(DESTDIR)$(pkgincludedir)"
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
-libhtdb_la_LIBADD =
-am_libhtdb_la_OBJECTS = bt_compare.lo bt_conv.lo bt_curadj.lo \
+libhldb_la_LIBADD =
+am_libhldb_la_OBJECTS = bt_compare.lo bt_conv.lo bt_curadj.lo \
 	bt_cursor.lo bt_delete.lo bt_method.lo bt_open.lo bt_put.lo \
 	bt_rec.lo bt_reclaim.lo bt_recno.lo bt_rsearch.lo bt_search.lo \
 	bt_split.lo bt_stat.lo bt_upgrade.lo btree_auto.lo \
@@ -156,14 +156,14 @@ am_libhtdb_la_OBJECTS = bt_compare.lo bt_conv.lo bt_curadj.lo \
 	os_unlink.lo qam.lo qam_auto.lo qam_conv.lo qam_method.lo \
 	qam_open.lo qam_rec.lo qam_stat.lo txn.lo txn_auto.lo \
 	txn_rec.lo txn_region.lo xa.lo xa_db.lo xa_map.lo
-libhtdb_la_OBJECTS = $(am_libhtdb_la_OBJECTS)
+libhldb_la_OBJECTS = $(am_libhldb_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-libhtdb_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+libhldb_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(libhtdb_la_LDFLAGS) $(LDFLAGS) -o $@
+	$(libhldb_la_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -197,8 +197,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libhtdb_la_SOURCES)
-DIST_SOURCES = $(libhtdb_la_SOURCES)
+SOURCES = $(libhldb_la_SOURCES)
+DIST_SOURCES = $(libhldb_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -378,7 +378,7 @@ u_int8_decl = @u_int8_decl@
 u_int_decl = @u_int_decl@
 u_long_decl = @u_long_decl@
 u_short_decl = @u_short_decl@
-AM_CPPFLAGS = -I$(top_srcdir)/../htlib
+AM_CPPFLAGS = -I$(top_srcdir)/../hllib
 AUTOMAKE_OPTIONS = foreign no-dependencies
 EXTRA_DIST = db_config.h.in db.h.in \
 	68K.gcc alpha.gcc sparc.gcc x86.gcc \
@@ -386,8 +386,8 @@ EXTRA_DIST = db_config.h.in db.h.in \
 	LICENSE
 
 ACLOCAL_AMFLAGS = -I m4
-pkglib_LTLIBRARIES = libhtdb.la
-libhtdb_la_SOURCES = \
+pkglib_LTLIBRARIES = libhldb.la
+libhldb_la_SOURCES = \
 	bt_compare.c \
 	bt_conv.c \
 	bt_curadj.c \
@@ -515,7 +515,7 @@ libhtdb_la_SOURCES = \
 	xa_db.c \
 	xa_map.c
 
-libhtdb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
+libhldb_la_LDFLAGS = -release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
 pkginclude_HEADERS = \
 	btree.h \
 	btree_auto.h \
@@ -654,8 +654,8 @@ clean-pkglibLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
-libhtdb.la: $(libhtdb_la_OBJECTS) $(libhtdb_la_DEPENDENCIES) $(EXTRA_libhtdb_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libhtdb_la_LINK) -rpath $(pkglibdir) $(libhtdb_la_OBJECTS) $(libhtdb_la_LIBADD) $(LIBS)
+libhldb.la: $(libhldb_la_OBJECTS) $(libhldb_la_DEPENDENCIES) $(EXTRA_libhldb_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libhldb_la_LINK) -rpath $(pkglibdir) $(libhldb_la_OBJECTS) $(libhldb_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

@@ -86,9 +86,9 @@ build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = $(top_srcdir)/Makefile.config $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs
-bin_PROGRAMS = htdb_load$(EXEEXT) htdb_dump$(EXEEXT) \
-	htdb_stat$(EXEEXT)
-subdir = htdb
+bin_PROGRAMS = hldb_load$(EXEEXT) hldb_dump$(EXEEXT) \
+	hldb_stat$(EXEEXT)
+subdir = hldb
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
@@ -107,25 +107,25 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_htdb_dump_OBJECTS = htdb_dump.$(OBJEXT)
-htdb_dump_OBJECTS = $(am_htdb_dump_OBJECTS)
+am_hldb_dump_OBJECTS = htdb_dump.$(OBJEXT)
+hldb_dump_OBJECTS = $(am_hldb_dump_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-htdb_dump_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+hldb_dump_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htdb_dump_LDFLAGS) $(LDFLAGS) -o $@
-am_htdb_load_OBJECTS = htdb_load.$(OBJEXT)
-htdb_load_OBJECTS = $(am_htdb_load_OBJECTS)
-htdb_load_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(CXXFLAGS) $(hldb_dump_LDFLAGS) $(LDFLAGS) -o $@
+am_hldb_load_OBJECTS = htdb_load.$(OBJEXT)
+hldb_load_OBJECTS = $(am_hldb_load_OBJECTS)
+hldb_load_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htdb_load_LDFLAGS) $(LDFLAGS) -o $@
-am_htdb_stat_OBJECTS = htdb_stat.$(OBJEXT)
-htdb_stat_OBJECTS = $(am_htdb_stat_OBJECTS)
-htdb_stat_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(CXXFLAGS) $(hldb_load_LDFLAGS) $(LDFLAGS) -o $@
+am_hldb_stat_OBJECTS = htdb_stat.$(OBJEXT)
+hldb_stat_OBJECTS = $(am_hldb_stat_OBJECTS)
+hldb_stat_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(htdb_stat_LDFLAGS) $(LDFLAGS) -o $@
+	$(CXXFLAGS) $(hldb_stat_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -159,10 +159,10 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(htdb_dump_SOURCES) $(htdb_load_SOURCES) \
-	$(htdb_stat_SOURCES)
-DIST_SOURCES = $(htdb_dump_SOURCES) $(htdb_load_SOURCES) \
-	$(htdb_stat_SOURCES)
+SOURCES = $(hldb_dump_SOURCES) $(hldb_load_SOURCES) \
+	$(hldb_stat_SOURCES)
+DIST_SOURCES = $(hldb_dump_SOURCES) $(hldb_load_SOURCES) \
+	$(hldb_stat_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -363,32 +363,32 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign no-dependencies
 AM_CPPFLAGS = \
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
-		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
+		-I$(top_srcdir)/include -I$(top_srcdir)/hllib \
 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
 		-I$(top_srcdir)/htword \
 		-I$(top_srcdir)/db -I$(top_builddir)/db \
 		$(LOCAL_DEFINES) $(PROFILING) \
 		-DLOCALEDIR=\"$(localedir)\"
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la \
+HLLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
 		$(top_builddir)/htword/libhtword.la \
-		$(top_builddir)/htlib/libht.la \
-		$(top_builddir)/db/libhtdb.la
+		$(top_builddir)/hllib/libhl.la \
+		$(top_builddir)/db/libhldb.la
 
-LDADD = $(HTLIBS) @LIBINTL@
-htdb_load_SOURCES = htdb_load.cc
-htdb_load_DEPENDENCIES = $(HTLIBS)
-htdb_load_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htdb_load_LDADD = $(HTLIBS)
-htdb_dump_SOURCES = htdb_dump.cc
-htdb_dump_DEPENDENCIES = $(HTLIBS)
-htdb_dump_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htdb_dump_LDADD = $(HTLIBS)
-htdb_stat_SOURCES = htdb_stat.cc
-htdb_stat_DEPENDENCIES = $(HTLIBS)
-htdb_stat_LDFLAGS = $(PROFILING) ${extra_ldflags}
-htdb_stat_LDADD = $(HTLIBS)
+LDADD = $(HLLIBS) @LIBINTL@
+hldb_load_SOURCES = htdb_load.cc
+hldb_load_DEPENDENCIES = $(HLLIBS)
+hldb_load_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hldb_load_LDADD = $(HLLIBS)
+hldb_dump_SOURCES = htdb_dump.cc
+hldb_dump_DEPENDENCIES = $(HLLIBS)
+hldb_dump_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hldb_dump_LDADD = $(HLLIBS)
+hldb_stat_SOURCES = htdb_stat.cc
+hldb_stat_DEPENDENCIES = $(HLLIBS)
+hldb_stat_LDFLAGS = $(PROFILING) ${extra_ldflags}
+hldb_stat_LDADD = $(HLLIBS)
 all: all-am
 
 .SUFFIXES:
@@ -402,9 +402,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign htdb/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign hldb/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign htdb/Makefile
+	  $(AUTOMAKE) --foreign hldb/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -474,17 +474,17 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
-htdb_dump$(EXEEXT): $(htdb_dump_OBJECTS) $(htdb_dump_DEPENDENCIES) $(EXTRA_htdb_dump_DEPENDENCIES) 
-	@rm -f htdb_dump$(EXEEXT)
-	$(AM_V_CXXLD)$(htdb_dump_LINK) $(htdb_dump_OBJECTS) $(htdb_dump_LDADD) $(LIBS)
+hldb_dump$(EXEEXT): $(hldb_dump_OBJECTS) $(hldb_dump_DEPENDENCIES) $(EXTRA_hldb_dump_DEPENDENCIES) 
+	@rm -f hldb_dump$(EXEEXT)
+	$(AM_V_CXXLD)$(hldb_dump_LINK) $(hldb_dump_OBJECTS) $(hldb_dump_LDADD) $(LIBS)
 
-htdb_load$(EXEEXT): $(htdb_load_OBJECTS) $(htdb_load_DEPENDENCIES) $(EXTRA_htdb_load_DEPENDENCIES) 
-	@rm -f htdb_load$(EXEEXT)
-	$(AM_V_CXXLD)$(htdb_load_LINK) $(htdb_load_OBJECTS) $(htdb_load_LDADD) $(LIBS)
+hldb_load$(EXEEXT): $(hldb_load_OBJECTS) $(hldb_load_DEPENDENCIES) $(EXTRA_hldb_load_DEPENDENCIES) 
+	@rm -f hldb_load$(EXEEXT)
+	$(AM_V_CXXLD)$(hldb_load_LINK) $(hldb_load_OBJECTS) $(hldb_load_LDADD) $(LIBS)
 
-htdb_stat$(EXEEXT): $(htdb_stat_OBJECTS) $(htdb_stat_DEPENDENCIES) $(EXTRA_htdb_stat_DEPENDENCIES) 
-	@rm -f htdb_stat$(EXEEXT)
-	$(AM_V_CXXLD)$(htdb_stat_LINK) $(htdb_stat_OBJECTS) $(htdb_stat_LDADD) $(LIBS)
+hldb_stat$(EXEEXT): $(hldb_stat_OBJECTS) $(hldb_stat_DEPENDENCIES) $(EXTRA_hldb_stat_DEPENDENCIES) 
+	@rm -f hldb_stat$(EXEEXT)
+	$(AM_V_CXXLD)$(hldb_stat_LINK) $(hldb_stat_OBJECTS) $(hldb_stat_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

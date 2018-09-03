@@ -370,20 +370,20 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign no-dependencies
 AM_CPPFLAGS = \
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
-		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
+		-I$(top_srcdir)/include -I$(top_srcdir)/hllib \
 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
 		-I$(top_srcdir)/htword \
 		-I$(top_srcdir)/db -I$(top_builddir)/db \
 		$(LOCAL_DEFINES) $(PROFILING) \
 		-DLOCALEDIR=\"$(localedir)\"
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la \
+HLLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
 		$(top_builddir)/htword/libhtword.la \
-		$(top_builddir)/htlib/libht.la \
-		$(top_builddir)/db/libhtdb.la
+		$(top_builddir)/hllib/libhl.la \
+		$(top_builddir)/db/libhldb.la
 
-LDADD = $(HTLIBS) @LIBINTL@
+LDADD = $(HLLIBS) @LIBINTL@
 LOCAL_DEFINES = -DCONFIG_DIR=\"$(CONFIG_DIR)\" -I$(top_srcdir)/hlfuzzy
 hlsearch_SOURCES = Display.cc DocMatch.cc ResultList.cc ResultMatch.cc \
 		Template.cc TemplateList.cc WeightWord.cc hlsearch.cc \
@@ -399,9 +399,9 @@ noinst_HEADERS = Display.h DocMatch.h ResultList.h ResultMatch.h \
 	QueryLexer.h QueryParser.h SimpleLexer.h SimpleQueryParser.h \
 	VolatileCache.h
 
-hlsearch_DEPENDENCIES = $(top_builddir)/hlfuzzy/libfuzzy.la $(HTLIBS)
+hlsearch_DEPENDENCIES = $(top_builddir)/hlfuzzy/libfuzzy.la $(HLLIBS)
 hlsearch_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlsearch_LDADD = $(top_builddir)/hlfuzzy/libfuzzy.la $(HTLIBS)
+hlsearch_LDADD = $(top_builddir)/hlfuzzy/libfuzzy.la $(HLLIBS)
 qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc \
 	BooleanLexer.cc BooleanQueryParser.cc ExactWordQuery.cc \
 	GParser.cc NearQuery.cc NotQuery.cc OperatorQuery.cc \
@@ -409,9 +409,9 @@ qtest_SOURCES = DocMatch.cc ResultList.cc AndQuery.cc \
 	QueryLexer.cc QueryParser.cc SimpleQueryParser.cc VolatileCache.cc \
 	WordSearcher.cc qtest.cc
 
-qtest_DEPENDENCIES = $(top_builddir)/hlfuzzy/libfuzzy.la $(HTLIBS)
+qtest_DEPENDENCIES = $(top_builddir)/hlfuzzy/libfuzzy.la $(HLLIBS)
 qtest_LDFLAGS = $(PROFILING) ${extra_ldflags}
-qtest_LDADD = $(top_builddir)/hlfuzzy/libfuzzy.la $(HTLIBS)
+qtest_LDADD = $(top_builddir)/hlfuzzy/libfuzzy.la $(HLLIBS)
 all: all-am
 
 .SUFFIXES:

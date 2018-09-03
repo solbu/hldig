@@ -86,10 +86,10 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = $(top_srcdir)/Makefile.config $(srcdir)/Makefile.in \
-	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs memcmp.c \
-	vsnprintf.c snprintf.c malloc.c regex.c realloc.c \
+	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs realloc.c \
+	regex.c malloc.c snprintf.c vsnprintf.c memcmp.c \
 	$(pkginclude_HEADERS)
-subdir = htlib
+subdir = hllib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
@@ -136,8 +136,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(pkglibdir)" \
 	"$(DESTDIR)$(pkgincludedir)"
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
-libht_la_DEPENDENCIES = @LTLIBOBJS@
-am_libht_la_OBJECTS = Configuration.lo Database.lo DB2_db.lo \
+libhl_la_DEPENDENCIES = @LTLIBOBJS@
+am_libhl_la_OBJECTS = Configuration.lo Database.lo DB2_db.lo \
 	Dictionary.lo getcwd.lo good_strtok.lo HtCodec.lo \
 	HtDateTime.lo HtHeap.lo HtMaxMin.lo HtPack.lo HtRegex.lo \
 	HtRegexList.lo HtRegexReplace.lo HtRegexReplaceList.lo \
@@ -147,14 +147,14 @@ am_libht_la_OBJECTS = Configuration.lo Database.lo DB2_db.lo \
 	QuotedStringList.lo raise.lo Stack.lo strcasecmp.lo \
 	strerror.lo String.lo String_fmt.lo StringList.lo \
 	StringMatch.lo strptime.lo timegm.lo
-libht_la_OBJECTS = $(am_libht_la_OBJECTS)
+libhl_la_OBJECTS = $(am_libhl_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-libht_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+libhl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(libht_la_LDFLAGS) $(LDFLAGS) -o $@
+	$(CXXFLAGS) $(libhl_la_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -206,8 +206,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libht_la_SOURCES)
-DIST_SOURCES = $(libht_la_SOURCES)
+SOURCES = $(libhl_la_SOURCES)
+DIST_SOURCES = $(libhl_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -409,22 +409,22 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign no-dependencies
 AM_CPPFLAGS = \
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
-		-I$(top_srcdir)/include -I$(top_srcdir)/htlib \
+		-I$(top_srcdir)/include -I$(top_srcdir)/hllib \
 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
 		-I$(top_srcdir)/htword \
 		-I$(top_srcdir)/db -I$(top_builddir)/db \
 		$(LOCAL_DEFINES) $(PROFILING) \
 		-DLOCALEDIR=\"$(localedir)\"
 
-HTLIBS = $(top_builddir)/htnet/libhtnet.la \
+HLLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
 		$(top_builddir)/htword/libhtword.la \
-		$(top_builddir)/htlib/libht.la \
-		$(top_builddir)/db/libhtdb.la
+		$(top_builddir)/hllib/libhl.la \
+		$(top_builddir)/db/libhldb.la
 
-LDADD = $(HTLIBS) @LIBINTL@
-pkglib_LTLIBRARIES = libht.la
-libht_la_SOURCES = \
+LDADD = $(HLLIBS) @LIBINTL@
+pkglib_LTLIBRARIES = libhl.la
+libhl_la_SOURCES = \
 	Configuration.cc \
 	Database.cc \
 	DB2_db.cc \
@@ -467,9 +467,9 @@ libht_la_SOURCES = \
 	strptime.cc \
 	timegm.c
 
-libht_la_LIBADD = @LTLIBOBJS@
+libhl_la_LIBADD = @LTLIBOBJS@
 # this includes regex.c
-libht_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
+libhl_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
 pkginclude_HEADERS = \
 	ber.h \
 	clib.h \
@@ -527,9 +527,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign htlib/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign hllib/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign htlib/Makefile
+	  $(AUTOMAKE) --foreign hllib/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -585,8 +585,8 @@ clean-pkglibLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
-libht.la: $(libht_la_OBJECTS) $(libht_la_DEPENDENCIES) $(EXTRA_libht_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(libht_la_LINK) -rpath $(pkglibdir) $(libht_la_OBJECTS) $(libht_la_LIBADD) $(LIBS)
+libhl.la: $(libhl_la_OBJECTS) $(libhl_la_DEPENDENCIES) $(EXTRA_libhl_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(libhl_la_LINK) -rpath $(pkglibdir) $(libhl_la_OBJECTS) $(libhl_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
