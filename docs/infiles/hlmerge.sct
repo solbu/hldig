@@ -18,7 +18,7 @@ layout:default
     </h2>
     </dd>
     <dd>
-    Htmerge is used to create a document index and word
+    Hlmerge is used to create a document index and word
     database from the files that were created by
     <a href="hldig.html">hldig</a>. These databases are then used by
     <a href="hlsearch.html" target="_top">hlsearch</a> to perform

@@ -260,16 +260,16 @@ layout:default
     hlfuzzy
     </li>
     <li>
-    htnotify
+    hlnotify
     </li>
     <li>
-    htdump
+    hldump
     </li>
     <li>
-    htstat
+    hlstat
     </li>
     <li>
-    htload
+    hlload
     </li>
   </ul>
   <p>

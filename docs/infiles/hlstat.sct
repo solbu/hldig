@@ -8,7 +8,7 @@ layout:default
     </h2>
     </dd>
     <dd>
-    htstat [<em>options</em>]
+    hlstat [<em>options</em>]
     </dd>
   </dl>
   <dl>
@@ -18,7 +18,7 @@ layout:default
     </h2>
     </dd>
     <dd>
-    Htstat returns statistics on the document and word
+    Hlstat returns statistics on the document and word
     databases, much like the -s option to htdig or
     hlmerge.
     </dd>
@@ -35,7 +35,7 @@ layout:default
       -a
       </dt>
       <dd>
-      Use alternate work files. Tells htstat to
+      Use alternate work files. Tells hlstat to
       append <em>.work</em> to the database files
       allowing it to operate on a second set of
       databases.

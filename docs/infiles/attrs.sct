@@ -23,7 +23,7 @@ layout:default
       </dt>
       <dd>
       <a href="hlfuzzy.html">hlfuzzy</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -50,7 +50,7 @@ layout:default
   The database file used for the fuzzy "accents" search
   algorithm. This database is created by
   <a href="hlfuzzy.html">hlfuzzy</a> and used by
-  <a href="htsearch.html" target="_top">htsearch</a>.
+  <a href="hlsearch.html" target="_top">hlsearch</a>.
       </dd>
       <dt>
       <em>example:</em>
@@ -158,7 +158,7 @@ layout:default
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -291,7 +291,7 @@ layout:default
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -385,7 +385,7 @@ layout:default
       </dt>
       <dd>
       <a href="htdig.html">htdig</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -595,7 +595,7 @@ layout:default
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -665,7 +665,7 @@ layout:default
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -732,7 +732,7 @@ layout:default
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -829,7 +829,7 @@ layout:default
   the -u option, and will be blotted out so it won't show up in a
   process listing. If you use it directly in a configuration file,
   be sure to protect it so it is readable only by you, and do not
-  use that same configuration file for htsearch.
+  use that same configuration file for hlsearch.
       </dd>
       <dt>
       <em>example:</em>
@@ -867,7 +867,7 @@ layout:default
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -1133,7 +1133,7 @@ layout:default
       </dt>
       <dd>
       <a href="htdig.html">htdig</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -1271,7 +1271,7 @@ layout:default
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -1342,7 +1342,7 @@ layout:default
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -1419,7 +1419,7 @@ layout:default
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -1443,7 +1443,7 @@ layout:default
       <em>description:</em>
       </dt>
       <dd>
-  This list allows you to define any htsearch input parameter as
+  This list allows you to define any hlsearch input parameter as
   a select list for use in templates, provided you also define
   the corresponding name list attribute which enumerates all the
   choices to put in the list. It can be used for existing input
@@ -1515,7 +1515,7 @@ layout:default
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -1777,7 +1777,7 @@ layout:default
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -1802,7 +1802,7 @@ layout:default
       </dt>
       <dd>
   This is a list of config file names that are used for searching multiple databases.
-  Simply put, htsearch will loop through the databases specified by each of these config
+  Simply put, hlsearch will loop through the databases specified by each of these config
   files and present the result of the search on all of the databases.
   The corresponding config files are looked up in the <a href="#config_dir">config_dir</a> directory.
   Each listed config file <strong>must</strong> exist, as well as the corresponding databases.
@@ -2077,7 +2077,7 @@ https://solbu.github.io/htdig/
   Name of configuration file to load.
   For security reasons, restrictions are placed on the values which
   can be specified on the command line to
-  <a href="htsearch.html" target="_top">htsearch</a>.
+  <a href="hlsearch.html" target="_top">hlsearch</a>.
   The default value of this attribute is determined at
   compile time.
       </dd>
@@ -2584,7 +2584,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -2652,7 +2652,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -2683,7 +2683,7 @@ https://solbu.github.io/htdig/
   for this function, for a description of available
   format codes. If this format string is empty, as it
   is by default,
-  <a href="htsearch.html" target="_top">htsearch</a>
+  <a href="hlsearch.html" target="_top">hlsearch</a>
   will pick a format itself. In this case, the <a
   href="#iso_8601">iso_8601</a> attribute can be used
   to modify the appearance of the date.
@@ -2724,7 +2724,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -3128,8 +3128,8 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
       <a href="htdig.html">htdig</a>,
-      <a href="htdump.html">htdump</a>,
-      <a href="htload.html">htload</a>
+      <a href="hldump.html">hldump</a>,
+      <a href="hlload.html">hlload</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -3195,7 +3195,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -3261,7 +3261,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -3327,7 +3327,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -3527,7 +3527,7 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
       <a href="hlfuzzy.html">hlfuzzy</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -3600,7 +3600,7 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
       <a href="hlfuzzy.html">hlfuzzy</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -3672,7 +3672,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -3738,7 +3738,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -3804,7 +3804,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -3877,7 +3877,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -3942,7 +3942,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -4526,7 +4526,7 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
       <a href="htdig.html">htdig</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -4685,7 +4685,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -4748,8 +4748,8 @@ https://solbu.github.io/htdig/
   <hr>
   <dl>
     <dt>
-    <strong><a name="htnotify_prefix_file">
-    htnotify_prefix_file</a></strong>
+    <strong><a name="hlnotify_prefix_file">
+    hlnotify_prefix_file</a></strong>
     </dt>
     <dd>
     <dl>
@@ -4763,7 +4763,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htnotify.html">htnotify</a>
+      <a href="hlnotify.html">hlnotify</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -4788,7 +4788,7 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
   Specifies the file containing text to be inserted in each mail
-  message sent by htnotify before the list of expired webpages. If omitted,
+  message sent by hlnotify before the list of expired webpages. If omitted,
   nothing is inserted.
       </dd>
       <dt>
@@ -4798,7 +4798,7 @@ https://solbu.github.io/htdig/
       <table border="0">
         <tr>
         <td valign="top">
-          htnotify_prefix_file:
+          hlnotify_prefix_file:
         </td>
         <td nowrap>
              ${common_dir}/notify_prefix.txt
@@ -4812,8 +4812,8 @@ https://solbu.github.io/htdig/
   <hr>
   <dl>
     <dt>
-    <strong><a name="htnotify_replyto">
-    htnotify_replyto</a></strong>
+    <strong><a name="hlnotify_replyto">
+    hlnotify_replyto</a></strong>
     </dt>
     <dd>
     <dl>
@@ -4827,7 +4827,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htnotify.html">htnotify</a>
+      <a href="hlnotify.html">hlnotify</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -4851,7 +4851,7 @@ https://solbu.github.io/htdig/
       <em>description:</em>
       </dt>
       <dd>
-  This specifies the email address that htnotify email messages
+  This specifies the email address that hlnotify email messages
   include in the Reply-to: field.
       </dd>
       <dt>
@@ -4861,7 +4861,7 @@ https://solbu.github.io/htdig/
       <table border="0">
         <tr>
         <td valign="top">
-          htnotify_replyto:
+          hlnotify_replyto:
         </td>
         <td nowrap>
              design-group@foo.com
@@ -4875,8 +4875,8 @@ https://solbu.github.io/htdig/
   <hr>
   <dl>
     <dt>
-    <strong><a name="htnotify_sender">
-    htnotify_sender</a></strong>
+    <strong><a name="hlnotify_sender">
+    hlnotify_sender</a></strong>
     </dt>
     <dd>
     <dl>
@@ -4890,7 +4890,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htnotify.html">htnotify</a>
+      <a href="hlnotify.html">hlnotify</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -4914,9 +4914,9 @@ https://solbu.github.io/htdig/
       <em>description:</em>
       </dt>
       <dd>
-  This specifies the email address that htnotify email
+  This specifies the email address that hlnotify email
   messages get sent out from. The address is forged using
-  /usr/lib/sendmail. Check htnotify/htnotify.cc for
+  /usr/lib/sendmail. Check hlnotify/hlnotify.cc for
   detail on how this is done.
       </dd>
       <dt>
@@ -4926,7 +4926,7 @@ https://solbu.github.io/htdig/
       <table border="0">
         <tr>
         <td valign="top">
-          htnotify_sender:
+          hlnotify_sender:
         </td>
         <td nowrap>
              bigboss@yourcompany.com
@@ -4940,8 +4940,8 @@ https://solbu.github.io/htdig/
   <hr>
   <dl>
     <dt>
-    <strong><a name="htnotify_suffix_file">
-    htnotify_suffix_file</a></strong>
+    <strong><a name="hlnotify_suffix_file">
+    hlnotify_suffix_file</a></strong>
     </dt>
     <dd>
     <dl>
@@ -4955,7 +4955,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htnotify.html">htnotify</a>
+      <a href="hlnotify.html">hlnotify</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -4980,7 +4980,7 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
   Specifies the file containing text to be inserted in each mail message
-  sent by htnotify after the list of expired webpages. If omitted, htnotify
+  sent by hlnotify after the list of expired webpages. If omitted, hlnotify
   will insert a standard message.
       </dd>
       <dt>
@@ -4990,7 +4990,7 @@ https://solbu.github.io/htdig/
       <table border="0">
         <tr>
         <td valign="top">
-          htnotify_suffix_file:
+          hlnotify_suffix_file:
         </td>
         <td nowrap>
              ${common_dir}/notify_suffix.txt
@@ -5004,8 +5004,8 @@ https://solbu.github.io/htdig/
   <hr>
   <dl>
     <dt>
-    <strong><a name="htnotify_webmaster">
-    htnotify_webmaster</a></strong>
+    <strong><a name="hlnotify_webmaster">
+    hlnotify_webmaster</a></strong>
     </dt>
     <dd>
     <dl>
@@ -5019,7 +5019,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htnotify.html">htnotify</a>
+      <a href="hlnotify.html">hlnotify</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -5044,7 +5044,7 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
   This provides a name for the From field, in addition to the email
-  address for the email messages sent out by htnotify.
+  address for the email messages sent out by hlnotify.
       </dd>
       <dt>
       <em>example:</em>
@@ -5053,7 +5053,7 @@ https://solbu.github.io/htdig/
       <table border="0">
         <tr>
         <td valign="top">
-          htnotify_webmaster:
+          hlnotify_webmaster:
         </td>
         <td nowrap>
              Notification Service
@@ -5186,7 +5186,7 @@ https://solbu.github.io/htdig/
   password.<br>
   If you use this option, be sure to protect the configuration file
   so it is readable only by you, and do not
-  use that same configuration file for htsearch.
+  use that same configuration file for hlsearch.
       </dd>
       <dt>
       <em>example:</em>
@@ -5485,7 +5485,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -5511,7 +5511,7 @@ https://solbu.github.io/htdig/
       <dd>
   This specifies the directory portion of the URL used
   to display star images. This attribute isn't directly
-  used by htsearch, but is used in the default URL for
+  used by hlsearch, but is used in the default URL for
   the <a href="#star_image">star_image</a> and
   <a href="#star_blank">star_blank</a> attributes, and
   other attributes may be defined in terms of this one.
@@ -5628,8 +5628,8 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>,
-      <a href="htnotify.html">htnotify</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>,
+      <a href="hlnotify.html">hlnotify</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -5658,10 +5658,10 @@ https://solbu.github.io/htdig/
   See also the <a
   href="#date_format">date_format</a> attribute, which
   can override any date format that
-  <a href="htsearch.html" target="_top">htsearch</a>
+  <a href="hlsearch.html" target="_top">hlsearch</a>
   picks by default.<br>
   This attribute also affects the format of the date
-  <a href="htnotify.html">htnotify</a> expects to find
+  <a href="hlnotify.html">hlnotify</a> expects to find
   in a <strong>htdig-notification-date</strong> field.
       </dd>
       <dt>
@@ -5700,7 +5700,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -5764,7 +5764,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -6007,7 +6007,7 @@ https://solbu.github.io/htdig/
   specified).<br>
   Granted, this is not the perfect way of doing this,
   but it is simple enough and it covers most cases.<br>
-  To limit URLs in htsearch, use
+  To limit URLs in hlsearch, use
   <a href="#restrict">restrict</a>.
       </dd>
       <dt>
@@ -6421,7 +6421,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -6445,7 +6445,7 @@ https://solbu.github.io/htdig/
       <em>description:</em>
       </dt>
       <dd>
-  This sets whether htsearch should use the syslog() to log
+  This sets whether hlsearch should use the syslog() to log
   search requests. If set, this will log requests with a
   default level of LOG_INFO and a facility of LOG_LOCAL5. For
   details on redirecting the log into a separate file or other
@@ -6455,7 +6455,7 @@ https://solbu.github.io/htdig/
   before compiling.
   <dl>
     <dt>
-      Each line logged by htsearch contains the following:
+      Each line logged by hlsearch contains the following:
     </dt>
     <dd>
       REMOTE_ADDR [config] (match_method) [words]
@@ -6567,7 +6567,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -6591,7 +6591,7 @@ https://solbu.github.io/htdig/
       <em>description:</em>
       </dt>
       <dd>
-  This is the default method for matching that htsearch
+  This is the default method for matching that hlsearch
   uses. The valid choices are:
   <ul>
     <li> or </li>
@@ -6599,7 +6599,7 @@ https://solbu.github.io/htdig/
     <li> boolean </li>
   </ul>
   This attribute will only be used if the HTML form that
-  calls htsearch didn't have the
+  calls hlsearch didn't have the
   <a href="hts_form.html#method">method</a> value set.
       </dd>
       <dt>
@@ -6638,7 +6638,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -6665,7 +6665,7 @@ https://solbu.github.io/htdig/
   If this is set to a relatively small number, the
   matches will be shown in pages instead of all at once.
   This attribute will only be used if the HTML form that
-  calls htsearch didn't have the
+  calls hlsearch didn't have the
   <a href="hts_form.html#matchesperpage">matchesperpage</a> value set.
       </dd>
       <dt>
@@ -6977,7 +6977,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -7311,7 +7311,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -7441,7 +7441,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -7505,7 +7505,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -7573,7 +7573,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -7643,7 +7643,7 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
       <a href="htdig.html">htdig</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>,
+      <a href="hlsearch.html" target="_top">hlsearch</a>,
       <a href="hlfuzzy.html">hlfuzzy</a>
       </dd>
       <dt>
@@ -7774,7 +7774,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -7841,7 +7841,7 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
       <a href="hlfuzzy.html">hlfuzzy</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -7868,7 +7868,7 @@ https://solbu.github.io/htdig/
   The database file used for the fuzzy "metaphone" search
   algorithm. This database is created by
   <a href="hlfuzzy.html">hlfuzzy</a> and used by
-  <a href="htsearch.html" target="_top">htsearch</a>.
+  <a href="hlsearch.html" target="_top">hlsearch</a>.
       </dd>
       <dt>
       <em>example:</em>
@@ -7906,7 +7906,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8042,7 +8042,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8106,7 +8106,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8171,7 +8171,7 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
       <a href="htdig.html">htdig</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8239,7 +8239,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8306,7 +8306,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8369,7 +8369,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8434,7 +8434,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8492,7 +8492,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8548,7 +8548,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8613,7 +8613,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8696,7 +8696,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8752,7 +8752,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -8778,7 +8778,7 @@ https://solbu.github.io/htdig/
       <dd>
   This specifies the text to use in search results when no
   title is found in the document itself. If it is set to
-  filename, htsearch will use the name of the file itself,
+  filename, hlsearch will use the name of the file itself,
   enclosed in brackets (e.g. [index.html]).
       </dd>
       <dt>
@@ -8962,7 +8962,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9030,7 +9030,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9054,7 +9054,7 @@ https://solbu.github.io/htdig/
       <em>description:</em>
       </dt>
       <dd>
-  This attribute determines whether htsearch sends out full HTTP
+  This attribute determines whether hlsearch sends out full HTTP
   headers as required for an NPH (non-parsed header) CGI. Some
   servers assume CGIs will act in this fashion, for example MS
   IIS. If your server does not send out full HTTP headers, you
@@ -9096,7 +9096,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9154,7 +9154,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9229,7 +9229,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9377,7 +9377,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9442,7 +9442,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9518,7 +9518,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9581,7 +9581,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9648,7 +9648,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htpurge.html">htpurge</a>
+      <a href="hlpurge.html">hlpurge</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9672,7 +9672,7 @@ https://solbu.github.io/htdig/
       <em>description:</em>
       </dt>
       <dd>
-  If TRUE, htpurge will remove any URLs which were marked
+  If TRUE, hlpurge will remove any URLs which were marked
   as unreachable by htdig from the database. If FALSE, it
   will not do this. When htdig is run in initial mode,
   documents which were referred to but could not be
@@ -9792,7 +9792,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htpurge.html">htpurge</a>
+      <a href="hlpurge.html">hlpurge</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9816,7 +9816,7 @@ https://solbu.github.io/htdig/
       <em>description:</em>
       </dt>
       <dd>
-  If TRUE, htpurge will remove any URLs which were discovered
+  If TRUE, hlpurge will remove any URLs which were discovered
   and included as stubs in the database but not yet retrieved. If FALSE, it
   will not do this. When htdig is run in initial mode with no restrictions
   on hopcount or maximum documents, these should probably be removed and set
@@ -9859,7 +9859,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -9997,7 +9997,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -10023,7 +10023,7 @@ https://solbu.github.io/htdig/
       <dd>
   Overrides the value of the SCRIPT_NAME
   environment attribute. This is useful if
-  htsearch is not being called directly as a CGI
+  hlsearch is not being called directly as a CGI
   program, but indirectly from within a dynamic
   .shtml page using SSI directives. Previously,
   you needed a wrapper script to do this, but
@@ -10036,7 +10036,7 @@ https://solbu.github.io/htdig/
   directory for a small example. Note that this
   attribute also affects the value of the <a
   href="hts_templates.html#CGI">CGI</a> variable
-  used in htsearch templates.
+  used in hlsearch templates.
       </dd>
       <dt>
       <em>example:</em>
@@ -10074,7 +10074,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -10248,7 +10248,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -10312,7 +10312,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -10448,7 +10448,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -10576,7 +10576,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -10647,7 +10647,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -10679,7 +10679,7 @@ https://solbu.github.io/htdig/
   pseudo-variable <strong>$(HTSEARCH_RESULTS)</strong> as a
   separator for the header and footer sections.
   If the filename is not specified, the file is unreadable,
-  or the pseudo-variable above is not found, htsearch reverts
+  or the pseudo-variable above is not found, hlsearch reverts
   to the separate header and footer files instead.
   While outputting the wrapper,
   some variables will be expanded, just as for the
@@ -10727,7 +10727,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11017,7 +11017,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11041,7 +11041,7 @@ https://solbu.github.io/htdig/
       <em>description:</em>
       </dt>
       <dd>
-  This is the default sorting method that htsearch
+  This is the default sorting method that hlsearch
   uses to determine the order in which matches are displayed.
   The valid choices are:
   <table border="0">
@@ -11063,7 +11063,7 @@ https://solbu.github.io/htdig/
   </tr>
   </table>
   This attribute will only be used if the HTML form that
-  calls htsearch didn't have the <strong>sort</strong>
+  calls hlsearch didn't have the <strong>sort</strong>
   value set. The words date and revdate can be used instead
   of time and revtime, as both will sort by the time that
   the document was last modified, if this information is
@@ -11109,7 +11109,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11182,7 +11182,7 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
       <a href="hlfuzzy.html">hlfuzzy</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11209,7 +11209,7 @@ https://solbu.github.io/htdig/
   The database file used for the fuzzy "soundex" search
   algorithm. This database is created by
   <a href="hlfuzzy.html">hlfuzzy</a> and used by
-  <a href="htsearch.html" target="_top">htsearch</a>.
+  <a href="hlsearch.html" target="_top">hlsearch</a>.
       </dd>
       <dt>
       <em>example:</em>
@@ -11247,7 +11247,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11312,7 +11312,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11383,7 +11383,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11459,7 +11459,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11525,7 +11525,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11591,7 +11591,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11658,7 +11658,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11795,7 +11795,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -11933,7 +11933,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -12000,7 +12000,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>,
+      <a href="hlsearch.html" target="_top">hlsearch</a>,
       <a href="hlfuzzy.html">hlfuzzy</a>
       </dd>
       <dt>
@@ -12028,7 +12028,7 @@ https://solbu.github.io/htdig/
   Points to the database that <a href="hlfuzzy.html">
   hlfuzzy</a> creates when the <strong>synonyms</strong>
   algorithm is used.<br>
-  <a href="htsearch.html" target="_top">htsearch</a>
+  <a href="hlsearch.html" target="_top">hlsearch</a>
   uses this to perform synonym dictionary lookups.
       </dd>
       <dt>
@@ -12133,7 +12133,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -12323,7 +12323,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -12358,7 +12358,7 @@ https://solbu.github.io/htdig/
   builtin-short</strong>. If the filename is one of
   those, they will be used instead.<br>
   More information about templates can be found in the
-  <a href="htsearch.html" target="_top">htsearch</a>
+  <a href="hlsearch.html" target="_top">hlsearch</a>
   documentation.  The particular template is selecterd by the
   <a href="hts_form.html#format">format</a> cgi argument, and the
   default is given by <a href="#template_name">template_name</a> in
@@ -12404,7 +12404,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -12469,7 +12469,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -12502,7 +12502,7 @@ https://solbu.github.io/htdig/
   element of each pair is a pattern, the second element
   is the name of the template file for that pattern.<br>
   More information about templates can be found in the
-  <a href="htsearch.html" target="_top">htsearch</a>
+  <a href="hlsearch.html" target="_top">hlsearch</a>
   documentation.<br>
   Normally, when using this template selection method, you
   would disable user selection of templates via the <strong>format</strong>
@@ -12552,7 +12552,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -12685,7 +12685,7 @@ https://solbu.github.io/htdig/
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -12753,7 +12753,7 @@ https://solbu.github.io/htdig/
       </dt>
       <dd>
       <a href="htdig.html">htdig</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -13019,12 +13019,12 @@ https://solbu.github.io/htdig/
   There are two separate settings of
   <em>url_part_aliases</em> below; the first one is
   for the configuration file to be used by htdig,
-  hlmerge, and htnotify, and the second one is for the
-  configuration file to be used by htsearch.
+  hlmerge, and hlnotify, and the second one is for the
+  configuration file to be used by hlsearch.
   In this example, htdig will encode the URL
   "http://search.example.com/~htdig/contrib/stuff.html"
   as "*sitecontrib/stuff*2" in the databases, and
-  htsearch will decode it as
+  hlsearch will decode it as
   "http://www.htdig.org/contrib/stuff.htm".<br>
   As of version 3.1.6, you can also do more complex
   rewriting of URLs using
@@ -13161,7 +13161,7 @@ form during indexing and translated for results.
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -13249,7 +13249,7 @@ form during indexing and translated for results.
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -13380,7 +13380,7 @@ form during indexing and translated for results.
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -13405,7 +13405,7 @@ form during indexing and translated for results.
       </dt>
       <dd>
   If set to true, any META description tags will be used as
-  excerpts by htsearch. Any documents that do not have META
+  excerpts by hlsearch. Any documents that do not have META
   descriptions will retain their normal excerpts.
       </dd>
       <dt>
@@ -13444,7 +13444,7 @@ form during indexing and translated for results.
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -13645,7 +13645,7 @@ form during indexing and translated for results.
       </dt>
       <dd>
       <a href="htdig.html">htdig</a>,
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -13723,7 +13723,7 @@ form during indexing and translated for results.
       <em>used by:</em>
       </dt>
       <dd>
-      <a href="htsearch.html" target="_top">htsearch</a>
+      <a href="hlsearch.html" target="_top">hlsearch</a>
       </dd>
       <dt>
       <em>default:</em>
@@ -13854,8 +13854,8 @@ form during indexing and translated for results.
       </dt>
       <dd>
       <a href="htdig.html">htdig</a>,
-      <a href="htdump.html">htdump</a>,
-      <a href="htload.html">htload</a>
+      <a href="hldump.html">hldump</a>,
+      <a href="hlload.html">hlload</a>
       </dd>
       <dt>
       <em>default:</em>

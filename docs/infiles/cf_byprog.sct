@@ -103,7 +103,7 @@ layout:confindex
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#valid_extensions">valid_extensions</a><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#valid_punctuation">valid_punctuation</a><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#word_dump">word_dump</a><br>
-  <br><strong><a href="htdump.html" target="body">htdump</a></strong> <font face="helvetica,arial" size="2"><br>
+  <br><strong><a href="hldump.html" target="body">hldump</a></strong> <font face="helvetica,arial" size="2"><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#doc_list">doc_list</a><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#word_dump">word_dump</a><br>
   <br><strong><a href="hlfuzzy.html" target="body">hlfuzzy</a></strong> <font face="helvetica,arial" size="2"><br>
@@ -117,17 +117,17 @@ layout:confindex
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#soundex_db">soundex_db</a><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#synonym_db">synonym_db</a><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#synonym_dictionary">synonym_dictionary</a><br>
-  <br><strong><a href="htload.html" target="body">htload</a></strong> <font face="helvetica,arial" size="2"><br>
+  <br><strong><a href="hlload.html" target="body">hlload</a></strong> <font face="helvetica,arial" size="2"><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#doc_list">doc_list</a><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#word_dump">word_dump</a><br>
-  <br><strong><a href="htnotify.html" target="body">htnotify</a></strong> <font face="helvetica,arial" size="2"><br>
-   <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#htnotify_prefix_file">htnotify_prefix_file</a><br>
-   <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#htnotify_replyto">htnotify_replyto</a><br>
-   <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#htnotify_sender">htnotify_sender</a><br>
-   <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#htnotify_suffix_file">htnotify_suffix_file</a><br>
-   <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#htnotify_webmaster">htnotify_webmaster</a><br>
+  <br><strong><a href="hlnotify.html" target="body">hlnotify</a></strong> <font face="helvetica,arial" size="2"><br>
+   <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#hlnotify_prefix_file">hlnotify_prefix_file</a><br>
+   <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#hlnotify_replyto">hlnotify_replyto</a><br>
+   <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#hlnotify_sender">hlnotify_sender</a><br>
+   <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#hlnotify_suffix_file">hlnotify_suffix_file</a><br>
+   <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#hlnotify_webmaster">hlnotify_webmaster</a><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#iso_8601">iso_8601</a><br>
-  <br><strong><a href="htpurge.html" target="body">htpurge</a></strong> <font face="helvetica,arial" size="2"><br>
+  <br><strong><a href="hlpurge.html" target="body">hlpurge</a></strong> <font face="helvetica,arial" size="2"><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#remove_bad_urls">remove_bad_urls</a><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#remove_unretrieved_urls">remove_unretrieved_urls</a><br>
   <br><strong><a href="htsearch.html" target="_top">htsearch</a></strong> <font face="helvetica,arial" size="2"><br>

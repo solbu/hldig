@@ -113,7 +113,7 @@ layout:default
          <tr> <td>g</td><td>Signature of the document used for
          duplicate-detection</td></tr>
          <tr> <td>e</td><td>E-mail address to use for a
-         notification message from htnotify</td></tr>
+         notification message from hlnotify</td></tr>
          <tr> <td>n</td><td>Date to send out a notification
          e-mail message</td></tr>
          <tr> <td>S</td><td>Subject for a notification e-mail

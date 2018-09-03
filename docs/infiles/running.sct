@@ -28,9 +28,9 @@ layout:default
     files</a>, you can build the required databases simply by running
     <a href="rundig.html">rundig</a>. This script will run
     <a href="htdig.html">htdig</a> first to build the initial database,
-    then it runs <a href="htpurge.html">htpurge</a> to clean up the
+    then it runs <a href="hlpurge.html">hlpurge</a> to clean up the
     document and word databases that were created by htdig.
-    It then runs <a href="htnotify.html">htnotify</a>, and finally
+    It then runs <a href="hlnotify.html">hlnotify</a>, and finally
     runs <a href="hlfuzzy.html">hlfuzzy</a> if necessary, to build
     the endings and synonyms databases if they're missing or outdated.
     The rundig script can be customized for your specific needs, or
@@ -50,7 +50,7 @@ layout:default
     is initially installed. The rundig script handles the building of
     these two databases as needed for the default setup. A few of the
     other fuzzy match algorithms use databases that are derived from
-    the word database built by htdig/htpurge, so if you use these
+    the word database built by htdig/hlpurge, so if you use these
     algorithms you should rebuild their databases with hlfuzzy every
     time you update your index. This isn't done in rundig, but the
     comments in the script show where you can add your hlfuzzy commands

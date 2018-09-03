@@ -46,34 +46,34 @@ layout:default
    into another. In previous versions of ht://Dig, the hlmerge
    program also formed databases for use by htsearch from the
    hldig output. This process is now largely unnecessary except
-   for removal of invalid URLs which is now done by the htpurge
+   for removal of invalid URLs which is now done by the hlpurge
    program.
   </p>
   <hr noshade>
   <h3>
-    <a href="htpurge.html">htpurge</a>
+    <a href="hlpurge.html">hlpurge</a>
   </h3>
   <p>
    Purging removes documents and the associated words from the
    databases. This should be done after running hldig to remove
    invalid URLs, documents marked not to be indexed, old
    versions of modified documents, etc. You can also specify
-   specific URLs to be removed explicitly by htpurge.
+   specific URLs to be removed explicitly by hlpurge.
   </p>
   <hr noshade>
   <h3>
-    <a href="htload.html">htload</a>
+    <a href="hlload.html">hlload</a>
   </h3>
   <p>
     Loading involves importing the contents of the databases
-    from formatted ASCII text documents as created by htdump or
+    from formatted ASCII text documents as created by hldump or
     the -t flag from hldig. This is, of course, destructive by
     nature and data from the text files will replace any
     conflicting data in the databases.
   </p>
   <hr noshade>
   <h3>
-    <a href="htdump.html">htdump</a>
+    <a href="hldump.html">hldump</a>
   </h3>
   <p>
     Dumping involves exporting the contents of the databases to
@@ -86,16 +86,16 @@ layout:default
   </p>
   <hr noshade>
   <h3>
-    <a href="htstat.html">htstat</a>
+    <a href="hlstat.html">hlstat</a>
   </h3>
   <p>
-    The htstat program returns statistics on the databases,
+    The hlstat program returns statistics on the databases,
     similar to the -s flags for some of the programs. In
     addition, it can return a list of URLs in the databases.
   </p>
   <hr noshade>
   <h3>
-  <a href="htnotify.html">htnotify</a>
+  <a href="hlnotify.html">hlnotify</a>
   </h3>
   <p>
     The ht://Dig system includes a handy reminder service which

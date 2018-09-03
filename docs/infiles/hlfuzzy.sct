@@ -18,7 +18,7 @@ layout:default
     </h2>
     </dd>
     <dd>
-    Htfuzzy creates indexes for different "fuzzy" search
+    Hlfuzzy creates indexes for different "fuzzy" search
     algorithms. These indexes can then be used by the
     <a href="htsearch.html" target="_top">htsearch</a> program.
     </dd>

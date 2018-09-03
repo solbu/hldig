@@ -5,7 +5,7 @@ layout:default
 <a href="https://github.com/solbu/hldig">hl://Dig</a> is a fork of <a href="https://sourceforge.net/projects/htdig/">ht://Dig</a>, a world-wide-web search system for an intranet or small internet.
 </h2>
 <p>
-hl://Dig Copyright &copy; 2017<br>
+hl://Dig Copyright &copy; 2017-2018
 Please see the file <a href="https://github.com/solbu/hldig/blob/master/COPYING">COPYING</a> for
 license information.
 </p>
@@ -14,7 +14,7 @@ license information.
 Recent News
 </h2>
 <p>
-View the <a href="https://github.com/solbu/hldig/blob/master/ChangeLog.md">ChangeLog</a>
+View the <a href="https://github.com/solbu/hldig/blob/master/ChangeLog">ChangeLog</a>
 </p>
 <form action="http://htdig.dreamhosters.com/hlsearch.sh" method="post">
 <p>

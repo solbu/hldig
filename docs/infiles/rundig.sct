@@ -21,9 +21,9 @@ layout:default
     Rundig is a shell script that builds the databases necessary
     for a typical hl://Dig setup. It runs <a href="htdig.html">
     htdig</a> first to build the initial database, then it runs
-    <a href="htpurge.html">htpurge</a> to clean up the document
+    <a href="hlpurge.html">hlpurge</a> to clean up the document
     and word databases that were created by htdig.
-    It then runs <a href="htnotify.html">htnotify</a>, and finally
+    It then runs <a href="hlnotify.html">hlnotify</a>, and finally
     runs <a href="hlfuzzy.html">hlfuzzy</a> if necessary, to build
     the endings and synonyms databases if they're missing or
     outdated. Rundig uses the "-i" option to htdig, so it always
@@ -42,11 +42,11 @@ layout:default
       -a
       </dt>
       <dd>
-      Use alternate work files. Tells htdig and htpurge to
+      Use alternate work files. Tells htdig and hlpurge to
       append <em>.work</em> to database files, causing a
       second copy of the database to be built. This allows
       the original files to be used by htsearch during the
-      indexing run. After htdig and htpurge are done building
+      indexing run. After htdig and hlpurge are done building
       the .work database files, rundig will move them into
       place, replacing the original files.
       <br>This option only works for building a new second
@@ -93,7 +93,7 @@ layout:default
     <dd>
     <dl>
       <dt>
-      <a href="attrs.html#bin_dir">BIN_DIR</a>/htdig, htpurge, htnotify, hlfuzzy
+      <a href="attrs.html#bin_dir">BIN_DIR</a>/htdig, hlpurge, hlnotify, hlfuzzy
       </dt>
       <dd>
       The executable programs called by rundig.

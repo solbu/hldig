@@ -1065,7 +1065,7 @@ lang_dir:             ${<a href="attrs.html#common_dir">common_dir</a>}/german
     <p>Didier Lebrun has written a guide for configuring htdig to
     support French, entitled
     <a href="http://www.quartier-rural.org/dl/elucu/htdig-vf/lisezmoi.html">
-    Comment installer et configurer HtDig pour la langue fran&ccedil;aise</a>.
+    Comment installer et configurer HlDig pour la langue fran&ccedil;aise</a>.
     His "kit de francisation" is also available on
     <a
     href="http://www.htdig.org/files/contrib/wordlists/">our
@@ -1270,7 +1270,7 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
     attention to the description and examples for
     <a href="attrs.html#url_part_aliases">url_part_aliases</a>.
     You must put one definition of this attribute in your
-    configuration file for htdig, hlmerge (or htpurge) and htnotify,
+    configuration file for htdig, hlmerge (or hlpurge) and hlnotify,
     and a different definition of it in your configuration file
     for htsearch.</p>
 
@@ -1748,7 +1748,7 @@ require group foo
     your OS distribution. Also, once you've set your locale, you need
     to reindex all your documents in order for the locale to take
     effect in the word database. This means rerunning the "rundig"
-    script, or running "htdig -i" and hlmerge (or htpurge in the 3.2
+    script, or running "htdig -i" and hlmerge (or hlpurge in the 3.2
     betas).</p>
 
     <p>Note also that some UNIX systems and libc5-based Linux
