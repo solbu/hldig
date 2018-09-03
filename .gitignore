@@ -2,6 +2,7 @@ Makefile
 *.log
 autom4te.cache
 *~
+*.swp
 testing
 temp
 *.o
