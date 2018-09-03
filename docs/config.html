@@ -41,7 +41,7 @@
       <li class="nav-item" > <a class="nav-link" href="hlload.html">hlload</a>
       <li class="nav-item" > <a class="nav-link" href="hlpurge.html">hlpurge</a>
       <li class="nav-item" > <a class="nav-link" href="hlstat.html">hlstat</a>
-      <li class="nav-item" > <a class="nav-link" href="htfuzzy.html">htfuzzy</a>
+      <li class="nav-item" > <a class="nav-link" href="hlfuzzy.html">hlfuzzy</a>
       <li class="nav-item" > <a class="nav-link" href="hlsearch.html">hlsearch</a>
       <li class="nav-item" > <a class="nav-link" href="confindex.html" target="_top">Configuration file</a>
       <li class="nav-item" > <a class="nav-link" href="meta.html">META tags</a>
@@ -65,8 +65,8 @@
 
     <div class="col-md-8">
         <p>
-    ht://Dig requires a configuration file and several HTML files
-    to operate correctly. Fortunately, when ht://Dig is
+    hl://Dig requires a configuration file and several HTML files
+    to operate correctly. Fortunately, when hl://Dig is
     installed, a very reasonable configuration is created and in
     most cases only minor modifications to the files are
     necessary.
@@ -80,7 +80,7 @@
   </p>
   <ul>
     <li>
-    <a href="#htdig.conf">${CONFIG_DIR}/htdig.conf</a>
+    <a href="#hldig.conf">${CONFIG_DIR}/hldig.conf</a>
     </li>
     <li>
     <a href="#search.html">${SEARCH_DIR}/search.html</a>
@@ -103,27 +103,27 @@
   </ul>
   <hr noshade>
   <h2>
-    <a name="#htdig.conf">${CONFIG_DIR}/htdig.conf</a>
+    <a name="#hldig.conf">${CONFIG_DIR}/hldig.conf</a>
   </h2>
   <p>
     This is the main runtime configuration file for all programs
-    that make up ht://Dig. The file is fully described in the
+    that make up hl://Dig. The file is fully described in the
     <a href="confindex.html" target="_top">Configuration file
     manual</a>.
   </p>
   <p>
-    When ht://Dig is installed, several attributes will be
+    When hl://Dig is installed, several attributes will be
     customized to your particular environment, but for reference,
     here is a sample copy of what it can look like:
   </p>
 <pre>
 <font size="-1">
 #
-# Example config file for ht://Dig.
+# Example config file for hl://Dig.
 #
-# This configuration file is used by all the programs that make up ht://Dig.
+# This configuration file is used by all the programs that make up hl://Dig.
 # Please refer to the attribute reference manual for more details on what
-# can be put into this file.  (http://www.htdig.org/confindex.html)
+# can be put into this file.  (https://solbu.github.io/hldig/confindex.html)
 # Note that most attributes have very reasonable default values so you
 # really only have to add attributes here if you want to change the defaults.
 #
@@ -135,17 +135,17 @@
 # plenty of free disk space available for the databases.  They can get
 # pretty big.
 #
-database_dir:           /opt/www/htdig/db
+database_dir:           /opt/www/var/hldig/db
 
 #
-# This specifies the URL where the robot (htdig) will start.  You can specify
+# This specifies the URL where the robot (hldig) will start.  You can specify
 # multiple URLs here.  Just separate them by some whitespace.
-# The example here will cause the ht://Dig homepage and related pages to be
+# The example here will cause the hl://Dig homepage and related pages to be
 # indexed.
 # You could also index all the URLs in a file like so:
 # start_url:           `${common_dir}/start.url`
 #
-start_url:              http://www.htdig.org/
+start_url:              https://solbu.github.io/hldig/
 
 #
 # This attribute limits the scope of the indexing process.  The default is to
@@ -171,7 +171,7 @@ limit_urls_to:          ${start_url}
 exclude_urls:           /cgi-bin/ .cgi
 
 #
-# Since ht://Dig does not (and cannot) parse every document type, this
+# Since hl://Dig does not (and cannot) parse every document type, this
 # attribute is a list of strings (extensions) that will be ignored during
 # indexing. These are *only* checked at the end of a URL, whereas
 # exclude_url patterns are matched anywhere.
@@ -183,10 +183,10 @@ bad_extensions:         .wav .gz .z .sit .au .zip .tar .hqx .exe .com .gif \
         .jpg .jpeg .aiff .class .map .ram .tgz .bin .rpm .mpg .mov .avi .css
 
 #
-# The string htdig will send in every request to identify the robot.  Change
+# The string hldig will send in every request to identify the robot.  Change
 # this to your email address.
 #
-maintainer:             unconfigured@htdig.searchengine.maintainer
+maintainer:             unconfigured@hldig.searchengine.maintainer
 
 #
 # The excerpts that are displayed in long results rely on stored information
@@ -207,17 +207,17 @@ maintainer:             unconfigured@htdig.searchengine.maintainer
 max_head_length:        10000
 
 #
-# To limit network connections, ht://Dig will only pull up to a certain limit
+# To limit network connections, hl://Dig will only pull up to a certain limit
 # of bytes. This prevents the indexing from dying because the server keeps
 # sending information. However, several FAQs happen because people have files
 # bigger than the default limit of 100KB. This sets the default a bit higher.
-# (see &lt;http://www.htdig.org/FAQ.html&gt; for more)
+# (see &lt;https://solbu.github.io/hldig/FAQ.html&gt; for more)
 #
 max_doc_size:           200000
 
 #
 # Most people expect some sort of excerpt in results. By default, if the
-# search words aren't found in context in the stored excerpt, htsearch shows
+# search words aren't found in context in the stored excerpt, hlsearch shows
 # the text defined in the no_excerpt_text attribute:
 # (None of the search words were found in the top of this document.)
 # This attribute instead will show the top of the excerpt.
@@ -244,7 +244,7 @@ no_excerpt_show_top:    true
 #       synonyms
 # By default only the "exact" algorithm is used with weight 1.
 # Note that if you are going to use the endings, metaphone, soundex, accents,
-# or synonyms algorithms, you will need to run htfuzzy to generate
+# or synonyms algorithms, you will need to run hlfuzzy to generate
 # the databases they use.
 #
 search_algorithm:       exact:1 synonyms:0.5 endings:0.1
@@ -254,7 +254,7 @@ search_algorithm:       exact:1 synonyms:0.5 endings:0.1
 # The default is to use compiled versions of these files, which produces
 # slightly faster results. However, uncommenting these lines makes it
 # very easy to change the format of search results.
-# See &lt;http://www.htdig.org/hts_templates.html&gt; for more details.
+# See &lt;https://solbu.github.io/hldig/hts_templates.html&gt; for more details.
 #
 # template_map: Long long ${common_dir}/long.html \
 #               Short short ${common_dir}/short.html
@@ -265,34 +265,34 @@ search_algorithm:       exact:1 synonyms:0.5 endings:0.1
 # The defaults are just boring text numbers.  These images spice
 # up the result pages quite a bit.  (Feel free to do whatever, though)
 #
-next_page_text:         &lt;img src="/htdig/buttonr.gif" border="0" align="middle" width="30" height="30" alt="next"&gt;
+next_page_text:         &lt;img src="/hldig/buttonr.gif" border="0" align="middle" width="30" height="30" alt="next"&gt;
 no_next_page_text:
-prev_page_text:         &lt;img src="/htdig/buttonl.gif" border="0" align="middle" width="30" height="30" alt="prev"&gt;
+prev_page_text:         &lt;img src="/hldig/buttonl.gif" border="0" align="middle" width="30" height="30" alt="prev"&gt;
 no_prev_page_text:
-page_number_text:       '&lt;img src="/htdig/button1.gif" border="0" align="middle" width="30" height="30" alt="1"&gt;' \
-                        '&lt;img src="/htdig/button2.gif" border="0" align="middle" width="30" height="30" alt="2"&gt;' \
-                        '&lt;img src="/htdig/button3.gif" border="0" align="middle" width="30" height="30" alt="3"&gt;' \
-                        '&lt;img src="/htdig/button4.gif" border="0" align="middle" width="30" height="30" alt="4"&gt;' \
-                        '&lt;img src="/htdig/button5.gif" border="0" align="middle" width="30" height="30" alt="5"&gt;' \
-                        '&lt;img src="/htdig/button6.gif" border="0" align="middle" width="30" height="30" alt="6"&gt;' \
-                        '&lt;img src="/htdig/button7.gif" border="0" align="middle" width="30" height="30" alt="7"&gt;' \
-                        '&lt;img src="/htdig/button8.gif" border="0" align="middle" width="30" height="30" alt="8"&gt;' \
-                        '&lt;img src="/htdig/button9.gif" border="0" align="middle" width="30" height="30" alt="9"&gt;' \
-                        '&lt;img src="/htdig/button10.gif" border="0" align="middle" width="30" height="30" alt="10"&gt;'
+page_number_text:       '&lt;img src="/hldig/button1.gif" border="0" align="middle" width="30" height="30" alt="1"&gt;' \
+                        '&lt;img src="/hldig/button2.gif" border="0" align="middle" width="30" height="30" alt="2"&gt;' \
+                        '&lt;img src="/hldig/button3.gif" border="0" align="middle" width="30" height="30" alt="3"&gt;' \
+                        '&lt;img src="/hldig/button4.gif" border="0" align="middle" width="30" height="30" alt="4"&gt;' \
+                        '&lt;img src="/hldig/button5.gif" border="0" align="middle" width="30" height="30" alt="5"&gt;' \
+                        '&lt;img src="/hldig/button6.gif" border="0" align="middle" width="30" height="30" alt="6"&gt;' \
+                        '&lt;img src="/hldig/button7.gif" border="0" align="middle" width="30" height="30" alt="7"&gt;' \
+                        '&lt;img src="/hldig/button8.gif" border="0" align="middle" width="30" height="30" alt="8"&gt;' \
+                        '&lt;img src="/hldig/button9.gif" border="0" align="middle" width="30" height="30" alt="9"&gt;' \
+                        '&lt;img src="/hldig/button10.gif" border="0" align="middle" width="30" height="30" alt="10"&gt;'
 #
 # To make the current page stand out, we will put a border around the
 # image for that page.
 #
-no_page_number_text:    '&lt;img src="/htdig/button1.gif" border="2" align="middle" width="30" height="30" alt="1"&gt;' \
-                        '&lt;img src="/htdig/button2.gif" border="2" align="middle" width="30" height="30" alt="2"&gt;' \
-                        '&lt;img src="/htdig/button3.gif" border="2" align="middle" width="30" height="30" alt="3"&gt;' \
-                        '&lt;img src="/htdig/button4.gif" border="2" align="middle" width="30" height="30" alt="4"&gt;' \
-                        '&lt;img src="/htdig/button5.gif" border="2" align="middle" width="30" height="30" alt="5"&gt;' \
-                        '&lt;img src="/htdig/button6.gif" border="2" align="middle" width="30" height="30" alt="6"&gt;' \
-                        '&lt;img src="/htdig/button7.gif" border="2" align="middle" width="30" height="30" alt="7"&gt;' \
-                        '&lt;img src="/htdig/button8.gif" border="2" align="middle" width="30" height="30" alt="8"&gt;' \
-                        '&lt;img src="/htdig/button9.gif" border="2" align="middle" width="30" height="30" alt="9"&gt;' \
-                        '&lt;img src="/htdig/button10.gif" border="2" align="middle" width="30" height="30" alt="10"&gt;'
+no_page_number_text:    '&lt;img src="/hldig/button1.gif" border="2" align="middle" width="30" height="30" alt="1"&gt;' \
+                        '&lt;img src="/hldig/button2.gif" border="2" align="middle" width="30" height="30" alt="2"&gt;' \
+                        '&lt;img src="/hldig/button3.gif" border="2" align="middle" width="30" height="30" alt="3"&gt;' \
+                        '&lt;img src="/hldig/button4.gif" border="2" align="middle" width="30" height="30" alt="4"&gt;' \
+                        '&lt;img src="/hldig/button5.gif" border="2" align="middle" width="30" height="30" alt="5"&gt;' \
+                        '&lt;img src="/hldig/button6.gif" border="2" align="middle" width="30" height="30" alt="6"&gt;' \
+                        '&lt;img src="/hldig/button7.gif" border="2" align="middle" width="30" height="30" alt="7"&gt;' \
+                        '&lt;img src="/hldig/button8.gif" border="2" align="middle" width="30" height="30" alt="8"&gt;' \
+                        '&lt;img src="/hldig/button9.gif" border="2" align="middle" width="30" height="30" alt="9"&gt;' \
+                        '&lt;img src="/hldig/button10.gif" border="2" align="middle" width="30" height="30" alt="10"&gt;'
 </font>
 </pre>
   <hr noshade>
@@ -301,10 +301,10 @@ no_page_number_text:    '&lt;img src="/htdig/button1.gif" border="2" align="midd
   </h2>
   <p>
     This is the default search form. It is an example interface to
-    the search engine, htsearch. The file contains a form with as
-    its action a call to htsearch. There are several form variables
-    which htsearch will use. More about those can be found in the
-    <a href="htsearch.html" target="_top">htsearch
+    the search engine, hlsearch. The file contains a form with as
+    its action a call to hlsearch. There are several form variables
+    which hlsearch will use. More about those can be found in the
+    <a href="hlsearch.html" target="_top">hlsearch
     documentation</a>.
   </p>
   <p>
@@ -315,18 +315,18 @@ no_page_number_text:    '&lt;img src="/htdig/button1.gif" border="2" align="midd
 &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"&gt;
 &lt;html&gt;
 &lt;head&gt;
-&lt;title&gt;ht://Dig WWW Search&lt;/title&gt;
+&lt;title&gt;hl://Dig WWW Search&lt;/title&gt;
 &lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
 &lt;h1&gt;
-&lt;a href="http://www.htdig.org"&gt;&lt;IMG SRC="/htdig/logo.jpg" align="bottom" alt="ht://Dig" border="0"&gt;&lt;/a&gt;
+&lt;a href="https://solbu.github.io/hldig"&gt;&lt;IMG SRC="/hldig/logo.jpg" align="bottom" alt="hl://Dig" border="0"&gt;&lt;/a&gt;
 WWW Site Search&lt;/h1&gt;
 &lt;hr noshade size="4"&gt;
 This search will allow you to search the contents of
 all the publicly available WWW documents at this site.
 &lt;br&gt;
 &lt;p&gt;
-&lt;form method="post" action="/cgi-bin/htsearch"&gt;
+&lt;form method="post" action="/cgi-bin/hlsearch"&gt;
 &lt;font size="-1"&gt;
 Match: &lt;select name="method"&gt;
 &lt;option value="and"&gt;All
@@ -346,7 +346,7 @@ Sort by: &lt;select name="sort"&gt;
 &lt;option value="revtitle"&gt;Reverse Title
 &lt;/select&gt;
 &lt;/font&gt;
-&lt;input type="hidden" name="config" value="htdig"&gt;
+&lt;input type="hidden" name="config" value="hldig"&gt;
 &lt;input type="hidden" name="restrict" value=""&gt;
 &lt;input type="hidden" name="exclude" value=""&gt;
 &lt;br&gt;
@@ -379,7 +379,7 @@ Search:
     variables will be replaced with the appropriate values for
     the particular search it is used for. For more details of the
     use of these variables, consult the
-    <a href="hts_templates.html">htsearch templates</a> documentation.
+    <a href="hts_templates.html">hlsearch templates</a> documentation.
   </p>
   <p>
     Below is the default header.html file that gets installed.
@@ -391,7 +391,7 @@ Search:
 &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"&gt;
 &lt;html&gt;&lt;head&gt;&lt;title&gt;Search results for '$&(WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
-&lt;h2&gt;&lt;img src="/htdig/logo.jpg" alt="ht://Dig"&gt;
+&lt;h2&gt;&lt;img src="/hldig/logo.jpg" alt="hl://Dig"&gt;
 Search results for '$&(LOGICAL_WORDS)'&lt;/h2&gt;
 &lt;hr noshade size="4"&gt;
 &lt;form method="get" action="$(CGI)"&gt;
@@ -410,7 +410,7 @@ Refine search:
 &lt;/form&gt;
 &lt;hr noshade size="1"&gt;
 &lt;strong&gt;Documents $(FIRSTDISPLAYED) - $(LASTDISPLAYED) of $(MATCHES) matches.
-More &lt;img src="/htdig/star.gif" alt="*"&gt;'s indicate a better match.
+More &lt;img src="/hldig/star.gif" alt="*"&gt;'s indicate a better match.
 &lt;/strong&gt;
 &lt;hr noshade size="1"&gt;
 </font>
@@ -433,8 +433,8 @@ More &lt;img src="/htdig/star.gif" alt="*"&gt;'s indicate a better match.
 $(PAGEHEADER)
 $(PREVPAGE) $(PAGELIST) $(NEXTPAGE)
 &lt;hr noshade size="4"&gt;
-&lt;a href="http://www.htdig.org/"&gt;
-&lt;img src="/htdig/logo.jpg" border="0" alt="ht://Dig"&gt;ht://Dig $(VERSION)&lt;/a&gt;
+&lt;a href="https://solbu.github.io/hldig/"&gt;
+&lt;img src="/hldig/logo.jpg" border="0" alt="hl://Dig"&gt;hl://Dig $(VERSION)&lt;/a&gt;
 &lt;/body&gt;&lt;/html&gt;
 </font>
 </pre>
@@ -467,7 +467,7 @@ $(PREVPAGE) $(PAGELIST) $(NEXTPAGE)
 &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"&gt;
 &lt;html&gt;&lt;head&gt;&lt;title&gt;No match for '$&(LOGICAL_WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
-&lt;h1&gt;&lt;img src="/htdig/logo.jpg" alt="ht://Dig"&gt;
+&lt;h1&gt;&lt;img src="/hldig/logo.jpg" alt="hl://Dig"&gt;
 Search results&lt;/h1&gt;
 &lt;hr noshade size="4"&gt;
 &lt;h2&gt;No matches were found for '$&(LOGICAL_WORDS)'&lt;/h2&gt;
@@ -498,8 +498,8 @@ Refine search:
 &lt;/font&gt;
 &lt;/form&gt;
 &lt;hr noshade size="4"&gt;
-&lt;a href="http://www.htdig.org/"&gt;
-&lt;img src="/htdig/logo.jpg" border="0" alt="ht://Dig"&gt;ht://Dig $(VERSION)&lt;/a&gt;
+&lt;a href="https://solbu.github.io/hldig/"&gt;
+&lt;img src="/hldig/logo.jpg" border="0" alt="hl://Dig"&gt;hl://Dig $(VERSION)&lt;/a&gt;
 &lt;/body&gt;&lt;/html&gt;
 </font>
 </pre>
@@ -516,7 +516,7 @@ Refine search:
 &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"&gt;
 &lt;html&gt;&lt;head&gt;&lt;title&gt;Error in Boolean search for '$&(WORDS)'&lt;/title&gt;&lt;/head&gt;
 &lt;body bgcolor="#eef7ff"&gt;
-&lt;h1&gt;&lt;img src="/htdig/logo.jpg" alt="ht://Dig"&gt;
+&lt;h1&gt;&lt;img src="/hldig/logo.jpg" alt="hl://Dig"&gt;
 Error in Boolean search for '$&(LOGICAL_WORDS)'&lt;/h1&gt;
 &lt;hr noshade size="4"&gt;
 Boolean expressions need to be 'correct' in order for the search
@@ -544,8 +544,8 @@ Refine search:
 &lt;/font&gt;
 &lt;/form&gt;
 &lt;hr noshade size="4"&gt;
-&lt;a href="http://www.htdig.org/"&gt;
-&lt;img src="/htdig/logo.jpg" border="0" alt="ht://Dig"&gt;ht://Dig $(VERSION)&lt;/a&gt;
+&lt;a href="https://solbu.github.io/hldig/"&gt;
+&lt;img src="/hldig/logo.jpg" border="0" alt="hl://Dig"&gt;hl://Dig $(VERSION)&lt;/a&gt;
 &lt;/body&gt;&lt;/html&gt;
 
 </font>

@@ -41,7 +41,7 @@
       <li class="nav-item" > <a class="nav-link" href="hlload.html">hlload</a>
       <li class="nav-item" > <a class="nav-link" href="hlpurge.html">hlpurge</a>
       <li class="nav-item" > <a class="nav-link" href="hlstat.html">hlstat</a>
-      <li class="nav-item" > <a class="nav-link" href="htfuzzy.html">htfuzzy</a>
+      <li class="nav-item" > <a class="nav-link" href="hlfuzzy.html">hlfuzzy</a>
       <li class="nav-item" > <a class="nav-link" href="hlsearch.html">hlsearch</a>
       <li class="nav-item" > <a class="nav-link" href="confindex.html" target="_top">Configuration file</a>
       <li class="nav-item" > <a class="nav-link" href="meta.html">META tags</a>
@@ -91,10 +91,10 @@
     files</a>, you can build the required databases simply by running
     <a href="rundig.html">rundig</a>. This script will run
     <a href="htdig.html">htdig</a> first to build the initial database,
-    then it runs <a href="htpurge.html">htpurge</a> to clean up the
+    then it runs <a href="hlpurge.html">hlpurge</a> to clean up the
     document and word databases that were created by htdig.
-    It then runs <a href="htnotify.html">htnotify</a>, and finally
-    runs <a href="htfuzzy.html">htfuzzy</a> if necessary, to build
+    It then runs <a href="hlnotify.html">hlnotify</a>, and finally
+    runs <a href="hlfuzzy.html">hlfuzzy</a> if necessary, to build
     the endings and synonyms databases if they're missing or outdated.
     The rundig script can be customized for your specific needs, or
     you can develop your own script that runs any of these programs.
@@ -102,21 +102,21 @@
     better understanding of what each one does.
   </p>
   <p>
-    The <a href="htfuzzy.html">htfuzzy</a> program deserves a bit more
+    The <a href="hlfuzzy.html">hlfuzzy</a> program deserves a bit more
     explaining. It is used to build databases that are used by some
     of the fuzzy match algorithms selected by
     <a href="htsearch.html" target="_top">htsearch</a>'s
     <a href="attrs.html#search_algorithm">search_algorithm</a>
     attribute. The <em>endings</em> and <em>synonyms</em> algorithms
     use static dictionaries, so their databases only need to be rebuilt
-    by htfuzzy when the dictionary files are changed, or when hl://Dig
+    by hlfuzzy when the dictionary files are changed, or when hl://Dig
     is initially installed. The rundig script handles the building of
     these two databases as needed for the default setup. A few of the
     other fuzzy match algorithms use databases that are derived from
-    the word database built by htdig/htpurge, so if you use these
-    algorithms you should rebuild their databases with htfuzzy every
+    the word database built by htdig/hlpurge, so if you use these
+    algorithms you should rebuild their databases with hlfuzzy every
     time you update your index. This isn't done in rundig, but the
-    comments in the script show where you can add your htfuzzy commands
+    comments in the script show where you can add your hlfuzzy commands
     as needed. Some fuzzy match algorithms don't need their own
     database, as they just operate on the word database, so they don't
     need any special setup.

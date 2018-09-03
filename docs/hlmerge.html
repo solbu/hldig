@@ -41,7 +41,7 @@
       <li class="nav-item" > <a class="nav-link" href="hlload.html">hlload</a>
       <li class="nav-item" > <a class="nav-link" href="hlpurge.html">hlpurge</a>
       <li class="nav-item" > <a class="nav-link" href="hlstat.html">hlstat</a>
-      <li class="nav-item" > <a class="nav-link" href="htfuzzy.html">htfuzzy</a>
+      <li class="nav-item" > <a class="nav-link" href="hlfuzzy.html">hlfuzzy</a>
       <li class="nav-item" > <a class="nav-link" href="hlsearch.html">hlsearch</a>
       <li class="nav-item" > <a class="nav-link" href="confindex.html" target="_top">Configuration file</a>
       <li class="nav-item" > <a class="nav-link" href="meta.html">META tags</a>
@@ -71,7 +71,7 @@
     </h2>
     </dd>
     <dd>
-    htmerge [<em>options</em>]
+    hlmerge [<em>options</em>]
     </dd>
   </dl>
   <dl>
@@ -81,7 +81,7 @@
     </h2>
     </dd>
     <dd>
-    Htmerge is used to create a document index and word
+    Hlmerge is used to create a document index and word
     database from the files that were created by
     <a href="hldig.html">hldig</a>. These databases are then used by
     <a href="hlsearch.html" target="_top">hlsearch</a> to perform
@@ -130,16 +130,16 @@
       <a href="attrs.html#database_base">database_base</a>
       attribute to change the name of the databases, so
       they are in different directories or files.<br>
-      <strong>Note:</strong> You <em>must</em> run htmerge
+      <strong>Note:</strong> You <em>must</em> run hlmerge
       separately on each of the databases created by
       <a href="hldig.html">hldig</a> before merging them
       together with this option. This is because merging
       the two wordlists together requires wordlists that
-      have already been cleaned up by htmerge.
+      have already been cleaned up by hlmerge.
       Because the -m option allows you to specify only
       one database to be merged into the other, and only
       one -m option may be specified, if you need to merge
-      three or more databases together you must run htmerge
+      three or more databases together you must run hlmerge
       multiple times with the -m option.
       </dd>
       <dt>
@@ -147,7 +147,7 @@
       </dt>
       <dd>
       Print statistics about the document and word databases
-      after htmerge has finished.
+      after hlmerge has finished.
       </dd>
       <dt>
       -v
@@ -155,7 +155,7 @@
       <dd>
       Run in verbose mode. This will provide some hints as to
       the progress of the merge. This can be useful when
-      running htmerge interactively since some parts
+      running hlmerge interactively since some parts
       (especially the word database creation) can take a very
       long time.
       </dd>
