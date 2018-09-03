@@ -106,7 +106,7 @@ layout:confindex
   <br><strong><a href="htdump.html" target="body">htdump</a></strong> <font face="helvetica,arial" size="2"><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#doc_list">doc_list</a><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#word_dump">word_dump</a><br>
-  <br><strong><a href="htfuzzy.html" target="body">htfuzzy</a></strong> <font face="helvetica,arial" size="2"><br>
+  <br><strong><a href="hlfuzzy.html" target="body">hlfuzzy</a></strong> <font face="helvetica,arial" size="2"><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#accents_db">accents_db</a><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#endings_affix_file">endings_affix_file</a><br>
    <img src="dot.gif" alt="*" width=9 height=9> <a target="body" href="attrs.html#endings_dictionary">endings_dictionary</a><br>

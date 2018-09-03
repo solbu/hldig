@@ -227,7 +227,7 @@ layout:default
       </h2>
      </dd>
      <dd>
-      <a href="htmerge.html">htmerge</a>,
+      <a href="hlmerge.html">hlmerge</a>,
       <a href="htsearch.html" target="_top">htsearch</a>,
       <a href="attrs.html">Configuration file format</a>, and
       <a href="http://www.robotstxt.org/wc/norobots.html">

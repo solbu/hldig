@@ -181,7 +181,7 @@ no_excerpt_show_top:    true
 #       synonyms
 # By default only the "exact" algorithm is used with weight 1.
 # Note that if you are going to use the endings, metaphone, soundex, accents,
-# or synonyms algorithms, you will need to run htfuzzy to generate
+# or synonyms algorithms, you will need to run hlfuzzy to generate
 # the databases they use.
 #
 search_algorithm:       exact:1 synonyms:0.5 endings:0.1

@@ -20,7 +20,7 @@ layout:default
     <dd>
     Htstat returns statistics on the document and word
     databases, much like the -s option to htdig or
-    htmerge.
+    hlmerge.
     </dd>
   </dl>
   <dl>
@@ -88,7 +88,7 @@ layout:default
     </dd>
     <dd>
       <a href="htdig.html">htdig</a>,
-    <a href="htmerge.html">htmerge</a>, and
+    <a href="hlmerge.html">hlmerge</a>, and
     <a href="attrs.html">Configuration file format</a>
     </dd>
   </dl>

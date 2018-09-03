@@ -5,13 +5,13 @@ layout:default
     There are several programs in the hl://Dig package.
   </p>
   <h3>
-    <a href="htdig.html">htdig</a>
+    <a href="hldig.html">hldig</a>
   </h3>
   <p>
     Digging is the first step in creating a search database. This
     system uses the word <em>digging</em> while other systems call
     it <em>harvesting</em> or <em>gathering</em>. In the ht://Dig
-    system, the program <a href="htdig.html">htdig</a> performs
+    system, the program <a href="hldig.html">hldig</a> performs
     the information gathering stage. In this process, the program
     will act as a regular web user, except that it will follow
     <em>all</em> hyperlinks that it comes across. (Actually, it
@@ -39,13 +39,13 @@ layout:default
   </p>
   <hr noshade>
   <h3>
-    <a href="htmerge.html">htmerge</a>
+    <a href="hlmerge.html">hlmerge</a>
   </h3>
   <p>
    Merging does exactly that--it merges one database
-   into another. In previous versions of ht://Dig, the htmerge
+   into another. In previous versions of ht://Dig, the hlmerge
    program also formed databases for use by htsearch from the
-   htdig output. This process is now largely unnecessary except
+   hldig output. This process is now largely unnecessary except
    for removal of invalid URLs which is now done by the htpurge
    program.
   </p>
@@ -55,7 +55,7 @@ layout:default
   </h3>
   <p>
    Purging removes documents and the associated words from the
-   databases. This should be done after running htdig to remove
+   databases. This should be done after running hldig to remove
    invalid URLs, documents marked not to be indexed, old
    versions of modified documents, etc. You can also specify
    specific URLs to be removed explicitly by htpurge.
@@ -67,7 +67,7 @@ layout:default
   <p>
     Loading involves importing the contents of the databases
     from formatted ASCII text documents as created by htdump or
-    the -t flag from htdig. This is, of course, destructive by
+    the -t flag from hldig. This is, of course, destructive by
     nature and data from the text files will replace any
     conflicting data in the databases.
   </p>
@@ -108,10 +108,10 @@ layout:default
   </p>
   <hr noshade>
   <h3>
-  <a href="htfuzzy.html">htfuzzy</a>
+  <a href="hlfuzzy.html">hlfuzzy</a>
   </h3>
   <p>
     To allow the searches to use &quot;fuzzy&quot; algorithms to match
-    words, the <a href="htfuzzy.html">htfuzzy</a> program can
+    words, the <a href="hlfuzzy.html">hlfuzzy</a> program can
     create indexes for several different algorithms.
   </p>

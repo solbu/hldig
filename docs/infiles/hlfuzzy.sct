@@ -1,4 +1,4 @@
-title:htfuzzy
+title:hlfuzzy
 layout:default
 ---
   <dl>
@@ -8,7 +8,7 @@ layout:default
     </h2>
     </dd>
     <dd>
-    htfuzzy [-c <em>configfile</em>][-v] <em>algorithm</em> ...
+    hlfuzzy [-c <em>configfile</em>][-v] <em>algorithm</em> ...
     </dd>
   </dl>
   <dl>
@@ -210,7 +210,7 @@ layout:default
     </dd>
     <dd>
     <a href="hldig.html">htdig</a>,
-    <a href="hlmerge.html">htmerge</a>,
+    <a href="hlmerge.html">hlmerge</a>,
     <a href="hlsearch.html" target="_top">htsearch</a>,
     <a href="attrs.html">Configuration file format</a>, and
     <a href="http://fmg-www.cs.ucla.edu/fmg-members/geoff/ispell.html">

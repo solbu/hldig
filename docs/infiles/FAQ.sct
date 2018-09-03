@@ -143,17 +143,17 @@ layout:default
     5.2. <a href="#q5.2">I can't index PDF files.</a><br>
     5.3. <a href="#q5.3">When I run "rundig," I get a message about
     "DATABASE_DIR" not being found.</a><br>
-    5.4. <a href="#q5.4">When I run htmerge, it stops with an "out
+    5.4. <a href="#q5.4">When I run hlmerge, it stops with an "out
     of diskspace" message.</a><br>
     5.5. <a href="#q5.5">I have problems running rundig from cron
     under Linux.</a><br>
-    5.6. <a href="#q5.6">When I run htmerge, it stops with an
+    5.6. <a href="#q5.6">When I run hlmerge, it stops with an
     "Unexpected file type" message.</a><br>
     5.7. <a href="#q5.7">When I run htsearch, I get lots of Internal
     Server Errors (#500).</a><br>
     5.8. <a href="#q5.8">I'm having problems with indexing words
     with accented characters.</a><br>
-    5.9. <a href="#q5.9">When I run htmerge, it stops with a
+    5.9. <a href="#q5.9">When I run hlmerge, it stops with a
     "Word sort failed" message.</a><br>
     5.10. <a href="#q5.10">When htsearch has a lot of matches, it runs
     extremely slowly.</a><br>
@@ -164,10 +164,10 @@ layout:default
     5.13. <a href="#q5.13">I get Premature End of Script Headers errors
     when running htsearch.</a><br>
     5.14. <a href="#q5.14">I get Segmentation faults when running
-    htdig, htsearch or htfuzzy.</a><br>
+    htdig, htsearch or hlfuzzy.</a><br>
     5.15. <a href="#q5.15">Why does htdig 3.1.3 mangle URL parameters
     that contain bare "&amp;" characters?</a><br>
-    5.16. <a href="#q5.16">When I run htmerge, it stops with an
+    5.16. <a href="#q5.16">When I run hlmerge, it stops with an
     "Unable to open word list file '.../db.wordlist'" message.</a><br>
     5.17. <a href="#q5.17">When using Netscape, htsearch always returns the
     "No match" page.</a><br>
@@ -190,7 +190,7 @@ layout:default
     in the htdig -v output mean?</a><br>
     5.27. <a href="#q5.27">Why is htdig rejecting some of the
     links in my documents?</a><br>
-    5.28. <a href="#q5.28">When I run htdig or htmerge, I get a
+    5.28. <a href="#q5.28">When I run htdig or hlmerge, I get a
     "DB2 problem...: missing or empty key value specified" message.</a><br>
     5.29. <a href="#q5.29">When I run htdig on my site,
     it seems to go on and on without ending.</a><br>
@@ -359,7 +359,7 @@ layout:default
     many pages you plan on indexing. Some operating systems limit
     files to 2 GB in size, which can become a problem with a large
     database. There are also slightly different limits to each of
-    the programs. Right now htmerge performs a sort on the words
+    the programs. Right now hlmerge performs a sort on the words
     indexed. Most sort programs use a fair amount of RAM and
     temporary disk space as they assemble the sorted list. The
     htdig program stores a fair amount of information about the
@@ -792,7 +792,7 @@ following line would do it:<br>
     <strong>4.5. <a name="q4.5">OK, I can use multiple databases. Can I
     merge them into one?</a></strong><br>
     <p>As of version 3.1.0, you can do this with the -m option to
-    <a href="htmerge.html">htmerge</a>.</p>
+    <a href="hlmerge.html">hlmerge</a>.</p>
 
     <strong>4.6. <a name="q4.6">Wow, hl://Dig eats up a lot of disk
     space. How can I cut down?</a></strong><br>
@@ -996,7 +996,7 @@ lang_dir:             ${<a href="attrs.html#common_dir">common_dir</a>}/german
 <a href="attrs.html#endings_word2root_db">endings_word2root_db</a>: ${lang_dir}/word2root.db
 </pre>
     <p>
-    You can build the endings database with <code>htfuzzy endings</code>.
+    You can build the endings database with <code>hlfuzzy endings</code>.
     (This command may actually take days to complete, for
     releases older than 3.1.2. Current releases use faster regular
     expression matching, which will speed this up by a few orders
@@ -1049,7 +1049,7 @@ lang_dir:             ${<a href="attrs.html#common_dir">common_dir</a>}/german
     attribute, which lets you treat accented and unaccented letters
     as equivalent in words. Note that if you use the accents algorithm,
     you need to rebuild the accents database each time you update your
-    word database, using <code>"htfuzzy accents"</code>. This command
+    word database, using <code>"hlfuzzy accents"</code>. This command
     isn't in the default rundig script, so you may want to add it there.
     The accents fuzzy match algorithm is also in the 3.2 beta releases.
     There are also the
@@ -1270,7 +1270,7 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
     attention to the description and examples for
     <a href="attrs.html#url_part_aliases">url_part_aliases</a>.
     You must put one definition of this attribute in your
-    configuration file for htdig, htmerge (or htpurge) and htnotify,
+    configuration file for htdig, hlmerge (or htpurge) and htnotify,
     and a different definition of it in your configuration file
     for htsearch.</p>
 
@@ -1376,7 +1376,7 @@ http://www.grommetsRus.com/cgi-bin/htsearch?method=and&amp;words=grapple+grommet
     <a href="attrs.html#common_dir">common_dir</a> settings as well.
     Make sure your database_dir, and even your common_dir, are not
     in any directories accessible from the web server. Run htdig
-    and htmerge (or rundig) with each separate configuration file,
+    and hlmerge (or rundig) with each separate configuration file,
     to build your two databases.</p>
 
     <p>The tricky part is to make sure your htsearch program is
@@ -1420,7 +1420,7 @@ require group foo
     while the index is updating?</a></strong><br>
     <p>Answer contributed by Avi Rappoport &lt;avirr@searchtools.com&gt;</p>
     <p>If you have enough disk space for two copies of the index
-    database, use -a with the htdig and htmerge processes. This will
+    database, use -a with the htdig and hlmerge processes. This will
     make use of a copy of the index database with the extension
     ".work", and update the copy instead of the originals.
     This way, htsearch can use those originals while the update is
@@ -1666,20 +1666,20 @@ require group foo
     <p>This is due to a bug in the Makefile.in file in version
     3.1.0b1. The easiest fix is to edit the rundig file and change
     the line "TMPDIR=@DATABASE_DIR@" to set TMPDIR to a directory
-    with a large amount of temporary disk space for htmerge. This
+    with a large amount of temporary disk space for hlmerge. This
     bug is fixed in version 3.1.0b2.</p>
 
-    <strong>5.4. <a name="q5.4">When I run htmerge, it stops with an "out
+    <strong>5.4. <a name="q5.4">When I run hlmerge, it stops with an "out
     of diskspace" message.</a></strong><br>
-    <p>This means that htmerge has run out of temporary disk space
-    for sorting. Either in your "rundig" script (if you run htmerge
-    through that) or before you run htmerge, set the variable TMPDIR
+    <p>This means that hlmerge has run out of temporary disk space
+    for sorting. Either in your "rundig" script (if you run hlmerge
+    through that) or before you run hlmerge, set the variable TMPDIR
     to a temp directory with lots of space.</p>
 
     <strong>5.5. <a name="q5.5">I have problems running rundig from cron
     under Linux.</a></strong><br>
     <p>This problem commonly occurs on Red Hat Linux 5.0 and 5.1,
-    because of a bug in vixie-cron. It causes htmerge to fail with a
+    because of a bug in vixie-cron. It causes hlmerge to fail with a
     "Word sort failed" error. It's fixed in Red Hat 5.2.
     You can install vixie-cron-3.0.1-26.{arch}.rpm from a 5.2
     distribution to fix the problem on 5.0 or 5.1. A quick fix for
@@ -1687,7 +1687,7 @@ require group foo
     which will run the script through the ash shell, but this doesn't
     solve the underlying problem.</p>
 
-    <strong>5.6. <a name="q5.6">When I run htmerge, it stops with an
+    <strong>5.6. <a name="q5.6">When I run hlmerge, it stops with an
     "Unexpected file type" message.</a></strong><br>
     <p>Often this is because the databases are corrupt. Try removing
     them and rebuilding. If this doesn't work, some have found that
@@ -1748,7 +1748,7 @@ require group foo
     your OS distribution. Also, once you've set your locale, you need
     to reindex all your documents in order for the locale to take
     effect in the word database. This means rerunning the "rundig"
-    script, or running "htdig -i" and htmerge (or htpurge in the 3.2
+    script, or running "htdig -i" and hlmerge (or htpurge in the 3.2
     betas).</p>
 
     <p>Note also that some UNIX systems and libc5-based Linux
@@ -1761,7 +1761,7 @@ require group foo
     follow the directions in the program's comments to know how to
     use it and what to look for in its output.</p>
 
-    <strong>5.9. <a name="q5.9">When I run htmerge, it stops with a
+    <strong>5.9. <a name="q5.9">When I run hlmerge, it stops with a
     "Word sort failed" message.</a></strong><br>
     <p>There are three common causes of this. First of all, the sort
     program may be running out of temporary file space. Fix this
@@ -1772,7 +1772,7 @@ require group foo
     FreeBSD or NetBSD). This program uses the -T option as a record
     separator rather than an alternate temporary directory. On these
     systems, you must remove the TMPDIR environment variable from
-    rundig, or change the code in htmerge/words.cc not to use the
+    rundig, or change the code in hlmerge/words.cc not to use the
     -T option. A third cause is the cron program on Red Hat Linux
     5.0 or 5.1. (See question <a href="#q5.5">5.5</a> above.)</p>
 
@@ -1808,7 +1808,7 @@ require group foo
     matches, but doesn't list the matching documents.</a></strong><br>
     <p>This most commonly happens when you run htsearch while the
     database is currently being rebuilt or updated by htdig.
-    If htdig and htmerge have run to completion, and the problem still
+    If htdig and hlmerge have run to completion, and the problem still
     occurs, this is usually an indication of a corrupted database. If
     it's finding matches, it's because it found the matching
     words in db.words.db.  However, it isn't finding the document
@@ -1865,10 +1865,10 @@ require group foo
     <a href="#q5.14">5.14</a> and <a href="#q5.23">5.23</a>.</p>
 
     <strong>5.14. <a name="q5.14">I get Segmentation faults when running
-    htdig, htsearch or htfuzzy.</a></strong><br>
+    htdig, htsearch or hlfuzzy.</a></strong><br>
     <p>Despite a great deal of debugging of these programs, we haven't
     been able to completely eliminate all such problems on all platforms.
-    If you're running htsearch or htfuzzy on a BSDI system, a common
+    If you're running htsearch or hlfuzzy on a BSDI system, a common
     cause of core dumps is due to a conflict between the GNU regex
     code bundled in htdig 3.1.2 and later, and the BSD C or C++ library.
     The solution is to use the BSD library's own rx code instead,
@@ -1923,7 +1923,7 @@ require group foo
     "patch -p0 &lt; /path/to/HTML.cc.0". This is
     also fixed as of version 3.1.4.</p>
 
-    <strong>5.16. <a name="q5.16">When I run htmerge, it stops with an
+    <strong>5.16. <a name="q5.16">When I run hlmerge, it stops with an
     "Unable to open word list file '.../db.wordlist'" message.</a></strong><br>
     <p>The most common cause of this error is that htdig did not
     manage to index any documents, and so it did not create a word
@@ -2203,7 +2203,7 @@ find /path/to/your/document/root -type f -name \*.html -print | \
     only in the 3.2.0 betas. In 3.1.5 and earlier, this condition
     is only caught later, resulting in the message
     "robots.txt: discarding '<em>URL</em>'" from htdig, and a
-    later "Deleted: no excerpt" message from htmerge.</dd>
+    later "Deleted: no excerpt" message from hlmerge.</dd>
      <dt>url rejected: (level 2)</dt>
      <dd>No substring of the URL entirely matches one of the items in the
     <a href="attrs.html#limit_normalized">limit_normalized</a>
@@ -2224,10 +2224,10 @@ find /path/to/your/document/root -type f -name \*.html -print | \
     if it's actually finding them.
     See also question <a href="#q5.25">5.25</a>.</p>
 
-    <strong>5.28. <a name="q5.28">When I run htdig or htmerge, I get a
+    <strong>5.28. <a name="q5.28">When I run htdig or hlmerge, I get a
     "DB2 problem...: missing or empty key value specified" message.</a></strong><br>
     <p>The most common cause of this error is that htdig or
-    htmerge rejected any documents that had been put in the
+    hlmerge rejected any documents that had been put in the
     database, leaving an empty database. You need to find out the
     reasons for the rejection of these documents. See questions
     <a href="#q4.1">4.1</a>, <a href="#q5.25">5.25</a> and
@@ -2366,7 +2366,7 @@ find /path/to/your/document/root -type f -name \*.html -print | \
     example, when you change attributes used by htdig, they won't have
     an immediate effect on entries already in the database, so you would
     have to reindex your site before they take effect. Similarly,
-    attributes that affect how htfuzzy builds some of its databases
+    attributes that affect how hlfuzzy builds some of its databases
     don't take effect until those databases are rebuilt. Another, more
     subtle latent effect occurs with releases 3.1.6 and 3.2 betas:
     when you interrupt htdig (i.e. with Control-C or a kill command),

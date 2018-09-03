@@ -55,7 +55,7 @@ layout:default
     <code>./configure --prefix=/usr/local</code><br>
     <code>make</code><br>
     <code>make install</code><br>
-    <code>vi /usr/local/conf/htdig.conf</code><br>
+    <code>vi /usr/local/conf/hldig.conf</code><br>
     <code>/usr/local/bin/rundig</code><br>
     (The final three commands must be issued as root.)
   </p>
@@ -126,14 +126,14 @@ layout:default
     </dt>
     <dd>
     Point this to where all the tools will look for the
-    configuration file [default=/opt/www/conf/htdig.conf].
+    configuration file [default=/opt/www/conf/hldig.conf].
     </dd>
     <dt>
     <code>--with-common-dir=DIR</code>
     </dt>
     <dd>
     This directory is for files which can be shared between
-    different search databases [default=/opt/www/share/htdig].
+    different search databases [default=/opt/www/share/hldig].
     </dd>
     <dt>
     <code>--with-database-dir=DIR</code>
@@ -141,7 +141,7 @@ layout:default
     <dd>
     Set this to the directory where the search databases are
     going to be. (Make sure there is plenty of space on the
-    partition you put this on!) [default=/opt/www/var/htdig].
+    partition you put this on!) [default=/opt/www/var/hldig].
     </dd>
     <dt>
     <code>--with-cgi-bin-dir=DIR</code>
@@ -157,7 +157,7 @@ layout:default
     <dd>
     Define this to be a place that can be accessed by your web
     server. This is where a couple of images will be installed
-    [default=/opt/www/htdocs/htdig].
+    [default=/opt/www/hldig/www].
     </dd>
     <dt>
     <code>--with-image-url-prefix=LOCATION</code>
@@ -165,14 +165,14 @@ layout:default
     <dd>
     This is the URL which points to the directory specified by
     the <code>--with-image-dir=DIR</code> option above
-    [default=/htdig].
+    [default=/hldig].
     </dd>
     <dt>
     <code>--with-search-dir=FILE</code>
     </dt>
     <dd>
     where the sample search form should be installed
-    [default=/opt/www/htdocs/htdig].
+    [default=/opt/www/hldig/www].
     </dd>
     <dt>
     <code>--with-search-form=FILE</code>
@@ -251,13 +251,13 @@ layout:default
   </p>
   <ul>
     <li>
-    htdig
+    hldig
     </li>
     <li>
-    htmerge
+    hlmerge
     </li>
     <li>
-    htfuzzy
+    hlfuzzy
     </li>
     <li>
     htnotify
@@ -283,11 +283,11 @@ layout:default
     <blockquote>
     <dl>
       <dt>
-      <em><img src="bdot.gif" width=9 height=9 alt="*"><code>--with-config-dir=DIR</code></em>/htdig.conf
+      <em><img src="bdot.gif" width=9 height=9 alt="*"><code>--with-config-dir=DIR</code></em>/hldig.conf
       </dt>
       <dd>
       A minimal config file which can be used to create a
-      search database for http://www.htdig.org/
+      search database for https://solbu.github.io/hldig/
       </dd>
       <dt>
       <em><img src="bdot.gif" width=9 height=9 alt="*"><code>--with-search-form=FILE</code></em>
@@ -328,13 +328,13 @@ layout:default
       </dt>
       <dd>
       Default list of words with affixes that is used by
-      htfuzzy.
+      hlfuzzy.
       </dd>
       <dt>
       <em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-common-dir=DIR</code></em>/english.aff
       </dt>
       <dd>
-      Default affix rule database that is used by htfuzzy.
+      Default affix rule database that is used by hlfuzzy.
       </dd>
       <dt>
       <em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--with-image-dir=DIR</code></em>/star.gif
@@ -369,17 +369,17 @@ layout:default
       A sample shell script which will create a database.
       </dd>
       <dt>
-      <em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--prefix=DIR</code>/lib/htdig</em>/*.{a,so}
+      <em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--prefix=DIR</code>/lib/hldig</em>/*.{a,so}
       </dt>
       <dd>
       The shared and static libraries.
       </dd>
       <dt>
-      <em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--prefix=DIR</code>/include/htdig</em>/*.h
+      <em><img src="bdot.gif" width=9 height=9 alt="*"> <code>--prefix=DIR</code>/include/hldig</em>/*.h
       </dt>
       <dd>
       The header files that allow anyone to develop a program
-      based on the internals of htdig.
+      based on the internals of hldig.
       </dd>
     </dl>
     </blockquote>
@@ -396,12 +396,12 @@ layout:default
     After the installation, you will be ready to test out
     everything. You can use the <code>rundig</code> script to make a
     test database of the online documentation at
-    http://www.htdig.org/
+    https://solbu.github.io/hldig/
   </p>
   <p>
     The only thing left to do is to modify the <code>
-    htdig.conf</code> config file which was placed in <em>
-    <code>--with-config-dir=DIR</code></em>/htdig.conf. The <a href="attrs.html">
+    hldig.conf</code> config file which was placed in <em>
+    <code>--with-config-dir=DIR</code></em>/hldig.conf. The <a href="attrs.html">
     Configuration</a> manual has the details on how what
     attributes are needed.
     Then, you'll be ready to begin <a href="running.html">
@@ -420,7 +420,7 @@ layout:default
   <p>
     If you installed with shared libraries, you must be sure the
     system will find them. Usually it's done by adding the
-    prefix/lib/htdig directory to the LD_LIBRARY_PATH.
+    prefix/lib/hldig directory to the LD_LIBRARY_PATH.
     This is really system dependent and you must check your
     documentation.
   </p>

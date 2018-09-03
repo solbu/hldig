@@ -8,7 +8,7 @@ layout:default
     </h2>
     </dd>
     <dd>
-    htmerge [<em>options</em>]
+    hlmerge [<em>options</em>]
     </dd>
   </dl>
   <dl>
@@ -67,16 +67,16 @@ layout:default
       <a href="attrs.html#database_base">database_base</a>
       attribute to change the name of the databases, so
       they are in different directories or files.<br>
-      <strong>Note:</strong> You <em>must</em> run htmerge
+      <strong>Note:</strong> You <em>must</em> run hlmerge
       separately on each of the databases created by
       <a href="hldig.html">hldig</a> before merging them
       together with this option. This is because merging
       the two wordlists together requires wordlists that
-      have already been cleaned up by htmerge.
+      have already been cleaned up by hlmerge.
       Because the -m option allows you to specify only
       one database to be merged into the other, and only
       one -m option may be specified, if you need to merge
-      three or more databases together you must run htmerge
+      three or more databases together you must run hlmerge
       multiple times with the -m option.
       </dd>
       <dt>
@@ -84,7 +84,7 @@ layout:default
       </dt>
       <dd>
       Print statistics about the document and word databases
-      after htmerge has finished.
+      after hlmerge has finished.
       </dd>
       <dt>
       -v
@@ -92,7 +92,7 @@ layout:default
       <dd>
       Run in verbose mode. This will provide some hints as to
       the progress of the merge. This can be useful when
-      running htmerge interactively since some parts
+      running hlmerge interactively since some parts
       (especially the word database creation) can take a very
       long time.
       </dd>

@@ -24,7 +24,7 @@ layout:default
     <a href="htpurge.html">htpurge</a> to clean up the document
     and word databases that were created by htdig.
     It then runs <a href="htnotify.html">htnotify</a>, and finally
-    runs <a href="htfuzzy.html">htfuzzy</a> if necessary, to build
+    runs <a href="hlfuzzy.html">hlfuzzy</a> if necessary, to build
     the endings and synonyms databases if they're missing or
     outdated. Rundig uses the "-i" option to htdig, so it always
     reindexes your web site from scratch when you run it.
@@ -93,7 +93,7 @@ layout:default
     <dd>
     <dl>
       <dt>
-      <a href="attrs.html#bin_dir">BIN_DIR</a>/htdig, htpurge, htnotify, htfuzzy
+      <a href="attrs.html#bin_dir">BIN_DIR</a>/htdig, htpurge, htnotify, hlfuzzy
       </dt>
       <dd>
       The executable programs called by rundig.
@@ -123,7 +123,7 @@ layout:default
     <a href="hldig.html">hldig</a>,
     <a href="hlpurge.html">hlpurge</a>,
     <a href="hlnotify.html">hlnotify</a>,
-    <a href="htfuzzy.html">htfuzzy</a>,
+    <a href="hlfuzzy.html">hlfuzzy</a>,
     <a href="hlsearch.html">hlsearch</a>, and
     <a href="attrs.html">Configuration file format</a>.
     </dd>
