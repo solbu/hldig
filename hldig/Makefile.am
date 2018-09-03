@@ -14,5 +14,5 @@ noinst_HEADERS = Document.h ExternalParser.h HTML.h \
 
 ACLOCAL_AMFLAGS = -I m4
 
-hldig_DEPENDENCIES = $(HTLIBS)
+hldig_DEPENDENCIES = $(HLLIBS)
 hldig_LDFLAGS = $(PROFILING) ${extra_ldflags}

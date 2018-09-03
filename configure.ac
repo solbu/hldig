@@ -19,7 +19,7 @@ HLDIG_MICRO_VERSION=[`expr $VERSION : '[0-9][0-9]*\.[0-9][0-9]*\.\([0-9][0-9]*\)
 AC_SUBST(HLDIG_MICRO_VERSION)
 
 AM_CONFIG_HEADER([include/config.h:include/config.in])
-AC_CONFIG_LIBOBJ_DIR([htlib])
+AC_CONFIG_LIBOBJ_DIR([hllib])
 AC_PREFIX_DEFAULT([/opt/www])
 
 AC_CONFIG_MACRO_DIRS([m4])
@@ -341,10 +341,10 @@ fi
 if test $WITH_RX = no; then
  AC_MSG_CHECKING(if we should use the included regex?)
  OLD_CFLAGS=$CFLAGS
- CFLAGS="$CFLAGS -I${srcdir}/htlib"
+ CFLAGS="$CFLAGS -I${srcdir}/hllib"
 
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#include "${srcdir}/htlib/regex.c"
+#include "${srcdir}/hllib/regex.c"
 int main() {
     regex_t re;
     return regcomp(&re, "ht.*Dig", REG_ICASE);
@@ -426,7 +426,7 @@ done
 
 AC_CONFIG_FILES([Makefile
                  htcommon/Makefile
-                 htdb/Makefile
+                 hldb/Makefile
                  hldig/Makefile
                  installdir/hldig.1
                  installdir/hldig-pdfparser.1
@@ -441,7 +441,7 @@ AC_CONFIG_FILES([Makefile
                  installdir/hlsearch.1
                  installdir/rundig.1
                  hlfuzzy/Makefile
-                 htlib/Makefile
+                 hllib/Makefile
                  htnet/Makefile
                  hlsearch/Makefile
                  hltools/Makefile

@@ -9,11 +9,11 @@ include $(top_srcdir)/Makefile.config
 
 #
 # All test programs use the index description from the
-# mifluz.conf file (MIFLUZ_CONFIG set in test_functions.in). 
+# mifluz.conf file (MIFLUZ_CONFIG set in test_functions.in).
 # Some have hard wired additions but these
 # additions are never redundant with mifluz.conf content. Some
 # programs have options that allow command line overriding of
-# index parameters (page size, compression and such). 
+# index parameters (page size, compression and such).
 #
 # To run individual tests use (for instance):
 # make TESTS=t_wordkey check
@@ -21,14 +21,14 @@ include $(top_srcdir)/Makefile.config
 # To turn on verbosity use (for instance):
 # VERBOSE=-vv make TESTS=t_wordkey check
 #
-# Run individual test without using make 
+# Run individual test without using make
 # MAKE=make srcdir=. VERBOSE=-vv t_wordkey
 #
 # To purify objects use:
 # ( cd ../test ; rm -f word ; make CXXLD='purify g++' word )
 #
 # To generate benchmarks in benchmark/... make sure
-# you have rrdtool installed and use 
+# you have rrdtool installed and use
 # make MONITOR=' -m' dobench
 #
 
@@ -50,43 +50,43 @@ LOCAL_DEFINES = -I$(top_builddir)/db -I$(top_srcdir)/db $(PROFILING)
 check_PROGRAMS = word dbbench txt2mifluz search testnet document url
 
 dbbench_SOURCES = dbbench.cc
-dbbench_DEPENDENCIES = $(HTLIBS)
+dbbench_DEPENDENCIES = $(HLLIBS)
 dbbench_LDFLAGS = $(PROFILING) ${extra_ldflags}
-dbbench_LDADD = $(HTLIBS)
+dbbench_LDADD = $(HLLIBS)
 
 word_SOURCES = word.cc
-word_DEPENDENCIES = $(HTLIBS)
+word_DEPENDENCIES = $(HLLIBS)
 word_LDFLAGS = $(PROFILING) ${extra_ldflags}
-word_LDADD = $(HTLIBS)
+word_LDADD = $(HLLIBS)
 
 txt2mifluz_SOURCES = txt2mifluz.cc
-txt2mifluz_DEPENDENCIES = $(HTLIBS)
+txt2mifluz_DEPENDENCIES = $(HLLIBS)
 txt2mifluz_LDFLAGS = $(PROFILING) ${extra_ldflags}
-txt2mifluz_LDADD = $(HTLIBS)
+txt2mifluz_LDADD = $(HLLIBS)
 
 search_SOURCES = search.cc
-search_DEPENDENCIES = $(HTLIBS)
+search_DEPENDENCIES = $(HLLIBS)
 search_LDFLAGS = $(PROFILING) ${extra_ldflags}
-search_LDADD = $(HTLIBS)
+search_LDADD = $(HLLIBS)
 
 testnet_SOURCES = testnet.cc
-testnet_DEPENDENCIES = $(HTLIBS)
+testnet_DEPENDENCIES = $(HLLIBS)
 testnet_LDFLAGS = $(PROFILING) ${extra_ldflags}
-testnet_LDADD = $(HTLIBS)
+testnet_LDADD = $(HLLIBS)
 
 document_SOURCES = document.cc
-document_DEPENDENCIES = $(HTLIBS)
+document_DEPENDENCIES = $(HLLIBS)
 document_LDFLAGS = $(PROFILING) ${extra_ldflags}
-document_LDADD = $(HTLIBS)
+document_LDADD = $(HLLIBS)
 
 url_SOURCES = url.cc
-url_DEPENDENCIES = $(HTLIBS)
+url_DEPENDENCIES = $(HLLIBS)
 url_LDFLAGS = $(PROFILING) ${extra_ldflags}
-url_LDADD = $(HTLIBS)
+url_LDADD = $(HLLIBS)
 
 clean-local:
 	rm -fr gmon.out test test_weakcmpr __db*
-	rm -f  tmpfile t_htdb.d? monitor.out 
+	rm -f  tmpfile t_htdb.d? monitor.out
 	cd conf; $(MAKE) clean
 
 distclean-local:
@@ -108,9 +108,9 @@ PAGESIZE = -S 8192
 CMPR = -z
 WORDS = -w words.all
 LOOP = -l 3
-NWORDS = 
+NWORDS =
 #MONITOR = -m
-MONITOR = 
+MONITOR =
 
 benchmark: dbbench
 	rm -f $(BASE) $(BASE)_weakcmpr __db* monitor.out bench.out
@@ -136,5 +136,5 @@ benchmark: dbbench
 words:
 	if [ -d /usr/info ] ; then root=/usr ; else root=/usr/share ; fi ; \
 	find $$root/info -name '*.gz' -print | xargs zcat | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' > words.all ; \
-	find $$root/man -type f -name '*.gz' -print | xargs zcat | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' >> words.all 
+	find $$root/man -type f -name '*.gz' -print | xargs zcat | perl -n -e 'print join("\n", map { lc } grep(length() > 2 && length() < 32, m/[a-z]+/ig)) . "\n"' | grep -v '^$$' >> words.all
 	sort -u < words.all > words.uniq

@@ -29,6 +29,6 @@ noinst_HEADERS = Accents.h \
 bin_PROGRAMS = hlfuzzy
 
 hlfuzzy_SOURCES = hlfuzzy.cc
-hlfuzzy_DEPENDENCIES = libfuzzy.la $(HTLIBS)
+hlfuzzy_DEPENDENCIES = libfuzzy.la $(HLLIBS)
 hlfuzzy_LDFLAGS = $(PROFILING) ${extra_ldflags}
-hlfuzzy_LDADD = libfuzzy.la $(HTLIBS)
+hlfuzzy_LDADD = libfuzzy.la $(HLLIBS)
