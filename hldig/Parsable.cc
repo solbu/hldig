@@ -68,14 +68,20 @@ Parsable::setContents (char *data, int length)
 void
 Parsable::addString (Retriever & retriever, char *s, int &wordindex, int slot)
 {
-  char *w = HtWordToken (s);
+  char *w = (char *)calloc (sizeof (HtWordToken (s)), sizeof (char));
+  if (w == NULL)
+  {
+      printf (_("Error allocating memory."));
+      exit (1);
+  }
+
   while (w)
   {
     if (strlen (w) >= minimum_word_length)
       retriever.got_word (w, wordindex++, slot);        // slot for img_alt
     w = HtWordToken (0);
   }
-  *w = '\0';
+  free (w);
 }
 
 //*****************************************************************************
@@ -86,12 +92,18 @@ Parsable::addString (Retriever & retriever, char *s, int &wordindex, int slot)
 void
 Parsable::addKeywordString (Retriever & retriever, char *s, int &wordindex)
 {
-  char *w = HtWordToken (s);
+  char *w = (char *)calloc (sizeof (HtWordToken (s)), sizeof (char));
+  if (w == NULL)
+  {
+      printf (_("Error allocating memory."));
+      exit (1);
+  }
+
   while (w)
   {
     if (strlen (w) >= minimum_word_length && ++keywordsCount <= max_keywords)
       retriever.got_word (w, wordindex++, 9);
     w = HtWordToken (0);
   }
-  *w = '\0';
+  free (w);
 }
