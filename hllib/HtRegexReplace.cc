@@ -94,7 +94,7 @@ HtRegexReplace::putMark (int n)
     size_t newSize = segSize * 2 + 5;   // grow in chunks
     int *newMark = new int[newSize];    // do we assume that new can't fail?
     memcpy (newMark, segMark, segSize * sizeof (int));
-    delete segMark;
+    delete[] segMark;
     segMark = newMark;
     segSize = newSize;
   }
