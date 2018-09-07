@@ -425,7 +425,7 @@ while echo $VERSION | grep '\$' >/dev/null ; do
 done
 
 AC_CONFIG_FILES([Makefile
-                 htcommon/Makefile
+                 hlcommon/Makefile
                  hldb/Makefile
                  hldig/Makefile
                  installdir/hldig.1

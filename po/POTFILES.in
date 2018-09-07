@@ -1,6 +1,6 @@
 # List of source files which contain translatable strings.
 
-htcommon/messages.cc
+hlcommon/messages.cc
 hldig/hldig.cc
 hldig/Retriever.cc
 hldig/Server.cc

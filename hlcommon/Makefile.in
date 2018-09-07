@@ -89,7 +89,7 @@ DIST_COMMON = $(top_srcdir)/Makefile.config $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs \
 	conf_lexer.cxx conf_parser.hxx conf_parser.cxx \
 	$(top_srcdir)/ylwrap $(noinst_HEADERS)
-subdir = htcommon
+subdir = hlcommon
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
@@ -423,14 +423,14 @@ AUTOMAKE_OPTIONS = foreign no-dependencies
 AM_CPPFLAGS = \
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 		-I$(top_srcdir)/include -I$(top_srcdir)/hllib \
-		-I$(top_srcdir)/hlnet -I$(top_srcdir)/htcommon \
+		-I$(top_srcdir)/hlnet -I$(top_srcdir)/hlcommon \
 		-I$(top_srcdir)/hlword \
 		-I$(top_srcdir)/db -I$(top_builddir)/db \
 		$(LOCAL_DEFINES) $(PROFILING) \
 		-DLOCALEDIR=\"$(localedir)\"
 
 HLLIBS = $(top_builddir)/hlnet/libhlnet.la \
-		$(top_builddir)/htcommon/libcommon.la \
+		$(top_builddir)/hlcommon/libcommon.la \
 		$(top_builddir)/hlword/libhlword.la \
 		$(top_builddir)/hllib/libhl.la \
 		$(top_builddir)/db/libhldb.la
@@ -489,9 +489,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign htcommon/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign hlcommon/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign htcommon/Makefile
+	  $(AUTOMAKE) --foreign hlcommon/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

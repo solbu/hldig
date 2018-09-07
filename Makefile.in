@@ -170,7 +170,7 @@ am__define_uniq_tagged_files = \
 ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
-DIST_SUBDIRS = db hllib hlword htcommon hlnet hlfuzzy hldb hldig \
+DIST_SUBDIRS = db hllib hlword hlcommon hlnet hlfuzzy hldb hldig \
 	hlsearch hltools installdir include test po
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 top_distdir = $(distdir)
@@ -389,14 +389,14 @@ AUTOMAKE_OPTIONS = foreign no-dependencies
 AM_CPPFLAGS = \
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 		-I$(top_srcdir)/include -I$(top_srcdir)/hllib \
-		-I$(top_srcdir)/hlnet -I$(top_srcdir)/htcommon \
+		-I$(top_srcdir)/hlnet -I$(top_srcdir)/hlcommon \
 		-I$(top_srcdir)/hlword \
 		-I$(top_srcdir)/db -I$(top_builddir)/db \
 		$(LOCAL_DEFINES) $(PROFILING) \
 		-DLOCALEDIR=\"$(localedir)\"
 
 HLLIBS = $(top_builddir)/hlnet/libhlnet.la \
-		$(top_builddir)/htcommon/libcommon.la \
+		$(top_builddir)/hlcommon/libcommon.la \
 		$(top_builddir)/hlword/libhlword.la \
 		$(top_builddir)/hllib/libhl.la \
 		$(top_builddir)/db/libhldb.la
@@ -406,7 +406,7 @@ LDADD = $(HLLIBS) @LIBINTL@
 
 # process the Makefile.am files in these directories. the po directory
 # is a little # different because of a rule near the end of configure.ac
-SUBDIRS = db hllib hlword htcommon hlnet hlfuzzy hldb hldig hlsearch	\
+SUBDIRS = db hllib hlword hlcommon hlnet hlfuzzy hldb hldig hlsearch	\
 hltools installdir include $(TESTDIR) po
 
 

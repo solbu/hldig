@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hldig 0.1.01\n"
 "Report-Msgid-Bugs-To: https://github.com/solbu/hldig/issues\n"
-"POT-Creation-Date: 2018-09-07 07:30+0200\n"
+"POT-Creation-Date: 2018-09-07 11:50+0200\n"
 "PO-Revision-Date: 2018-03-07 20:41-0500\n"
 "Last-Translator: svitlana.galianova@gmail.com\n"
 "Language-Team: Russian\n"
@@ -33,12 +33,12 @@ msgstr ""
 "\tпрогоне индексов.\n"
 "\n"
 
-#: htcommon/messages.cc:39
+#: hlcommon/messages.cc:39
 #, c-format
 msgid " -a\tUse alternate work files.\n"
 msgstr " -a\tИспользовать альтернативные рабочие файлы.\n"
 
-#: htcommon/messages.cc:32
+#: hlcommon/messages.cc:32
 #, c-format
 msgid ""
 " -c\tconfigfile\n"
@@ -135,7 +135,7 @@ msgstr ""
 "\tи паролем.\n"
 "\n"
 
-#: htcommon/messages.cc:22
+#: hlcommon/messages.cc:22
 #, c-format
 msgid ""
 " -v\tVerbose mode\n"
