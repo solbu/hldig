@@ -40,7 +40,7 @@ while [ $# -gt 0 ]; do
     output=`file -i -b -m $magic_file "$input" 2>/dev/null | sed 's/[,;].*//'`
   else
       # old file(1) command can't strip leading whitespace, or accept -i option
-    head -100 "$input" 2> /dev/null | tr '\012\015' ' ' |
+    head -n 100 "$input" 2> /dev/null | tr '\012\015' ' ' |
                        sed -e's/^ *//' -e's/ *<! /<!--/' > $tmpfile
     output=`file -m $magic_file $tmpfile 2>/dev/null | sed -e 's/.*:[ 	]*//' -e's/[,;].*//'`
     /bin/rm -f $tmpfile
@@ -76,7 +76,7 @@ while [ $# -gt 0 ]; do
   # Catch HTML documents, which are special cases of SGML and XML
   case $type in
     text/xml | text/sgml )
-      if head -100 "$input"| egrep -i '<html|<head|<title|< *a *href *='>/dev/null
+      if head -n 100 "$input"| egrep -i '<html|<head|<title|< *a *href *='>/dev/null
       then
         echo text/html
       else

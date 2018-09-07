@@ -12,8 +12,8 @@
 
 export MIFLUZ_CONFIG ; MIFLUZ_CONFIG=${srcdir}/mifluz-search.conf
 
-count1=`head -1 $srcdir/search.txt | ./txt2mifluz -z -v $VERBOSE`
-count2=`tail -1 $srcdir/search.txt | ./txt2mifluz -z -v $VERBOSE`
+count1=`head -n 1 $srcdir/search.txt | ./txt2mifluz -z -v $VERBOSE`
+count2=`tail -n 1 $srcdir/search.txt | ./txt2mifluz -z -v $VERBOSE`
 if [ "$count1" != "$count2" ]
 then
 	echo "inserted $count1 then $count2, expected same number" >&2

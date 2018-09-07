@@ -2382,7 +2382,7 @@ EOF
     # If the export-symbols file already is a .def file (1st line
     # is EXPORTS), use it as is.
     # If DATA tags from a recent dlltool are present, honour them!
-    archive_expsym_cmds='if test "x`head -1 $export_symbols`" = xEXPORTS; then
+    archive_expsym_cmds='if test "x`head -n 1 $export_symbols`" = xEXPORTS; then
         cp $export_symbols $output_objdir/$soname-def;
       else
         echo EXPORTS > $output_objdir/$soname-def;
@@ -4212,7 +4212,7 @@ darwin* | rhapsody*)
   lt_cv_file_magic_cmd='/usr/bin/file -L'
   case "$host_os" in
   rhapsody* | darwin1.[012])
-    lt_cv_file_magic_test_file=`echo /System/Library/Frameworks/System.framework/Versions/*/System | head -1`
+    lt_cv_file_magic_test_file=`echo /System/Library/Frameworks/System.framework/Versions/*/System | head -n 1`
     ;;
   *) # Darwin 1.3 on
     lt_cv_file_magic_test_file='/usr/lib/libSystem.dylib'
