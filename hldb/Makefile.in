@@ -107,7 +107,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_hldb_dump_OBJECTS = htdb_dump.$(OBJEXT)
+am_hldb_dump_OBJECTS = hldb_dump.$(OBJEXT)
 hldb_dump_OBJECTS = $(am_hldb_dump_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -116,12 +116,12 @@ am__v_lt_1 =
 hldb_dump_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(hldb_dump_LDFLAGS) $(LDFLAGS) -o $@
-am_hldb_load_OBJECTS = htdb_load.$(OBJEXT)
+am_hldb_load_OBJECTS = hldb_load.$(OBJEXT)
 hldb_load_OBJECTS = $(am_hldb_load_OBJECTS)
 hldb_load_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(hldb_load_LDFLAGS) $(LDFLAGS) -o $@
-am_hldb_stat_OBJECTS = htdb_stat.$(OBJEXT)
+am_hldb_stat_OBJECTS = hldb_stat.$(OBJEXT)
 hldb_stat_OBJECTS = $(am_hldb_stat_OBJECTS)
 hldb_stat_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -377,15 +377,15 @@ HLLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/db/libhldb.la
 
 LDADD = $(HLLIBS) @LIBINTL@
-hldb_load_SOURCES = htdb_load.cc
+hldb_load_SOURCES = hldb_load.cc
 hldb_load_DEPENDENCIES = $(HLLIBS)
 hldb_load_LDFLAGS = $(PROFILING) ${extra_ldflags}
 hldb_load_LDADD = $(HLLIBS)
-hldb_dump_SOURCES = htdb_dump.cc
+hldb_dump_SOURCES = hldb_dump.cc
 hldb_dump_DEPENDENCIES = $(HLLIBS)
 hldb_dump_LDFLAGS = $(PROFILING) ${extra_ldflags}
 hldb_dump_LDADD = $(HLLIBS)
-hldb_stat_SOURCES = htdb_stat.cc
+hldb_stat_SOURCES = hldb_stat.cc
 hldb_stat_DEPENDENCIES = $(HLLIBS)
 hldb_stat_LDFLAGS = $(PROFILING) ${extra_ldflags}
 hldb_stat_LDADD = $(HLLIBS)

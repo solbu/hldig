@@ -71,7 +71,7 @@ int version = 1;                /* Input version. */
 
 DB_ENV *dbenv;
 int interrupted;
-const char *progname = "htdb_load";     /* Program name. */
+const char *progname = "hldb_load";     /* Program name. */
 
 int
 main (int argc, char *argv[])
@@ -1066,7 +1066,7 @@ void
 usage ()
 {
   (void) fprintf (stderr, "%s\n\t%s\n",
-                  "usage: htdb_load [-nTzW]",
+                  "usage: hldb_load [-nTzW]",
                   "[-c name=value] [-f file] [-h home] [-C cachesize] [-t btree | hash | recno] db_file");
   exit (1);
 }

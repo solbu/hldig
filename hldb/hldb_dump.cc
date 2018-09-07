@@ -62,7 +62,7 @@ void usage __P ((void));
 
 DB_ENV *dbenv;
 int interrupted;
-const char *progname = "htdb_dump";     /* Program name. */
+const char *progname = "hldb_dump";     /* Program name. */
 
 int
 main (int argc, char *argv[])
@@ -651,6 +651,6 @@ void
 usage ()
 {
   (void) fprintf (stderr,
-                  "usage: htdb_dump [-klNpWz] [-C cachesize] [-d ahr] [-f file] [-h home] [-s subdb] db_file\n");
+                  "usage: hldb_dump [-klNpWz] [-C cachesize] [-d ahr] [-f file] [-h home] [-s subdb] db_file\n");
   exit (1);
 }

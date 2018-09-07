@@ -88,7 +88,7 @@ void usage __P ((void));
 DB_ENV *dbenv;
 int interrupted;
 char *stats_internal;
-const char *progname = "htdb_stat";     /* Program name. */
+const char *progname = "hldb_stat";     /* Program name. */
 
 int
 main (int argc, char *argv[])
@@ -998,6 +998,6 @@ void
 usage ()
 {
   fprintf (stderr,
-           "usage: htdb_stat [-celmNtzW] [-C Acflmo] [-d file [-s file]] [-h home] [-M Ahlm]\n");
+           "usage: hldb_stat [-celmNtzW] [-C Acflmo] [-d file [-s file]] [-h home] [-M Ahlm]\n");
   exit (1);
 }
