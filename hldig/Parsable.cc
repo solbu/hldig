@@ -69,10 +69,14 @@ void
 Parsable::addString (Retriever & retriever, char *s, int &wordindex, int slot)
 {
   char *w = (char *)calloc (sizeof (HtWordToken (s)), sizeof (char));
-  if (w == NULL)
+  if (w != NULL)
+  {
+    w = HtWordToken (s);
+  }
+  else
   {
       printf (_("Error allocating memory."));
-      exit (1);
+      exit (EXIT_FAILURE);
   }
 
   while (w)
@@ -93,10 +97,14 @@ void
 Parsable::addKeywordString (Retriever & retriever, char *s, int &wordindex)
 {
   char *w = (char *)calloc (sizeof (HtWordToken (s)), sizeof (char));
-  if (w == NULL)
+  if (w != NULL)
   {
-      printf (_("Error allocating memory."));
-      exit (1);
+    w = HtWordToken (s);
+  }
+  else
+  {
+    printf (_("Error allocating memory."));
+    exit (EXIT_FAILURE);
   }
 
   while (w)
