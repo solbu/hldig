@@ -42,5 +42,5 @@ md5 (char *rhash, char *buf, int len, time_t * date, bool debug)
     }
     printf (" ");
   }
-  delete td;
+  free (td);
 }
