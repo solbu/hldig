@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hldig 0.3.0\n"
 "Report-Msgid-Bugs-To: https://github.com/solbu/hldig/issues\n"
-"POT-Creation-Date: 2018-09-02 23:50+0200\n"
+"POT-Creation-Date: 2018-09-07 07:30+0200\n"
 "PO-Revision-Date: 2018-09-02 23:56+0200\n"
 "Last-Translator: Johnny A. Solbu <johnny@solbu.net>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
@@ -240,6 +240,11 @@ msgstr ""
 #: hltools/hlnotify.cc:339
 msgid "Email:   "
 msgstr "E-post:   "
+
+#: hldig/Parsable.cc:78 hldig/Parsable.cc:106
+#, c-format
+msgid "Error allocating memory."
+msgstr ""
 
 #. TRANSLATORS: Do not translate "Content-Type"
 #: hldig/ExternalParser.cc:568
