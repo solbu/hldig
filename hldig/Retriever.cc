@@ -16,7 +16,7 @@
 //
 
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "hlconfig.h"
 #endif /* HAVE_CONFIG_H */
 
 #ifdef _MSC_VER                 /* _WIN32 */

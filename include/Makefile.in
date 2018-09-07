@@ -366,7 +366,7 @@ HLLIBS = $(top_builddir)/hlnet/libhlnet.la \
 LDADD = $(HLLIBS) @LIBINTL@
 EXTRA_DIST = config.h.in stamp-h.in
 pkginclude_HEADERS = \
-	htconfig.h 	\
+	hlconfig.h 	\
 	gettext.h
 
 all: config.h

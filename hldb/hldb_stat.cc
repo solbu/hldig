@@ -12,7 +12,7 @@
  */
 
 #include "db_config.h"
-#include "htconfig.h"
+#include "hlconfig.h"
 
 #ifndef lint
 static const char copyright[] = "@(#) Copyright (c) 1996, 1997, 1998, 1999\n\

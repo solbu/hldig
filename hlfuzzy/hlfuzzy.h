@@ -24,7 +24,7 @@
 #ifndef _hlfuzzy_h_
 #define _hlfuzzy_h_
 
-#include "htconfig.h"
+#include "hlconfig.h"
 #include "HtConfiguration.h"
 #include "HtWordList.h"
 

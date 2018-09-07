@@ -35,7 +35,7 @@
 #define _GNU_SOURCE
 
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "hlconfig.h"
 #endif
 
 #ifdef _MSC_VER                 /* _WIN32 */

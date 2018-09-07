@@ -121,7 +121,7 @@
 #define _HTDATETIME_H
 
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "hlconfig.h"
 #endif
 
 #if TIME_WITH_SYS_TIME

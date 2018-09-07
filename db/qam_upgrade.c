@@ -4,7 +4,7 @@
  * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *  Sleepycat Software.  All rights reserved.
  */
-#include "htconfig.h"
+#include "hlconfig.h"
 
 #ifndef lint
 static const char revid[] =

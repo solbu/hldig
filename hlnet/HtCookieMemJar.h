@@ -31,7 +31,7 @@
 #define _HTCOOKIE_MEM_JAR_H
 
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "hlconfig.h"
 #endif
 
 #include "Object.h"

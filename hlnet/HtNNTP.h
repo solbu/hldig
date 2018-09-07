@@ -20,7 +20,7 @@
 #define _HTNNTP_H
 
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "hlconfig.h"
 #endif
 
 #include "Transport.h"

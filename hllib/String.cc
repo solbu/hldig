@@ -12,7 +12,7 @@
 // $Id: String.cc,v 1.40 2004/05/28 13:15:21 lha Exp $
 //
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "hlconfig.h"
 #endif /* HAVE_CONFIG_H */
 
 

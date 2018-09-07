@@ -14,7 +14,7 @@
 
 #include <stdio.h>
 
-#include "htconfig.h"
+#include "hlconfig.h"
 #include <iostream>
 #include "messages.h"
 

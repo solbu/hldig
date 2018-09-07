@@ -7,7 +7,7 @@
  * $Id: hash_verify.c,v 1.2 2002/02/02 18:18:05 ghutchis Exp $
  */
 
-#include "htconfig.h"
+#include "hlconfig.h"
 
 #ifndef lint
 static const char revid[] =

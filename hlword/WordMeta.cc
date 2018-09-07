@@ -10,7 +10,7 @@
 // $Id: WordMeta.cc,v 1.4 2004/05/28 13:15:28 lha Exp $
 //
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "hlconfig.h"
 #endif /* HAVE_CONFIG_H */
 
 #include <fcntl.h>

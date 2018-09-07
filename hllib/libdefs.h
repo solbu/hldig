@@ -11,7 +11,7 @@
 #endif
 
 
-#include "htconfig.h"
+#include "hlconfig.h"
 
 
 #ifdef STDC_HEADERS

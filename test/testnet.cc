@@ -1,6 +1,6 @@
 // $Id: testnet.cc,v 1.11 2003/07/21 08:16:12 angusgb Exp $
 #ifdef HAVE_CONFIG_H
-#include <htconfig.h>
+#include <hlconfig.h>
 #endif /* HAVE_CONFIG_H */
 
 #include "Transport.h"

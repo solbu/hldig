@@ -28,7 +28,7 @@
 //
 
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "hlconfig.h"
 #endif
 
 #include "HtCookieMemJar.h"

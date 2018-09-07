@@ -20,7 +20,7 @@
 #include "List.h"
 #include "DocumentDB.h"
 #include "StringMatch.h"
-#include "htconfig.h"
+#include "hlconfig.h"
 #include "HtRegexList.h"
 #include <stdlib.h>
 

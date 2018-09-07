@@ -21,7 +21,7 @@
 // $Id: hlfuzzy.cc,v 1.20 2004/05/28 13:15:20 lha Exp $
 //
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "hlconfig.h"
 #endif /* HAVE_CONFIG_H */
 
 #include "hlfuzzy.h"

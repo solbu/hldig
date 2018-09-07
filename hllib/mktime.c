@@ -30,7 +30,7 @@
 /* #define DEBUG 1 */
 
 #ifdef HAVE_CONFIG_H
-#include "htconfig.h"
+#include "hlconfig.h"
 #endif
 
 #ifdef _LIBC
