@@ -88,7 +88,7 @@ host_triplet = @host@
 DIST_COMMON = $(top_srcdir)/Makefile.config $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs \
 	$(pkginclude_HEADERS)
-subdir = htnet
+subdir = hlnet
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
@@ -135,19 +135,19 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(pkglibdir)" \
 	"$(DESTDIR)$(pkgincludedir)"
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
-libhtnet_la_LIBADD =
-am_libhtnet_la_OBJECTS = Connection.lo Transport.lo HtHTTP.lo \
-	HtFile.lo HtNNTP.lo HtFTP.lo HtCookie.lo HtCookieJar.lo \
-	HtCookieMemJar.lo HtCookieInFileJar.lo HtHTTPBasic.lo \
-	HtHTTPSecure.lo SSLConnection.lo
-libhtnet_la_OBJECTS = $(am_libhtnet_la_OBJECTS)
+libhlnet_la_LIBADD =
+am_libhlnet_la_OBJECTS = Connection.lo HtCookie.lo \
+	HtCookieInFileJar.lo HtCookieJar.lo HtCookieMemJar.lo HtFTP.lo \
+	HtFile.lo HtHTTP.lo HtHTTPBasic.lo HtHTTPSecure.lo HtNNTP.lo \
+	SSLConnection.lo Transport.lo
+libhlnet_la_OBJECTS = $(am_libhlnet_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-libhtnet_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+libhlnet_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(libhtnet_la_LDFLAGS) $(LDFLAGS) -o $@
+	$(CXXFLAGS) $(libhlnet_la_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -181,8 +181,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libhtnet_la_SOURCES)
-DIST_SOURCES = $(libhtnet_la_SOURCES)
+SOURCES = $(libhlnet_la_SOURCES)
+DIST_SOURCES = $(libhlnet_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -385,25 +385,36 @@ AUTOMAKE_OPTIONS = foreign no-dependencies
 AM_CPPFLAGS = \
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 		-I$(top_srcdir)/include -I$(top_srcdir)/hllib \
-		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
+		-I$(top_srcdir)/hlnet -I$(top_srcdir)/htcommon \
 		-I$(top_srcdir)/hlword \
 		-I$(top_srcdir)/db -I$(top_builddir)/db \
 		$(LOCAL_DEFINES) $(PROFILING) \
 		-DLOCALEDIR=\"$(localedir)\"
 
-HLLIBS = $(top_builddir)/htnet/libhtnet.la \
+HLLIBS = $(top_builddir)/hlnet/libhlnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
 		$(top_builddir)/hlword/libhlword.la \
 		$(top_builddir)/hllib/libhl.la \
 		$(top_builddir)/db/libhldb.la
 
 LDADD = $(HLLIBS) @LIBINTL@
-pkglib_LTLIBRARIES = libhtnet.la
-libhtnet_la_SOURCES = Connection.cc Transport.cc HtHTTP.cc HtFile.cc \
-	HtNNTP.cc HtFTP.cc HtCookie.cc HtCookieJar.cc HtCookieMemJar.cc \
-	HtCookieInFileJar.cc HtHTTPBasic.cc HtHTTPSecure.cc SSLConnection.cc
+pkglib_LTLIBRARIES = libhlnet.la
+libhlnet_la_SOURCES = \
+	Connection.cc \
+	HtCookie.cc \
+	HtCookieInFileJar.cc \
+	HtCookieJar.cc \
+	HtCookieMemJar.cc \
+	HtFTP.cc \
+	HtFile.cc \
+	HtHTTP.cc \
+	HtHTTPBasic.cc \
+	HtHTTPSecure.cc \
+	HtNNTP.cc \
+	SSLConnection.cc \
+	Transport.cc
 
-libhtnet_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
+libhlnet_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
 pkginclude_HEADERS = \
 	Connection.h \
 	Transport.h \
@@ -432,9 +443,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign htnet/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign hlnet/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign htnet/Makefile
+	  $(AUTOMAKE) --foreign hlnet/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -490,8 +501,8 @@ clean-pkglibLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
-libhtnet.la: $(libhtnet_la_OBJECTS) $(libhtnet_la_DEPENDENCIES) $(EXTRA_libhtnet_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(libhtnet_la_LINK) -rpath $(pkglibdir) $(libhtnet_la_OBJECTS) $(libhtnet_la_LIBADD) $(LIBS)
+libhlnet.la: $(libhlnet_la_OBJECTS) $(libhlnet_la_DEPENDENCIES) $(EXTRA_libhlnet_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(libhlnet_la_LINK) -rpath $(pkglibdir) $(libhlnet_la_OBJECTS) $(libhlnet_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

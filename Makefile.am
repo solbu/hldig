@@ -13,7 +13,7 @@ endif
 # process the Makefile.am files in these directories. the po directory
 # is a little # different because of a rule near the end of configure.ac
 
-SUBDIRS = db hllib hlword htcommon htnet hlfuzzy hldb hldig hlsearch	\
+SUBDIRS = db hllib hlword htcommon hlnet hlfuzzy hldb hldig hlsearch	\
 hltools installdir include $(TESTDIR) po
 
 # files to be installed to destination docdir when 'make install' is run

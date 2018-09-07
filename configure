@@ -22577,7 +22577,7 @@ while echo $VERSION | grep '\$' >/dev/null ; do
   eval "VERSION=$VERSION"
 done
 
-ac_config_files="$ac_config_files Makefile htcommon/Makefile hldb/Makefile hldig/Makefile installdir/hldig.1 installdir/hldig-pdfparser.1 installdir/hlfuzzy.1 installdir/hlmerge.1 installdir/hlpurge.1 installdir/hlstat.1 installdir/hldigconfig.8 installdir/hldump.1 installdir/hlload.1 installdir/hlnotify.1 installdir/hlsearch.1 installdir/rundig.1 hlfuzzy/Makefile hllib/Makefile htnet/Makefile hlsearch/Makefile hltools/Makefile hlword/Makefile include/Makefile installdir/Makefile test/Makefile po/Makefile.in test/test_functions"
+ac_config_files="$ac_config_files Makefile htcommon/Makefile hldb/Makefile hldig/Makefile installdir/hldig.1 installdir/hldig-pdfparser.1 installdir/hlfuzzy.1 installdir/hlmerge.1 installdir/hlpurge.1 installdir/hlstat.1 installdir/hldigconfig.8 installdir/hldump.1 installdir/hlload.1 installdir/hlnotify.1 installdir/hlsearch.1 installdir/rundig.1 hlfuzzy/Makefile hllib/Makefile hlnet/Makefile hlsearch/Makefile hltools/Makefile hlword/Makefile include/Makefile installdir/Makefile test/Makefile po/Makefile.in test/test_functions"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -23730,7 +23730,7 @@ do
     "installdir/rundig.1") CONFIG_FILES="$CONFIG_FILES installdir/rundig.1" ;;
     "hlfuzzy/Makefile") CONFIG_FILES="$CONFIG_FILES hlfuzzy/Makefile" ;;
     "hllib/Makefile") CONFIG_FILES="$CONFIG_FILES hllib/Makefile" ;;
-    "htnet/Makefile") CONFIG_FILES="$CONFIG_FILES htnet/Makefile" ;;
+    "hlnet/Makefile") CONFIG_FILES="$CONFIG_FILES hlnet/Makefile" ;;
     "hlsearch/Makefile") CONFIG_FILES="$CONFIG_FILES hlsearch/Makefile" ;;
     "hltools/Makefile") CONFIG_FILES="$CONFIG_FILES hltools/Makefile" ;;
     "hlword/Makefile") CONFIG_FILES="$CONFIG_FILES hlword/Makefile" ;;

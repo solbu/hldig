@@ -358,13 +358,13 @@ AUTOMAKE_OPTIONS = foreign no-dependencies
 AM_CPPFLAGS = \
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 		-I$(top_srcdir)/include -I$(top_srcdir)/hllib \
-		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
+		-I$(top_srcdir)/hlnet -I$(top_srcdir)/htcommon \
 		-I$(top_srcdir)/hlword \
 		-I$(top_srcdir)/db -I$(top_builddir)/db \
 		$(LOCAL_DEFINES) $(PROFILING) \
 		-DLOCALEDIR=\"$(localedir)\"
 
-HLLIBS = $(top_builddir)/htnet/libhtnet.la \
+HLLIBS = $(top_builddir)/hlnet/libhlnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
 		$(top_builddir)/hlword/libhlword.la \
 		$(top_builddir)/hllib/libhl.la \

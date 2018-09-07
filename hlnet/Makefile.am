@@ -1,9 +1,9 @@
 
 include $(top_srcdir)/Makefile.config
 
-pkglib_LTLIBRARIES = libhtnet.la
+pkglib_LTLIBRARIES = libhlnet.la
 
-libhtnet_la_SOURCES =  \
+libhlnet_la_SOURCES =  \
 	Connection.cc \
 	HtCookie.cc \
 	HtCookieInFileJar.cc \
@@ -18,7 +18,7 @@ libhtnet_la_SOURCES =  \
 	SSLConnection.cc \
 	Transport.cc
 
-libhtnet_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
+libhlnet_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
 
 pkginclude_HEADERS = \
 	Connection.h \

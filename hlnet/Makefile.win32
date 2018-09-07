@@ -1,5 +1,5 @@
 
-TARGET = $(LIBDIR)/libhtnet$(LIBSFX)
+TARGET = $(LIBDIR)/libhlnet$(LIBSFX)
 
 # ----------------------------------------------------------------------------
 # add new library members to this list

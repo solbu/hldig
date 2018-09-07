@@ -442,7 +442,7 @@ AC_CONFIG_FILES([Makefile
                  installdir/rundig.1
                  hlfuzzy/Makefile
                  hllib/Makefile
-                 htnet/Makefile
+                 hlnet/Makefile
                  hlsearch/Makefile
                  hltools/Makefile
                  hlword/Makefile
