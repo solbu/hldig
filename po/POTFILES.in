@@ -6,6 +6,7 @@ hldig/Retriever.cc
 hldig/Server.cc
 hldig/ExternalParser.cc
 hldig/ExternalTransport.cc
+hldig/Parsable.cc
 hlsearch/hlsearch.cc
 hltools/hldump.cc
 hltools/hlload.cc
