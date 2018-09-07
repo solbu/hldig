@@ -3,9 +3,20 @@ include $(top_srcdir)/Makefile.config
 
 pkglib_LTLIBRARIES = libhtnet.la
 
-libhtnet_la_SOURCES = Connection.cc Transport.cc HtHTTP.cc HtFile.cc \
-	HtNNTP.cc HtFTP.cc HtCookie.cc HtCookieJar.cc HtCookieMemJar.cc \
-	HtCookieInFileJar.cc HtHTTPBasic.cc HtHTTPSecure.cc SSLConnection.cc
+libhtnet_la_SOURCES =  \
+	Connection.cc \
+	HtCookie.cc \
+	HtCookieInFileJar.cc \
+	HtCookieJar.cc \
+	HtCookieMemJar.cc \
+	HtFTP.cc \
+	HtFile.cc \
+	HtHTTP.cc \
+	HtHTTPBasic.cc \
+	HtHTTPSecure.cc \
+	HtNNTP.cc \
+	SSLConnection.cc \
+	Transport.cc
 
 libhtnet_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
 
