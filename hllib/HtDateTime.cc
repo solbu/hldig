@@ -33,7 +33,7 @@ using namespace std;
 #endif /* HAVE_STD */
 
 #ifndef HAVE_STRPTIME
-// mystrptime() declared in lib.h, defined in htlib/strptime.cc
+// mystrptime() declared in lib.h, defined in hllib/strptime.cc
 #define strptime(s,f,t)  mystrptime(s,f,t)
 #else /* HAVE_STRPTIME */
 #ifndef HAVE_STRPTIME_DECL
