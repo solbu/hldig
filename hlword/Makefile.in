@@ -88,7 +88,7 @@ host_triplet = @host@
 DIST_COMMON = $(top_srcdir)/Makefile.config $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs \
 	$(pkginclude_HEADERS) README
-subdir = htword
+subdir = hlword
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
@@ -135,20 +135,20 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(pkglibdir)" \
 	"$(DESTDIR)$(pkgincludedir)"
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
-libhtword_la_LIBADD =
-am_libhtword_la_OBJECTS = WordBitCompress.lo WordContext.lo \
+libhlword_la_LIBADD =
+am_libhlword_la_OBJECTS = WordBitCompress.lo WordContext.lo \
 	WordCursor.lo WordDB.lo WordDBCompress.lo WordDBInfo.lo \
 	WordDBPage.lo WordKey.lo WordKeyInfo.lo WordList.lo \
 	WordMonitor.lo WordRecord.lo WordRecordInfo.lo \
 	WordReference.lo WordStat.lo WordType.lo
-libhtword_la_OBJECTS = $(am_libhtword_la_OBJECTS)
+libhlword_la_OBJECTS = $(am_libhlword_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-libhtword_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+libhlword_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(libhtword_la_LDFLAGS) $(LDFLAGS) -o $@
+	$(CXXFLAGS) $(libhlword_la_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -182,8 +182,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libhtword_la_SOURCES)
-DIST_SOURCES = $(libhtword_la_SOURCES)
+SOURCES = $(libhlword_la_SOURCES)
+DIST_SOURCES = $(libhlword_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -387,14 +387,14 @@ AM_CPPFLAGS = \
 		-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 		-I$(top_srcdir)/include -I$(top_srcdir)/hllib \
 		-I$(top_srcdir)/htnet -I$(top_srcdir)/htcommon \
-		-I$(top_srcdir)/htword \
+		-I$(top_srcdir)/hlword \
 		-I$(top_srcdir)/db -I$(top_builddir)/db \
 		$(LOCAL_DEFINES) $(PROFILING) \
 		-DLOCALEDIR=\"$(localedir)\"
 
 HLLIBS = $(top_builddir)/htnet/libhtnet.la \
 		$(top_builddir)/htcommon/libcommon.la \
-		$(top_builddir)/htword/libhtword.la \
+		$(top_builddir)/hlword/libhlword.la \
 		$(top_builddir)/hllib/libhl.la \
 		$(top_builddir)/db/libhldb.la
 
@@ -408,8 +408,8 @@ LDADD = $(HLLIBS) @LIBINTL@
 # <http://www.gnu.org/copyleft/lgpl.html>
 #
 LOCAL_DEFINES = 
-pkglib_LTLIBRARIES = libhtword.la
-libhtword_la_SOURCES = \
+pkglib_LTLIBRARIES = libhlword.la
+libhlword_la_SOURCES = \
 	WordBitCompress.cc \
 	WordContext.cc \
 	WordCursor.cc \
@@ -427,7 +427,7 @@ libhtword_la_SOURCES = \
 	WordStat.cc \
 	WordType.cc
 
-libhtword_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
+libhlword_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
 pkginclude_HEADERS = \
 	WordBitCompress.h \
 	WordCaseIsAStatements.h \
@@ -460,9 +460,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign htword/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign hlword/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign htword/Makefile
+	  $(AUTOMAKE) --foreign hlword/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -518,8 +518,8 @@ clean-pkglibLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
-libhtword.la: $(libhtword_la_OBJECTS) $(libhtword_la_DEPENDENCIES) $(EXTRA_libhtword_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(libhtword_la_LINK) -rpath $(pkglibdir) $(libhtword_la_OBJECTS) $(libhtword_la_LIBADD) $(LIBS)
+libhlword.la: $(libhlword_la_OBJECTS) $(libhlword_la_DEPENDENCIES) $(EXTRA_libhlword_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(libhlword_la_LINK) -rpath $(pkglibdir) $(libhlword_la_OBJECTS) $(libhlword_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
