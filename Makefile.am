@@ -69,3 +69,8 @@ install-data-hook:
 
 
 distdir = $(PACKAGE)-$(VERSION)
+
+# While we wait for the «make dist» to work properly,
+# have a shortcut to create tarball from the local git repo
+release:
+	git archive --format=tar.gz -o $(PACKAGE)-$(VERSION).tar.gz --prefix=$(PACKAGE)-$(VERSION)/ HEAD

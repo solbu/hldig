@@ -929,6 +929,11 @@ install-data-hook:
 	@echo "To uninstall hldig, use 'make uninstall' (must be run before 'make distclean')"
 	@echo "To remove build files, use 'make distclean'"
 
+# While we wait for the «make dist» to work properly,
+# have a shortcut to create tarball from the local git repo
+release:
+	git archive --format=tar.gz -o $(PACKAGE)-$(VERSION).tar.gz --prefix=$(PACKAGE)-$(VERSION)/ HEAD
+
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
