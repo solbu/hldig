@@ -366,12 +366,6 @@ dnl @(#)options.m4	11.5 (Sleepycat) 10/15/99
 dnl Process user-specified options.
 AC_DEFUN([AM_OPTIONS_SET], [
 
-AC_MSG_CHECKING(if --enable-bigfile option specified)
-AC_ARG_ENABLE(bigfile,
-	[  --enable-bigfile       Enable Linux, AIX, HP/UX, Solaris big files.],
-	[db_cv_bigfile="$enable_bigfile"], [db_cv_bigfile="yes"])
-AC_MSG_RESULT($db_cv_bigfile)
-
 AC_MSG_CHECKING(if --enable-debug option specified)
 AC_ARG_ENABLE(debug,
 	[  --enable-debug          Build a debugging version.],
