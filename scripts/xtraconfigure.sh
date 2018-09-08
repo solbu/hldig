@@ -1,3 +1,3 @@
 #!/bin/sh
 
-./configure --prefix=$PWD/testing --with-zlib  --enable-bigfile
+./configure --prefix=$PWD/testing --with-zlib

@@ -356,13 +356,6 @@ int main() {
  CFLAGS=$OLD_CFLAGS
 fi
 
-# Enable big files?
-AC_MSG_CHECKING(if --enable-bigfile option specified)
-AC_ARG_ENABLE(bigfile,
-	[AC_HELP_STRING([--enable-bigfile], [enable Linux, AIX, HP/UX, Solaris big files.])],
-	[db_cv_bigfile="$enable_bigfile"], [db_cv_bigfile="yes"])
-AC_MSG_RESULT($db_cv_bigfile)
-
 AC_SYS_LARGEFILE
 
 # Add the -mimpure-text option on Solaris with GCC and libstc++ that is not shared
