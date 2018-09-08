@@ -57,3 +57,6 @@ test/bench.out
 test/dbbench
 test/test
 test/test_weakcmpr
+
+# ignore auto-generated file
+hlcommon/conf_lexer.cxx
