@@ -1,3 +1,8 @@
+2018-09-08  Johnny A. Solbu <johnny@solbu.net>
+
+	* Don't pull external scripts. Serve it from our own server.
+	  This also disables any tracking from the CDN provider.
+
 2018-09-07  Johnny A. Solbu <johnny@solbu.net>
 
 	* All tools should now be renamed
@@ -7,6 +12,7 @@
 	* Rename htfuzzy as hlfuzzy
 	* Fix compile error on gcc 7, 8, and clang 6
 	* Fix various compile warnings
+	* Bump version: 0.3.0
 
 2018-08-26  Johnny A. Solbu <johnny@solbu.net>
 
