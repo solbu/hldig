@@ -47,7 +47,7 @@ tion for more details.
 
 \fIsynonyms\fR
 Creates a database of synonyms for words. It reads a text database of synonyms and creates a  database  that
-htsearch  can  then use. Each line of the text database consists of words where the first word will have the
+hlsearch  can  then use. Each line of the text database consists of words where the first word will have the
 other words on that line as synonyms.
 
 .SH "Notes on searching"
@@ -79,11 +79,11 @@ Please refer to the HTML pages (in the hldig-doc package)
 and the manual pages
 .I hldigconfig(8)
 ,
-.I htmerge(1)
+.I hlmerge(1)
 ,
-.I htnotify(1)
+.I hlnotify(1)
 ,
-.I htsearch(1)
+.I hlsearch(1)
 and
 .I rundig(1)
 for a detailed description of hl://Dig and its commands.
