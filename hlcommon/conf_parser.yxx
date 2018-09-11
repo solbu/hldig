@@ -39,13 +39,15 @@ using namespace std;
 #include "htString.h"
 /*#define YYDEBUG 1*/
 #define YYPARSE_PARAM aConf
-int yyerror(char *s);
+int yyerror(const HtConfiguration *aConf, char *s);
 int yylex(void);  
 #undef DEBUG
 #ifdef DEBUG
 int sn_debug=3;
 #endif
 %}
+
+%parse-param {HtConfiguration *aConf}
 
 %union {
   char *str;
@@ -252,7 +254,7 @@ list:    T_STRING T_STRING      {
 ;
 %%
 int
-yyerror (char *s)  /* Called by yyparse on error */
+yyerror (const HtConfiguration *, char *s)  /* Called by yyparse on error */
 {
    extern int yylineno;
    extern int include_stack_ptr;
