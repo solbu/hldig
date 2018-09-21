@@ -34,6 +34,10 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 
 Project maintainers who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as determined by other members of the projects leadership.
 
+## Disagreements on these rules
+
+The project maintainers decide how to implement and enforce these rules. When there is disputes, we reserve the right to disagree with you.
+
 ## Attribution
 
 This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4, available at [http://contributor-covenant.org/version/1/4][version]
