@@ -15,11 +15,6 @@ We have [opened a ticket](https://github.com/solbu/hldig/issues/50)
 to discuss how to proceed with documentation and what type of web site to put
 in place.
 
-## Try it out
-At the following link you can try a search. This form calls hlsearch<br />
-to search the hl://Dig web site at [https://solbu.github.io/hldig](https://solbu.github.io/hldig)<br />
-[hl://Dig Testing Ground](http://htdig.dreamhosters.com/)
-
 ## Contributing
 [Guidelines for Contributing](https://github.com/solbu/hldig/blob/master/CONTRIBUTING.md)
 
@@ -35,5 +30,3 @@ Anyone interested in this project may join the IRC channel -
 [chat.freenode.net / channel: #hldig](ircs://irc.freenode.net/hldig)
 
 Project maintainer: [Johnny A. Solbu](https://www.solbu.net/)<br>
-Main developer: Andy Alt –
-Email: andy400-dev [at] yahoo.com
