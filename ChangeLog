@@ -1,3 +1,8 @@
+2018-09-27  Johnny A. Solbu <johnny@solbu.net>
+
+	* Patches from NevemTeve: Fix bison/yacc/flex compile error
+	* Regenerate conf_parser.cxx and conf_lexer.cxx using bison 3.0.4
+
 2018-09-08  Johnny A. Solbu <johnny@solbu.net>
 
 	* Don't pull external scripts. Serve it from our own server.
