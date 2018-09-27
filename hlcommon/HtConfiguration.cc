@@ -291,7 +291,7 @@ int
 HtConfiguration::Read (const String & filename)
 {
   extern FILE *yyin;
-  extern int yyparse (void *);
+  extern int yyparse (HtConfiguration *);
   if ((yyin = fopen (filename, "r")) == NULL)
     return NOTOK;
 
