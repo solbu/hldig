@@ -1,4 +1,4 @@
-AC_INIT([simplecgen], [m4_esyscmd_s([cat ./VERSION])], [andy400-dev@yahoo.com])
+AC_INIT([simplecgen], [0.2.0], [andy400-dev@yahoo.com])
 AM_INIT_AUTOMAKE
 AC_PREREQ(2.69)
 AC_CONFIG_HEADERS([./config.h:./config.in])
