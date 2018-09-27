@@ -13,12 +13,22 @@ EXTRA_DIST=conf_lexer.cxx conf_parser.cxx
 
 pkglib_LTLIBRARIES = libcommon.la
 
-libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc \
-	HtWordReference.cc HtWordList.cc defaults.cc \
-	HtURLCodec.cc URL.cc URLTrans.cc \
-	HtZlibCodec.cc cgi.cc HtSGMLCodec.cc \
-	HtConfiguration.cc HtURLRewriter.cc \
-	conf_lexer.lxx conf_parser.yxx 			\
+libcommon_la_SOURCES = \
+	DocumentDB.cc \
+	DocumentRef.cc \
+	HtConfiguration.cc \
+	HtSGMLCodec.cc \
+	HtURLCodec.cc \
+	HtURLRewriter.cc \
+	HtWordList.cc \
+	HtWordReference.cc \
+	HtZlibCodec.cc \
+	URL.cc \
+	URLTrans.cc \
+	cgi.cc \
+	conf_lexer.lxx \
+	conf_parser.yxx \
+	defaults.cc \
 	messages.cc
 
 libcommon_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
