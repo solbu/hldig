@@ -2,6 +2,7 @@
 
 	* Patches from NevemTeve: Fix bison/yacc/flex compile error
 	* Regenerate conf_parser.cxx and conf_lexer.cxx
+	* Bump version: 0.4.0
 
 2018-09-08  Johnny A. Solbu <johnny@solbu.net>
 
