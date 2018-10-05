@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: hldig 0.3.0\n"
+"Project-Id-Version: hldig 0.4.0\n"
 "Report-Msgid-Bugs-To: https://github.com/solbu/hldig/issues\n"
-"POT-Creation-Date: 2018-09-07 11:50+0200\n"
+"POT-Creation-Date: 2018-10-06 00:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -528,6 +528,10 @@ msgstr ""
 msgid "hldig Start Time: "
 msgstr ""
 
+#: hlfuzzy/Fuzzy.cc:165
+msgid "hlfuzzy: '"
+msgstr ""
+
 #: hlfuzzy/hlfuzzy.cc:211
 msgid "hlfuzzy: Could not create database for algorithm: "
 msgstr ""
@@ -544,8 +548,16 @@ msgstr ""
 msgid "hlfuzzy: Selected algorithm: "
 msgstr ""
 
+#: hlfuzzy/Fuzzy.cc:176
+msgid "hlfuzzy: Total keys: "
+msgstr ""
+
 #: hlfuzzy/hlfuzzy.cc:176
 msgid "hlfuzzy: Writing index files...\n"
+msgstr ""
+
+#: hlfuzzy/Fuzzy.cc:170
+msgid "hlfuzzy: keys: "
 msgstr ""
 
 #: hlfuzzy/hlfuzzy.cc:175
