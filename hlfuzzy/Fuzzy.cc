@@ -173,7 +173,7 @@ Fuzzy::writeDB ()
   }
   if (debug == 1)
   {
-    cout << _("hlfuzzy:Total keys: ") << count << "\n";
+    cout << _("hlfuzzy: Total keys: ") << count << "\n";
   }
   return OK;
 }
