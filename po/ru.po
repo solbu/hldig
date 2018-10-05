@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hldig 0.1.01\n"
 "Report-Msgid-Bugs-To: https://github.com/solbu/hldig/issues\n"
-"POT-Creation-Date: 2018-09-07 11:50+0200\n"
+"POT-Creation-Date: 2018-10-06 00:20+0200\n"
 "PO-Revision-Date: 2018-03-07 20:41-0500\n"
 "Last-Translator: svitlana.galianova@gmail.com\n"
 "Language-Team: Russian\n"
@@ -593,6 +593,12 @@ msgstr "hldig Время Окончания: "
 msgid "hldig Start Time: "
 msgstr "hldig Время начала: "
 
+#: hlfuzzy/Fuzzy.cc:165
+#, fuzzy
+#| msgid "hlfuzzy: Done.\n"
+msgid "hlfuzzy: '"
+msgstr "hlfuzzy: Завершено.\n"
+
 #: hlfuzzy/hlfuzzy.cc:211
 msgid "hlfuzzy: Could not create database for algorithm: "
 msgstr "hlfuzzy: Не удалось создать базу данных для алгоритма: "
@@ -609,9 +615,21 @@ msgstr "hlfuzzy: Алгоритмы не указаны\n"
 msgid "hlfuzzy: Selected algorithm: "
 msgstr "hlfuzzy: Выбраный алгоритм: "
 
+#: hlfuzzy/Fuzzy.cc:176
+#, fuzzy
+#| msgid "hlfuzzy: total words: "
+msgid "hlfuzzy: Total keys: "
+msgstr "hlfuzzy: общее количество слов: "
+
 #: hlfuzzy/hlfuzzy.cc:176
 msgid "hlfuzzy: Writing index files...\n"
 msgstr "hlfuzzy: Пишем индекс файлы...\n"
+
+#: hlfuzzy/Fuzzy.cc:170
+#, fuzzy
+#| msgid "hlfuzzy: Done.\n"
+msgid "hlfuzzy: keys: "
+msgstr "hlfuzzy: Завершено.\n"
 
 #: hlfuzzy/hlfuzzy.cc:175
 msgid "hlfuzzy: total words: "

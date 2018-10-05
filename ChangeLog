@@ -1,3 +1,7 @@
+2018-10-06  Johnny A. Solbu <johnny@solbu.net>
+
+	* hlfuzzy/Fuzzy.cc: mark strings for translations
+
 2018-09-27  Johnny A. Solbu <johnny@solbu.net>
 
 	* Patches from NevemTeve: Fix bison/yacc/flex compile error
