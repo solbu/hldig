@@ -162,18 +162,18 @@ Fuzzy::writeDB ()
 
     if (debug > 1)
     {
-      cout << "hlfuzzy: '" << fuzzyKey << "' ==> '" << s->get () << "'\n";
+      cout << _("hlfuzzy: '") << fuzzyKey << "' ==> '" << s->get () << "'\n";
     }
     count++;
     if ((count % 100) == 0 && debug == 1)
     {
-      cout << "hlfuzzy: keys: " << count << '\n';
+      cout << _("hlfuzzy: keys: ") << count << '\n';
       cout.flush ();
     }
   }
   if (debug == 1)
   {
-    cout << "hlfuzzy:Total keys: " << count << "\n";
+    cout << _("hlfuzzy:Total keys: ") << count << "\n";
   }
   return OK;
 }
