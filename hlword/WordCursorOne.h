@@ -177,3 +177,4 @@ protected:
 };
 
 #endif /* _WordCursorOne_h_ */
+# thanks for help
