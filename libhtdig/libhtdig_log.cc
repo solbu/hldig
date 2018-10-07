@@ -71,7 +71,7 @@ logEntry (char *msg)
 // Report an error
 
 void
-reportError (char *msg)
+reportError (const char *msg)
 {
   time_t now = time (NULL);
 

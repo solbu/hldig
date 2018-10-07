@@ -55,7 +55,7 @@ protected:
   void term (int);
   void factor (int);
   int match (int);
-  void setError (char *);
+  void setError (const char *);
   void perform_push ();
   void perform_and ();
   void perform_not ();

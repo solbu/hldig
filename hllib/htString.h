@@ -95,7 +95,7 @@ public:
     append (s, l);
     return *this;
   }
-  inline String & set (char *s)
+  inline String & set (const char *s)
   {
     trunc ();
     append (s, strlen (s));
@@ -271,7 +271,7 @@ private:
   friend class StringIndex;
 };
 
-extern char *form (const char *, ...);
+extern const char *form (const char *, ...);
 extern char *vform (const char *, va_list);
 
 //

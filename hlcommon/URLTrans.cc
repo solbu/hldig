@@ -70,7 +70,7 @@ String & decodeURL (String & str)
 //   escaped.  The escape character is '%' and is followed by 2 hex
 //   digits representing the octet.
 //
-String & encodeURL (String & str, char *valid)
+String & encodeURL (String & str, const char *valid)
 {
   String temp;
   string digits = "0123456789ABCDEF";

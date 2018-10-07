@@ -73,7 +73,7 @@ int stats = 0;
 // Component procedures
 void mergeDB ();
 void usage ();
-void reportError (char *msg);
+void reportError (const char *msg);
 
 //*****************************************************************************
 // int main(int ac, char **av)
@@ -406,7 +406,7 @@ usage ()
 // Report an error and die
 //
 void
-reportError (char *msg)
+reportError (const char *msg)
 {
   cout << "hlmerge: " << msg << "\n\n";
   exit (1);

@@ -31,7 +31,7 @@
 
 int logOpen (char *file);
 void logEntry (char *msg);
-void reportError (char *msg);
+void reportError (const char *msg);
 int logClose (void);
 
 #endif /* LIBHTDIG_LOG_H */

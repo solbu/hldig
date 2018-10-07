@@ -34,7 +34,7 @@
 #include <getopt.h>
 #endif
 
-void reportError (char *msg);
+void reportError (const char *msg);
 void usage ();
 
 int debug = 0;
@@ -170,7 +170,7 @@ usage ()
 // Report an error and die
 //
 void
-reportError (char *msg)
+reportError (const char *msg)
 {
   cout << "parsetest: " << msg << "\n\n";
   exit (1);

@@ -73,7 +73,7 @@ int htsearch (Collection *, List &, Parser *);
 
 void setupWords (char *, List &, int, Parser *, String &);
 void createLogicalWords (List &, String &, String &);
-void reportError (char *);
+void reportError (const char *);
 void convertToBoolean (List & words);
 void doFuzzy (WeightWord *, List &, List &);
 void addRequiredWords (List &, StringList &);
@@ -1121,7 +1121,7 @@ addRequiredWords (List & searchWords, StringList & requiredWords)
 // we will assume this is the first thing returned by a CGI program.
 //
 void
-reportError_html (char *msg)
+reportError_html (const char *msg)
 {
   HtConfiguration *config = HtConfiguration::config ();
   cout << "Content-type: text/html\r\n\r\n";

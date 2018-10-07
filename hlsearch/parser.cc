@@ -50,7 +50,7 @@ int
 Parser::checkSyntax (List * tokenList)
 {
   HtConfiguration *config = HtConfiguration::config ();
-  void reportError (char *);
+  void reportError (const char *);
   // Load boolean_syntax_errors from configuration
   // they should be placed in this order:
   // 0        1               2            3            4
@@ -297,7 +297,7 @@ Parser::match (int t)
 
 //*****************************************************************************
 void
-Parser::setError (char *expected)
+Parser::setError (const char *expected)
 {
   if (valid)
   {

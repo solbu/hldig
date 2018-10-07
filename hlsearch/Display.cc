@@ -734,7 +734,7 @@ Display::setVariables (int pageNumber, List * matches)
     vars.Add ("NEXTPAGE", str);
 
     str = new String ();
-    char *p;
+    const char *p;
     QuotedStringList pnt (config->Find ("page_number_text"), " \t\r\n");
     QuotedStringList npnt (config->Find ("no_page_number_text"), " \t\r\n");
     QuotedStringList sep (config->Find ("page_number_separator"), " \t\r\n");
@@ -1961,8 +1961,8 @@ Display::logSearch (int page, List * matches)
   int nMatches = 0;
   int level = LOG_LEVEL;
   int facility = LOG_FACILITY;
-  char *host = getenv ("REMOTE_HOST");
-  char *ref = getenv ("HTTP_REFERER");
+  const char *host = getenv ("REMOTE_HOST");
+  const char *ref = getenv ("HTTP_REFERER");
 
   if (host == NULL)
     host = getenv ("REMOTE_ADDR");

@@ -91,7 +91,7 @@ StringMatch::~StringMatch ()
 //   Compile the given pattern into a state transition table
 //
 void
-StringMatch::Pattern (char *pattern, char sep)
+StringMatch::Pattern (const char *pattern, char sep)
 {
   if (!pattern || !*pattern)
   {
@@ -111,7 +111,7 @@ StringMatch::Pattern (char *pattern, char sep)
   // for each string in the pattern, we can subtract the number
   // of separators.  Wins for small but numerous strings in
   // the pattern.
-  char *tmpstr;
+  const char *tmpstr;
   for (tmpstr = pattern; (tmpstr = strchr (tmpstr, sep)) != NULL; tmpstr++)     // Pass the separator.
     n--;
 

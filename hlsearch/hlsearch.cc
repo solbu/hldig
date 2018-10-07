@@ -54,7 +54,7 @@ void htsearch (Collection *, List &, Parser *);
 
 void setupWords (char *, List &, int, Parser *, String &);
 void createLogicalWords (List &, String &, String &);
-void reportError (char *);
+void reportError (const char *);
 void convertToBoolean (List & words);
 void doFuzzy (WeightWord *, List &, List &);
 void addRequiredWords (List &, StringList &);
@@ -71,7 +71,7 @@ StringList collectionList;      // List of databases to search on
 // Don't use a dictionary structure, as setup time outweights saving.
 struct
 {
-  char *name;
+  const char *name;
   unsigned int flag;
 } colonPrefix[] =
 {
@@ -527,7 +527,7 @@ createLogicalWords (List & searchWords, String & logicalWords, String & wm)
 }
 
 void
-dumpWords (List & words, char *msg = "")
+dumpWords (List & words, const char *msg = "")
 {
   if (debug)
   {
@@ -947,7 +947,7 @@ addRequiredWords (List & searchWords, StringList & requiredWords)
 // we will assume this is the first thing returned by a CGI program.
 //
 void
-reportError (char *msg)
+reportError (const char *msg)
 {
   HtConfiguration *config = HtConfiguration::config ();
   cout << "Content-type: text/html\r\n\r\n";

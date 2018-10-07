@@ -28,13 +28,13 @@ public:
   // Construction/Destruction
   //
   WeightWord ();
-  WeightWord (char *word, double weight);
-    WeightWord (char *word, double weight, unsigned int flags);
+  WeightWord (const char *word, double weight);
+    WeightWord (const char *word, double weight, unsigned int flags);
     WeightWord (WeightWord *);
 
     virtual ~ WeightWord ();
 
-  void set (char *word);
+  void set (const char *word);
 
   String word;
   double weight;

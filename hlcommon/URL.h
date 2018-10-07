@@ -127,7 +127,7 @@ private:
 //String &encodeURL(String &, char *valid = "?_@.=&/:");
 //String &encodeURL(String &, char *reserved = ";/?:@&=+$,");
 //                         char *unreserved = "-_.!~*'()");
-String & encodeURL (String &, char *valid = (char *) UNRESERVED);
+String & encodeURL (String &, const char *valid = UNRESERVED);
 
 String & decodeURL (String &);
 
