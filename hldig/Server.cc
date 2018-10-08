@@ -261,7 +261,7 @@ Server::robotstxt (Document & doc)
       name++;
     rest = good_strtok (NULL, '\r');
     if (!rest)
-      rest = "";
+      rest = (char *)"";
 
     while (rest && isspace (*rest))
       rest++;
