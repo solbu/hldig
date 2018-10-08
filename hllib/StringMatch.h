@@ -52,7 +52,7 @@ public:
   // be in the form <string1>|<string2>|...  If in the form of a
   // List, it should be a list of String objects.
   //
-  void Pattern (char *pattern, char sep = '|');
+  void Pattern (const char *pattern, char sep = '|');
 
   //
   // Search for any of the strings in the pattern in the given

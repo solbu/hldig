@@ -251,10 +251,10 @@ usage()
 
 
 //*****************************************************************************
-// void reportError(char *msg)
+// void reportError(const char *msg)
 //
 void
-reportError(char *msg)
+reportError(const char *msg)
 {
     cout << "hlfuzzy: " << msg << "\n\n";
     exit(1);

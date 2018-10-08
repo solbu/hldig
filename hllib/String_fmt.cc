@@ -32,7 +32,7 @@ static char buf[10000];
 //*****************************************************************************
 // char *form(char *fmt, ...)
 //
-char *
+const char *
 form (const char *fmt, ...)
 {
   va_list args;

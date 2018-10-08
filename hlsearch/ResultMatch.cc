@@ -40,7 +40,7 @@ ResultMatch::~ResultMatch ()
 
 //*****************************************************************************
 // Default-access-methods.  Just dummies when that data is not used.
-char *
+const char *
 ResultMatch::getTitle ()
 {
   return "";
@@ -233,7 +233,7 @@ public:
   getSortFun ();
   virtual void
   setTitle (char *t);
-  virtual char *
+  virtual const char *
   getTitle ();
   TitleMatch ();
   ~
@@ -263,7 +263,7 @@ TitleMatch::setTitle (char *t)
   myTitle = t;
 }
 
-char *
+const char *
 TitleMatch::getTitle ()
 {
   return myTitle;
@@ -274,8 +274,8 @@ TitleMatch::compare (const void *a1, const void *a2)
 {
   ResultMatch *m1 = *((ResultMatch **) a1);
   ResultMatch *m2 = *((ResultMatch **) a2);
-  char *t1 = m1->getTitle ();
-  char *t2 = m2->getTitle ();
+  const char *t1 = m1->getTitle ();
+  const char *t2 = m2->getTitle ();
 
   if (!t1)
     t1 = "";
@@ -295,7 +295,7 @@ ResultMatch::setSortType (const String & sorttype)
 {
   static const struct
   {
-    char *typest;
+    const char *typest;
     SortType type;
   }
   sorttypes[] =

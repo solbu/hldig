@@ -48,7 +48,7 @@ HtHTTP    *HTTPConnect = NULL;
 
 
 static void usage();
-void reportError(char *msg);
+void reportError(const char *msg);
 Transport::DocStatus Retrieve();
 int Parser(char *ct);
 
@@ -311,7 +311,7 @@ void usage()
 //
 // Report an error and die
 //
-void reportError(char *msg)
+void reportError(const char *msg)
 {
     cout << "testnet: " << msg << "\n\n";
     exit(1);

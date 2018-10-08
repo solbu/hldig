@@ -62,7 +62,7 @@ WeightWord::WeightWord (WeightWord * ww)
 //***************************************************************************
 // WeightWord::WeightWord(char *word, double weight)
 //
-WeightWord::WeightWord (char *word, double weight)
+WeightWord::WeightWord (const char *word, double weight)
 {
   records = 0;
   isExact = 0;
@@ -79,7 +79,7 @@ WeightWord::WeightWord (char *word, double weight)
 //***************************************************************************
 // WeightWord::WeightWord(char *word, double weight, unsigned int f)
 //
-WeightWord::WeightWord (char *word, double weight, unsigned int f)
+WeightWord::WeightWord (const char *word, double weight, unsigned int f)
 {
   records = 0;
 
@@ -110,7 +110,7 @@ WeightWord::~WeightWord ()
 // void WeightWord::set(char *word)
 //
 void
-WeightWord::set (char *word)
+WeightWord::set (const char *word)
 {
 #if 0
   isExact = 0;

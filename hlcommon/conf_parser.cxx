@@ -104,7 +104,7 @@ using namespace std;
 #include "htString.h"
 /*#define YYDEBUG 1*/
 #define YYPARSE_PARAM aConf
-int yyerror(const HtConfiguration *aConf, char *s);
+int yyerror(const HtConfiguration *aConf, const char *s);
 int yylex(void);  
 #undef DEBUG
 #ifdef DEBUG
@@ -1778,7 +1778,7 @@ yyreturn:
 
 
 int
-yyerror (const HtConfiguration *, char *s)  /* Called by yyparse on error */
+yyerror (const HtConfiguration *, const char *s)  /* Called by yyparse on error */
 {
    extern int yylineno;
    extern int include_stack_ptr;

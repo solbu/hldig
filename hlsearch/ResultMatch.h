@@ -77,7 +77,7 @@ public:
   // A method for each type of data Display wants to cram in.
   // Will only store the pieces necessary for the
   // search-type as defined in setSortType, the others are dummies.
-  virtual char *getTitle ();
+  virtual const char *getTitle ();
   virtual time_t getTime ();
 
   virtual void setTitle (char *title);

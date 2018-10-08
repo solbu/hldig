@@ -216,7 +216,7 @@ Transport::DocStatus ExternalTransport::Request ()
 
   // OK, now parse the stuff we got back from the handler...
   String line;
-  char *
+  const char *
     token1;
   int
     in_header = 1;

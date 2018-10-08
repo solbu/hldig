@@ -411,8 +411,8 @@ HTML::parse (Retriever & retriever, URL & baseURL)
       tag.append ((char *) position, q - position);
       while (isspace (*position))
         position++;
-      if (!in_space && spacebeforetags.CompareWord ((char *) position)
-          || !in_space && !in_punct && *position != '/')
+      if ((!in_space && spacebeforetags.CompareWord ((char *) position))
+          || (!in_space && !in_punct && *position != '/'))
       {
         // These opening tags cause a space to be inserted
         // before anything they insert.

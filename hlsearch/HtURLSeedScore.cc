@@ -160,7 +160,7 @@ ScoreAdjustItem::~ScoreAdjustItem ()
 
 URLSeedScore::URLSeedScore (Configuration & config)
 {
-  char *config_item = "url_seed_score";
+  const char *config_item = "url_seed_score";
 
   StringList sl (config[config_item], "\t \r\n");
 
