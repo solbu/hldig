@@ -110,12 +110,7 @@
 struct ConfigDefaults
 {
   const char *name;             // Name of the attribute
-  /* FIXME: If I'm not mistaken, sometimes "value" is a constant and sometimes
-   * it is not. If it's declared with "const" the build will fail. As it is now,
-   * we get repeated warnings such as "deprecated conversion from
-   * string constant to 'char*' [-Wwrite-strings] but the build completes.
-   */
-  char *value;                  // Default value
+  const char *value;                  // Default value
   const char *type;             // Type of the value (string, integer, boolean)
   const char *programs;         // Whitespace separated list of programs/modules using this attribute
   const char *block;            // Configuration block this can be used in (can be blank)

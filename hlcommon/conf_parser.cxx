@@ -1369,7 +1369,7 @@ yyreduce:
                               (yyval.ConfLine)=new ConfigDefaults;
             (yyval.ConfLine)->name = (yyvsp[-2].str);
             (yyval.ConfLine)->value=new char[1];
-            *(yyval.ConfLine)->value='\0';
+            *(char*)((yyval.ConfLine)->value)='\0';
           }
 
     break;

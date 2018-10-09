@@ -325,7 +325,7 @@ ExternalParser::parse (Retriever & retriever, URL & base)
 #endif
     token1 = strtok (line, "\t");
     if (token1 == NULL)
-      token1 = "";
+      token1 = (char *)"";
     token2 = NULL;
     token3 = NULL;
     switch (*token1)
