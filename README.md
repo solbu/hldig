@@ -12,7 +12,7 @@ Recently, we wrote a quick-guide to [building and testing hl://Dig](TESTING.md),
 but it doesn't cover all the programs in the hl://Dig package.
 
 We have [opened a ticket](https://github.com/solbu/hldig/issues/50)
-to discuss how to proceed with documentation and what type of web site to put
+to discuss how to proceed with documentation and what type of web site to put//comment added
 in place.
 
 ## Contributing
