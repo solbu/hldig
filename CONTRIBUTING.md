@@ -59,7 +59,7 @@ If you're working on documentation or something else that doesn't require compil
     [skip ci]
 
 to the commit message. That way, the [Travis code integration test]
-(https://travis-ci.org/andy5995/hldig) will be skipped.
+(https://travis-ci.org/solbu/hldig) will be skipped.
 
 9. Push the working branch (e.g. issue_32) to your remote fork and make
 your [pull request][PR].
