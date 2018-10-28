@@ -21,7 +21,7 @@ in place.
 List of [Contributors](https://github.com/solbu/hldig/graphs/contributors)
 
 ## Translating
-If you are interested in translating the output messages from hldig, please see
+If you are interested in translating the output messages from hldig, please see the
 [TRANSLATING](https://github.com/solbu/hldig/blob/master/TRANSLATING.md).
 
 ## Community/Contact
