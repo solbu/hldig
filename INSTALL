@@ -9,6 +9,51 @@ are permitted in any medium without royalty provided the copyright
 notice and this notice are preserved.  This file is offered as-is,
 without warranty of any kind.
 
+
+Build requirements
+==================
+
+In order to compile hl://Dig you need the development libraries of
+c++, openssl and zlib.
+It is also recommended to have flex and bison.
+
+GNU/Linux
+---------
+On Debian and Debian derivatives like Ubuntu, Mint etc, install the following packages:
+
+    build-essential
+    libstdc++
+    libssl-dev
+    zlib1g-dev
+
+On Mageia, Fedora, RHEL, CentOS and other rpm based systems, install the following packages:
+
+    libstdc++-devel
+    openssl-devel
+    libzlib-devel
+
+Mac
+---
+Install the appropriate xcode cli tools.
+
+    xcode-select --install
+
+Using homebrew install latest openssl and zlib.
+
+    brew install openssl zlib
+
+
+Special configure option
+========================
+
+hl://Dig have a configure option that set the path part of the URL 
+where images are loaded from. By default hl://Dig look for images
+in the webserver path /www.
+
+If you serve the hl://Dig images from example.com/hldig/images/
+use the configure option "--with-image-url-prefix=/hldig/images"
+
+
 Basic Installation
 ==================
 
@@ -142,8 +187,8 @@ Installation Names
 ==================
 
    By default, `make install' installs the package's commands under
-`/usr/local/bin', include files under `/usr/local/include', etc.  You
-can specify an installation prefix other than `/usr/local' by giving
+`/opt/www/bin', include files under `/opt/www/include', etc.  You
+can specify an installation prefix other than `/opt/www' by giving
 `configure' the option `--prefix=PREFIX', where PREFIX must be an
 absolute file name.
 
@@ -248,7 +293,7 @@ these programs are available in `/usr/bin'.  So, if you need `/usr/ucb'
 in your `PATH', put it _after_ `/usr/bin'.
 
    On Haiku, software installed for all users goes in `/boot/common',
-not `/usr/local'.  It is recommended to use the following options:
+not `/opt/www'.  It is recommended to use the following options:
 
      ./configure --prefix=/boot/common
 
@@ -303,7 +348,7 @@ configure again during the build, and the customized values of these
 variables may be lost.  In order to avoid this problem, you should set
 them in the `configure' command line, using `VAR=value'.  For example:
 
-     ./configure CC=/usr/local2/bin/gcc
+     ./configure CC=/opt/www2/bin/gcc
 
 causes the specified `gcc' to be used as the C compiler (unless it is
 overridden in the site shell script).
