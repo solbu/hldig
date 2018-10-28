@@ -137,10 +137,10 @@ am__installdirs = "$(DESTDIR)$(pkglibdir)"
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
 libcommon_la_LIBADD =
 am_libcommon_la_OBJECTS = DocumentDB.lo DocumentRef.lo \
-	HtWordReference.lo HtWordList.lo defaults.lo HtURLCodec.lo \
-	URL.lo URLTrans.lo HtZlibCodec.lo cgi.lo HtSGMLCodec.lo \
-	HtConfiguration.lo HtURLRewriter.lo conf_lexer.lo \
-	conf_parser.lo messages.lo
+	HtConfiguration.lo HtSGMLCodec.lo HtURLCodec.lo \
+	HtURLRewriter.lo HtWordList.lo HtWordReference.lo \
+	HtZlibCodec.lo URL.lo URLTrans.lo cgi.lo conf_lexer.lo \
+	conf_parser.lo defaults.lo messages.lo
 libcommon_la_OBJECTS = $(am_libcommon_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -446,12 +446,22 @@ AM_LFLAGS = -L
 AM_YFLAGS = -l -d
 EXTRA_DIST = conf_lexer.cxx conf_parser.cxx
 pkglib_LTLIBRARIES = libcommon.la
-libcommon_la_SOURCES = DocumentDB.cc DocumentRef.cc \
-	HtWordReference.cc HtWordList.cc defaults.cc \
-	HtURLCodec.cc URL.cc URLTrans.cc \
-	HtZlibCodec.cc cgi.cc HtSGMLCodec.cc \
-	HtConfiguration.cc HtURLRewriter.cc \
-	conf_lexer.lxx conf_parser.yxx 			\
+libcommon_la_SOURCES = \
+	DocumentDB.cc \
+	DocumentRef.cc \
+	HtConfiguration.cc \
+	HtSGMLCodec.cc \
+	HtURLCodec.cc \
+	HtURLRewriter.cc \
+	HtWordList.cc \
+	HtWordReference.cc \
+	HtZlibCodec.cc \
+	URL.cc \
+	URLTrans.cc \
+	cgi.cc \
+	conf_lexer.lxx \
+	conf_parser.yxx \
+	defaults.cc \
 	messages.cc
 
 libcommon_la_LDFLAGS = -release $(HLDIG_MAJOR_VERSION).$(HLDIG_MINOR_VERSION).$(HLDIG_MICRO_VERSION) ${extra_ldflags}
