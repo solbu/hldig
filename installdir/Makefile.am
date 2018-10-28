@@ -7,7 +7,7 @@ man_MANS = hldig-pdfparser.1 hldig.1 hldump.1 hlfuzzy.1 hlload.1 hlmerge.1 \
 hldir	=	$(IMAGE_DIR)
 hl_DATA	=	button1.gif button2.gif button3.gif button4.gif button5.gif \
 		button6.gif button7.gif button8.gif button9.gif buttonl.gif \
-		buttonr.gif button10.gif logo.jpg star.gif star_blank.gif \
+		buttonr.gif button10.gif hldig.jpg star.gif star_blank.gif \
 		button1.png button2.png button3.png button4.png button5.png \
                 button6.png button7.png button8.png button9.png buttonl.png \
                 buttonr.png button10.png star.png star_blank.png
