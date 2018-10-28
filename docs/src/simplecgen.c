@@ -52,7 +52,12 @@ int main(int argc, char **argv)
   char cfg_file[PATH_MAX + 1];
   sprintf (cfg_file, "%s/%s", bin_dir, CONFIG_FILE_BASE);
 
-  struct_cfg *cfgopts = calloc (sizeof (struct_cfg), 1);
+  struct_cfg *cfgopts;
+  if ((cfgopts = calloc (sizeof (struct_cfg), 1)) == NULL)
+  {
+    printf ("Unable to allocate memory\n");
+    return 1;
+  }
 
   // char site_title[120];
 
