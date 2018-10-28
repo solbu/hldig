@@ -1,3 +1,16 @@
+2018-10-28  Johnny A. Solbu <johnny@solbu.net>
+
+	* Rename logo.jpg > hldig.jpg
+	* Update documentation urls
+
+2018-10-27  jasonjyu <jason.j.yu@gmail.com>
+
+	* Check for NULL
+
+2018-10-07  José Jorge <josejorge@gmail.com>
+
+	* Replace char* with const char* to fix write string warnings, fixes #34
+
 2018-10-06  Johnny A. Solbu <johnny@solbu.net>
 
 	* hlfuzzy/Fuzzy.cc: mark strings for translations
