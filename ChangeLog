@@ -2,6 +2,7 @@
 
 	* Rename logo.jpg > hldig.jpg
 	* Update documentation urls
+	* Replace char* with const char* in conf_parser.yxx
 
 2018-10-27  jasonjyu <jason.j.yu@gmail.com>
 
