@@ -125,7 +125,6 @@ private:
   time_t current_time;
   int current_id;
   DocumentRef *current_ref;
-  int current_anchor_number;
   int trackWords;
   int n_links;
   String credentials;

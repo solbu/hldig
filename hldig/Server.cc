@@ -188,7 +188,7 @@ _port (u.port ()), _bad_server (0), _documents (0), _accept_language (0)
 
 // Copy constructor
 Server::Server (const Server & rhs):
-_host (_host),
+_host (rhs._host),
 _port (rhs._port),
 _bad_server (rhs._bad_server),
 _connection_space (rhs._connection_space),
