@@ -67,7 +67,7 @@ HtRegex::set (const char *str, int case_sensitive)
     char *buf = new char[len];
     regerror (err, &re, buf, len);
     lastErrorMessage = buf;
-    delete buf;
+    delete[] buf;
   }
   return compiled;
 }

@@ -62,18 +62,21 @@ public:
   //
   // Standard List operations...
   //
-  void Add (const char *);
-  void Add (String * obj)
+  using List::Add;
+  virtual void Add (const char *);
+  virtual void Add (String * obj)
   {
     List::Add (obj);
   }
-  void Insert (const char *, int pos);
-  void Insert (String * obj, int pos)
+  using List::Insert;
+  virtual void Insert (const char *, int pos);
+  virtual void Insert (String * obj, int pos)
   {
     List::Insert (obj, pos);
   }
-  void Assign (const char *, int pos);
-  void Assign (String * obj, int pos)
+  using List::Assign;
+  virtual void Assign (const char *, int pos);
+  virtual void Assign (String * obj, int pos)
   {
     List::Assign (obj, pos);
   }

@@ -181,7 +181,7 @@ StringList::Sort (int)
     List::Add (array[i]);
   }
 
-  delete array;
+  delete[] array;
 }
 
 //*****************************************************************************
