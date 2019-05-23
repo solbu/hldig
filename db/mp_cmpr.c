@@ -443,12 +443,12 @@ CDB___memp_cmpr_write (dbmfp, bhp, db_io, niop)
   if (cmpr_info->zlib_flags != 0)
     ret =
       CDB___memp_cmpr_deflate (orig_buff, CMPR_MULTIPLY (db_io->pagesize),
-                               &buffcmpr, &buffcmpr_length,
+                               &buffcmpr, (int*)&buffcmpr_length,
                                cmpr_info->user_data);
   else
     ret =
       (*cmpr_info->compress) (orig_buff, CMPR_MULTIPLY (db_io->pagesize),
-                              &buffcmpr, &buffcmpr_length,
+                              &buffcmpr, (int*)&buffcmpr_length,
                               cmpr_info->user_data);
 
   if (ret != 0)

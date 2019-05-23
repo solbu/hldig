@@ -33,6 +33,8 @@ static const char sccsid[] = "@(#)os_map.c  11.10 (Sleepycat) 10/31/99";
 #include "db_int.h"
 #include "os_jump.h"
 
+extern int CDB___db_eopnotsup (const DB_ENV *);
+
 #ifdef HAVE_MMAP
 static int CDB___os_map
 __P ((DB_ENV *, char *, DB_FH *, size_t, int, int, void **));
