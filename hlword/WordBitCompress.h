@@ -44,7 +44,7 @@ typedef char *charptr;
 // ******** Utility inline functions and macros
 
 // error checking
-#define FATAL_ABORT fflush(stdout);fprintf(stderr,"FATAL ERROR at file:%s line:%d !!!\n",__FILE__,__LINE__);fflush(stderr);(*(int *)NULL)=1
+#define FATAL_ABORT fflush(stdout);fprintf(stderr,"FATAL ERROR at file:%s line:%d !!!\n",__FILE__,__LINE__);fflush(stderr);abort()
 #define errr(s) {fprintf(stderr,"FATAL ERROR:%s\n",s);FATAL_ABORT;}
 #define CHECK_MEM(p) if(!p) errr("mifluz: Out of memory!");
 // max/min of 2 values

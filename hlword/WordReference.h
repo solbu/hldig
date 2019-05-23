@@ -264,9 +264,9 @@ public:
 #endif /* SWIG */
 
 #ifndef SWIG
-  int compare (Object * to)
+  int compare (const Object & to) const
   {
-    String word (((WordReference *) to)->key.GetWord ());
+    String word (((const WordReference *) &to)->key.GetWord ());
     return key.GetWord ().nocase_compare (word);
   }
 #endif /* SWIG */

@@ -125,7 +125,7 @@ int word_only_db_cmp (const DBT * a, const DBT * b);
 //
 // !!!!!!!DEBUGTMP
 #ifndef SWIG
-#define WORD_FATAL_ABORT fflush(stdout);fprintf(stderr,"FATAL ERROR at file:%s line:%d !!!\n",__FILE__,__LINE__);fflush(stderr);(*(int *)NULL)=1
+#define WORD_FATAL_ABORT fflush(stdout);fprintf(stderr,"FATAL ERROR at file:%s line:%d !!!\n",__FILE__,__LINE__);fflush(stderr);abort()
 #define word_errr(s) {fprintf(stderr,"FATAL ERROR:%s\n",s);WORD_FATAL_ABORT;}
 #endif /* SWIG */
 class WordKey
