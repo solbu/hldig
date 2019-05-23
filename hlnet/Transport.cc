@@ -450,8 +450,7 @@ Transport::NewDate (const char *datestring)
 // Recognize the possible date format sent by the server
 Transport::DateFormat Transport::RecognizeDateFormat (const char *datestring)
 {
-  register const char *
-    s;
+  const char * s;
 
   if ((s = strchr (datestring, ',')))
   {

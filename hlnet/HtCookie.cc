@@ -483,8 +483,7 @@ HtCookie::SetDate (const char *datestring, HtDateTime & dt)
 HtCookie::DateFormat HtCookie::RecognizeDateFormat (const char *datestring)
 {
 
-  register const char *
-    s;
+  const char * s;
 
   if (datestring)
   {

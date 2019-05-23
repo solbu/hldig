@@ -110,8 +110,8 @@ const int
 int
 HtDateTime::Parse (const char *date)
 {
-  register const char *s;
-  register const char *t;
+  const char *s;
+  const char *t;
   int day, month, year, hour, minute, second;
 
   //
@@ -362,8 +362,8 @@ char *
 HtDateTime::SetFTime (const char *buf, const char *format)
 {
 
-  register char *p;
-  register int r;
+  char *p;
+  int r;
 
   ToGMTime ();                  // This must be set cos strptime always stores in GM
 

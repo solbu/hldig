@@ -236,8 +236,8 @@ public:
   inline int find_interval (const unsigned int v, unsigned int &lboundary)
   {
     // SPEED CRITICAL SECTION
-    register int i;
-    register unsigned int sboundary = 0;
+    int i;
+    unsigned int sboundary = 0;
     lboundary = 0;
     for (i = 0; i < nintervals - 1; i++)
     {
