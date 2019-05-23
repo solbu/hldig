@@ -9,6 +9,7 @@
 #define _clib_h_
 
 #include <sys/types.h>
+#include <stdarg.h>
 
 extern "C"
 {
@@ -42,7 +43,7 @@ extern "C"
 #endif
 
 #ifndef HAVE_VSNPRINTF
-  int vsnprintf (char *, size_t, const char *, ...);
+  int vsnprintf (char *, size_t, const char *, va_list);
 #endif
 }
 

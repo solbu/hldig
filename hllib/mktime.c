@@ -54,11 +54,12 @@
 
 #if DEBUG
 #include <stdio.h>
+#include <string.h>
 #if STDC_HEADERS
 #include <stdlib.h>
 #endif
 /* Make it work even if the system's libc has its own mktime routine.  */
-#define mktime my_mktime
+#define mktime mymktime
 #endif /* DEBUG */
 
 #ifndef __P
@@ -73,13 +74,24 @@
 #define CHAR_BIT 8
 #endif
 
-/* The extra casts work around common compiler bugs.  */
-#define TYPE_SIGNED(t) (! ((t) 0 < (t) -1))
-/* The outer cast is needed to work around a bug in Cray C 5.0.3.0.
-   It is necessary at least when t == time_t.  */
-#define TYPE_MINIMUM(t) ((t) (TYPE_SIGNED (t) \
-            ? ~ (t) 0 << (sizeof (t) * CHAR_BIT - 1) : (t) 0))
-#define TYPE_MAXIMUM(t) ((t) (~ (t) 0 - TYPE_MINIMUM (t)))
+
+/* Construction of the min/max values for an integral type
+ * just based on its width is a bit ugly. The C standard
+ * imposes a few rules here:
+ *
+ * + signed integer overflow is undefined behaviour
+ * + excessive shifting is undefined behaviour
+ * + left shift of negative quantities is undefined behaviour
+ * + right shift of negativ quantities is compiler-defined behaviour
+ * + integer conversion to wider type takes place when needed and not
+ *   throughout the whole expression evaluation
+ */
+#define TYPE_SIGNED(t)  ((t)0 >= (t)-1)
+#define TYPE_SMAXBIT(t) ((t)1 << (sizeof(t) * CHAR_BIT - 2))
+#define TYPE_SMAXVAL(t) (TYPE_SMAXBIT(t) + (TYPE_SMAXBIT(t) - 1))
+#define TYPE_MAXIMUM(t) (TYPE_SIGNED(t) ? TYPE_SMAXVAL(t) : (t)-1)
+#define TYPE_MINIMUM(t) (TYPE_SIGNED(t) ? (-TYPE_SMAXVAL(t) - (~0 == -1)) : (t)0)
+
 
 #ifndef INT_MIN
 #define INT_MIN TYPE_MINIMUM (int)
