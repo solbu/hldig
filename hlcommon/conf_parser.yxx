@@ -45,6 +45,7 @@ int yylex(void);
 #ifdef DEBUG
 int sn_debug=3;
 #endif
+#define register
 %}
 
 %parse-param {HtConfiguration *aConf}
@@ -112,12 +113,13 @@ simple_expression:      T_KEYWORD T_DELIMITER T_STRING T_NEWLINE  {
     $$->name = $1; $$->value=$3;
   }
   | T_KEYWORD T_DELIMITER T_NEWLINE  {
-    // excude_urls:
+    // exclude_urls:
     //
-                              $$=new ConfigDefaults;
+            char * tmp = new char[1];
+            $$=new ConfigDefaults;
             $$->name = $1;
-            $$->value=new char[1];
-            *$$->value='\0';
+            $$->value=tmp;
+	    *tmp = '\0';
           }
 ;
 

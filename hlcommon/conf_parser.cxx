@@ -110,6 +110,7 @@ int yylex(void);
 #ifdef DEBUG
 int sn_debug=3;
 #endif
+#define register
 
 
 
@@ -131,8 +132,8 @@ int sn_debug=3;
 
 /* In a future release of Bison, this section will be replaced
    by #include "y.tab.h".  */
-#ifndef YY_YY_CONF_PARSER_HXX_INCLUDED
-# define YY_YY_CONF_PARSER_HXX_INCLUDED
+#ifndef YY_YY__HLDIG_HLCOMMON_CONF_PARSER_HXX_INCLUDED
+# define YY_YY__HLDIG_HLCOMMON_CONF_PARSER_HXX_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -192,7 +193,7 @@ extern YYSTYPE yylval;
 
 int yyparse (HtConfiguration *aConf);
 
-#endif /* !YY_YY_CONF_PARSER_HXX_INCLUDED  */
+#endif /* !YY_YY__HLDIG_HLCOMMON_CONF_PARSER_HXX_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
@@ -494,9 +495,9 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    67,    67,    68,    71,    83,    89,    92,   102,   108,
-     114,   124,   145,   163,   175,   178,   191,   204,   217,   230,
-     242
+       0,    68,    68,    69,    72,    84,    90,    93,   103,   109,
+     115,   126,   147,   165,   177,   180,   193,   206,   219,   232,
+     244
 };
 #endif
 
@@ -1364,12 +1365,13 @@ yyreduce:
   case 10:
 
     {
-    // excude_urls:
+    // exclude_urls:
     //
-                              (yyval.ConfLine)=new ConfigDefaults;
+            char * tmp = new char[1];
+            (yyval.ConfLine)=new ConfigDefaults;
             (yyval.ConfLine)->name = (yyvsp[-2].str);
-            (yyval.ConfLine)->value=new char[1];
-            *(char*)((yyval.ConfLine)->value)='\0';
+            (yyval.ConfLine)->value=tmp;
+	    *tmp = '\0';
           }
 
     break;
