@@ -1247,7 +1247,10 @@ Display::buildMatchList ()
   startdate = *lt;
   enddate = *lt;
 
-  time_t eternity = ~(1 << (sizeof (time_t) * 8 - 1));  // will be the largest value holdable by a time_t
+  // !WARNING! 'time_t is assumed to be a signed integral. Constructing the maximum
+  // value is slightly tricky here.
+  time_t eternity = (time_t)1 << (sizeof (time_t) * 8 - 2);
+  eternity += (eternity - 1);
   tm endoftime;                 // the time_t eternity will be converted into a tm, held by this variable
 
   time_t timet_startdate;
