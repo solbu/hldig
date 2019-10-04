@@ -26,6 +26,8 @@ On Debian and Debian derivatives like Ubuntu, Mint etc, install the following pa
     libssl-dev
     zlib1g-dev
 
+    You also need to install gettext, not just gettext-base
+
 On Mageia, Fedora, RHEL, CentOS and other rpm based systems, install the following packages:
 
     libstdc++-devel
