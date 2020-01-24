@@ -45,13 +45,13 @@ int
 CDB_log_archive (dbenv, listp, flags, db_malloc)
      DB_ENV *dbenv;
      char ***listp;
-     u_int32_t flags;
+     uint32_t flags;
      void *(*db_malloc) __P ((size_t));
 {
   DBT rec;
   DB_LOG *dblp;
   DB_LSN stable_lsn;
-  u_int32_t fnum;
+  uint32_t fnum;
   int array_size, n, ret;
   char **array, **arrayp, *name, *p, *pref, buf[MAXPATHLEN];
 
@@ -219,7 +219,7 @@ CDB___build_data (dbenv, pref, listp, db_malloc)
   DB_LOG *dblp;
   DB_LSN lsn;
   __log_register_args *argp;
-  u_int32_t rectype;
+  uint32_t rectype;
   int array_size, last, n, nxt, ret;
   char **array, **arrayp, *p, *real_name;
 

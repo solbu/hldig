@@ -21,15 +21,15 @@ CDB___qam_inc_log (dbenv, txnid, ret_lsnp, flags, fileid, lsn)
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
+     uint32_t flags;
      int32_t fileid;
      DB_LSN *lsn;
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t rectype, txn_num;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -62,7 +62,7 @@ CDB___qam_inc_log (dbenv, txnid, ret_lsnp, flags, fileid, lsn)
   else
     memset (bp, 0, sizeof (*lsn));
   bp += sizeof (*lsn);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -79,7 +79,7 @@ CDB___qam_inc_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __qam_inc_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -111,7 +111,7 @@ CDB___qam_inc_read (recbuf, argpp)
      __qam_inc_args **argpp;
 {
   __qam_inc_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__qam_inc_args) +
@@ -139,15 +139,15 @@ CDB___qam_incfirst_log (dbenv, txnid, ret_lsnp, flags, fileid, recno)
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
+     uint32_t flags;
      int32_t fileid;
      db_recno_t recno;
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t rectype, txn_num;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -177,7 +177,7 @@ CDB___qam_incfirst_log (dbenv, txnid, ret_lsnp, flags, fileid, recno)
   bp += sizeof (fileid);
   memcpy (bp, &recno, sizeof (recno));
   bp += sizeof (recno);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -194,7 +194,7 @@ CDB___qam_incfirst_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __qam_incfirst_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -225,7 +225,7 @@ CDB___qam_incfirst_read (recbuf, argpp)
      __qam_incfirst_args **argpp;
 {
   __qam_incfirst_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__qam_incfirst_args) +
@@ -255,8 +255,8 @@ CDB___qam_mvptr_log (dbenv, txnid, ret_lsnp, flags,
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
-     u_int32_t opcode;
+     uint32_t flags;
+     uint32_t opcode;
      int32_t fileid;
      db_recno_t old_first;
      db_recno_t new_first;
@@ -266,9 +266,9 @@ CDB___qam_mvptr_log (dbenv, txnid, ret_lsnp, flags,
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t rectype, txn_num;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -315,7 +315,7 @@ CDB___qam_mvptr_log (dbenv, txnid, ret_lsnp, flags,
   else
     memset (bp, 0, sizeof (*metalsn));
   bp += sizeof (*metalsn);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -332,7 +332,7 @@ CDB___qam_mvptr_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __qam_mvptr_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -369,7 +369,7 @@ CDB___qam_mvptr_read (recbuf, argpp)
      __qam_mvptr_args **argpp;
 {
   __qam_mvptr_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__qam_mvptr_args) +
@@ -408,18 +408,18 @@ CDB___qam_del_log (dbenv, txnid, ret_lsnp, flags,
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
+     uint32_t flags;
      int32_t fileid;
      DB_LSN *lsn;
      db_pgno_t pgno;
-     u_int32_t indx;
+     uint32_t indx;
      db_recno_t recno;
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t rectype, txn_num;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -459,7 +459,7 @@ CDB___qam_del_log (dbenv, txnid, ret_lsnp, flags,
   bp += sizeof (indx);
   memcpy (bp, &recno, sizeof (recno));
   bp += sizeof (recno);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -476,7 +476,7 @@ CDB___qam_del_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __qam_del_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -511,7 +511,7 @@ CDB___qam_del_read (recbuf, argpp)
      __qam_del_args **argpp;
 {
   __qam_del_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__qam_del_args) +
@@ -546,22 +546,22 @@ CDB___qam_add_log (dbenv, txnid, ret_lsnp, flags,
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
+     uint32_t flags;
      int32_t fileid;
      DB_LSN *lsn;
      db_pgno_t pgno;
-     u_int32_t indx;
+     uint32_t indx;
      db_recno_t recno;
      const DBT *data;
-     u_int32_t vflag;
+     uint32_t vflag;
      const DBT *olddata;
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t zero;
-  u_int32_t rectype, txn_num;
+  uint32_t zero;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -581,9 +581,9 @@ CDB___qam_add_log (dbenv, txnid, ret_lsnp, flags,
     + sizeof (pgno)
     + sizeof (indx)
     + sizeof (recno)
-    + sizeof (u_int32_t) + (data == NULL ? 0 : data->size)
+    + sizeof (uint32_t) + (data == NULL ? 0 : data->size)
     + sizeof (vflag)
-    + sizeof (u_int32_t) + (olddata == NULL ? 0 : olddata->size);
+    + sizeof (uint32_t) + (olddata == NULL ? 0 : olddata->size);
   if ((ret = CDB___os_malloc (logrec.size, NULL, &logrec.data)) != 0)
     return (ret);
 
@@ -610,8 +610,8 @@ CDB___qam_add_log (dbenv, txnid, ret_lsnp, flags,
   if (data == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -625,8 +625,8 @@ CDB___qam_add_log (dbenv, txnid, ret_lsnp, flags,
   if (olddata == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -635,7 +635,7 @@ CDB___qam_add_log (dbenv, txnid, ret_lsnp, flags,
     memcpy (bp, olddata->data, olddata->size);
     bp += olddata->size;
   }
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -652,7 +652,7 @@ CDB___qam_add_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __qam_add_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -679,7 +679,7 @@ CDB___qam_add_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tdata: ");
   for (i = 0; i < argp->data.size; i++)
   {
-    ch = ((u_int8_t *) argp->data.data)[i];
+    ch = ((uint8_t *) argp->data.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -690,7 +690,7 @@ CDB___qam_add_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tolddata: ");
   for (i = 0; i < argp->olddata.size; i++)
   {
-    ch = ((u_int8_t *) argp->olddata.data)[i];
+    ch = ((uint8_t *) argp->olddata.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -708,7 +708,7 @@ CDB___qam_add_read (recbuf, argpp)
      __qam_add_args **argpp;
 {
   __qam_add_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__qam_add_args) +
@@ -734,15 +734,15 @@ CDB___qam_add_read (recbuf, argpp)
   memcpy (&argp->recno, bp, sizeof (argp->recno));
   bp += sizeof (argp->recno);
   memset (&argp->data, 0, sizeof (argp->data));
-  memcpy (&argp->data.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->data.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->data.data = bp;
   bp += argp->data.size;
   memcpy (&argp->vflag, bp, sizeof (argp->vflag));
   bp += sizeof (argp->vflag);
   memset (&argp->olddata, 0, sizeof (argp->olddata));
-  memcpy (&argp->olddata.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->olddata.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->olddata.data = bp;
   bp += argp->olddata.size;
   *argpp = argp;

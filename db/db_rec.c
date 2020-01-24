@@ -42,7 +42,7 @@ CDB___db_addrem_recover (dbenv, dbtp, lsnp, redo, info)
   DBC *dbc;
   DB_MPOOLFILE *mpf;
   PAGE *pagep;
-  u_int32_t change;
+  uint32_t change;
   int cmp_n, cmp_p, ret;
 
   COMPQUIET (info, NULL);
@@ -207,7 +207,7 @@ CDB___db_big_recover (dbenv, dbtp, lsnp, redo, info)
   DBC *dbc;
   DB_MPOOLFILE *mpf;
   PAGE *pagep;
-  u_int32_t change;
+  uint32_t change;
   int cmp_n, cmp_p, ret;
 
   COMPQUIET (info, NULL);
@@ -250,7 +250,7 @@ CDB___db_big_recover (dbenv, dbtp, lsnp, redo, info)
             argp->next_pgno, 0, P_OVERFLOW);
     OV_LEN (pagep) = argp->dbt.size;
     OV_REF (pagep) = 1;
-    memcpy ((u_int8_t *) pagep + P_OVERHEAD, argp->dbt.data, argp->dbt.size);
+    memcpy ((uint8_t *) pagep + P_OVERHEAD, argp->dbt.data, argp->dbt.size);
     PREV_PGNO (pagep) = argp->prev_pgno;
     change = DB_MPOOL_DIRTY;
   }
@@ -572,7 +572,7 @@ CDB___db_addpage_recover (dbenv, dbtp, lsnp, redo, info)
   DBC *dbc;
   DB_MPOOLFILE *mpf;
   PAGE *pagep;
-  u_int32_t change;
+  uint32_t change;
   int cmp_n, cmp_p, ret;
 
   COMPQUIET (info, NULL);
@@ -700,7 +700,7 @@ CDB___db_noop_recover (dbenv, dbtp, lsnp, redo, info)
   DBC *dbc;
   DB_MPOOLFILE *mpf;
   PAGE *pagep;
-  u_int32_t change;
+  uint32_t change;
   int cmp_n, cmp_p, ret;
 
   COMPQUIET (info, NULL);

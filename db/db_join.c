@@ -25,11 +25,11 @@ static const char sccsid[] = "@(#)db_join.c  11.6 (Sleepycat) 10/19/99";
 #include "btree.h"
 
 static int CDB___db_join_close __P ((DBC *));
-static int CDB___db_join_del __P ((DBC *, u_int32_t));
-static int CDB___db_join_get __P ((DBC *, DBT *, DBT *, u_int32_t));
+static int CDB___db_join_del __P ((DBC *, uint32_t));
+static int CDB___db_join_get __P ((DBC *, DBT *, DBT *, uint32_t));
 static int CDB___db_join_getnext
-__P ((DBC *, DBT *, DBT *, DBT *, u_int32_t));
-static int CDB___db_join_put __P ((DBC *, DBT *, DBT *, u_int32_t));
+__P ((DBC *, DBT *, DBT *, DBT *, uint32_t));
+static int CDB___db_join_put __P ((DBC *, DBT *, DBT *, uint32_t));
 
 /*
  * This is the duplicate-assisted join functionality.  Right now we're
@@ -63,13 +63,13 @@ static int CDB___db_join_put __P ((DBC *, DBT *, DBT *, u_int32_t));
  * key and data are returned.  When no more items are left in the join
  * set, the  c_next operation off the join cursor will return DB_NOTFOUND.
  *
- * PUBLIC: int CDB___db_join __P((DB *, DBC **, DBC **, u_int32_t));
+ * PUBLIC: int CDB___db_join __P((DB *, DBC **, DBC **, uint32_t));
  */
 int
 CDB___db_join (primary, curslist, dbcp, flags)
      DB *primary;
      DBC **curslist, **dbcp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBC *dbc;
   JOIN_CURSOR *jc;
@@ -160,7 +160,7 @@ CDB___db_join (primary, curslist, dbcp, flags)
     goto err;
   if ((ret = CDB___os_calloc (nslots, sizeof (DBC *), &jc->j_fdupcurs)) != 0)
     goto err;
-  if ((ret = CDB___os_calloc (nslots, sizeof (u_int8_t),
+  if ((ret = CDB___os_calloc (nslots, sizeof (uint8_t),
                               &jc->j_exhausted)) != 0)
     goto err;
   for (i = 0; curslist[i] != NULL; i++)
@@ -213,7 +213,7 @@ err:if (jc != NULL)
     if (jc->j_fdupcurs != NULL)
       CDB___os_free (jc->j_fdupcurs, nslots * sizeof (DBC *));
     if (jc->j_exhausted != NULL)
-      CDB___os_free (jc->j_exhausted, nslots * sizeof (u_int8_t));
+      CDB___os_free (jc->j_exhausted, nslots * sizeof (uint8_t));
     CDB___os_free (jc, sizeof (JOIN_CURSOR));
   }
   if (dbc != NULL)
@@ -226,7 +226,7 @@ CDB___db_join_put (dbc, key, data, flags)
      DBC *dbc;
      DBT *key;
      DBT *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   PANIC_CHECK (dbc->dbp->dbenv);
 
@@ -239,7 +239,7 @@ CDB___db_join_put (dbc, key, data, flags)
 static int
 CDB___db_join_del (dbc, flags)
      DBC *dbc;
-     u_int32_t flags;
+     uint32_t flags;
 {
   PANIC_CHECK (dbc->dbp->dbenv);
 
@@ -251,14 +251,14 @@ static int
 CDB___db_join_get (dbc, key, data, flags)
      DBC *dbc;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBT currkey;
   DB *dbp;
   DBC *cp;
   JOIN_CURSOR *jc;
   int ret, i, j;
-  u_int32_t operation;
+  uint32_t operation;
 
   dbp = dbc->dbp;
   memset (&currkey, 0, sizeof (currkey));
@@ -572,7 +572,7 @@ static int
 CDB___db_join_getnext (dbc, key, data, matching, exhausted)
      DBC *dbc;
      DBT *key, *data, *matching;
-     u_int32_t exhausted;
+     uint32_t exhausted;
 {
   int ret, cmp;
   DB *dbp;

@@ -114,7 +114,7 @@ CDB___os_read (fhp, addr, len, nrp)
 {
   size_t offset;
   ssize_t nr;
-  u_int8_t *taddr;
+  uint8_t *taddr;
 
 
   /* HACK to debug where the O_BINARY mode of the file gets fouled up */
@@ -135,7 +135,7 @@ CDB___os_read (fhp, addr, len, nrp)
     if (nr == 0)
       break;
   }
-  *nrp = taddr - (u_int8_t *) addr;
+  *nrp = taddr - (uint8_t *) addr;
   return (0);
 }
 
@@ -154,7 +154,7 @@ CDB___os_write (fhp, addr, len, nwp)
 {
   size_t offset;
   ssize_t nw;
-  u_int8_t *taddr;
+  uint8_t *taddr;
 
   /* HACK to debug where the O_BINARY mode of the file gets fouled up */
   /*

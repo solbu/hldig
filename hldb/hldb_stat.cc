@@ -78,7 +78,7 @@ int main __P ((int, char *[]));
 int mpool_ok __P ((char *));
 int mpool_stats __P ((DB_ENV *));
 void onint __P ((int));
-void prflags __P ((u_int32_t, const FN *));
+void prflags __P ((uint32_t, const FN *));
 int queue_stats __P ((DB_ENV *, DB *));
 void siginit __P ((void));
 int txn_compare __P ((const void *, const void *));
@@ -735,7 +735,7 @@ int
 txn_stats (DB_ENV * dbenvp)
 {
   DB_TXN_STAT *sp;
-  u_int32_t i;
+  uint32_t i;
   int ret;
   const char *p;
 
@@ -864,7 +864,7 @@ dl_bytes (const char *msg, u_long gbytes, u_long mbytes, u_long bytes)
  *  Print out flag values.
  */
 void
-prflags (u_int32_t flags, const FN * fnp)
+prflags (uint32_t flags, const FN * fnp)
 {
   const char *sep;
 
@@ -886,7 +886,7 @@ prflags (u_int32_t flags, const FN * fnp)
 int
 db_init (char *home, test_t ttype)
 {
-  u_int32_t flags;
+  uint32_t flags;
   int ret;
 
   /*

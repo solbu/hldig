@@ -28,7 +28,7 @@ static const char revid[] =
 #include "db_ext.h"
 
 static int __db_c_cleanup __P ((DBC *, DBC *, int));
-static int __db_c_idup __P ((DBC *, DBC **, u_int32_t));
+static int __db_c_idup __P ((DBC *, DBC **, uint32_t));
 static int __db_wrlock_err __P ((DB_ENV *));
 
 #define  LOCKING_INIT(dbp, dbc)          \
@@ -197,13 +197,13 @@ CDB___db_c_destroy (dbc)
  * CDB___db_c_count --
  *  Return a count of duplicate data items.
  *
- * PUBLIC: int CDB___db_c_count __P((DBC *, db_recno_t *, u_int32_t));
+ * PUBLIC: int CDB___db_c_count __P((DBC *, db_recno_t *, uint32_t));
  */
 int
 CDB___db_c_count (dbc, recnop, flags)
      DBC *dbc;
      db_recno_t *recnop;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   int ret;
@@ -252,12 +252,12 @@ CDB___db_c_count (dbc, recnop, flags)
  * CDB___db_c_del --
  *  Delete using a cursor.
  *
- * PUBLIC: int CDB___db_c_del __P((DBC *, u_int32_t));
+ * PUBLIC: int CDB___db_c_del __P((DBC *, uint32_t));
  */
 int
 CDB___db_c_del (dbc, flags)
      DBC *dbc;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   DBC *opd;
@@ -305,13 +305,13 @@ CDB___db_c_del (dbc, flags)
  * CDB___db_c_dup --
  *  Duplicate a cursor
  *
- * PUBLIC: int CDB___db_c_dup __P((DBC *, DBC **, u_int32_t));
+ * PUBLIC: int CDB___db_c_dup __P((DBC *, DBC **, uint32_t));
  */
 int
 CDB___db_c_dup (dbc_orig, dbcp, flags)
      DBC *dbc_orig;
      DBC **dbcp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB_ENV *dbenv;
   DB *dbp;
@@ -387,7 +387,7 @@ err:if (dbc_n != NULL)
 static int
 __db_c_idup (dbc_orig, dbcp, flags)
      DBC *dbc_orig, **dbcp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   DBC *dbc_n;
@@ -450,20 +450,20 @@ err:(void) dbc_n->c_close (dbc_n);
  * CDB___db_c_get --
  *  Get using a cursor.
  *
- * PUBLIC: int CDB___db_c_get __P((DBC *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: int CDB___db_c_get __P((DBC *, DBT *, DBT *, uint32_t));
  */
 int
 CDB___db_c_get (dbc_arg, key, data, flags)
      DBC *dbc_arg;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   DBC *dbc, *dbc_n, *opd;
   DBC_INTERNAL *cp, *cp_n;
   db_pgno_t pgno;
-  u_int32_t tmp_flags, tmp_rmw;
-  u_int8_t type;
+  uint32_t tmp_flags, tmp_rmw;
+  uint8_t type;
   int ret, t_ret;
 
   /*
@@ -694,18 +694,18 @@ err:                           /* Don't pass DB_DBT_ISSET back to application le
  * CDB___db_c_put --
  *  Put using a cursor.
  *
- * PUBLIC: int CDB___db_c_put __P((DBC *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: int CDB___db_c_put __P((DBC *, DBT *, DBT *, uint32_t));
  */
 int
 CDB___db_c_put (dbc_arg, key, data, flags)
      DBC *dbc_arg;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   DBC *dbc_n, *opd;
   db_pgno_t pgno;
-  u_int32_t tmp_flags;
+  uint32_t tmp_flags;
   int ret, t_ret;
 
   /*
@@ -804,12 +804,12 @@ err:                           /* Cleanup and cursor resolution. */
 /*
  * CDB___db_duperr()
  *  Error message: we don't currently support sorted duplicate duplicates.
- * PUBLIC: int CDB___db_duperr __P((DB *, u_int32_t));
+ * PUBLIC: int CDB___db_duperr __P((DB *, uint32_t));
  */
 int
 CDB___db_duperr (dbp, flags)
      DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   if (flags != DB_NODUPDATA)
     CDB___db_err (dbp->dbenv,

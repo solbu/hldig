@@ -20,16 +20,16 @@ CDB___crdel_fileopen_log (dbenv, txnid, ret_lsnp, flags, name, mode)
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
+     uint32_t flags;
      const DBT *name;
-     u_int32_t mode;
+     uint32_t mode;
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t zero;
-  u_int32_t rectype, txn_num;
+  uint32_t zero;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -44,7 +44,7 @@ CDB___crdel_fileopen_log (dbenv, txnid, ret_lsnp, flags, name, mode)
   else
     lsnp = &txnid->last_lsn;
   logrec.size = sizeof (rectype) + sizeof (txn_num) + sizeof (DB_LSN)
-    + sizeof (u_int32_t) + (name == NULL ? 0 : name->size) + sizeof (mode);
+    + sizeof (uint32_t) + (name == NULL ? 0 : name->size) + sizeof (mode);
   if ((ret = CDB___os_malloc (logrec.size, NULL, &logrec.data)) != 0)
     return (ret);
 
@@ -58,8 +58,8 @@ CDB___crdel_fileopen_log (dbenv, txnid, ret_lsnp, flags, name, mode)
   if (name == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -70,7 +70,7 @@ CDB___crdel_fileopen_log (dbenv, txnid, ret_lsnp, flags, name, mode)
   }
   memcpy (bp, &mode, sizeof (mode));
   bp += sizeof (mode);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -87,7 +87,7 @@ CDB___crdel_fileopen_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __crdel_fileopen_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -108,7 +108,7 @@ CDB___crdel_fileopen_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tname: ");
   for (i = 0; i < argp->name.size; i++)
   {
-    ch = ((u_int8_t *) argp->name.data)[i];
+    ch = ((uint8_t *) argp->name.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -127,7 +127,7 @@ CDB___crdel_fileopen_read (recbuf, argpp)
      __crdel_fileopen_args **argpp;
 {
   __crdel_fileopen_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__crdel_fileopen_args) +
@@ -143,8 +143,8 @@ CDB___crdel_fileopen_read (recbuf, argpp)
   memcpy (&argp->prev_lsn, bp, sizeof (DB_LSN));
   bp += sizeof (DB_LSN);
   memset (&argp->name, 0, sizeof (argp->name));
-  memcpy (&argp->name.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->name.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->name.data = bp;
   bp += argp->name.size;
   memcpy (&argp->mode, bp, sizeof (argp->mode));
@@ -159,18 +159,18 @@ CDB___crdel_metasub_log (dbenv, txnid, ret_lsnp, flags,
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
-     u_int32_t fileid;
+     uint32_t flags;
+     uint32_t fileid;
      db_pgno_t pgno;
      const DBT *page;
      DB_LSN *lsn;
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t zero;
-  u_int32_t rectype, txn_num;
+  uint32_t zero;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -187,7 +187,7 @@ CDB___crdel_metasub_log (dbenv, txnid, ret_lsnp, flags,
   logrec.size = sizeof (rectype) + sizeof (txn_num) + sizeof (DB_LSN)
     + sizeof (fileid)
     + sizeof (pgno)
-    + sizeof (u_int32_t) + (page == NULL ? 0 : page->size) + sizeof (*lsn);
+    + sizeof (uint32_t) + (page == NULL ? 0 : page->size) + sizeof (*lsn);
   if ((ret = CDB___os_malloc (logrec.size, NULL, &logrec.data)) != 0)
     return (ret);
 
@@ -205,8 +205,8 @@ CDB___crdel_metasub_log (dbenv, txnid, ret_lsnp, flags,
   if (page == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -220,7 +220,7 @@ CDB___crdel_metasub_log (dbenv, txnid, ret_lsnp, flags,
   else
     memset (bp, 0, sizeof (*lsn));
   bp += sizeof (*lsn);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -237,7 +237,7 @@ CDB___crdel_metasub_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __crdel_metasub_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -260,7 +260,7 @@ CDB___crdel_metasub_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tpage: ");
   for (i = 0; i < argp->page.size; i++)
   {
-    ch = ((u_int8_t *) argp->page.data)[i];
+    ch = ((uint8_t *) argp->page.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -280,7 +280,7 @@ CDB___crdel_metasub_read (recbuf, argpp)
      __crdel_metasub_args **argpp;
 {
   __crdel_metasub_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__crdel_metasub_args) +
@@ -300,8 +300,8 @@ CDB___crdel_metasub_read (recbuf, argpp)
   memcpy (&argp->pgno, bp, sizeof (argp->pgno));
   bp += sizeof (argp->pgno);
   memset (&argp->page, 0, sizeof (argp->page));
-  memcpy (&argp->page.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->page.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->page.data = bp;
   bp += argp->page.size;
   memcpy (&argp->lsn, bp, sizeof (argp->lsn));
@@ -316,18 +316,18 @@ CDB___crdel_metapage_log (dbenv, txnid, ret_lsnp, flags,
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
-     u_int32_t fileid;
+     uint32_t flags;
+     uint32_t fileid;
      const DBT *name;
      db_pgno_t pgno;
      const DBT *page;
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t zero;
-  u_int32_t rectype, txn_num;
+  uint32_t zero;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -343,8 +343,8 @@ CDB___crdel_metapage_log (dbenv, txnid, ret_lsnp, flags,
     lsnp = &txnid->last_lsn;
   logrec.size = sizeof (rectype) + sizeof (txn_num) + sizeof (DB_LSN)
     + sizeof (fileid)
-    + sizeof (u_int32_t) + (name == NULL ? 0 : name->size)
-    + sizeof (pgno) + sizeof (u_int32_t) + (page == NULL ? 0 : page->size);
+    + sizeof (uint32_t) + (name == NULL ? 0 : name->size)
+    + sizeof (pgno) + sizeof (uint32_t) + (page == NULL ? 0 : page->size);
   if ((ret = CDB___os_malloc (logrec.size, NULL, &logrec.data)) != 0)
     return (ret);
 
@@ -360,8 +360,8 @@ CDB___crdel_metapage_log (dbenv, txnid, ret_lsnp, flags,
   if (name == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -375,8 +375,8 @@ CDB___crdel_metapage_log (dbenv, txnid, ret_lsnp, flags,
   if (page == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -385,7 +385,7 @@ CDB___crdel_metapage_log (dbenv, txnid, ret_lsnp, flags,
     memcpy (bp, page->data, page->size);
     bp += page->size;
   }
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -402,7 +402,7 @@ CDB___crdel_metapage_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __crdel_metapage_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -424,7 +424,7 @@ CDB___crdel_metapage_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tname: ");
   for (i = 0; i < argp->name.size; i++)
   {
-    ch = ((u_int8_t *) argp->name.data)[i];
+    ch = ((uint8_t *) argp->name.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -435,7 +435,7 @@ CDB___crdel_metapage_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tpage: ");
   for (i = 0; i < argp->page.size; i++)
   {
-    ch = ((u_int8_t *) argp->page.data)[i];
+    ch = ((uint8_t *) argp->page.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -453,7 +453,7 @@ CDB___crdel_metapage_read (recbuf, argpp)
      __crdel_metapage_args **argpp;
 {
   __crdel_metapage_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__crdel_metapage_args) +
@@ -471,15 +471,15 @@ CDB___crdel_metapage_read (recbuf, argpp)
   memcpy (&argp->fileid, bp, sizeof (argp->fileid));
   bp += sizeof (argp->fileid);
   memset (&argp->name, 0, sizeof (argp->name));
-  memcpy (&argp->name.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->name.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->name.data = bp;
   bp += argp->name.size;
   memcpy (&argp->pgno, bp, sizeof (argp->pgno));
   bp += sizeof (argp->pgno);
   memset (&argp->page, 0, sizeof (argp->page));
-  memcpy (&argp->page.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->page.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->page.data = bp;
   bp += argp->page.size;
   *argpp = argp;
@@ -491,15 +491,15 @@ CDB___crdel_delete_log (dbenv, txnid, ret_lsnp, flags, name)
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
+     uint32_t flags;
      const DBT *name;
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t zero;
-  u_int32_t rectype, txn_num;
+  uint32_t zero;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -514,7 +514,7 @@ CDB___crdel_delete_log (dbenv, txnid, ret_lsnp, flags, name)
   else
     lsnp = &txnid->last_lsn;
   logrec.size = sizeof (rectype) + sizeof (txn_num) + sizeof (DB_LSN)
-    + sizeof (u_int32_t) + (name == NULL ? 0 : name->size);
+    + sizeof (uint32_t) + (name == NULL ? 0 : name->size);
   if ((ret = CDB___os_malloc (logrec.size, NULL, &logrec.data)) != 0)
     return (ret);
 
@@ -528,8 +528,8 @@ CDB___crdel_delete_log (dbenv, txnid, ret_lsnp, flags, name)
   if (name == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -538,7 +538,7 @@ CDB___crdel_delete_log (dbenv, txnid, ret_lsnp, flags, name)
     memcpy (bp, name->data, name->size);
     bp += name->size;
   }
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -555,7 +555,7 @@ CDB___crdel_delete_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __crdel_delete_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -576,7 +576,7 @@ CDB___crdel_delete_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tname: ");
   for (i = 0; i < argp->name.size; i++)
   {
-    ch = ((u_int8_t *) argp->name.data)[i];
+    ch = ((uint8_t *) argp->name.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -594,7 +594,7 @@ CDB___crdel_delete_read (recbuf, argpp)
      __crdel_delete_args **argpp;
 {
   __crdel_delete_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__crdel_delete_args) +
@@ -610,8 +610,8 @@ CDB___crdel_delete_read (recbuf, argpp)
   memcpy (&argp->prev_lsn, bp, sizeof (DB_LSN));
   bp += sizeof (DB_LSN);
   memset (&argp->name, 0, sizeof (argp->name));
-  memcpy (&argp->name.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->name.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->name.data = bp;
   bp += argp->name.size;
   *argpp = argp;

@@ -30,13 +30,13 @@ static const char revid[] =
  * CDB___qam_31_qammeta --
  *  Upgrade the database from version 1 to version 2.
  *
- * PUBLIC: int CDB___qam_31_qammeta __P((DB *, char *, u_int8_t *));
+ * PUBLIC: int CDB___qam_31_qammeta __P((DB *, char *, uint8_t *));
  */
 int
 CDB___qam_31_qammeta (dbp, real_name, buf)
      DB *dbp;
      char *real_name;
-     u_int8_t *buf;
+     uint8_t *buf;
 {
   QMETA31 *newmeta;
   QMETA30 *oldmeta;

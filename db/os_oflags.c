@@ -24,13 +24,13 @@ static const char sccsid[] = "@(#)os_oflags.c  11.1 (Sleepycat) 7/25/99";
  * CDB___db_oflags --
  *  Convert open(2) flags to DB flags.
  *
- * PUBLIC: u_int32_t CDB___db_oflags __P((int));
+ * PUBLIC: uint32_t CDB___db_oflags __P((int));
  */
-u_int32_t
+uint32_t
 CDB___db_oflags (oflags)
      int oflags;
 {
-  u_int32_t dbflags;
+  uint32_t dbflags;
 
   /*
    * XXX

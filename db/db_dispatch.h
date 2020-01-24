@@ -51,7 +51,7 @@ typedef struct __db_txnlist DB_TXNLIST;
 struct __db_txnhead
 {
   LIST_HEAD (__db_headlink, __db_txnlist) head;
-  u_int32_t maxid;
+  uint32_t maxid;
   int32_t generation;
 };
 
@@ -65,16 +65,16 @@ struct __db_txnlist
   {
     struct
     {
-      u_int32_t txnid;
+      uint32_t txnid;
       int32_t generation;
     } t;
     struct
     {
 #define TXNLIST_FLAG_DELETED  0x1
 #define  TXNLIST_FLAG_CLOSED  0x2
-      u_int32_t flags;
-      u_int32_t fileid;
-      u_int32_t count;
+      uint32_t flags;
+      uint32_t fileid;
+      uint32_t count;
       char *fname;
     } d;
   } u;

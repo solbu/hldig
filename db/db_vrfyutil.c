@@ -32,12 +32,12 @@ static int __db_vrfy_pgset_iinc __P ((DB *, db_pgno_t, int));
  *  Allocate and initialize a VRFY_DBINFO structure.
  *
  * PUBLIC: int CDB___db_vrfy_dbinfo_create
- * PUBLIC:     __P((DB_ENV *, u_int32_t, VRFY_DBINFO **));
+ * PUBLIC:     __P((DB_ENV *, uint32_t, VRFY_DBINFO **));
  */
 int
 CDB___db_vrfy_dbinfo_create (dbenv, pgsize, vdpp)
      DB_ENV *dbenv;
-     u_int32_t pgsize;
+     uint32_t pgsize;
      VRFY_DBINFO **vdpp;
 {
   DB *cdbp, *pgdbp, *pgset;
@@ -267,12 +267,12 @@ CDB___db_vrfy_putpageinfo (vdp, pip)
  *  (A mapping from page number to int, used by the *_meta2pgset functions,
  *  as well as for keeping track of which pages the verifier has seen.)
  *
- * PUBLIC: int CDB___db_vrfy_pgset __P((DB_ENV *, u_int32_t, DB **));
+ * PUBLIC: int CDB___db_vrfy_pgset __P((DB_ENV *, uint32_t, DB **));
  */
 int
 CDB___db_vrfy_pgset (dbenv, pgsize, dbpp)
      DB_ENV *dbenv;
-     u_int32_t pgsize;
+     uint32_t pgsize;
      DB **dbpp;
 {
   DB *dbp;
@@ -643,19 +643,19 @@ CDB___db_salvage_destroy (vdp)
  *  in this search, as well as the page we're returning.
  *
  * PUBLIC: int CDB___db_salvage_getnext
- * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t *, u_int32_t *));
+ * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t *, uint32_t *));
  */
 int
 CDB___db_salvage_getnext (vdp, pgnop, pgtypep)
      VRFY_DBINFO *vdp;
      db_pgno_t *pgnop;
-     u_int32_t *pgtypep;
+     uint32_t *pgtypep;
 {
   DB *dbp;
   DBC *dbc;
   DBT key, data;
   int ret;
-  u_int32_t pgtype;
+  uint32_t pgtype;
 
   dbp = vdp->salvage_pages;
 
@@ -667,7 +667,7 @@ CDB___db_salvage_getnext (vdp, pgnop, pgtypep)
 
   while ((ret = dbc->c_get (dbc, &key, &data, DB_NEXT)) == 0)
   {
-    DB_ASSERT (data.size == sizeof (u_int32_t));
+    DB_ASSERT (data.size == sizeof (uint32_t));
     memcpy (&pgtype, data.data, sizeof (pgtype));
 
     if ((ret = dbc->c_del (dbc, 0)) != 0)
@@ -681,10 +681,10 @@ CDB___db_salvage_getnext (vdp, pgnop, pgtypep)
   if (0)
   {
   found:DB_ASSERT (key.size == sizeof (db_pgno_t));
-    DB_ASSERT (data.size == sizeof (u_int32_t));
+    DB_ASSERT (data.size == sizeof (uint32_t));
 
     *pgnop = *(db_pgno_t *) key.data;
-    *pgtypep = *(u_int32_t *) data.data;
+    *pgtypep = *(uint32_t *) data.data;
   }
 
 err:(void) dbc->c_close (dbc);
@@ -709,7 +709,7 @@ CDB___db_salvage_isdone (vdp, pgno)
   DBT key, data;
   DB *dbp;
   int ret;
-  u_int32_t currtype;
+  uint32_t currtype;
 
   dbp = vdp->salvage_pages;
 
@@ -718,7 +718,7 @@ CDB___db_salvage_isdone (vdp, pgno)
 
   currtype = SALVAGE_INVALID;
   data.data = &currtype;
-  data.ulen = sizeof (u_int32_t);
+  data.ulen = sizeof (uint32_t);
   data.flags = DB_DBT_USERMEM;
 
   key.data = &pgno;
@@ -764,7 +764,7 @@ CDB___db_salvage_markdone (vdp, pgno)
   DBT key, data;
   DB *dbp;
   int pgtype, ret;
-  u_int32_t currtype;
+  uint32_t currtype;
 
   pgtype = SALVAGE_IGNORE;
   dbp = vdp->salvage_pages;
@@ -774,7 +774,7 @@ CDB___db_salvage_markdone (vdp, pgno)
 
   currtype = SALVAGE_INVALID;
   data.data = &currtype;
-  data.ulen = sizeof (u_int32_t);
+  data.ulen = sizeof (uint32_t);
   data.flags = DB_DBT_USERMEM;
 
   key.data = &pgno;
@@ -790,7 +790,7 @@ CDB___db_salvage_markdone (vdp, pgno)
   if ((ret = CDB___db_salvage_isdone (vdp, pgno)) != 0)
     return (ret);
 
-  data.size = sizeof (u_int32_t);
+  data.size = sizeof (uint32_t);
   data.data = &pgtype;
 
   return (dbp->put (dbp, NULL, &key, &data, 0));
@@ -802,13 +802,13 @@ CDB___db_salvage_markdone (vdp, pgno)
  *  must be dealt with later.
  *
  * PUBLIC: int CDB___db_salvage_markneeded
- * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t, u_int32_t));
+ * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t, uint32_t));
  */
 int
 CDB___db_salvage_markneeded (vdp, pgno, pgtype)
      VRFY_DBINFO *vdp;
      db_pgno_t pgno;
-     u_int32_t pgtype;
+     uint32_t pgtype;
 {
   DB *dbp;
   DBT key, data;
@@ -823,7 +823,7 @@ CDB___db_salvage_markneeded (vdp, pgno, pgtype)
   key.size = sizeof (db_pgno_t);
 
   data.data = &pgtype;
-  data.size = sizeof (u_int32_t);
+  data.size = sizeof (uint32_t);
 
   /*
    * Put an entry for this page, with pgno as key and type as data,

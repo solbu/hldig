@@ -30,12 +30,12 @@ static int CDB___dbt_ferr __P ((const DB *, const char *, const DBT *, int));
  * CDB___db_cursorchk --
  *  Common cursor argument checking routine.
  *
- * PUBLIC: int CDB___db_cursorchk __P((const DB *, u_int32_t, int));
+ * PUBLIC: int CDB___db_cursorchk __P((const DB *, uint32_t, int));
  */
 int
 CDB___db_cursorchk (dbp, flags, isrdonly)
      const DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
      int isrdonly;
 {
   /* Check for invalid function flags. */
@@ -65,12 +65,12 @@ CDB___db_cursorchk (dbp, flags, isrdonly)
  * CDB___db_cdelchk --
  *  Common cursor delete argument checking routine.
  *
- * PUBLIC: int CDB___db_cdelchk __P((const DB *, u_int32_t, int, int));
+ * PUBLIC: int CDB___db_cdelchk __P((const DB *, uint32_t, int, int));
  */
 int
 CDB___db_cdelchk (dbp, flags, isrdonly, isvalid)
      const DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
      int isrdonly, isvalid;
 {
   /* Check for changes to a read-only tree. */
@@ -97,13 +97,13 @@ CDB___db_cdelchk (dbp, flags, isrdonly, isvalid)
  * CDB___db_cgetchk --
  *  Common cursor get argument checking routine.
  *
- * PUBLIC: int CDB___db_cgetchk __P((const DB *, DBT *, DBT *, u_int32_t, int));
+ * PUBLIC: int CDB___db_cgetchk __P((const DB *, DBT *, DBT *, uint32_t, int));
  */
 int
 CDB___db_cgetchk (dbp, key, data, flags, isvalid)
      const DB *dbp;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
      int isvalid;
 {
   int key_einval, key_flags, ret;
@@ -185,14 +185,14 @@ CDB___db_cgetchk (dbp, key, data, flags, isvalid)
  *  Common cursor put argument checking routine.
  *
  * PUBLIC: int CDB___db_cputchk __P((const DB *,
- * PUBLIC:    const DBT *, DBT *, u_int32_t, int, int));
+ * PUBLIC:    const DBT *, DBT *, uint32_t, int, int));
  */
 int
 CDB___db_cputchk (dbp, key, data, flags, isrdonly, isvalid)
      const DB *dbp;
      const DBT *key;
      DBT *data;
-     u_int32_t flags;
+     uint32_t flags;
      int isrdonly, isvalid;
 {
   int key_einval, key_flags, ret;
@@ -258,12 +258,12 @@ CDB___db_cputchk (dbp, key, data, flags, isrdonly, isvalid)
  * CDB___db_closechk --
  *  DB->close flag check.
  *
- * PUBLIC: int CDB___db_closechk __P((const DB *, u_int32_t));
+ * PUBLIC: int CDB___db_closechk __P((const DB *, uint32_t));
  */
 int
 CDB___db_closechk (dbp, flags)
      const DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   /* Check for invalid function flags. */
   switch (flags)
@@ -282,13 +282,13 @@ CDB___db_closechk (dbp, flags)
  * CDB___db_delchk --
  *  Common delete argument checking routine.
  *
- * PUBLIC: int CDB___db_delchk __P((const DB *, DBT *, u_int32_t, int));
+ * PUBLIC: int CDB___db_delchk __P((const DB *, DBT *, uint32_t, int));
  */
 int
 CDB___db_delchk (dbp, key, flags, isrdonly)
      const DB *dbp;
      DBT *key;
-     u_int32_t flags;
+     uint32_t flags;
      int isrdonly;
 {
   /* Check for changes to a read-only tree. */
@@ -315,14 +315,14 @@ CDB___db_delchk (dbp, key, flags, isrdonly)
  * CDB___db_getchk --
  *  Common get argument checking routine.
  *
- * PUBLIC: int CDB___db_getchk __P((const DB *, const DBT *, DBT *, u_int32_t));
+ * PUBLIC: int CDB___db_getchk __P((const DB *, const DBT *, DBT *, uint32_t));
  */
 int
 CDB___db_getchk (dbp, key, data, flags)
      const DB *dbp;
      const DBT *key;
      DBT *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   int ret;
 
@@ -368,12 +368,12 @@ CDB___db_getchk (dbp, key, data, flags)
  * CDB___db_joinchk --
  *  Common join argument checking routine.
  *
- * PUBLIC: int CDB___db_joinchk __P((const DB *, u_int32_t));
+ * PUBLIC: int CDB___db_joinchk __P((const DB *, uint32_t));
  */
 int
 CDB___db_joinchk (dbp, flags)
      const DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   if (flags != 0)
     return (CDB___db_ferr (dbp->dbenv, "DB->join", 0));
@@ -386,14 +386,14 @@ CDB___db_joinchk (dbp, flags)
  *  Common put argument checking routine.
  *
  * PUBLIC: int CDB___db_putchk
- * PUBLIC:    __P((const DB *, DBT *, const DBT *, u_int32_t, int, int));
+ * PUBLIC:    __P((const DB *, DBT *, const DBT *, uint32_t, int, int));
  */
 int
 CDB___db_putchk (dbp, key, data, flags, isrdonly, isdup)
      const DB *dbp;
      DBT *key;
      const DBT *data;
-     u_int32_t flags;
+     uint32_t flags;
      int isrdonly, isdup;
 {
   int ret;
@@ -441,12 +441,12 @@ CDB___db_putchk (dbp, key, data, flags, isrdonly, isdup)
  * CDB___db_statchk --
  *  Common stat argument checking routine.
  *
- * PUBLIC: int CDB___db_statchk __P((const DB *, u_int32_t));
+ * PUBLIC: int CDB___db_statchk __P((const DB *, uint32_t));
  */
 int
 CDB___db_statchk (dbp, flags)
      const DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   /* Check for invalid function flags. */
   switch (flags)
@@ -470,12 +470,12 @@ CDB___db_statchk (dbp, flags)
  * CDB___db_syncchk --
  *  Common sync argument checking routine.
  *
- * PUBLIC: int CDB___db_syncchk __P((const DB *, u_int32_t));
+ * PUBLIC: int CDB___db_syncchk __P((const DB *, uint32_t));
  */
 int
 CDB___db_syncchk (dbp, flags)
      const DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   /* Check for invalid function flags. */
   switch (flags)
@@ -584,12 +584,12 @@ CDB___db_rdonly (dbenv, name)
  * CDB___db_removechk --
  *  DB->remove flag check.
  *
- * PUBLIC: int CDB___db_removechk __P((const DB *, u_int32_t));
+ * PUBLIC: int CDB___db_removechk __P((const DB *, uint32_t));
  */
 int
 CDB___db_removechk (dbp, flags)
      const DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   /* Check for invalid function flags. */
   switch (flags)

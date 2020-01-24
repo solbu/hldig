@@ -32,14 +32,14 @@ static const char sccsid[] = "@(#)os_seek.c  11.3 (Sleepycat) 10/29/99";
  *  Seek to a page/byte offset in the file.
  *
  * PUBLIC: int CDB___os_seek
- * PUBLIC:     __P((DB_FH *, size_t, db_pgno_t, u_int32_t, int, DB_OS_SEEK));
+ * PUBLIC:     __P((DB_FH *, size_t, db_pgno_t, uint32_t, int, DB_OS_SEEK));
  */
 int
 CDB___os_seek (fhp, pgsize, pageno, relative, isrewind, db_whence)
      DB_FH *fhp;
      size_t pgsize;
      db_pgno_t pageno;
-     u_int32_t relative;
+     uint32_t relative;
      int isrewind;
      DB_OS_SEEK db_whence;
 {

@@ -17,7 +17,7 @@
  */
 typedef struct __join_cursor
 {
-  u_int8_t *j_exhausted;        /* Array of flags; is cursor i exhausted? */
+  uint8_t *j_exhausted;        /* Array of flags; is cursor i exhausted? */
   DBC **j_curslist;             /* Array of cursors in the join: constant. */
   DBC **j_fdupcurs;             /* Cursors w/ first intances of current dup. */
   DBC **j_workcurs;             /* Scratch cursor copies to muck with. */

@@ -27,12 +27,12 @@ static const char sccsid[] = "@(#)qam.c  11.23 (Sleepycat) 10/26/99";
 #include "mp.h"
 
 static int CDB___qam_c_close __P ((DBC *));
-static int CDB___qam_c_del __P ((DBC *, u_int32_t));
-static int CDB___qam_c_get __P ((DBC *, DBT *, DBT *, u_int32_t));
-static int CDB___qam_c_put __P ((DBC *, DBT *, DBT *, u_int32_t));
+static int CDB___qam_c_del __P ((DBC *, uint32_t));
+static int CDB___qam_c_get __P ((DBC *, DBT *, DBT *, uint32_t));
+static int CDB___qam_c_put __P ((DBC *, DBT *, DBT *, uint32_t));
 static int CDB___qam_getno __P ((DB *, const DBT *, db_recno_t *));
 static int CDB___qam_i_delete __P ((DBC *));
-static int CDB___qam_i_put __P ((DBC *, DBT *, u_int32_t));
+static int CDB___qam_i_put __P ((DBC *, DBT *, uint32_t));
 static int CDB___qam_nrecs __P ((DBC *, db_recno_t *, db_recno_t *));
 static int CDB___qam_position
 __P ((DBC *, db_recno_t *, db_lockmode_t, db_recno_t, int *));
@@ -142,13 +142,13 @@ CDB___qam_position (dbc, recnop, lock_mode, start, exactp)
  *   pagep must be write locked
  *
  * PUBLIC: int CDB___qam_pitem
- * PUBLIC:     __P((DBC *,  QPAGE *, u_int32_t, db_recno_t, DBT *));
+ * PUBLIC:     __P((DBC *,  QPAGE *, uint32_t, db_recno_t, DBT *));
  */
 int
 CDB___qam_pitem (dbc, pagep, indx, recno, data)
      DBC *dbc;
      QPAGE *pagep;
-     u_int32_t indx;
+     uint32_t indx;
      db_recno_t recno;
      DBT *data;
 {
@@ -156,8 +156,8 @@ CDB___qam_pitem (dbc, pagep, indx, recno, data)
   DBT olddata, pdata, *datap;
   QAMDATA *qp;
   QUEUE *t;
-  u_int32_t size;
-  u_int8_t *dest, *p;
+  uint32_t size;
+  uint8_t *dest, *p;
   int alloced, ret;
 
   alloced = ret = 0;
@@ -260,7 +260,7 @@ static int
 CDB___qam_c_put (dbc, key, data, flags)
      DBC *dbc;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   QUEUE_CURSOR *cp;
   DB_LOCK lock;
@@ -298,7 +298,7 @@ static int
 CDB___qam_i_put (dbc, data, flags)
      DBC *dbc;
      DBT *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   QUEUE_CURSOR *cp;
   DB *dbp;
@@ -306,7 +306,7 @@ CDB___qam_i_put (dbc, data, flags)
   QMETA *meta;
   db_pgno_t pg;
   db_recno_t new_cur, new_first;
-  u_int32_t opcode;
+  uint32_t opcode;
   int exact, ret, t_ret;
 
   dbp = dbc->dbp;
@@ -428,14 +428,14 @@ CDB___qam_i_put (dbc, data, flags)
  *  If we are doing anything but appending, just call qam_c_put to do the
  *  work.  Otherwise we fast path things here.
  *
- * PUBLIC: int CDB___qam_put __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: int CDB___qam_put __P((DB *, DB_TXN *, DBT *, DBT *, uint32_t));
  */
 int
 CDB___qam_put (dbp, txn, key, data, flags)
      DB *dbp;
      DB_TXN *txn;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   QUEUE_CURSOR *cp;
   DBC *dbc;
@@ -659,14 +659,14 @@ err:if (F_ISSET (dbp->dbenv, DB_ENV_CDB) && F_ISSET (dbc, DBC_WRITECURSOR))
  * CDB___qam_delete --
  *  Queue db->del function.
  *
- * PUBLIC: int CDB___qam_delete __P((DB *, DB_TXN *, DBT *, u_int32_t));
+ * PUBLIC: int CDB___qam_delete __P((DB *, DB_TXN *, DBT *, uint32_t));
  */
 int
 CDB___qam_delete (dbp, txn, key, flags)
      DB *dbp;
      DB_TXN *txn;
      DBT *key;
-     u_int32_t flags;
+     uint32_t flags;
 {
   QUEUE_CURSOR *cp;
   DBC *dbc;
@@ -714,7 +714,7 @@ err:if ((t_ret = dbc->c_close (dbc)) != 0 && ret == 0)
 static int
 CDB___qam_c_del (dbc, flags)
      DBC *dbc;
-     u_int32_t flags;
+     uint32_t flags;
 {
   QUEUE_CURSOR *cp;
   DB *dbp;
@@ -748,7 +748,7 @@ static int
 CDB___qam_c_get (dbc_orig, key, data, flags)
      DBC *dbc_orig;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   QUEUE_CURSOR *cp, *orig;
   DB *dbp;

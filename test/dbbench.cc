@@ -225,9 +225,9 @@ int_cmp(const DBT *a, const DBT *b)
 {
   // First compare word
   size_t len = (a->size > b->size ? b->size : a->size) - (sizeof(unsigned short) + sizeof(int));
-  u_int8_t *p1, *p2;
+  uint8_t *p1, *p2;
 
-  for (p1 = (u_int8_t*)a->data + sizeof(unsigned short) + sizeof(int), p2 = (u_int8_t*)b->data + sizeof(unsigned short) + sizeof(int); len--; ++p1, ++p2)
+  for (p1 = (uint8_t*)a->data + sizeof(unsigned short) + sizeof(int), p2 = (uint8_t*)b->data + sizeof(unsigned short) + sizeof(int); len--; ++p1, ++p2)
     if (*p1 != *p2)
       return ((long)*p1 - (long)*p2);
 
@@ -773,12 +773,12 @@ static void usage()
 
 extern "C"
 {
-    extern int CDB___memp_cmpr_inflate(const u_int8_t *, int, u_int8_t * , int  , void *);
-    extern int CDB___memp_cmpr_deflate(const u_int8_t *, int, u_int8_t **, int *, void *);
+    extern int CDB___memp_cmpr_inflate(const uint8_t *, int, uint8_t * , int  , void *);
+    extern int CDB___memp_cmpr_deflate(const uint8_t *, int, uint8_t **, int *, void *);
 }
 
 int compressone(params_t* params, unsigned char* buffin, int buffin_length) {
-  u_int8_t *buffout = 0;
+  uint8_t *buffout = 0;
   int buffout_length = 0;
 
   if(CDB___memp_cmpr_deflate(buffin, buffin_length, &buffout, &buffout_length,NULL) != 0) {
@@ -789,7 +789,7 @@ int compressone(params_t* params, unsigned char* buffin, int buffin_length) {
   if(verbose) fprintf(stderr, "compressone: %d\n", buffout_length);
 
   if(params->uncompress) {
-    u_int8_t *bufftmp = (u_int8_t*)malloc(buffin_length);
+    uint8_t *bufftmp = (uint8_t*)malloc(buffin_length);
     int bufftmp_length = buffin_length;
 
     if(CDB___memp_cmpr_inflate(buffout, buffout_length, bufftmp, bufftmp_length,NULL) != 0) {

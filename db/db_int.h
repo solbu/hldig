@@ -94,7 +94,7 @@
 /* Structure used to print flag values. */
 typedef struct __fn
 {
-  u_int32_t mask;               /* Flag value. */
+  uint32_t mask;               /* Flag value. */
   const char *name;             /* Flag name. */
 } FN;
 
@@ -246,11 +246,11 @@ typedef struct __dbpginfo
  */
 typedef struct __db_globals
 {
-  u_int32_t db_mutexlocks;      /* db_set_mutexlocks */
-  u_int32_t db_pageyield;       /* db_set_pageyield */
-  u_int32_t db_panic;           /* db_set_panic */
-  u_int32_t db_region_init;     /* db_set_region_init */
-  u_int32_t db_tas_spins;       /* db_set_tas_spins */
+  uint32_t db_mutexlocks;      /* db_set_mutexlocks */
+  uint32_t db_pageyield;       /* db_set_pageyield */
+  uint32_t db_panic;           /* db_set_panic */
+  uint32_t db_region_init;     /* db_set_region_init */
+  uint32_t db_tas_spins;       /* db_set_tas_spins */
   /* XA: list of opened environments. */
     TAILQ_HEAD (__db_envq, __db_env) db_envq;
 } DB_GLOBALS;

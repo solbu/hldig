@@ -108,15 +108,15 @@ CDB___db_shalloc (p, len, align, retp)
      *  + Subtract the memory the user wants.
      *  + Find the closest previous correctly-aligned address.
      */
-    rp = (u_int8_t *) elp + sizeof (size_t) + elp->len;
-    rp = (u_int8_t *) rp - len;
-    rp = (u_int8_t *) ((ALIGNTYPE) rp & ~(align - 1));
+    rp = (uint8_t *) elp + sizeof (size_t) + elp->len;
+    rp = (uint8_t *) rp - len;
+    rp = (uint8_t *) ((ALIGNTYPE) rp & ~(align - 1));
 
     /*
      * Rp may now point before elp->links, in which case the chunk
      * was too small, and we have to try again.
      */
-    if ((u_int8_t *) rp < (u_int8_t *) & elp->links)
+    if ((uint8_t *) rp < (uint8_t *) & elp->links)
       continue;
 
     *(void **) retp = rp;
@@ -124,11 +124,11 @@ CDB___db_shalloc (p, len, align, retp)
     /*
      * At this point, whether or not we still need to split up a
      * chunk, retp is the address of the region we are returning,
-     * and (u_int8_t *)elp + sizeof(size_t) + elp->len gives us
+     * and (uint8_t *)elp + sizeof(size_t) + elp->len gives us
      * the address of the first byte after the end of the chunk.
      * Make the byte immediately before that the guard byte.
      */
-    *((u_int8_t *) elp + sizeof (size_t) + elp->len - 1) = GUARD_BYTE;
+    *((uint8_t *) elp + sizeof (size_t) + elp->len - 1) = GUARD_BYTE;
 #endif
 
 #define  SHALLOC_FRAGMENT  32
@@ -136,10 +136,10 @@ CDB___db_shalloc (p, len, align, retp)
      * If there are at least SHALLOC_FRAGMENT additional bytes of
      * memory, divide the chunk into two chunks.
      */
-    if ((u_int8_t *) rp >= (u_int8_t *) & elp->links + SHALLOC_FRAGMENT)
+    if ((uint8_t *) rp >= (uint8_t *) & elp->links + SHALLOC_FRAGMENT)
     {
       sp = rp;
-      *--sp = elp->len - ((u_int8_t *) rp - (u_int8_t *) & elp->links);
+      *--sp = elp->len - ((uint8_t *) rp - (uint8_t *) & elp->links);
       elp->len -= *sp + sizeof (size_t);
       return (0);
     }
@@ -154,7 +154,7 @@ CDB___db_shalloc (p, len, align, retp)
      */
 #define  ILLEGAL_SIZE  1
     SH_LIST_REMOVE (elp, links, __data);
-    for (sp = rp; (u_int8_t *)-- sp >= (u_int8_t *) & elp->links;)
+    for (sp = rp; (uint8_t *)-- sp >= (uint8_t *) & elp->links;)
       *sp = ILLEGAL_SIZE;
     return (0);
   }
@@ -185,7 +185,7 @@ CDB___db_shalloc_free (regionp, ptr)
     ;
   ptr = sp;
 
-  newp = (struct __data *) ((u_int8_t *) ptr - sizeof (size_t));
+  newp = (struct __data *) ((uint8_t *) ptr - sizeof (size_t));
   free_size = newp->len;
 
 #ifdef DIAGNOSTIC
@@ -195,7 +195,7 @@ CDB___db_shalloc_free (regionp, ptr)
    *
    * Check it to make sure it hasn't been stomped.
    */
-  if (*((u_int8_t *) ptr + free_size - 1) != GUARD_BYTE)
+  if (*((uint8_t *) ptr + free_size - 1) != GUARD_BYTE)
   {
     /*
      * Eventually, once we push a DB_ENV handle down to these
@@ -234,7 +234,7 @@ CDB___db_shalloc_free (regionp, ptr)
    * Check for coalescing with the next element.
    */
   merged = 0;
-  if ((u_int8_t *) ptr + free_size == (u_int8_t *) elp)
+  if ((uint8_t *) ptr + free_size == (uint8_t *) elp)
   {
     newp->len += elp->len + sizeof (size_t);
     SH_LIST_REMOVE (elp, links, __data);
@@ -246,8 +246,8 @@ CDB___db_shalloc_free (regionp, ptr)
   }
 
   /* Check for coalescing with the previous element. */
-  if (lastp != NULL && (u_int8_t *) lastp +
-      lastp->len + sizeof (size_t) == (u_int8_t *) newp)
+  if (lastp != NULL && (uint8_t *) lastp +
+      lastp->len + sizeof (size_t) == (uint8_t *) newp)
   {
     lastp->len += newp->len + sizeof (size_t);
 
@@ -316,7 +316,7 @@ CDB___db_shsizeof (ptr)
   for (sp = (size_t *) ptr; sp[-1] == ILLEGAL_SIZE; --sp)
     ;
 
-  elp = (struct __data *) ((u_int8_t *) sp - sizeof (size_t));
+  elp = (struct __data *) ((uint8_t *) sp - sizeof (size_t));
   return (elp->len);
 }
 

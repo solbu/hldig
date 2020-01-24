@@ -30,30 +30,30 @@
  */
 typedef struct __db_lockregion
 {
-  u_int32_t id;                 /* unique id generator */
-  u_int32_t need_dd;            /* flag for deadlock detector */
-  u_int32_t detect;             /* run dd on every conflict */
+  uint32_t id;                 /* unique id generator */
+  uint32_t need_dd;            /* flag for deadlock detector */
+  uint32_t detect;             /* run dd on every conflict */
   /* free lock header */
     SH_TAILQ_HEAD (__flock) free_locks;
   /* free obj header */
     SH_TAILQ_HEAD (__fobj) free_objs;
   /* free locker header */
     SH_TAILQ_HEAD (__flocker) free_lockers;
-  u_int32_t maxlocks;           /* maximum number of locks in table */
-  u_int32_t table_size;         /* size of hash table */
-  u_int32_t nmodes;             /* number of lock modes */
-  u_int32_t nlockers;           /* number of lockers */
-  u_int32_t maxnlockers;        /* maximum number of lockers */
+  uint32_t maxlocks;           /* maximum number of locks in table */
+  uint32_t table_size;         /* size of hash table */
+  uint32_t nmodes;             /* number of lock modes */
+  uint32_t nlockers;           /* number of lockers */
+  uint32_t maxnlockers;        /* maximum number of lockers */
   roff_t memlock_off;           /* offset of memory mutex */
   roff_t conf_off;              /* offset of conflicts array */
   roff_t obj_off;               /* offset of object hash table */
   roff_t osynch_off;            /* offset of the object mutex table */
   roff_t locker_off;            /* offset of locker hash table */
   roff_t lsynch_off;            /* offset of the locker mutex table */
-  u_int32_t nconflicts;         /* number of lock conflicts */
-  u_int32_t nrequests;          /* number of lock gets */
-  u_int32_t nreleases;          /* number of lock puts */
-  u_int32_t ndeadlocks;         /* number of deadlocks */
+  uint32_t nconflicts;         /* number of lock conflicts */
+  uint32_t nrequests;          /* number of lock gets */
+  uint32_t nreleases;          /* number of lock puts */
+  uint32_t ndeadlocks;         /* number of deadlocks */
 } DB_LOCKREGION;
 
 /*
@@ -62,11 +62,11 @@ typedef struct __db_lockregion
  */
 typedef struct __sh_dbt
 {
-  u_int32_t size;               /* Byte length. */
+  uint32_t size;               /* Byte length. */
   ssize_t off;                  /* Region offset. */
 } SH_DBT;
 
-#define SH_DBT_PTR(p)  ((void *)(((u_int8_t *)(p)) + (p)->off))
+#define SH_DBT_PTR(p)  ((void *)(((uint8_t *)(p)) + (p)->off))
 
 /*
  * Object structures;  these live in the object hash table.
@@ -81,7 +81,7 @@ typedef struct __db_lockobj
    * typical DB lock structures so that
    * we do not have to allocate them from
    * shalloc at run-time. */
-  u_int8_t objdata[sizeof (struct __db_ilock)];
+  uint8_t objdata[sizeof (struct __db_ilock)];
 } DB_LOCKOBJ;
 
 /*
@@ -89,8 +89,8 @@ typedef struct __db_lockobj
  */
 typedef struct __db_locker
 {
-  u_int32_t id;                 /* Locker id. */
-  u_int32_t dd_id;              /* Deadlock detector id. */
+  uint32_t id;                 /* Locker id. */
+  uint32_t dd_id;              /* Deadlock detector id. */
   size_t master_locker;         /* Locker of master transaction. */
   size_t parent_locker;         /* Parent of this child. */
     SH_LIST_HEAD (_child) child_locker; /* List of descendant txns;
@@ -103,7 +103,7 @@ typedef struct __db_locker
     SH_LIST_HEAD (_held) heldby;        /* Locks held by this locker. */
 
 #define DB_LOCKER_DELETED  0x0001
-  u_int32_t flags;
+  uint32_t flags;
 } DB_LOCKER;
 
 /*
@@ -127,7 +127,7 @@ typedef struct __db_locktab
   DB_ENV *dbenv;                /* Environment. */
   REGINFO reginfo;              /* Region information. */
   MUTEX *memlock;               /* Mutex to protect memory alloc. */
-  u_int8_t *conflicts;          /* Pointer to conflict matrix. */
+  uint8_t *conflicts;          /* Pointer to conflict matrix. */
   DB_HASHTAB *obj_tab;          /* Beginning of object hash table. */
   MUTEX *osynch_tab;            /* Object mutex table. */
   DB_HASHTAB *locker_tab;       /* Beginning of locker hash table. */
@@ -148,11 +148,11 @@ struct __db_lock
    */
   MUTEX mutex;
 
-  u_int32_t holder;             /* Who holds this lock. */
-  u_int32_t gen;                /* Generation count. */
+  uint32_t holder;             /* Who holds this lock. */
+  uint32_t gen;                /* Generation count. */
   SH_TAILQ_ENTRY links;         /* Free or holder/waiter list. */
   SH_LIST_ENTRY locker_links;   /* List of locks held by a locker. */
-  u_int32_t refcount;           /* Reference count the lock. */
+  uint32_t refcount;           /* Reference count the lock. */
   db_lockmode_t mode;           /* What sort of lock. */
   ssize_t obj;                  /* Relative offset of object struct. */
   roff_t txnoff;                /* Offset of holding transaction. */

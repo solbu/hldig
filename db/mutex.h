@@ -234,7 +234,7 @@ typedef unsigned char tsl_t;
  * ALPHA/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_ALPHA_GCC_ASSEMBLY
-typedef u_int32_t tsl_t;
+typedef uint32_t tsl_t;
 
 #define  MUTEX_ALIGN  4
 #endif
@@ -243,7 +243,7 @@ typedef u_int32_t tsl_t;
  * HPPA/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_HPPA_GCC_ASSEMBLY
-typedef u_int32_t tsl_t;
+typedef uint32_t tsl_t;
 
 #define  MUTEX_ALIGN  16
 #endif
@@ -307,16 +307,16 @@ struct __mutex_t
 #else
   tsl_t tas;                    /* Test and set. */
 #endif
-  u_int32_t spins;              /* Spins before block. */
-  u_int32_t locked;             /* !0 if locked. */
+  uint32_t spins;              /* Spins before block. */
+  uint32_t locked;             /* !0 if locked. */
 #else
-  u_int32_t off;                /* Byte offset to lock. */
-  u_int32_t pid;                /* Lock holder: 0 or process pid. */
+  uint32_t off;                /* Byte offset to lock. */
+  uint32_t pid;                /* Lock holder: 0 or process pid. */
 #endif
-  u_int32_t mutex_set_wait;     /* Granted after wait. */
-  u_int32_t mutex_set_nowait;   /* Granted without waiting. */
+  uint32_t mutex_set_wait;     /* Granted after wait. */
+  uint32_t mutex_set_nowait;   /* Granted without waiting. */
 
-  u_int8_t flags;               /* MUTEX_XXX */
+  uint8_t flags;               /* MUTEX_XXX */
 };
 
 /* Redirect calls to the correct functions. */

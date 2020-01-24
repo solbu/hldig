@@ -29,14 +29,14 @@ static int CDB___bam_stat_callback __P ((DB *, PAGE *, void *, int *));
  * CDB___bam_stat --
  *  Gather/print the btree statistics
  *
- * PUBLIC: int CDB___bam_stat __P((DB *, void *, void *(*)(size_t), u_int32_t));
+ * PUBLIC: int CDB___bam_stat __P((DB *, void *, void *(*)(size_t), uint32_t));
  */
 int
 CDB___bam_stat (dbp, spp, db_malloc, flags)
      DB *dbp;
      void *spp;
      void *(*db_malloc) __P ((size_t));
-     u_int32_t flags;
+     uint32_t flags;
 {
   BTMETA *meta;
   BTREE *t;

@@ -54,7 +54,7 @@ static const char sccsid[] = "@(#)log_rec.c  11.16 (Sleepycat) 10/19/99";
 #include "db_ext.h"
 
 static int CDB___log_do_open
-__P ((DB_LOG *, u_int8_t *, char *, DBTYPE, u_int32_t));
+__P ((DB_LOG *, uint8_t *, char *, DBTYPE, uint32_t));
 static int CDB___log_lid_to_fname __P ((DB_LOG *, int32_t, FNAME **));
 static int CDB___log_open_file __P ((DB_LOG *, __log_register_args *));
 
@@ -228,14 +228,14 @@ CDB___log_open_file (lp, argp)
 static int
 CDB___log_do_open (lp, uid, name, ftype, ndx)
      DB_LOG *lp;
-     u_int8_t *uid;
+     uint8_t *uid;
      char *name;
      DBTYPE ftype;
-     u_int32_t ndx;
+     uint32_t ndx;
 {
   DB *dbp;
   int ret;
-  u_int8_t zeroid[DB_FILE_ID_LEN];
+  uint8_t zeroid[DB_FILE_ID_LEN];
 
   if ((ret = CDB_db_create (&dbp, lp->dbenv, 0)) != 0)
     return (ret);
@@ -263,15 +263,15 @@ CDB___log_do_open (lp, uid, name, ftype, ndx)
  * CDB___log_add_logid --
  *  Adds a DB entry to the log's DB entry table.
  *
- * PUBLIC: int CDB___log_add_logid __P((DB_LOG *, DB *, u_int32_t));
+ * PUBLIC: int CDB___log_add_logid __P((DB_LOG *, DB *, uint32_t));
  */
 int
 CDB___log_add_logid (logp, dbp, ndx)
      DB_LOG *logp;
      DB *dbp;
-     u_int32_t ndx;
+     uint32_t ndx;
 {
-  u_int32_t i;
+  uint32_t i;
   int ret;
 
   ret = 0;
@@ -345,7 +345,7 @@ CDB___db_fileid_to_db (dbenv, dbpp, ndx, inc)
    * by a process that does not necessarily have the file open, so we
    * we must open the file explicitly.
    */
-  if ((u_int32_t) ndx >= logp->dbentry_cnt ||
+  if ((uint32_t) ndx >= logp->dbentry_cnt ||
       (!logp->dbentry[ndx].deleted && logp->dbentry[ndx].dbp == NULL))
   {
     if (CDB___log_lid_to_fname (logp, ndx, &fname) != 0)
@@ -411,7 +411,7 @@ CDB___log_close_files (dbenv)
 {
   DB_ENTRY *dbe;
   DB_LOG *logp;
-  u_int32_t i;
+  uint32_t i;
 
   logp = dbenv->lg_handle;
   MUTEX_THREAD_LOCK (logp->mutexp);
@@ -432,12 +432,12 @@ CDB___log_close_files (dbenv)
 }
 
 /*
- * PUBLIC: void CDB___log_rem_logid __P((DB_LOG *, u_int32_t));
+ * PUBLIC: void CDB___log_rem_logid __P((DB_LOG *, uint32_t));
  */
 void
 CDB___log_rem_logid (logp, ndx)
      DB_LOG *logp;
-     u_int32_t ndx;
+     uint32_t ndx;
 {
   MUTEX_THREAD_LOCK (logp->mutexp);
   if (--logp->dbentry[ndx].refcount == 0)

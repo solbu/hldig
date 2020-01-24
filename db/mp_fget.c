@@ -34,7 +34,7 @@ int
 CDB_memp_fget (dbmfp, pgnoaddr, flags, addrp)
      DB_MPOOLFILE *dbmfp;
      db_pgno_t *pgnoaddr;
-     u_int32_t flags;
+     uint32_t flags;
      void *addrp;
 {
   BH *bhp;
@@ -45,7 +45,7 @@ CDB_memp_fget (dbmfp, pgnoaddr, flags, addrp)
   MPOOL *mp;
   MPOOLFILE *mfp;
   size_t n_bucket, n_cache, mf_offset;
-  u_int32_t st_hsearch;
+  uint32_t st_hsearch;
   int b_incr, first, ret;
 
   dbmp = dbmfp->dbmp;

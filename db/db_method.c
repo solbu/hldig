@@ -29,17 +29,17 @@ static const char sccsid[] = "@(#)db_method.c  11.8 (Sleepycat) 9/22/99";
 
 static int CDB___db_get_byteswapped __P ((DB *));
 static DBTYPE CDB___db_get_type __P ((DB *));
-static int CDB___db_init __P ((DB *, u_int32_t));
-static int CDB___db_set_cachesize __P ((DB *, u_int32_t, u_int32_t, int));
+static int CDB___db_init __P ((DB *, uint32_t));
+static int CDB___db_set_cachesize __P ((DB *, uint32_t, uint32_t, int));
 static int CDB___db_set_dup_compare
 __P ((DB *, int (*)(const DBT *, const DBT *)));
 static void CDB___db_set_errcall __P ((DB *, void (*)(const char *, char *)));
 static void CDB___db_set_errfile __P ((DB *, FILE *));
 static void CDB___db_set_feedback __P ((DB *, void (*)(DB *, int, int)));
-static int CDB___db_set_flags __P ((DB *, u_int32_t));
+static int CDB___db_set_flags __P ((DB *, uint32_t));
 static int CDB___db_set_lorder __P ((DB *, int));
 static int CDB___db_set_malloc __P ((DB *, void *(*)(size_t)));
-static int CDB___db_set_pagesize __P ((DB *, u_int32_t));
+static int CDB___db_set_pagesize __P ((DB *, uint32_t));
 static int CDB___db_set_realloc __P ((DB *, void *(*)(void *, size_t)));
 static void CDB___db_set_errpfx __P ((DB *, const char *));
 static void CDB___db_set_paniccall __P ((DB *, void (*)(DB_ENV *, int)));
@@ -54,7 +54,7 @@ int
 CDB_db_create (dbpp, dbenv, flags)
      DB **dbpp;
      DB_ENV *dbenv;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   int ret;
@@ -117,7 +117,7 @@ CDB_db_create (dbpp, dbenv, flags)
 static int
 CDB___db_init (dbp, flags)
      DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   int ret;
 
@@ -182,12 +182,12 @@ CDB___db_init (dbp, flags)
  * CDB___dbh_am_chk --
  *  Error if an unreasonable method is called.
  *
- * PUBLIC: int CDB___dbh_am_chk __P((DB *, u_int32_t));
+ * PUBLIC: int CDB___dbh_am_chk __P((DB *, uint32_t));
  */
 int
 CDB___dbh_am_chk (dbp, flags)
      DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   /*
    * We start out allowing any access methods to be called, and as the
@@ -294,7 +294,7 @@ CDB___db_get_type (dbp)
 static int
 CDB___db_set_cachesize (dbp, cache_gbytes, cache_bytes, ncache)
      DB *dbp;
-     u_int32_t cache_gbytes, cache_bytes;
+     uint32_t cache_gbytes, cache_bytes;
      int ncache;
 {
   DB_ILLEGAL_IN_ENV (dbp, "set_cachesize");
@@ -356,7 +356,7 @@ CDB___db_set_feedback (dbp, feedback)
 static int
 CDB___db_set_flags (dbp, flags)
      DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   int ret;
 
@@ -415,7 +415,7 @@ CDB___db_set_malloc (dbp, func)
 static int
 CDB___db_set_pagesize (dbp, db_pagesize)
      DB *dbp;
-     u_int32_t db_pagesize;
+     uint32_t db_pagesize;
 {
   DB_ILLEGAL_AFTER_OPEN (dbp, "set_pagesize");
 
@@ -436,7 +436,7 @@ CDB___db_set_pagesize (dbp, db_pagesize)
    * We don't want anything that's not a power-of-2, as we rely on that
    * for alignment of various types on the pages.
    */
-  if ((u_int32_t) 1 << CDB___db_log2 (db_pagesize) != db_pagesize)
+  if ((uint32_t) 1 << CDB___db_log2 (db_pagesize) != db_pagesize)
   {
     CDB___db_err (dbp->dbenv, "page sizes must be a power-of-2");
     return (EINVAL);

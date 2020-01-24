@@ -28,7 +28,7 @@ int
 CDB_memp_fput (dbmfp, pgaddr, flags)
      DB_MPOOLFILE *dbmfp;
      void *pgaddr;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BH *bhp;
   DB_ENV *dbenv;
@@ -79,14 +79,14 @@ CDB_memp_fput (dbmfp, pgaddr, flags)
    * region.
    */
   if (dbmfp->addr != NULL && pgaddr >= dbmfp->addr &&
-      (u_int8_t *) pgaddr <= (u_int8_t *) dbmfp->addr + dbmfp->len)
+      (uint8_t *) pgaddr <= (uint8_t *) dbmfp->addr + dbmfp->len)
   {
     R_UNLOCK (dbenv, &dbmp->reginfo);
     return (0);
   }
 
   /* Convert the page address to a buffer header. */
-  bhp = (BH *) ((u_int8_t *) pgaddr - SSZA (BH, buf));
+  bhp = (BH *) ((uint8_t *) pgaddr - SSZA (BH, buf));
 
   /* Convert the buffer header to a cache. */
   mc = BH_TO_CACHE (dbmp, bhp);

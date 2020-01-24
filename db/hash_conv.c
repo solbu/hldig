@@ -94,12 +94,12 @@ int
 CDB___ham_mswap (pg)
      void *pg;
 {
-  u_int8_t *p;
+  uint8_t *p;
   int i;
 
   CDB___db_metaswap (pg);
 
-  p = (u_int8_t *) pg + sizeof (DBMETA);
+  p = (uint8_t *) pg + sizeof (DBMETA);
 
   SWAP32 (p);                   /* max_bucket */
   SWAP32 (p);                   /* high_mask */

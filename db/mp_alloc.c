@@ -53,7 +53,7 @@ CDB___memp_alloc (dbmp, memreg, mfp, len, offsetp, retp)
    * before free-ing and re-allocating buffers.
    */
   if (mfp != NULL)
-    len = (sizeof (BH) - sizeof (u_int8_t)) + mfp->stat.st_pagesize;
+    len = (sizeof (BH) - sizeof (uint8_t)) + mfp->stat.st_pagesize;
 
   nomore = 0;
 alloc:if ((ret =

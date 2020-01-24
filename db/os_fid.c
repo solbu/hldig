@@ -35,19 +35,19 @@ static const char sccsid[] = "@(#)os_fid.c  11.1 (Sleepycat) 7/25/99";
  * CDB___os_fileid --
  *  Return a unique identifier for a file.
  *
- * PUBLIC: int CDB___os_fileid __P((DB_ENV *, const char *, int, u_int8_t *));
+ * PUBLIC: int CDB___os_fileid __P((DB_ENV *, const char *, int, uint8_t *));
  */
 int
 CDB___os_fileid (dbenv, fname, timestamp, fidp)
      DB_ENV *dbenv;
      const char *fname;
      int timestamp;
-     u_int8_t *fidp;
+     uint8_t *fidp;
 {
   struct stat sb;
   size_t i;
-  u_int32_t tmp;
-  u_int8_t *p;
+  uint32_t tmp;
+  uint8_t *p;
 
   /* Clear the buffer. */
   memset (fidp, 0, DB_FILE_ID_LEN);
@@ -82,12 +82,12 @@ CDB___os_fileid (dbenv, fname, timestamp, fidp)
    * get the same 32-bit values if we truncate any returned 64-bit value
    * to a 32-bit value.
    */
-  tmp = (u_int32_t) sb.st_ino;
-  for (p = (u_int8_t *) & tmp, i = sizeof (u_int32_t); i > 0; --i)
+  tmp = (uint32_t) sb.st_ino;
+  for (p = (uint8_t *) & tmp, i = sizeof (uint32_t); i > 0; --i)
     *fidp++ = *p++;
 
-  tmp = (u_int32_t) sb.st_dev;
-  for (p = (u_int8_t *) & tmp, i = sizeof (u_int32_t); i > 0; --i)
+  tmp = (uint32_t) sb.st_dev;
+  for (p = (uint8_t *) & tmp, i = sizeof (uint32_t); i > 0; --i)
     *fidp++ = *p++;
 
   if (timestamp)
@@ -97,8 +97,8 @@ CDB___os_fileid (dbenv, fname, timestamp, fidp)
      * so convert the returned time_t to a (potentially) smaller
      * fixed-size type.
      */
-    tmp = (u_int32_t) time (NULL);
-    for (p = (u_int8_t *) & tmp, i = sizeof (u_int32_t); i > 0; --i)
+    tmp = (uint32_t) time (NULL);
+    for (p = (uint8_t *) & tmp, i = sizeof (uint32_t); i > 0; --i)
       *fidp++ = *p++;
   }
 

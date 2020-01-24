@@ -30,9 +30,9 @@ __P ((DB_ENV *, int (*)(const char *, int *)));
 static int CDB___os_set_func_free __P ((DB_ENV *, void (*)(void *)));
 static int CDB___os_set_func_fsync __P ((DB_ENV *, int (*)(int)));
 static int CDB___os_set_func_ioinfo __P ((DB_ENV *, int (*)(const char *,
-                                                            int, u_int32_t *,
-                                                            u_int32_t *,
-                                                            u_int32_t *)));
+                                                            int, uint32_t *,
+                                                            uint32_t *,
+                                                            uint32_t *)));
 static int CDB___os_set_func_malloc __P ((DB_ENV *, void *(*)(size_t)));
 static int CDB___os_set_func_map __P ((DB_ENV *,
                                        int (*)(char *, size_t, int, int,
@@ -46,7 +46,7 @@ __P ((DB_ENV *, void *(*)(void *, size_t)));
 static int CDB___os_set_func_rename
 __P ((DB_ENV *, int (*)(const char *, const char *)));
 static int CDB___os_set_func_seek
-__P ((DB_ENV *, int (*)(int, size_t, db_pgno_t, u_int32_t, int, int)));
+__P ((DB_ENV *, int (*)(int, size_t, db_pgno_t, uint32_t, int, int)));
 static int CDB___os_set_func_sleep __P ((DB_ENV *, int (*)(u_long, u_long)));
 static int CDB___os_set_func_unlink __P ((DB_ENV *, int (*)(const char *)));
 static int CDB___os_set_func_unmap __P ((DB_ENV *, int (*)(void *, size_t)));
@@ -156,7 +156,7 @@ static int
 CDB___os_set_func_ioinfo (dbenv, func_ioinfo)
      DB_ENV *dbenv;
      int (*func_ioinfo)
-  __P ((const char *, int, u_int32_t *, u_int32_t *, u_int32_t *));
+  __P ((const char *, int, uint32_t *, uint32_t *, uint32_t *));
 {
   ENV_ILLEGAL_AFTER_OPEN (dbenv, "set_func_ioinfo");
 
@@ -233,7 +233,7 @@ CDB___os_set_func_rename (dbenv, func_rename)
 static int
 CDB___os_set_func_seek (dbenv, func_seek)
      DB_ENV *dbenv;
-     int (*func_seek) __P ((int, size_t, db_pgno_t, u_int32_t, int, int));
+     int (*func_seek) __P ((int, size_t, db_pgno_t, uint32_t, int, int));
 {
   ENV_ILLEGAL_AFTER_OPEN (dbenv, "set_func_seek");
 

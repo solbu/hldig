@@ -67,18 +67,18 @@ static const char sccsid[] = "@(#)hash.c  11.29 (Sleepycat) 11/14/99";
 #include "txn.h"
 
 static int CDB___ham_c_close __P ((DBC *));
-static int CDB___ham_c_del __P ((DBC *, u_int32_t));
+static int CDB___ham_c_del __P ((DBC *, uint32_t));
 static int CDB___ham_c_destroy __P ((DBC *));
-static int CDB___ham_c_get __P ((DBC *, DBT *, DBT *, u_int32_t));
-static int CDB___ham_c_put __P ((DBC *, DBT *, DBT *, u_int32_t));
-static int CDB___ham_delete __P ((DB *, DB_TXN *, DBT *, u_int32_t));
-static int CDB___ham_dup_return __P ((DBC *, DBT *, u_int32_t));
+static int CDB___ham_c_get __P ((DBC *, DBT *, DBT *, uint32_t));
+static int CDB___ham_c_put __P ((DBC *, DBT *, DBT *, uint32_t));
+static int CDB___ham_delete __P ((DB *, DB_TXN *, DBT *, uint32_t));
+static int CDB___ham_dup_return __P ((DBC *, DBT *, uint32_t));
 static int CDB___ham_expand_table __P ((DBC *));
 static int CDB___ham_init_htab __P ((DBC *,
-                                     const char *, db_pgno_t, u_int32_t,
-                                     u_int32_t));
+                                     const char *, db_pgno_t, uint32_t,
+                                     uint32_t));
 static int CDB___ham_lookup
-__P ((DBC *, const DBT *, u_int32_t, db_lockmode_t));
+__P ((DBC *, const DBT *, uint32_t, db_lockmode_t));
 static int CDB___ham_overwrite __P ((DBC *, DBT *));
 
 /*
@@ -93,7 +93,7 @@ CDB___ham_metachk (dbp, name, hashm)
      HMETA *hashm;
 {
   DB_ENV *dbenv;
-  u_int32_t vers;
+  uint32_t vers;
   int ret;
 
   dbenv = dbp->dbenv;
@@ -288,7 +288,7 @@ CDB___ham_init_htab (dbc, name, pgno, nelem, ffactor)
      DBC *dbc;
      const char *name;
      db_pgno_t pgno;
-     u_int32_t nelem, ffactor;
+     uint32_t nelem, ffactor;
 {
   DB *dbp;
   DB_LOCK metalock;
@@ -429,7 +429,7 @@ CDB___ham_delete (dbp, txn, key, flags)
      DB *dbp;
      DB_TXN *txn;
      DBT *key;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBC *dbc;
   HASH_CURSOR *hcp;
@@ -542,7 +542,7 @@ CDB___ham_c_destroy (dbc)
 static int
 CDB___ham_c_del (dbc, flags)
      DBC *dbc;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   DBT repldbt;
@@ -763,7 +763,7 @@ CDB___ham_c_get (dbc, key, data, flags)
      DBC *dbc;
      DBT *key;
      DBT *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   HASH_CURSOR *hcp, save_curs;
@@ -943,12 +943,12 @@ CDB___ham_c_put (dbc, key, data, flags)
      DBC *dbc;
      DBT *key;
      DBT *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   DBT tmp_val, *myval;
   HASH_CURSOR *hcp, save_curs;
-  u_int32_t nbytes;
+  uint32_t nbytes;
   int ret, t_ret;
 
   /*
@@ -1033,7 +1033,7 @@ CDB___ham_c_put (dbc, key, data, flags)
                                        &dbc->rdata.size)) == 0)
         {
           memset (tmp_val.data, 0, data->doff);
-          memcpy ((u_int8_t *) tmp_val.data +
+          memcpy ((uint8_t *) tmp_val.data +
                   data->doff, data->data, data->size);
           myval = &tmp_val;
         }
@@ -1097,7 +1097,7 @@ CDB___ham_expand_table (dbc)
   PAGE *h;
   HASH_CURSOR *hcp;
   db_pgno_t pgno;
-  u_int32_t old_bucket, new_bucket;
+  uint32_t old_bucket, new_bucket;
   int ret;
 
   dbp = dbc->dbp;
@@ -1194,19 +1194,19 @@ CDB___ham_expand_table (dbc)
 }
 
 /*
- * PUBLIC: u_int32_t CDB___ham_call_hash __P((HASH_CURSOR *, u_int8_t *, int32_t));
+ * PUBLIC: uint32_t CDB___ham_call_hash __P((HASH_CURSOR *, uint8_t *, int32_t));
  */
-u_int32_t
+uint32_t
 CDB___ham_call_hash (hcp, k, len)
      HASH_CURSOR *hcp;
-     u_int8_t *k;
+     uint8_t *k;
      int32_t len;
 {
-  u_int32_t n, bucket;
+  uint32_t n, bucket;
   HASH *hashp;
 
   hashp = hcp->dbc->dbp->h_internal;
-  n = (u_int32_t) (hashp->h_hash (k, len));
+  n = (uint32_t) (hashp->h_hash (k, len));
 
   bucket = n & hcp->hdr->high_mask;
   if (bucket > hcp->hdr->max_bucket)
@@ -1222,7 +1222,7 @@ static int
 CDB___ham_dup_return (dbc, val, flags)
      DBC *dbc;
      DBT *val;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   HASH_CURSOR *hcp;
@@ -1230,8 +1230,8 @@ CDB___ham_dup_return (dbc, val, flags)
   DBT *myval, tmp_val;
   db_indx_t ndx;
   db_pgno_t pgno;
-  u_int32_t off, tlen;
-  u_int8_t *hk, type;
+  uint32_t off, tlen;
+  uint8_t *hk, type;
   int cmp, ret;
   db_indx_t len;
 
@@ -1340,7 +1340,7 @@ CDB___ham_dup_return (dbc, val, flags)
       hk = H_PAIRDATA (hcp->pagep, hcp->bndx);
       if (((HKEYDATA *) hk)->type == H_OFFPAGE)
       {
-        memcpy (&tlen, HOFFPAGE_TLEN (hk), sizeof (u_int32_t));
+        memcpy (&tlen, HOFFPAGE_TLEN (hk), sizeof (uint32_t));
         memcpy (&pgno, HOFFPAGE_PGNO (hk), sizeof (db_pgno_t));
         if ((ret = CDB___db_moff (dbp, val,
                                   pgno, tlen, dbp->dup_compare, &cmp)) != 0)
@@ -1437,8 +1437,8 @@ CDB___ham_overwrite (dbc, nval)
   HASH_CURSOR *hcp;
   DBT *myval, tmp_val, tmp_val2;
   void *newrec;
-  u_int8_t *hk, *p;
-  u_int32_t len, nondup_size;
+  uint8_t *hk, *p;
+  uint32_t len, nondup_size;
   db_pgno_t prev;
   db_indx_t newsize, dndx;
   int ret;
@@ -1593,7 +1593,7 @@ CDB___ham_overwrite (dbc, nval)
       if (nval->doff + nval->dlen < tmp_val.size)
       {
         len = tmp_val.size - nval->doff - nval->dlen;
-        memcpy (p, (u_int8_t *) tmp_val.data + nval->doff + nval->dlen, len);
+        memcpy (p, (uint8_t *) tmp_val.data + nval->doff + nval->dlen, len);
         p += len;
       }
 
@@ -1606,7 +1606,7 @@ CDB___ham_overwrite (dbc, nval)
        */
       if (dbc->dbp->dup_compare != NULL)
       {
-        tmp_val2.data = (u_int8_t *) newrec + sizeof (db_indx_t);
+        tmp_val2.data = (uint8_t *) newrec + sizeof (db_indx_t);
         tmp_val2.size = newsize;
         if (dbc->dbp->dup_compare (&tmp_val, &tmp_val2) != 0)
         {
@@ -1681,7 +1681,7 @@ CDB___ham_overwrite (dbc, nval)
     tmp_val.doff = 0;
     hk = H_PAIRDATA (hcp->pagep, hcp->bndx);
     if (HPAGE_PTYPE (hk) == H_OFFPAGE)
-      memcpy (&tmp_val.dlen, HOFFPAGE_TLEN (hk), sizeof (u_int32_t));
+      memcpy (&tmp_val.dlen, HOFFPAGE_TLEN (hk), sizeof (uint32_t));
     else
       tmp_val.dlen = LEN_HDATA (hcp->pagep,
                                 hcp->hdr->dbmeta.pagesize, hcp->bndx);
@@ -1707,15 +1707,15 @@ static int
 CDB___ham_lookup (dbc, key, sought, mode)
      DBC *dbc;
      const DBT *key;
-     u_int32_t sought;
+     uint32_t sought;
      db_lockmode_t mode;
 {
   DB *dbp;
   HASH_CURSOR *hcp;
   db_pgno_t pgno;
-  u_int32_t tlen;
+  uint32_t tlen;
   int match, ret, t_ret;
-  u_int8_t *hk;
+  uint8_t *hk;
 
   dbp = dbc->dbp;
   hcp = (HASH_CURSOR *) dbc->internal;
@@ -1727,7 +1727,7 @@ CDB___ham_lookup (dbc, key, sought, mode)
     return (ret);
   hcp->seek_size = sought;
 
-  hcp->bucket = CDB___ham_call_hash (hcp, (u_int8_t *) key->data, key->size);
+  hcp->bucket = CDB___ham_call_hash (hcp, (uint8_t *) key->data, key->size);
   while (1)
   {
     if ((ret = CDB___ham_item_next (dbc, mode)) != 0)
@@ -1740,7 +1740,7 @@ CDB___ham_lookup (dbc, key, sought, mode)
     switch (HPAGE_PTYPE (hk))
     {
     case H_OFFPAGE:
-      memcpy (&tlen, HOFFPAGE_TLEN (hk), sizeof (u_int32_t));
+      memcpy (&tlen, HOFFPAGE_TLEN (hk), sizeof (uint32_t));
       if (tlen == key->size)
       {
         memcpy (&pgno, HOFFPAGE_PGNO (hk), sizeof (db_pgno_t));
@@ -1789,14 +1789,14 @@ CDB___ham_lookup (dbc, key, sought, mode)
  *  Initialize a dbt using some possibly already allocated storage
  *  for items.
  *
- * PUBLIC: int CDB___ham_init_dbt __P((DBT *, u_int32_t, void **, u_int32_t *));
+ * PUBLIC: int CDB___ham_init_dbt __P((DBT *, uint32_t, void **, uint32_t *));
  */
 int
 CDB___ham_init_dbt (dbt, size, bufp, sizep)
      DBT *dbt;
-     u_int32_t size;
+     uint32_t size;
      void **bufp;
-     u_int32_t *sizep;
+     uint32_t *sizep;
 {
   int ret;
 
@@ -1826,13 +1826,13 @@ CDB___ham_init_dbt (dbt, size, bufp, sizep)
  * dup indicates if the addition occurred into a duplicate set.
  *
  * PUBLIC: void CDB___ham_c_update
- * PUBLIC:    __P((HASH_CURSOR *, db_pgno_t, u_int32_t, int, int));
+ * PUBLIC:    __P((HASH_CURSOR *, db_pgno_t, uint32_t, int, int));
  */
 void
 CDB___ham_c_update (hcp, chg_pgno, len, add, is_dup)
      HASH_CURSOR *hcp;
      db_pgno_t chg_pgno;
-     u_int32_t len;
+     uint32_t len;
      int add, is_dup;
 {
   DB *dbp;
@@ -1958,13 +1958,13 @@ CDB___ham_c_update (hcp, chg_pgno, len, add, is_dup)
  * move items off page.
  *
  * PUBLIC: int CDB___ham_get_clist __P((DB *,
- * PUBLIC:     db_pgno_t, u_int32_t, HASH_CURSOR ***));
+ * PUBLIC:     db_pgno_t, uint32_t, HASH_CURSOR ***));
  */
 int
 CDB___ham_get_clist (dbp, bucket, indx, listp)
      DB *dbp;
      db_pgno_t bucket;
-     u_int32_t indx;
+     uint32_t indx;
      HASH_CURSOR ***listp;
 {
   DBC *cp;

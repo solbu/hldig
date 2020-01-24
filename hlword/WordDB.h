@@ -114,14 +114,14 @@ public:
   {
     if (!is_open)
       return DB_UNKNOWN;
-    return db->stat (db, sp, db_malloc, (u_int32_t) flags);
+    return db->stat (db, sp, db_malloc, (uint32_t) flags);
   }
 
   inline int Sync (int flags)
   {
     if (!is_open)
       return DB_UNKNOWN;
-    return db->sync (db, (u_int32_t) flags);
+    return db->sync (db, (uint32_t) flags);
   }
 
   inline int get_byteswapped () const
@@ -152,8 +152,8 @@ public:
 
   inline int Get (DB_TXN * txn, String & key, String & data, int flags) const
   {
-    WORD_DBT_INIT (rkey, (void *) key.get (), (u_int32_t) key.length ());
-    WORD_DBT_INIT (rdata, (void *) data.get (), (u_int32_t) data.length ());
+    WORD_DBT_INIT (rkey, (void *) key.get (), (uint32_t) key.length ());
+    WORD_DBT_INIT (rdata, (void *) data.get (), (uint32_t) data.length ());
 
     int error;
     if ((error = db->get (db, txn, &rkey, &rdata, 0)) != 0)
@@ -176,7 +176,7 @@ public:
 
   inline int Del (DB_TXN * txn, const String & key)
   {
-    WORD_DBT_INIT (rkey, (void *) key.get (), (u_int32_t) key.length ());
+    WORD_DBT_INIT (rkey, (void *) key.get (), (uint32_t) key.length ());
 
     return db->del (db, txn, &rkey, 0);
   }
@@ -257,7 +257,7 @@ public:
     return db->set_bt_compare (db, compare);
   }
 
-  inline int set_pagesize (u_int32_t pagesize)
+  inline int set_pagesize (uint32_t pagesize)
   {
     return db->set_pagesize (db, pagesize);
   }
@@ -325,7 +325,7 @@ public:
     }
     int error;
     if ((error =
-         cursor->c_get (cursor, &rkey, &rdata, (u_int32_t) flags)) != 0)
+         cursor->c_get (cursor, &rkey, &rdata, (uint32_t) flags)) != 0)
     {
       if (error != DB_NOTFOUND)
         fprintf (stderr, "WordDBCursor::Get(%d) failed %s\n", flags,
@@ -343,12 +343,12 @@ public:
   {
     WORD_DBT_INIT (rkey, (void *) key.get (), (size_t) key.length ());
     WORD_DBT_INIT (rdata, (void *) data.get (), (size_t) data.length ());
-    return cursor->c_put (cursor, &rkey, &rdata, (u_int32_t) flags);
+    return cursor->c_put (cursor, &rkey, &rdata, (uint32_t) flags);
   }
 
   inline int Del ()
   {
-    return cursor->c_del (cursor, (u_int32_t) 0);
+    return cursor->c_del (cursor, (uint32_t) 0);
   }
 
 private:

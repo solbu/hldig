@@ -27,21 +27,21 @@ static const char sccsid[] = "@(#)bt_cursor.c  11.21 (Sleepycat) 11/10/99";
 #include "qam.h"
 
 static int CDB___bam_c_close __P ((DBC *));
-static int CDB___bam_c_del __P ((DBC *, u_int32_t));
+static int CDB___bam_c_del __P ((DBC *, uint32_t));
 static int CDB___bam_c_destroy __P ((DBC *));
 static int CDB___bam_c_first __P ((DBC *));
-static int CDB___bam_c_get __P ((DBC *, DBT *, DBT *, u_int32_t));
+static int CDB___bam_c_get __P ((DBC *, DBT *, DBT *, uint32_t));
 static int CDB___bam_c_getstack __P ((DBC *));
 static int CDB___bam_c_last __P ((DBC *));
 static int CDB___bam_c_next __P ((DBC *, int));
 static int CDB___bam_c_physdel __P ((DBC *));
 static int CDB___bam_c_prev __P ((DBC *));
-static int CDB___bam_c_put __P ((DBC *, DBT *, DBT *, u_int32_t));
+static int CDB___bam_c_put __P ((DBC *, DBT *, DBT *, uint32_t));
 static void CDB___bam_c_reset __P ((BTREE_CURSOR *));
-static int CDB___bam_c_rget __P ((DBC *, DBT *, u_int32_t));
-static int CDB___bam_c_search __P ((DBC *, const DBT *, u_int32_t, int *));
-static int CDB___bam_dsearch __P ((DBC *, DBT *, u_int32_t *));
-static int CDB___bam_dup __P ((DBC *, u_int32_t, int));
+static int CDB___bam_c_rget __P ((DBC *, DBT *, uint32_t));
+static int CDB___bam_c_search __P ((DBC *, const DBT *, uint32_t, int *));
+static int CDB___bam_dsearch __P ((DBC *, DBT *, uint32_t *));
+static int CDB___bam_dup __P ((DBC *, uint32_t, int));
 
 /*
  * Acquire a new page/lock for the cursor.  If we hold a page/lock, discard
@@ -327,7 +327,7 @@ CDB___bam_c_destroy (dbc)
 static int
 CDB___bam_c_del (dbc, flags)
      DBC *dbc;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BTREE_CURSOR *cp;
   DB *dbp;
@@ -457,13 +457,13 @@ static int
 CDB___bam_c_get (dbc_orig, key, data, flags)
      DBC *dbc_orig;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BTREE_CURSOR *cp, *orig, start;
   DB *dbp;
   DBC *dbc;
   PAGE *h;
-  u_int32_t tmp_rmw;
+  uint32_t tmp_rmw;
   int exact, ret;
 
   dbp = dbc_orig->dbp;
@@ -740,7 +740,7 @@ static int
 CDB___bam_dsearch (dbc, data, iflagp)
      DBC *dbc;
      DBT *data;
-     u_int32_t *iflagp;         /* Non-NULL if we're doing an insert. */
+     uint32_t *iflagp;         /* Non-NULL if we're doing an insert. */
 {
   BTREE_CURSOR *cp, copy, last;
   DB *dbp;
@@ -836,7 +836,7 @@ static int
 CDB___bam_c_rget (dbc, data, flags)
      DBC *dbc;
      DBT *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BTREE_CURSOR *cp;
   DB *dbp;
@@ -884,7 +884,7 @@ static int
 CDB___bam_c_put (dbc_orig, key, data, flags)
      DBC *dbc_orig;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BTREE_CURSOR *cp, *orig;
   DB *dbp;
@@ -895,7 +895,7 @@ CDB___bam_c_put (dbc_orig, key, data, flags)
   DBT dbt;
   db_indx_t indx;
   db_pgno_t pgno;
-  u_int32_t iiop;
+  uint32_t iiop;
   int exact, needkey = 0, ret, ret_ignore, stack = 0;
   void *arg;
 
@@ -1532,7 +1532,7 @@ static int
 CDB___bam_c_search (dbc, key, flags, exactp)
      DBC *dbc;
      const DBT *key;
-     u_int32_t flags;
+     uint32_t flags;
      int *exactp;
 {
   BTREE *t;
@@ -1542,7 +1542,7 @@ CDB___bam_c_search (dbc, key, flags, exactp)
   PAGE *h;
   db_recno_t recno;
   db_indx_t indx;
-  u_int32_t sflags;
+  uint32_t sflags;
   int cmp, ret;
 
   dbp = dbc->dbp;
@@ -1717,7 +1717,7 @@ CDB___bam_c_search (dbc, key, flags, exactp)
 static int
 CDB___bam_dup (dbc, indx, last_dup)
      DBC *dbc;
-     u_int32_t indx;
+     uint32_t indx;
      int last_dup;
 {
   BOVERFLOW *bo;

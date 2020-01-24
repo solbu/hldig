@@ -62,19 +62,19 @@ static const char sccsid[] = "@(#)bt_delete.c  11.6 (Sleepycat) 9/9/99";
  * CDB___bam_delete --
  *  Delete the items referenced by a key.
  *
- * PUBLIC: int CDB___bam_delete __P((DB *, DB_TXN *, DBT *, u_int32_t));
+ * PUBLIC: int CDB___bam_delete __P((DB *, DB_TXN *, DBT *, uint32_t));
  */
 int
 CDB___bam_delete (dbp, txn, key, flags)
      DB *dbp;
      DB_TXN *txn;
      DBT *key;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBC *dbc;
   DBT lkey;
   DBT data;
-  u_int32_t f_init, f_next;
+  uint32_t f_init, f_next;
   int ret, t_ret;
 
   PANIC_CHECK (dbp->dbenv);
@@ -140,19 +140,19 @@ err:                           /* Discard the cursor. */
  * CDB___bam_ditem --
  *  Delete one or more entries from a page.
  *
- * PUBLIC: int CDB___bam_ditem __P((DBC *, PAGE *, u_int32_t));
+ * PUBLIC: int CDB___bam_ditem __P((DBC *, PAGE *, uint32_t));
  */
 int
 CDB___bam_ditem (dbc, h, indx)
      DBC *dbc;
      PAGE *h;
-     u_int32_t indx;
+     uint32_t indx;
 {
   BINTERNAL *bi;
   BKEYDATA *bk;
   BOVERFLOW *bo;
   DB *dbp;
-  u_int32_t nbytes;
+  uint32_t nbytes;
   int ret;
 
   dbp = dbc->dbp;
@@ -196,7 +196,7 @@ CDB___bam_ditem (dbc, h, indx)
        * data item, otherwise the "indx + P_INDX" calculation
        * won't work!
        */
-      if (indx + P_INDX < (u_int32_t) NUM_ENT (h) &&
+      if (indx + P_INDX < (uint32_t) NUM_ENT (h) &&
           h->inp[indx] == h->inp[indx + P_INDX])
         return (CDB___bam_adjindx (dbc, h, indx, indx + O_INDX, 0));
       /*
@@ -250,13 +250,13 @@ CDB___bam_ditem (dbc, h, indx)
  * CDB___bam_adjindx --
  *  Adjust an index on the page.
  *
- * PUBLIC: int CDB___bam_adjindx __P((DBC *, PAGE *, u_int32_t, u_int32_t, int));
+ * PUBLIC: int CDB___bam_adjindx __P((DBC *, PAGE *, uint32_t, uint32_t, int));
  */
 int
 CDB___bam_adjindx (dbc, h, indx, indx_copy, is_insert)
      DBC *dbc;
      PAGE *h;
-     u_int32_t indx, indx_copy;
+     uint32_t indx, indx_copy;
      int is_insert;
 {
   DB *dbp;
@@ -269,7 +269,7 @@ CDB___bam_adjindx (dbc, h, indx, indx_copy, is_insert)
   if (DB_LOGGING (dbc) &&
       (ret = CDB___bam_adj_log (dbp->dbenv, dbc->txn, &LSN (h),
                                 0, dbp->log_fileid, PGNO (h), &LSN (h), indx,
-                                indx_copy, (u_int32_t) is_insert)) != 0)
+                                indx_copy, (uint32_t) is_insert)) != 0)
     return (ret);
 
   if (is_insert)

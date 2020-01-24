@@ -226,7 +226,7 @@ CDB___bam_root (dbc, cp)
     if ((ret = CDB___bam_split_log (dbp->dbenv, dbc->txn,
                                     &LSN (cp->page), 0, dbp->log_fileid,
                                     PGNO (lp), &LSN (lp), PGNO (rp),
-                                    &LSN (rp), (u_int32_t) NUM_ENT (lp), 0,
+                                    &LSN (rp), (uint32_t) NUM_ENT (lp), 0,
                                     &__lsn, &__a)) != 0)
       goto err;
     LSN (lp) = LSN (rp) = LSN (cp->page);
@@ -389,7 +389,7 @@ CDB___bam_page (dbc, pp, cp)
                                     &LSN (cp->page), 0, dbp->log_fileid,
                                     PGNO (cp->page), &LSN (cp->page),
                                     PGNO (alloc_rp), &LSN (alloc_rp),
-                                    (u_int32_t) NUM_ENT (lp),
+                                    (uint32_t) NUM_ENT (lp),
                                     tp == NULL ? 0 : PGNO (tp),
                                     tp == NULL ? &__lsn : &LSN (tp),
                                     &__a)) != 0)
@@ -413,14 +413,14 @@ CDB___bam_page (dbc, pp, cp)
    */
   save_lsn = alloc_rp->lsn;
   memcpy (alloc_rp, rp, LOFFSET (rp));
-  memcpy ((u_int8_t *) alloc_rp + HOFFSET (rp),
-          (u_int8_t *) rp + HOFFSET (rp), dbp->pgsize - HOFFSET (rp));
+  memcpy ((uint8_t *) alloc_rp + HOFFSET (rp),
+          (uint8_t *) rp + HOFFSET (rp), dbp->pgsize - HOFFSET (rp));
   alloc_rp->lsn = save_lsn;
 
   save_lsn = cp->page->lsn;
   memcpy (cp->page, lp, LOFFSET (lp));
-  memcpy ((u_int8_t *) cp->page + HOFFSET (lp),
-          (u_int8_t *) lp + HOFFSET (lp), dbp->pgsize - HOFFSET (lp));
+  memcpy ((uint8_t *) cp->page + HOFFSET (lp),
+          (uint8_t *) lp + HOFFSET (lp), dbp->pgsize - HOFFSET (lp));
   cp->page->lsn = save_lsn;
 
   /* Fix up the next-page link. */
@@ -689,7 +689,7 @@ CDB___bam_pinsert (dbc, parent, lchild, rchild, space_check)
   RINTERNAL ri;
   db_indx_t off;
   db_recno_t nrecs;
-  u_int32_t n, nbytes, nksize;
+  uint32_t n, nbytes, nksize;
   int ret;
 
   dbp = dbc->dbp;
@@ -875,7 +875,7 @@ CDB___bam_pinsert (dbc, parent, lchild, rchild, space_check)
         (ret = CDB___bam_cadjust_log (dbp->dbenv,
                                       dbc->txn, &LSN (ppage), 0,
                                       dbp->log_fileid, PGNO (ppage),
-                                      &LSN (ppage), (u_int32_t) parent->indx,
+                                      &LSN (ppage), (uint32_t) parent->indx,
                                       -(int32_t) nrecs, (int32_t) 0)) != 0)
       return (ret);
 
@@ -1057,13 +1057,13 @@ sort:splitp = off;
  * CDB___bam_copy --
  *  Copy a set of records from one page to another.
  *
- * PUBLIC: int CDB___bam_copy __P((DB *, PAGE *, PAGE *, u_int32_t, u_int32_t));
+ * PUBLIC: int CDB___bam_copy __P((DB *, PAGE *, PAGE *, uint32_t, uint32_t));
  */
 int
 CDB___bam_copy (dbp, pp, cp, nxt, stop)
      DB *dbp;
      PAGE *pp, *cp;
-     u_int32_t nxt, stop;
+     uint32_t nxt, stop;
 {
   db_indx_t nbytes, off;
 

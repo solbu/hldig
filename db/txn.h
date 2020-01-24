@@ -33,7 +33,7 @@ struct __db_txn
   DB_TXNMGR *mgrp;              /* Pointer to transaction manager. */
   DB_TXN *parent;               /* Pointer to transaction's parent. */
   DB_LSN last_lsn;              /* Lsn of last log write. */
-  u_int32_t txnid;              /* Unique transaction id. */
+  uint32_t txnid;              /* Unique transaction id. */
   roff_t off;                   /* Detail structure within region. */
     TAILQ_ENTRY (__db_txn) links;       /* Links transactions off manager. */
     TAILQ_HEAD (__kids, __db_txn) kids; /* Child transactions. */
@@ -45,7 +45,7 @@ struct __db_txn
 #define  TXN_NOSYNC  0x08       /* Do not sync on prepare and commit. */
 #define  TXN_NOWAIT  0x10       /* Do not wait on locks. */
 #define  TXN_SYNC  0x20         /* Sync on prepare and commit. */
-  u_int32_t flags;
+  uint32_t flags;
 };
 
 /*
@@ -55,7 +55,7 @@ typedef char DB_XID[XIDDATASIZE];
 
 typedef struct __txn_detail
 {
-  u_int32_t txnid;              /* current transaction id
+  uint32_t txnid;              /* current transaction id
                                    used to link free list also */
   DB_LSN last_lsn;              /* last lsn written for this txn */
   DB_LSN begin_lsn;             /* lsn of begin record */
@@ -66,7 +66,7 @@ typedef struct __txn_detail
 #define  TXN_ABORTED    2
 #define  TXN_PREPARED    3
 #define  TXN_COMMITTED    4
-  u_int32_t status;             /* status of the transaction */
+  uint32_t status;             /* status of the transaction */
 
   SH_TAILQ_ENTRY links;         /* free/active list */
 
@@ -76,15 +76,15 @@ typedef struct __txn_detail
 #define  TXN_XA_PREPARED    4
 #define  TXN_XA_STARTED    5
 #define  TXN_XA_SUSPENDED  6
-  u_int32_t xa_status;          /* XA status */
+  uint32_t xa_status;          /* XA status */
 
   /*
    * XID (xid_t) structure: because these fields are logged, the
    * sizes have to be explicit.
    */
   DB_XID xid;                   /* XA global transaction id */
-  u_int32_t bqual;              /* bqual_length from XID */
-  u_int32_t gtrid;              /* gtrid_length from XID */
+  uint32_t bqual;              /* bqual_length from XID */
+  uint32_t gtrid;              /* gtrid_length from XID */
   int32_t format;               /* XA format */
 } TXN_DETAIL;
 
@@ -123,18 +123,18 @@ struct __db_txnmgr
  */
 struct __db_txnregion
 {
-  u_int32_t maxtxns;            /* maximum number of active TXNs */
-  u_int32_t last_txnid;         /* last transaction id given out */
+  uint32_t maxtxns;            /* maximum number of active TXNs */
+  uint32_t last_txnid;         /* last transaction id given out */
   DB_LSN pending_ckp;           /* last checkpoint did not finish */
   DB_LSN last_ckp;              /* lsn of the last checkpoint */
   time_t time_ckp;              /* time of last checkpoint */
-  u_int32_t logtype;            /* type of logging */
-  u_int32_t locktype;           /* lock type */
-  u_int32_t naborts;            /* number of aborted TXNs */
-  u_int32_t ncommits;           /* number of committed TXNs */
-  u_int32_t nbegins;            /* number of begun TXNs */
-  u_int32_t nactive;            /* number of active TXNs */
-  u_int32_t maxnactive;         /* maximum number of active TXNs */
+  uint32_t logtype;            /* type of logging */
+  uint32_t locktype;           /* lock type */
+  uint32_t naborts;            /* number of aborted TXNs */
+  uint32_t ncommits;           /* number of committed TXNs */
+  uint32_t nbegins;            /* number of begun TXNs */
+  uint32_t nactive;            /* number of active TXNs */
+  uint32_t maxnactive;         /* maximum number of active TXNs */
   /* active TXN list */
     SH_TAILQ_HEAD (__active) active_txn;
 };

@@ -45,7 +45,7 @@ CDB___crdel_fileopen_recover (dbenv, dbtp, lsnp, redo, info)
   DB_FH fh;
   ssize_t nr;
   int do_unlink, ret;
-  u_int32_t b, mb, io;
+  uint32_t b, mb, io;
   char *real_name;
 
   COMPQUIET (info, NULL);
@@ -223,7 +223,7 @@ CDB___crdel_metapage_recover (dbenv, dbtp, lsnp, redo, info)
   DBMETA *meta, ondisk;
   DB_FH fh;
   ssize_t nr;
-  u_int32_t b, io, mb, pagesize;
+  uint32_t b, io, mb, pagesize;
   int is_done, ret;
   char *real_name;
 

@@ -913,7 +913,7 @@ CDB___bam_repl_recover (dbenv, dbtp, lsnp, redo, info)
   DB_MPOOLFILE *mpf;
   PAGE *pagep;
   int cmp_n, cmp_p, modified, ret;
-  u_int8_t *p;
+  uint8_t *p;
 
   COMPQUIET (info, NULL);
   REC_PRINT (CDB___bam_repl_print);

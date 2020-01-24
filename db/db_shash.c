@@ -28,8 +28,8 @@ static const char sccsid[] = "@(#)db_shash.c  11.1 (Sleepycat) 7/25/99";
  */
 static const struct
 {
-  u_int32_t power;
-  u_int32_t prime;
+  uint32_t power;
+  uint32_t prime;
 } list[] =
 {
   {
@@ -114,11 +114,11 @@ static const struct
  * CDB___db_tablesize --
  *  Choose a size for the hash table.
  *
- * PUBLIC: int CDB___db_tablesize __P((u_int32_t));
+ * PUBLIC: int CDB___db_tablesize __P((uint32_t));
  */
 int
 CDB___db_tablesize (n_buckets)
-     u_int32_t n_buckets;
+     uint32_t n_buckets;
 {
   int i;
 
@@ -149,14 +149,14 @@ CDB___db_tablesize (n_buckets)
  * CDB___db_hashinit --
  *  Initialize a hash table that resides in shared memory.
  *
- * PUBLIC: void CDB___db_hashinit __P((void *, u_int32_t));
+ * PUBLIC: void CDB___db_hashinit __P((void *, uint32_t));
  */
 void
 CDB___db_hashinit (begin, nelements)
      void *begin;
-     u_int32_t nelements;
+     uint32_t nelements;
 {
-  u_int32_t i;
+  uint32_t i;
   SH_TAILQ_HEAD (hash_head) * headp;
 
   headp = (struct hash_head *) begin;

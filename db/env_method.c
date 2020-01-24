@@ -52,8 +52,8 @@ static void CDB___dbenv_set_paniccall
 __P ((DB_ENV *, void (*)(DB_ENV *, int)));
 static int CDB___dbenv_set_recovery_init __P ((DB_ENV *, int (*)(DB_ENV *)));
 static int CDB___dbenv_set_region_init __P ((DB_ENV *, int));
-static int CDB___dbenv_set_tas_spins __P ((DB_ENV *, u_int32_t));
-static int CDB___dbenv_set_verbose __P ((DB_ENV *, u_int32_t, int));
+static int CDB___dbenv_set_tas_spins __P ((DB_ENV *, uint32_t));
+static int CDB___dbenv_set_verbose __P ((DB_ENV *, uint32_t, int));
 
 /*
  * CDB_db_env_create --
@@ -62,7 +62,7 @@ static int CDB___dbenv_set_verbose __P ((DB_ENV *, u_int32_t, int));
 int
 CDB_db_env_create (dbenvpp, flags)
      DB_ENV **dbenvpp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB_ENV *dbenv;
   int ret;
@@ -277,7 +277,7 @@ CDB___dbenv_set_region_init (dbenv, onoff)
 static int
 CDB___dbenv_set_tas_spins (dbenv, tas_spins)
      DB_ENV *dbenv;
-     u_int32_t tas_spins;
+     uint32_t tas_spins;
 {
   COMPQUIET (dbenv, NULL);
 
@@ -288,7 +288,7 @@ CDB___dbenv_set_tas_spins (dbenv, tas_spins)
 static int
 CDB___dbenv_set_verbose (dbenv, which, onoff)
      DB_ENV *dbenv;
-     u_int32_t which;
+     uint32_t which;
      int onoff;
 {
   switch (which)

@@ -559,7 +559,7 @@ CDB___ham_putitem (p, dbt, type)
      const DBT *dbt;
      int type;
 {
-  u_int16_t n, off;
+  uint16_t n, off;
 
   n = NUM_ENT (p);
 
@@ -583,7 +583,7 @@ CDB___ham_putitem (p, dbt, type)
 
 /*
  * PUBLIC: void CDB___ham_reputpair
- * PUBLIC:    __P((PAGE *p, u_int32_t, u_int32_t, const DBT *, const DBT *));
+ * PUBLIC:    __P((PAGE *p, uint32_t, uint32_t, const DBT *, const DBT *));
  *
  * This is a special case to restore a key/data pair to its original
  * location during recovery.  We are guaranteed that the pair fits
@@ -593,17 +593,17 @@ CDB___ham_putitem (p, dbt, type)
 void
 CDB___ham_reputpair (p, psize, ndx, key, data)
      PAGE *p;
-     u_int32_t psize, ndx;
+     uint32_t psize, ndx;
      const DBT *key, *data;
 {
   db_indx_t i, movebytes, newbytes;
-  u_int8_t *from;
+  uint8_t *from;
 
   /* First shuffle the existing items up on the page.  */
   movebytes =
     (ndx == 0 ? psize : p->inp[H_DATAINDEX (ndx - 1)]) - HOFFSET (p);
   newbytes = key->size + data->size;
-  from = (u_int8_t *) p + HOFFSET (p);
+  from = (uint8_t *) p + HOFFSET (p);
   memmove (from - newbytes, from, movebytes);
 
   /*
@@ -715,7 +715,7 @@ CDB___ham_del_pair (dbc, reclaim_page)
     if ((ret = CDB___ham_insdel_log (dbenv,
                                      dbc->txn, &new_lsn, 0, DELPAIR,
                                      dbp->log_fileid, PGNO (p),
-                                     (u_int32_t) ndx, &LSN (p), &key_dbt,
+                                     (uint32_t) ndx, &LSN (p), &key_dbt,
                                      &data_dbt)) != 0)
       return (ret);
 
@@ -895,22 +895,22 @@ CDB___ham_del_pair (dbc, reclaim_page)
  *  Given the key data indicated by the cursor, replace part/all of it
  *  according to the fields in the dbt.
  *
- * PUBLIC: int CDB___ham_replpair __P((DBC *, DBT *, u_int32_t));
+ * PUBLIC: int CDB___ham_replpair __P((DBC *, DBT *, uint32_t));
  */
 int
 CDB___ham_replpair (dbc, dbt, make_dup)
      DBC *dbc;
      DBT *dbt;
-     u_int32_t make_dup;
+     uint32_t make_dup;
 {
   DB *dbp;
   HASH_CURSOR *hcp;
   DBT old_dbt, tdata, tmp;
   DB_LSN new_lsn;
   int32_t change;               /* XXX: Possible overflow. */
-  u_int32_t dup, len;
+  uint32_t dup, len;
   int is_big, ret, type;
-  u_int8_t *beg, *dest, *end, *hk, *src;
+  uint8_t *beg, *dest, *end, *hk, *src;
 
   /*
    * Big item replacements are handled in generic code.
@@ -941,7 +941,7 @@ CDB___ham_replpair (dbc, dbt, make_dup)
   is_big = HPAGE_PTYPE (hk) == H_OFFPAGE;
 
   if (is_big)
-    memcpy (&len, HOFFPAGE_TLEN (hk), sizeof (u_int32_t));
+    memcpy (&len, HOFFPAGE_TLEN (hk), sizeof (uint32_t));
   else
     len = LEN_HKEYDATA (hcp->pagep, dbp->pgsize, H_DATAINDEX (hcp->bndx));
 
@@ -1001,18 +1001,18 @@ CDB___ham_replpair (dbc, dbt, make_dup)
         if ((ret = CDB___os_realloc (tdata.size + change,
                                      NULL, &tdata.data)) != 0)
           return (ret);
-        memset ((u_int8_t *) tdata.data + tdata.size, 0, change);
+        memset ((uint8_t *) tdata.data + tdata.size, 0, change);
       }
-      end = (u_int8_t *) tdata.data + tdata.size;
+      end = (uint8_t *) tdata.data + tdata.size;
 
-      src = (u_int8_t *) tdata.data + dbt->doff + dbt->dlen;
+      src = (uint8_t *) tdata.data + dbt->doff + dbt->dlen;
       if (src < end && tdata.size > dbt->doff + dbt->dlen)
       {
         len = tdata.size - dbt->doff - dbt->dlen;
         dest = src + change;
         memmove (dest, src, len);
       }
-      memcpy ((u_int8_t *) tdata.data + dbt->doff, dbt->data, dbt->size);
+      memcpy ((uint8_t *) tdata.data + dbt->doff, dbt->data, dbt->size);
       tdata.size += change;
 
       /* Now add the pair. */
@@ -1043,9 +1043,9 @@ CDB___ham_replpair (dbc, dbt, make_dup)
     if ((ret = CDB___ham_replace_log (dbp->dbenv,
                                       dbc->txn, &new_lsn, 0, dbp->log_fileid,
                                       PGNO (hcp->pagep),
-                                      (u_int32_t) H_DATAINDEX (hcp->bndx),
+                                      (uint32_t) H_DATAINDEX (hcp->bndx),
                                       &LSN (hcp->pagep),
-                                      (u_int32_t) dbt->doff, &old_dbt, dbt,
+                                      (uint32_t) dbt->doff, &old_dbt, dbt,
                                       make_dup)) != 0)
       return (ret);
 
@@ -1053,7 +1053,7 @@ CDB___ham_replpair (dbc, dbt, make_dup)
   }
 
   CDB___ham_onpage_replace (hcp->pagep, dbp->pgsize,
-                            (u_int32_t) H_DATAINDEX (hcp->bndx),
+                            (uint32_t) H_DATAINDEX (hcp->bndx),
                             (int32_t) dbt->doff, change, dbt);
 
   return (0);
@@ -1070,30 +1070,30 @@ CDB___ham_replpair (dbc, dbt, make_dup)
  * off: Offset at which we are beginning the replacement.
  * change: the number of bytes (+ or -) that the element is growing/shrinking.
  * dbt: the new data that gets written at beg.
- * PUBLIC: void CDB___ham_onpage_replace __P((PAGE *, size_t, u_int32_t, int32_t,
+ * PUBLIC: void CDB___ham_onpage_replace __P((PAGE *, size_t, uint32_t, int32_t,
  * PUBLIC:     int32_t,  DBT *));
  */
 void
 CDB___ham_onpage_replace (pagep, pgsize, ndx, off, change, dbt)
      PAGE *pagep;
      size_t pgsize;
-     u_int32_t ndx;
+     uint32_t ndx;
      int32_t off;
      int32_t change;
      DBT *dbt;
 {
   db_indx_t i;
   int32_t len;
-  u_int8_t *src, *dest;
+  uint8_t *src, *dest;
   int zero_me;
 
   if (change != 0)
   {
     zero_me = 0;
-    src = (u_int8_t *) (pagep) + HOFFSET (pagep);
+    src = (uint8_t *) (pagep) + HOFFSET (pagep);
     if (off < 0)
       len = pagep->inp[ndx] - HOFFSET (pagep);
-    else if ((u_int32_t) off >= LEN_HKEYDATA (pagep, pgsize, ndx))
+    else if ((uint32_t) off >= LEN_HKEYDATA (pagep, pgsize, ndx))
     {
       len = HKEYDATA_DATA (P_ENTRY (pagep, ndx)) +
         LEN_HKEYDATA (pagep, pgsize, ndx) - src;
@@ -1118,12 +1118,12 @@ CDB___ham_onpage_replace (pagep, pgsize, ndx, off, change, dbt)
 }
 
 /*
- * PUBLIC: int CDB___ham_split_page __P((DBC *, u_int32_t, u_int32_t));
+ * PUBLIC: int CDB___ham_split_page __P((DBC *, uint32_t, uint32_t));
  */
 int
 CDB___ham_split_page (dbc, obucket, nbucket)
      DBC *dbc;
-     u_int32_t obucket, nbucket;
+     uint32_t obucket, nbucket;
 {
   DB *dbp;
   HASH_CURSOR *hcp, **harray;
@@ -1133,7 +1133,7 @@ CDB___ham_split_page (dbc, obucket, nbucket)
   PAGE **pp, *old_pagep, *temp_pagep, *new_pagep;
   db_indx_t n;
   db_pgno_t bucket_pgno, npgno, next_pgno;
-  u_int32_t big_len, len;
+  uint32_t big_len, len;
   int i, ret, tret;
   void *big_buf;
 
@@ -1336,7 +1336,7 @@ CDB___ham_add_el (dbc, key, val, type)
   DB_LSN new_lsn;
   HOFFPAGE doff, koff;
   db_pgno_t next_pgno;
-  u_int32_t data_size, key_size, pairsize, rectype;
+  uint32_t data_size, key_size, pairsize, rectype;
   int do_expand, is_keybig, is_databig, ret;
   int key_type, data_type;
 
@@ -1445,7 +1445,7 @@ CDB___ham_add_el (dbc, key, val, type)
     if ((ret = CDB___ham_insdel_log (dbp->dbenv, dbc->txn, &new_lsn, 0,
                                      rectype, dbp->log_fileid,
                                      PGNO (hcp->pagep),
-                                     (u_int32_t) H_NUMPAIRS (hcp->pagep),
+                                     (uint32_t) H_NUMPAIRS (hcp->pagep),
                                      &LSN (hcp->pagep), pkey, pdata)) != 0)
       return (ret);
 
@@ -1472,7 +1472,7 @@ CDB___ham_add_el (dbc, key, val, type)
     hcp->hdr->nelem++;
 
   if (do_expand || (hcp->hdr->ffactor != 0 &&
-                    (u_int32_t) H_NUMPAIRS (hcp->pagep) > hcp->hdr->ffactor))
+                    (uint32_t) H_NUMPAIRS (hcp->pagep) > hcp->hdr->ffactor))
     F_SET (hcp, H_EXPAND);
   return (0);
 }
@@ -1484,16 +1484,16 @@ CDB___ham_add_el (dbc, key, val, type)
  * H_DUPLICATE, H_OFFDUP).  Since we log splits at a high level, we
  * do not need to do any logging here.
  *
- * PUBLIC: void CDB___ham_copy_item __P((size_t, PAGE *, u_int32_t, PAGE *));
+ * PUBLIC: void CDB___ham_copy_item __P((size_t, PAGE *, uint32_t, PAGE *));
  */
 void
 CDB___ham_copy_item (pgsize, src_page, src_ndx, dest_page)
      size_t pgsize;
      PAGE *src_page;
-     u_int32_t src_ndx;
+     uint32_t src_ndx;
      PAGE *dest_page;
 {
-  u_int32_t len;
+  uint32_t len;
   void *src, *dest;
 
   /*
@@ -1687,14 +1687,14 @@ CDB___ham_get_cpage (dbc, mode)
  * If the flag is set to H_ISDUP, then we are talking about the
  * duplicate page, not the main page.
  *
- * PUBLIC: int CDB___ham_next_cpage __P((DBC *, db_pgno_t, int, u_int32_t));
+ * PUBLIC: int CDB___ham_next_cpage __P((DBC *, db_pgno_t, int, uint32_t));
  */
 int
 CDB___ham_next_cpage (dbc, pgno, dirty, flags)
      DBC *dbc;
      db_pgno_t pgno;
      int dirty;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   HASH_CURSOR *hcp;
@@ -1741,7 +1741,7 @@ CDB___ham_lock_bucket (dbc, mode)
      db_lockmode_t mode;
 {
   HASH_CURSOR *hcp;
-  u_int32_t flags;
+  uint32_t flags;
   int ret;
 
   hcp = (HASH_CURSOR *) dbc->internal;
@@ -1764,16 +1764,16 @@ CDB___ham_lock_bucket (dbc, mode)
  *  represents.  The caller is responsible for freeing up duplicates
  *  or offpage entries that might be referenced by this pair.
  *
- * PUBLIC: void CDB___ham_dpair __P((DB *, PAGE *, u_int32_t));
+ * PUBLIC: void CDB___ham_dpair __P((DB *, PAGE *, uint32_t));
  */
 void
 CDB___ham_dpair (dbp, p, pndx)
      DB *dbp;
      PAGE *p;
-     u_int32_t pndx;
+     uint32_t pndx;
 {
   db_indx_t delta, n;
-  u_int8_t *dest, *src;
+  uint8_t *dest, *src;
 
   /*
    * Compute "delta", the amount we have to shift all of the
@@ -1793,7 +1793,7 @@ CDB___ham_dpair (dbp, p, pndx)
      * Move the data: src is the first occupied byte on
      * the page. (Length is delta.)
      */
-    src = (u_int8_t *) p + HOFFSET (p);
+    src = (uint8_t *) p + HOFFSET (p);
 
     /*
      * Destination is delta bytes beyond src.  This might

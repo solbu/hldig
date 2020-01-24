@@ -50,13 +50,13 @@ static const char sccsid[] = "@(#)db_log2.c  11.2 (Sleepycat) 9/9/99";
 #include "common_ext.h"
 
 /*
- * PUBLIC: u_int32_t CDB___db_log2 __P((u_int32_t));
+ * PUBLIC: uint32_t CDB___db_log2 __P((uint32_t));
  */
-u_int32_t
+uint32_t
 CDB___db_log2 (num)
-     u_int32_t num;
+     uint32_t num;
 {
-  u_int32_t i, limit;
+  uint32_t i, limit;
 
   limit = 1;
   for (i = 0; limit < num; limit = limit << 1)

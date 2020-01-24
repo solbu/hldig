@@ -75,7 +75,7 @@ main (int argc, char *argv[])
   char *dopt, *home, *subname;
   int compress = 0;
   int wordlist = 0;
-  u_int32_t cachesize = 0;
+  uint32_t cachesize = 0;
   Configuration *config = 0;
 
   dbp = NULL;
@@ -273,7 +273,7 @@ main (int argc, char *argv[])
 int
 db_init (char *home, int Nflag)
 {
-  u_int32_t flags;
+  uint32_t flags;
   int ret;
 
   /* Optionally turn mutexes off. */

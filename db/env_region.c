@@ -48,7 +48,7 @@ CDB___db_e_attach (dbenv)
   REGION *rp, tregion;
   size_t size;
   ssize_t nrw;
-  u_int32_t mbytes, bytes;
+  uint32_t mbytes, bytes;
   int retry_cnt, ret, segid;
   char buf[sizeof (DB_REGION_FMT) + 20];
 
@@ -241,7 +241,7 @@ loop:renv = NULL;
    * as well, but that should be fine.
    */
   infop->primary = R_ADDR (infop, 0);
-  infop->addr = (u_int8_t *) infop->addr + sizeof (REGENV);
+  infop->addr = (uint8_t *) infop->addr + sizeof (REGENV);
 
   /*
    * Check if the environment has had a catastrophic failure.
@@ -364,7 +364,7 @@ creation:
    * shifted as well, but that should be fine.
    */
   infop->primary = R_ADDR (infop, 0);
-  infop->addr = (u_int8_t *) infop->addr + sizeof (REGENV);
+  infop->addr = (uint8_t *) infop->addr + sizeof (REGENV);
   CDB___db_shalloc_init (infop->addr, tregion.size - sizeof (REGENV));
 
   /*
@@ -712,7 +712,7 @@ CDB___db_e_remfile (dbenv)
     NULL,
   };
   int cnt, fcnt, lastrm, ret;
-  u_int8_t saved_byte;
+  uint8_t saved_byte;
   const char *dir;
   char *p, **names, *path, buf[sizeof (DB_REGION_FMT) + 20];
 
@@ -1111,7 +1111,7 @@ CDB___db_faultmem (addr, size, created)
      int created;
 {
   int ret;
-  u_int8_t *p, *t;
+  uint8_t *p, *t;
 
   /*
    * It's sometimes significantly faster to page-fault in all of the
@@ -1129,10 +1129,10 @@ CDB___db_faultmem (addr, size, created)
   if (DB_GLOBAL (db_region_init))
   {
     if (created)
-      for (p = addr, t = (u_int8_t *) addr + size; p < t; p += OS_VMPAGESIZE)
+      for (p = addr, t = (uint8_t *) addr + size; p < t; p += OS_VMPAGESIZE)
         p[0] = 0xdb;
     else
-      for (p = addr, t = (u_int8_t *) addr + size; p < t; p += OS_VMPAGESIZE)
+      for (p = addr, t = (uint8_t *) addr + size; p < t; p += OS_VMPAGESIZE)
         ret |= p[0];
   }
 

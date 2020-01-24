@@ -57,13 +57,13 @@ CDB___bam_cprint (dbp)
  *  Update the cursors when items are deleted and when already deleted
  *  items are overwritten.  Return the number of relevant cursors found.
  *
- * PUBLIC: int CDB___bam_ca_delete __P((DB *, db_pgno_t, u_int32_t, int));
+ * PUBLIC: int CDB___bam_ca_delete __P((DB *, db_pgno_t, uint32_t, int));
  */
 int
 CDB___bam_ca_delete (dbp, pgno, indx, delete)
      DB *dbp;
      db_pgno_t pgno;
-     u_int32_t indx;
+     uint32_t indx;
      int delete;
 {
   DBC *dbc;
@@ -110,13 +110,13 @@ CDB___bam_ca_delete (dbp, pgno, indx, delete)
  * CDB___bam_ca_di --
  *  Adjust the cursors during a delete or insert.
  *
- * PUBLIC: void CDB___bam_ca_di __P((DB *, db_pgno_t, u_int32_t, int));
+ * PUBLIC: void CDB___bam_ca_di __P((DB *, db_pgno_t, uint32_t, int));
  */
 void
 CDB___bam_ca_di (dbp, pgno, indx, adjust)
      DB *dbp;
      db_pgno_t pgno;
-     u_int32_t indx;
+     uint32_t indx;
      int adjust;
 {
   DBC *dbc;
@@ -156,13 +156,13 @@ CDB___bam_ca_di (dbp, pgno, indx, adjust)
  *  page.
  *
  * PUBLIC: void CDB___bam_ca_dup __P((DB *,
- * PUBLIC:    db_pgno_t, u_int32_t, u_int32_t, db_pgno_t, u_int32_t));
+ * PUBLIC:    db_pgno_t, uint32_t, uint32_t, db_pgno_t, uint32_t));
  */
 void
 CDB___bam_ca_dup (dbp, fpgno, first, fi, tpgno, ti)
      DB *dbp;
      db_pgno_t fpgno, tpgno;
-     u_int32_t first, fi, ti;
+     uint32_t first, fi, ti;
 {
   DBC *dbc;
 
@@ -231,13 +231,13 @@ CDB___bam_ca_rsplit (dbp, fpgno, tpgno)
  *  Adjust the cursors when splitting a page.
  *
  * PUBLIC: void CDB___bam_ca_split __P((DB *,
- * PUBLIC:    db_pgno_t, db_pgno_t, db_pgno_t, u_int32_t, int));
+ * PUBLIC:    db_pgno_t, db_pgno_t, db_pgno_t, uint32_t, int));
  */
 void
 CDB___bam_ca_split (dbp, ppgno, lpgno, rpgno, split_indx, cleft)
      DB *dbp;
      db_pgno_t ppgno, lpgno, rpgno;
-     u_int32_t split_indx;
+     uint32_t split_indx;
      int cleft;
 {
   DBC *dbc;
@@ -297,13 +297,13 @@ CDB___bam_ca_split (dbp, ppgno, lpgno, rpgno, split_indx, cleft)
  *  Adjust the cursors when when doing a replace.
  *
  * PUBLIC: void CDB___bam_ca_repl __P((DB *,
- * PUBLIC:    db_pgno_t, u_int32_t, db_pgno_t, u_int32_t));
+ * PUBLIC:    db_pgno_t, uint32_t, db_pgno_t, uint32_t));
  */
 void
 CDB___bam_ca_repl (dbp, dpgno, dindx, newpgno, newindx)
      DB *dbp;
      db_pgno_t dpgno, newpgno;
-     u_int32_t dindx, newindx;
+     uint32_t dindx, newindx;
 {
   DBC *dbc;
 

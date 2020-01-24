@@ -61,13 +61,13 @@ static const char sccsid[] = "@(#)mut_tas.c  11.4 (Sleepycat) 10/1/99";
  * CDB___db_tas_mutex_init --
  *  Initialize a MUTEX.
  *
- * PUBLIC: int CDB___db_tas_mutex_init __P((DB_ENV *, MUTEX *, u_int32_t));
+ * PUBLIC: int CDB___db_tas_mutex_init __P((DB_ENV *, MUTEX *, uint32_t));
  */
 int
 CDB___db_tas_mutex_init (dbenv, mutexp, flags)
      DB_ENV *dbenv;
      MUTEX *mutexp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   memset (mutexp, 0, sizeof (*mutexp));
 
@@ -129,7 +129,7 @@ loop:                          /* Attempt to acquire the resource for N spins. *
                        sizeof (msgbuf), MSG1, (u_long) mutexp->locked);
       (void) write (STDERR_FILENO, msgbuf, strlen (msgbuf));
     }
-    mutexp->locked = (u_int32_t) getpid ();
+    mutexp->locked = (uint32_t) getpid ();
 #endif
     if (ms == 1)
       ++mutexp->mutex_set_nowait;

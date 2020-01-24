@@ -39,11 +39,11 @@ static const char sccsid[] = "@(#)CDB_log_put.c  11.4 (Sleepycat) 11/10/99";
 #include "log.h"
 #include "hash.h"
 
-static int CDB___log_fill __P ((DB_LOG *, DB_LSN *, void *, u_int32_t));
+static int CDB___log_fill __P ((DB_LOG *, DB_LSN *, void *, uint32_t));
 static int CDB___log_flush __P ((DB_LOG *, const DB_LSN *));
 static int CDB___log_newfh __P ((DB_LOG *));
-static int CDB___log_putr __P ((DB_LOG *, DB_LSN *, const DBT *, u_int32_t));
-static int CDB___log_write __P ((DB_LOG *, void *, u_int32_t));
+static int CDB___log_putr __P ((DB_LOG *, DB_LSN *, const DBT *, uint32_t));
+static int CDB___log_write __P ((DB_LOG *, void *, uint32_t));
 
 /*
  * CDB_log_put --
@@ -54,7 +54,7 @@ CDB_log_put (dbenv, lsn, dbt, flags)
      DB_ENV *dbenv;
      DB_LSN *lsn;
      const DBT *dbt;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB_LOG *dblp;
   int ret;
@@ -78,21 +78,21 @@ CDB_log_put (dbenv, lsn, dbt, flags)
  * CDB___log_put --
  *  Write a log record; internal version.
  *
- * PUBLIC: int CDB___log_put __P((DB_ENV *, DB_LSN *, const DBT *, u_int32_t));
+ * PUBLIC: int CDB___log_put __P((DB_ENV *, DB_LSN *, const DBT *, uint32_t));
  */
 int
 CDB___log_put (dbenv, lsn, dbt, flags)
      DB_ENV *dbenv;
      DB_LSN *lsn;
      const DBT *dbt;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBT fid_dbt, t;
   DB_LOG *dblp;
   DB_LSN r_unused;
   FNAME *fnp;
   LOG *lp;
-  u_int32_t lastoff;
+  uint32_t lastoff;
   int ret;
 
   dblp = dbenv->lg_handle;
@@ -226,7 +226,7 @@ CDB___log_putr (dblp, lsn, dbt, prev)
      DB_LOG *dblp;
      DB_LSN *lsn;
      const DBT *dbt;
-     u_int32_t prev;
+     uint32_t prev;
 {
   HDR hdr;
   LOG *lp;
@@ -396,10 +396,10 @@ CDB___log_fill (dblp, lsn, addr, len)
      DB_LOG *dblp;
      DB_LSN *lsn;
      void *addr;
-     u_int32_t len;
+     uint32_t len;
 {
   LOG *lp;
-  u_int32_t bsize, nrec;
+  uint32_t bsize, nrec;
   size_t nw, remain;
   int ret;
 
@@ -426,7 +426,7 @@ CDB___log_fill (dblp, lsn, addr, len)
       nrec = len / bsize;
       if ((ret = CDB___log_write (dblp, addr, nrec * bsize)) != 0)
         return (ret);
-      addr = (u_int8_t *) addr + nrec * bsize;
+      addr = (uint8_t *) addr + nrec * bsize;
       len -= nrec * bsize;
       ++lp->stat.st_wcount_fill;
       continue;
@@ -436,7 +436,7 @@ CDB___log_fill (dblp, lsn, addr, len)
     remain = bsize - lp->b_off;
     nw = remain > len ? len : remain;
     memcpy (dblp->bufp + lp->b_off, addr, nw);
-    addr = (u_int8_t *) addr + nw;
+    addr = (uint8_t *) addr + nw;
     len -= nw;
     lp->b_off += nw;
 
@@ -460,7 +460,7 @@ static int
 CDB___log_write (dblp, addr, len)
      DB_LOG *dblp;
      void *addr;
-     u_int32_t len;
+     uint32_t len;
 {
   LOG *lp;
   ssize_t nw;
@@ -579,12 +579,12 @@ CDB___log_newfh (dblp)
  *  Return the log name for a particular file, and optionally open it.
  *
  * PUBLIC: int CDB___log_name __P((DB_LOG *,
- * PUBLIC:     u_int32_t, char **, DB_FH *, u_int32_t));
+ * PUBLIC:     uint32_t, char **, DB_FH *, uint32_t));
  */
 int
 CDB___log_name (dblp, filenumber, namep, fhp, flags)
      DB_LOG *dblp;
-     u_int32_t filenumber, flags;
+     uint32_t filenumber, flags;
      char **namep;
      DB_FH *fhp;
 {

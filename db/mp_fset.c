@@ -28,7 +28,7 @@ int
 CDB_memp_fset (dbmfp, pgaddr, flags)
      DB_MPOOLFILE *dbmfp;
      void *pgaddr;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BH *bhp;
   DB_ENV *dbenv;
@@ -63,7 +63,7 @@ CDB_memp_fset (dbmfp, pgaddr, flags)
   }
 
   /* Convert the page address to a buffer header. */
-  bhp = (BH *) ((u_int8_t *) pgaddr - SSZA (BH, buf));
+  bhp = (BH *) ((uint8_t *) pgaddr - SSZA (BH, buf));
 
   /* Convert the buffer header to a cache. */
   mc = BH_TO_CACHE (dbmp, bhp);

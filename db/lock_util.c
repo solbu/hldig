@@ -46,11 +46,11 @@ CDB___lock_cmp (dbt, lock_obj)
 }
 
 /*
- * PUBLIC: int CDB___lock_locker_cmp __P((u_int32_t, DB_LOCKER *));
+ * PUBLIC: int CDB___lock_locker_cmp __P((uint32_t, DB_LOCKER *));
  */
 int
 CDB___lock_locker_cmp (locker, sh_locker)
-     u_int32_t locker;
+     uint32_t locker;
      DB_LOCKER *sh_locker;
 {
   return (locker == sh_locker->id);
@@ -77,10 +77,10 @@ CDB___lock_locker_cmp (locker, sh_locker)
  * we're coming through this code path.
  */
 #define FAST_HASH(P) {      \
-  u_int32_t __h;      \
-  u_int8_t *__cp, *__hp;    \
-  __hp = (u_int8_t *)&__h;  \
-  __cp = (u_int8_t *)(P);    \
+  uint32_t __h;      \
+  uint8_t *__cp, *__hp;    \
+  __hp = (uint8_t *)&__h;  \
+  __cp = (uint8_t *)(P);    \
   __hp[0] = __cp[0] ^ __cp[4];  \
   __hp[1] = __cp[1] ^ __cp[5];  \
   __hp[2] = __cp[2] ^ __cp[6];  \
@@ -91,9 +91,9 @@ CDB___lock_locker_cmp (locker, sh_locker)
 /*
  * CDB___lock_ohash --
  *
- * PUBLIC: u_int32_t CDB___lock_ohash __P((const DBT *));
+ * PUBLIC: uint32_t CDB___lock_ohash __P((const DBT *));
  */
-u_int32_t
+uint32_t
 CDB___lock_ohash (dbt)
      const DBT *dbt;
 {
@@ -106,9 +106,9 @@ CDB___lock_ohash (dbt)
 /*
  * CDB___lock_lhash --
  *
- * PUBLIC: u_int32_t CDB___lock_lhash __P((DB_LOCKOBJ *));
+ * PUBLIC: uint32_t CDB___lock_lhash __P((DB_LOCKOBJ *));
  */
-u_int32_t
+uint32_t
 CDB___lock_lhash (lock_obj)
      DB_LOCKOBJ *lock_obj;
 {
@@ -128,11 +128,11 @@ CDB___lock_lhash (lock_obj)
  *   Since these are simply 32-bit unsigned integers, just return
  *  the locker value.
  *
- * PUBLIC: u_int32_t CDB___lock_locker_hash __P((u_int32_t));
+ * PUBLIC: uint32_t CDB___lock_locker_hash __P((uint32_t));
  */
-u_int32_t
+uint32_t
 CDB___lock_locker_hash (locker)
-     u_int32_t locker;
+     uint32_t locker;
 {
   return (locker);
 }

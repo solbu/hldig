@@ -26,7 +26,7 @@ static const char sccsid[] = "@(#)lock_deadlock.c  11.7 (Sleepycat) 10/19/99";
 #define  ISSET_MAP(M, N)  ((M)[(N) / 32] & (1 << (N) % 32))
 
 #define  CLEAR_MAP(M, N) {            \
-  u_int32_t __i;              \
+  uint32_t __i;              \
   for (__i = 0; __i < (N); __i++)          \
     (M)[__i] = 0;            \
 }
@@ -35,7 +35,7 @@ static const char sccsid[] = "@(#)lock_deadlock.c  11.7 (Sleepycat) 10/19/99";
 #define  CLR_MAP(M, B)  ((M)[(B) / 32] &= ~(1 << ((B) % 32)))
 
 #define  OR_MAP(D, S, N)  {            \
-  u_int32_t __i;              \
+  uint32_t __i;              \
   for (__i = 0; __i < (N); __i++)          \
     D[__i] |= S[__i];          \
 }
@@ -44,33 +44,33 @@ static const char sccsid[] = "@(#)lock_deadlock.c  11.7 (Sleepycat) 10/19/99";
 typedef struct
 {
   int valid;
-  u_int32_t id;
-  u_int32_t last_lock;
-  u_int32_t last_locker_id;
+  uint32_t id;
+  uint32_t last_lock;
+  uint32_t last_locker_id;
   db_pgno_t pgno;
 } locker_info;
 
 static int CDB___dd_abort __P ((DB_ENV *, locker_info *));
 static int CDB___dd_build
-__P ((DB_ENV *, u_int32_t **, u_int32_t *, locker_info **));
+__P ((DB_ENV *, uint32_t **, uint32_t *, locker_info **));
 static int CDB___dd_find
-__P ((u_int32_t *, locker_info *, u_int32_t, u_int32_t ***));
+__P ((uint32_t *, locker_info *, uint32_t, uint32_t ***));
 
 #ifdef DIAGNOSTIC
 static void __dd_debug
-__P ((DB_ENV *, locker_info *, u_int32_t *, u_int32_t));
+__P ((DB_ENV *, locker_info *, uint32_t *, uint32_t));
 #endif
 
 int
 CDB_lock_detect (dbenv, flags, atype, abortp)
      DB_ENV *dbenv;
-     u_int32_t flags, atype;
+     uint32_t flags, atype;
      int *abortp;
 {
   DB_LOCKREGION *region;
   DB_LOCKTAB *lt;
   locker_info *idmap;
-  u_int32_t *bitmap, **deadp, **free_me, i, killid, nentries, nlockers;
+  uint32_t *bitmap, **deadp, **free_me, i, killid, nentries, nlockers;
   int do_pass, ret;
 
   PANIC_CHECK (dbenv);
@@ -230,12 +230,12 @@ CDB_lock_detect (dbenv, flags, atype, abortp)
  * Utilities
  */
 
-#define DD_INVALID_ID  ((u_int32_t) -1)
+#define DD_INVALID_ID  ((uint32_t) -1)
 
 static int
 CDB___dd_build (dbenv, bmp, nlockers, idmap)
      DB_ENV *dbenv;
-     u_int32_t **bmp, *nlockers;
+     uint32_t **bmp, *nlockers;
      locker_info **idmap;
 {
   struct __db_lock *lp;
@@ -244,8 +244,8 @@ CDB___dd_build (dbenv, bmp, nlockers, idmap)
   DB_LOCKREGION *region;
   DB_LOCKTAB *lt;
   locker_info *id_array;
-  u_int32_t *bitmap, count, dd, *entryp, i, id, ndx, nentries, *tmpmap;
-  u_int8_t *pptr;
+  uint32_t *bitmap, count, dd, *entryp, i, id, ndx, nentries, *tmpmap;
+  uint8_t *pptr;
   int is_first, ret;
 
   lt = dbenv->lk_handle;
@@ -282,12 +282,12 @@ retry:count = region->nlockers;
    * reallocing if necessary because count grew by too much.
    */
   if ((ret = CDB___os_calloc ((size_t) count,
-                              sizeof (u_int32_t) * nentries, &bitmap)) != 0)
+                              sizeof (uint32_t) * nentries, &bitmap)) != 0)
     return (ret);
 
-  if ((ret = CDB___os_calloc (sizeof (u_int32_t), nentries, &tmpmap)) != 0)
+  if ((ret = CDB___os_calloc (sizeof (uint32_t), nentries, &tmpmap)) != 0)
   {
-    CDB___os_free (bitmap, sizeof (u_int32_t) * nentries);
+    CDB___os_free (bitmap, sizeof (uint32_t) * nentries);
     return (ret);
   }
 
@@ -295,8 +295,8 @@ retry:count = region->nlockers;
        CDB___os_calloc ((size_t) count, sizeof (locker_info),
                         &id_array)) != 0)
   {
-    CDB___os_free (bitmap, count * sizeof (u_int32_t) * nentries);
-    CDB___os_free (tmpmap, sizeof (u_int32_t) * nentries);
+    CDB___os_free (bitmap, count * sizeof (uint32_t) * nentries);
+    CDB___os_free (tmpmap, sizeof (uint32_t) * nentries);
     return (ret);
   }
 
@@ -306,8 +306,8 @@ retry:count = region->nlockers;
   MEMORY_LOCK (lt);
   if (region->nlockers > count)
   {
-    CDB___os_free (bitmap, count * sizeof (u_int32_t) * nentries);
-    CDB___os_free (tmpmap, sizeof (u_int32_t) * nentries);
+    CDB___os_free (bitmap, count * sizeof (uint32_t) * nentries);
+    CDB___os_free (tmpmap, sizeof (uint32_t) * nentries);
     CDB___os_free (id_array, count * sizeof (locker_info));
     goto retry;
   }
@@ -468,7 +468,7 @@ retry:count = region->nlockers;
     {
       id_array[id].last_locker_id = lockerp->id;
     get_lock:id_array[id].last_lock = R_OFFSET (&lt->reginfo, lp);
-      lo = (DB_LOCKOBJ *) ((u_int8_t *) lp + lp->obj);
+      lo = (DB_LOCKOBJ *) ((uint8_t *) lp + lp->obj);
       pptr = SH_DBT_PTR (&lo->lockobj);
       if (lo->lockobj.size >= sizeof (db_pgno_t))
         memcpy (&id_array[id].pgno, pptr, sizeof (db_pgno_t));
@@ -490,18 +490,18 @@ retry:count = region->nlockers;
   *nlockers = id;
   *idmap = id_array;
   *bmp = bitmap;
-  CDB___os_free (tmpmap, sizeof (u_int32_t) * nentries);
+  CDB___os_free (tmpmap, sizeof (uint32_t) * nentries);
   return (0);
 }
 
 static int
 CDB___dd_find (bmp, idmap, nlockers, deadp)
-     u_int32_t *bmp, nlockers;
+     uint32_t *bmp, nlockers;
      locker_info *idmap;
-     u_int32_t ***deadp;
+     uint32_t ***deadp;
 {
-  u_int32_t i, j, k, nentries, *mymap, *tmpmap;
-  u_int32_t **retp;
+  uint32_t i, j, k, nentries, *mymap, *tmpmap;
+  uint32_t **retp;
   int ndead, ndeadalloc, ret;
 
 #undef  INITIAL_DEAD_ALLOC
@@ -510,7 +510,7 @@ CDB___dd_find (bmp, idmap, nlockers, deadp)
   ndeadalloc = INITIAL_DEAD_ALLOC;
   ndead = 0;
   if ((ret =
-       CDB___os_malloc (ndeadalloc * sizeof (u_int32_t *), NULL, &retp)) != 0)
+       CDB___os_malloc (ndeadalloc * sizeof (uint32_t *), NULL, &retp)) != 0)
     return (ret);
 
   /*
@@ -541,7 +541,7 @@ CDB___dd_find (bmp, idmap, nlockers, deadp)
          * If the alloc fails, then simply return the
          * deadlocks that we already have.
          */
-        if (CDB___os_realloc (ndeadalloc * sizeof (u_int32_t),
+        if (CDB___os_realloc (ndeadalloc * sizeof (uint32_t),
                               NULL, &retp) != 0)
         {
           retp[ndead] = NULL;
@@ -573,7 +573,7 @@ CDB___dd_abort (dbenv, info)
   DB_LOCKOBJ *sh_obj;
   DB_LOCKREGION *region;
   DB_LOCKTAB *lt;
-  u_int32_t ndx;
+  uint32_t ndx;
   int ret;
 
   lt = dbenv->lk_handle;
@@ -612,7 +612,7 @@ CDB___dd_abort (dbenv, info)
     goto out;
   }
 
-  sh_obj = (DB_LOCKOBJ *) ((u_int8_t *) lockp + lockp->obj);
+  sh_obj = (DB_LOCKOBJ *) ((uint8_t *) lockp + lockp->obj);
   SH_LIST_REMOVE (lockp, locker_links, __db_lock);
   LOCKER_UNLOCK (lt, ndx);
 
@@ -642,9 +642,9 @@ static void
 __dd_debug (dbenv, idmap, bitmap, nlockers)
      DB_ENV *dbenv;
      locker_info *idmap;
-     u_int32_t *bitmap, nlockers;
+     uint32_t *bitmap, nlockers;
 {
-  u_int32_t i, j, *mymap, nentries;
+  uint32_t i, j, *mymap, nentries;
   int ret;
   char *msgbuf;
 

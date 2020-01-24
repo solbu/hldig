@@ -84,7 +84,7 @@ CDB___ham_insdel_recover (dbenv, dbtp, lsnp, redo, info)
   DBC *dbc;
   DB_MPOOLFILE *mpf;
   PAGE *pagep;
-  u_int32_t op;
+  uint32_t op;
   int cmp_n, cmp_p, getmeta, ret;
 
   COMPQUIET (info, NULL);
@@ -137,7 +137,7 @@ CDB___ham_insdel_recover (dbenv, dbtp, lsnp, redo, info)
      * position.  That's a royal pain in the butt (because we do
      * not store item lengths on the page), but there's no choice.
      */
-    if (op != DELPAIR || argp->ndx == (u_int32_t) H_NUMPAIRS (pagep))
+    if (op != DELPAIR || argp->ndx == (uint32_t) H_NUMPAIRS (pagep))
     {
       CDB___ham_putitem (pagep, &argp->key,
                          !redo || PAIR_ISKEYBIG (argp->opcode) ?
@@ -407,7 +407,7 @@ CDB___ham_replace_recover (dbenv, dbtp, lsnp, redo, info)
   PAGE *pagep;
   int32_t grow;
   int change, cmp_n, cmp_p, getmeta, ret;
-  u_int8_t *hk;
+  uint8_t *hk;
 
   COMPQUIET (info, NULL);
 
@@ -848,7 +848,7 @@ CDB___ham_metagroup_recover (dbenv, dbtp, lsnp, redo, info)
    * pages; if it's not, then we simply allocated one new page.
    */
   groupgrow =
-    (u_int32_t) (1 << CDB___db_log2 (argp->bucket + 1)) == argp->bucket + 1;
+    (uint32_t) (1 << CDB___db_log2 (argp->bucket + 1)) == argp->bucket + 1;
 
   last_pgno = argp->pgno;
   if (groupgrow)
@@ -1050,7 +1050,7 @@ CDB___ham_free_pages (dbp, argp)
   DBMETA *mmeta;
   DB_MPOOLFILE *mpf;
   PAGE *pagep;
-  u_int32_t i;
+  uint32_t i;
   db_pgno_t last_free, pgno;
   int mod_meta, ret, t_ret;
 

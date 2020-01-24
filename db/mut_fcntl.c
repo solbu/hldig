@@ -29,13 +29,13 @@ static const char sccsid[] = "@(#)mut_fcntl.c  11.1 (Sleepycat) 7/25/99";
  * CDB___db_fcntl_mutex_init --
  *  Initialize a DB mutex structure.
  *
- * PUBLIC: int CDB___db_fcntl_mutex_init __P((DB_ENV *, MUTEX *, u_int32_t));
+ * PUBLIC: int CDB___db_fcntl_mutex_init __P((DB_ENV *, MUTEX *, uint32_t));
  */
 int
 CDB___db_fcntl_mutex_init (dbenv, mutexp, offset)
      DB_ENV *dbenv;
      MUTEX *mutexp;
-     u_int32_t offset;
+     uint32_t offset;
 {
   memset (mutexp, 0, sizeof (*mutexp));
 
@@ -99,7 +99,7 @@ CDB___db_fcntl_mutex_lock (mutexp, fhp)
     if (mutexp->pid == 0)
     {
       locked = 1;
-      mutexp->pid = (u_int32_t) getpid ();
+      mutexp->pid = (uint32_t) getpid ();
     }
 
     /* Release the kernel lock. */

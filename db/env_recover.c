@@ -38,18 +38,18 @@ static const char sccsid[] = "@(#)env_recover.c  11.6 (Sleepycat) 10/1/99";
 #include "txn.h"
 
 static float CDB___lsn_diff
-__P ((DB_LSN *, DB_LSN *, DB_LSN *, u_int32_t, int));
+__P ((DB_LSN *, DB_LSN *, DB_LSN *, uint32_t, int));
 
 /*
  * CDB___db_apprec --
  *  Perform recovery.
  *
- * PUBLIC: int CDB___db_apprec __P((DB_ENV *, u_int32_t));
+ * PUBLIC: int CDB___db_apprec __P((DB_ENV *, uint32_t));
  */
 int
 CDB___db_apprec (dbenv, flags)
      DB_ENV *dbenv;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBT data;
   DB_LSN ckp_lsn, first_lsn, last_lsn, lsn, open_lsn;
@@ -282,7 +282,7 @@ CDB___db_apprec (dbenv, flags)
   (void) time (&now);
   region = ((DB_TXNMGR *) dbenv->tx_handle)->reginfo.primary;
   region->last_ckp = ckp_lsn;
-  region->time_ckp = (u_int32_t) now;
+  region->time_ckp = (uint32_t) now;
   if ((ret = CDB_txn_checkpoint (dbenv, 0, 0)) != 0)
     goto out;
   region->last_txnid = TXN_MINIMUM;
@@ -322,7 +322,7 @@ out:if (is_thread)
 static float
 CDB___lsn_diff (low, high, current, max, is_forward)
      DB_LSN *low, *high, *current;
-     u_int32_t max;
+     uint32_t max;
      int is_forward;
 {
   float nf;

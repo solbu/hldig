@@ -74,10 +74,10 @@ CDB___ham_upgrade5 (dbp, swapped, real_name, fhp)
 {
   DB_ENV *dbenv;
   ssize_t n;
-  u_int32_t *o_spares, *n_spares, version;
-  u_int32_t fillf, maxb, nelem;
+  uint32_t *o_spares, *n_spares, version;
+  uint32_t fillf, maxb, nelem;
   int i, non_zero, ret;
-  u_int8_t nbuf[256], *new, obuf[256];
+  uint8_t nbuf[256], *new, obuf[256];
 
   dbenv = dbp->dbenv;
 
@@ -128,7 +128,7 @@ CDB___ham_upgrade5 (dbp, swapped, real_name, fhp)
   version = 6;
   if (swapped)
     M_32_SWAP (version);
-  memcpy (nbuf + 16, &version, sizeof (u_int32_t));
+  memcpy (nbuf + 16, &version, sizeof (uint32_t));
 
   /* Assign unused and type fields. */
   new = nbuf + 24;
@@ -149,9 +149,9 @@ CDB___ham_upgrade5 (dbp, swapped, real_name, fhp)
    * (that is, very large and positive), we'll die trying to dump and
    * load this database.  So, let's see if we can fix it here.
    */
-  memcpy (&nelem, nbuf + 72, sizeof (u_int32_t));
-  memcpy (&fillf, nbuf + 68, sizeof (u_int32_t));
-  memcpy (&maxb, nbuf + 56, sizeof (u_int32_t));
+  memcpy (&nelem, nbuf + 72, sizeof (uint32_t));
+  memcpy (&fillf, nbuf + 68, sizeof (uint32_t));
+  memcpy (&maxb, nbuf + 56, sizeof (uint32_t));
   if (swapped)
   {
     M_32_SWAP (nelem);
@@ -163,7 +163,7 @@ CDB___ham_upgrade5 (dbp, swapped, real_name, fhp)
       (fillf == 0 && nelem > 0x8000000))
   {
     nelem = 0;
-    memcpy (nbuf + 72, &nelem, sizeof (u_int32_t));
+    memcpy (nbuf + 72, &nelem, sizeof (uint32_t));
   }
 
   /*
@@ -173,8 +173,8 @@ CDB___ham_upgrade5 (dbp, swapped, real_name, fhp)
    * contains the page number of the first bucket in the next doubling
    * MINUS the bucket number of that bucket.
    */
-  o_spares = (u_int32_t *) (obuf + 60);
-  n_spares = (u_int32_t *) (nbuf + 80);
+  o_spares = (uint32_t *) (obuf + 60);
+  n_spares = (uint32_t *) (nbuf + 80);
   non_zero = 0;
   n_spares[0] = 1;
   for (i = 1; i < NCACHED; i++)

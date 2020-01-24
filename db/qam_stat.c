@@ -28,14 +28,14 @@ static const char sccsid[] = "@(#)qam_stat.c  11.4 (Sleepycat) 8/19/99";
  * CDB___qam_stat --
  *  Gather/print the qam statistics
  *
- * PUBLIC: int CDB___qam_stat __P((DB *, void *, void *(*)(size_t), u_int32_t));
+ * PUBLIC: int CDB___qam_stat __P((DB *, void *, void *(*)(size_t), uint32_t));
  */
 int
 CDB___qam_stat (dbp, spp, db_malloc, flags)
      DB *dbp;
      void *spp;
      void *(*db_malloc) __P ((size_t));
-     u_int32_t flags;
+     uint32_t flags;
 {
   QUEUE *t;
   DBC *dbc;

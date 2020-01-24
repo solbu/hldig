@@ -45,26 +45,26 @@
  *  P_32_SWAP  swap a referenced memory location
  */
 #define  M_32_SWAP(a) {              \
-  u_int32_t _tmp;              \
+  uint32_t _tmp;              \
   _tmp = a;              \
-  ((u_int8_t *)&a)[0] = ((u_int8_t *)&_tmp)[3];      \
-  ((u_int8_t *)&a)[1] = ((u_int8_t *)&_tmp)[2];      \
-  ((u_int8_t *)&a)[2] = ((u_int8_t *)&_tmp)[1];      \
-  ((u_int8_t *)&a)[3] = ((u_int8_t *)&_tmp)[0];      \
+  ((uint8_t *)&a)[0] = ((uint8_t *)&_tmp)[3];      \
+  ((uint8_t *)&a)[1] = ((uint8_t *)&_tmp)[2];      \
+  ((uint8_t *)&a)[2] = ((uint8_t *)&_tmp)[1];      \
+  ((uint8_t *)&a)[3] = ((uint8_t *)&_tmp)[0];      \
 }
 #define  P_32_COPY(a, b) {            \
-  ((u_int8_t *)b)[0] = ((u_int8_t *)a)[0];      \
-  ((u_int8_t *)b)[1] = ((u_int8_t *)a)[1];      \
-  ((u_int8_t *)b)[2] = ((u_int8_t *)a)[2];      \
-  ((u_int8_t *)b)[3] = ((u_int8_t *)a)[3];      \
+  ((uint8_t *)b)[0] = ((uint8_t *)a)[0];      \
+  ((uint8_t *)b)[1] = ((uint8_t *)a)[1];      \
+  ((uint8_t *)b)[2] = ((uint8_t *)a)[2];      \
+  ((uint8_t *)b)[3] = ((uint8_t *)a)[3];      \
 }
 #define  P_32_SWAP(a) {              \
-  u_int32_t _tmp;              \
+  uint32_t _tmp;              \
   P_32_COPY(a, &_tmp);            \
-  ((u_int8_t *)a)[0] = ((u_int8_t *)&_tmp)[3];      \
-  ((u_int8_t *)a)[1] = ((u_int8_t *)&_tmp)[2];      \
-  ((u_int8_t *)a)[2] = ((u_int8_t *)&_tmp)[1];      \
-  ((u_int8_t *)a)[3] = ((u_int8_t *)&_tmp)[0];      \
+  ((uint8_t *)a)[0] = ((uint8_t *)&_tmp)[3];      \
+  ((uint8_t *)a)[1] = ((uint8_t *)&_tmp)[2];      \
+  ((uint8_t *)a)[2] = ((uint8_t *)&_tmp)[1];      \
+  ((uint8_t *)a)[3] = ((uint8_t *)&_tmp)[0];      \
 }
 
 /*
@@ -74,28 +74,28 @@
  *  P_16_SWAP  swap a referenced memory location
  */
 #define  M_16_SWAP(a) {              \
-  u_int16_t _tmp;              \
-  _tmp = (u_int16_t)a;            \
-  ((u_int8_t *)&a)[0] = ((u_int8_t *)&_tmp)[1];      \
-  ((u_int8_t *)&a)[1] = ((u_int8_t *)&_tmp)[0];      \
+  uint16_t _tmp;              \
+  _tmp = (uint16_t)a;            \
+  ((uint8_t *)&a)[0] = ((uint8_t *)&_tmp)[1];      \
+  ((uint8_t *)&a)[1] = ((uint8_t *)&_tmp)[0];      \
 }
 #define  P_16_COPY(a, b) {            \
-  ((u_int8_t *)b)[0] = ((u_int8_t *)a)[0];      \
-  ((u_int8_t *)b)[1] = ((u_int8_t *)a)[1];      \
+  ((uint8_t *)b)[0] = ((uint8_t *)a)[0];      \
+  ((uint8_t *)b)[1] = ((uint8_t *)a)[1];      \
 }
 #define  P_16_SWAP(a) {              \
-  u_int16_t _tmp;              \
+  uint16_t _tmp;              \
   P_16_COPY(a, &_tmp);            \
-  ((u_int8_t *)a)[0] = ((u_int8_t *)&_tmp)[1];      \
-  ((u_int8_t *)a)[1] = ((u_int8_t *)&_tmp)[0];      \
+  ((uint8_t *)a)[0] = ((uint8_t *)&_tmp)[1];      \
+  ((uint8_t *)a)[1] = ((uint8_t *)&_tmp)[0];      \
 }
 
 #define  SWAP32(p) {              \
   P_32_SWAP(p);              \
-  (p) += sizeof(u_int32_t);          \
+  (p) += sizeof(uint32_t);          \
 }
 #define  SWAP16(p) {              \
   P_16_SWAP(p);              \
-  (p) += sizeof(u_int16_t);          \
+  (p) += sizeof(uint16_t);          \
 }
 #endif /* !_DB_SWAP_H_ */

@@ -108,7 +108,7 @@
  * split 100Gb memory pools into that many different regions.  It's typedef'd
  * so it won't be too painful to upgrade.
  */
-typedef u_int32_t roff_t;
+typedef uint32_t roff_t;
 
 /*
  * Nothing can live at region offset 0, because, in all cases, that's where
@@ -158,7 +158,7 @@ typedef struct __db_reg_env
    * it to determine if the memory has been zeroed since it was last used.
    */
 #define  DB_REGION_MAGIC  0x120897
-  u_int32_t magic;              /* Valid region magic number. */
+  uint32_t magic;              /* Valid region magic number. */
 
   int panic;                    /* Environment is dead. */
 
@@ -169,7 +169,7 @@ typedef struct __db_reg_env
   /* List of regions. */
     SH_LIST_HEAD (__db_regionh) regionq;
 
-  u_int32_t refcnt;             /* References to the environment. */
+  uint32_t refcnt;             /* References to the environment. */
 
   size_t pad;                   /* Guarantee that following memory is
                                  * size_t aligned.  This is necessary
@@ -194,7 +194,7 @@ typedef struct __db_region
    * in both the environment and each shared region, as Windows/95 uses
    * it to determine if the memory has been zeroed since it was last used.
    */
-  u_int32_t magic;
+  uint32_t magic;
 
   SH_LIST_ENTRY q;              /* Linked list of REGIONs. */
 
@@ -214,7 +214,7 @@ typedef struct __db_region
   int id;                       /* Region id. */
 
 #define  REG_DEAD  0x01         /* Region may be corrupted. */
-  u_int32_t flags;
+  uint32_t flags;
 } REGION;
 
 /*
@@ -237,7 +237,7 @@ struct __db_reginfo_t
 
 #define  REGION_CREATE    0x01  /* Caller created region. */
 #define  REGION_CREATE_OK  0x02 /* Caller willing to create region. */
-  u_int32_t flags;
+  uint32_t flags;
 };
 
 /*
@@ -246,12 +246,12 @@ struct __db_reginfo_t
  *
  * !!!
  * R_OFFSET should really be returning a ptrdiff_t, but that's not yet
- * portable.  We use u_int32_t, which restricts regions to 4Gb in size.
+ * portable.  We use uint32_t, which restricts regions to 4Gb in size.
  */
 #define  R_ADDR(base, offset)            \
-  ((void *)((u_int8_t *)((base)->addr) + offset))
+  ((void *)((uint8_t *)((base)->addr) + offset))
 #define  R_OFFSET(base, p)            \
-  ((u_int32_t)((u_int8_t *)(p) - (u_int8_t *)(base)->addr))
+  ((uint32_t)((uint8_t *)(p) - (uint8_t *)(base)->addr))
 
 /*
  * R_LOCK  Lock/unlock a region.

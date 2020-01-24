@@ -31,12 +31,12 @@ static const char sccsid[] = "@(#)os_tmpdir.c  11.1 (Sleepycat) 7/25/99";
  * The order of items in the list structure and the order of checks in
  * the environment are documented.
  *
- * PUBLIC: int CDB___os_tmpdir __P((DB_ENV *, u_int32_t));
+ * PUBLIC: int CDB___os_tmpdir __P((DB_ENV *, uint32_t));
  */
 int
 CDB___os_tmpdir (dbenv, flags)
      DB_ENV *dbenv;
-     u_int32_t flags;
+     uint32_t flags;
 {
   /*
    * !!!

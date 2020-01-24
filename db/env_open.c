@@ -40,11 +40,11 @@ static const char sccsid[] = "@(#)env_open.c  11.8 (Sleepycat) 11/10/99";
 #include "txn.h"
 
 static int CDB___dbenv_config
-__P ((DB_ENV *, const char *, char *const *, u_int32_t));
+__P ((DB_ENV *, const char *, char *const *, uint32_t));
 static int CDB___dbenv_refresh __P ((DB_ENV *));
-static int CDB___db_home __P ((DB_ENV *, const char *, u_int32_t));
+static int CDB___db_home __P ((DB_ENV *, const char *, uint32_t));
 static int CDB___db_parse __P ((DB_ENV *, char *));
-static int CDB___db_tmp_open __P ((DB_ENV *, u_int32_t, char *, DB_FH *));
+static int CDB___db_tmp_open __P ((DB_ENV *, uint32_t, char *, DB_FH *));
 
 /*
  * CDB_db_version --
@@ -68,14 +68,14 @@ CDB_db_version (majverp, minverp, patchp)
  *  Initialize an environment.
  *
  * PUBLIC: int CDB___dbenv_open __P((DB_ENV *,
- * PUBLIC:     const char *, char * const *, u_int32_t, int));
+ * PUBLIC:     const char *, char * const *, uint32_t, int));
  */
 int
 CDB___dbenv_open (dbenv, db_home, db_config, flags, mode)
      DB_ENV *dbenv;
      const char *db_home;
      char *const *db_config;
-     u_int32_t flags;
+     uint32_t flags;
      int mode;
 {
   DB_ENV *rm_dbenv;
@@ -241,14 +241,14 @@ err:(void) CDB___dbenv_refresh (dbenv);
  *  Discard an environment.
  *
  * PUBLIC: int CDB___dbenv_remove __P((DB_ENV *,
- * PUBLIC:     const char *, char * const *, u_int32_t));
+ * PUBLIC:     const char *, char * const *, uint32_t));
  */
 int
 CDB___dbenv_remove (dbenv, db_home, db_config, flags)
      DB_ENV *dbenv;
      const char *db_home;
      char *const *db_config;
-     u_int32_t flags;
+     uint32_t flags;
 {
   int ret, t_ret;
 
@@ -286,7 +286,7 @@ CDB___dbenv_config (dbenv, db_home, db_config, flags)
      DB_ENV *dbenv;
      const char *db_home;
      char *const *db_config;
-     u_int32_t flags;
+     uint32_t flags;
 {
   FILE *fp;
   int ret;
@@ -373,12 +373,12 @@ CDB___dbenv_config (dbenv, db_home, db_config, flags)
  * CDB___dbenv_close --
  *  DB_ENV destructor.
  *
- * PUBLIC: int CDB___dbenv_close __P((DB_ENV *, u_int32_t));
+ * PUBLIC: int CDB___dbenv_close __P((DB_ENV *, uint32_t));
  */
 int
 CDB___dbenv_close (dbenv, flags)
      DB_ENV *dbenv;
-     u_int32_t flags;
+     uint32_t flags;
 {
   int ret;
 
@@ -533,14 +533,14 @@ CDB___dbenv_refresh (dbenv)
  *  it in allocated space.
  *
  * PUBLIC: int CDB___db_appname __P((DB_ENV *, APPNAME,
- * PUBLIC:    const char *, const char *, u_int32_t, DB_FH *, char **));
+ * PUBLIC:    const char *, const char *, uint32_t, DB_FH *, char **));
  */
 int
 CDB___db_appname (dbenv, appname, dir, file, tmp_oflags, fhp, namep)
      DB_ENV *dbenv;
      APPNAME appname;
      const char *dir, *file;
-     u_int32_t tmp_oflags;
+     uint32_t tmp_oflags;
      DB_FH *fhp;
      char **namep;
 {
@@ -758,7 +758,7 @@ static int
 CDB___db_home (dbenv, db_home, flags)
      DB_ENV *dbenv;
      const char *db_home;
-     u_int32_t flags;
+     uint32_t flags;
 {
   const char *p;
 
@@ -884,7 +884,7 @@ err:                           /*
 static int
 CDB___db_tmp_open (dbenv, tmp_oflags, path, fhp)
      DB_ENV *dbenv;
-     u_int32_t tmp_oflags;
+     uint32_t tmp_oflags;
      char *path;
      DB_FH *fhp;
 {

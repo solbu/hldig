@@ -74,9 +74,9 @@ CDB___bam_upgrade6 (dbp, swapped, real_name, fhp)
 {
   DB_ENV *dbenv;
   ssize_t n;
-  u_int32_t tmp;
+  uint32_t tmp;
   int ret;
-  u_int8_t buf[256], *p;
+  uint8_t buf[256], *p;
 
   dbenv = dbp->dbenv;
 
@@ -129,7 +129,7 @@ CDB___bam_upgrade6 (dbp, swapped, real_name, fhp)
   tmp = 7;
   if (swapped)
     M_32_SWAP (tmp);
-  memcpy (buf + 16, &tmp, sizeof (u_int32_t));
+  memcpy (buf + 16, &tmp, sizeof (uint32_t));
 
   /*  0-23 done: Bytes 0-24 are unchanged. */
   p = buf + 24;
@@ -151,7 +151,7 @@ CDB___bam_upgrade6 (dbp, swapped, real_name, fhp)
   tmp = 1;
   if (swapped)
     M_32_SWAP (tmp);
-  memcpy (buf + 72, &tmp, sizeof (u_int32_t));
+  memcpy (buf + 72, &tmp, sizeof (uint32_t));
 
   /* Write the metadata page out. */
   if ((ret = CDB___os_seek (fhp, 0, 0, 0, 1, DB_OS_SEEK_SET)) != 0)

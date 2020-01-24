@@ -19,10 +19,10 @@ static const char sccsid[] = "@(#)hash_method.c  11.3 (Sleepycat) 9/29/99";
 #include "db_page.h"
 #include "hash.h"
 
-static int CDB___ham_set_h_ffactor __P ((DB *, u_int32_t));
+static int CDB___ham_set_h_ffactor __P ((DB *, uint32_t));
 static int CDB___ham_set_h_hash
-__P ((DB *, u_int32_t (*)(const void *, u_int32_t)));
-static int CDB___ham_set_h_nelem __P ((DB *, u_int32_t));
+__P ((DB *, uint32_t (*)(const void *, uint32_t)));
+static int CDB___ham_set_h_nelem __P ((DB *, uint32_t));
 
 /*
  * CDB___ham_db_create --
@@ -74,7 +74,7 @@ CDB___ham_db_close (dbp)
 static int
 CDB___ham_set_h_ffactor (dbp, h_ffactor)
      DB *dbp;
-     u_int32_t h_ffactor;
+     uint32_t h_ffactor;
 {
   HASH *hashp;
 
@@ -93,7 +93,7 @@ CDB___ham_set_h_ffactor (dbp, h_ffactor)
 static int
 CDB___ham_set_h_hash (dbp, func)
      DB *dbp;
-u_int32_t (*func) __P ((const void *, u_int32_t));
+uint32_t (*func) __P ((const void *, uint32_t));
 {
   HASH *hashp;
 
@@ -112,7 +112,7 @@ u_int32_t (*func) __P ((const void *, u_int32_t));
 static int
 CDB___ham_set_h_nelem (dbp, h_nelem)
      DB *dbp;
-     u_int32_t h_nelem;
+     uint32_t h_nelem;
 {
   HASH *hashp;
 

@@ -82,11 +82,11 @@ int
 CDB___bam_mswap (pg)
      PAGE *pg;
 {
-  u_int8_t *p;
+  uint8_t *p;
 
   CDB___db_metaswap (pg);
 
-  p = (u_int8_t *) pg + sizeof (DBMETA);
+  p = (uint8_t *) pg + sizeof (DBMETA);
 
   SWAP32 (p);                   /* maxkey */
   SWAP32 (p);                   /* minkey */

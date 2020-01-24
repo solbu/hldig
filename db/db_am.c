@@ -40,18 +40,18 @@ static int CDB___db_c_close __P ((DBC *));
  * CDB___db_cursor --
  *  Allocate and return a cursor.
  *
- * PUBLIC: int CDB___db_cursor __P((DB *, DB_TXN *, DBC **, u_int32_t));
+ * PUBLIC: int CDB___db_cursor __P((DB *, DB_TXN *, DBC **, uint32_t));
  */
 int
 CDB___db_cursor (dbp, txn, dbcp, flags)
      DB *dbp;
      DB_TXN *txn;
      DBC **dbcp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBC *dbc, *adbc;
   db_lockmode_t mode;
-  u_int32_t op;
+  uint32_t op;
   int ret;
 
   PANIC_CHECK (dbp->dbenv);
@@ -245,13 +245,13 @@ CDB___db_c_close (dbc)
  * CDB___db_c_dup --
  *  Duplicate a cursor
  *
- * PUBLIC: int CDB___db_c_dup __P((DBC *, DBC **, u_int32_t));
+ * PUBLIC: int CDB___db_c_dup __P((DBC *, DBC **, uint32_t));
  */
 int
 CDB___db_c_dup (orig_dbc, dbcp, flags)
      DBC *orig_dbc;
      DBC **dbcp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *dbp;
   DBC *dbc;
@@ -425,14 +425,14 @@ CDB___db_fd (dbp, fdp)
  * CDB___db_get --
  *  Return a key/data pair.
  *
- * PUBLIC: int CDB___db_get __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: int CDB___db_get __P((DB *, DB_TXN *, DBT *, DBT *, uint32_t));
  */
 int
 CDB___db_get (dbp, txn, key, data, flags)
      DB *dbp;
      DB_TXN *txn;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBC *dbc;
   int ret, t_ret;
@@ -479,14 +479,14 @@ CDB___db_get (dbp, txn, key, data, flags)
  * CDB___db_put --
  *  Store a key/data pair.
  *
- * PUBLIC: int CDB___db_put __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: int CDB___db_put __P((DB *, DB_TXN *, DBT *, DBT *, uint32_t));
  */
 int
 CDB___db_put (dbp, txn, key, data, flags)
      DB *dbp;
      DB_TXN *txn;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBC *dbc;
   DBT tdata;
@@ -542,12 +542,12 @@ CDB___db_put (dbp, txn, key, data, flags)
  * CDB___db_sync --
  *  Flush the database cache.
  *
- * PUBLIC: int CDB___db_sync __P((DB *, u_int32_t));
+ * PUBLIC: int CDB___db_sync __P((DB *, uint32_t));
  */
 int
 CDB___db_sync (dbp, flags)
      DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   int ret, t_ret;
 

@@ -637,7 +637,7 @@ public:
     insert_pos = pgsz;
     insert_indx = 0;
   }
-  WordDBPage (const u_int8_t * buff, int buff_length)
+  WordDBPage (const uint8_t * buff, int buff_length)
   {
     init0 ();
     pg = (PAGE *) buff;

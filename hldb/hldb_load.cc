@@ -56,7 +56,7 @@ int dbt_rprint __P ((DBT *));
 int dbt_rrecno __P ((DBT *));
 int digitize __P ((int, int *));
 int linetorn __P ((char *, db_recno_t *));
-int load __P ((char *, DBTYPE, char **, int, u_int32_t, int, int));
+int load __P ((char *, DBTYPE, char **, int, uint32_t, int, int));
 int main __P ((int, char *[]));
 void onint __P ((int));
 int rheader __P ((DB *, DBTYPE *, char **, int *, int *));
@@ -79,8 +79,8 @@ main (int argc, char *argv[])
   extern char *optarg;
   extern int optind;
   DBTYPE dbtype;
-  u_int32_t cachesize = 0;
-  u_int32_t db_nooverwrite;
+  uint32_t cachesize = 0;
+  uint32_t db_nooverwrite;
   int ch, e_close, exitval, no_header, ret;
   char **clist, **clp, *home;
   int compress = 0;
@@ -241,7 +241,7 @@ main (int argc, char *argv[])
  */
 int
 load (char *name, DBTYPE argtype, char **clist, int no_header,
-      u_int32_t db_nooverwrite, int compress, int wordlist)
+      uint32_t db_nooverwrite, int compress, int wordlist)
 {
   DB *dbp;
   DBT key, rkey, data, *readp, *writep;
@@ -476,7 +476,7 @@ done:rval = 0;
 int
 db_init (char *home)
 {
-  u_int32_t flags;
+  uint32_t flags;
   int ret;
 
   /* We may be loading into a live environment.  Try and join. */
@@ -759,8 +759,8 @@ badfmt:
 int
 dbt_rprint (DBT * dbtp)
 {
-  u_int32_t len;
-  u_int8_t *p;
+  uint32_t len;
+  uint8_t *p;
   int c1, c2, e, escape, first;
   char buf[32];
 
@@ -768,7 +768,7 @@ dbt_rprint (DBT * dbtp)
 
   first = 1;
   e = escape = 0;
-  for (p = (u_int8_t *) dbtp->data, len = 0; (c1 = getchar ()) != '\n';)
+  for (p = (uint8_t *) dbtp->data, len = 0; (c1 = getchar ()) != '\n';)
   {
     if (c1 == EOF)
     {
@@ -829,7 +829,7 @@ dbt_rprint (DBT * dbtp)
         dbenv->err (dbenv, ENOMEM, NULL);
         return (1);
       }
-      p = (u_int8_t *) dbtp->data + len;
+      p = (uint8_t *) dbtp->data + len;
     }
     ++len;
     *p++ = c1;
@@ -846,8 +846,8 @@ dbt_rprint (DBT * dbtp)
 int
 dbt_rdump (DBT * dbtp)
 {
-  u_int32_t len;
-  u_int8_t *p;
+  uint32_t len;
+  uint8_t *p;
   int c1, c2, e, first;
   char buf[32];
 
@@ -855,7 +855,7 @@ dbt_rdump (DBT * dbtp)
 
   first = 1;
   e = 0;
-  for (p = (u_int8_t *) dbtp->data, len = 0; (c1 = getchar ()) != '\n';)
+  for (p = (uint8_t *) dbtp->data, len = 0; (c1 = getchar ()) != '\n';)
   {
     if (c1 == EOF)
     {
@@ -901,7 +901,7 @@ dbt_rdump (DBT * dbtp)
         dbenv->err (dbenv, ENOMEM, NULL);
         return (1);
       }
-      p = (u_int8_t *) dbtp->data + len;
+      p = (uint8_t *) dbtp->data + len;
     }
     ++len;
     *p++ = digitize (c1, &e) << 4 | digitize (c2, &e);

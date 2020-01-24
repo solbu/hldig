@@ -34,7 +34,7 @@ CDB_memp_trickle (dbenv, pct, nwrotep)
 {
   DB_MPOOL *dbmp;
   MPOOL *mp;
-  u_int32_t i;
+  uint32_t i;
   int ret;
 
   PANIC_CHECK (dbenv);

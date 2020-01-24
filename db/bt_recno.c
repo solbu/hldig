@@ -29,11 +29,11 @@ static const char sccsid[] = "@(#)bt_recno.c  11.9 (Sleepycat) 10/29/99";
 #include "qam.h"
 
 static int CDB___ram_add
-__P ((DBC *, db_recno_t *, DBT *, u_int32_t, u_int32_t));
-static int CDB___ram_delete __P ((DB *, DB_TXN *, DBT *, u_int32_t));
+__P ((DBC *, db_recno_t *, DBT *, uint32_t, uint32_t));
+static int CDB___ram_delete __P ((DB *, DB_TXN *, DBT *, uint32_t));
 static int CDB___ram_fmap __P ((DBC *, db_recno_t));
 static int CDB___ram_i_delete __P ((DBC *));
-static int CDB___ram_put __P ((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+static int CDB___ram_put __P ((DB *, DB_TXN *, DBT *, DBT *, uint32_t));
 static int CDB___ram_source __P ((DB *));
 static int CDB___ram_update __P ((DBC *, db_recno_t, int));
 static int CDB___ram_vmap __P ((DBC *, db_recno_t));
@@ -154,7 +154,7 @@ CDB___ram_delete (dbp, txn, key, flags)
      DB *dbp;
      DB_TXN *txn;
      DBT *key;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BTREE_CURSOR *cp;
   DBC *dbc;
@@ -317,7 +317,7 @@ CDB___ram_put (dbp, txn, key, data, flags)
      DB *dbp;
      DB_TXN *txn;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBC *dbc;
   db_recno_t recno;
@@ -370,12 +370,12 @@ CDB___ram_put (dbp, txn, key, data, flags)
  * CDB___ram_c_del --
  *  Recno cursor->c_del function.
  *
- * PUBLIC: int CDB___ram_c_del __P((DBC *, u_int32_t));
+ * PUBLIC: int CDB___ram_c_del __P((DBC *, uint32_t));
  */
 int
 CDB___ram_c_del (dbc, flags)
      DBC *dbc;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BTREE_CURSOR *cp;
   DB *dbp;
@@ -413,13 +413,13 @@ CDB___ram_c_del (dbc, flags)
  * CDB___ram_c_get --
  *  Recno cursor->c_get function.
  *
- * PUBLIC: int CDB___ram_c_get __P((DBC *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: int CDB___ram_c_get __P((DBC *, DBT *, DBT *, uint32_t));
  */
 int
 CDB___ram_c_get (dbc, key, data, flags)
      DBC *dbc;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BTREE_CURSOR *cp, copy;
   DB *dbp;
@@ -594,13 +594,13 @@ err:if (stack)
  * CDB___ram_c_put --
  *  Recno cursor->c_put function.
  *
- * PUBLIC: int CDB___ram_c_put __P((DBC *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: int CDB___ram_c_put __P((DBC *, DBT *, DBT *, uint32_t));
  */
 int
 CDB___ram_c_put (dbc, key, data, flags)
      DBC *dbc;
      DBT *key, *data;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BTREE_CURSOR *cp, copy;
   DB *dbp;
@@ -874,7 +874,7 @@ CDB___ram_source (dbp)
 {
   BTREE *t;
   size_t size;
-  u_int32_t bytes, mbytes;
+  uint32_t bytes, mbytes;
   int ret;
 
   t = dbp->bt_internal;
@@ -932,7 +932,7 @@ CDB___ram_source (dbp)
                                &t->re_smap)) != 0)
     return (ret);
   t->re_cmap = t->re_smap;
-  t->re_emap = (u_int8_t *) t->re_smap + (t->re_msize = size);
+  t->re_emap = (uint8_t *) t->re_smap + (t->re_msize = size);
   t->re_irec =
     F_ISSET (dbp, DB_RE_FIXEDLEN) ? CDB___ram_fmap : CDB___ram_vmap;
   return (0);
@@ -955,7 +955,7 @@ CDB___ram_writeback (dbp)
   db_recno_t keyno;
   ssize_t nw;
   int ret, t_ret;
-  u_int8_t delim, *pad;
+  uint8_t delim, *pad;
 
   t = dbp->bt_internal;
 
@@ -1112,8 +1112,8 @@ CDB___ram_fmap (dbc, top)
   DB *dbp;
   DBT data;
   db_recno_t recno;
-  u_int32_t len;
-  u_int8_t *sp, *ep, *p;
+  uint32_t len;
+  uint8_t *sp, *ep, *p;
   int is_modified, ret;
 
   dbp = dbc->dbp;
@@ -1139,8 +1139,8 @@ CDB___ram_fmap (dbc, top)
   data.data = dbc->rdata.data;
   data.size = t->re_len;
 
-  sp = (u_int8_t *) t->re_cmap;
-  ep = (u_int8_t *) t->re_emap;
+  sp = (uint8_t *) t->re_cmap;
+  ep = (uint8_t *) t->re_emap;
   while (recno < top)
   {
     if (sp >= ep)
@@ -1195,7 +1195,7 @@ CDB___ram_vmap (dbc, top)
   BTREE *t;
   DBT data;
   db_recno_t recno;
-  u_int8_t *sp, *ep;
+  uint8_t *sp, *ep;
   int delim, is_modified, ret;
 
   t = dbc->dbp->bt_internal;
@@ -1208,8 +1208,8 @@ CDB___ram_vmap (dbc, top)
 
   memset (&data, 0, sizeof (data));
 
-  sp = (u_int8_t *) t->re_cmap;
-  ep = (u_int8_t *) t->re_emap;
+  sp = (uint8_t *) t->re_cmap;
+  ep = (uint8_t *) t->re_emap;
   while (recno < top)
   {
     if (sp >= ep)
@@ -1230,7 +1230,7 @@ CDB___ram_vmap (dbc, top)
      */
     if (t->re_last >= recno)
     {
-      data.size = sp - (u_int8_t *) data.data;
+      data.size = sp - (uint8_t *) data.data;
       ++recno;
       if ((ret = CDB___ram_add (dbc, &recno, &data, 0, 0)) != 0)
         goto err;
@@ -1255,7 +1255,7 @@ CDB___ram_add (dbc, recnop, data, flags, bi_flags)
      DBC *dbc;
      db_recno_t *recnop;
      DBT *data;
-     u_int32_t flags, bi_flags;
+     uint32_t flags, bi_flags;
 {
   BKEYDATA *bk;
   BTREE_CURSOR *cp;

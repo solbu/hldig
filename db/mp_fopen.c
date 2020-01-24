@@ -34,7 +34,7 @@ int
 CDB_memp_fopen (dbenv, path, flags, mode, pagesize, finfop, retp)
      DB_ENV *dbenv;
      const char *path;
-     u_int32_t flags;
+     uint32_t flags;
      int mode;
      size_t pagesize;
      DB_MPOOL_FINFO *finfop;
@@ -81,7 +81,7 @@ CDB_memp_fopen (dbenv, path, flags, mode, pagesize, finfop, retp)
  *  Open a backing file for the memory pool; internal version.
  *
  * PUBLIC: int CDB___memp_fopen __P((DB_MPOOL *, MPOOLFILE *, const char *,
- * PUBLIC:    u_int32_t, int, size_t, int, DB_MPOOL_FINFO *, DB_MPOOLFILE **));
+ * PUBLIC:    uint32_t, int, size_t, int, DB_MPOOL_FINFO *, DB_MPOOLFILE **));
  */
 int
 CDB___memp_fopen (dbmp, mfp, path, flags, mode, pagesize, needlock, finfop,
@@ -89,7 +89,7 @@ CDB___memp_fopen (dbmp, mfp, path, flags, mode, pagesize, needlock, finfop,
      DB_MPOOL *dbmp;
      MPOOLFILE *mfp;
      const char *path;
-     u_int32_t flags;
+     uint32_t flags;
      int mode, needlock;
      size_t pagesize;
      DB_MPOOL_FINFO *finfop;
@@ -100,9 +100,9 @@ CDB___memp_fopen (dbmp, mfp, path, flags, mode, pagesize, needlock, finfop,
   DB_MPOOL_FINFO finfo;
   db_pgno_t last_pgno;
   size_t maxmap;
-  u_int32_t mbytes, bytes, oflags;
+  uint32_t mbytes, bytes, oflags;
   int ret;
-  u_int8_t idbuf[DB_FILE_ID_LEN];
+  uint8_t idbuf[DB_FILE_ID_LEN];
   char *rpath;
 
   dbenv = dbmp->dbenv;
