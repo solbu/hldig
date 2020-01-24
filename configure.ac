@@ -261,7 +261,7 @@ AC_TYPE_SIGNAL
 AC_FUNC_STRFTIME
 AC_FUNC_STRPTIME
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([alarm btowc bzero ftime getcwd gettimeofday localtime_r memcmp memcpy memmove memset mkstemp munmap pstat_getdynamic raise re_comp regcomp select setlocale strchr strcspn strdup strerror strrchr strstr strtol strtoul timegm])
+AC_CHECK_FUNCS([alarm btowc bzero ftime getcwd gettimeofday localtime_r memcmp memcpy memmove memset mkstemp munmap pstat_getdynamic raise re_comp regcomp rresvport select setlocale strchr strcspn strdup strerror strrchr strstr strtol strtoul timegm])
 AC_REPLACE_FUNCS(snprintf vsnprintf)
 
 # More header checks--here use C++
