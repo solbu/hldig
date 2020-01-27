@@ -30,7 +30,7 @@ CONTRIBUTING.md		\
 TRANSLATING.md 		\
 ChangeLog 		\
 STATUS			\
-CODE_OF_CONDUCT.md	\
+CONDUCT.md		\
 ABOUT-NLS
 
 # packextras_DATA=$(EXTRA_DIST)
