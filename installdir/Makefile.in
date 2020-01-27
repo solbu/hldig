@@ -748,10 +748,10 @@ uninstall-local:
 	rm -f $(DESTDIR)$(bindir)/HtFileType
 	rm -f $(DESTDIR)$(bindir)/rundig
 	rm -f $(DESTDIR)$(SEARCH_DIR)/$(SEARCH_FORM)
-#	rm -f $(DESTDIR)$(CONFIG_DIR)/hldig.conf
-#	rm -f $(DESTDIR)$(CONFIG_DIR)/mime.types
-#	rm -f $(DESTDIR)$(CONFIG_DIR)/HtFileType-magic.mime
-#	rm -f $(DESTDIR)$(CONFIG_DIR)/cookies.txt
+	rm -f $(DESTDIR)$(CONFIG_DIR)/hldig.conf
+	rm -f $(DESTDIR)$(CONFIG_DIR)/mime.types
+	rm -f $(DESTDIR)$(CONFIG_DIR)/HtFileType-magic.mime
+	rm -f $(DESTDIR)$(CONFIG_DIR)/cookies.txt
 
 	@for i in $(COMMONHTML); do \
 		rm -f $(DESTDIR)$(COMMON_DIR)/$$i; echo $(DESTDIR)$(COMMON_DIR)/$$i; \
