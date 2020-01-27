@@ -7,7 +7,7 @@
 
 AC_PREREQ(2.57)
 
-AC_INIT([hldig], [1.0.0], [https://github.com/solbu/hldig/issues/], ,['https://github.com/solbu/hldig/'])
+AC_INIT([hldig], [1.0.1], [https://github.com/solbu/hldig/issues/], ,['https://github.com/solbu/hldig/'])
 AC_CONFIG_SRCDIR([hldig/hldig.cc])
 AM_INIT_AUTOMAKE
 

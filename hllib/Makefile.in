@@ -87,7 +87,7 @@ build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = $(top_srcdir)/Makefile.config $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs memcmp.c \
-	realloc.c regex.c snprintf.c malloc.c vsnprintf.c \
+	snprintf.c vsnprintf.c regex.c malloc.c realloc.c \
 	$(pkginclude_HEADERS)
 subdir = hllib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4

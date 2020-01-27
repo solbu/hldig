@@ -1,3 +1,13 @@
+2020-01-27  Johnny A. Solbu <johnny@solbu.net>
+
+	* Release version 1.0.1
+	* Patch from Matías Fonzo:
+	  - Use standard (uint) types
+	    Non-standard types have been reported while attempting to compile
+	    under the Musl C library; this patch resolves those warnings that
+	    end in error.
+	  - Check if the rresvport function is available
+
 2018-11-01  Johnny A. Solbu <johnny@solbu.net>
 
 	* Release version 1.0.0
