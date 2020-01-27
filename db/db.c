@@ -65,15 +65,15 @@ static const char sccsid[] = "@(#)db.c  11.31 (Sleepycat) 11/12/99";
 #include "qam.h"
 
 static int CDB___db_dbopen
-__P ((DB *, const char *, u_int32_t, int, db_pgno_t));
-static int CDB___db_dbenv_setup __P ((DB *, const char *, u_int32_t));
+__P ((DB *, const char *, uint32_t, int, db_pgno_t));
+static int CDB___db_dbenv_setup __P ((DB *, const char *, uint32_t));
 static int CDB___db_file_setup __P ((DB *,
-                                     const char *, u_int32_t, int, db_pgno_t,
+                                     const char *, uint32_t, int, db_pgno_t,
                                      int *));
 static int CDB___db_master_open
-__P ((DB_ENV *, DB_TXN *, const char *, u_int32_t, int, DB **));
+__P ((DB_ENV *, DB_TXN *, const char *, uint32_t, int, DB **));
 static int CDB___db_master_update
-__P ((DB *, const char *, u_int32_t, db_pgno_t *, int, u_int32_t));
+__P ((DB *, const char *, uint32_t, db_pgno_t *, int, uint32_t));
 static int CDB___db_metabegin __P ((DB *, DB_LOCK *));
 static int CDB___db_metaend __P ((DB *,
                                   DB_LOCK *, int, int (*)(DB *, void *),
@@ -91,21 +91,21 @@ static void __db_makecopy __P ((const char *, const char *));
  *  Main library interface to the DB access methods.
  *
  * PUBLIC: int CDB___db_open __P((DB *,
- * PUBLIC:     const char *, const char *, DBTYPE, u_int32_t, int));
+ * PUBLIC:     const char *, const char *, DBTYPE, uint32_t, int));
  */
 int
 CDB___db_open (dbp, name, subdb, type, flags, mode)
      DB *dbp;
      const char *name, *subdb;
      DBTYPE type;
-     u_int32_t flags;
+     uint32_t flags;
      int mode;
 {
   DB_ENV *dbenv;
   DB_LOCK open_lock;
   DB *mdbp;
   db_pgno_t meta_pgno;
-  u_int32_t ok_flags;
+  uint32_t ok_flags;
   int ret, t_ret;
 
   dbenv = dbp->dbenv;
@@ -317,7 +317,7 @@ static int
 CDB___db_dbopen (dbp, name, flags, mode, meta_pgno)
      DB *dbp;
      const char *name;
-     u_int32_t flags;
+     uint32_t flags;
      int mode;
      db_pgno_t meta_pgno;
 {
@@ -380,7 +380,7 @@ CDB___db_master_open (dbenv, txn, name, flags, mode, dbpp)
      DB_ENV *dbenv;
      DB_TXN *txn;
      const char *name;
-     u_int32_t flags;
+     uint32_t flags;
      int mode;
      DB **dbpp;
 {
@@ -417,10 +417,10 @@ static int
 CDB___db_master_update (mdbp, subdb, type, meta_pgnop, is_remove, flags)
      DB *mdbp;
      const char *subdb;
-     u_int32_t type;
+     uint32_t type;
      db_pgno_t *meta_pgnop;     /* !NULL if creating/reading. */
      int is_remove;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBC *dbc;
   DBT key, data;
@@ -543,7 +543,7 @@ static int
 CDB___db_dbenv_setup (dbp, name, flags)
      DB *dbp;
      const char *name;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB_ENV *dbenv;
   DBT pgcookie;
@@ -665,7 +665,7 @@ static int
 CDB___db_file_setup (dbp, name, flags, mode, meta_pgno, zerop)
      DB *dbp;
      const char *name;
-     u_int32_t flags;
+     uint32_t flags;
      int mode;
      db_pgno_t meta_pgno;
      int *zerop;
@@ -676,7 +676,7 @@ CDB___db_file_setup (dbp, name, flags, mode, meta_pgno, zerop)
   DB_LSN lsn;
   DB_TXN *txn;
   ssize_t nr;
-  u_int32_t magic, oflags;
+  uint32_t magic, oflags;
   int ret, retry_cnt, t_ret;
   char *real_name, mbuf[256];
 
@@ -761,7 +761,7 @@ CDB___db_file_setup (dbp, name, flags, mode, meta_pgno, zerop)
      * from there as necessary, and it saves having two copies.
      */
     if (F_ISSET (dbenv, DB_ENV_LOCKING | DB_ENV_CDB) &&
-        (ret = CDB_lock_id (dbenv, (u_int32_t *) dbp->fileid)) != 0)
+        (ret = CDB_lock_id (dbenv, (uint32_t *) dbp->fileid)) != 0)
       return (ret);
 
     return (0);
@@ -1075,7 +1075,7 @@ CDB___db_set_pgsize (dbp, fhp, name)
      char *name;
 {
   DB_ENV *dbenv;
-  u_int32_t iopsize;
+  uint32_t iopsize;
   int ret;
 
   dbenv = dbp->dbenv;
@@ -1125,12 +1125,12 @@ CDB___db_set_pgsize (dbp, fhp, name)
  * CDB___db_close --
  *  DB destructor.
  *
- * PUBLIC: int CDB___db_close __P((DB *, u_int32_t));
+ * PUBLIC: int CDB___db_close __P((DB *, uint32_t));
  */
 int
 CDB___db_close (dbp, flags)
      DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB_ENV *dbenv;
   DBC *dbc;
@@ -1266,13 +1266,13 @@ CDB___db_refresh (dbp)
  * CDB___db_remove
  *   Remove method for DB.
  *
- * PUBLIC: int CDB___db_remove __P((DB *, const char *, const char *, u_int32_t));
+ * PUBLIC: int CDB___db_remove __P((DB *, const char *, const char *, uint32_t));
  */
 int
 CDB___db_remove (dbp, name, subdb, flags)
      DB *dbp;
      const char *name, *subdb;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBT namedbt;
   DB_ENV *dbenv;
@@ -1478,7 +1478,7 @@ CDB___db_metabegin (dbp, lockp)
 {
   DB_ENV *dbenv;
   DBT dbplock;
-  u_int32_t locker, lockval;
+  uint32_t locker, lockval;
   int ret;
 
   dbenv = dbp->dbenv;

@@ -73,16 +73,16 @@ typedef struct _dbmeta
 {
   DB_LSN lsn;                   /* 00-07: LSN. */
   db_pgno_t pgno;               /* 08-11: Current page number. */
-  u_int32_t magic;              /* 12-15: Magic number. */
-  u_int32_t version;            /* 16-19: Version. */
-  u_int32_t pagesize;           /* 20-23: Pagesize. */
-  u_int8_t unused1[1];          /*    24: Unused. */
-  u_int8_t type;                /*    25: Page type. */
-  u_int8_t unused2[2];          /* 26-27: Unused. */
-  u_int32_t free;               /* 28-31: Free list page number. */
-  u_int32_t flags;              /* 32-35: Flags: unique to each AM. */
+  uint32_t magic;              /* 12-15: Magic number. */
+  uint32_t version;            /* 16-19: Version. */
+  uint32_t pagesize;           /* 20-23: Pagesize. */
+  uint8_t unused1[1];          /*    24: Unused. */
+  uint8_t type;                /*    25: Page type. */
+  uint8_t unused2[2];          /* 26-27: Unused. */
+  uint32_t free;               /* 28-31: Free list page number. */
+  uint32_t flags;              /* 32-35: Flags: unique to each AM. */
   /* 36-55: Unique file ID. */
-  u_int8_t uid[DB_FILE_ID_LEN];
+  uint8_t uid[DB_FILE_ID_LEN];
 } DBMETA;
 
 /************************************************************************
@@ -99,11 +99,11 @@ typedef struct _btmeta
 #define  BTM_MASK  0x03f
   DBMETA dbmeta;                /* 00-55: Generic meta-data header. */
 
-  u_int32_t maxkey;             /* 56-59: Btree: Maxkey. */
-  u_int32_t minkey;             /* 60-63: Btree: Minkey. */
-  u_int32_t re_len;             /* 64-67: Recno: fixed-length record length. */
-  u_int32_t re_pad;             /* 68-71: Recno: fixed-length record pad. */
-  u_int32_t root;               /* 72-75: Root page. */
+  uint32_t maxkey;             /* 56-59: Btree: Maxkey. */
+  uint32_t minkey;             /* 60-63: Btree: Minkey. */
+  uint32_t re_len;             /* 64-67: Recno: fixed-length record length. */
+  uint32_t re_pad;             /* 68-71: Recno: fixed-length record pad. */
+  uint32_t root;               /* 72-75: Root page. */
 
   /*
    * Minimum page size is 128.
@@ -119,15 +119,15 @@ typedef struct _hashmeta
 #define  DB_HASH_SUBDB  0x02    /*    Subdatabases. */
   DBMETA dbmeta;                /* 00-55: Generic meta-data page header. */
 
-  u_int32_t max_bucket;         /* 56-59: ID of Maximum bucket in use */
-  u_int32_t high_mask;          /* 60-63: Modulo mask into table */
-  u_int32_t low_mask;           /* 64-67: Modulo mask into table lower half */
-  u_int32_t ffactor;            /* 68-71: Fill factor */
-  u_int32_t nelem;              /* 72-75: Number of keys in hash table */
-  u_int32_t h_charkey;          /* 76-79: Value of hash(CHARKEY) */
+  uint32_t max_bucket;         /* 56-59: ID of Maximum bucket in use */
+  uint32_t high_mask;          /* 60-63: Modulo mask into table */
+  uint32_t low_mask;           /* 64-67: Modulo mask into table lower half */
+  uint32_t ffactor;            /* 68-71: Fill factor */
+  uint32_t nelem;              /* 72-75: Number of keys in hash table */
+  uint32_t h_charkey;          /* 76-79: Value of hash(CHARKEY) */
 #define NCACHED  32             /* number of spare points */
   /* 80-207: Spare pages for overflow */
-  u_int32_t spares[NCACHED];
+  uint32_t spares[NCACHED];
 
   /*
    * Minimum page size is 256.
@@ -145,12 +145,12 @@ typedef struct _qmeta
 {
   DBMETA dbmeta;                /* 00-55: Generic meta-data header. */
 
-  u_int32_t start;              /* 56-59: Start offset. */
-  u_int32_t first_recno;        /* 60-63: First not deleted record. */
-  u_int32_t cur_recno;          /* 64-67: Last recno allocated. */
-  u_int32_t re_len;             /* 68-71: Fixed-length record length. */
-  u_int32_t re_pad;             /* 72-75: Fixed-length record pad. */
-  u_int32_t rec_page;           /* 76-79: Records Per Page. */
+  uint32_t start;              /* 56-59: Start offset. */
+  uint32_t first_recno;        /* 60-63: First not deleted record. */
+  uint32_t cur_recno;          /* 64-67: Last recno allocated. */
+  uint32_t re_len;             /* 68-71: Fixed-length record length. */
+  uint32_t re_pad;             /* 72-75: Fixed-length record pad. */
+  uint32_t rec_page;           /* 76-79: Records Per Page. */
 
   /*
    * Minimum page size is 128.
@@ -202,8 +202,8 @@ typedef struct _db_page
    */
 #define  LEAFLEVEL    1
 #define  MAXBTREELEVEL  255
-  u_int8_t level;               /*    24: Btree tree level. */
-  u_int8_t type;                /*    25: Page type. */
+  uint8_t level;               /*    24: Btree tree level. */
+  uint8_t type;                /*    25: Page type. */
   db_indx_t inp[1];             /* Variable length index of items. */
 } PAGE;
 
@@ -214,10 +214,10 @@ typedef struct _qpage
 {
   DB_LSN lsn;                   /* 00-07: Log sequence number. */
   db_pgno_t pgno;               /* 08-11: Current page number. */
-  u_int32_t unused0[3];         /* 12-23: Unused. */
-  u_int8_t unused1[1];          /*    24: Unused. */
-  u_int8_t type;                /*    25: Page type. */
-  u_int8_t unused2[2];          /* 26-27: Unused. */
+  uint32_t unused0[3];         /* 12-23: Unused. */
+  uint8_t unused1[1];          /*    24: Unused. */
+  uint8_t type;                /*    25: Page type. */
+  uint8_t unused2[2];          /* 26-27: Unused. */
 } QPAGE;
 
 /* Main page element macros. */
@@ -279,7 +279,7 @@ typedef struct _qpage
 #define  P_FREESPACE(pg)    (HOFFSET(pg) - LOFFSET(pg))
 
 /* Get a pointer to the bytes at a specific index. */
-#define  P_ENTRY(pg, indx)  ((u_int8_t *)pg + ((PAGE *)pg)->inp[indx])
+#define  P_ENTRY(pg, indx)  ((uint8_t *)pg + ((PAGE *)pg)->inp[indx])
 
 /************************************************************************
  OVERFLOW PAGE LAYOUT
@@ -327,7 +327,7 @@ typedef struct _qpage
  * field, it requires no alignment, and it's in the same location in all three
  * structures, there's a pair of macros.
  */
-#define  HPAGE_PTYPE(p)    (*(u_int8_t *)p)
+#define  HPAGE_PTYPE(p)    (*(uint8_t *)p)
 #define  HPAGE_TYPE(pg, indx)  (*P_ENTRY(pg, indx))
 
 /*
@@ -350,10 +350,10 @@ typedef struct _qpage
  */
 typedef struct _hkeydata
 {
-  u_int8_t type;                /*    00: Page type. */
-  u_int8_t data[1];             /* Variable length key/data item. */
+  uint8_t type;                /*    00: Page type. */
+  uint8_t data[1];             /* Variable length key/data item. */
 } HKEYDATA;
-#define  HKEYDATA_DATA(p)  (((u_int8_t *)p) + SSZA(HKEYDATA, data))
+#define  HKEYDATA_DATA(p)  (((uint8_t *)p) + SSZA(HKEYDATA, data))
 
 /*
  * The length of any HKEYDATA item. Note that indx is an element index,
@@ -378,7 +378,7 @@ typedef struct _hkeydata
 /* Put a HKEYDATA item at the location referenced by a page entry. */
 #define  PUT_HKEYDATA(pe, kd, len, type) {        \
   ((HKEYDATA *)pe)->type = type;          \
-  memcpy((u_int8_t *)pe + sizeof(u_int8_t), kd, len);    \
+  memcpy((uint8_t *)pe + sizeof(uint8_t), kd, len);    \
 }
 
 /*
@@ -402,14 +402,14 @@ typedef struct _hkeydata
  */
 typedef struct _hoffpage
 {
-  u_int8_t type;                /*    00: Page type and delete flag. */
-  u_int8_t unused[3];           /* 01-03: Padding, unused. */
+  uint8_t type;                /*    00: Page type and delete flag. */
+  uint8_t unused[3];           /* 01-03: Padding, unused. */
   db_pgno_t pgno;               /* 04-07: Offpage page number. */
-  u_int32_t tlen;               /* 08-11: Total length of item. */
+  uint32_t tlen;               /* 08-11: Total length of item. */
 } HOFFPAGE;
 
-#define  HOFFPAGE_PGNO(p)  (((u_int8_t *)p) + SSZ(HOFFPAGE, pgno))
-#define  HOFFPAGE_TLEN(p)  (((u_int8_t *)p) + SSZ(HOFFPAGE, tlen))
+#define  HOFFPAGE_PGNO(p)  (((uint8_t *)p) + SSZ(HOFFPAGE, pgno))
+#define  HOFFPAGE_TLEN(p)  (((uint8_t *)p) + SSZ(HOFFPAGE, tlen))
 
 /*
  * Page space required to add a new HOFFPAGE item to the page, with and
@@ -423,11 +423,11 @@ typedef struct _hoffpage
  */
 typedef struct _hoffdup
 {
-  u_int8_t type;                /*    00: Page type and delete flag. */
-  u_int8_t unused[3];           /* 01-03: Padding, unused. */
+  uint8_t type;                /*    00: Page type and delete flag. */
+  uint8_t unused[3];           /* 01-03: Padding, unused. */
   db_pgno_t pgno;               /* 04-07: Offpage page number. */
 } HOFFDUP;
-#define  HOFFDUP_PGNO(p)    (((u_int8_t *)p) + SSZ(HOFFDUP, pgno))
+#define  HOFFDUP_PGNO(p)    (((uint8_t *)p) + SSZ(HOFFDUP, pgno))
 
 /*
  * Page space required to add a new HOFFDUP item to the page, with and
@@ -469,8 +469,8 @@ typedef struct _hoffdup
 typedef struct _bkeydata
 {
   db_indx_t len;                /* 00-01: Key/data item length. */
-  u_int8_t type;                /*    02: Page type AND DELETE FLAG. */
-  u_int8_t data[1];             /* Variable length key/data item. */
+  uint8_t type;                /*    02: Page type AND DELETE FLAG. */
+  uint8_t data[1];             /* Variable length key/data item. */
 } BKEYDATA;
 
 /* Get a BKEYDATA item for a specific index. */
@@ -493,10 +493,10 @@ typedef struct _bkeydata
 typedef struct _boverflow
 {
   db_indx_t unused1;            /* 00-01: Padding, unused. */
-  u_int8_t type;                /*    02: Page type AND DELETE FLAG. */
-  u_int8_t unused2;             /*    03: Padding, unused. */
+  uint8_t type;                /*    02: Page type AND DELETE FLAG. */
+  uint8_t unused2;             /*    03: Padding, unused. */
   db_pgno_t pgno;               /* 04-07: Next page number. */
-  u_int32_t tlen;               /* 08-11: Total length of item. */
+  uint32_t tlen;               /* 08-11: Total length of item. */
 } BOVERFLOW;
 
 /* Get a BOVERFLOW item for a specific index. */
@@ -531,11 +531,11 @@ typedef struct _boverflow
 typedef struct _binternal
 {
   db_indx_t len;                /* 00-01: Key/data item length. */
-  u_int8_t type;                /*    02: Page type AND DELETE FLAG. */
-  u_int8_t unused;              /*    03: Padding, unused. */
+  uint8_t type;                /*    02: Page type AND DELETE FLAG. */
+  uint8_t unused;              /*    03: Padding, unused. */
   db_pgno_t pgno;               /* 04-07: Page number of referenced page. */
   db_recno_t nrecs;             /* 08-11: Subtree record count. */
-  u_int8_t data[1];             /* Variable length key item. */
+  uint8_t data[1];             /* Variable length key item. */
 } BINTERNAL;
 
 /* Get a BINTERNAL item for a specific index. */

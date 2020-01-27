@@ -34,7 +34,7 @@ static const char sccsid[] = "@(#)txn_region.c  11.4 (Sleepycat) 9/20/99";
 #include "db_am.h"
 
 static int CDB___txn_init __P ((DB_ENV *, DB_TXNMGR *));
-static int CDB___txn_set_tx_max __P ((DB_ENV *, u_int32_t));
+static int CDB___txn_set_tx_max __P ((DB_ENV *, uint32_t));
 static int CDB___txn_set_tx_recover
 __P ((DB_ENV *, int (*)(DB_ENV *, DBT *, DB_LSN *, int, void *)));
 
@@ -61,7 +61,7 @@ CDB___txn_dbenv_create (dbenv)
 static int
 CDB___txn_set_tx_max (dbenv, tx_max)
      DB_ENV *dbenv;
-     u_int32_t tx_max;
+     uint32_t tx_max;
 {
   ENV_ILLEGAL_AFTER_OPEN (dbenv, "set_tx_max");
 
@@ -262,7 +262,7 @@ CDB_txn_stat (dbenv, statp, db_malloc)
   DB_TXN_STAT *stats;
   TXN_DETAIL *txnp;
   size_t nbytes;
-  u_int32_t nactive, ndx;
+  uint32_t nactive, ndx;
   int ret, slop;
 
   PANIC_CHECK (dbenv);

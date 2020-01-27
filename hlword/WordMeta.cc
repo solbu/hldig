@@ -168,7 +168,7 @@ WordMeta::Lock (const String & resource, WordLock * &lock)
 {
   lock = new WordLock;
   DB_ENV *dbenv = words->GetContext ()->GetDBInfo ().dbenv;
-  u_int32_t id;
+  uint32_t id;
   if (CDB_lock_id (dbenv, &id) != 0)
   {
     delete lock;

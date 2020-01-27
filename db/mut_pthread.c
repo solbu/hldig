@@ -52,13 +52,13 @@ static const char sccsid[] = "@(#)mut_pthread.c  11.15 (Sleepycat) 11/9/99";
  * CDB___db_pthread_mutex_init --
  *  Initialize a MUTEX.
  *
- * PUBLIC: int CDB___db_pthread_mutex_init __P((DB_ENV *, MUTEX *, u_int32_t));
+ * PUBLIC: int CDB___db_pthread_mutex_init __P((DB_ENV *, MUTEX *, uint32_t));
  */
 int
 CDB___db_pthread_mutex_init (dbenv, mutexp, flags)
      DB_ENV *dbenv;
      MUTEX *mutexp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   int ret;
 
@@ -187,7 +187,7 @@ int
 CDB___db_pthread_mutex_lock (mutexp)
      MUTEX *mutexp;
 {
-  u_int32_t nspins;
+  uint32_t nspins;
   int ret, waited;
 
   if (!DB_GLOBAL (db_mutexlocks) || F_ISSET (mutexp, MUTEX_IGNORE))
@@ -230,7 +230,7 @@ CDB___db_pthread_mutex_lock (mutexp)
       ++mutexp->mutex_set_nowait;
 
 #ifdef DIAGNOSTIC
-    mutexp->locked = (u_int32_t) pthread_self ();
+    mutexp->locked = (uint32_t) pthread_self ();
 #else
     mutexp->locked = 1;
 #endif
@@ -251,7 +251,7 @@ CDB___db_pthread_mutex_lock (mutexp)
                        sizeof (msgbuf), MSG1, (u_long) mutexp->locked);
       (void) write (STDERR_FILENO, msgbuf, strlen (msgbuf));
     }
-    mutexp->locked = (u_int32_t) pthread_self ();
+    mutexp->locked = (uint32_t) pthread_self ();
 #else
     mutexp->locked = 1;
 #endif

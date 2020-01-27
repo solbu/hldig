@@ -27,7 +27,7 @@ static const char revid[] =
 #include "qam.h"
 
 static int (*const func_31_list[P_PAGETYPE_MAX])
-__P ((DB *, char *, u_int32_t, DB_FH *, PAGE *, int *)) =
+__P ((DB *, char *, uint32_t, DB_FH *, PAGE *, int *)) =
 {
   NULL,                         /* P_INVALID */
     NULL,                       /* __P_DUPLICATE */
@@ -41,27 +41,27 @@ __P ((DB *, char *, u_int32_t, DB_FH *, PAGE *, int *)) =
     CDB___bam_31_btreemeta,     /* P_BTREEMETA */
 };
 
-static int __db_page_pass __P ((DB *, char *, u_int32_t, int (*const[])
-                                (DB *, char *, u_int32_t, DB_FH *, PAGE *,
+static int __db_page_pass __P ((DB *, char *, uint32_t, int (*const[])
+                                (DB *, char *, uint32_t, DB_FH *, PAGE *,
                                  int *), DB_FH *));
 
 /*
  * CDB___db_upgrade --
  *  Upgrade an existing database.
  *
- * PUBLIC: int CDB___db_upgrade __P((DB *, const char *, u_int32_t));
+ * PUBLIC: int CDB___db_upgrade __P((DB *, const char *, uint32_t));
  */
 int
 CDB___db_upgrade (dbp, fname, flags)
      DB *dbp;
      const char *fname;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB_ENV *dbenv;
   DB_FH fh;
   size_t n;
   int ret, t_ret;
-  u_int8_t mbuf[256];
+  uint8_t mbuf[256];
   char *real_name;
 
   dbenv = dbp->dbenv;
@@ -116,7 +116,7 @@ CDB___db_upgrade (dbp, fname, flags)
        * We need the page size to do more.  Rip it out of
        * the meta-data page.
        */
-      memcpy (&dbp->pgsize, mbuf + 20, sizeof (u_int32_t));
+      memcpy (&dbp->pgsize, mbuf + 20, sizeof (uint32_t));
 
       if ((ret =
            __db_page_pass (dbp, real_name, flags, func_31_list, &fh)) != 0)
@@ -152,7 +152,7 @@ CDB___db_upgrade (dbp, fname, flags)
        * We need the page size to do more.  Rip it out of
        * the meta-data page.
        */
-      memcpy (&dbp->pgsize, mbuf + 20, sizeof (u_int32_t));
+      memcpy (&dbp->pgsize, mbuf + 20, sizeof (uint32_t));
 
       if ((ret =
            __db_page_pass (dbp, real_name, flags, func_31_list, &fh)) != 0)
@@ -232,9 +232,9 @@ static int
 __db_page_pass (dbp, real_name, flags, fl, fhp)
      DB *dbp;
      char *real_name;
-     u_int32_t flags;
+     uint32_t flags;
      int (*const fl[P_PAGETYPE_MAX])
-  __P ((DB *, char *, u_int32_t, DB_FH *, PAGE *, int *));
+  __P ((DB *, char *, uint32_t, DB_FH *, PAGE *, int *));
      DB_FH *fhp;
 {
   DB_ENV *dbenv;
@@ -299,7 +299,7 @@ CDB___db_lastpgno (dbp, real_name, fhp, pgno_lastp)
 {
   DB_ENV *dbenv;
   db_pgno_t pgno_last;
-  u_int32_t mbytes, bytes;
+  uint32_t mbytes, bytes;
   int ret;
 
   dbenv = dbp->dbenv;

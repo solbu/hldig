@@ -26,15 +26,15 @@ static const char sccsid[] = "@(#)lock.c  11.8 (Sleepycat) 10/19/99";
 #include "txn.h"
 
 static int CDB___lock_checklocker __P ((DB_LOCKTAB *,
-                                        struct __db_lock *, u_int32_t,
-                                        u_int32_t, int *));
+                                        struct __db_lock *, uint32_t,
+                                        uint32_t, int *));
 static int CDB___lock_get_internal
-__P ((DB_LOCKTAB *, u_int32_t, u_int32_t, const DBT *, db_lockmode_t,
+__P ((DB_LOCKTAB *, uint32_t, uint32_t, const DBT *, db_lockmode_t,
       DB_LOCK *));
-static int CDB___lock_is_parent __P ((DB_LOCKTAB *, u_int32_t, DB_LOCKER *));
+static int CDB___lock_is_parent __P ((DB_LOCKTAB *, uint32_t, DB_LOCKER *));
 static int CDB___lock_put_internal __P ((DB_LOCKTAB *,
-                                         struct __db_lock *, u_int32_t,
-                                         u_int32_t));
+                                         struct __db_lock *, uint32_t,
+                                         uint32_t));
 static int CDB___lock_put_nolock __P ((DB_ENV *, DB_LOCK *, int *));
 static void CDB___lock_remove_waiter __P ((DB_LOCKOBJ *,
                                            struct __db_lock *, db_status_t));
@@ -46,7 +46,7 @@ static void CDB___lock_remove_waiter __P ((DB_LOCKOBJ *,
 int
 CDB_lock_id (dbenv, idp)
      DB_ENV *dbenv;
-     u_int32_t *idp;
+     uint32_t *idp;
 {
   DB_LOCKTAB *lt;
   DB_LOCKREGION *region;
@@ -92,7 +92,7 @@ CDB_lock_id (dbenv, idp)
 int
 CDB_lock_vec (dbenv, locker, flags, list, nlist, elistp)
      DB_ENV *dbenv;
-     u_int32_t locker, flags;
+     uint32_t locker, flags;
      int nlist;
      DB_LOCKREQ *list, **elistp;
 {
@@ -101,7 +101,7 @@ CDB_lock_vec (dbenv, locker, flags, list, nlist, elistp)
   DB_LOCKOBJ *sh_obj;
   DB_LOCKREGION *region;
   DB_LOCKTAB *lt;
-  u_int32_t lndx, ndx, pndx;
+  uint32_t lndx, ndx, pndx;
   int did_abort, i, ret, run_dd;
 
   PANIC_CHECK (dbenv);
@@ -219,7 +219,7 @@ CDB_lock_vec (dbenv, locker, flags, list, nlist, elistp)
            lp != NULL; lp = SH_LIST_FIRST (&sh_locker->heldby, __db_lock))
       {
         SH_LIST_REMOVE (lp, locker_links, __db_lock);
-        sh_obj = (DB_LOCKOBJ *) ((u_int8_t *) lp + lp->obj);
+        sh_obj = (DB_LOCKOBJ *) ((uint8_t *) lp + lp->obj);
         SHOBJECT_LOCK (lt, region, sh_obj, lndx);
         ret = CDB___lock_put_internal (lt,
                                        lp, lndx,
@@ -329,7 +329,7 @@ CDB_lock_vec (dbenv, locker, flags, list, nlist, elistp)
 int
 CDB_lock_get (dbenv, locker, flags, obj, lock_mode, lock)
      DB_ENV *dbenv;
-     u_int32_t locker, flags;
+     uint32_t locker, flags;
      const DBT *obj;
      db_lockmode_t lock_mode;
      DB_LOCK *lock;
@@ -358,7 +358,7 @@ CDB_lock_get (dbenv, locker, flags, obj, lock_mode, lock)
 static int
 CDB___lock_get_internal (lt, locker, flags, obj, lock_mode, lock)
      DB_LOCKTAB *lt;
-     u_int32_t locker, flags;
+     uint32_t locker, flags;
      const DBT *obj;
      db_lockmode_t lock_mode;
      DB_LOCK *lock;
@@ -368,7 +368,7 @@ CDB___lock_get_internal (lt, locker, flags, obj, lock_mode, lock)
   DB_LOCKER *sh_locker;
   DB_LOCKOBJ *sh_obj;
   DB_LOCKREGION *region;
-  u_int32_t locker_ndx;
+  uint32_t locker_ndx;
   int did_abort, freed, ihold, on_locker_list, no_dd, ret;
 
   no_dd = ret = 0;
@@ -379,7 +379,7 @@ CDB___lock_get_internal (lt, locker, flags, obj, lock_mode, lock)
   /*
    * Check that the lock mode is valid.
    */
-  if ((u_int32_t) lock_mode >= region->nmodes)
+  if ((uint32_t) lock_mode >= region->nmodes)
   {
     CDB___db_err (dbenv,
                   "CDB_lock_get: invalid lock mode %lu\n",
@@ -666,7 +666,7 @@ CDB___lock_put_nolock (dbenv, lock, runp)
   struct __db_lock *lockp;
   DB_LOCKREGION *region;
   DB_LOCKTAB *lt;
-  u_int32_t locker;
+  uint32_t locker;
   int ret;
 
   lt = dbenv->lk_handle;
@@ -708,14 +708,14 @@ CDB___lock_put_nolock (dbenv, lock, runp)
  * back to iwrite locks.
  *
  * PUBLIC: int CDB___lock_downgrade __P((DB_ENV *,
- * PUBLIC:     DB_LOCK *, db_lockmode_t, u_int32_t));
+ * PUBLIC:     DB_LOCK *, db_lockmode_t, uint32_t));
  */
 int
 CDB___lock_downgrade (dbenv, lock, new_mode, flags)
      DB_ENV *dbenv;
      DB_LOCK *lock;
      db_lockmode_t new_mode;
-     u_int32_t flags;
+     uint32_t flags;
 {
   struct __db_lock *lockp;
   DB_LOCKOBJ *obj;
@@ -744,7 +744,7 @@ CDB___lock_downgrade (dbenv, lock, new_mode, flags)
   lockp->mode = new_mode;
 
   /* Get the object associated with this lock. */
-  obj = (DB_LOCKOBJ *) ((u_int8_t *) lockp + lockp->obj);
+  obj = (DB_LOCKOBJ *) ((uint8_t *) lockp + lockp->obj);
   (void) CDB___lock_promote (lt, obj);
   OBJECT_UNLOCK (lt, lock->ndx);
 
@@ -760,8 +760,8 @@ static int
 CDB___lock_put_internal (lt, lockp, obj_ndx, flags)
      DB_LOCKTAB *lt;
      struct __db_lock *lockp;
-     u_int32_t obj_ndx;
-     u_int32_t flags;
+     uint32_t obj_ndx;
+     uint32_t flags;
 {
   DB_LOCKOBJ *sh_obj;
   DB_LOCKREGION *region;
@@ -802,7 +802,7 @@ CDB___lock_put_internal (lt, lockp, obj_ndx, flags)
   lockp->gen++;
 
   /* Get the object associated with this lock. */
-  sh_obj = (DB_LOCKOBJ *) ((u_int8_t *) lockp + lockp->obj);
+  sh_obj = (DB_LOCKOBJ *) ((uint8_t *) lockp + lockp->obj);
 
   /* Remove this lock from its holders/waitlist. */
   if (lockp->status != DB_LSTAT_HELD)
@@ -869,13 +869,13 @@ static int
 CDB___lock_checklocker (lt, lockp, locker, flags, freed)
      DB_LOCKTAB *lt;
      struct __db_lock *lockp;
-     u_int32_t locker, flags;
+     uint32_t locker, flags;
      int *freed;
 {
   DB_ENV *dbenv;
   DB_LOCKER *sh_locker;
   DB_LOCKREGION *region;
-  u_int32_t indx;
+  uint32_t indx;
   int ret;
 
   dbenv = lt->dbenv;
@@ -932,17 +932,17 @@ freelock:
  * CDB___lock_addfamilylocker
  *  Put a locker entry in for a child transaction.
  *
- * PUBLIC: int CDB___lock_addfamilylocker __P((DB_ENV *, u_int32_t, u_int32_t));
+ * PUBLIC: int CDB___lock_addfamilylocker __P((DB_ENV *, uint32_t, uint32_t));
  */
 int
 CDB___lock_addfamilylocker (dbenv, pid, id)
      DB_ENV *dbenv;
-     u_int32_t pid, id;
+     uint32_t pid, id;
 {
   DB_LOCKER *lockerp, *mlockerp;
   DB_LOCKREGION *region;
   DB_LOCKTAB *lt;
-  u_int32_t ndx;
+  uint32_t ndx;
   int ret;
 
   lt = dbenv->lk_handle;
@@ -1002,17 +1002,17 @@ err:
  *
  * This must be called without the locker bucket locked.
  *
- * PUBLIC: int CDB___lock_freefamilylocker  __P((DB_LOCKTAB *, u_int32_t));
+ * PUBLIC: int CDB___lock_freefamilylocker  __P((DB_LOCKTAB *, uint32_t));
  */
 int
 CDB___lock_freefamilylocker (lt, locker)
      DB_LOCKTAB *lt;
-     u_int32_t locker;
+     uint32_t locker;
 {
   DB_ENV *dbenv;
   DB_LOCKER *sh_locker;
   DB_LOCKREGION *region;
-  u_int32_t indx;
+  uint32_t indx;
   int ret;
 
   dbenv = lt->dbenv;
@@ -1055,14 +1055,14 @@ freelock:
  * This must be called with the locker bucket locked.
  *
  * PUBLIC: void CDB___lock_freelocker __P((DB_LOCKTAB *,
- * PUBLIC:     DB_LOCKREGION *, DB_LOCKER *, u_int32_t));
+ * PUBLIC:     DB_LOCKREGION *, DB_LOCKER *, uint32_t));
  */
 void
 CDB___lock_freelocker (lt, region, sh_locker, indx)
      DB_LOCKTAB *lt;
      DB_LOCKREGION *region;
      DB_LOCKER *sh_locker;
-     u_int32_t indx;
+     uint32_t indx;
 
 {
   HASHREMOVE_EL (lt->locker_tab, indx, __db_locker, links, sh_locker);
@@ -1081,12 +1081,12 @@ CDB___lock_freelocker (lt, region, sh_locker, indx)
  * This must be called with the locker bucket locked.
  *
  * PUBLIC: int CDB___lock_getlocker __P((DB_LOCKTAB *,
- * PUBLIC:     u_int32_t, u_int32_t, int, DB_LOCKER **));
+ * PUBLIC:     uint32_t, uint32_t, int, DB_LOCKER **));
  */
 int
 CDB___lock_getlocker (lt, locker, indx, create, retp)
      DB_LOCKTAB *lt;
-     u_int32_t locker, indx;
+     uint32_t locker, indx;
      int create;
      DB_LOCKER **retp;
 {
@@ -1144,13 +1144,13 @@ CDB___lock_getlocker (lt, locker, indx, create, retp)
  * This must be called with the object bucket locked.
  *
  * PUBLIC: int CDB___lock_getobj __P((DB_LOCKTAB *,
- * PUBLIC:     const DBT *, u_int32_t, int, DB_LOCKOBJ **));
+ * PUBLIC:     const DBT *, uint32_t, int, DB_LOCKOBJ **));
  */
 int
 CDB___lock_getobj (lt, obj, ndx, create, retp)
      DB_LOCKTAB *lt;
      const DBT *obj;
-     u_int32_t ndx;
+     uint32_t ndx;
      int create;
      DB_LOCKOBJ **retp;
 {
@@ -1218,7 +1218,7 @@ err:MEMORY_UNLOCK (lt);
 static int
 CDB___lock_is_parent (lt, locker, sh_locker)
      DB_LOCKTAB *lt;
-     u_int32_t locker;
+     uint32_t locker;
      DB_LOCKER *sh_locker;
 {
   DB_LOCKER *parent;
@@ -1344,8 +1344,8 @@ CDB___lock_printlock (lt, lp, ispgno)
 {
   DB_LOCKOBJ *lockobj;
   db_pgno_t pgno;
-  u_int32_t *fidp;
-  u_int8_t *ptr, type;
+  uint32_t *fidp;
+  uint8_t *ptr, type;
   const char *mode, *status;
 
   switch (lp->mode)
@@ -1402,14 +1402,14 @@ CDB___lock_printlock (lt, lp, ispgno)
   printf ("\t%lx\t%s\t%lu\t%s\t",
           (u_long) lp->holder, mode, (u_long) lp->refcount, status);
 
-  lockobj = (DB_LOCKOBJ *) ((u_int8_t *) lp + lp->obj);
+  lockobj = (DB_LOCKOBJ *) ((uint8_t *) lp + lp->obj);
   ptr = SH_DBT_PTR (&lockobj->lockobj);
   if (ispgno && lockobj->lockobj.size == sizeof (struct __db_ilock))
   {
     /* Assume this is a DBT lock. */
     memcpy (&pgno, ptr, sizeof (db_pgno_t));
-    fidp = (u_int32_t *) (ptr + sizeof (db_pgno_t));
-    type = *(u_int8_t *) (ptr + sizeof (db_pgno_t) + DB_FILE_ID_LEN);
+    fidp = (uint32_t *) (ptr + sizeof (db_pgno_t));
+    type = *(uint8_t *) (ptr + sizeof (db_pgno_t) + DB_FILE_ID_LEN);
     printf ("%s  %lu (%lu %lu %lu %lu %lu)\n",
             type == DB_PAGE_LOCK ? "page" : "record",
             (u_long) pgno,

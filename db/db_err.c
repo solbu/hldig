@@ -51,13 +51,13 @@ __P ((const DB_ENV *, int, int, const char *, va_list));
  * CDB___db_fchk --
  *  General flags checking routine.
  *
- * PUBLIC: int CDB___db_fchk __P((DB_ENV *, const char *, u_int32_t, u_int32_t));
+ * PUBLIC: int CDB___db_fchk __P((DB_ENV *, const char *, uint32_t, uint32_t));
  */
 int
 CDB___db_fchk (dbenv, name, flags, ok_flags)
      DB_ENV *dbenv;
      const char *name;
-     u_int32_t flags, ok_flags;
+     uint32_t flags, ok_flags;
 {
   return (LF_ISSET (~ok_flags) ? CDB___db_ferr (dbenv, name, 0) : 0);
 }
@@ -67,13 +67,13 @@ CDB___db_fchk (dbenv, name, flags, ok_flags)
  *  General combination flags checking routine.
  *
  * PUBLIC: int CDB___db_fcchk
- * PUBLIC:    __P((DB_ENV *, const char *, u_int32_t, u_int32_t, u_int32_t));
+ * PUBLIC:    __P((DB_ENV *, const char *, uint32_t, uint32_t, uint32_t));
  */
 int
 CDB___db_fcchk (dbenv, name, flags, flag1, flag2)
      DB_ENV *dbenv;
      const char *name;
-     u_int32_t flags, flag1, flag2;
+     uint32_t flags, flag1, flag2;
 {
   return (LF_ISSET (flag1) &&
           LF_ISSET (flag2) ? CDB___db_ferr (dbenv, name, 1) : 0);
@@ -389,7 +389,7 @@ CDB___db_errfile (dbenv, error, error_set, fmt, ap)
  *
  * PUBLIC: #ifdef __STDC__
  * PUBLIC: int CDB___db_logmsg __P((DB_ENV *,
- * PUBLIC:     DB_TXN *, const char *, u_int32_t, const char *, ...));
+ * PUBLIC:     DB_TXN *, const char *, uint32_t, const char *, ...));
  * PUBLIC: #else
  * PUBLIC: int CDB___db_logmsg();
  * PUBLIC: #endif
@@ -397,14 +397,14 @@ CDB___db_errfile (dbenv, error, error_set, fmt, ap)
 int
 #if defined(__STDC__) || defined(_MSC_VER)      /* WIN32 */
 CDB___db_logmsg (DB_ENV * dbenv,
-                 DB_TXN * txnid, const char *opname, u_int32_t flags,
+                 DB_TXN * txnid, const char *opname, uint32_t flags,
                  const char *fmt, ...)
 #else
 CDB___db_logmsg (dbenv, txnid, opname, flags, fmt, va_alist)
      DB_ENV *dbenv;
      DB_TXN *txnid;
      const char *opname, *fmt;
-     u_int32_t flags;
+     uint32_t flags;
      va_dcl
 #endif
 {

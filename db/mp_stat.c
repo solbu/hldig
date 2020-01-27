@@ -30,7 +30,7 @@ static const char sccsid[] = "@(#)mp_stat.c  11.4 (Sleepycat) 9/18/99";
 #include "mp.h"
 
 static void CDB___memp_dumpcache
-__P ((DB_MPOOL *, REGINFO *, size_t *, FILE *, u_int32_t));
+__P ((DB_MPOOL *, REGINFO *, size_t *, FILE *, uint32_t));
 static void CDB___memp_pbh __P ((DB_MPOOL *, BH *, size_t *, FILE *));
 
 /*
@@ -51,7 +51,7 @@ CDB_memp_stat (dbenv, gspp, fspp, db_malloc)
   MPOOL *mp;
   MPOOLFILE *mfp;
   size_t len, nlen;
-  u_int32_t i;
+  uint32_t i;
   int ret;
   char *name;
 
@@ -148,7 +148,7 @@ CDB_memp_stat (dbenv, gspp, fspp, db_malloc)
         return (ret);
       **tfsp = mfp->stat;
       (*tfsp)->file_name = (char *)
-        (u_int8_t *) * tfsp + sizeof (DB_MPOOL_FSTAT);
+        (uint8_t *) * tfsp + sizeof (DB_MPOOL_FSTAT);
       memcpy ((*tfsp)->file_name, name, nlen + 1);
 
       /*
@@ -200,9 +200,9 @@ CDB___memp_dump_region (dbenv, area, fp)
   MPOOL *mp;
   MPOOLFILE *mfp;
   size_t fmap[FMAP_ENTRIES + 1];
-  u_int32_t i, flags;
+  uint32_t i, flags;
   int cnt;
-  u_int8_t *p;
+  uint8_t *p;
 
   dbmp = dbenv->mp_handle;
 
@@ -295,7 +295,7 @@ CDB___memp_dumpcache (dbmp, reginfo, fmap, fp, flags)
      REGINFO *reginfo;
      size_t *fmap;
      FILE *fp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BH *bhp;
   DB_HASHTAB *dbht;

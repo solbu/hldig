@@ -12,10 +12,10 @@
  */
 typedef struct _qamdata
 {
-  u_int8_t flags;               /* 00: delete bit. */
+  uint8_t flags;               /* 00: delete bit. */
 #define QAM_VALID  0x01
 #define QAM_SET    0x02
-  u_int8_t data[1];             /* Record. */
+  uint8_t data[1];             /* Record. */
 } QAMDATA;
 
 struct __queue;
@@ -36,7 +36,7 @@ struct __qcursor
   DB_LOCK lock;                 /* Cursor lock. */
   db_lockmode_t lock_mode;      /* Lock mode. */
 
-  u_int32_t flags;
+  uint32_t flags;
 };
 
 /*
@@ -48,8 +48,8 @@ struct __queue
   db_pgno_t q_root;             /* Database root page. */
 
   int re_pad;                   /* Fixed-length padding byte. */
-  u_int32_t re_len;             /* Length for fixed-length records. */
-  u_int32_t rec_page;           /* records per page */
+  uint32_t re_len;             /* Length for fixed-length records. */
+  uint32_t rec_page;           /* records per page */
 };
 
 /*
@@ -68,9 +68,9 @@ struct __queue
  *   physical record number, less the logical pno times records/page
  */
 #define CALC_QAM_RECNO_PER_PAGE(dbp)         \
-  (((dbp)->pgsize - ALIGN(sizeof(QPAGE), sizeof(u_int32_t))) / \
+  (((dbp)->pgsize - ALIGN(sizeof(QPAGE), sizeof(uint32_t))) / \
   ALIGN(((QUEUE *)(dbp)->q_internal)->re_len +    \
-  sizeof(QAMDATA) - sizeof ((QAMDATA *)0)->data, sizeof(u_int32_t)))
+  sizeof(QAMDATA) - sizeof ((QAMDATA *)0)->data, sizeof(uint32_t)))
 
 #define QAM_RECNO_PER_PAGE(dbp)  (((QUEUE*)(dbp)->q_internal)->rec_page)
 
@@ -85,9 +85,9 @@ struct __queue
 
 #define QAM_GET_RECORD(dbp, page, index)      \
   ((QAMDATA *) ((char *)(page) +        \
-    ALIGN(sizeof(QPAGE), sizeof(u_int32_t)) +  \
+    ALIGN(sizeof(QPAGE), sizeof(uint32_t)) +  \
   (ALIGN(sizeof(QAMDATA) - sizeof ((QAMDATA *)0)->data +   \
-  ((QUEUE *)(dbp)->q_internal)->re_len, sizeof (u_int32_t)) * index)))
+  ((QUEUE *)(dbp)->q_internal)->re_len, sizeof (uint32_t)) * index)))
 
 /*
  * Log opcodes for the mvptr routine.

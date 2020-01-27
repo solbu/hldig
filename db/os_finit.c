@@ -35,7 +35,7 @@ CDB___os_finit (fhp, size, zerofill)
   db_pgno_t pages;
   size_t i;
   ssize_t nw;
-  u_int32_t relative;
+  uint32_t relative;
   int ret;
   char buf[OS_VMPAGESIZE];
 

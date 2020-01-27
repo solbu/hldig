@@ -27,9 +27,9 @@ static const char revid[] =
 #include "qam.h"
 
 static int __db_build_bi
-__P ((DB *, DB_FH *, PAGE *, PAGE *, u_int32_t, int *));
+__P ((DB *, DB_FH *, PAGE *, PAGE *, uint32_t, int *));
 static int __db_build_ri
-__P ((DB *, DB_FH *, PAGE *, PAGE *, u_int32_t, int *));
+__P ((DB *, DB_FH *, PAGE *, PAGE *, uint32_t, int *));
 static int __db_up_ovref __P ((DB *, DB_FH *, db_pgno_t));
 
 #define  GET_PAGE(dbp, fhp, pgno, page) {        \
@@ -220,12 +220,12 @@ __db_build_bi (dbp, fhp, ipage, page, indx, nomemp)
      DB *dbp;
      DB_FH *fhp;
      PAGE *ipage, *page;
-     u_int32_t indx;
+     uint32_t indx;
      int *nomemp;
 {
   BINTERNAL bi, *child_bi;
   BKEYDATA *child_bk;
-  u_int8_t *p;
+  uint8_t *p;
   int ret;
 
   switch (TYPE (page))
@@ -317,7 +317,7 @@ __db_build_ri (dbp, fhp, ipage, page, indx, nomemp)
      DB *dbp;
      DB_FH *fhp;
      PAGE *ipage, *page;
-     u_int32_t indx;
+     uint32_t indx;
      int *nomemp;
 {
   RINTERNAL ri;

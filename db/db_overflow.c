@@ -71,21 +71,21 @@ static const char sccsid[] = "@(#)db_overflow.c  11.2 (Sleepycat) 9/9/99";
  *  Get an offpage item.
  *
  * PUBLIC: int CDB___db_goff __P((DB *, DBT *,
- * PUBLIC:     u_int32_t, db_pgno_t, void **, u_int32_t *));
+ * PUBLIC:     uint32_t, db_pgno_t, void **, uint32_t *));
  */
 int
 CDB___db_goff (dbp, dbt, tlen, pgno, bpp, bpsz)
      DB *dbp;
      DBT *dbt;
-     u_int32_t tlen;
+     uint32_t tlen;
      db_pgno_t pgno;
      void **bpp;
-     u_int32_t *bpsz;
+     uint32_t *bpsz;
 {
   PAGE *h;
   db_indx_t bytes;
-  u_int32_t curoff, needed, start;
-  u_int8_t *p, *src;
+  uint32_t curoff, needed, start;
+  uint8_t *p, *src;
   int ret;
 
   /*
@@ -149,7 +149,7 @@ CDB___db_goff (dbp, dbt, tlen, pgno, bpp, bpsz)
     /* Check if we need any bytes from this page. */
     if (curoff + OV_LEN (h) >= start)
     {
-      src = (u_int8_t *) h + P_OVERHEAD;
+      src = (uint8_t *) h + P_OVERHEAD;
       bytes = OV_LEN (h);
       if (start > curoff)
       {
@@ -186,8 +186,8 @@ CDB___db_poff (dbc, dbt, pgnop)
   DB_LSN new_lsn, null_lsn;
   DBT tmp_dbt;
   db_indx_t pagespace;
-  u_int32_t sz;
-  u_int8_t *p;
+  uint32_t sz;
+  uint8_t *p;
   int ret;
 
   /*
@@ -239,7 +239,7 @@ CDB___db_poff (dbc, dbt, pgnop)
             PGNO (pagep), PGNO_INVALID, PGNO_INVALID, 0, P_OVERFLOW);
     OV_LEN (pagep) = pagespace;
     OV_REF (pagep) = 1;
-    memcpy ((u_int8_t *) pagep + P_OVERHEAD, p, pagespace);
+    memcpy ((uint8_t *) pagep + P_OVERHEAD, p, pagespace);
 
     /*
      * If this is the first entry, update the user's info.
@@ -332,7 +332,7 @@ CDB___db_doff (dbc, pgno)
 
     if (DB_LOGGING (dbc))
     {
-      tmp_dbt.data = (u_int8_t *) pagep + P_OVERHEAD;
+      tmp_dbt.data = (uint8_t *) pagep + P_OVERHEAD;
       tmp_dbt.size = OV_LEN (pagep);
       ZERO_LSN (null_lsn);
       if ((ret = CDB___db_big_log (dbp->dbenv, dbc->txn,
@@ -362,7 +362,7 @@ CDB___db_doff (dbc, pgno)
  * specified a comparison function.  In this case, we need to materialize
  * the entire object and call their comparison routine.
  *
- * PUBLIC: int CDB___db_moff __P((DB *, const DBT *, db_pgno_t, u_int32_t,
+ * PUBLIC: int CDB___db_moff __P((DB *, const DBT *, db_pgno_t, uint32_t,
  * PUBLIC:     int (*)(const DBT *, const DBT *), int *));
  */
 int
@@ -370,14 +370,14 @@ CDB___db_moff (dbp, dbt, pgno, tlen, cmpfunc, cmpp)
      DB *dbp;
      const DBT *dbt;
      db_pgno_t pgno;
-     u_int32_t tlen;
+     uint32_t tlen;
      int (*cmpfunc) __P ((const DBT *, const DBT *)), *cmpp;
 {
   PAGE *pagep;
   DBT local_dbt;
   void *buf;
-  u_int32_t bufsize, cmp_bytes, key_left;
-  u_int8_t *p1, *p2;
+  uint32_t bufsize, cmp_bytes, key_left;
+  uint8_t *p1, *p2;
   int ret;
 
   /*
@@ -408,7 +408,7 @@ CDB___db_moff (dbp, dbt, pgno, tlen, cmpfunc, cmpp)
     cmp_bytes = OV_LEN (pagep) < key_left ? OV_LEN (pagep) : key_left;
     tlen -= cmp_bytes;
     key_left -= cmp_bytes;
-    for (p2 = (u_int8_t *) pagep + P_OVERHEAD; cmp_bytes-- > 0; ++p1, ++p2)
+    for (p2 = (uint8_t *) pagep + P_OVERHEAD; cmp_bytes-- > 0; ++p1, ++p2)
       if (*p1 != *p2)
       {
         *cmpp = (long) *p1 - (long) *p2;

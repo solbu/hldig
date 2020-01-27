@@ -68,7 +68,7 @@ WordDB::Open (const String & filename, DBTYPE type, int flags, int mode)
 
   }
 
-  int error = db->open (db, filename, NULL, type, (u_int32_t) flags, mode);
+  int error = db->open (db, filename, NULL, type, (uint32_t) flags, mode);
 
   if (error == 0)
     is_open = 1;

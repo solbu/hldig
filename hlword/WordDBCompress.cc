@@ -30,9 +30,9 @@
 extern "C"
 {
 
-  static int WordDBCompress_compress_c (const u_int8_t * inbuff,
+  static int WordDBCompress_compress_c (const uint8_t * inbuff,
                                         int inbuff_length,
-                                        u_int8_t ** outbuffp,
+                                        uint8_t ** outbuffp,
                                         int *outbuff_lengthp, void *user_data)
   {
     if (!user_data)
@@ -47,9 +47,9 @@ extern "C"
                                                      outbuff_lengthp);
   }
 
-  static int WordDBCompress_uncompress_c (const u_int8_t * inbuff,
+  static int WordDBCompress_uncompress_c (const uint8_t * inbuff,
                                           int inbuff_length,
-                                          u_int8_t * outbuff,
+                                          uint8_t * outbuff,
                                           int outbuff_length, void *user_data)
   {
     if (!user_data)
@@ -124,8 +124,8 @@ WordDBCompress::CmprInfo ()
 }
 
 int
-WordDBCompress::Compress (const u_int8_t * inbuff, int inbuff_length,
-                          u_int8_t ** outbuffp, int *outbuff_lengthp)
+WordDBCompress::Compress (const uint8_t * inbuff, int inbuff_length,
+                          uint8_t ** outbuffp, int *outbuff_lengthp)
 {
   WordDBPage pg (inbuff, inbuff_length);
 
@@ -166,8 +166,8 @@ WordDBCompress::Compress (const u_int8_t * inbuff, int inbuff_length,
 }
 
 int
-WordDBCompress::Uncompress (const u_int8_t * inbuff, int inbuff_length,
-                            u_int8_t * outbuff, int outbuff_length)
+WordDBCompress::Uncompress (const uint8_t * inbuff, int inbuff_length,
+                            uint8_t * outbuff, int outbuff_length)
 {
   if (debug > 2)
     printf ("WordDBCompress::Uncompress::  %5d -> %5d\n", inbuff_length,
@@ -197,7 +197,7 @@ WordDBCompress::Uncompress (const u_int8_t * inbuff, int inbuff_length,
 }
 
 int
-WordDBCompress::TestCompress (const u_int8_t * pagebuff, int pagebuffsize)
+WordDBCompress::TestCompress (const uint8_t * pagebuff, int pagebuffsize)
 {
   WordDBPage pg (pagebuff, pagebuffsize);
   pg.TestCompress (debug);

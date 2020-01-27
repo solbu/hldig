@@ -21,11 +21,11 @@ struct __fh_t
 #endif
   int fd;                       /* POSIX file descriptor. */
 
-  u_int32_t log_size;           /* XXX: Log file size. */
+  uint32_t log_size;           /* XXX: Log file size. */
 
 #define  DB_FH_NOSYNC  0x01     /* Handle doesn't need to be sync'd. */
 #define  DB_FH_VALID  0x02      /* Handle is valid. */
-  u_int8_t flags;
+  uint8_t flags;
 };
 
 /*
@@ -40,6 +40,6 @@ typedef struct __io_t
   MUTEX *mutexp;                /* Mutex to lock. */
   size_t pagesize;              /* Page size. */
   db_pgno_t pgno;               /* Page number. */
-  u_int8_t *buf;                /* Buffer. */
+  uint8_t *buf;                /* Buffer. */
   size_t bytes;                 /* Bytes read/written. */
 } DB_IO;

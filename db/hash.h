@@ -47,10 +47,10 @@ typedef struct hash_t
 {
   DB *dbp;                      /* Pointer to enclosing DB */
   db_pgno_t meta_pgno;          /* Page number of the meta data page. */
-  u_int32_t h_ffactor;          /* Fill factor. */
-  u_int32_t h_nelem;            /* Number of elements. */
+  uint32_t h_ffactor;          /* Fill factor. */
+  uint32_t h_nelem;            /* Number of elements. */
   /* Hash function. */
-    u_int32_t (*h_hash) __P ((const void *, u_int32_t));
+    uint32_t (*h_hash) __P ((const void *, uint32_t));
 } HASH;
 
 /* Cursor structure definitions. */
@@ -77,7 +77,7 @@ typedef struct cursor_t
   db_indx_t dup_off;            /* Offset within a duplicate set. */
   db_indx_t dup_len;            /* Length of current duplicate. */
   db_indx_t dup_tlen;           /* Total length of duplicate entry. */
-  u_int32_t seek_size;          /* Number of bytes we need for add. */
+  uint32_t seek_size;          /* Number of bytes we need for add. */
   db_pgno_t seek_found_page;    /* Page on which we can insert. */
 
 #define  H_DELETED  0x0001      /* Cursor item is deleted. */
@@ -88,7 +88,7 @@ typedef struct cursor_t
 #define  H_OK    0x0020         /* Request succeeded. */
 #define H_DIRTY    0x0040       /* Meta-data page needs to be written */
 #define  H_ORIGINAL  0x0080     /* Bucket lock existed on entry. */
-  u_int32_t flags;
+  uint32_t flags;
 } HASH_CURSOR;
 
 #define  IS_VALID(C) ((C)->bucket != BUCKET_INVALID)

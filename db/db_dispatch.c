@@ -79,10 +79,10 @@ CDB___db_dispatch (dbenv, db, lsnp, redo, info)
      int redo;                  /* Redo this op (or undo it). */
      void *info;
 {
-  u_int32_t rectype, txnid;
+  uint32_t rectype, txnid;
 
   memcpy (&rectype, db->data, sizeof (rectype));
-  memcpy (&txnid, (u_int8_t *) db->data + sizeof (rectype), sizeof (txnid));
+  memcpy (&txnid, (uint8_t *) db->data + sizeof (rectype), sizeof (txnid));
 
   switch (redo)
   {
@@ -132,15 +132,15 @@ CDB___db_dispatch (dbenv, db, lsnp, redo, info)
  * CDB___db_add_recovery --
  *
  * PUBLIC: int CDB___db_add_recovery __P((DB_ENV *,
- * PUBLIC:    int (*)(DB_ENV *, DBT *, DB_LSN *, int, void *), u_int32_t));
+ * PUBLIC:    int (*)(DB_ENV *, DBT *, DB_LSN *, int, void *), uint32_t));
  */
 int
 CDB___db_add_recovery (dbenv, func, ndx)
      DB_ENV *dbenv;
      int (*func) __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
-     u_int32_t ndx;
+     uint32_t ndx;
 {
-  u_int32_t i;
+  uint32_t i;
   int ret;
 
   /* Check if we have to grow the table. */
@@ -187,12 +187,12 @@ CDB___db_txnlist_init (retp)
  * CDB___db_txnlist_add --
  *  Add an element to our transaction linked list.
  *
- * PUBLIC: int CDB___db_txnlist_add __P((void *, u_int32_t));
+ * PUBLIC: int CDB___db_txnlist_add __P((void *, uint32_t));
  */
 int
 CDB___db_txnlist_add (listp, txnid)
      void *listp;
-     u_int32_t txnid;
+     uint32_t txnid;
 {
   DB_TXNHEAD *hp;
   DB_TXNLIST *elp;
@@ -220,14 +220,14 @@ CDB___db_txnlist_add (listp, txnid)
  * to have been deleted.  If you never do any operations on a file, then
  * we assume it's OK to appear deleted.
  *
- * PUBLIC: int CDB___db_txnlist_close __P((void *, u_int32_t, u_int32_t));
+ * PUBLIC: int CDB___db_txnlist_close __P((void *, uint32_t, uint32_t));
  */
 
 int
 CDB___db_txnlist_close (listp, lid, count)
      void *listp;
-     u_int32_t lid;
-     u_int32_t count;
+     uint32_t lid;
+     uint32_t count;
 {
   DB_TXNHEAD *hp;
   DB_TXNLIST *p;
@@ -254,13 +254,13 @@ CDB___db_txnlist_close (listp, lid, count)
  * just encountered a file that is missing.  The lid is the log fileid
  * and is only meaningful if deleted is not equal to 0.
  *
- * PUBLIC: int CDB___db_txnlist_delete __P((void *, char *, u_int32_t, int));
+ * PUBLIC: int CDB___db_txnlist_delete __P((void *, char *, uint32_t, int));
  */
 int
 CDB___db_txnlist_delete (listp, name, lid, deleted)
      void *listp;
      char *name;
-     u_int32_t lid;
+     uint32_t lid;
      int deleted;
 {
   DB_TXNHEAD *hp;
@@ -345,12 +345,12 @@ CDB___db_txnlist_end (dbenv, listp)
  *  Checks to see if a txnid with the current generation is in the
  *  txnid list.
  *
- * PUBLIC: int CDB___db_txnlist_find __P((void *, u_int32_t));
+ * PUBLIC: int CDB___db_txnlist_find __P((void *, uint32_t));
  */
 int
 CDB___db_txnlist_find (listp, txnid)
      void *listp;
-     u_int32_t txnid;
+     uint32_t txnid;
 {
   DB_TXNHEAD *hp;
   DB_TXNLIST *p;

@@ -28,7 +28,7 @@ static const char revid[] =
  *  Verify the queue-specific part of a metadata page.
  *
  * PUBLIC: int CDB___qam_vrfy_meta __P((DB *, VRFY_DBINFO *, QMETA *,
- * PUBLIC:     db_pgno_t, u_int32_t));
+ * PUBLIC:     db_pgno_t, uint32_t));
  */
 int
 CDB___qam_vrfy_meta (dbp, vdp, meta, pgno, flags)
@@ -36,7 +36,7 @@ CDB___qam_vrfy_meta (dbp, vdp, meta, pgno, flags)
      VRFY_DBINFO *vdp;
      QMETA *meta;
      db_pgno_t pgno;
-     u_int32_t flags;
+     uint32_t flags;
 {
   VRFY_PAGEINFO *pip;
   int isbad, ret, t_ret;
@@ -81,7 +81,7 @@ CDB___qam_vrfy_meta (dbp, vdp, meta, pgno, flags)
    * re_len:  If this is bad, we can't safely verify queue data pages, so
    * return DB_VERIFY_FATAL
    */
-  if (ALIGN (meta->re_len + sizeof (QAMDATA) - 1, sizeof (u_int32_t)) *
+  if (ALIGN (meta->re_len + sizeof (QAMDATA) - 1, sizeof (uint32_t)) *
       meta->rec_page + sizeof (QPAGE) > dbp->pgsize)
   {
     EPRINT ((dbp->dbenv,
@@ -106,7 +106,7 @@ err:if ((t_ret = CDB___db_vrfy_putpageinfo (vdp, pip)) != 0 && ret == 0)
  *  Verify a queue data page.
  *
  * PUBLIC: int CDB___qam_vrfy_data __P((DB *, VRFY_DBINFO *, QPAGE *,
- * PUBLIC:     db_pgno_t, u_int32_t));
+ * PUBLIC:     db_pgno_t, uint32_t));
  */
 int
 CDB___qam_vrfy_data (dbp, vdp, h, pgno, flags)
@@ -114,13 +114,13 @@ CDB___qam_vrfy_data (dbp, vdp, h, pgno, flags)
      VRFY_DBINFO *vdp;
      QPAGE *h;
      db_pgno_t pgno;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB fakedb;
   struct __queue fakeq;
   QAMDATA *qp;
   db_recno_t i;
-  u_int8_t qflags;
+  uint8_t qflags;
 
   /*
    * Not much to do here, except make sure that flags are reasonable.
@@ -135,7 +135,7 @@ CDB___qam_vrfy_data (dbp, vdp, h, pgno, flags)
   for (i = 0; i < vdp->rec_page; i++)
   {
     qp = QAM_GET_RECORD (&fakedb, h, i);
-    if ((u_int8_t *) qp >= (u_int8_t *) h + dbp->pgsize)
+    if ((uint8_t *) qp >= (uint8_t *) h + dbp->pgsize)
     {
       EPRINT ((dbp->dbenv,
                "Queue record %lu extends past end of page %lu", i, pgno));
@@ -159,13 +159,13 @@ CDB___qam_vrfy_data (dbp, vdp, h, pgno, flags)
  * CDB___qam_vrfy_structure --
  *  Verify a queue database structure, such as it is.
  *
- * PUBLIC: int CDB___qam_vrfy_structure __P((DB *, VRFY_DBINFO *, u_int32_t));
+ * PUBLIC: int CDB___qam_vrfy_structure __P((DB *, VRFY_DBINFO *, uint32_t));
  */
 int
 CDB___qam_vrfy_structure (dbp, vdp, flags)
      DB *dbp;
      VRFY_DBINFO *vdp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   VRFY_PAGEINFO *pip;
   db_pgno_t i;

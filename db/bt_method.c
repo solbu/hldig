@@ -24,12 +24,12 @@ static const char sccsid[] = "@(#)bt_method.c  11.8 (Sleepycat) 10/27/99";
 
 static int CDB___bam_set_bt_compare
 __P ((DB *, int (*)(const DBT *, const DBT *)));
-static int CDB___bam_set_bt_maxkey __P ((DB *, u_int32_t));
-static int CDB___bam_set_bt_minkey __P ((DB *, u_int32_t));
+static int CDB___bam_set_bt_maxkey __P ((DB *, uint32_t));
+static int CDB___bam_set_bt_minkey __P ((DB *, uint32_t));
 static int CDB___bam_set_bt_prefix
 __P ((DB *, size_t (*)(const DBT *, const DBT *)));
 static int CDB___ram_set_re_delim __P ((DB *, int));
-static int CDB___ram_set_re_len __P ((DB *, u_int32_t));
+static int CDB___ram_set_re_len __P ((DB *, uint32_t));
 static int CDB___ram_set_re_pad __P ((DB *, int));
 static int CDB___ram_set_re_source __P ((DB *, const char *));
 
@@ -107,14 +107,14 @@ CDB___bam_db_close (dbp)
  * CDB___bam_set_flags --
  *  Set Btree specific flags.
  *
- * PUBLIC: int CDB___bam_set_flags __P((DB *, u_int32_t *flagsp));
+ * PUBLIC: int CDB___bam_set_flags __P((DB *, uint32_t *flagsp));
  */
 int
 CDB___bam_set_flags (dbp, flagsp)
      DB *dbp;
-     u_int32_t *flagsp;
+     uint32_t *flagsp;
 {
-  u_int32_t flags;
+  uint32_t flags;
 
   flags = *flagsp;
   if (LF_ISSET (DB_DUP | DB_DUPSORT | DB_RECNUM | DB_REVSPLITOFF))
@@ -203,7 +203,7 @@ CDB___bam_set_bt_compare (dbp, func)
 static int
 CDB___bam_set_bt_maxkey (dbp, bt_maxkey)
      DB *dbp;
-     u_int32_t bt_maxkey;
+     uint32_t bt_maxkey;
 {
   BTREE *t;
 
@@ -229,7 +229,7 @@ CDB___bam_set_bt_maxkey (dbp, bt_maxkey)
 static int
 CDB___bam_set_bt_minkey (dbp, bt_minkey)
      DB *dbp;
-     u_int32_t bt_minkey;
+     uint32_t bt_minkey;
 {
   BTREE *t;
 
@@ -272,14 +272,14 @@ size_t (*func) __P ((const DBT *, const DBT *));
  * CDB___ram_set_flags --
  *  Set Recno specific flags.
  *
- * PUBLIC: int CDB___ram_set_flags __P((DB *, u_int32_t *flagsp));
+ * PUBLIC: int CDB___ram_set_flags __P((DB *, uint32_t *flagsp));
  */
 int
 CDB___ram_set_flags (dbp, flagsp)
      DB *dbp;
-     u_int32_t *flagsp;
+     uint32_t *flagsp;
 {
-  u_int32_t flags;
+  uint32_t flags;
 
   flags = *flagsp;
   if (LF_ISSET (DB_RENUMBER | DB_SNAPSHOT))
@@ -334,7 +334,7 @@ CDB___ram_set_re_delim (dbp, re_delim)
 static int
 CDB___ram_set_re_len (dbp, re_len)
      DB *dbp;
-     u_int32_t re_len;
+     uint32_t re_len;
 {
   BTREE *t;
   QUEUE *q;

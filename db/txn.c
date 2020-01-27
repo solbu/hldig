@@ -101,7 +101,7 @@ int
 CDB_txn_begin (dbenv, parent, txnpp, flags)
      DB_ENV *dbenv;
      DB_TXN *parent, **txnpp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB_TXN *txn;
   int ret;
@@ -180,7 +180,7 @@ CDB___txn_begin (txn)
   DB_TXNREGION *region;
   TXN_DETAIL *td;
   size_t off;
-  u_int32_t id;
+  uint32_t id;
   int ret;
 
   mgr = txn->mgrp;
@@ -275,7 +275,7 @@ err2:return (ret);
 int
 CDB_txn_commit (txnp, flags)
      DB_TXN *txnp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB_ENV *dbenv;
   DB_TXN *kids;
@@ -422,7 +422,7 @@ CDB_txn_prepare (txnp)
 /*
  * Return the transaction ID associated with a particular transaction
  */
-u_int32_t
+uint32_t
 CDB_txn_id (txnp)
      DB_TXN *txnp;
 {
@@ -645,7 +645,7 @@ CDB___txn_undo (txnp)
 int
 CDB_txn_checkpoint (dbenv, kbytes, minutes)
      DB_ENV *dbenv;
-     u_int32_t kbytes, minutes;
+     uint32_t kbytes, minutes;
 {
   DB_LOG *dblp;
   DB_LSN ckp_lsn, sync_lsn, last_ckp;
@@ -654,7 +654,7 @@ CDB_txn_checkpoint (dbenv, kbytes, minutes)
   LOG *lp;
   TXN_DETAIL *txnp;
   time_t last_ckp_time, now;
-  u_int32_t kbytes_written;
+  uint32_t kbytes_written;
   int ret;
 
   PANIC_CHECK (dbenv);
@@ -688,7 +688,7 @@ CDB_txn_checkpoint (dbenv, kbytes, minutes)
       lp->stat.st_wc_mbytes * 1024 + lp->stat.st_wc_bytes / 1024;
     ckp_lsn = lp->lsn;
     R_UNLOCK (dbenv, &dblp->reginfo);
-    if (kbytes_written >= (u_int32_t) kbytes)
+    if (kbytes_written >= (uint32_t) kbytes)
       goto do_ckp;
   }
 

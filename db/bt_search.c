@@ -63,13 +63,13 @@ static const char sccsid[] = "@(#)bt_search.c  11.8 (Sleepycat) 10/21/99";
  *  Search a btree for a key.
  *
  * PUBLIC: int CDB___bam_search __P((DBC *,
- * PUBLIC:     const DBT *, u_int32_t, int, db_recno_t *, int *));
+ * PUBLIC:     const DBT *, uint32_t, int, db_recno_t *, int *));
  */
 int
 CDB___bam_search (dbc, key, flags, stop, recnop, exactp)
      DBC *dbc;
      const DBT *key;
-     u_int32_t flags;
+     uint32_t flags;
      int stop, *exactp;
      db_recno_t *recnop;
 {
@@ -128,7 +128,7 @@ CDB___bam_search (dbc, key, flags, stop, recnop, exactp)
    * for a write lock.
    */
   if (!stack &&
-      ((LF_ISSET (S_PARENT) && (u_int8_t) (stop + 1) >= h->level) ||
+      ((LF_ISSET (S_PARENT) && (uint8_t) (stop + 1) >= h->level) ||
        (LF_ISSET (S_WRITE) && h->level == LEAFLEVEL)))
   {
     (void) CDB_memp_fput (dbp->mpf, h, 0);
@@ -238,7 +238,7 @@ CDB___bam_search (dbc, key, flags, stop, recnop, exactp)
        * unlock it.
        */
       if ((LF_ISSET (S_PARENT) &&
-           (u_int8_t) (stop + 1) >= (u_int8_t) (h->level - 1)) ||
+           (uint8_t) (stop + 1) >= (uint8_t) (h->level - 1)) ||
           (h->level - 1) == LEAFLEVEL)
         stack = 1;
 

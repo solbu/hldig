@@ -194,7 +194,7 @@ struct __cursor
    * be specially adjusted on the next operation.
    */
 #define  C_DELETED  0x0001      /* Record was deleted. */
-  u_int32_t flags;
+  uint32_t flags;
 };
 
 /*
@@ -210,8 +210,8 @@ struct __btree
   db_pgno_t bt_meta;            /* Database meta-data page. */
   db_pgno_t bt_root;            /* Database root page. */
 
-  u_int32_t bt_maxkey;          /* Maximum keys per page. */
-  u_int32_t bt_minkey;          /* Minimum keys per page. */
+  uint32_t bt_maxkey;          /* Maximum keys per page. */
+  uint32_t bt_minkey;          /* Minimum keys per page. */
 
   /* Btree comparison function. */
   int (*bt_compare) __P ((const DBT *, const DBT *));
@@ -221,7 +221,7 @@ struct __btree
   /* Recno access method. */
   int re_pad;                   /* Fixed-length padding byte. */
   int re_delim;                 /* Variable-length delimiting byte. */
-  u_int32_t re_len;             /* Length for fixed-length records. */
+  uint32_t re_len;             /* Length for fixed-length records. */
   char *re_source;              /* Source file name. */
 
   /*
@@ -241,7 +241,7 @@ struct __btree
 
 #define  RECNO_EOF  0x01        /* EOF on backing source file. */
 #define  RECNO_MODIFIED  0x02   /* Tree was modified. */
-  u_int32_t flags;
+  uint32_t flags;
 };
 
 

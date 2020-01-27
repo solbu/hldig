@@ -416,7 +416,7 @@ CDB___db_xa_recover (xids, count, rmid, flags)
   DB_LOG *log;
   XID *xidp;
   int err, ret;
-  u_int32_t rectype, txnid;
+  uint32_t rectype, txnid;
 
   ret = 0;
   xidp = xids;
@@ -481,7 +481,7 @@ CDB___db_xa_recover (xids, count, rmid, flags)
     if (rectype != DB_txn_xa_regop && rectype != DB_txn_regop)
       continue;
 
-    memcpy (&txnid, (u_int8_t *) data.data + sizeof (rectype),
+    memcpy (&txnid, (uint8_t *) data.data + sizeof (rectype),
             sizeof (txnid));
     err = CDB___db_txnlist_find (log->xa_info, txnid);
     switch (rectype)

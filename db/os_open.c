@@ -24,12 +24,12 @@ static const char sccsid[] = "@(#)os_open.c  11.1 (Sleepycat) 7/25/99";
  * CDB___os_open --
  *  Open a file.
  *
- * PUBLIC: int CDB___os_open __P((const char *, u_int32_t, int, DB_FH *));
+ * PUBLIC: int CDB___os_open __P((const char *, uint32_t, int, DB_FH *));
  */
 int
 CDB___os_open (name, flags, mode, fhp)
      const char *name;
-     u_int32_t flags;
+     uint32_t flags;
      int mode;
      DB_FH *fhp;
 {

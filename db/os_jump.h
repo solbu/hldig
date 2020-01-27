@@ -17,14 +17,14 @@ struct __db_jumptab
   void (*j_free) __P ((void *));
   int (*j_fsync) __P ((int));
   int (*j_ioinfo) __P ((const char *,
-                        int, u_int32_t *, u_int32_t *, u_int32_t *));
+                        int, uint32_t *, uint32_t *, uint32_t *));
   void *(*j_malloc) __P ((size_t));
   int (*j_map) __P ((char *, size_t, int, int, void **));
   int (*j_open) __P ((const char *, int, ...));
     ssize_t (*j_read) __P ((int, void *, size_t));
   void *(*j_realloc) __P ((void *, size_t));
   int (*j_rename) __P ((const char *, const char *));
-  int (*j_seek) __P ((int, size_t, db_pgno_t, u_int32_t, int, int));
+  int (*j_seek) __P ((int, size_t, db_pgno_t, uint32_t, int, int));
   int (*j_sleep) __P ((u_long, u_long));
   int (*j_unlink) __P ((const char *));
   int (*j_unmap) __P ((void *, size_t));

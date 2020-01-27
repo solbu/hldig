@@ -7,7 +7,7 @@
 
 typedef struct _qam_inc_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
   int32_t fileid;
@@ -15,7 +15,7 @@ typedef struct _qam_inc_args
 } __qam_inc_args;
 
 int CDB___qam_inc_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, int32_t, DB_LSN *));
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, int32_t, DB_LSN *));
 int CDB___qam_inc_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___qam_inc_read __P ((void *, __qam_inc_args **));
 
@@ -23,7 +23,7 @@ int CDB___qam_inc_read __P ((void *, __qam_inc_args **));
 
 typedef struct _qam_incfirst_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
   int32_t fileid;
@@ -31,7 +31,7 @@ typedef struct _qam_incfirst_args
 } __qam_incfirst_args;
 
 int CDB___qam_incfirst_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, int32_t, db_recno_t));
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, int32_t, db_recno_t));
 int CDB___qam_incfirst_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___qam_incfirst_read __P ((void *, __qam_incfirst_args **));
 
@@ -39,10 +39,10 @@ int CDB___qam_incfirst_read __P ((void *, __qam_incfirst_args **));
 
 typedef struct _qam_mvptr_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
-  u_int32_t opcode;
+  uint32_t opcode;
   int32_t fileid;
   db_recno_t old_first;
   db_recno_t new_first;
@@ -52,7 +52,7 @@ typedef struct _qam_mvptr_args
 } __qam_mvptr_args;
 
 int CDB___qam_mvptr_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, u_int32_t, int32_t, db_recno_t,
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, uint32_t, int32_t, db_recno_t,
       db_recno_t, db_recno_t, db_recno_t, DB_LSN *));
 int CDB___qam_mvptr_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___qam_mvptr_read __P ((void *, __qam_mvptr_args **));
@@ -61,19 +61,19 @@ int CDB___qam_mvptr_read __P ((void *, __qam_mvptr_args **));
 
 typedef struct _qam_del_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
   int32_t fileid;
   DB_LSN lsn;
   db_pgno_t pgno;
-  u_int32_t indx;
+  uint32_t indx;
   db_recno_t recno;
 } __qam_del_args;
 
 int CDB___qam_del_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, int32_t, DB_LSN *, db_pgno_t,
-      u_int32_t, db_recno_t));
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, int32_t, DB_LSN *, db_pgno_t,
+      uint32_t, db_recno_t));
 int CDB___qam_del_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___qam_del_read __P ((void *, __qam_del_args **));
 
@@ -81,22 +81,22 @@ int CDB___qam_del_read __P ((void *, __qam_del_args **));
 
 typedef struct _qam_add_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
   int32_t fileid;
   DB_LSN lsn;
   db_pgno_t pgno;
-  u_int32_t indx;
+  uint32_t indx;
   db_recno_t recno;
   DBT data;
-  u_int32_t vflag;
+  uint32_t vflag;
   DBT olddata;
 } __qam_add_args;
 
 int CDB___qam_add_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, int32_t, DB_LSN *, db_pgno_t,
-      u_int32_t, db_recno_t, const DBT *, u_int32_t, const DBT *));
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, int32_t, DB_LSN *, db_pgno_t,
+      uint32_t, db_recno_t, const DBT *, uint32_t, const DBT *));
 int CDB___qam_add_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___qam_add_read __P ((void *, __qam_add_args **));
 int CDB___qam_init_print __P ((DB_ENV *));

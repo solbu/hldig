@@ -58,18 +58,18 @@ static const char sccsid[] = "@(#)hash_func.c  11.2 (Sleepycat) 9/9/99";
  * CDB___ham_func2 --
  *  Phong Vo's linear congruential hash.
  *
- * PUBLIC: u_int32_t CDB___ham_func2 __P((const void *, u_int32_t));
+ * PUBLIC: uint32_t CDB___ham_func2 __P((const void *, uint32_t));
  */
 #define  DCHARHASH(h, c)  ((h) = 0x63c63cd9*(h) + 0x9c39c33d + (c))
 
-u_int32_t
+uint32_t
 CDB___ham_func2 (key, len)
      const void *key;
-     u_int32_t len;
+     uint32_t len;
 {
-  const u_int8_t *e, *k;
-  u_int32_t h;
-  u_int8_t c;
+  const uint8_t *e, *k;
+  uint32_t h;
+  uint8_t c;
 
   k = key;
   e = k + len;
@@ -92,15 +92,15 @@ CDB___ham_func2 (key, len)
  * iteration, perform 8 HASHC's so we handle all 8 bytes.  Essentially, this
  * saves us 7 cmp & branch instructions.
  *
- * PUBLIC: u_int32_t CDB___ham_func3 __P((const void *, u_int32_t));
+ * PUBLIC: uint32_t CDB___ham_func3 __P((const void *, uint32_t));
  */
-u_int32_t
+uint32_t
 CDB___ham_func3 (key, len)
      const void *key;
-     u_int32_t len;
+     uint32_t len;
 {
-  const u_int8_t *k;
-  u_int32_t n, loop;
+  const uint8_t *k;
+  uint32_t n, loop;
 
   if (len == 0)
     return (0);
@@ -142,15 +142,15 @@ CDB___ham_func3 (key, len)
  *  slightly worse than CDB___ham_func5 on strings, it performs horribly on
  *  numbers.
  *
- * PUBLIC: u_int32_t CDB___ham_func4 __P((const void *, u_int32_t));
+ * PUBLIC: uint32_t CDB___ham_func4 __P((const void *, uint32_t));
  */
-u_int32_t
+uint32_t
 CDB___ham_func4 (key, len)
      const void *key;
-     u_int32_t len;
+     uint32_t len;
 {
-  const u_int8_t *k;
-  u_int32_t h, loop;
+  const uint8_t *k;
+  uint32_t h, loop;
 
   if (len == 0)
     return (0);
@@ -202,15 +202,15 @@ CDB___ham_func4 (key, len)
  * This hash produces the fewest collisions of any function that we've seen so
  * far, and works well on both numbers and strings.
  *
- * PUBLIC: u_int32_t CDB___ham_func5 __P((const void *, u_int32_t));
+ * PUBLIC: uint32_t CDB___ham_func5 __P((const void *, uint32_t));
  */
-u_int32_t
+uint32_t
 CDB___ham_func5 (key, len)
      const void *key;
-     u_int32_t len;
+     uint32_t len;
 {
-  const u_int8_t *k, *e;
-  u_int32_t h;
+  const uint8_t *k, *e;
+  uint32_t h;
 
   k = key;
   e = k + len;

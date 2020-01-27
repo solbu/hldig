@@ -57,13 +57,13 @@ CDB___os_exists (path, isdirp)
  *  to replace.
  *
  * PUBLIC: int CDB___os_ioinfo __P((const char *,
- * PUBLIC:    DB_FH *, u_int32_t *, u_int32_t *, u_int32_t *));
+ * PUBLIC:    DB_FH *, uint32_t *, uint32_t *, uint32_t *));
  */
 int
 CDB___os_ioinfo (path, fhp, mbytesp, bytesp, iosizep)
      const char *path;
      DB_FH *fhp;
-     u_int32_t *mbytesp, *bytesp, *iosizep;
+     uint32_t *mbytesp, *bytesp, *iosizep;
 {
   struct stat sb;
 

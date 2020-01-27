@@ -21,11 +21,11 @@ CDB___db_addrem_log (dbenv, txnid, ret_lsnp, flags,
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
-     u_int32_t opcode;
+     uint32_t flags;
+     uint32_t opcode;
      int32_t fileid;
      db_pgno_t pgno;
-     u_int32_t indx;
+     uint32_t indx;
      size_t nbytes;
      const DBT *hdr;
      const DBT *dbt;
@@ -33,10 +33,10 @@ CDB___db_addrem_log (dbenv, txnid, ret_lsnp, flags,
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t zero;
-  u_int32_t rectype, txn_num;
+  uint32_t zero;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -56,8 +56,8 @@ CDB___db_addrem_log (dbenv, txnid, ret_lsnp, flags,
     + sizeof (pgno)
     + sizeof (indx)
     + sizeof (nbytes)
-    + sizeof (u_int32_t) + (hdr == NULL ? 0 : hdr->size)
-    + sizeof (u_int32_t) + (dbt == NULL ? 0 : dbt->size) + sizeof (*pagelsn);
+    + sizeof (uint32_t) + (hdr == NULL ? 0 : hdr->size)
+    + sizeof (uint32_t) + (dbt == NULL ? 0 : dbt->size) + sizeof (*pagelsn);
   if ((ret = CDB___os_malloc (logrec.size, NULL, &logrec.data)) != 0)
     return (ret);
 
@@ -81,8 +81,8 @@ CDB___db_addrem_log (dbenv, txnid, ret_lsnp, flags,
   if (hdr == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -94,8 +94,8 @@ CDB___db_addrem_log (dbenv, txnid, ret_lsnp, flags,
   if (dbt == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -109,7 +109,7 @@ CDB___db_addrem_log (dbenv, txnid, ret_lsnp, flags,
   else
     memset (bp, 0, sizeof (*pagelsn));
   bp += sizeof (*pagelsn);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -126,7 +126,7 @@ CDB___db_addrem_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __db_addrem_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -152,7 +152,7 @@ CDB___db_addrem_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\thdr: ");
   for (i = 0; i < argp->hdr.size; i++)
   {
-    ch = ((u_int8_t *) argp->hdr.data)[i];
+    ch = ((uint8_t *) argp->hdr.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -162,7 +162,7 @@ CDB___db_addrem_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tdbt: ");
   for (i = 0; i < argp->dbt.size; i++)
   {
-    ch = ((u_int8_t *) argp->dbt.data)[i];
+    ch = ((uint8_t *) argp->dbt.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -182,7 +182,7 @@ CDB___db_addrem_read (recbuf, argpp)
      __db_addrem_args **argpp;
 {
   __db_addrem_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__db_addrem_args) +
@@ -208,13 +208,13 @@ CDB___db_addrem_read (recbuf, argpp)
   memcpy (&argp->nbytes, bp, sizeof (argp->nbytes));
   bp += sizeof (argp->nbytes);
   memset (&argp->hdr, 0, sizeof (argp->hdr));
-  memcpy (&argp->hdr.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->hdr.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->hdr.data = bp;
   bp += argp->hdr.size;
   memset (&argp->dbt, 0, sizeof (argp->dbt));
-  memcpy (&argp->dbt.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->dbt.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->dbt.data = bp;
   bp += argp->dbt.size;
   memcpy (&argp->pagelsn, bp, sizeof (argp->pagelsn));
@@ -229,8 +229,8 @@ CDB___db_split_log (dbenv, txnid, ret_lsnp, flags,
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
-     u_int32_t opcode;
+     uint32_t flags;
+     uint32_t opcode;
      int32_t fileid;
      db_pgno_t pgno;
      const DBT *pageimage;
@@ -238,10 +238,10 @@ CDB___db_split_log (dbenv, txnid, ret_lsnp, flags,
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t zero;
-  u_int32_t rectype, txn_num;
+  uint32_t zero;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -259,7 +259,7 @@ CDB___db_split_log (dbenv, txnid, ret_lsnp, flags,
     + sizeof (opcode)
     + sizeof (fileid)
     + sizeof (pgno)
-    + sizeof (u_int32_t) + (pageimage == NULL ? 0 : pageimage->size)
+    + sizeof (uint32_t) + (pageimage == NULL ? 0 : pageimage->size)
     + sizeof (*pagelsn);
   if ((ret = CDB___os_malloc (logrec.size, NULL, &logrec.data)) != 0)
     return (ret);
@@ -280,8 +280,8 @@ CDB___db_split_log (dbenv, txnid, ret_lsnp, flags,
   if (pageimage == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -295,7 +295,7 @@ CDB___db_split_log (dbenv, txnid, ret_lsnp, flags,
   else
     memset (bp, 0, sizeof (*pagelsn));
   bp += sizeof (*pagelsn);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -312,7 +312,7 @@ CDB___db_split_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __db_split_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -336,7 +336,7 @@ CDB___db_split_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tpageimage: ");
   for (i = 0; i < argp->pageimage.size; i++)
   {
-    ch = ((u_int8_t *) argp->pageimage.data)[i];
+    ch = ((uint8_t *) argp->pageimage.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -356,7 +356,7 @@ CDB___db_split_read (recbuf, argpp)
      __db_split_args **argpp;
 {
   __db_split_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__db_split_args) +
@@ -378,8 +378,8 @@ CDB___db_split_read (recbuf, argpp)
   memcpy (&argp->pgno, bp, sizeof (argp->pgno));
   bp += sizeof (argp->pgno);
   memset (&argp->pageimage, 0, sizeof (argp->pageimage));
-  memcpy (&argp->pageimage.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->pageimage.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->pageimage.data = bp;
   bp += argp->pageimage.size;
   memcpy (&argp->pagelsn, bp, sizeof (argp->pagelsn));
@@ -395,8 +395,8 @@ CDB___db_big_log (dbenv, txnid, ret_lsnp, flags,
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
-     u_int32_t opcode;
+     uint32_t flags;
+     uint32_t opcode;
      int32_t fileid;
      db_pgno_t pgno;
      db_pgno_t prev_pgno;
@@ -408,10 +408,10 @@ CDB___db_big_log (dbenv, txnid, ret_lsnp, flags,
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t zero;
-  u_int32_t rectype, txn_num;
+  uint32_t zero;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -431,7 +431,7 @@ CDB___db_big_log (dbenv, txnid, ret_lsnp, flags,
     + sizeof (pgno)
     + sizeof (prev_pgno)
     + sizeof (next_pgno)
-    + sizeof (u_int32_t) + (dbt == NULL ? 0 : dbt->size)
+    + sizeof (uint32_t) + (dbt == NULL ? 0 : dbt->size)
     + sizeof (*pagelsn) + sizeof (*prevlsn) + sizeof (*nextlsn);
   if ((ret = CDB___os_malloc (logrec.size, NULL, &logrec.data)) != 0)
     return (ret);
@@ -456,8 +456,8 @@ CDB___db_big_log (dbenv, txnid, ret_lsnp, flags,
   if (dbt == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -481,7 +481,7 @@ CDB___db_big_log (dbenv, txnid, ret_lsnp, flags,
   else
     memset (bp, 0, sizeof (*nextlsn));
   bp += sizeof (*nextlsn);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -498,7 +498,7 @@ CDB___db_big_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __db_big_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -524,7 +524,7 @@ CDB___db_big_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tdbt: ");
   for (i = 0; i < argp->dbt.size; i++)
   {
-    ch = ((u_int8_t *) argp->dbt.data)[i];
+    ch = ((uint8_t *) argp->dbt.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -548,7 +548,7 @@ CDB___db_big_read (recbuf, argpp)
      __db_big_args **argpp;
 {
   __db_big_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__db_big_args) +
@@ -574,8 +574,8 @@ CDB___db_big_read (recbuf, argpp)
   memcpy (&argp->next_pgno, bp, sizeof (argp->next_pgno));
   bp += sizeof (argp->next_pgno);
   memset (&argp->dbt, 0, sizeof (argp->dbt));
-  memcpy (&argp->dbt.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->dbt.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->dbt.data = bp;
   bp += argp->dbt.size;
   memcpy (&argp->pagelsn, bp, sizeof (argp->pagelsn));
@@ -593,7 +593,7 @@ CDB___db_ovref_log (dbenv, txnid, ret_lsnp, flags, fileid, pgno, adjust, lsn)
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
+     uint32_t flags;
      int32_t fileid;
      db_pgno_t pgno;
      int32_t adjust;
@@ -601,9 +601,9 @@ CDB___db_ovref_log (dbenv, txnid, ret_lsnp, flags, fileid, pgno, adjust, lsn)
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t rectype, txn_num;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -640,7 +640,7 @@ CDB___db_ovref_log (dbenv, txnid, ret_lsnp, flags, fileid, pgno, adjust, lsn)
   else
     memset (bp, 0, sizeof (*lsn));
   bp += sizeof (*lsn);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -657,7 +657,7 @@ CDB___db_ovref_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __db_ovref_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -691,7 +691,7 @@ CDB___db_ovref_read (recbuf, argpp)
      __db_ovref_args **argpp;
 {
   __db_ovref_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__db_ovref_args) +
@@ -725,8 +725,8 @@ CDB___db_relink_log (dbenv, txnid, ret_lsnp, flags,
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
-     u_int32_t opcode;
+     uint32_t flags;
+     uint32_t opcode;
      int32_t fileid;
      db_pgno_t pgno;
      DB_LSN *lsn;
@@ -737,9 +737,9 @@ CDB___db_relink_log (dbenv, txnid, ret_lsnp, flags,
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t rectype, txn_num;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -794,7 +794,7 @@ CDB___db_relink_log (dbenv, txnid, ret_lsnp, flags,
   else
     memset (bp, 0, sizeof (*lsn_next));
   bp += sizeof (*lsn_next);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -811,7 +811,7 @@ CDB___db_relink_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __db_relink_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -851,7 +851,7 @@ CDB___db_relink_read (recbuf, argpp)
      __db_relink_args **argpp;
 {
   __db_relink_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__db_relink_args) +
@@ -892,7 +892,7 @@ CDB___db_addpage_log (dbenv, txnid, ret_lsnp, flags,
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
+     uint32_t flags;
      int32_t fileid;
      db_pgno_t pgno;
      DB_LSN *lsn;
@@ -901,9 +901,9 @@ CDB___db_addpage_log (dbenv, txnid, ret_lsnp, flags,
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t rectype, txn_num;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -946,7 +946,7 @@ CDB___db_addpage_log (dbenv, txnid, ret_lsnp, flags,
   else
     memset (bp, 0, sizeof (*nextlsn));
   bp += sizeof (*nextlsn);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -963,7 +963,7 @@ CDB___db_addpage_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __db_addpage_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -999,7 +999,7 @@ CDB___db_addpage_read (recbuf, argpp)
      __db_addpage_args **argpp;
 {
   __db_addpage_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__db_addpage_args) +
@@ -1034,19 +1034,19 @@ CDB___db_debug_log (dbenv, txnid, ret_lsnp, flags,
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
+     uint32_t flags;
      const DBT *op;
      int32_t fileid;
      const DBT *key;
      const DBT *data;
-     u_int32_t arg_flags;
+     uint32_t arg_flags;
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t zero;
-  u_int32_t rectype, txn_num;
+  uint32_t zero;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -1061,10 +1061,10 @@ CDB___db_debug_log (dbenv, txnid, ret_lsnp, flags,
   else
     lsnp = &txnid->last_lsn;
   logrec.size = sizeof (rectype) + sizeof (txn_num) + sizeof (DB_LSN)
-    + sizeof (u_int32_t) + (op == NULL ? 0 : op->size)
+    + sizeof (uint32_t) + (op == NULL ? 0 : op->size)
     + sizeof (fileid)
-    + sizeof (u_int32_t) + (key == NULL ? 0 : key->size)
-    + sizeof (u_int32_t) + (data == NULL ? 0 : data->size)
+    + sizeof (uint32_t) + (key == NULL ? 0 : key->size)
+    + sizeof (uint32_t) + (data == NULL ? 0 : data->size)
     + sizeof (arg_flags);
   if ((ret = CDB___os_malloc (logrec.size, NULL, &logrec.data)) != 0)
     return (ret);
@@ -1079,8 +1079,8 @@ CDB___db_debug_log (dbenv, txnid, ret_lsnp, flags,
   if (op == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -1094,8 +1094,8 @@ CDB___db_debug_log (dbenv, txnid, ret_lsnp, flags,
   if (key == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -1107,8 +1107,8 @@ CDB___db_debug_log (dbenv, txnid, ret_lsnp, flags,
   if (data == NULL)
   {
     zero = 0;
-    memcpy (bp, &zero, sizeof (u_int32_t));
-    bp += sizeof (u_int32_t);
+    memcpy (bp, &zero, sizeof (uint32_t));
+    bp += sizeof (uint32_t);
   }
   else
   {
@@ -1119,7 +1119,7 @@ CDB___db_debug_log (dbenv, txnid, ret_lsnp, flags,
   }
   memcpy (bp, &arg_flags, sizeof (arg_flags));
   bp += sizeof (arg_flags);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -1136,7 +1136,7 @@ CDB___db_debug_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __db_debug_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -1157,7 +1157,7 @@ CDB___db_debug_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\top: ");
   for (i = 0; i < argp->op.size; i++)
   {
-    ch = ((u_int8_t *) argp->op.data)[i];
+    ch = ((uint8_t *) argp->op.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -1168,7 +1168,7 @@ CDB___db_debug_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tkey: ");
   for (i = 0; i < argp->key.size; i++)
   {
-    ch = ((u_int8_t *) argp->key.data)[i];
+    ch = ((uint8_t *) argp->key.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -1178,7 +1178,7 @@ CDB___db_debug_print (notused1, dbtp, lsnp, notused2, notused3)
   printf ("\tdata: ");
   for (i = 0; i < argp->data.size; i++)
   {
-    ch = ((u_int8_t *) argp->data.data)[i];
+    ch = ((uint8_t *) argp->data.data)[i];
     if (isprint (ch) || ch == 0xa)
       putchar (ch);
     else
@@ -1197,7 +1197,7 @@ CDB___db_debug_read (recbuf, argpp)
      __db_debug_args **argpp;
 {
   __db_debug_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__db_debug_args) +
@@ -1213,20 +1213,20 @@ CDB___db_debug_read (recbuf, argpp)
   memcpy (&argp->prev_lsn, bp, sizeof (DB_LSN));
   bp += sizeof (DB_LSN);
   memset (&argp->op, 0, sizeof (argp->op));
-  memcpy (&argp->op.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->op.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->op.data = bp;
   bp += argp->op.size;
   memcpy (&argp->fileid, bp, sizeof (argp->fileid));
   bp += sizeof (argp->fileid);
   memset (&argp->key, 0, sizeof (argp->key));
-  memcpy (&argp->key.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->key.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->key.data = bp;
   bp += argp->key.size;
   memset (&argp->data, 0, sizeof (argp->data));
-  memcpy (&argp->data.size, bp, sizeof (u_int32_t));
-  bp += sizeof (u_int32_t);
+  memcpy (&argp->data.size, bp, sizeof (uint32_t));
+  bp += sizeof (uint32_t);
   argp->data.data = bp;
   bp += argp->data.size;
   memcpy (&argp->arg_flags, bp, sizeof (argp->arg_flags));
@@ -1240,16 +1240,16 @@ CDB___db_noop_log (dbenv, txnid, ret_lsnp, flags, fileid, pgno, prevlsn)
      DB_ENV *dbenv;
      DB_TXN *txnid;
      DB_LSN *ret_lsnp;
-     u_int32_t flags;
+     uint32_t flags;
      int32_t fileid;
      db_pgno_t pgno;
      DB_LSN *prevlsn;
 {
   DBT logrec;
   DB_LSN *lsnp, null_lsn;
-  u_int32_t rectype, txn_num;
+  uint32_t rectype, txn_num;
   int ret;
-  u_int8_t *bp;
+  uint8_t *bp;
 
   if (txnid != NULL &&
       TAILQ_FIRST (&txnid->kids) != NULL && CDB___txn_activekids (txnid) != 0)
@@ -1284,7 +1284,7 @@ CDB___db_noop_log (dbenv, txnid, ret_lsnp, flags, fileid, pgno, prevlsn)
   else
     memset (bp, 0, sizeof (*prevlsn));
   bp += sizeof (*prevlsn);
-  DB_ASSERT ((u_int32_t) (bp - (u_int8_t *) logrec.data) == logrec.size);
+  DB_ASSERT ((uint32_t) (bp - (uint8_t *) logrec.data) == logrec.size);
   ret = CDB_log_put (dbenv, ret_lsnp, (DBT *) & logrec, flags);
   if (txnid != NULL)
     txnid->last_lsn = *ret_lsnp;
@@ -1301,7 +1301,7 @@ CDB___db_noop_print (notused1, dbtp, lsnp, notused2, notused3)
      void *notused3;
 {
   __db_noop_args *argp;
-  u_int32_t i;
+  uint32_t i;
   u_int ch;
   int ret;
 
@@ -1334,7 +1334,7 @@ CDB___db_noop_read (recbuf, argpp)
      __db_noop_args **argpp;
 {
   __db_noop_args *argp;
-  u_int8_t *bp;
+  uint8_t *bp;
   int ret;
 
   ret = CDB___os_malloc (sizeof (__db_noop_args) +

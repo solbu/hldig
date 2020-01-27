@@ -148,7 +148,7 @@ CDB___bam_metachk (dbp, name, btm)
      BTMETA *btm;
 {
   DB_ENV *dbenv;
-  u_int32_t vers;
+  uint32_t vers;
   int ret;
 
   dbenv = dbp->dbenv;

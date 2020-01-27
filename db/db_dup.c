@@ -26,7 +26,7 @@ static const char sccsid[] = "@(#)db_dup.c  11.11 (Sleepycat) 11/3/99";
 #include "db_am.h"
 
 static int CDB___db_addpage __P ((DBC *, PAGE **, db_indx_t *));
-static int CDB___db_dsplit __P ((DBC *, PAGE **, db_indx_t *, u_int32_t));
+static int CDB___db_dsplit __P ((DBC *, PAGE **, db_indx_t *, uint32_t));
 
 /*
  * CDB___db_dput --
@@ -96,7 +96,7 @@ CDB___db_dput (dbc, dbt, pp, indxp)
    * the location to insert.
    */
   if ((ret = CDB___db_pitem (dbc,
-                             pagep, (u_int32_t) * indxp, isize, hdr_dbtp,
+                             pagep, (uint32_t) * indxp, isize, hdr_dbtp,
                              data_dbtp)) != 0)
     return (ret);
 
@@ -108,13 +108,13 @@ CDB___db_dput (dbc, dbt, pp, indxp)
  * CDB___db_drem --
  *  Remove a duplicate at the given index on the given page.
  *
- * PUBLIC: int CDB___db_drem __P((DBC *, PAGE **, u_int32_t));
+ * PUBLIC: int CDB___db_drem __P((DBC *, PAGE **, uint32_t));
  */
 int
 CDB___db_drem (dbc, pp, indx)
      DBC *dbc;
      PAGE **pp;
-     u_int32_t indx;
+     uint32_t indx;
 {
   PAGE *pagep;
   int ret;
@@ -215,7 +215,7 @@ CDB___db_dsplit (dbc, hp, indxp, size)
      DBC *dbc;
      PAGE **hp;
      db_indx_t *indxp;
-     u_int32_t size;
+     uint32_t size;
 {
   PAGE *h, *np, *tp;
   BKEYDATA *bk;
@@ -326,7 +326,7 @@ CDB___db_dsplit (dbc, hp, indxp, size)
       s = BOVERFLOW_SIZE;
 
     np->inp[nindex++] = HOFFSET (np) -= s;
-    memcpy ((u_int8_t *) np + HOFFSET (np), bk, s);
+    memcpy ((uint8_t *) np + HOFFSET (np), bk, s);
     NUM_ENT (np)++;
   }
 
@@ -343,7 +343,7 @@ CDB___db_dsplit (dbc, hp, indxp, size)
       s = BOVERFLOW_SIZE;
 
     tp->inp[nindex++] = HOFFSET (tp) -= s;
-    memcpy ((u_int8_t *) tp + HOFFSET (tp), bk, s);
+    memcpy ((uint8_t *) tp + HOFFSET (tp), bk, s);
     NUM_ENT (tp)++;
   }
 
@@ -354,8 +354,8 @@ CDB___db_dsplit (dbc, hp, indxp, size)
    * about half a page.
    */
   memcpy (h, tp, LOFFSET (tp));
-  memcpy ((u_int8_t *) h + HOFFSET (tp),
-          (u_int8_t *) tp + HOFFSET (tp), pgsize - HOFFSET (tp));
+  memcpy ((uint8_t *) h + HOFFSET (tp),
+          (uint8_t *) tp + HOFFSET (tp), pgsize - HOFFSET (tp));
   CDB___os_free (tp, pgsize);
 
   if (DB_LOGGING (dbc))
@@ -406,19 +406,19 @@ CDB___db_dsplit (dbc, hp, indxp, size)
  * CDB___db_ditem --
  *  Remove an item from a page.
  *
- * PUBLIC:  int CDB___db_ditem __P((DBC *, PAGE *, u_int32_t, u_int32_t));
+ * PUBLIC:  int CDB___db_ditem __P((DBC *, PAGE *, uint32_t, uint32_t));
  */
 int
 CDB___db_ditem (dbc, pagep, indx, nbytes)
      DBC *dbc;
      PAGE *pagep;
-     u_int32_t indx, nbytes;
+     uint32_t indx, nbytes;
 {
   DB *dbp;
   DBT ldbt;
   db_indx_t cnt, offset;
   int ret;
-  u_int8_t *from;
+  uint8_t *from;
 
   dbp = dbc->dbp;
   if (DB_LOGGING (dbc))
@@ -428,7 +428,7 @@ CDB___db_ditem (dbc, pagep, indx, nbytes)
     if ((ret = CDB___db_addrem_log (dbp->dbenv, dbc->txn,
                                     &LSN (pagep), 0, DB_REM_DUP,
                                     dbp->log_fileid, PGNO (pagep),
-                                    (u_int32_t) indx, nbytes, &ldbt, NULL,
+                                    (uint32_t) indx, nbytes, &ldbt, NULL,
                                     &LSN (pagep))) != 0)
       return (ret);
   }
@@ -448,7 +448,7 @@ CDB___db_ditem (dbc, pagep, indx, nbytes)
    * Pack the remaining key/data items at the end of the page.  Use
    * memmove(3), the regions may overlap.
    */
-  from = (u_int8_t *) pagep + HOFFSET (pagep);
+  from = (uint8_t *) pagep + HOFFSET (pagep);
   memmove (from + nbytes, from, pagep->inp[indx] - HOFFSET (pagep));
   HOFFSET (pagep) += nbytes;
 
@@ -472,21 +472,21 @@ CDB___db_ditem (dbc, pagep, indx, nbytes)
  *  Put an item on a page.
  *
  * PUBLIC: int CDB___db_pitem
- * PUBLIC:     __P((DBC *, PAGE *, u_int32_t, u_int32_t, DBT *, DBT *));
+ * PUBLIC:     __P((DBC *, PAGE *, uint32_t, uint32_t, DBT *, DBT *));
  */
 int
 CDB___db_pitem (dbc, pagep, indx, nbytes, hdr, data)
      DBC *dbc;
      PAGE *pagep;
-     u_int32_t indx;
-     u_int32_t nbytes;
+     uint32_t indx;
+     uint32_t nbytes;
      DBT *hdr, *data;
 {
   DB *dbp;
   BKEYDATA bk;
   DBT thdr;
   int ret;
-  u_int8_t *p;
+  uint8_t *p;
 
   /*
    * Put a single item onto a page.  The logic figuring out where to
@@ -510,7 +510,7 @@ CDB___db_pitem (dbc, pagep, indx, nbytes, hdr, data)
     if ((ret = CDB___db_addrem_log (dbp->dbenv, dbc->txn,
                                     &LSN (pagep), 0, DB_ADD_DUP,
                                     dbp->log_fileid, PGNO (pagep),
-                                    (u_int32_t) indx, nbytes, hdr, data,
+                                    (uint32_t) indx, nbytes, hdr, data,
                                     &LSN (pagep))) != 0)
       return (ret);
 
@@ -544,12 +544,12 @@ CDB___db_pitem (dbc, pagep, indx, nbytes, hdr, data)
  * CDB___db_relink --
  *  Relink around a deleted page.
  *
- * PUBLIC: int CDB___db_relink __P((DBC *, u_int32_t, PAGE *, PAGE **, int));
+ * PUBLIC: int CDB___db_relink __P((DBC *, uint32_t, PAGE *, PAGE **, int));
  */
 int
 CDB___db_relink (dbc, add_rem, pagep, new_next, needlock)
      DBC *dbc;
-     u_int32_t add_rem;
+     uint32_t add_rem;
      PAGE *pagep, **new_next;
      int needlock;
 {

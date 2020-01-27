@@ -28,13 +28,13 @@ static const char sccsid[] = "@(#)db_upgrade.c  11.3 (Sleepycat) 10/20/99";
  * CDB___db_upgrade --
  *  Upgrade an existing database.
  *
- * PUBLIC: int CDB___db_upgrade __P((DB *, const char *, u_int32_t));
+ * PUBLIC: int CDB___db_upgrade __P((DB *, const char *, uint32_t));
  */
 int
 CDB___db_upgrade (dbp, fname, flags)
      DB *dbp;
      const char *fname;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB_ENV *dbenv;
   DB_FH fh;

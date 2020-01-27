@@ -164,7 +164,7 @@ CDB___log_recover (dblp)
   DBT dbt;
   DB_LSN lsn;
   LOG *lp;
-  u_int32_t chk;
+  uint32_t chk;
   int cnt, found_checkpoint, ret;
 
   lp = dblp->reginfo.primary;
@@ -201,9 +201,9 @@ CDB___log_recover (dblp)
   found_checkpoint = 0;
   while (CDB___log_get (dblp, &lsn, &dbt, DB_NEXT, 1) == 0)
   {
-    if (dbt.size < sizeof (u_int32_t))
+    if (dbt.size < sizeof (uint32_t))
       continue;
-    memcpy (&chk, dbt.data, sizeof (u_int32_t));
+    memcpy (&chk, dbt.data, sizeof (uint32_t));
     if (chk == DB_txn_ckp)
     {
       lp->chkpt_lsn = lsn;
@@ -244,9 +244,9 @@ CDB___log_recover (dblp)
      */
     while (CDB___log_get (dblp, &lsn, &dbt, DB_NEXT, 1) == 0)
     {
-      if (dbt.size < sizeof (u_int32_t))
+      if (dbt.size < sizeof (uint32_t))
         continue;
-      memcpy (&chk, dbt.data, sizeof (u_int32_t));
+      memcpy (&chk, dbt.data, sizeof (uint32_t));
       if (chk == DB_txn_ckp)
       {
         lp->chkpt_lsn = lsn;
@@ -286,7 +286,7 @@ CDB___log_find (dblp, find_first, valp)
      DB_LOG *dblp;
      int find_first, *valp;
 {
-  u_int32_t clv, logval;
+  uint32_t clv, logval;
   int cnt, fcnt, ret;
   const char *dir;
   char **names, *p, *q;
@@ -360,12 +360,12 @@ CDB___log_find (dblp, find_first, valp)
  * log_valid --
  *  Validate a log file.
  *
- * PUBLIC: int CDB___log_valid __P((DB_LOG *, u_int32_t, int));
+ * PUBLIC: int CDB___log_valid __P((DB_LOG *, uint32_t, int));
  */
 int
 CDB___log_valid (dblp, number, set_persist)
      DB_LOG *dblp;
-     u_int32_t number;
+     uint32_t number;
      int set_persist;
 {
   DB_FH fh;

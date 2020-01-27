@@ -26,8 +26,8 @@ static const char sccsid[] = "@(#)log_method.c  11.3 (Sleepycat) 8/11/99";
 #include "db_int.h"
 #include "log.h"
 
-static int CDB___log_set_lg_max __P ((DB_ENV *, u_int32_t));
-static int CDB___log_set_lg_bsize __P ((DB_ENV *, u_int32_t));
+static int CDB___log_set_lg_max __P ((DB_ENV *, uint32_t));
+static int CDB___log_set_lg_bsize __P ((DB_ENV *, uint32_t));
 
 /*
  * CDB___log_dbenv_create --
@@ -53,7 +53,7 @@ CDB___log_dbenv_create (dbenv)
 static int
 CDB___log_set_lg_bsize (dbenv, lg_bsize)
      DB_ENV *dbenv;
-     u_int32_t lg_bsize;
+     uint32_t lg_bsize;
 {
   ENV_ILLEGAL_AFTER_OPEN (dbenv, "set_lg_bsize");
 
@@ -75,7 +75,7 @@ CDB___log_set_lg_bsize (dbenv, lg_bsize)
 static int
 CDB___log_set_lg_max (dbenv, lg_max)
      DB_ENV *dbenv;
-     u_int32_t lg_max;
+     uint32_t lg_max;
 {
   ENV_ILLEGAL_AFTER_OPEN (dbenv, "set_lg_max");
 

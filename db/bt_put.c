@@ -57,15 +57,15 @@ static const char sccsid[] = "@(#)bt_put.c  11.20 (Sleepycat) 10/28/99";
 #include "db_page.h"
 #include "btree.h"
 
-static int CDB___bam_ndup __P ((DBC *, PAGE *, u_int32_t));
-static int CDB___bam_ovput __P ((DBC *, PAGE *, u_int32_t, DBT *));
+static int CDB___bam_ndup __P ((DBC *, PAGE *, uint32_t));
+static int CDB___bam_ovput __P ((DBC *, PAGE *, uint32_t, DBT *));
 
 /*
  * CDB___bam_iitem --
  *  Insert an item into the tree.
  *
  * PUBLIC: int CDB___bam_iitem __P((DBC *,
- * PUBLIC:    PAGE **, db_indx_t *, DBT *, DBT *, u_int32_t, u_int32_t));
+ * PUBLIC:    PAGE **, db_indx_t *, DBT *, DBT *, uint32_t, uint32_t));
  */
 int
 CDB___bam_iitem (dbc, hp, indxp, key, data, op, flags)
@@ -73,7 +73,7 @@ CDB___bam_iitem (dbc, hp, indxp, key, data, op, flags)
      PAGE **hp;
      db_indx_t *indxp;
      DBT *key, *data;
-     u_int32_t op, flags;
+     uint32_t op, flags;
 {
   BKEYDATA *bk;
   BTREE *t;
@@ -83,7 +83,7 @@ CDB___bam_iitem (dbc, hp, indxp, key, data, op, flags)
   PAGE *h;
   db_indx_t indx;
   db_pgno_t pgno;
-  u_int32_t data_size, have_bytes, need_bytes, needed;
+  uint32_t data_size, have_bytes, need_bytes, needed;
   int bigkey, bigdata, dupadjust, padrec, replace, ret, was_deleted;
 
   COMPQUIET (bk, NULL);
@@ -489,16 +489,16 @@ done:if (dbp->type == DB_RECNO)
  * CDB___bam_partsize --
  *  Figure out how much space a partial data item is in total.
  *
- * PUBLIC: u_int32_t CDB___bam_partsize __P((u_int32_t, DBT *, PAGE *, u_int32_t));
+ * PUBLIC: uint32_t CDB___bam_partsize __P((uint32_t, DBT *, PAGE *, uint32_t));
  */
-u_int32_t
+uint32_t
 CDB___bam_partsize (op, data, h, indx)
-     u_int32_t op, indx;
+     uint32_t op, indx;
      DBT *data;
      PAGE *h;
 {
   BKEYDATA *bk;
-  u_int32_t nbytes;
+  uint32_t nbytes;
 
   /*
    * If the record doesn't already exist, it's simply the data we're
@@ -539,13 +539,13 @@ CDB___bam_partsize (op, data, h, indx)
  * CDB___bam_build --
  *  Build the real record for a partial put, or short fixed-length record.
  *
- * PUBLIC: int CDB___bam_build __P((DBC *, u_int32_t,
- * PUBLIC:     DBT *, PAGE *, u_int32_t, u_int32_t));
+ * PUBLIC: int CDB___bam_build __P((DBC *, uint32_t,
+ * PUBLIC:     DBT *, PAGE *, uint32_t, uint32_t));
  */
 int
 CDB___bam_build (dbc, op, dbt, h, indx, nbytes)
      DBC *dbc;
-     u_int32_t op, indx, nbytes;
+     uint32_t op, indx, nbytes;
      DBT *dbt;
      PAGE *h;
 {
@@ -554,8 +554,8 @@ CDB___bam_build (dbc, op, dbt, h, indx, nbytes)
   BTREE *t;
   DB *dbp;
   DBT copy;
-  u_int32_t len, tlen;
-  u_int8_t *p;
+  uint32_t len, tlen;
+  uint8_t *p;
   int ret;
 
   COMPQUIET (bo, NULL);
@@ -593,7 +593,7 @@ CDB___bam_build (dbc, op, dbt, h, indx, nbytes)
    */
   if (!F_ISSET (dbt, DB_DBT_PARTIAL) || op != DB_CURRENT)
   {
-    p = (u_int8_t *) dbc->rdata.data + dbt->doff;
+    p = (uint8_t *) dbc->rdata.data + dbt->doff;
     tlen = dbt->doff;
     goto user_copy;
   }
@@ -624,7 +624,7 @@ CDB___bam_build (dbc, op, dbt, h, indx, nbytes)
 
     /* Skip any leading data from the original record. */
     tlen = dbt->doff;
-    p = (u_int8_t *) dbc->rdata.data + dbt->doff;
+    p = (uint8_t *) dbc->rdata.data + dbt->doff;
 
     /*
      * Copy in any trailing data from the original record.
@@ -651,7 +651,7 @@ CDB___bam_build (dbc, op, dbt, h, indx, nbytes)
     memcpy (dbc->rdata.data,
             bk->data, dbt->doff > bk->len ? bk->len : dbt->doff);
     tlen = dbt->doff;
-    p = (u_int8_t *) dbc->rdata.data + dbt->doff;
+    p = (uint8_t *) dbc->rdata.data + dbt->doff;
 
     /* Copy in any trailing data from the original record. */
     len = dbt->doff + dbt->dlen;
@@ -702,7 +702,7 @@ static int
 CDB___bam_ovput (dbc, h, indx, item)
      DBC *dbc;
      PAGE *h;
-     u_int32_t indx;
+     uint32_t indx;
      DBT *item;
 {
   BOVERFLOW bo;
@@ -724,13 +724,13 @@ CDB___bam_ovput (dbc, h, indx, item)
  * CDB___bam_ritem --
  *  Replace an item on a page.
  *
- * PUBLIC: int CDB___bam_ritem __P((DBC *, PAGE *, u_int32_t, DBT *));
+ * PUBLIC: int CDB___bam_ritem __P((DBC *, PAGE *, uint32_t, DBT *));
  */
 int
 CDB___bam_ritem (dbc, h, indx, data)
      DBC *dbc;
      PAGE *h;
-     u_int32_t indx;
+     uint32_t indx;
      DBT *data;
 {
   BKEYDATA *bk;
@@ -738,7 +738,7 @@ CDB___bam_ritem (dbc, h, indx, data)
   DBT orig, repl;
   db_indx_t cnt, lo, ln, min, off, prefix, suffix;
   int32_t nbytes;
-  u_int8_t *p, *t;
+  uint8_t *p, *t;
 
   dbp = dbc->dbp;
 
@@ -765,23 +765,23 @@ CDB___bam_ritem (dbc, h, indx, data)
 
     min -= prefix;
     for (suffix = 0,
-         p = (u_int8_t *) bk->data + bk->len - 1,
-         t = (u_int8_t *) data->data + data->size - 1;
+         p = (uint8_t *) bk->data + bk->len - 1,
+         t = (uint8_t *) data->data + data->size - 1;
          suffix < min && *p == *t; ++suffix, --p, --t)
       ;
 
     /* We only log the parts of the keys that have changed. */
-    orig.data = (u_int8_t *) bk->data + prefix;
+    orig.data = (uint8_t *) bk->data + prefix;
     orig.size = bk->len - (prefix + suffix);
-    repl.data = (u_int8_t *) data->data + prefix;
+    repl.data = (uint8_t *) data->data + prefix;
     repl.size = data->size - (prefix + suffix);
     int ret = 0;
     if ((ret = CDB___bam_repl_log (dbp->dbenv, dbc->txn,
                                    &LSN (h), 0, dbp->log_fileid, PGNO (h),
-                                   &LSN (h), (u_int32_t) indx,
-                                   (u_int32_t) B_DISSET (bk->type), &orig,
-                                   &repl, (u_int32_t) prefix,
-                                   (u_int32_t) suffix)) != 0)
+                                   &LSN (h), (uint32_t) indx,
+                                   (uint32_t) B_DISSET (bk->type), &orig,
+                                   &repl, (uint32_t) prefix,
+                                   (uint32_t) suffix)) != 0)
       return (ret);
   }
 
@@ -789,8 +789,8 @@ CDB___bam_ritem (dbc, h, indx, data)
    * Set references to the first in-use byte on the page and the
    * first byte of the item being replaced.
    */
-  p = (u_int8_t *) h + HOFFSET (h);
-  t = (u_int8_t *) bk;
+  p = (uint8_t *) h + HOFFSET (h);
+  t = (uint8_t *) bk;
 
   /*
    * If the entry is growing in size, shift the beginning of the data
@@ -839,7 +839,7 @@ static int
 CDB___bam_ndup (dbc, h, indx)
      DBC *dbc;
      PAGE *h;
-     u_int32_t indx;
+     uint32_t indx;
 {
   BKEYDATA *bk;
   BOVERFLOW bo;

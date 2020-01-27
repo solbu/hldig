@@ -199,7 +199,7 @@ CDB___os_realloc (size, db_realloc, storep)
   }
 
 #ifdef DIAGNOSTIC
-  ((u_int8_t *) p)[size - 1] = CLEAR_BYTE;      /* Initialize guard byte. */
+  ((uint8_t *) p)[size - 1] = CLEAR_BYTE;      /* Initialize guard byte. */
 #endif
 
   *(void **) storep = p;
@@ -225,7 +225,7 @@ CDB___os_free (ptr, size)
      * Check that the guard byte (one past the end of the memory) is
      * still CLEAR_BYTE.
      */
-    if (((u_int8_t *) ptr)[size] != CLEAR_BYTE)
+    if (((uint8_t *) ptr)[size] != CLEAR_BYTE)
       __os_guard ();
 
     /* Clear memory. */
@@ -261,7 +261,7 @@ CDB___os_freestr (ptr)
    * Check that the guard byte (one past the end of the memory) is
    * still CLEAR_BYTE.
    */
-  if (((u_int8_t *) ptr)[size] != CLEAR_BYTE)
+  if (((uint8_t *) ptr)[size] != CLEAR_BYTE)
     __os_guard ();
 
   /* Clear memory. */
@@ -313,7 +313,7 @@ __os_guard ()
  *  some compilers optimize to use instructions that require alignment.
  *  It's a compiler bug, but it's a pretty common one.
  *
- *  Casting the memcpy arguments to (u_int8_t *) appears to work most
+ *  Casting the memcpy arguments to (uint8_t *) appears to work most
  *  of the time, but we've seen examples where it wasn't sufficient
  *  and there's nothing in ANSI C that requires it.
  *

@@ -27,12 +27,12 @@ static const char revid[] =
 #include "btree.h"
 #include "hash.h"
 
-static int __ham_dups_unsorted __P ((DB *, u_int8_t *, u_int32_t));
-static int __ham_vrfy_bucket __P ((DB *, VRFY_DBINFO *, HMETA *, u_int32_t,
-                                   u_int32_t));
+static int __ham_dups_unsorted __P ((DB *, uint8_t *, uint32_t));
+static int __ham_vrfy_bucket __P ((DB *, VRFY_DBINFO *, HMETA *, uint32_t,
+                                   uint32_t));
 static int __ham_vrfy_item __P ((DB *,
-                                 VRFY_DBINFO *, db_pgno_t, PAGE *, u_int32_t,
-                                 u_int32_t));
+                                 VRFY_DBINFO *, db_pgno_t, PAGE *, uint32_t,
+                                 uint32_t));
 
 /*
  * CDB___ham_vrfy_meta --
@@ -43,7 +43,7 @@ static int __ham_vrfy_item __P ((DB *,
  *  amount of state here is significant.
  *
  * PUBLIC: int CDB___ham_vrfy_meta __P((DB *, VRFY_DBINFO *, HMETA *,
- * PUBLIC:     db_pgno_t, u_int32_t));
+ * PUBLIC:     db_pgno_t, uint32_t));
  */
 int
 CDB___ham_vrfy_meta (dbp, vdp, m, pgno, flags)
@@ -51,13 +51,13 @@ CDB___ham_vrfy_meta (dbp, vdp, m, pgno, flags)
      VRFY_DBINFO *vdp;
      HMETA *m;
      db_pgno_t pgno;
-     u_int32_t flags;
+     uint32_t flags;
 {
   HASH *hashp;
   VRFY_PAGEINFO *pip;
   int i, ret, t_ret, isbad;
-  u_int32_t pwr, mbucket;
-  u_int32_t (*hfunc) __P ((const void *, u_int32_t));
+  uint32_t pwr, mbucket;
+  uint32_t (*hfunc) __P ((const void *, uint32_t));
 
   if ((ret = CDB___db_vrfy_getpageinfo (vdp, pgno, &pip)) != 0)
     return (ret);
@@ -189,7 +189,7 @@ err:if ((t_ret = CDB___db_vrfy_putpageinfo (vdp, pip)) != 0 && ret == 0)
  *  Verify hash page.
  *
  * PUBLIC: int CDB___ham_vrfy __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
- * PUBLIC:     u_int32_t));
+ * PUBLIC:     uint32_t));
  */
 int
 CDB___ham_vrfy (dbp, vdp, h, pgno, flags)
@@ -197,7 +197,7 @@ CDB___ham_vrfy (dbp, vdp, h, pgno, flags)
      VRFY_DBINFO *vdp;
      PAGE *h;
      db_pgno_t pgno;
-     u_int32_t flags;
+     uint32_t flags;
 {
   VRFY_PAGEINFO *pip;
   db_indx_t ent, himark, inpend;
@@ -239,7 +239,7 @@ CDB___ham_vrfy (dbp, vdp, h, pgno, flags)
    * be unsafe to proceed.
    */
   for (ent = 0, himark = dbp->pgsize,
-       inpend = (u_int8_t *) h->inp - (u_int8_t *) h;
+       inpend = (uint8_t *) h->inp - (uint8_t *) h;
        ent < NUM_ENT (h); ent++)
     if (h->inp[ent] >= himark)
     {
@@ -280,7 +280,7 @@ __ham_vrfy_item (dbp, vdp, pgno, h, i, flags)
      VRFY_DBINFO *vdp;
      db_pgno_t pgno;
      PAGE *h;
-     u_int32_t i, flags;
+     uint32_t i, flags;
 {
   HOFFPAGE hop;
   HOFFDUP hod;
@@ -288,7 +288,7 @@ __ham_vrfy_item (dbp, vdp, pgno, h, i, flags)
   VRFY_PAGEINFO *pip;
   db_indx_t offset, len, dlen, elen;
   int ret, t_ret;
-  u_int8_t *databuf;
+  uint8_t *databuf;
 
   if ((ret = CDB___db_vrfy_getpageinfo (vdp, pgno, &pip)) != 0)
     return (ret);
@@ -406,14 +406,14 @@ err:if ((t_ret = CDB___db_vrfy_putpageinfo (vdp, pip)) != 0 && ret == 0)
  *  Verify the structure of a hash database.
  *
  * PUBLIC: int CDB___ham_vrfy_structure __P((DB *, VRFY_DBINFO *, db_pgno_t,
- * PUBLIC:     u_int32_t));
+ * PUBLIC:     uint32_t));
  */
 int
 CDB___ham_vrfy_structure (dbp, vdp, meta_pgno, flags)
      DB *dbp;
      VRFY_DBINFO *vdp;
      db_pgno_t meta_pgno;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB *pgset;
   HMETA *m;
@@ -421,7 +421,7 @@ CDB___ham_vrfy_structure (dbp, vdp, meta_pgno, flags)
   VRFY_PAGEINFO *pip;
   int isbad, p, ret, t_ret;
   db_pgno_t pgno;
-  u_int32_t bucket;
+  uint32_t bucket;
 
   ret = isbad = 0;
   h = NULL;
@@ -519,7 +519,7 @@ __ham_vrfy_bucket (dbp, vdp, m, bucket, flags)
      DB *dbp;
      VRFY_DBINFO *vdp;
      HMETA *m;
-     u_int32_t bucket, flags;
+     uint32_t bucket, flags;
 {
   HASH *hashp;
   VRFY_CHILDINFO *child;
@@ -527,7 +527,7 @@ __ham_vrfy_bucket (dbp, vdp, m, bucket, flags)
   int ret, t_ret, isbad, p;
   db_pgno_t pgno, next_pgno;
   DBC *cc;
-  u_int32_t (*hfunc) __P ((const void *, u_int32_t));
+  uint32_t (*hfunc) __P ((const void *, uint32_t));
 
   isbad = 0;
   pip = NULL;
@@ -715,24 +715,24 @@ err:if (cc != NULL && ((t_ret = CDB___db_vrfy_ccclose (cc)) != 0)
  *  Verify that all items on a given hash page hash correctly.
  *
  * PUBLIC: int CDB___ham_vrfy_hashing __P((DB *,
- * PUBLIC:     u_int32_t, HMETA *, u_int32_t, db_pgno_t, u_int32_t,
- * PUBLIC:     u_int32_t (*) __P((const void *, u_int32_t))));
+ * PUBLIC:     uint32_t, HMETA *, uint32_t, db_pgno_t, uint32_t,
+ * PUBLIC:     uint32_t (*) __P((const void *, uint32_t))));
  */
 int
 CDB___ham_vrfy_hashing (dbp, nentries, m, thisbucket, pgno, flags, hfunc)
      DB *dbp;
-     u_int32_t nentries;
+     uint32_t nentries;
      HMETA *m;
-     u_int32_t thisbucket;
+     uint32_t thisbucket;
      db_pgno_t pgno;
-     u_int32_t flags;
-u_int32_t (*hfunc) __P ((const void *, u_int32_t));
+     uint32_t flags;
+uint32_t (*hfunc) __P ((const void *, uint32_t));
 {
   DBT dbt;
   PAGE *h;
   db_indx_t i;
   int ret, t_ret, isbad;
-  u_int32_t hval, bucket;
+  uint32_t hval, bucket;
 
   ret = isbad = 0;
   memset (&dbt, 0, sizeof (DBT));
@@ -781,7 +781,7 @@ err:if (dbt.data != NULL)
  *  hash page.
  *
  * PUBLIC: int CDB___ham_salvage __P((DB *, VRFY_DBINFO *, db_pgno_t, PAGE *,
- * PUBLIC:     void *, int (*)(void *, const void *), u_int32_t));
+ * PUBLIC:     void *, int (*)(void *, const void *), uint32_t));
  */
 int
 CDB___ham_salvage (dbp, vdp, pgno, h, handle, callback, flags)
@@ -791,13 +791,13 @@ CDB___ham_salvage (dbp, vdp, pgno, h, handle, callback, flags)
      PAGE *h;
      void *handle;
      int (*callback) __P ((void *, const void *));
-     u_int32_t flags;
+     uint32_t flags;
 {
   DBT dbt, unkdbt;
   db_pgno_t dpgno;
   int ret, err_ret, t_ret;
-  u_int32_t himark, tlen;
-  u_int8_t *hk;
+  uint32_t himark, tlen;
+  uint8_t *hk;
   void *buf;
   db_indx_t dlen, len, i;
 
@@ -834,7 +834,7 @@ CDB___ham_salvage (dbp, vdp, pgno, h, handle, callback, flags)
     {
       hk = P_ENTRY (h, i);
       len = LEN_HKEYDATA (h, dbp->pgsize, i);
-      if ((u_int32_t) (hk + len - (u_int8_t *) h) > dbp->pgsize)
+      if ((uint32_t) (hk + len - (uint8_t *) h) > dbp->pgsize)
       {
         /*
          * Item is unsafely large;  either continue
@@ -843,7 +843,7 @@ CDB___ham_salvage (dbp, vdp, pgno, h, handle, callback, flags)
          */
         if (!LF_ISSET (DB_AGGRESSIVE))
           continue;
-        len = dbp->pgsize - (u_int32_t) (hk - (u_int8_t *) h);
+        len = dbp->pgsize - (uint32_t) (hk - (uint8_t *) h);
         err_ret = DB_VERIFY_BAD;
       }
       switch (HPAGE_PTYPE (hk))
@@ -956,7 +956,7 @@ CDB___ham_salvage (dbp, vdp, pgno, h, handle, callback, flags)
  *  Return the set of hash pages corresponding to the given
  *  known-good meta page.
  *
- * PUBLIC: int CDB___ham_meta2pgset __P((DB *, VRFY_DBINFO *, HMETA *, u_int32_t,
+ * PUBLIC: int CDB___ham_meta2pgset __P((DB *, VRFY_DBINFO *, HMETA *, uint32_t,
  * PUBLIC:     DB *));
  */
 int
@@ -964,12 +964,12 @@ CDB___ham_meta2pgset (dbp, vdp, hmeta, flags, pgset)
      DB *dbp;
      VRFY_DBINFO *vdp;
      HMETA *hmeta;
-     u_int32_t flags;
+     uint32_t flags;
      DB *pgset;
 {
   PAGE *h;
   db_pgno_t pgno;
-  u_int32_t bucket, totpgs;
+  uint32_t bucket, totpgs;
   int ret, val;
 
   /*
@@ -1050,8 +1050,8 @@ CDB___ham_meta2pgset (dbp, vdp, hmeta, flags, pgset)
 static int
 __ham_dups_unsorted (dbp, buf, len)
      DB *dbp;
-     u_int8_t *buf;
-     u_int32_t len;
+     uint8_t *buf;
+     uint32_t len;
 {
   DBT a, b;
   db_indx_t offset, dlen;

@@ -21,14 +21,14 @@ static const char sccsid[] = "@(#)lock_conflict.c  11.1 (Sleepycat) 7/25/99";
  * The conflict arrays are set up such that the row is the lock you
  * are holding and the column is the lock that is desired.
  */
-const u_int8_t CDB_db_rw_conflicts[] = {
+const uint8_t CDB_db_rw_conflicts[] = {
   /*    N   R   W */
   /*   N */ 0, 0, 0,
   /*   R */ 0, 0, 1,
   /*   W */ 0, 1, 1
 };
 
-const u_int8_t CDB_db_riw_conflicts[] = {
+const uint8_t CDB_db_riw_conflicts[] = {
   /*    N     S     X    IX    IS  SIX */
   /*   N */ 0, 0, 0, 0, 0, 0,
   /*   S */ 0, 0, 1, 1, 0, 1,

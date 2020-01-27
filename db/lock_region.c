@@ -28,16 +28,16 @@ static void CDB___lock_dump_object __P ((DB_LOCKTAB *, DB_LOCKOBJ *, FILE *));
 static const char *CDB___lock_dump_status __P ((db_status_t));
 static int CDB___lock_init __P ((DB_ENV *, DB_LOCKTAB *));
 static size_t CDB___lock_region_size __P ((DB_ENV *));
-static int CDB___lock_set_lk_conflicts __P ((DB_ENV *, u_int8_t *, int));
-static int CDB___lock_set_lk_detect __P ((DB_ENV *, u_int32_t));
-static int CDB___lock_set_lk_max __P ((DB_ENV *, u_int32_t));
+static int CDB___lock_set_lk_conflicts __P ((DB_ENV *, uint8_t *, int));
+static int CDB___lock_set_lk_detect __P ((DB_ENV *, uint32_t));
+static int CDB___lock_set_lk_max __P ((DB_ENV *, uint32_t));
 
 /*
  * This conflict array is used for concurrent db access (CDB).  It
  * uses the same locks as the db_rw_conflict array, but adds an IW
  * mode to be used for write cursors.
  */
-static u_int8_t const db_cdb_conflicts[] = {
+static uint8_t const db_cdb_conflicts[] = {
   /*    N   R   W  IW */
   /*    N */ 0, 0, 0, 0,
   /*    R */ 0, 0, 1, 0,
@@ -86,7 +86,7 @@ CDB___lock_dbenv_close (dbenv)
 static int
 CDB___lock_set_lk_conflicts (dbenv, lk_conflicts, lk_modes)
      DB_ENV *dbenv;
-     u_int8_t *lk_conflicts;
+     uint8_t *lk_conflicts;
      int lk_modes;
 {
   int ret;
@@ -115,7 +115,7 @@ CDB___lock_set_lk_conflicts (dbenv, lk_conflicts, lk_modes)
 static int
 CDB___lock_set_lk_detect (dbenv, lk_detect)
      DB_ENV *dbenv;
-     u_int32_t lk_detect;
+     uint32_t lk_detect;
 {
   ENV_ILLEGAL_AFTER_OPEN (dbenv, "set_lk_detect");
 
@@ -140,7 +140,7 @@ CDB___lock_set_lk_detect (dbenv, lk_detect)
 static int
 CDB___lock_set_lk_max (dbenv, lk_max)
      DB_ENV *dbenv;
-     u_int32_t lk_max;
+     uint32_t lk_max;
 {
   ENV_ILLEGAL_AFTER_OPEN (dbenv, "set_lk_max");
 
@@ -209,7 +209,7 @@ CDB___lock_open (dbenv)
 
   /* Set remaining pointers into region. */
   lt->memlock = (MUTEX *) R_ADDR (&lt->reginfo, region->memlock_off);
-  lt->conflicts = (u_int8_t *) R_ADDR (&lt->reginfo, region->conf_off);
+  lt->conflicts = (uint8_t *) R_ADDR (&lt->reginfo, region->conf_off);
   lt->obj_tab = (DB_HASHTAB *) R_ADDR (&lt->reginfo, region->obj_off);
   lt->osynch_tab = (MUTEX *) R_ADDR (&lt->reginfo, region->osynch_off);
   lt->locker_tab = (DB_HASHTAB *) R_ADDR (&lt->reginfo, region->locker_off);
@@ -240,7 +240,7 @@ CDB___lock_init (dbenv, lt)
      DB_ENV *dbenv;
      DB_LOCKTAB *lt;
 {
-  const u_int8_t *lk_conflicts;
+  const uint8_t *lk_conflicts;
   struct __db_lock *lp;
   DB_LOCKER *lidp;
   DB_LOCKOBJ *op;
@@ -248,8 +248,8 @@ CDB___lock_init (dbenv, lt)
 #ifdef FINE_GRAIN
   MUTEX *m;
 #endif
-  u_int32_t i, lk_modes, nelements;
-  u_int8_t *addr;
+  uint32_t i, lk_modes, nelements;
+  uint8_t *addr;
   int ret;
 
   if ((ret = CDB___db_shalloc (lt->reginfo.addr,
@@ -495,7 +495,7 @@ CDB___lock_dump_region (dbenv, area, fp)
   DB_LOCKOBJ *op;
   DB_LOCKREGION *lrp;
   DB_LOCKTAB *lt;
-  u_int32_t flags, i, j;
+  uint32_t flags, i, j;
   int label;
 
   /* Make it easy to call from the debugger. */
@@ -645,8 +645,8 @@ CDB___lock_dump_object (lt, op, fp)
      FILE *fp;
 {
   struct __db_lock *lp;
-  u_int32_t j;
-  u_int8_t *ptr;
+  uint32_t j;
+  uint8_t *ptr;
   u_int ch;
 
   ptr = SH_DBT_PTR (&op->lockobj);
@@ -704,7 +704,7 @@ CDB___lock_region_size (dbenv)
      DB_ENV *dbenv;
 {
   size_t retval;
-  u_int32_t i, nelements, nlocks;
+  uint32_t i, nelements, nlocks;
 
   nlocks = dbenv->lk_max;
   nelements = CDB___db_tablesize (dbenv->lk_max);

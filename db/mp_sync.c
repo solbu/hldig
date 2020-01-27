@@ -23,7 +23,7 @@ static const char sccsid[] = "@(#)mp_sync.c  11.10 (Sleepycat) 10/29/99";
 
 static int CDB___bhcmp __P ((const void *, const void *));
 static int CDB___memp_fsync __P ((DB_MPOOLFILE *));
-static int CDB___memp_sballoc __P ((DB_ENV *, BH ***, u_int32_t *));
+static int CDB___memp_sballoc __P ((DB_ENV *, BH ***, uint32_t *));
 
 /*
  * CDB_memp_sync --
@@ -40,7 +40,7 @@ CDB_memp_sync (dbenv, lsnp)
   MCACHE *mc;
   MPOOL *mp;
   MPOOLFILE *mfp;
-  u_int32_t ar_cnt, i, ndirty;
+  uint32_t ar_cnt, i, ndirty;
   int ret, retry_done, retry_need, wrote;
 
   PANIC_CHECK (dbenv);
@@ -401,7 +401,7 @@ CDB___memp_fsync (dbmfp)
   MCACHE *mc;
   MPOOL *mp;
   size_t mf_offset;
-  u_int32_t ar_cnt, i, ndirty;
+  uint32_t ar_cnt, i, ndirty;
   int incomplete, ret, retry_done, retry_need, wrote;
 
   dbmp = dbmfp->dbmp;
@@ -570,12 +570,12 @@ static int
 CDB___memp_sballoc (dbenv, bharrayp, ndirtyp)
      DB_ENV *dbenv;
      BH ***bharrayp;
-     u_int32_t *ndirtyp;
+     uint32_t *ndirtyp;
 {
   DB_MPOOL *dbmp;
   MCACHE *mc;
   MPOOL *mp;
-  u_int32_t i, nclean, ndirty, maxpin;
+  uint32_t i, nclean, ndirty, maxpin;
   int ret;
 
   dbmp = dbenv->mp_handle;

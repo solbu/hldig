@@ -146,9 +146,9 @@ void
 CDB___db_metaswap (pg)
      PAGE *pg;
 {
-  u_int8_t *p;
+  uint8_t *p;
 
-  p = (u_int8_t *) pg;
+  p = (uint8_t *) pg;
 
   /* Swap the meta-data information. */
   SWAP32 (p);                   /* lsn.file */
@@ -180,7 +180,7 @@ CDB___db_byteswap (pg, h, pagesize, pgin)
   BOVERFLOW *bo;
   RINTERNAL *ri;
   db_indx_t i, len, tmp;
-  u_int8_t *p, *end;
+  uint8_t *p, *end;
 
   COMPQUIET (pg, 0);
 

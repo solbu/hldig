@@ -35,17 +35,17 @@ static const char sccsid[] = "@(#)db_pr.c  11.9 (Sleepycat) 11/10/99";
 #include "qam.h"
 #include "db_am.h"
 
-static int CDB___db_bmeta __P ((DB *, FILE *, BTMETA *, u_int32_t));
-static int CDB___db_hmeta __P ((DB *, FILE *, HMETA *, u_int32_t));
+static int CDB___db_bmeta __P ((DB *, FILE *, BTMETA *, uint32_t));
+static int CDB___db_hmeta __P ((DB *, FILE *, HMETA *, uint32_t));
 static void CDB___db_meta
-__P ((DB *, DBMETA *, FILE *, FN const *, u_int32_t));
+__P ((DB *, DBMETA *, FILE *, FN const *, uint32_t));
 static const char *CDB___db_name __P ((DB *));
-static void CDB___db_prdb __P ((DB *, FILE *, u_int32_t));
+static void CDB___db_prdb __P ((DB *, FILE *, uint32_t));
 static FILE *CDB___db_prinit __P ((FILE *));
 static void CDB___db_proff __P ((void *));
-static int CDB___db_prtree __P ((DB *, u_int32_t));
+static int CDB___db_prtree __P ((DB *, uint32_t));
 static void CDB___db_psize __P ((DB *));
-static int CDB___db_qmeta __P ((DB *, FILE *, QMETA *, u_int32_t));
+static int CDB___db_qmeta __P ((DB *, FILE *, QMETA *, uint32_t));
 
 /*
  * 64K is the maximum page size, so by default we check for offsets larger
@@ -83,7 +83,7 @@ CDB___db_dump (dbp, op, name)
      char *op, *name;
 {
   FILE *fp, *save_fp;
-  u_int32_t flags;
+  uint32_t flags;
 
   COMPQUIET (save_fp, NULL);
 
@@ -139,7 +139,7 @@ static void
 CDB___db_prdb (dbp, fp, flags)
      DB *dbp;
      FILE *fp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   static const FN fn[] = {
     {DB_AM_DISCARD, "discard cached pages"},
@@ -235,7 +235,7 @@ CDB___db_prdb (dbp, fp, flags)
 static int
 CDB___db_prtree (dbp, flags)
      DB *dbp;
-     u_int32_t flags;
+     uint32_t flags;
 {
   PAGE *h;
   db_pgno_t i, last;
@@ -274,12 +274,12 @@ CDB___db_meta (dbp, dbmeta, fp, fn, flags)
      DBMETA *dbmeta;
      FILE *fp;
      FN const *fn;
-     u_int32_t flags;
+     uint32_t flags;
 {
   PAGE *h;
   int cnt;
   db_pgno_t pgno;
-  u_int8_t *p;
+  uint8_t *p;
   int ret;
   const char *sep;
 
@@ -328,7 +328,7 @@ CDB___db_meta (dbp, dbmeta, fp, fn, flags)
   }
 
   fprintf (fp, "\tuid: ");
-  for (p = (u_int8_t *) dbmeta->uid, cnt = 0; cnt < DB_FILE_ID_LEN; ++cnt)
+  for (p = (uint8_t *) dbmeta->uid, cnt = 0; cnt < DB_FILE_ID_LEN; ++cnt)
   {
     fprintf (fp, "%x", *p++);
     if (cnt < DB_FILE_ID_LEN - 1)
@@ -346,7 +346,7 @@ CDB___db_bmeta (dbp, fp, h, flags)
      DB *dbp;
      FILE *fp;
      BTMETA *h;
-     u_int32_t flags;
+     uint32_t flags;
 {
   static const FN mfn[] = {
     {BTM_DUP, "duplicates"},
@@ -379,7 +379,7 @@ CDB___db_hmeta (dbp, fp, h, flags)
      DB *dbp;
      FILE *fp;
      HMETA *h;
-     u_int32_t flags;
+     uint32_t flags;
 {
   static const FN mfn[] = {
     {DB_HASH_DUP, "duplicates"},
@@ -413,7 +413,7 @@ CDB___db_qmeta (dbp, fp, h, flags)
      DB *dbp;
      FILE *fp;
      QMETA *h;
-     u_int32_t flags;
+     uint32_t flags;
 {
   CDB___db_meta (dbp, (DBMETA *) h, fp, NULL, flags);
 
@@ -458,13 +458,13 @@ CDB___db_prnpage (dbp, pgno)
  * CDB___db_prpage
  *  -- Print out a page.
  *
- * PUBLIC: int CDB___db_prpage __P((DB *, PAGE *, u_int32_t));
+ * PUBLIC: int CDB___db_prpage __P((DB *, PAGE *, uint32_t));
  */
 int
 CDB___db_prpage (dbp, h, flags)
      DB *dbp;
      PAGE *h;
-     u_int32_t flags;
+     uint32_t flags;
 {
   BINTERNAL *bi;
   BKEYDATA *bk;
@@ -478,8 +478,8 @@ CDB___db_prpage (dbp, h, flags)
   db_recno_t recno;
   int deleted, ret;
   const char *s;
-  u_int32_t qlen;
-  u_int8_t *ep, *hk, *p;
+  uint32_t qlen;
+  uint8_t *ep, *hk, *p;
   void *sp;
 
   fp = CDB___db_prinit (NULL);
@@ -582,7 +582,7 @@ CDB___db_prpage (dbp, h, flags)
   if (TYPE (h) == P_OVERFLOW)
   {
     fprintf (fp, " ref cnt: %4lu ", (u_long) OV_REF (h));
-    CDB___db_pr ((u_int8_t *) h + P_OVERHEAD, OV_LEN (h));
+    CDB___db_pr ((uint8_t *) h + P_OVERHEAD, OV_LEN (h));
     return (0);
   }
   fprintf (fp, " entries: %4lu", (u_long) NUM_ENT (h));
@@ -594,8 +594,8 @@ CDB___db_prpage (dbp, h, flags)
   ret = 0;
   for (i = 0; i < NUM_ENT (h); i++)
   {
-    if (P_ENTRY (h, i) - (u_int8_t *) h < P_OVERHEAD ||
-        (size_t) (P_ENTRY (h, i) - (u_int8_t *) h) >= set_psize)
+    if (P_ENTRY (h, i) - (uint8_t *) h < P_OVERHEAD ||
+        (size_t) (P_ENTRY (h, i) - (uint8_t *) h) >= set_psize)
     {
       fprintf (fp,
                "ILLEGAL PAGE OFFSET: indx: %lu of %lu\n",
@@ -766,8 +766,8 @@ CDB___db_isbad (h, die)
 
   for (i = 0; i < NUM_ENT (h); i++)
   {
-    if (P_ENTRY (h, i) - (u_int8_t *) h < P_OVERHEAD ||
-        (size_t) (P_ENTRY (h, i) - (u_int8_t *) h) >= set_psize)
+    if (P_ENTRY (h, i) - (uint8_t *) h < P_OVERHEAD ||
+        (size_t) (P_ENTRY (h, i) - (uint8_t *) h) >= set_psize)
     {
       fprintf (fp,
                "ILLEGAL PAGE OFFSET: indx: %lu of %lu\n",
@@ -829,12 +829,12 @@ bad:if (die)
  * CDB___db_pr --
  *  Print out a data element.
  *
- * PUBLIC: void CDB___db_pr __P((u_int8_t *, u_int32_t));
+ * PUBLIC: void CDB___db_pr __P((uint8_t *, uint32_t));
  */
 void
 CDB___db_pr (p, len)
-     u_int8_t *p;
-     u_int32_t len;
+     uint8_t *p;
+     uint32_t len;
 {
   FILE *fp;
   u_int lastch;
@@ -881,8 +881,8 @@ CDB___db_prdbt (dbtp, checkprint, prefix, fp, is_recno)
 {
   static const char hex[] = "0123456789abcdef";
   db_recno_t recno;
-  u_int32_t len;
-  u_int8_t *p;
+  uint32_t len;
+  uint8_t *p;
 
   /*
    * !!!
@@ -915,13 +915,13 @@ CDB___db_prdbt (dbtp, checkprint, prefix, fp, is_recno)
       }
       else
         if (fprintf (fp, "\\%c%c",
-                     hex[(u_int8_t) (*p & 0xf0) >> 4], hex[*p & 0x0f]) != 3)
+                     hex[(uint8_t) (*p & 0xf0) >> 4], hex[*p & 0x0f]) != 3)
         return (EIO);
   }
   else
     for (len = dbtp->size, p = dbtp->data; len--; ++p)
       if (fprintf (fp, "%c%c",
-                   hex[(u_int8_t) (*p & 0xf0) >> 4], hex[*p & 0x0f]) != 2)
+                   hex[(uint8_t) (*p & 0xf0) >> 4], hex[*p & 0x0f]) != 2)
         return (EIO);
 
   return (fprintf (fp, "\n") == 1 ? 0 : EIO);
@@ -957,11 +957,11 @@ CDB___db_proff (vp)
  * CDB___db_prflags --
  *  Print out flags values.
  *
- * PUBLIC: void CDB___db_prflags __P((u_int32_t, const FN *, FILE *));
+ * PUBLIC: void CDB___db_prflags __P((uint32_t, const FN *, FILE *));
  */
 void
 CDB___db_prflags (flags, fn, fp)
-     u_int32_t flags;
+     uint32_t flags;
      FN const *fn;
      FILE *fp;
 {

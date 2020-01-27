@@ -44,8 +44,8 @@ typedef struct __log_persist LOGP;
 typedef struct __db_entry
 {
   DB *dbp;                      /* Associated DB structure. */
-  u_int32_t refcount;           /* Reference counted. */
-  u_int32_t count;              /* Number of ops on a deleted db. */
+  uint32_t refcount;           /* Reference counted. */
+  uint32_t count;              /* Number of ops on a deleted db. */
   int deleted;                  /* File was not found during open. */
 } DB_ENTRY;
 
@@ -67,7 +67,7 @@ struct __db_log
 
   DB_ENTRY *dbentry;            /* Recovery file-id mapping. */
 #define  DB_GROW_SIZE  64
-  u_int32_t dbentry_cnt;        /* Entries.  Grows by DB_GROW_SIZE. */
+  uint32_t dbentry_cnt;        /* Entries.  Grows by DB_GROW_SIZE. */
 
 /*
  * These fields are always accessed while the region lock is held, so they do
@@ -75,16 +75,16 @@ struct __db_log
  * when threads are not being used, i.e. most cursor operations are disallowed
  * on threaded logs.
  */
-  u_int32_t lfname;             /* Log file "name". */
+  uint32_t lfname;             /* Log file "name". */
   DB_FH lfh;                    /* Log file handle. */
 
   DB_LSN c_lsn;                 /* Cursor: current LSN. */
   DBT c_dbt;                    /* Cursor: return DBT structure. */
   DB_FH c_fh;                   /* Cursor: file handle. */
-  u_int32_t c_off;              /* Cursor: previous record offset. */
-  u_int32_t c_len;              /* Cursor: current record length. */
+  uint32_t c_off;              /* Cursor: previous record offset. */
+  uint32_t c_len;              /* Cursor: current record length. */
 
-  u_int8_t *bufp;               /* Region buffer. */
+  uint8_t *bufp;               /* Region buffer. */
 
 /* These fields are not protected. */
   DB_ENV *dbenv;                /* Reference to error information. */
@@ -106,7 +106,7 @@ struct __db_log
    * Currently used to hold:
    *  DBC_RECOVER  (a DBC flag)
    */
-  u_int32_t flags;
+  uint32_t flags;
 };
 
 /*
@@ -115,17 +115,17 @@ struct __db_log
  */
 struct __hdr
 {
-  u_int32_t prev;               /* Previous offset. */
-  u_int32_t cksum;              /* Current checksum. */
-  u_int32_t len;                /* Current length. */
+  uint32_t prev;               /* Previous offset. */
+  uint32_t cksum;              /* Current checksum. */
+  uint32_t len;                /* Current length. */
 };
 
 struct __log_persist
 {
-  u_int32_t magic;              /* DB_LOGMAGIC */
-  u_int32_t version;            /* DB_LOGVERSION */
+  uint32_t magic;              /* DB_LOGMAGIC */
+  uint32_t version;            /* DB_LOGVERSION */
 
-  u_int32_t lg_max;             /* Maximum file size. */
+  uint32_t lg_max;             /* Maximum file size. */
   int mode;                     /* Log file mode. */
 };
 
@@ -152,9 +152,9 @@ struct __log
    */
   DB_LSN s_lsn;                 /* LSN of the last sync. */
 
-  u_int32_t len;                /* Length of the last record. */
+  uint32_t len;                /* Length of the last record. */
 
-  u_int32_t w_off;              /* Current write offset in the file. */
+  uint32_t w_off;              /* Current write offset in the file. */
 
   DB_LSN chkpt_lsn;             /* LSN of the last checkpoint. */
   time_t chkpt;                 /* Time of the last checkpoint. */
@@ -171,7 +171,7 @@ struct __log
   size_t b_off;                 /* Current offset in the buffer. */
 
   roff_t buffer_off;            /* Log buffer offset. */
-  u_int32_t buffer_size;        /* Log buffer size. */
+  uint32_t buffer_size;        /* Log buffer size. */
 };
 
 /*
@@ -182,13 +182,13 @@ struct __fname
 {
   SH_TAILQ_ENTRY q;             /* File name queue. */
 
-  u_int16_t ref;                /* Reference count. */
+  uint16_t ref;                /* Reference count. */
 
   int32_t id;                   /* Logging file id. */
   DBTYPE s_type;                /* Saved DB type. */
 
   roff_t name_off;              /* Name offset. */
-  u_int8_t ufid[DB_FILE_ID_LEN];        /* Unique file id. */
+  uint8_t ufid[DB_FILE_ID_LEN];        /* Unique file id. */
 };
 
 /* File open/close register log record opcodes. */

@@ -95,7 +95,7 @@ struct __db_mpoolfile
 
   DB_FH fh;                     /* Underlying file handle. */
 
-  u_int32_t ref;                /* Reference count. */
+  uint32_t ref;                /* Reference count. */
 
   /*
    * !!!
@@ -107,7 +107,7 @@ struct __db_mpoolfile
    * the race between the seek and write of the file descriptor) will
    * block any other put/get calls using this DB_MPOOLFILE structure.
    */
-  u_int32_t pinref;             /* Pinned block reference count. */
+  uint32_t pinref;             /* Pinned block reference count. */
 
   /*
    * !!!
@@ -128,7 +128,7 @@ struct __db_mpoolfile
 #define  MP_UPGRADE  0x02       /* File descriptor is readwrite. */
 #define  MP_UPGRADE_FAIL  0x04  /* Upgrade wasn't possible. */
 #define  MP_CMPR    0x08        /* Transparent I/O compression. */
-  u_int32_t flags;
+  uint32_t flags;
 
   CMPR_CONTEXT cmpr_context;    /* Shared compression information */
 
@@ -177,13 +177,13 @@ struct __mpool
    */
   MUTEX sync_mutex;             /* Checkpoint lock. */
   DB_LSN lsn;                   /* Maximum checkpoint LSN. */
-  u_int32_t lsn_cnt;            /* Checkpoint buffers left to write. */
+  uint32_t lsn_cnt;            /* Checkpoint buffers left to write. */
 
-  u_int32_t nc_reg;             /* Number of underlying REGIONS. */
+  uint32_t nc_reg;             /* Number of underlying REGIONS. */
   roff_t c_regids;              /* Array of underlying REGION Ids. */
 
 #define  MP_LSN_RETRY  0x01     /* Retry all BH_WRITE buffers. */
-  u_int32_t flags;
+  uint32_t flags;
 
   /* HACK!! */
   /* a pointers allocated for this structure is (erroneously?) used */
@@ -222,7 +222,7 @@ struct __mpoolfile
   int ftype;                    /* File type. */
 
   int32_t lsn_off;              /* Page's LSN offset. */
-  u_int32_t clear_len;          /* Bytes to clear on page create. */
+  uint32_t clear_len;          /* Bytes to clear on page create. */
 
   roff_t path_off;              /* File name location. */
   roff_t fileid_off;            /* File identification location. */
@@ -230,7 +230,7 @@ struct __mpoolfile
   roff_t pgcookie_len;          /* Pgin/pgout cookie length. */
   roff_t pgcookie_off;          /* Pgin/pgout cookie location. */
 
-  u_int32_t lsn_cnt;            /* Checkpoint buffers left to write. */
+  uint32_t lsn_cnt;            /* Checkpoint buffers left to write. */
 
   db_pgno_t last_pgno;          /* Last page in the file. */
   db_pgno_t orig_last_pgno;     /* Original last page in the file. */
@@ -238,7 +238,7 @@ struct __mpoolfile
 #define  MP_CAN_MMAP  0x01      /* If the file can be mmap'd. */
 #define  MP_REMOVED  0x02       /* Backing file has been removed. */
 #define  MP_TEMP    0x04        /* Backing file is a temporary. */
-  u_int32_t flags;
+  uint32_t flags;
 
   DB_MPOOL_FSTAT stat;          /* Per-file mpool statistics. */
 };
@@ -274,7 +274,7 @@ struct __cmpr
 #define DB_CMPR_CHAIN     0x04  /* More data in next page. */
 #define DB_CMPR_FREE    0x08    /* Not in use. */
 
-  u_int16_t flags;
+  uint16_t flags;
 
   /* 
    * Filled if DB_CMPR_CHAIN set
@@ -303,7 +303,7 @@ struct __bh
 {
   MUTEX mutex;                  /* Buffer thread/process lock. */
 
-  u_int16_t ref;                /* Reference count. */
+  uint16_t ref;                /* Reference count. */
 
 #define  BH_CALLPGIN  0x001     /* Page needs to be reworked... */
 #define  BH_DIRTY  0x002        /* Page was modified. */
@@ -314,7 +314,7 @@ struct __bh
 #define  BH_CMPR    0x040       /* Chain contains valid data. */
 #define  BH_CMPR_POOL  0x080    /* Chain allocated in pool. */
 #define  BH_CMPR_OS  0x100      /* Chain allocate with malloc. */
-  u_int16_t flags;
+  uint16_t flags;
 
   db_pgno_t *chain;             /* Compression chain. */
 
@@ -330,7 +330,7 @@ struct __bh
    * and other structures into it, and expect to be able to access them
    * directly.  (We guarantee size_t alignment in the documentation too.)
    */
-  u_int8_t buf[1];              /* Variable length data. */
+  uint8_t buf[1];              /* Variable length data. */
 };
 
 #include "mp_ext.h"

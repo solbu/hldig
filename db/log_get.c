@@ -36,7 +36,7 @@ CDB_log_get (dbenv, alsn, dbt, flags)
      DB_ENV *dbenv;
      DB_LSN *alsn;
      DBT *dbt;
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB_LOG *dblp;
   int ret;
@@ -90,14 +90,14 @@ CDB_log_get (dbenv, alsn, dbt, flags)
  * CDB___log_get --
  *  Get a log record; internal version.
  *
- * PUBLIC: int CDB___log_get __P((DB_LOG *, DB_LSN *, DBT *, u_int32_t, int));
+ * PUBLIC: int CDB___log_get __P((DB_LOG *, DB_LSN *, DBT *, uint32_t, int));
  */
 int
 CDB___log_get (dblp, alsn, dbt, flags, silent)
      DB_LOG *dblp;
      DB_LSN *alsn;
      DBT *dbt;
-     u_int32_t flags;
+     uint32_t flags;
      int silent;
 {
   DB_LSN nlsn;
@@ -109,7 +109,7 @@ CDB___log_get (dblp, alsn, dbt, flags, silent)
   char *np, *tbuf;
   const char *fail;
   void *shortp;
-  u_int8_t *p;
+  uint8_t *p;
 
   lp = dblp->reginfo.primary;
   fail = np = tbuf = NULL;
@@ -263,7 +263,7 @@ CDB___log_get (dblp, alsn, dbt, flags, silent)
       goto corrupt;
 
     /* Get the rest of the header from the in-memory buffer. */
-    memcpy ((u_int8_t *) & hdr + nr, dblp->bufp, sizeof (HDR) - nr);
+    memcpy ((uint8_t *) & hdr + nr, dblp->bufp, sizeof (HDR) - nr);
     shortp = dblp->bufp + (sizeof (HDR) - nr);
   }
 
@@ -283,7 +283,7 @@ CDB___log_get (dblp, alsn, dbt, flags, silent)
   /* If we've already moved to the in-memory buffer, fill from there. */
   if (shortp != NULL)
   {
-    if (lp->b_off < ((u_int8_t *) shortp - dblp->bufp) + len)
+    if (lp->b_off < ((uint8_t *) shortp - dblp->bufp) + len)
       goto corrupt;
     if ((ret = CDB___db_retcopy (NULL, dbt, shortp, len,
                                  &dblp->c_dbt.data, &dblp->c_dbt.ulen)) != 0)
@@ -329,7 +329,7 @@ CDB___log_get (dblp, alsn, dbt, flags, silent)
       goto corrupt;
 
     /* Get the rest of the record from the in-memory buffer. */
-    memcpy ((u_int8_t *) tbuf + nr, dblp->bufp, len - nr);
+    memcpy ((uint8_t *) tbuf + nr, dblp->bufp, len - nr);
   }
 
   /* Copy the record into the user's DBT. */

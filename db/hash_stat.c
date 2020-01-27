@@ -30,13 +30,13 @@ static int CDB___ham_stat_callback __P ((DB *, PAGE *, void *, int *));
  * CDB___ham_stat --
  *  Gather/print the hash statistics
  *
- * PUBLIC: int CDB___ham_stat __P((DB *, void *, void *(*)(size_t), u_int32_t));
+ * PUBLIC: int CDB___ham_stat __P((DB *, void *, void *(*)(size_t), uint32_t));
  */
 int
 CDB___ham_stat (dbp, spp, db_malloc, flags)
      DB *dbp;
      void *spp, *(*db_malloc) __P ((size_t));
-     u_int32_t flags;
+     uint32_t flags;
 {
   DB_HASH_STAT *sp;
   HASH_CURSOR *hcp;
@@ -128,7 +128,7 @@ CDB___ham_traverse (dbp, dbc, mode, callback, cookie)
   HASH_CURSOR *hcp;
   HKEYDATA *hk;
   db_pgno_t pgno, opgno;
-  u_int32_t bucket;
+  uint32_t bucket;
   int did_put, i, ret;
 
   hcp = (HASH_CURSOR *) dbc->internal;

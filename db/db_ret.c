@@ -28,22 +28,22 @@ static const char sccsid[] = "@(#)db_ret.c  11.1 (Sleepycat) 7/24/99";
  *  Build return DBT.
  *
  * PUBLIC: int CDB___db_ret __P((DB *,
- * PUBLIC:    PAGE *, u_int32_t, DBT *, void **, u_int32_t *));
+ * PUBLIC:    PAGE *, uint32_t, DBT *, void **, uint32_t *));
  */
 int
 CDB___db_ret (dbp, h, indx, dbt, memp, memsize)
      DB *dbp;
      PAGE *h;
-     u_int32_t indx;
+     uint32_t indx;
      DBT *dbt;
      void **memp;
-     u_int32_t *memsize;
+     uint32_t *memsize;
 {
   BKEYDATA *bk;
   HOFFPAGE ho;
   BOVERFLOW *bo;
-  u_int32_t len;
-  u_int8_t *hk;
+  uint32_t len;
+  uint8_t *hk;
   void *data;
 
   switch (TYPE (h))
@@ -84,23 +84,23 @@ CDB___db_ret (dbp, h, indx, dbt, memp, memsize)
  *  Copy the returned data into the user's DBT, handling special flags.
  *
  * PUBLIC: int CDB___db_retcopy __P((DB *, DBT *,
- * PUBLIC:    void *, u_int32_t, void **, u_int32_t *));
+ * PUBLIC:    void *, uint32_t, void **, uint32_t *));
  */
 int
 CDB___db_retcopy (dbp, dbt, data, len, memp, memsize)
      DB *dbp;
      DBT *dbt;
      void *data;
-     u_int32_t len;
+     uint32_t len;
      void **memp;
-     u_int32_t *memsize;
+     uint32_t *memsize;
 {
   int ret;
 
   /* If returning a partial record, reset the length. */
   if (F_ISSET (dbt, DB_DBT_PARTIAL))
   {
-    data = (u_int8_t *) data + dbt->doff;
+    data = (uint8_t *) data + dbt->doff;
     if (len > dbt->doff)
     {
       len -= dbt->doff;

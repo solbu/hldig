@@ -157,7 +157,7 @@ CDB___qam_metachk (dbp, name, qmeta)
      QMETA *qmeta;
 {
   DB_ENV *dbenv;
-  u_int32_t vers;
+  uint32_t vers;
   int ret;
 
   dbenv = dbp->dbenv;

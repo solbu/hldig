@@ -113,12 +113,12 @@ struct __vrfy_dbinfo
   db_pgno_t last_pgno;
 
   /* Queue needs these to verify data pages in the first pass. */
-  u_int32_t re_len;
-  u_int32_t rec_page;
+  uint32_t re_len;
+  uint32_t rec_page;
 
 #define  SALVAGE_PRINTHEADER  0x01
 #define  SALVAGE_PRINTFOOTER  0x02
-  u_int32_t flags;
+  uint32_t flags;
 };                              /* VRFY_DBINFO */
 
 /*
@@ -131,10 +131,10 @@ struct __vrfy_dbinfo
  */
 struct __vrfy_pageinfo
 {
-  u_int8_t type;
-  u_int8_t bt_level;
-  u_int8_t unused1;
-  u_int8_t unused2;
+  uint8_t type;
+  uint8_t bt_level;
+  uint8_t unused1;
+  uint8_t unused2;
   db_pgno_t pgno;
   db_pgno_t prev_pgno;
   db_pgno_t next_pgno;
@@ -144,21 +144,21 @@ struct __vrfy_pageinfo
   db_pgno_t free;               /* Free list head. */
 
   db_indx_t entries;            /* Actual number of entries. */
-  u_int16_t unused;
+  uint16_t unused;
   db_recno_t rec_cnt;           /* Record count. */
-  u_int32_t re_len;             /* Record length. */
-  u_int32_t bt_minkey;
-  u_int32_t bt_maxkey;
-  u_int32_t h_ffactor;
-  u_int32_t h_nelem;
+  uint32_t re_len;             /* Record length. */
+  uint32_t bt_minkey;
+  uint32_t bt_maxkey;
+  uint32_t h_ffactor;
+  uint32_t h_nelem;
 
   /* overflow pages */
   /*
    * Note that refcount is the refcount for an overflow page; pi_refcount
    * is this structure's own refcount!
    */
-  u_int32_t refcount;
-  u_int32_t olen;
+  uint32_t refcount;
+  uint32_t olen;
 
 #define  VRFY_DUPS_UNSORTED  0x0001     /* Have to flag the negative! */
 #define  VRFY_HAS_DUPS    0x0002
@@ -171,10 +171,10 @@ struct __vrfy_pageinfo
 #define  VRFY_IS_RECNO    0x0100
 #define  VRFY_IS_RRECNO    0x0200
 #define  VRFY_OVFL_LEAFSEEN  0x0400
-  u_int32_t flags;
+  uint32_t flags;
 
     LIST_ENTRY (__vrfy_pageinfo) links;
-  u_int32_t pi_refcount;
+  uint32_t pi_refcount;
 };                              /* VRFY_PAGEINFO */
 
 struct __vrfy_childinfo
@@ -184,9 +184,9 @@ struct __vrfy_childinfo
 #define  V_DUPLICATE  1         /* off-page dup metadata */
 #define  V_OVERFLOW  2          /* overflow page */
 #define  V_RECNO    3           /* btree internal or leaf page */
-  u_int32_t type;
+  uint32_t type;
   db_recno_t nrecs;             /* record count on a btree subtree */
-  u_int32_t tlen;               /* ovfl. item total size */
+  uint32_t tlen;               /* ovfl. item total size */
 
     LIST_ENTRY (__vrfy_childinfo) links;
 };                              /* VRFY_CHILDINFO */

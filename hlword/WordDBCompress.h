@@ -86,10 +86,10 @@ public:
   WordDBCompress ();
   WordDBCompress (int, int);
 
-  int Compress (const u_int8_t * inbuff, int inbuff_length,
-                u_int8_t ** outbuffp, int *outbuff_lengthp);
-  int Uncompress (const u_int8_t * inbuff, int inbuff_length,
-                  u_int8_t * outbuff, int outbuff_length);
+  int Compress (const uint8_t * inbuff, int inbuff_length,
+                uint8_t ** outbuffp, int *outbuff_lengthp);
+  int Uncompress (const uint8_t * inbuff, int inbuff_length,
+                  uint8_t * outbuff, int outbuff_length);
 
   //
   // Return a new DB_CMPR_INFO initialized with characteristics of the
@@ -110,7 +110,7 @@ private:
 // 1 : TestCompress before each compression (but no debug within Compress Uncompress)
 // 2 : use_tags (BitStream) within TestCompress ->  Compress Uncompress
 // 3 : verbose
-  int TestCompress (const u_int8_t * pagebuff, int pagebuffsize);
+  int TestCompress (const uint8_t * pagebuff, int pagebuffsize);
 };
 
 #endif

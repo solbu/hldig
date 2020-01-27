@@ -19,7 +19,7 @@ static const char sccsid[] = "@(#)mp_method.c  11.2 (Sleepycat) 10/6/99";
 #include "mp.h"
 
 static int CDB___memp_set_cachesize
-__P ((DB_ENV *, u_int32_t, u_int32_t, int));
+__P ((DB_ENV *, uint32_t, uint32_t, int));
 static int CDB___memp_set_mp_mmapsize __P ((DB_ENV *, size_t));
 
 /*
@@ -53,7 +53,7 @@ CDB___memp_dbenv_create (dbenv)
 static int
 CDB___memp_set_cachesize (dbenv, gbytes, bytes, ncache)
      DB_ENV *dbenv;
-     u_int32_t gbytes, bytes;
+     uint32_t gbytes, bytes;
      int ncache;
 {
   ENV_ILLEGAL_AFTER_OPEN (dbenv, "set_cachesize");

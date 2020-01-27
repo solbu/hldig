@@ -64,7 +64,7 @@
 
 typedef void (*SIGNAL_HANDLER) (...);
 
-#ifndef _MSC_VER                /* _WIN32 */
+#ifdef HAVE_RRESVPORT
 extern "C"
 {
   int rresvport (int *);
@@ -178,8 +178,7 @@ Connection::Open (int priv)
   {
     int aport = IPPORT_RESERVED - 1;
 
-//  Native Windows (MSVC) has no rresvport
-#ifndef _MSC_VER                /* _WIN32 */
+#ifdef HAVE_RRESVPORT
     sock = rresvport (&aport);
 #else
     return NOTOK;

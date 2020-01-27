@@ -65,12 +65,12 @@ static const char sccsid[] = "@(#)db_meta.c  11.8 (Sleepycat) 10/19/99";
  * CDB___db_new --
  *  Get a new page, preferably from the freelist.
  *
- * PUBLIC: int CDB___db_new __P((DBC *, u_int32_t, PAGE **));
+ * PUBLIC: int CDB___db_new __P((DBC *, uint32_t, PAGE **));
  */
 int
 CDB___db_new (dbc, type, pagepp)
      DBC *dbc;
-     u_int32_t type;
+     uint32_t type;
      PAGE **pagepp;
 {
   DBMETA *meta;
@@ -112,7 +112,7 @@ CDB___db_new (dbc, type, pagepp)
   {
     if ((ret = __db_pg_alloc_log (dbp->dbenv, dbc->txn,
                                   &meta->lsn, 0, dbp->log_fileid, &meta->lsn,
-                                  &h->lsn, h->pgno, (u_int32_t) type,
+                                  &h->lsn, h->pgno, (uint32_t) type,
                                   meta->free)) != 0)
       goto err;
     LSN (h) = LSN (meta);
@@ -150,7 +150,7 @@ CDB___db_free (dbc, h)
   DBT ldbt;
   DB_LOCK metalock;
   db_pgno_t pgno;
-  u_int32_t dirty_flag;
+  uint32_t dirty_flag;
   int ret, t_ret;
 
   dbp = dbc->dbp;

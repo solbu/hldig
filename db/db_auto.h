@@ -7,13 +7,13 @@
 
 typedef struct _db_addrem_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
-  u_int32_t opcode;
+  uint32_t opcode;
   int32_t fileid;
   db_pgno_t pgno;
-  u_int32_t indx;
+  uint32_t indx;
   size_t nbytes;
   DBT hdr;
   DBT dbt;
@@ -21,8 +21,8 @@ typedef struct _db_addrem_args
 } __db_addrem_args;
 
 int CDB___db_addrem_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, u_int32_t, int32_t, db_pgno_t,
-      u_int32_t, size_t, const DBT *, const DBT *, DB_LSN *));
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, uint32_t, int32_t, db_pgno_t,
+      uint32_t, size_t, const DBT *, const DBT *, DB_LSN *));
 int CDB___db_addrem_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___db_addrem_read __P ((void *, __db_addrem_args **));
 
@@ -30,10 +30,10 @@ int CDB___db_addrem_read __P ((void *, __db_addrem_args **));
 
 typedef struct _db_split_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
-  u_int32_t opcode;
+  uint32_t opcode;
   int32_t fileid;
   db_pgno_t pgno;
   DBT pageimage;
@@ -41,7 +41,7 @@ typedef struct _db_split_args
 } __db_split_args;
 
 int CDB___db_split_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, u_int32_t, int32_t, db_pgno_t,
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, uint32_t, int32_t, db_pgno_t,
       const DBT *, DB_LSN *));
 int CDB___db_split_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___db_split_read __P ((void *, __db_split_args **));
@@ -50,10 +50,10 @@ int CDB___db_split_read __P ((void *, __db_split_args **));
 
 typedef struct _db_big_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
-  u_int32_t opcode;
+  uint32_t opcode;
   int32_t fileid;
   db_pgno_t pgno;
   db_pgno_t prev_pgno;
@@ -65,7 +65,7 @@ typedef struct _db_big_args
 } __db_big_args;
 
 int CDB___db_big_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, u_int32_t, int32_t, db_pgno_t,
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, uint32_t, int32_t, db_pgno_t,
       db_pgno_t, db_pgno_t, const DBT *, DB_LSN *, DB_LSN *, DB_LSN *));
 int CDB___db_big_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___db_big_read __P ((void *, __db_big_args **));
@@ -74,7 +74,7 @@ int CDB___db_big_read __P ((void *, __db_big_args **));
 
 typedef struct _db_ovref_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
   int32_t fileid;
@@ -84,7 +84,7 @@ typedef struct _db_ovref_args
 } __db_ovref_args;
 
 int CDB___db_ovref_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, int32_t, db_pgno_t, int32_t,
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, int32_t, db_pgno_t, int32_t,
       DB_LSN *));
 int CDB___db_ovref_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___db_ovref_read __P ((void *, __db_ovref_args **));
@@ -93,10 +93,10 @@ int CDB___db_ovref_read __P ((void *, __db_ovref_args **));
 
 typedef struct _db_relink_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
-  u_int32_t opcode;
+  uint32_t opcode;
   int32_t fileid;
   db_pgno_t pgno;
   DB_LSN lsn;
@@ -107,7 +107,7 @@ typedef struct _db_relink_args
 } __db_relink_args;
 
 int CDB___db_relink_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, u_int32_t, int32_t, db_pgno_t,
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, uint32_t, int32_t, db_pgno_t,
       DB_LSN *, db_pgno_t, DB_LSN *, db_pgno_t, DB_LSN *));
 int CDB___db_relink_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___db_relink_read __P ((void *, __db_relink_args **));
@@ -116,7 +116,7 @@ int CDB___db_relink_read __P ((void *, __db_relink_args **));
 
 typedef struct _db_addpage_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
   int32_t fileid;
@@ -127,7 +127,7 @@ typedef struct _db_addpage_args
 } __db_addpage_args;
 
 int CDB___db_addpage_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, int32_t, db_pgno_t, DB_LSN *,
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, int32_t, db_pgno_t, DB_LSN *,
       db_pgno_t, DB_LSN *));
 int CDB___db_addpage_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___db_addpage_read __P ((void *, __db_addpage_args **));
@@ -136,19 +136,19 @@ int CDB___db_addpage_read __P ((void *, __db_addpage_args **));
 
 typedef struct _db_debug_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
   DBT op;
   int32_t fileid;
   DBT key;
   DBT data;
-  u_int32_t arg_flags;
+  uint32_t arg_flags;
 } __db_debug_args;
 
 int CDB___db_debug_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, const DBT *, int32_t,
-      const DBT *, const DBT *, u_int32_t));
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, const DBT *, int32_t,
+      const DBT *, const DBT *, uint32_t));
 int CDB___db_debug_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___db_debug_read __P ((void *, __db_debug_args **));
 
@@ -156,7 +156,7 @@ int CDB___db_debug_read __P ((void *, __db_debug_args **));
 
 typedef struct _db_noop_args
 {
-  u_int32_t type;
+  uint32_t type;
   DB_TXN *txnid;
   DB_LSN prev_lsn;
   int32_t fileid;
@@ -165,7 +165,7 @@ typedef struct _db_noop_args
 } __db_noop_args;
 
 int CDB___db_noop_log
-__P ((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, int32_t, db_pgno_t, DB_LSN *));
+__P ((DB_ENV *, DB_TXN *, DB_LSN *, uint32_t, int32_t, db_pgno_t, DB_LSN *));
 int CDB___db_noop_print __P ((DB_ENV *, DBT *, DB_LSN *, int, void *));
 int CDB___db_noop_read __P ((void *, __db_noop_args **));
 int CDB___db_init_print __P ((DB_ENV *));

@@ -55,13 +55,13 @@ static const char sccsid[] = "@(#)bt_rsearch.c  11.8 (Sleepycat) 10/21/99";
  * CDB___bam_rsearch --
  *  Search a btree for a record number.
  *
- * PUBLIC: int CDB___bam_rsearch __P((DBC *, db_recno_t *, u_int32_t, int, int *));
+ * PUBLIC: int CDB___bam_rsearch __P((DBC *, db_recno_t *, uint32_t, int, int *));
  */
 int
 CDB___bam_rsearch (dbc, recnop, flags, stop, exactp)
      DBC *dbc;
      db_recno_t *recnop;
-     u_int32_t flags;
+     uint32_t flags;
      int stop, *exactp;
 {
   BINTERNAL *bi;
@@ -117,7 +117,7 @@ CDB___bam_rsearch (dbc, recnop, flags, stop, exactp)
    * for a write lock.
    */
   if (!stack &&
-      ((LF_ISSET (S_PARENT) && (u_int8_t) (stop + 1) >= h->level) ||
+      ((LF_ISSET (S_PARENT) && (uint8_t) (stop + 1) >= h->level) ||
        (LF_ISSET (S_WRITE) && h->level == LEAFLEVEL)))
   {
     (void) CDB_memp_fput (dbp->mpf, h, 0);
@@ -276,7 +276,7 @@ CDB___bam_rsearch (dbc, recnop, flags, stop, exactp)
        * never unlock it.
        */
       if ((LF_ISSET (S_PARENT) &&
-           (u_int8_t) (stop + 1) >= (u_int8_t) (h->level - 1)) ||
+           (uint8_t) (stop + 1) >= (uint8_t) (h->level - 1)) ||
           (h->level - 1) == LEAFLEVEL)
         stack = 1;
 
@@ -337,7 +337,7 @@ CDB___bam_adjust (dbc, adjust)
           (ret = CDB___bam_cadjust_log (dbp->dbenv,
                                         dbc->txn, &LSN (h), 0,
                                         dbp->log_fileid, PGNO (h), &LSN (h),
-                                        (u_int32_t) epg->indx, adjust,
+                                        (uint32_t) epg->indx, adjust,
                                         1)) != 0)
         return (ret);
 

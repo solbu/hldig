@@ -218,7 +218,7 @@ CDB___memp_cmpr_read (dbmfp, bhp, db_io, niop)
   CMPR cmpr;
   int ret;
   int chain = 0;
-  u_int8_t *buffcmpr = 0;
+  uint8_t *buffcmpr = 0;
   int buffcmpr_length = 0;
   int chain_length = 0;
   db_pgno_t first_pgno = db_io->pgno;
@@ -427,10 +427,10 @@ CDB___memp_cmpr_write (dbmfp, bhp, db_io, niop)
   int chain_length = 0;
   int first_nonreused_chain_pos = 0;
   int ret;
-  u_int8_t *buffcmpr = 0;
-  u_int8_t *buffp;
+  uint8_t *buffcmpr = 0;
+  uint8_t *buffp;
   unsigned int buffcmpr_length;
-  u_int8_t *orig_buff = db_io->buf;
+  uint8_t *orig_buff = db_io->buf;
   DB_ENV *dbenv = dbmfp->dbmp->dbenv;
   DB_CMPR_INFO *cmpr_info = dbenv->mp_cmpr_info;
 
@@ -647,14 +647,14 @@ err:
  * CDB___memp_cmpr_inflate --
  *  Decompress buffer
  *
- * PUBLIC: int CDB___memp_cmpr_inflate __P((const u_int8_t *, int, u_int8_t *, int, void *));
+ * PUBLIC: int CDB___memp_cmpr_inflate __P((const uint8_t *, int, uint8_t *, int, void *));
  */
 int
 CDB___memp_cmpr_inflate (inbuff, inbuff_length, outbuff, outbuff_length,
                          user_data)
-     const u_int8_t *inbuff;
+     const uint8_t *inbuff;
      int inbuff_length;
-     u_int8_t *outbuff;
+     uint8_t *outbuff;
      int outbuff_length;
      void *user_data;
 {
@@ -693,14 +693,14 @@ CDB___memp_cmpr_inflate (inbuff, inbuff_length, outbuff, outbuff_length,
  * CDB___memp_cmpr_deflate --
  *  Compress buffer
  *
- * PUBLIC: int CDB___memp_cmpr_deflate __P((const u_int8_t *, int, u_int8_t **, int*, void *));
+ * PUBLIC: int CDB___memp_cmpr_deflate __P((const uint8_t *, int, uint8_t **, int*, void *));
  */
 int
 CDB___memp_cmpr_deflate (inbuff, inbuff_length, outbuffp, outbuff_lengthp,
                          user_data)
-     const u_int8_t *inbuff;
+     const uint8_t *inbuff;
      int inbuff_length;
-     u_int8_t **outbuffp;
+     uint8_t **outbuffp;
      int *outbuff_lengthp;
      void *user_data;
 {
@@ -710,7 +710,7 @@ CDB___memp_cmpr_deflate (inbuff, inbuff_length, outbuffp, outbuff_lengthp,
   int off = 0;
   int freesp = 0;
   z_stream c_stream;
-  u_int8_t *outbuff;
+  uint8_t *outbuff;
 
   /*
    * Z_FINISH can be used immediately after deflateInit if all the compression
@@ -852,13 +852,13 @@ err:
  * __memp_cmpr_pagesize --
  *  Compute compressed page size
  *
- * PUBLIC: u_int8_t CDB___memp_cmpr_coefficient __P((DB_ENV *dbenv));
+ * PUBLIC: uint8_t CDB___memp_cmpr_coefficient __P((DB_ENV *dbenv));
  */
-u_int8_t
+uint8_t
 CDB___memp_cmpr_coefficient (dbenv)
      DB_ENV *dbenv;
 {
-  u_int8_t ret = 0;
+  uint8_t ret = 0;
 
   if (!dbenv || !dbenv->mp_cmpr_info)
   {

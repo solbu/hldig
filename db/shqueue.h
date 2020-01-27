@@ -45,24 +45,24 @@ struct {                \
  */
 
 #define SH_LIST_FIRSTP(head, type)          \
-  ((struct type *)(((u_int8_t *)(head)) + (head)->slh_first))
+  ((struct type *)(((uint8_t *)(head)) + (head)->slh_first))
 
 #define SH_LIST_FIRST(head, type)          \
   ((head)->slh_first == -1 ? NULL :        \
-  ((struct type *)(((u_int8_t *)(head)) + (head)->slh_first)))
+  ((struct type *)(((uint8_t *)(head)) + (head)->slh_first)))
 
 #define SH_LIST_NEXTP(elm, field, type)          \
-  ((struct type *)(((u_int8_t *)(elm)) + (elm)->field.sle_next))
+  ((struct type *)(((uint8_t *)(elm)) + (elm)->field.sle_next))
 
 #define SH_LIST_NEXT(elm, field, type)          \
   ((elm)->field.sle_next == -1 ? NULL :         \
-  ((struct type *)(((u_int8_t *)(elm)) + (elm)->field.sle_next)))
+  ((struct type *)(((uint8_t *)(elm)) + (elm)->field.sle_next)))
 
 #define SH_LIST_PREV(elm, field)          \
-  ((ssize_t *)(((u_int8_t *)(elm)) + (elm)->field.sle_prev))
+  ((ssize_t *)(((uint8_t *)(elm)) + (elm)->field.sle_prev))
 
 #define SH_PTR_TO_OFF(src, dest)          \
-  ((ssize_t)(((u_int8_t *)(dest)) - ((u_int8_t *)(src))))
+  ((ssize_t)(((uint8_t *)(dest)) - ((uint8_t *)(src))))
 
 #define  SH_LIST_END(head)      NULL
 
@@ -128,22 +128,22 @@ struct {                \
  * Shared tail queue functions.
  */
 #define SH_TAILQ_FIRSTP(head, type)          \
-  ((struct type *)((u_int8_t *)(head) + (head)->stqh_first))
+  ((struct type *)((uint8_t *)(head) + (head)->stqh_first))
 
 #define SH_TAILQ_FIRST(head, type)          \
   ((head)->stqh_first == -1 ? NULL : SH_TAILQ_FIRSTP(head, type))
 
 #define SH_TAILQ_NEXTP(elm, field, type)        \
-  ((struct type *)((u_int8_t *)(elm) + (elm)->field.stqe_next))
+  ((struct type *)((uint8_t *)(elm) + (elm)->field.stqe_next))
 
 #define SH_TAILQ_NEXT(elm, field, type)          \
   ((elm)->field.stqe_next == -1 ? NULL : SH_TAILQ_NEXTP(elm, field, type))
 
 #define SH_TAILQ_PREVP(elm, field)          \
-  ((ssize_t *)((u_int8_t *)(elm) + (elm)->field.stqe_prev))
+  ((ssize_t *)((uint8_t *)(elm) + (elm)->field.stqe_prev))
 
 #define SH_TAILQ_LAST(head)            \
-  ((ssize_t *)(((u_int8_t *)(head)) + (head)->stqh_last))
+  ((ssize_t *)(((uint8_t *)(head)) + (head)->stqh_last))
 
 #define SH_TAILQ_NEXT_TO_PREV(elm, field)        \
   (-(elm)->field.stqe_next + SH_PTR_TO_OFF(elm, &(elm)->field.stqe_next))
@@ -234,27 +234,27 @@ struct {                \
  * Shared circular queue functions.
  */
 #define SH_CIRCLEQ_FIRSTP(head, type)          \
-  ((struct type *)(((u_int8_t *)(head)) + (head)->scqh_first))
+  ((struct type *)(((uint8_t *)(head)) + (head)->scqh_first))
 
 #define SH_CIRCLEQ_FIRST(head, type)          \
   ((head)->scqh_first == -1 ?           \
   (void *)head : SH_CIRCLEQ_FIRSTP(head, type))
 
 #define SH_CIRCLEQ_LASTP(head, type)          \
-  ((struct type *)(((u_int8_t *)(head)) + (head)->scqh_last))
+  ((struct type *)(((uint8_t *)(head)) + (head)->scqh_last))
 
 #define SH_CIRCLEQ_LAST(head, type)          \
   ((head)->scqh_last == -1 ? (void *)head : SH_CIRCLEQ_LASTP(head, type))
 
 #define SH_CIRCLEQ_NEXTP(elm, field, type)        \
-  ((struct type *)(((u_int8_t *)(elm)) + (elm)->field.scqe_next))
+  ((struct type *)(((uint8_t *)(elm)) + (elm)->field.scqe_next))
 
 #define SH_CIRCLEQ_NEXT(head, elm, field, type)        \
   ((elm)->field.scqe_next == SH_PTR_TO_OFF(elm, head) ?    \
       (void *)head : SH_CIRCLEQ_NEXTP(elm, field, type))
 
 #define SH_CIRCLEQ_PREVP(elm, field, type)        \
-  ((struct type *)(((u_int8_t *)(elm)) + (elm)->field.scqe_prev))
+  ((struct type *)(((uint8_t *)(elm)) + (elm)->field.scqe_prev))
 
 #define SH_CIRCLEQ_PREV(head, elm, field, type)        \
   ((elm)->field.scqe_prev == SH_PTR_TO_OFF(elm, head) ?    \

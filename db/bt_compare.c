@@ -63,14 +63,14 @@ static const char sccsid[] = "@(#)bt_compare.c  11.2 (Sleepycat) 9/9/99";
  *  Compare a key to a given record.
  *
  * PUBLIC: int CDB___bam_cmp __P((DB *, const DBT *,
- * PUBLIC:    PAGE *, u_int32_t, int (*)(const DBT *, const DBT *)));
+ * PUBLIC:    PAGE *, uint32_t, int (*)(const DBT *, const DBT *)));
  */
 int
 CDB___bam_cmp (dbp, dbt, h, indx, func)
      DB *dbp;
      const DBT *dbt;
      PAGE *h;
-     u_int32_t indx;
+     uint32_t indx;
      int (*func) __P ((const DBT *, const DBT *));
 {
   BINTERNAL *bi;
@@ -154,7 +154,7 @@ CDB___bam_defcmp (a, b)
      const DBT *a, *b;
 {
   size_t len;
-  u_int8_t *p1, *p2;
+  uint8_t *p1, *p2;
 
   /*
    * Returns:
@@ -186,7 +186,7 @@ CDB___bam_defpfx (a, b)
      const DBT *a, *b;
 {
   size_t cnt, len;
-  u_int8_t *p1, *p2;
+  uint8_t *p1, *p2;
 
   cnt = 1;
   len = a->size > b->size ? b->size : a->size;
