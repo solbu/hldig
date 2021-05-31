@@ -1,3 +1,7 @@
+2021-05-31  Johnny A. Solbu <solbu@solbu-1>
+
+	* Remove travis integration (travis.org is shuting down) 
+
 2020-01-27  Johnny A. Solbu <johnny@solbu.net>
 
 	* Release version 1.0.2

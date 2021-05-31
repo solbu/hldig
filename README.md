@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/solbu/hldig.svg?branch=master)](https://travis-ci.org/solbu/hldig)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/16612/badge.svg)](https://scan.coverity.com/projects/hldig)
 
 hl://Dig is a fork of [ht://Dig](https://sourceforge.net/projects/htdig/),
