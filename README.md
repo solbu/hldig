@@ -3,9 +3,7 @@
 hl://Dig is a fork of [ht://Dig](https://sourceforge.net/projects/htdig/),
 a world-wide-web search system for an intranet or small internet.
 
-We are in the process of updating the
-[web site](https://solbu.github.io/hldig/)
-and documentation.
+On our [web site](https://solbu.github.io/hldig/) we have online documentation.
 
 Recently, we wrote a quick-guide to [building and testing hl://Dig](TESTING.md),
 but it doesn't cover all the programs in the hl://Dig package.
@@ -26,6 +24,6 @@ If you are interested in translating the output messages from hldig, please see
 ## Community/Contact
 
 Anyone interested in this project may join the IRC channel -
-[chat.freenode.net / channel: #hldig](ircs://irc.freenode.net/hldig)
+[irc.libera.chat / channel: #hldig](ircs://irc.libera.chat:6697/hldig)
 
 Project maintainer: [Johnny A. Solbu](https://www.solbu.net/)<br>

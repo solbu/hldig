@@ -1,5 +1,5 @@
-Translators are encouraged to join the [chat
-room](http://webchat.freenode.net?channels=%23%23hldig&uio=d4).
+Translators are encouraged to join the chat
+room #hldig on Libera (ircs://irc.libera.chat/hldig).
 We will try to help and answer any questions you may have about the
 translation process.
 
@@ -41,6 +41,7 @@ msgstr "reguläre Datei"
 * After you clone your fork, go into the hldig source po/ directory
 * run `msginit -l ??` (Where ?? is your
  [iso-631-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)) Example: To create a french .po file, run `msginit -l fr`.
-* At this point, you may open your new .po file and begin adding translations
+* At this point, you may open your new .po file and begin adding translations.
+  The [Translation Project](https://translationproject.org/html/software.html) have a list of editors that is specifically designed for working with po-files.
 * When done, make a [pull request](https://github.com/solbu/hldig/blob/master/CONTRIBUTING.md#pull-requests)
 * Thank you!

@@ -12,13 +12,13 @@ layout:default
         <a href="https://github.com/solbu/hldig/issues">GitHub Issue tracker</a>
       </li>
       <li>
-	IRC: #hldig on Freenode
+	IRC: #hldig on Libera
 	<ul>
 	  <li>
-          <a href="https://webchat.freenode.net/?channels=%23hldig&uio=d4">webchat-link</a>
+          <a href="https://web.libera.chat/">webchat-link</a>
 	  </li>
 	  <li>
-	  <a href="ircs://irc.freenode.net/hldig">ircs://irc.freenode.net/hldig</a>
+	  <a href="ircs://irc.libera.chat/hldig">ircs://irc.libera.chat/hldig</a>
 	  </li>
 	</ul>
       </li>
