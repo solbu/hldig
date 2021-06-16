@@ -154,10 +154,6 @@ hldig was designed to be a search engine for a web site. When `hlsearch` is
 used from the command line, the html code it outputs is displayed. Its true
 purpose is to be run through a form on a web site.
 
-Here is an example of where it's used through a web site form:
-
-[hldig Testing Ground](http://htdig.dreamhosters.com/)
-
 The is (old) html code used to display a form on a web site and request
 input from a user. You can see how `hlsearch` is called:
 
