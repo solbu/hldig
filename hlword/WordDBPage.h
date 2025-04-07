@@ -74,7 +74,7 @@ public:
 WordDBRecord ():WordRecord ()
   {;
   }
-  WordDBRecord (byte * dat, int len, int rectyp):WordRecord ()
+  WordDBRecord (hlbyte * dat, int len, int rectyp):WordRecord ()
   {
     type = (rectyp ? DefaultType () : WORD_RECORD_STATS);
     Unpack (String ((char *) dat, len));
@@ -138,7 +138,7 @@ WordDBKey (BINTERNAL * nkey):WordKey ()
       Unpack (String ((char *) nkey->data, nkey->len));
     }
   }
-  WordDBKey (byte * data, int len):WordKey ()
+  WordDBKey (hlbyte * data, int len):WordKey ()
   {
     key = NULL;
     if (!data || !len)
@@ -267,7 +267,7 @@ public:
   void *alloc_entry (int size)
   {
     size = WORD_ALIGN_TO (size, 4);
-    int inp_pos = ((byte *) & (pg->inp[insert_indx])) - (byte *) pg;
+    int inp_pos = ((hlbyte *) & (pg->inp[insert_indx])) - (hlbyte *) pg;
     insert_pos -= size;
     if (insert_pos <= inp_pos)
     {
@@ -278,7 +278,7 @@ public:
       errr ("WordDBPage::alloc_entry: PAGE OVERFLOW");
     }
     pg->inp[insert_indx++] = insert_pos;
-    return ((void *) ((byte *) pg + insert_pos));
+    return ((void *) ((hlbyte *) pg + insert_pos));
   }
 
 
@@ -328,7 +328,7 @@ public:
       ky.Pack (pkey);
       keylen = pkey.length ();
     }
-    int size = keylen + ((byte *) & (bti.data)) - ((byte *) & bti);     // pos of data field in BINTERNAL
+    int size = keylen + ((hlbyte *) & (bti.data)) - ((hlbyte *) & bti);     // pos of data field in BINTERNAL
     if (empty)
     {
       if (verbose)
@@ -336,7 +336,7 @@ public:
         printf
           ("WordDBPage::insert_btikey: empty : BINTERNAL:%d datapos:%d keylen:%d size:%d alligned to:%d\n",
            (int) sizeof (BINTERNAL),
-           (int) (((byte *) & (bti.data)) - ((byte *) & bti)), keylen, size,
+           (int) (((hlbyte *) & (bti.data)) - ((hlbyte *) & bti)), keylen, size,
            WORD_ALIGN_TO (size, 4));
       }
     }
@@ -389,9 +389,9 @@ public:
                                      int *pn);
   int Uncompress_header (Compressor & in);
   void Uncompress_rebuild (unsigned int **rnums, int *rnum_sizes, int nnums,
-                           byte * rworddiffs, int nrworddiffs);
+                           hlbyte * rworddiffs, int nrworddiffs);
   void Uncompress_show_rebuild (unsigned int **rnums, int *rnum_sizes,
-                                int nnums, byte * rworddiffs,
+                                int nnums, hlbyte * rworddiffs,
                                 int nrworddiffs);
 
   int TestCompress (int debuglevel);
@@ -422,7 +422,7 @@ public:
                     label_str ("seperatekey_bti_nrecs", i));
       if (len)
       {
-        out.put_zone ((byte *) btikey (i)->data, 8 * len,
+        out.put_zone ((hlbyte *) btikey (i)->data, 8 * len,
                       label_str ("seperatekey_btidata", i));
       }
     }
@@ -434,7 +434,7 @@ public:
       {
         printf ("WordDBPage::compress_key: compress(typ5):%d\n", len);
       }
-      out.put_zone ((byte *) key (i)->data, 8 * len,
+      out.put_zone ((hlbyte *) key (i)->data, 8 * len,
                     label_str ("seperatekey_data", i));
     }
   }
@@ -446,7 +446,7 @@ public:
     {
       printf ("WordDBPage::compress_data: compressdata(typ5):%d\n", len);
     }
-    out.put_zone ((byte *) data (i)->data, 8 * len,
+    out.put_zone ((hlbyte *) data (i)->data, 8 * len,
                   label_str ("seperatedata_data", i));
   }
   WordDBKey uncompress_key (Compressor & in, int i)
@@ -483,7 +483,7 @@ public:
       }
       if (len)
       {
-        byte *gotdata = new byte[len];
+        hlbyte *gotdata = new hlbyte[len];
         CHECK_MEM (gotdata);
         in.get_zone (gotdata, 8 * len, label_str ("seperatekey_btidata", i));
         res = WordDBKey (gotdata, len);
@@ -493,7 +493,7 @@ public:
     }
     else
     {
-      byte *gotdata = new byte[len];
+      hlbyte *gotdata = new hlbyte[len];
       CHECK_MEM (gotdata);
       in.get_zone (gotdata, 8 * len, label_str ("seperatekey_data", i));
       res = WordDBKey (gotdata, len);
@@ -508,7 +508,7 @@ public:
     int len = in.get_uint (NBITS_DATALEN, label_str ("seperatedata_len", i));
     if (verbose)
       printf ("uncompressdata:len:%d\n", len);
-    byte *gotdata = new byte[len];
+    hlbyte *gotdata = new hlbyte[len];
     CHECK_MEM (gotdata);
     in.get_zone (gotdata, 8 * len, label_str ("seperatedata_data", i));
     res = WordDBRecord (gotdata, len, rectyp);
@@ -632,7 +632,7 @@ public:
   {
     init0 ();
     pgsz = npgsz;
-    pg = (PAGE *) (new byte[pgsz]);
+    pg = (PAGE *) (new hlbyte[pgsz]);
     CHECK_MEM (pg);
     insert_pos = pgsz;
     insert_indx = 0;

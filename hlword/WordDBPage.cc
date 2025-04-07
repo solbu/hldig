@@ -192,7 +192,7 @@ WordDBPage::Uncompress (Compressor * pin, int ndebug,
     Uncompress_main (pin);
     break;
   case CMPRTYPE_BADCOMPRESS:   // this page did not compress correctly
-    pin->get_zone ((byte *) pg, pgsz * 8, "INITIALBUFFER");
+    pin->get_zone ((hlbyte *) pg, pgsz * 8, "INITIALBUFFER");
     break;
   default:
     errr ("WordDBPage::Uncompress: CMPRTYPE incoherent");
@@ -227,7 +227,7 @@ WordDBPage::Uncompress_main (Compressor * pin)
   int *rnum_sizes = new int[nnums];
   CHECK_MEM (rnum_sizes);
   // char differences between words
-  byte *rworddiffs = NULL;
+  hlbyte *rworddiffs = NULL;
   int nrworddiffs;
 
   // *********** read header
@@ -365,7 +365,7 @@ WordDBPage::Uncompress_header (Compressor & in)
     printf (" 12-15: Previous page number. : %d\n", pg->prev_pgno);
     printf (" 16-19: Next page number.     : %d\n", pg->next_pgno);
     printf (" 20-21: Number of item pairs on the page. : %d\n", pg->entries);
-    printf (" 22-23: High free byte page offset.       : %d\n",
+    printf (" 22-23: High free hlbyte page offset.       : %d\n",
             pg->hf_offset);
     printf ("    24: Btree tree level.                 : %d\n", pg->level);
     printf ("    25: Page type.                        : %d\n", pg->type);
@@ -375,7 +375,7 @@ WordDBPage::Uncompress_header (Compressor & in)
 
 void
 WordDBPage::Uncompress_rebuild (unsigned int **rnums, int *rnum_sizes,
-                                int nnums0, byte * rworddiffs,
+                                int nnums0, hlbyte * rworddiffs,
                                 int nrworddiffs)
 {
   int irwordiffs = 0;
@@ -529,7 +529,7 @@ WordDBPage::Uncompress_rebuild (unsigned int **rnums, int *rnum_sizes,
 // display
 void
 WordDBPage::Uncompress_show_rebuild (unsigned int **rnums, int *rnum_sizes,
-                                     int nnums0, byte * rworddiffs,
+                                     int nnums0, hlbyte * rworddiffs,
                                      int nrworddiffs)
 {
   int i, j;
@@ -617,7 +617,7 @@ WordDBPage::Compress (int ndebug, DB_CMPR_INFO * cmprInfo /*=NULL*/ )
                    "COMPRESS_VERSION");
     res->put_uint (CMPRTYPE_BADCOMPRESS, NBITS_CMPRTYPE, "CMPRTYPE");
 
-    res->put_zone ((byte *) pg, pgsz * 8, "INITIALBUFFER");
+    res->put_zone ((hlbyte *) pg, pgsz * 8, "INITIALBUFFER");
   }
 
   if (verbose)
@@ -1037,7 +1037,7 @@ WordDBPage::Compare (WordDBPage & other)
     printf ("compare failed in some unknown place in header:\n");
     for (i = 0; i < (int) (sizeof (PAGE) - sizeof (db_indx_t)); i++)
     {
-      printf ("%3d: %3x %3x\n", i, ((byte *) pg)[i], ((byte *) other.pg)[i]);
+      printf ("%3d: %3x %3x\n", i, ((hlbyte *) pg)[i], ((hlbyte *) other.pg)[i]);
     }
   }
 
@@ -1331,7 +1331,7 @@ WordDBPage::show ()
       printf ("%5d: ", nn);
       for (j = 0; j < 20; j++)
       {
-        printf ("%2x ", ((byte *) pg)[nn++]);
+        printf ("%2x ", ((hlbyte *) pg)[nn++]);
         if (nn >= pgsz)
         {
           break;
