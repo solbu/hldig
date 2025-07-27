@@ -59,6 +59,7 @@ LIBS="-lthread $LIBS"
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <thread.h>
 #include <synch.h>
+#include <stdlib.h>
 main(){
 	mutex_t mutex;
 	cond_t cond;
