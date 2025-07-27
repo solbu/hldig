@@ -37,8 +37,9 @@ dnl we avoid answering lots of user questions, not to mention the bugs.
 if test "$db_cv_mutex" = no; then
 
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <stdlib.h>
 #include <synch.h>
-main(){
+int main(){
 	static lwp_mutex_t mi = SHAREDMUTEX;
 	static lwp_cond_t ci = SHAREDCV;
 	lwp_mutex_t mutex = mi;
@@ -57,9 +58,10 @@ dnl Try with and without the -lthread library.
 if test "$db_cv_mutex" = no; then
 LIBS="-lthread $LIBS"
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <stdlib.h>
 #include <thread.h>
 #include <synch.h>
-main(){
+int main(){
 	mutex_t mutex;
 	cond_t cond;
 	int type = USYNC_PROCESS;
@@ -73,9 +75,10 @@ LIBS="$orig_libs"
 fi
 if test "$db_cv_mutex" = no; then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <stdlib.h>
 #include <thread.h>
 #include <synch.h>
-main(){
+int main(){
 	mutex_t mutex;
 	cond_t cond;
 	int type = USYNC_PROCESS;
@@ -92,8 +95,9 @@ dnl
 dnl Try with and without the -lpthread library.
 if test "$db_cv_mutex" = no; then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <stdlib.h>
 #include <pthread.h>
-main(){
+int main(){
 	pthread_cond_t cond;
 	pthread_mutex_t mutex;
 	pthread_condattr_t condattr;
@@ -116,8 +120,9 @@ fi
 if test "$db_cv_mutex" = no; then
 LIBS="-lpthread $LIBS"
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <stdlib.h>
 #include <pthread.h>
-main(){
+int main(){
 	pthread_cond_t cond;
 	pthread_mutex_t mutex;
 	pthread_condattr_t condattr;
@@ -143,8 +148,9 @@ dnl msemaphore: HPPA only
 dnl Try HPPA before general msem test, it needs special alignment.
 if test "$db_cv_mutex" = no; then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <stdlib.h>
 #include <sys/mman.h>
-main(){
+int main(){
 #if defined(__hppa)
 	typedef msemaphore tsl_t;
 	msemaphore x;
@@ -161,9 +167,10 @@ fi
 dnl msemaphore: OSF/1
 if test "$db_cv_mutex" = no; then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/mman.h>;
-main(){
+int main(){
 	typedef msemaphore tsl_t;
 	msemaphore x;
 	msem_init(&x, 0);
@@ -186,7 +193,8 @@ fi
 dnl SCO: UnixWare has threads in libthread, but OpenServer doesn't.
 if test "$db_cv_mutex" = no; then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-main(){
+#include <stdlib.h>
+int main(){
 #if defined(__USLC__)
 	exit(0);
 #endif
@@ -233,7 +241,8 @@ fi
 dnl Alpha/gcc: OSF/1
 if test "$db_cv_mutex" = no; then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-main(){
+#include <stdlib.h>
+int main(){
 #if defined(__alpha)
 #if defined(__GNUC__)
 exit(0);
@@ -246,7 +255,8 @@ fi
 dnl PaRisc/gcc: HP/UX
 if test "$db_cv_mutex" = no; then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-main(){
+#include <stdlib.h>
+int main(){
 #if defined(__hppa)
 #if defined(__GNUC__)
 exit(0);
@@ -261,7 +271,8 @@ dnl The sparc/gcc code doesn't always work, specifically, I've seen assembler
 dnl failures from the stbar instruction on SunOS 4.1.4/sun4c and gcc 2.7.2.2.
 if test "$db_cv_mutex" = DOESNT_WORK; then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-main(){
+#include <stdlib.h>
+int main(){
 #if defined(__sparc__)
 #if defined(__GNUC__)
 	exit(0);
@@ -274,7 +285,8 @@ fi
 dnl 68K/gcc: SunOS
 if test "$db_cv_mutex" = no; then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-main(){
+#include <stdlib.h>
+int main(){
 #if (defined(mc68020) || defined(sun3))
 #if defined(__GNUC__)
 	exit(0);
@@ -287,7 +299,8 @@ fi
 dnl x86/gcc: FreeBSD, NetBSD, BSD/OS, Linux
 if test "$db_cv_mutex" = no; then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-main(){
+#include <stdlib.h>
+int main(){
 #if defined(i386)
 #if defined(__GNUC__)
 	exit(0);
@@ -300,7 +313,8 @@ fi
 dnl: uts/cc: UTS
 if test "$db_cv_mutex" = no; then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-main(){
+#include <stdlib.h>
+int main(){
 #if defined(_UTS)
 	exit(0);
 #endif
@@ -533,7 +547,9 @@ AC_SUBST(u_int8_decl)
 AC_CACHE_CHECK([for u_int8_t], db_cv_uint8, [dnl
 AC_TRY_COMPILE([#include <sys/types.h>], u_int8_t foo;,
 	[db_cv_uint8=yes],
-    AC_RUN_IFELSE([AC_LANG_SOURCE([[main(){exit(sizeof(unsigned char) != 1);}]])],
+    AC_RUN_IFELSE([AC_LANG_SOURCE([[
+            #include <stdlib.h>
+            int main(){exit(sizeof(unsigned char) != 1);}]])],
 	    [db_cv_uint8="unsigned char"], [db_cv_uint8=no], [:]))])
 if test "$db_cv_uint8" = no; then
 	AC_MSG_ERROR(No unsigned 8-bit integral type.)
@@ -546,9 +562,13 @@ AC_SUBST(u_int16_decl)
 AC_CACHE_CHECK([for u_int16_t], db_cv_uint16, [dnl
 AC_TRY_COMPILE([#include <sys/types.h>], u_int16_t foo;,
 	[db_cv_uint16=yes],
-AC_RUN_IFELSE([AC_LANG_SOURCE([[main(){exit(sizeof(unsigned short) != 2);}]])],
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+        #include <stdlib.h>
+        int main(){exit(sizeof(unsigned short) != 2);}]])],
 	[db_cv_uint16="unsigned short"],
-AC_RUN_IFELSE([AC_LANG_SOURCE([[main(){exit(sizeof(unsigned int) != 2);}]])],
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+        #include <stdlib.h>
+        int main(){exit(sizeof(unsigned int) != 2);}]])],
 	[db_cv_uint16="unsigned int"], [db_cv_uint16=no], [:])))], [:])
 if test "$db_cv_uint16" = no; then
 	AC_MSG_ERROR([No unsigned 16-bit integral type.])
@@ -561,9 +581,13 @@ AC_SUBST(int16_decl)
 AC_CACHE_CHECK([for int16_t], db_cv_int16, [dnl
 AC_TRY_COMPILE([#include <sys/types.h>], int16_t foo;,
 	[db_cv_int16=yes],
-AC_RUN_IFELSE([AC_LANG_SOURCE([[main(){exit(sizeof(short) != 2);}]])],
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+        #include <stdlib.h>
+        int main(){exit(sizeof(short) != 2);}]])],
 	[db_cv_int16="short"],
-AC_RUN_IFELSE([AC_LANG_SOURCE([[main(){exit(sizeof(int) != 2);}]])],
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+        #include <stdlib.h>
+        int main(){exit(sizeof(int) != 2);}]])],
 	[db_cv_int16="int"], [db_cv_int16=no], [:])))], [:])
 if test "$db_cv_int16" = no; then
 	AC_MSG_ERROR([No signed 16-bit integral type.])
@@ -576,9 +600,13 @@ AC_SUBST(u_int32_decl)
 AC_CACHE_CHECK([for u_int32_t], db_cv_uint32, [dnl
 AC_TRY_COMPILE([#include <sys/types.h>], u_int32_t foo;,
 	[db_cv_uint32=yes],
-AC_TRY_RUN([main(){exit(sizeof(unsigned int) != 4);}],
+AC_TRY_RUN([
+    #include <stdlib.h>
+    int main(){exit(sizeof(unsigned int) != 4);}],
 	[db_cv_uint32="unsigned int"],
-AC_TRY_RUN([main(){exit(sizeof(unsigned long) != 4);}],
+AC_TRY_RUN([
+    #include <stdlib.h>
+    int main(){exit(sizeof(unsigned long) != 4);}],
 	[db_cv_uint32="unsigned long"], [db_cv_uint32=no], [:])))], [:])
 if test "$db_cv_uint32" = no; then
 	AC_MSG_ERROR([No unsigned 32-bit integral type.])
@@ -591,9 +619,13 @@ AC_SUBST(int32_decl)
 AC_CACHE_CHECK([for int32_t], db_cv_int32, [dnl
 AC_TRY_COMPILE([#include <sys/types.h>], int32_t foo;,
 	[db_cv_int32=yes],
-AC_TRY_RUN([main(){exit(sizeof(int) != 4);}],
+AC_TRY_RUN([
+    #include <stdlib.h>
+    int main(){exit(sizeof(int) != 4);}],
 	[db_cv_int32="int"],
-AC_TRY_RUN([main(){exit(sizeof(long) != 4);}],
+AC_TRY_RUN([
+    #include <stdlib.h>
+    int main(){exit(sizeof(long) != 4);}],
 	[db_cv_int32="long"], [db_cv_int32=no], [:])))], [:])
 if test "$db_cv_int32" = no; then
 	AC_MSG_ERROR([No signed 32-bit integral type.])
