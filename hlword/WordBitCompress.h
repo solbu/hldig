@@ -28,9 +28,10 @@
 #include"HtVector_int.h"
 #include"HtMaxMin.h"
 
-typedef unsigned char byte;
+//typedef unsigned char hlbyte;
+typedef unsigned char hlbyte;
 // ******** HtVector_byte (header)
-#define GType byte
+#define GType hlbyte
 #define HtVectorGType HtVector_byte
 #include "HtVectorGeneric.h"
 
@@ -137,7 +138,7 @@ public:
   }
 
   // gets a bit from the bitstream
-  inline byte get (const char *tag = (char *) NULL)
+  inline hlbyte get (const char *tag = (char *) NULL)
   {
     // SPEED CRITICAL SECTION
     if (check_tag (tag) == NOTOK)
@@ -148,7 +149,7 @@ public:
     {
       errr ("BitStream::get reading past end of BitStream!");
     }
-    byte res = buff[bitpos >> 3] & pow2 (bitpos & 0x07);
+    hlbyte res = buff[bitpos >> 3] & pow2 (bitpos & 0x07);
 //    printf("get:res:%d bitpos:%5d/%d buff[%3d]=%x\n",res,bitpos,bitpos%8,bitpos/8,buff[bitpos/8]);
     bitpos++;
     return (res);
@@ -159,8 +160,8 @@ public:
   unsigned int get_uint (int n, const char *tag = (char *) NULL);
 
   // get/put n bits of data stored in vals
-  void put_zone (byte * vals, int n, const char *tag);
-  void get_zone (byte * vals, int n, const char *tag);
+  void put_zone (hlbyte * vals, int n, const char *tag);
+  void get_zone (hlbyte * vals, int n, const char *tag);
 
   // 
   inline void add_tag (const char *tag)
@@ -202,9 +203,9 @@ public:
   }
 
   // get a copy of the buffer
-  byte *get_data ();
+  hlbyte *get_data ();
   // set the buffer from outside data (current buffer must be empty)
-  void set_data (const byte * nbuff, int nbits);
+  void set_data (const hlbyte * nbuff, int nbits);
 
   // use this for reading a BitStream after you have written in it 
   // (generally for debuging)
@@ -297,8 +298,8 @@ public:
   int get_vals (unsigned int **pres, const char *tag = (char *) "BADTAG!");
 
   // compress/decompress an array of bytes (very simple)
-  int put_fixedbitl (byte * vals, int n, const char *tag);
-  int get_fixedbitl (byte ** pres, const char *tag = (char *) "BADTAG!");
+  int put_fixedbitl (hlbyte * vals, int n, const char *tag);
+  int get_fixedbitl (hlbyte ** pres, const char *tag = (char *) "BADTAG!");
 
   // compress/decompress an array of unsigned ints (very simple)
   void get_fixedbitl (unsigned int *res, int n);

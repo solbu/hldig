@@ -29,7 +29,7 @@
 #include"WordBitCompress.h"
 
 // ******** HtVector_byte (implementation)
-#define GType byte
+#define GType hlbyte
 #define HtVectorGType HtVector_byte
 #include "HtVectorGenericCode.h"
 
@@ -478,7 +478,7 @@ bs (nbs)
 // **************************************************
 
 void
-BitStream::put_zone (byte * vals, int n, const char *tag)
+BitStream::put_zone (hlbyte * vals, int n, const char *tag)
 {
   add_tag (tag);
   for (int i = 0; i < (n + 7) / 8; i++)
@@ -488,7 +488,7 @@ BitStream::put_zone (byte * vals, int n, const char *tag)
 }
 
 void
-BitStream::get_zone (byte * vals, int n, const char *tag)
+BitStream::get_zone (hlbyte * vals, int n, const char *tag)
 {
   check_tag (tag);
   for (int i = 0; i < (n + 7) / 8; i++)
@@ -844,10 +844,10 @@ BitStream::show (int a /*=0*/ , int n /*=-1*/ )
 
 }
 
-byte *
+hlbyte *
 BitStream::get_data ()
 {
-  byte *res = (byte *) malloc (buff.size ());
+  hlbyte *res = (hlbyte *) malloc (buff.size ());
   CHECK_MEM (res);
   for (int i = 0; i < buff.size (); i++)
   {
@@ -857,7 +857,7 @@ BitStream::get_data ()
 }
 
 void
-BitStream::set_data (const byte * nbuff, int nbits)
+BitStream::set_data (const hlbyte * nbuff, int nbits)
 {
   if (buff.size () != 1 || bitpos != 0)
   {
@@ -1024,7 +1024,7 @@ Compressor::get_vals (unsigned int **pres, const char *tag /*="BADTAG!"*/ )
 
 
 int
-Compressor::put_fixedbitl (byte * vals, int n, const char *tag)
+Compressor::put_fixedbitl (hlbyte * vals, int n, const char *tag)
 {
   int cpos = bitpos;
   int i, j;
@@ -1036,10 +1036,10 @@ Compressor::put_fixedbitl (byte * vals, int n, const char *tag)
     return 0;
   }
 
-  byte maxv = vals[0];
+  hlbyte maxv = vals[0];
   for (i = 1; i < n; i++)
   {
-    byte v = vals[i];
+    hlbyte v = vals[i];
     if (v > maxv)
     {
       maxv = v;
@@ -1048,13 +1048,13 @@ Compressor::put_fixedbitl (byte * vals, int n, const char *tag)
   int nbits = num_bits (maxv);
   if (n >= pow2 (NBITS_NVALS))
   {
-    errr ("Compressor::put_fixedbitl(byte *) : overflow: nvals>2^16");
+    errr ("Compressor::put_fixedbitl(hlbyte *) : overflow: nvals>2^16");
   }
   put_uint (nbits, NBITS_NBITS_CHARVAL, "nbits");
   add_tag ("data");
   for (i = 0; i < n; i++)
   {
-    byte v = vals[i];
+    hlbyte v = vals[i];
     for (j = 0; j < nbits; j++)
     {
       put (v & pow2 (j));
@@ -1092,11 +1092,11 @@ Compressor::get_fixedbitl (unsigned int *res, int n)
 }
 
 int
-Compressor::get_fixedbitl (byte ** pres, const char *tag /*="BADTAG!"*/ )
+Compressor::get_fixedbitl (hlbyte ** pres, const char *tag /*="BADTAG!"*/ )
 {
   if (check_tag (tag) == NOTOK)
   {
-    errr ("Compressor::get_fixedbitl(byte *): check_tag failed");
+    errr ("Compressor::get_fixedbitl(hlbyte *): check_tag failed");
   }
   int n = get_uint_vl (NBITS_NVALS);
   if (!n)
@@ -1106,9 +1106,9 @@ Compressor::get_fixedbitl (byte ** pres, const char *tag /*="BADTAG!"*/ )
   }
   int nbits = get_uint (NBITS_NBITS_CHARVAL);
   if (verbose)
-    printf ("get_fixedbitl(byte):n%3d nbits:%2d\n", n, nbits);
+    printf ("get_fixedbitl(hlbyte):n%3d nbits:%2d\n", n, nbits);
   int i;
-  byte *res = new byte[n];
+  hlbyte *res = new hlbyte[n];
   CHECK_MEM (res);
   for (i = 0; i < n; i++)
   {
